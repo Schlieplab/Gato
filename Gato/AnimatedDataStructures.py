@@ -442,8 +442,11 @@ class AnimatedPredecessor(VertexLabeling):
 	except:
 	    i = 0 
 	if val != None:
-	    self.Animator.SetEdgeColor(val,v,"red")
-	    VertexLabeling.__setitem__(self, v, val)
+	    try:
+	        self.Animator.SetEdgeColor(val,v,"red")
+            except:
+                None
+        VertexLabeling.__setitem__(self, v, val)
      
 
 
