@@ -375,7 +375,7 @@ class AnimatedVertexQueue(Queue):
 	v = Queue.Top(self)
 	self.Animator.SetVertexColor(v, self.ColorOff)
 	if self.lastRemoved is not None:
-	    self.Animator.SetVertexFrameWidth(self.lastRemoved,gVertexFrameWidth)
+	    self.Animator.SetVertexFrameWidth(self.lastRemoved,self.Animator.gVertexFrameWidth)
 	self.Animator.SetVertexFrameWidth(v,6)
 	self.lastRemoved = v 
 	return v
@@ -385,7 +385,7 @@ class AnimatedVertexQueue(Queue):
 	    self.Animator.SetVertexColor(v, self.ColorOff)
 	Queue.Clear(self) 
 	if self.lastRemoved is not None:
-	    self.Animator.SetVertexFrameWidth(self.lastRemoved,gVertexFrameWidth)
+	    self.Animator.SetVertexFrameWidth(self.lastRemoved,self.Animator.gVertexFrameWidth)
             self.lastRemoved = None
 
 class AnimatedVertexPriorityQueue(PriorityQueue):    
@@ -416,7 +416,7 @@ class AnimatedVertexPriorityQueue(PriorityQueue):
         v = PriorityQueue.DeleteMin(self)
 	self.Animator.SetVertexColor(v, self.ColorOff)
 	if self.lastRemoved is not None:
-	    self.Animator.SetVertexFrameWidth(self.lastRemoved,gVertexFrameWidth)
+	    self.Animator.SetVertexFrameWidth(self.lastRemoved,self.Animator.gVertexFrameWidth)
 	self.Animator.SetVertexFrameWidth(v,6)
 	self.lastRemoved = v 
 	return v
@@ -446,7 +446,7 @@ class AnimatedVertexStack(Stack):
 	v = Stack.Pop(self)
 	self.Animator.SetVertexColor(v, self.ColorOff)
 	if self.lastRemoved is not None:
-	    self.Animator.SetVertexFrameWidth(self.lastRemoved,gVertexFrameWidth)
+	    self.Animator.SetVertexFrameWidth(self.lastRemoved,self.Animator.gVertexFrameWidth)
 	self.Animator.SetVertexFrameWidth(v,6)
 	self.lastRemoved = v 
 	return v
@@ -456,7 +456,7 @@ class AnimatedVertexStack(Stack):
 	    self.Animator.SetVertexColor(v, self.ColorOff)
 	Stack.Clear(self)
 	if self.lastRemoved is not None:
-	    self.Animator.SetVertexFrameWidth(self.lastRemoved,gVertexFrameWidth)
+	    self.Animator.SetVertexFrameWidth(self.lastRemoved,self.Animator.gVertexFrameWidth)
             self.lastRemoved = None
 
 

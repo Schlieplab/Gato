@@ -35,6 +35,7 @@
 ################################################################################
 
 from Tkinter import * # Frame, Canvas, Toplevel, StringVar and lots of handy constants
+import tkFont
 from Graph import Graph
 from math import sqrt, pi, sin, cos
 from GatoGlobals import *
@@ -87,15 +88,42 @@ class GraphDisplay:
 	self.label = {}  # XXX ditto for label
 
 	self.zoomFactor = 100.0 # percent
-	self.zVertexRadius = gVertexRadius
-	self.zArrowShape = (16, 20, 6)
-	self.zFontSize = 10
 
 	self.CreateWidgets()
 	self.SetTitle("Gato - Graph")
 	self.update()
 	self.graphInformer = None
 	self.clickhandler = None
+
+        self.ReadConfiguration()
+
+
+    def ReadConfiguration(self):
+        self.gVertexRadius = 12
+
+        self.gFontFamily = "Helvetica"
+        self.gFontSize = 10
+        self.gFontStyle = tkFont.NORMAL
+
+        self.gEdgeWidth = 3
+
+        self.gVertexFrameWidth = 2
+        self.cVertexDefault = "red"
+        self.cVertexBlink = "black"
+        self.cEdgeDefault = "black"
+        self.cLabelDefault = "black"
+        self.cLabelDefaultInverted = "white"
+        self.cLabelBlink = "green"
+        
+        # Used by ramazan's scaling code
+	self.zVertexRadius = self.gVertexRadius
+	self.zArrowShape = (16, 20, 6)
+        self.zFontSize = 10
+
+    def font(self, size):
+        return tkFont.Font(self, (self.gFontFamily, size, self.gFontStyle))
+
+
 
     def GetCanvasCenter(self): 
 	""" *Internal* Return the center of the canvas in pixel """
@@ -134,11 +162,11 @@ class GraphDisplay:
 	factor = zoomFactor[percent] / self.zoomFactor	    
 	self.zoomFactor = zoomFactor[percent]
 
-	self.zVertexRadius = (gVertexRadius*self.zoomFactor) / 100.0
+	self.zVertexRadius = (self.gVertexRadius*self.zoomFactor) / 100.0
 	self.zArrowShape = ((16*self.zoomFactor) / 100.0,
 			    (20*self.zoomFactor) / 100.0,
 			    (6*self.zoomFactor)  / 100.0)
-	self.zFontSize = max(7,int((10*self.zoomFactor) / 100.0))
+	self.zFontSize = max(7,int((self.gFontSize*self.zoomFactor) / 100.0))
 
 	for v in self.G.vertices:
 	    dv = self.drawVertex[v]
@@ -146,7 +174,7 @@ class GraphDisplay:
 	    newVertexFrameWidth = float(oldVertexFrameWidth) * factor
 	    self.canvas.itemconfig(dv, width=newVertexFrameWidth)
 	    dl = self.drawLabel[v]
-	    self.canvas.itemconfig(dl, font="Arial %d" %self.zFontSize)
+	    self.canvas.itemconfig(dl, font=self.font(self.zFontSize))
 
 	for e in self.G.Edges():
 	    de = self.drawEdges[e]
@@ -348,9 +376,9 @@ class GraphDisplay:
 	if x == None and y == None:
 	    x,y = self.EmbeddingToCanvas(self.embedding[v].x, self.embedding[v].y)
 	d = self.zVertexRadius
-	w = (gVertexFrameWidth*self.zoomFactor) / 100.0
+	w = (self.gVertexFrameWidth*self.zoomFactor) / 100.0
  	dv = self.canvas.create_oval(x-d, y-d, x+d, y+d, 
-				     fill=cVertexDefault, 
+				     fill=self.cVertexDefault, 
 				     tag="vertices",
 				     width=w) 
 	self.canvas.tag_bind(dv, "<Any-Leave>", self.DefaultInfo)
@@ -373,9 +401,9 @@ class GraphDisplay:
 	dl = self.canvas.create_text(pos.x, pos.y, 
 				     anchor="center", 
 				     justify="center", 
-				     font="Arial %d" %self.zFontSize,
+				     font=self.font(self.zFontSize),
 				     text=self.Labeling[v], 
-				     fill=cLabelDefault,
+				     fill=self.cLabelDefault,
 				     tag="labels")
 	self.canvas.tag_bind(dl, "<Any-Enter>", self.VertexInfo)
 	self.label[dl] = v # XXX
@@ -396,7 +424,7 @@ class GraphDisplay:
 	    Coords.append(loopRadius*cos(degree*(pi/180))+xMiddle)
 	    Coords.append(loopRadius*sin(degree*(pi/180))+yMiddle)
 	return self.canvas.create_line(Coords,
-				       fill=cEdgeDefault, 
+				       fill=self.cEdgeDefault, 
 				       width=w,
 				       smooth=TRUE,
 				       splinesteps=24,
@@ -416,7 +444,7 @@ class GraphDisplay:
 	return self.canvas.create_line(Coords,
 				       arrow="last",
 				       arrowshape=self.zArrowShape,
-				       fill=cEdgeDefault, 
+				       fill=self.cEdgeDefault, 
 				       width=w,
 				       smooth=TRUE,
 				       splinesteps=24,
@@ -425,7 +453,7 @@ class GraphDisplay:
     def CreateUndirectedDrawEdge(self,t,h,w):
 	""" *Internal* Create an undirected draw edge. t, h are Point2Ds """
 	return self.canvas.create_line(t.x,t.y,h.x,h.y,
-				       fill=cEdgeDefault,
+				       fill=self.cEdgeDefault,
 				       width=w,
 				       tag="edges") 
  
@@ -441,7 +469,7 @@ class GraphDisplay:
 	tmpY = t.y + c * (h.y - t.y)
 	if curved == 0:
 	    return self.canvas.create_line(t.x,t.y,tmpX,tmpY,
-					   fill=cEdgeDefault,
+					   fill=self.cEdgeDefault,
 					   arrow="last",
 					   arrowshape=self.zArrowShape, 
 					   width=w,
@@ -454,7 +482,7 @@ class GraphDisplay:
 	    mX = t.x + .5 * (h.x - t.x) + c * mX
 	    mY = t.y + .5 * (h.y - t.y) + c * mY
 	    return self.canvas.create_line(t.x,t.y,mX,mY,tmpX,tmpY,
-					   fill=cEdgeDefault,
+					   fill=self.cEdgeDefault,
 					   arrow="last",
 					   arrowshape=self.zArrowShape, 
 					   width=w,
@@ -470,7 +498,7 @@ class GraphDisplay:
 	h = self.VertexPosition(head)
 
 	if self.G.edgeWidth == None:
-	    w = (gEdgeWidth * self.zoomFactor) / 100.0
+	    w = (self.gEdgeWidth * self.zoomFactor) / 100.0
 	else:
 	    w = (self.G.edgeWidth[(tail,head)] * self.zoomFactor) / 100.0
 
@@ -486,7 +514,7 @@ class GraphDisplay:
 			self.canvas.delete(self.drawEdges[(head,tail)])
 			# ... and create a new curved one
 			if self.G.edgeWidth == None:
-			    wOld = (gEdgeWidth * self.zoomFactor) / 100.0
+			    wOld = (self.gEdgeWidth * self.zoomFactor) / 100.0
 			else:
 			    wOld = (self.G.edgeWidth[(head,tail)] * self.zoomFactor) / 100.0
 			de = self.CreateDirectedDrawEdge(h,t,1,wOld)
@@ -500,7 +528,7 @@ class GraphDisplay:
 			except TclError:
 			    None # can get here when opening graph
 		    except KeyError:
-			oldColor = cEdgeDefault # When opening a graph we can get here
+			oldColor = self.cEdgeDefault # When opening a graph we can get here
 		
 		    # Finally create the one we wanted to ...
 		    de = self.CreateDirectedDrawEdge(t,h,1,w)		
@@ -529,7 +557,7 @@ class GraphDisplay:
 				      pos.y + self.zVertexRadius+1, 
 				      anchor="w", 
 				      justify="left",
-				      font="Arial %d" %self.zFontSize, 
+				      font=self.font(self.zFontSize), 
 				      text=annotation,
 				      tag="vertexAnno",
 				      fill=color)
@@ -550,7 +578,7 @@ class GraphDisplay:
 	da =  self.canvas.create_text(x, y, 
 				      anchor="center", 
 				      justify="center", 
-				      font="Arial %d" %self.zFontSize,
+				      font=self.font(self.zFontSize),
 				      text=annotation,
 				      tag="edgeAnno",
 				      fill=color)
@@ -570,9 +598,9 @@ class GraphDisplay:
 					rgb_color[2] / 65536.0)
 	lightness =  hls_color[1]
 	if lightness < 0.4: 
-	    self.canvas.itemconfig( self.drawLabel[v], fill=cLabelDefaultInverted)
+	    self.canvas.itemconfig( self.drawLabel[v], fill=self.cLabelDefaultInverted)
 	else:
-	    self.canvas.itemconfig( self.drawLabel[v], fill=cLabelDefault)
+	    self.canvas.itemconfig( self.drawLabel[v], fill=self.cLabelDefault)
 	self.canvas.itemconfig( self.drawVertex[v], fill=color)
 	self.update()
 
@@ -632,9 +660,11 @@ class GraphDisplay:
 	return self.canvas.itemconfig(de, "fill")[4]
 
 
-    def BlinkVertex(self, v, color=cVertexBlink):
+    def BlinkVertex(self, v, color=None):
 	""" Blink vertex v with color. Number of times, speed, default color is
-	    specified in GatoGlobals.py. No error checking! """	
+	    specified in GatoGlobals.py. No error checking! """
+        if color is None: # No self in default arg
+            color=self.cVertexBlink
 	dv = self.drawVertex[v]
 	oldColor = self.canvas.itemconfig(dv, "fill")[4]
 	for i in xrange(1,gBlinkRepeat):
@@ -646,10 +676,12 @@ class GraphDisplay:
 	    self.update()
 
 
-    def BlinkEdge(self, tail, head, color=cVertexBlink):
+    def BlinkEdge(self, tail, head, color=None):
 	""" Blink edge (tail,head) with color. Number of times, speed, default 
 	    color is specified in GatoGlobals.py. No error checking!	Handles
 	    undirected graphs. """	
+        if color is None: # No self in default arg
+            color=self.cVertexBlink
 	if self.directed == 1:
 	    de = self.drawEdges[(tail,head)]
 	else:
@@ -666,12 +698,14 @@ class GraphDisplay:
 	    self.canvas.itemconfig( de, fill=oldColor)
 	    self.update()
 
-    def Blink(self, list, color=cVertexBlink):
+    def Blink(self, list, color=None):
 	""" Blink all edges or vertices in list with color.
             Edges are specified as (tail,head). 
 
             Number of times, speed, default color is specified in GatoGlobals.py. 
             No error checking!	Handles undirected graphs. """	
+        if color is None: # No self in default arg
+            color=self.cVertexBlink
 	oldColor = [None] * len(list)
 	drawItems = [None] * len(list)
 
@@ -717,7 +751,7 @@ class GraphDisplay:
 	else:
 	    da = self.vertexAnnotation[v]
 	    self.canvas.itemconfig(da, 
-				   font="Arial %d" %self.zFontSize,
+				   font=self.font(self.zFontSize),
 				   text=annotation,
 				   fill=color)
 	    self.update()
@@ -733,16 +767,18 @@ class GraphDisplay:
 	else:
 	    da = self.edgeAnnotation[(tail,head)]
 	    self.canvas.itemconfig(da,
-				   font="Arial %d" %self.zFontSize,
+				   font=self.font(self.zFontSize),
 				   text=annotation,
 				   fill=color)
 	    self.update()
 
 
-    def UpdateVertexLabel(self, v, blink=1, color=cLabelBlink):
+    def UpdateVertexLabel(self, v, blink=1, color=None):
 	""" Visualize the changing of v's label. After changing G.labeling[v],
 	    call UpdateVertexLabel to update the label in the graph window,
-	    blinking blink times with color. No error checking!  """	
+	    blinking blink times with color. No error checking!  """
+        if color is None:
+            color=self.cLabelBlink
 	dl = self.drawLabel[v]
 	if blink == 1:
 	    oldColor = self.canvas.itemconfig(dl, "fill")[4]
@@ -754,11 +790,11 @@ class GraphDisplay:
 		self.canvas.itemconfig( dl, fill=oldColor)
 		self.update()
 		self.canvas.itemconfig( dl,
-					font="Arial %d" %self.zFontSize,
+					font=self.font(self.zFontSize),
 					text=self.Labeling[v])
 	else:
 	    self.canvas.itemconfig( dl,
-				    font="Arial %d" %self.zFontSize,
+				    font=self.font(self.zFontSize),
 				    text=self.Labeling[v])
 	    self.update()
 

@@ -41,6 +41,7 @@ from DataStructures import EdgeWeight, VertexWeight
 from GraphUtil import OpenCATBoxGraph, OpenGMLGraph, SaveCATBoxGraph, WeightedGraphInformer
 from GraphEditor import GraphEditor
 from Tkinter import *
+import tkFont
 from GatoUtil import stripPath, extension, gatoPath
 import GatoDialogs
 import GatoIcons
@@ -193,7 +194,29 @@ class SAGraphEditor(GraphEditor, Frame):
 	    self.master.focus_force()
 	else:
 	    self.tkraise()
-	
+
+    def ReadConfiguration(self):
+        self.gVertexRadius = 13
+        self.gEdgeWidth = 3
+
+        self.gFontFamily = "Helvetica"
+        self.gFontSize = 11
+        self.gFontStyle = tkFont.BOLD
+        
+        self.gVertexFrameWidth = 0
+        self.cVertexDefault = "#000099"
+        self.cVertexBlink = "black"
+        self.cEdgeDefault = "#999999"
+        self.cLabelDefault = "white"
+        self.cLabelDefaultInverted = "black"
+        self.cLabelBlink = "green"
+
+        # Used by ramazan's scaling code
+	self.zVertexRadius = self.gVertexRadius
+	self.zArrowShape = (16, 20, 6)
+        self.zFontSize = 10
+       
+
 
     def SetGraphMenuDirected(self,directed):
 	if directed:

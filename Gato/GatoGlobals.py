@@ -35,11 +35,11 @@
 #
 ################################################################################
 
-# Globals 
-# NOTE: Values will be replaced by values read from gato.cfg 
-gVertexRadius     = 12  
-gVertexFrameWidth      =  2     
-gEdgeWidth        =  3     
+# Globals
+### This will be set in GraphDisplay.ReadConfiguration()
+##gVertexRadius = 12  
+##gVertexFrameWidth =  2     
+##gEdgeWidth =  3     
 
 # Animation
 gBlinkRate        = 10      # ms 100
@@ -57,13 +57,14 @@ gInfinity         = 9999999
 True              = 1
 False             = 0
 
-# Internal Color Names
-cVertexDefault    = "red"
-cVertexBlink      = "black"
-cEdgeDefault      = "black"
-cLabelDefault     = "black"
-cLabelDefaultInverted = "white"
-cLabelBlink       = "green"
+### Internal Color Names for GraphDisplay and such
+### This will be set in GraphDisplay.ReadConfiguration()
+##cVertexDefault    = "red"
+##cVertexBlink      = "black"
+##cEdgeDefault      = "black"
+##cLabelDefault     = "black"
+##cLabelDefaultInverted = "white"
+##cLabelBlink       = "green"
 
 cInitial          = "green"
 cVisited          = "grey"
