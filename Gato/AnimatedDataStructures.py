@@ -138,10 +138,10 @@ class BlinkingContainerWrapper:
 	#    doSomething
 	"""
 
-    def __init__(self, theAnimator, l, c):	
+    def __init__(self, theAnimator, l,  color=cOnQueue):	
 	self.Animator = theAnimator
 	self.list = copy.copy(l)
-	self.color = c
+	self.color = color
 	
     def __getitem__(self, i):
 	if i < len(self.list):
@@ -157,6 +157,43 @@ class BlinkingContainerWrapper:
     def __len__(self):
 	return len(self.list)
 
+
+class ContainerWrapper(BlinkingContainerWrapper):
+    """ Visualizes iterating over a list of vertices and/or edges by
+        coloring. If color has changed in the meantime the original
+        color will not be set again.
+
+	#List = lambda l, a=A: ContainerWrapper(a,l,color)
+	#
+	#for w in List:
+	#    doSomething
+	"""
+
+    def __init__(self, theAnimator, l, color=cOnQueue):
+        BlinkingContainerWrapper.__init__(self,theAnimator,l,color)	
+        self.lastitem  = None
+        self.lastcolor = None
+	
+    def __getitem__(self, i):
+	if i < len(self.list):
+	    item = self.list[i]
+	    if type(item) == type(2): # vertex
+                dummy = self.Animator.GetVertexColor(item)
+		if (self.lastitem != None) and (self.Animator.GetVertexColor(self.lastitem) == self.lastcolor):
+                    self.Animator.SetVertexColor(self.lastitem,self.lastcolor)
+		self.Animator.SetVertexColor(item,self.color)
+                self.lastcolor = dummy
+	    else:
+                dummy = self.Animator.GetEdgeColor(item[0],item[1])
+		if (self.lastitem != None) and (self.Animator.GetEdgeColor(self.lastitem[0],self.lastitem[1]) == self.lastcolor):
+                    self.Animator.SetEdgeColor(self.lastitem[0],self.lastitem[1],self.lastcolor)
+		self.Animator.SetEdgeColor(item[0],item[1],self.color)
+                self.lastcolor = dummy
+            self.lastitem = item
+	    return item
+	else:
+	    raise IndexError
+                         
 
 class AnimatedVertexLabeling(VertexLabeling):
     """ Visualizes changes of values of the VertexLabeling
