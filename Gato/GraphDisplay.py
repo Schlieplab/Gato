@@ -1051,17 +1051,14 @@ class GraphDisplay:
 	del(self.drawVertex.label[v])
 	self.canvas.delete(self.drawLabel[v])
 	del(self.drawLabel.label[v])
-## 	# delete incident edges
-## 	outVertices = self.G.OutNeighbors(v)[:] # Need a copy here
-## 	inVertices = self.G.InNeighbors(v)[:]
-## 	for w in outVertices:
-## 	    self.DeleteEdge(v,w,0)
-## 	for w in inVertices:
-## 	    if w != v: # We have already deleted loops
-## 		self.DeleteEdge(w,v,0)
-## 	#del(self.G.adjLists[v]) # XXX
-## 	# and finally the vertex itself
-## 	self.G.vertices.remove(v) # XXX
+ 	# delete incident edges
+ 	outVertices = self.G.OutNeighbors(v)[:] # Need a copy here
+ 	inVertices = self.G.InNeighbors(v)[:]
+ 	for w in outVertices:
+ 	    self.DeleteEdge(v,w,0)
+ 	for w in inVertices:
+ 	    if w != v: # We have already deleted loops
+ 		self.DeleteEdge(w,v,0)
         self.G.DeleteVertex(v)
 
     def AddEdge(self,tail,head):
