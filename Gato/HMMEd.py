@@ -537,9 +537,13 @@ class HMM:
             self.state[s].toDOM(XMLDoc, graph, initial_sum)
         
         # Compute sums of outgoing probabilities for renormalization of transition probabilities
-        out_sum = [0.0] * (self.G.Order() + 1)
+        # NOTE: need dictionaries here
+        out_sum = {}
+        for v in self.G.vertices:
+            out_sum[v] = 0.0
+        
         for e in self.G.Edges():
-            out_sum[e[0]] = out_sum[e[0]] + self.G.edgeWeights[0][e]
+             out_sum[e[0]] = out_sum[e[0]] + self.G.edgeWeights[0][e]
 
         for e in self.G.Edges():
             edge_elem = XMLDoc.createElement("edge")
