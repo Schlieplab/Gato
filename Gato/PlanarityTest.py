@@ -334,7 +334,7 @@ class block:
             alpha[e]=left
         for e in self.Rseg.elements:
             alpha[e]=right 
-            return 1
+        return 1
 
     def add_to_Att(self,Att,dfsnum_w0,alpha,dfsnum):
         # add the block to the rear of |Att|. Flip if necessary
@@ -370,7 +370,7 @@ Del=[]
 lowpt1={}
 lowpt2={}
 alpha={}
-Att=[]
+Att=List()
 cur_nr=0
 sort_num={}
 tree_edge_into={}
@@ -383,9 +383,11 @@ def planarity_test(Gin):
 # planarity_test decides whether the InputGraph is planar.
 # it also order the adjecentLists in counterclockwise.
 
+###    SaveGmlGraph(Gin,"/home/ramazan/Leda/Graphs/rama.gml")
+
     n=Gin.Order() # number of nodes
     if n<3: return 1
-    if Gin.Size()>6*n-12: return 0
+    if Gin.Size()>6*n-12: return 0 # number of edges
 
     #--------------------------------------------------------------
     # make G a copy of Gin and make G bidirected
@@ -712,7 +714,7 @@ def strongly_planar(e0,Att):
 #
 # strongly_planar operates in three phases.
 # It first constructs the cycle C(e0) underlying the segment S(e0). 
-# It then constructs the interlacing graph for the segments emanating from the
+# It then constructs the interlacing graph for the segments emanating >from the
 # spine of the cycle.
 # If this graph is non-bipartite then the segment S(e0) is non-planar.
 # If it is bipartite then the segment is planar.
@@ -720,7 +722,7 @@ def strongly_planar(e0,Att):
 # and, if so, computes its list of attachments.
 
     global G,alpha,dfsnum,parent
-    
+
     #--------------------------------------------------------------
     # DETERMINE THE CYCLE C(e0)
     # We determine the cycle "C(e0)" by following first edges until a back 
@@ -731,7 +733,7 @@ def strongly_planar(e0,Att):
     y=target(e0)
     e=G.first_adj_edge(y)
     wk=y
-    
+
     while dfsnum[target(e)]>dfsnum[wk]:  # e is a tree edge
         wk=target(e)
         e=G.first_adj_edge(wk)
@@ -763,6 +765,7 @@ def strongly_planar(e0,Att):
         count=0
         for e in G.adj_edges(w):
             count=count+1
+            
             if count!=1: # no action for first edge
                 # TEST RECURSIVELY
                 # Let "e" be any edge leaving the spine. 
@@ -771,7 +774,7 @@ def strongly_planar(e0,Att):
                 # If "e" is a tree edge we call our procedure recursively 
                 # and if "e" is a back edge then "S(e)" is certainly strongly 
                 # planar and |target(e)| is the only attachment.
-                # If we detect non-planarity we return flase and free
+                # If we detect non-planarity we return false and free
                 # the storage allocated for the blocks of stack |S|.
                 A=List()
                 if dfsnum[w]<dfsnum[target(e)]: 
@@ -781,7 +784,7 @@ def strongly_planar(e0,Att):
                         return 0                    
                 else:
                     A.append(dfsnum[target(e)]) # a back edge
-
+                    
                 # UPDATE STACK |S| OF ATTACHMENTS
                 # The list |A| contains the ordered list of attachments 
                 # of segment "S(e)". 
@@ -810,7 +813,6 @@ def strongly_planar(e0,Att):
                     if B.right_interlace(S): B.combine(S.Pop())
                     else: break
                 S.Push(B)
-        
 
         # PREPARE FOR NEXT ITERATION
         # We have now processed all edges emanating from vertex |w|. 
@@ -824,8 +826,8 @@ def strongly_planar(e0,Att):
         while (S.IsNotEmpty() and
                (S.contents[-1]).clean(dfsnum[parent[w]],alpha,dfsnum)):
             S.Pop()
+            
         w=parent[w]
-        
     #--------------------------------------------------------------
 
 
@@ -844,13 +846,14 @@ def strongly_planar(e0,Att):
     # add the two sides of |B| to the output list |Att|.
     # We also record the placements of the subsegments in |alpha|.
     Att.clear()
+
     while S.IsNotEmpty():
         B = S.Pop()
 
         if (not(B.empty_Latt()) and not(B.empty_Ratt()) and
             B.head_of_Latt()>dfsnum[w0] and B.head_of_Ratt()>dfsnum[w0]):
             del B
-            while S.IsNotEmpty(): S.Pop() 
+            while S.IsNotEmpty(): S.Pop()
             return 0
         B.add_to_Att(Att,dfsnum[w0],alpha,dfsnum)
         del B
