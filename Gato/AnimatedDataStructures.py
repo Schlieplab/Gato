@@ -89,6 +89,34 @@ class BlinkingNeighborhood:
 	return len(self.nbh)
 
 
+class BlinkingContainerWrapper:
+    """ Visualizes iterating over a list of vertices and/or edges by
+        blinking.
+
+	#List = lambda l, a=A: BlinkingContainerWrapper(a,l,color)
+	#
+	#for w in List:
+	#    doSomething
+	"""
+
+    def __init__(self, theAnimator, l, c):	
+	self.Animator = theAnimator
+	self.list = l
+	self.color = c
+	
+    def __getitem__(self, i):
+	if i < len(self.list):
+	    item = self.list[i]
+	    if type(item) == type(2): # vertex
+		self.Animator.BlinkVertex(item,self.color)
+	    else:
+		self.Animator.BlinkEdge(item[0],item[1],self.color)
+	return item
+
+    def len(self):
+	return len(self.list)
+
+
 class AnimatedVertexLabeling(VertexLabeling):
     """ Visualizes changes of values of the VertexLabeling
         by changing vertex colors appropriately.

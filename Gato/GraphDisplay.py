@@ -556,6 +556,38 @@ class GraphDisplay:
 	    self.canvas.itemconfig( de, fill=oldColor)
 	    self.update()
 
+    def Blink(self, list, color=cVertexBlink):
+	""" Blink all edges or vertices in list with color.
+            Edges are specified as (tail,head). 
+
+            Number of times, speed, default color is specified in GatoGlobals.py. 
+            No error checking!	Handles undirected graphs. """	
+	oldColor = [None] * len(list)
+	drawItems = [None] * len(list)
+
+	for i in xrange(len(list)):
+	    try:
+		e = list[i]
+		l = len(e) # will raise an exception	
+		drawItems[i] = self.drawEdges[e]
+		oldColor[i] = self.canvas.itemconfig(drawItems[i], "fill")[4]
+	    except: # It is a vertex
+		v = list[i]
+		drawItems[i] = self.drawVertex[v]
+		oldColor[i] = self.canvas.itemconfig(drawItems[i], "fill")[4]
+
+	for i in xrange(1,gBlinkRepeat):
+	    self.canvas.after(gBlinkRate)
+	    for j in xrange(len(drawItems)):	
+		self.canvas.itemconfig(drawItems[j], fill=color)
+	    self.update()
+	    self.canvas.after(gBlinkRate)
+	    for j in xrange(len(drawItems)):	
+		self.canvas.itemconfig(drawItems[j], fill=oldColor[j])
+	    self.update()
+		
+
+
     def SetVertexFrameWidth(self,v,val):
 	""" Set the width of the black frame of a vertex to val """	
 	dv = self.drawVertex[v]
@@ -755,6 +787,10 @@ class GraphDisplay:
 	""" *Internal* Delete vertex v """ 
 	del(self.Labeling.label[v]) # XXX
 	del(self.embedding.label[v]) # XXX
+	# if v has an annotation delete
+	if self.vertexAnnotation.QDefined(v):
+	    self.canvas.delete(self.vertexAnnotation[v])
+	    del(self.vertexAnnotation.label[v])
 	self.canvas.delete(self.drawVertex[v])
 	del(self.drawVertex.label[v])
 	self.canvas.delete(self.drawLabel[v])
@@ -798,6 +834,10 @@ class GraphDisplay:
 	""" *Internal* Delete edge (tail,head) """ 
 	# print "Removing edge (",tail,",",head,")"
 	self.canvas.delete(self.drawEdges[(tail,head)])
+	# if (tail,head) has an annotation delete it
+	if self.edgeAnnotation.QDefined((tail,head)):
+	    self.canvas.delete(self.edgeAnnotation[(tail,head)])
+	    del(self.edgeAnnotation.label[(tail,head)])
 	del(self.drawEdges.label[(tail,head)]) # XXX
 	self.G.DeleteEdge(tail,head)
 	if self.directed == 1 and tail in self.G.adjLists[head]: 
