@@ -943,13 +943,23 @@ class Algorithm:
 		if not r:
 		    self.GUI.CmdStop()
 
-    def PickVertex(self):
-	""" Pick a vertex interactively  """  
- 	return self.GUI.PickInteractive('vertex')
+    def PickVertex(self,callback=None):
+	""" Pick a vertex interactively  
+            callback is a function which takes the vertex as its 
+            only argument and cause e.g. some visual feedback""" 
+        v = self.GUI.PickInteractive('vertex')
+	if callback is not None:
+	    callback(v)
+  	return v
 	
-    def PickEdge(self):
-	""" Pick an edge interactively  """  
- 	return self.GUI.PickInteractive('edge')
+    def PickEdge(self,callback=None):
+	""" Pick an edge interactively  
+            callback is a function which takes the edge as its 
+            only argument and cause e.g. some visual feedback  """  
+ 	e = self.GUI.PickInteractive('edge')
+	if callback is not None:
+	    callback(e)
+  	return e
 
 
 ################################################################################
