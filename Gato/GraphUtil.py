@@ -88,11 +88,12 @@ class GraphInformer:
 
     def __init__(self,G):
 	self.G = G
+        self.info = ""
 
     def DefaultInfo(self):
         """ Provide an default text which is shown when no edge/vertex
 	    info is displayed """  
-	return ""
+        return self.info
 	
     def VertexInfo(self,v):
         """ Provide an info text for vertex v """  
@@ -104,22 +105,9 @@ class GraphInformer:
         """ Provide an info text for edge (tail,head)  """        
         return "Edge (%d,%d)" % (tail, head) 
 
-
-
-class DefaultGraphInformer(GraphInformer):
-    """ Provides default information in the status line """
-
-    def __init__(self,G):
-        GraphInformer.__init__(self,G)
-        self.info = ""
-
-    def DefaultInfo(self):
-        return self.info
-
     def SetDefaultInfo(self, info=""):
         self.info = info
 
- 
 
 class WeightedGraphInformer(GraphInformer):
     """ Provides information about weighted edges and vertices of a graph.
