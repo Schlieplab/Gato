@@ -151,6 +151,7 @@ class FlowGraphInformer(GraphInformer):
 	GraphInformer.__init__(self,G)
 	self.flow   = flow
         self.cap    = flow.cap
+        self.res    = flow.res
         self.excess = flow.excess
 
     def EdgeInfo(self,v,w):
@@ -167,6 +168,10 @@ class FlowGraphInformer(GraphInformer):
 
         return "Vertex %d - excess: %s" % (v, str1)
 
+class ResidualGraphInformer(FlowGraphInformer):
+
+    def EdgeInfo(self,v,w):
+        return "Edge (%d,%d) - residual capacity: %d" % (v, w, self.res[(v,w)])
 
 ################################################################################
 #
