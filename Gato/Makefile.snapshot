@@ -11,8 +11,8 @@
 
 # Vars
 
-VERSION       = 0.87B
-DATE          = 3/25/1999
+VERSION       = 0.87D
+DATE          = 3/29/1999
 DISTNAME      = Gato
 DISTNAMEMAC   = $(DISTNAME)-Mac
 DISTNAMEDOC   = $(DISTNAME)-Doc
@@ -20,10 +20,11 @@ DISTNAMEDOC   = $(DISTNAME)-Doc
 # Directories
 
 SRCDIR        = /homes/schliep/Src/Gato
-EXECDIR       = /homes/gato/Gato
-MACDIR        = /homes/gato/Gato-Mac
-WWWDIR        = /homes/gato/pub/Download
-DOCDIR        = /homes/gato/pub/Documentation
+GATODIR       = /homes/gato/
+EXECDIR       = $(GATODIR)/Gato
+MACDIR        = $(GATODIR)/Gato-Mac
+WWWDIR        = $(GATODIR)/pub/Download
+DOCDIR        = $(GATODIR)/pub/Documentation
 
 # Tools
 
@@ -37,7 +38,6 @@ MACIFY        = $(PERL) -pi -e "s/\n/\x0D/"
 UNMACIFY      = $(PERL) -pi -e "s/\x0D/\n/g"
 
 CRNOTICE     = `cat $(SRCDIR)/COPYRIGHT`
-#include $(COPYRIGHT)
 
 
 SOURCES	      = AnimatedAlgorithms.py \
@@ -53,7 +53,8 @@ SOURCES	      = AnimatedAlgorithms.py \
 		GraphEditor.py \
 		GraphUtil.py \
 		Gred.py \
-		catbox-splash.gif
+		gato.gif \
+		gred.gif 
 
 LICENCE       = GPL.txt
 
@@ -102,24 +103,23 @@ PHONY:
 	$(DATEIZE) $(EXECDIR)/*.*
 	$(COPYRIGHTIZE) $(EXECDIR)/*.*
 	chgrp -f catbox $(EXECDIR)/*.*
-	chmod 444 $(EXECDIR)/*.*
-	chmod 555 $(EXECUTABLES)
+	chmod 644 $(EXECDIR)/*.*
+	chmod 755 $(EXECUTABLES)
 
 	# 2) put tar-archives into ~gato/pub/Beta
-	cd $(EXECDIR);tar cf $(DISTNAME)-$(VERSION).tar *.py *.gif *.txt #*.alg *.pro *.cat
-	chmod 444 $(EXECDIR)/$(DISTNAME)-$(VERSION).tar
-	mv -f $(EXECDIR)/$(DISTNAME)-$(VERSION).tar $(WWWDIR)	
+	$(RM) $(WWWDIR)/$(DISTNAME)-$(VERSION).tar
+	cd $(GATODIR);tar cf $(WWWDIR)/$(DISTNAME)-$(VERSION).tar Gato/*
+	chmod 644 $(WWWDIR)/$(DISTNAME)-$(VERSION).tar
 
 	# Create Mac-version
 	#cd $(EXECDIR); cp -f *.py *.alg *.pro *.cat *.txt *.gif $(MACDIR)
 	cd $(EXECDIR); cp -f *.py *.txt *.gif $(MACDIR)
 	$(MACIFY) $(MACDIR)/*.py $(MACDIR)/*.txt #$(MACDIR)/*.alg $(MACDIR)/*.pro $(MACDIR)/*.cat 
-	chmod 444 $(MACDIR)/*.*
-	$(RM) $(MACDIR)/$(DISTNAMEMAC)-$(VERSION).tar
-	cd $(MACDIR); tar cf $(DISTNAMEMAC)-$(VERSION).tar *.py *.gif *.txt #*.alg *.pro *.cat
-	chmod 444 $(MACDIR)/$(DISTNAMEMAC)-$(VERSION).tar
+	chmod 644 $(MACDIR)/*.*
 	chgrp -f catbox $(MACDIR)/*
-	mv -f $(MACDIR)/$(DISTNAMEMAC)-$(VERSION).tar $(WWWDIR)	
+	$(RM) $(WWWDIR)/$(DISTNAMEMAC)-$(VERSION).tar
+	cd $(GATODIR); tar cf $(WWWDIR)/$(DISTNAMEMAC)-$(VERSION).tar Gato-Mac/*
+	chmod 644 $(WWWDIR)/$(DISTNAMEMAC)-$(VERSION).tar
 	
 	# 3) change ~gato/pub/Beta/build.info
 	cp -f build.info $(WWWDIR)
@@ -130,8 +130,8 @@ PHONY:
 	$(PERL) -pi -e 's/_DISTNAMEDOC_/$(DISTNAMEDOC)-$(VERSION).tar/' $(WWWDIR)/build.info
 	# update lizenz.txt
 	cp -f Lizenz.txt  $(WWWDIR)
-	chmod 444 $(WWWDIR)/Lizenz.txt
-	chmod 444 $(WWWDIR)/build.info
+	chmod 644 $(WWWDIR)/Lizenz.txt
+	chmod 644 $(WWWDIR)/build.info
 	chgrp -f catbox $(WWWDIR)/*
 
 	# 4) update and distribute documentation
@@ -142,5 +142,5 @@ PHONY:
 	chgrp -f catbox $(DOCDIR)/*
 	$(RM) $(DOCDIR)/$(DISTNAMEDOC)-$(VERSION).tar
 	cd $(SRCDIR); tar cf $(DOCDIR)/$(DISTNAMEDOC)-$(VERSION).tar Doc/*
-	chmod 444 $(DOCDIR)/$(DISTNAMEDOC)-$(VERSION).tar
+	chmod 644 $(DOCDIR)/$(DISTNAMEDOC)-$(VERSION).tar
 	chgrp -f catbox $(DOCDIR)/$(DISTNAMEDOC)-$(VERSION).tar
