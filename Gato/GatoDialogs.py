@@ -10,8 +10,8 @@
 #       Parts of the source from this file has been taken from
 #       the Python Tkinter demos.
 #
-#       This file has version _FILE_REVISION_ from _FILE_DATE_
-#
+#       This file has version $Revision$ from $Date$. Last change by
+#       $Author$.
 #
 ################################################################################
 from Tkinter import *
@@ -48,7 +48,7 @@ class AboutBox(tkSimpleDialog.Dialog):
 				     font="Times 10")
 	self.infoText.pack(expand=0, fill=X)
 	self.infoText.delete('0.0', END)
-	inputFile=open(sys.path[0] +"/Lizenz.txt", 'r')
+	inputFile=open(sys.path[0] +"/GPL.txt", 'r')
        	text = inputFile.read()
 	inputFile.close()
 	self.infoText.insert('0.0', text)	
