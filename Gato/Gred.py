@@ -35,6 +35,8 @@ import string
 import sys
 import os
 
+import Embedder
+
 class GredSplashScreen(GatoDialogs.SplashScreen):
 
     def CreateWidgets(self):
@@ -369,9 +371,15 @@ class SAGraphEditor(GraphEditor, Frame):
 
   	# Add extras menu
 	self.extrasMenu = Menu(self.menubar, tearoff=0)
-	self.extrasMenu.add_command(label='Randomize Layout',
-				  command=self.RandomizeLayout)
+
+	# Add a menue item for all embedders found in Embedder.embedder
+	for embed in Embedder.embedder:
+
+	    self.extrasMenu.add_command(label=embed.Name(),
+					command=lambda e=embed,s=self:e.Embed(s))
+	# --------------------------------------------------------------
 	self.extrasMenu.add_separator()
+
 	self.extrasMenu.add_command(label='Randomize Edge Weights',
 				  command=self.RandomizeEdgeWeights)
 	self.menubar.add_cascade(label="Extras", menu=self.extrasMenu, 
@@ -616,12 +624,7 @@ class SAGraphEditor(GraphEditor, Frame):
 
     #----- Extras Menu callbacks
 
-    def RandomizeLayout(self):
-	for v in self.G.vertices:
-	    self.MoveVertex(v, 
-			    whrandom.randint(10,990),
-			    whrandom.randint(10,990), 
-			    1)
+    # NOTE: Embedder handled by lambda passed as command
 
     def RandomizeEdgeWeights(self):
 	count = len(self.G.edgeWeights.keys())
