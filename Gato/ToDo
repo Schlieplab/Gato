@@ -8,20 +8,6 @@ CATBox/Gato To-Do Stand: 9/15/00
 Einordnen:
 ----------------------------------------------------------------
 
-* GraphDisplay: Moving vertices done delete/new
-
-* GraphDisplay: Move Annotations with vertices/edges
-
-* Gred: RandomizeEdgeWeights only for non-euclidean graphs
-
-* Gred: validate bei Randomize Weights ???
-
-* Gred: FileIO Error (protections, space)
-
-* Gred: Loops, Löschen, Directed vs. undirected.
-
-* TESTEN
- 
 * gato2eps command-line
 
 * Im MST Graph Informer steht immer "weight of mst", obwohl es doch
@@ -67,6 +53,18 @@ Specific Algorithms:
 ----------------------------------------------------------------
 Editor:
 ----------------------------------------------------------------
+
+* Gred: RandomizeEdgeWeights only for non-euclidean graphs
+
+* Gred: validate bei Randomize Weights ???
+
+* Gred: FileIO Error (protections, space)
+
+* Gred: Loops, Löschen, Directed vs. undirected.
+
+* GraphDisplay: Moving vertices done delete/new
+
+* GraphDisplay: Move Annotations with vertices/edges
 
 - Adjazenzmatrix/Adjazenzlisten/Inzidenzmatrix/ Darstellung
 

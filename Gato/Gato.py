@@ -805,7 +805,10 @@ class AlgoWin(Frame):
 
 
 class AlgorithmDebugger(bdb.Bdb):
-    """*Internal* Bdb subclass to allow debugging of algorithms """
+    """*Internal* Bdb subclass to allow debugging of algorithms 
+        REALLY UGLY CODE: Written before I understood the Debugger.
+        Probably should use sys.settrace() directly with the different
+        modes of debugging encoded in appropriate methods"""
 
     def __init__(self,dbgGUI):
 	""" *Internal* dbgGUI is the GUI for the debugger """
@@ -831,29 +834,19 @@ class AlgorithmDebugger(bdb.Bdb):
     def dispatch_call(self, frame, arg):
 	fn = frame.f_code.co_filename
         line = self.currentLine(frame)
-	doTrace = self.doTrace # value of self.doTrace might change 
+	doTrace = self.doTrace # value of self.doTrace might change
+	# No tracing of functions defined outside of our algorithmfile 
 	if fn != self.GUI.algoFileName:
 	    return None
-	import inspect
-	print "dispatch_call",fn, line, frame, self.stop_here(frame), self.break_anywhere(frame), self.break_here(frame) #frame.f_locals
-	print inspect.getframeinfo(frame)
+	#import inspect
+	#print "dispatch_call",fn, line, frame, self.stop_here(frame), self.break_anywhere(frame), self.break_here(frame)
+	#print inspect.getframeinfo(frame)
 	frame.f_locals['__args__'] = arg
 	if self.botframe is None:
 	    # First call of dispatch since reset()
 	    self.botframe = frame
 	    return self.trace_dispatch
 
-	# Handling of breakpoints in recursively called funs:
-	# Was: if not (self.stop_here(frame) or self.break_anywhere(frame)):
-	#         return # Note: not return None
-	# self.stop_here(frame) is always 1: Why ?
-	#YYY Wenn auskommentiert traced er immer 
-	#if self.break_anywhere(frame):
-	#    return self.trace_dispatch
-	#if self.break_here(frame):
-	#    return self.trace_dispatch
-	#else:
-	#    return
 	#if self.stop_here(frame) or self.break_anywhere(frame):
         #    return self.trace_dispatch
 
@@ -862,9 +855,28 @@ class AlgorithmDebugger(bdb.Bdb):
 	if doTrace == 1:
 	    self.doTrace = 0
 	    return self.trace_dispatch
-	else:
-	    return None
+	if self.break_anywhere(frame):
+	    self.doTrace = 0
+	    return self.trace_nofeedback_dispatch	    
+	return None
 
+    def trace_nofeedback_dispatch(self, frame, event, arg):
+        if self.quitting:
+            return # None
+        if event == 'line':
+	    line = self.currentLine(frame)
+	    if line in self.GUI.breakpoints:
+                self.GUI.mode = 2
+                return self.dispatch_line(frame)
+            else:
+                return None
+        if event == 'call':
+            return self.dispatch_call(frame, arg)
+        if event == 'return':
+            return self.dispatch_return(frame, arg)
+        if event == 'exception':
+            return self.dispatch_exception(frame, arg)
+        print 'bdb.Bdb.dispatch: unknown debugging event:', `event`
 
     def reset(self):
 	""" *Internal* Put debugger into initial state, calls forget() """
@@ -889,7 +901,7 @@ class AlgorithmDebugger(bdb.Bdb):
 	""" *Internal* This function is called when we stop or break
   	    at this line """
         line = self.currentLine(frame)
-        print "*user_call*", line, argument_list
+        # DEBUG print "*user_call*", line, argument_list
 	if self.doTrace == 1:
 	    line = self.currentLine(frame)
 	    if line in self.GUI.breakpoints:
@@ -904,7 +916,7 @@ class AlgorithmDebugger(bdb.Bdb):
 	""" *Internal* This function is called when we stop or break at this line  """
 	self.doTrace = 0 # XXX
 	line = self.currentLine(frame)
-	print "*user_line*", line
+	# DEBUG print "*user_line*", line
 	if line in self.GUI.breakpoints:
             self.GUI.mode = 2
 	self.GUI.GUI.ShowActive(line)
@@ -1290,7 +1302,7 @@ class Algorithm:
               only argument and cause e.g. some visual feedback """
         v = None
 
-	print "pickVertex ",globals()['gInteractive']
+	#print "pickVertex ",globals()['gInteractive']
         if globals()['gInteractive'] == 1:
 	    v = self.GUI.PickInteractive('vertex', filter)
 
