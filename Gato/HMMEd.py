@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.3
 ################################################################################
 #
 #       This file is part of Gato (Graph Algorithm Toolbox) 

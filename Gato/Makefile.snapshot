@@ -46,8 +46,8 @@
 
 # Vars
 
-VERSION       = 0.98M
-DATE          = 10/21/2004
+VERSION       = 0.98N
+DATE          = 01/13/2005
 DISTNAME      = Gato
 DISTNAMEDOC   = $(DISTNAME)-Doc
 
@@ -76,6 +76,7 @@ DATEIZE       = $(PERL) -pi -e "s|_BUILDDATE_|$(DATE)|"
 
 SOURCES	      = AnimatedAlgorithms.py \
 		AnimatedDataStructures.py \
+                AnimationHistory.py \
 		DataStructures.py \
 		EditObjectAttributesDialog.py \
 		Embedder.py \
