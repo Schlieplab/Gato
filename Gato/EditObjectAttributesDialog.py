@@ -19,9 +19,17 @@ from Tkinter import *
 from ScrolledText import *
 import tkSimpleDialog 
 import tkMessageBox
+import copy
 import sys
 import os
 import types
+
+def typed_assign(var, val):
+    result = type(var)(val)
+    result.__dict__ = copy.copy(var.__dict__)
+    return result
+
+
 
 #-------------------------------------------------------------------------------
 class TkStringEntry:
@@ -37,6 +45,7 @@ class TkStringEntry:
         return self.entryWidget.get()
     
     def set(self, value):
+        self.entryWidget.delete(0,END)
         self.entryWidget.insert(0,"%s" % value)
 
     def select(self):    
@@ -127,7 +136,7 @@ class TkDefaultFloatEntry(TkFloatEntry, TkDefaultMixin):
 
 
 class TkPopupSelector:
-    def __init__(self, master, value2pop, pop2value,width):
+    def __init__(self, master, value2pop, pop2value, width):
 
         self.value2pop = value2pop
         self.pop2value = pop2value
@@ -185,32 +194,32 @@ class EditObjectAttributesDialog(tkSimpleDialog.Dialog):
 
         attr = object.__dict__[attr_name]
         attr_type = type(attr)
-        print attr_name, attr_type
+        print attr_name, attr_type, attr.__dict__, object.__dict__
 
         widget = None
         default = isinstance(attr, WithDefault) # has a WithDefault mixin
 
-        if isinstance(attr, Popupable):
+        if isinstance(attr, Popupable):            
             widget = TkPopupSelector(master, attr.val2pop, attr.pop2val, attr.width)
 
         elif isinstance(attr, str):
 
             if default:
-                widget = TkDefaultStringEntry(master, max(32, len(attr)), attr.useDefault, attr.defaultValue)
+                widget = TkDefaultStringEntry(master, max(32, len(attr)), attr.useDefault, attr)
             else:
                 widget = TkStringEntry(master, max(32, len(attr)))
 
         elif isinstance(attr, int):
 
             if default:
-                widget = TkDefaultIntEntry(master, 6, attr.useDefault, attr.defaultValue)
+                widget = TkDefaultIntEntry(master, 6, attr.useDefault, attr)
             else:
                 widget = TkIntEntry(master, 6)
 
         elif isinstance(attr, float):
 
             if default:
-                widget = TkDefaultFloatEntry(master, 8, attr.useDefault, attr.defaultValue)
+                widget = TkDefaultFloatEntry(master, 8, attr.useDefault, attr)
             else:
                 widget = TkFloatEntry(master, 8)
 
@@ -260,9 +269,11 @@ class EditObjectAttributesDialog(tkSimpleDialog.Dialog):
 		return 0
         
         # Everything is valid => set values
-        for attr_name in self.edit.keys():
-            self.object.__dict__[attr_name] = self.edit[attr_name].get()
-            
+        print "before typed_assign", self.object.__dict__
+        for attr_name in self.edit.keys():            
+            self.object.__dict__[attr_name] = typed_assign(self.object.__dict__[attr_name], self.edit[attr_name].get())
+        print "after typed_assign", self.object.__dict__
+           
 	return 1
 
 
@@ -282,17 +293,32 @@ class WithDefault:
 
 
 class Popupable:
-    """Mix-in for variables which can be edited via a pop-up menu"""
-    def setPopup(self, val2pop):
+    """Mix-in for variables which can be edited via a pop-up menu
+       - val2pop : dict mapping value to string for pop up menu
+       - pop2val: dict mapping pop up menu string to value
+       - width: maximal string length in pop up
+    """
+    def setPopup(self, val2pop, pop2val = None, width = None):
+
+        #print "Popupable.setPopup", val2pop, pop2val, width
 
         self.val2pop = val2pop
-        self.pop2val = {}
-        self.width = 0
+        self.pop2val = None
+        self.width = None
+
+        if pop2val == None:
+            self.pop2val = {} # Private copy
+            self.width = 0
         
-        for val in val2pop.keys():
-            pop = val2pop[val]
-            self.width = max(len(pop), self.width)
-            self.pop2val[pop] = val
+            for val in val2pop.keys():
+                pop = val2pop[val]
+                self.width = max(len(pop), self.width)
+                self.pop2val[pop] = val
+        else:
+            self.pop2val = pop2val
+            self.width = width
+           
+            
                       
     def validate(self, value):
         return 1

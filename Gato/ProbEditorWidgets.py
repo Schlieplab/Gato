@@ -373,6 +373,9 @@ class bar_chart_y(Tkinter.Canvas,flyout_decoration):
         for k in keys:
             if prob_dict[k]>self.max_value:
                 self.max_value=prob_dict[k]
+
+        print keys,prob_dict # XXX bei Zustand 2,3  wird nur ein Teil der keys uebergeben
+
         self.bar_step=30
         self.bar_width=20
         self.text_length=30
@@ -444,12 +447,12 @@ class bar_chart_y(Tkinter.Canvas,flyout_decoration):
 
     def get_max_value(self):
         dict=self.get_bar_values()
-        max_value=0
+        max_value=0.0
         max_key=''
         for k in dict.keys():
             if dict[k]>self.max_value:
                 max_value=dict[k]
-                max_key=dict[k]
+                max_key=k #XXX dict[k]
         return (max_key,max_value)
 
     def get_bar_values(self,key_list=None):

@@ -30,20 +30,34 @@ from tkMessageBox import askokcancel
 import tkSimpleDialog 
 import whrandom
 import string
+import types
+import copy
 import ProbEditorBasics
 import ProbEditorDialogs
 
-import HMMXML import xml.dom.minidom
+import HMMXML
+import xml.dom.minidom
 import EditObjectAttributesDialog
-from import EditObjectAttributesDialog ValidatingString, ValidatingInt, ValidatingFloat, PopupableInt
+from EditObjectAttributesDialog import EditObjectAttributesDialog, ValidatingString, ValidatingInt, ValidatingFloat, PopupableInt, Probability, DefaultedInt, DefaultedString
+
+def typed_assign(var, val):
+    result = type(var)(val)
+    result.__dict__ = copy.copy(var.__dict__)
+    return result
+
+def listFromCSV(s, type):
+    return map(type,string.split(s,','))
 
 class DOM_Map:
     def __init__(self):
+        self.initialize()
+
+    def initialize(self):
         self.name = {}
         self.desc = {}
         self.hasDesc = None
         self.name2code = {}
-
+        
     def addCode(self, code, name, desc = None):
         self.name[code] = name
         if desc != None:
@@ -57,7 +71,7 @@ class DOM_Map:
     def high(self):
         return max(self.name.keys())
     
-    def fromDom(self, XMLNode):
+    def fromDOM(self, XMLNode):
         pass
 
     def symbolsFromDom(self, XMLNode):
@@ -78,98 +92,204 @@ class DOM_Map:
 
 class DiscreteHMMAlphabet(DOM_Map):
     def __init__(self):
-        DOM_Map.__init__()
+        DOM_Map.__init__(self)
         self.hmm_type = 'discrete'
 
-    def fromDom(self, XMLNode):
+    def fromDOM(self, XMLNode):
         """Take dom subtree representing a <hmm:alphabet</hmm:alphabet> element"""
+        self.initialize()
         # Not reading: hmm:low hmm:high
         if XMLNode.getAttribute("hmm:type") == self.hmm_type:
             self.symbolsFromDom(XMLNode)
         else:
-            print "DiscreteHMMAlphabet does not handle alphabet type %s yet" % XMLNode.getAttribute("hmm:type") 
+            print "DiscreteHMMAlphabet wrong type %s" % XMLNode.getAttribute("hmm:type") 
 
     
 class HMMClass(DOM_Map):
     def __init__(self):
-        DOM_Map.__init__()
+        DOM_Map.__init__(self)
 
-    def fromDom(self, XMLNode):
+    def fromDOM(self, XMLNode):
         """Take dom subtree representing a <hmm:class></hmm:class> element"""
+        self.initialize()
         self.symbolsFromDom(XMLNode)
 
     
 class HMMState:
-    def __init__(self, itsHMM):
+    def __init__(self, nodeIndex, itsHMM):
+
+        self.itsHMM = itsHMM
+
+        self.index = nodeIndex # The node index in the underlying graph
+        
         self.id = ValidatingString()
-        self.state_class = PopupableInt()
-        self.state_class.
+        self.state_class = PopupableInt()        
+        self.state_class.setPopup(itsHMM.hmmClass.name, itsHMM.hmmClass.name2code, 10)
+
         self.label = ValidatingString()
-        self.initial = ValidatingFloat()
+
+        self.order = DefaultedInt()
+        self.order.setDefault(1, 0)
+
+        self.emissions = []
+
+        self.initial = Probability()
         self.tiedto = DefaultedString()
+        self.tiedto.setDefault(1, '')
+        self.desc = self.id
 
 
-    
+    editableAttr = ['id', 'state_class', 'label', 'order', 'initial', 'tiedto']
+    xmlAttr = editableAttr + ['ngeom', 'emissions']
 
+
+    def fromDOM(self, XMLNode):
+
+        self.id = ValidatingString(XMLNode.attributes['id'].nodeValue.encode('ascii', 'replace'))
+        
+        self.index = self.itsHMM.G.AddVertex()
+        
+        datas = XMLNode.getElementsByTagName("data")
+        for data in datas:
+            dataKey = data.attributes['key'].nodeValue
+            dataValue = data.firstChild.nodeValue
+
+            if dataKey == 'class':
+                self.state_class = typed_assign(self.state_class, int(dataValue))
+            elif  dataKey == 'label':
+                self.label = type(self.label)(dataValue.encode('ascii', 'replace'))
+
+            elif  dataKey == 'order':
+                if dataValue == None: # Use default value
+                    self.order = typed_assign(self.order, self.order.defaultValue)
+                    self.order.useDefault = 1
+                else:
+                    self.order = typed_assign(self.order, int(dataValue))
+                    self.order.useDefault = 0
+
+            elif  dataKey == 'initial':
+                self.initial = typed_assign(self.initial, float(dataValue))
+
+            elif  dataKey == 'tiedto':
+                
+                if dataValue == None: # Use default value
+                    self.tiedto = typed_assign(self.tiedto, self.tiedto.defaultValue)
+                    self.tiedto.useDefault = 1
+                else:
+                    self.tiedto = typed_assign(self.tiedto, dataValue.encode('ascii', 'replace'))
+                    self.tiedto.useDefault = 0
+                    
+            elif  dataKey == 'ngeom':
+                # We only use pos
+                pos = XMLNode.getElementsByTagName('pos')[0] # Just one pos ...                
+                self.pos = Point2D(float(pos.attributes['x'].nodeValue),
+                                   float(pos.attributes['y'].nodeValue))
+                
+            elif  dataKey == 'emissions':
+                print dataKey, "\"%s\"" % dataValue
+                data.normalize()
+                dataValue = data.firstChild.nodeValue
+                if dataValue == None:
+                    self.emissions = [] # XXX Can happen for tied states
+                else:
+                    self.emissions = listFromCSV(dataValue, types.FloatType)
+                    
+            else:
+                print "HMMState.fromDOM: unknown key %s of value %s" % (dataKey, dataValue)
+        
 
 class HMM:
-    def __init__(self):
-	self.G = Graph()
+    
+    def __init__(self, XMLFileName = None):
+
+ 	self.G = Graph()
 	self.G.directed = 1
 	self.G.euclidian = 0
 	self.Pi = {}
+        self.id2index = {}
 
+        self.hmmAlphabet = DiscreteHMMAlphabet()
+        self.hmmClass = HMMClass()
+        
         self.editableAttr = {}
         self.editableAttr['HMM'] = ['desc']
-        self.desc = EditObjectAttributesDialog.ValidatingString()
+        self.desc = ValidatingString()       
+
+        self.state = {}
+
+        if XMLFileName != None:
+            self.OpenXML(XMLFileName)
+
+    def fromDOM(self, XMLNode):
         
+        self.hmmClass.fromDOM(XMLNode.getElementsByTagName("hmm:class")[0]) # One class!
+        self.hmmAlphabet.fromDOM(XMLNode.getElementsByTagName("hmm:alphabet")[0]) # One alphabet!
+
+        nodes = XMLNode.getElementsByTagName("node")
+        for n in nodes:
+            state = HMMState(-1, self)
+            state.fromDOM(n)
+            i = state.index
+            self.state[i] = state
+            self.id2index[state.id] = i
+
+            self.G.embedding[i] = state.pos
+            self.G.labeling[i] = "%s\n%s" % (state.id, state.label) # XXX Hack Aaaargh!
+
+
+        edges = XMLNode.getElementsByTagName("edge")
+        for edge in edges:
+            i = self.id2index[edge.attributes['source'].nodeValue]
+            j = self.id2index[edge.attributes['target'].nodeValue]
+
+            datas = edge.getElementsByTagName("data")
+            for data in datas:
+                dataKey = data.attributes['key'].nodeValue
+                dataValue = data.firstChild.nodeValue
+
+            if dataKey == 'prob':
+                p = float(dataValue)
+                               
+            self.G.AddEdge(i, j)
+            self.G.edgeWeights[0][(i,j)] = p
+
+
 
     def OpenXML(self, fileName):
-	self.G = Graph()
-	self.G.simple = 0
-	self.G.directed = 1
-	self.G.euclidian = 0
-
-        self.index = {} # Map id to index
-        self.id    = {} # Map index to id
-        self.label = {}
 
         dom = xml.dom.minidom.parse(fileName)
         assert dom.documentElement.tagName == "graphml"   
-
-        gml = HMMXML.GraphML()
-        gml.handleGraphML(dom)
-        print gml
+        self.fromDOM(dom)
         dom.unlink()
 
-        self.hmmAlphabet = gml.hmmAlphabet
+##        self.hmmAlphabet = gml.hmmAlphabet
 
-        # Nr of Symbols:
-        self.nrOfSymbols = gml.hmmAlphabet.high - gml.hmmAlphabet.low + 1
-        for i in xrange(self.nrOfSymbols):
-            self.G.vertexWeights[i] = VertexWeight(self.G)
+##        # Nr of Symbols:
+##        self.nrOfSymbols = gml.hmmAlphabet.high - gml.hmmAlphabet.low + 1
+##        for i in xrange(self.nrOfSymbols):
+##            self.G.vertexWeights[i] = VertexWeight(self.G)
 
-        # Adding vertices
-        #
-        # XXX We assume we have label, initial, pos
-        for n in gml.graph.nodes:
-            i = self.G.AddVertex()
-            self.index[n.id] = i
-            self.id[i] = n.id
-            self.G.labeling[i] = "%s\n%s" % (n.id, n.label) # XXX Hack Aaaargh!
-            self.Pi.append(n.initial)
-            self.G.embedding[i] = Point2D(float(n.ngeom.x),float(n.ngeom.y))
-            for j in xrange(self.nrOfSymbols):
-                #print n.id, i, j
-                self.G.vertexWeights[j][i] = n.emissions[j]
+##        # Adding vertices
+##        #
+##        # XXX We assume we have label, initial, pos
+##        for n in gml.graph.nodes:
+##            i = self.G.AddVertex()
+##            self.index[n.id] = i
+##            self.id[i] = n.id
+##            self.G.labeling[i] = "%s\n%s" % (n.id, n.label) # XXX Hack Aaaargh!
+##            self.Pi.append(n.initial)
+##            self.G.embedding[i] = Point2D(float(n.ngeom.x),float(n.ngeom.y))
+##            for j in xrange(self.nrOfSymbols):
+##                #print n.id, i, j
+##                self.G.vertexWeights[j][i] = n.emissions[j]
             
-        # Adding Edges
-        for e in gml.graph.edges:
-            i = self.index[e.source]
-            j = self.index[e.target]
-            #print i,j
-            self.G.AddEdge(i, j)
-            self.G.edgeWeights[0][(i,j)] = e.prob            
+##        # Adding Edges
+##        for e in gml.graph.edges:
+##            i = self.index[e.source]
+##            j = self.index[e.target]
+##            #print i,j
+##            self.G.AddEdge(i, j)
+##            self.G.edgeWeights[0][(i,j)] = e.prob            
 
 
 
@@ -243,9 +363,108 @@ class EditEmissionProbDialog(tkSimpleDialog.Dialog):
 class HMMEditor(SAGraphEditor):
 
     def __init__(self, master=None):
-	SAGraphEditor.__init__(self, master)
-	
+	SAGraphEditor.__init__(self, master)	
 	self.HMM = None
+
+    def CreateWidgets(self):
+
+        toolbar = Frame(self, cursor='hand2', relief=FLAT)
+        toolbar.pack(side=LEFT, fill=Y) # Allows horizontal growth
+
+        extra = Frame(toolbar, cursor='hand2', relief=SUNKEN, borderwidth=2)
+        extra.pack(side=TOP) # Allows horizontal growth
+        extra.rowconfigure(5,weight=1)
+        extra.bind("<Enter>", lambda e, gd=self:gd.DefaultInfo())
+
+        px = 0 
+        py = 3 
+
+        self.toolVar = StringVar()
+
+        import GatoIcons
+        # Load Icons
+        self.vertexIcon = PhotoImage(data=GatoIcons.vertex)
+        self.edgeIcon   = PhotoImage(data=GatoIcons.edge)
+        self.deleteIcon = PhotoImage(data=GatoIcons.delete)
+        self.swapIcon   = PhotoImage(data=GatoIcons.swap)
+        self.editIcon   = PhotoImage(data=GatoIcons.edit)
+        self.propIcon   = PhotoImage(data=GatoIcons.edit)
+        
+        b = Radiobutton(extra, width=32, padx=px, pady=py, 
+                        text='Add or move vertex',  
+                        command=self.ChangeTool,
+                        var = self.toolVar, value='AddOrMoveVertex', 
+                        indicator=0, image=self.vertexIcon)
+        b.grid(row=0, column=0, padx=2, pady=2)
+        b.bind("<Enter>", lambda e, gd=self:gd.UpdateInfo('Add or move vertex'))
+        self.defaultButton = b # default doesnt work as config option
+
+
+        b = Radiobutton(extra, width=32, padx=px, pady=py, 
+                        text='Add edge', 
+                        command=self.ChangeTool,
+                        var = self.toolVar, value='AddEdge', indicator=0,
+                        image=self.edgeIcon)
+        b.grid(row=1, column=0, padx=2, pady=2)
+        b.bind("<Enter>", lambda e, gd=self:gd.UpdateInfo('Add edge'))
+
+
+        b = Radiobutton(extra, width=32, padx=px, pady=py, 
+                        text='Delete edge or vertex', 
+                        command=self.ChangeTool,
+                        var = self.toolVar, value='DeleteEdgeOrVertex', indicator=0,
+                        image=self.deleteIcon)
+        b.grid(row=2, column=0, padx=2, pady=2)
+        b.bind("<Enter>", lambda e, gd=self:gd.UpdateInfo('Delete edge or vertex'))
+
+
+        b = Radiobutton(extra, width=32, padx=px, pady=py, 
+                        text='Swap orientation', 
+                        command=self.ChangeTool,
+                        var = self.toolVar, value='SwapOrientation', indicator=0,
+                        image=self.swapIcon)
+        b.grid(row=3, column=0, padx=2, pady=2)
+        b.bind("<Enter>", lambda e, gd=self:gd.UpdateInfo('Swap orientation'))
+
+
+        b = Radiobutton(extra, width=32, padx=px, pady=py, 
+                        text='Edit Weight', 
+                        command=self.ChangeTool,
+                        var = self.toolVar, value='EditWeight', indicator=0,
+                        image=self.editIcon)
+        b.grid(row=4, column=0, padx=2, pady=2)
+        b.bind("<Enter>", lambda e, gd=self:gd.UpdateInfo('Edit Weight'))
+
+        b = Radiobutton(extra, width=32, padx=px, pady=py, 
+                        text='Edit Properties', 
+                        command=self.ChangeTool,
+                        var = self.toolVar, value='EditProperties', indicator=0,
+                        image=self.editIcon)
+        b.grid(row=5, column=0, padx=2, pady=2)
+        b.bind("<Enter>", lambda e, gd=self:gd.UpdateInfo('Edit Properties'))
+        
+        GraphEditor.CreateWidgets(self)
+
+
+    #----- Tools Menu callbacks
+    def ChangeTool(self):
+        self.SetEditMode(self.toolVar.get())
+
+    def MouseUp(self,event):
+	if self.mode == 'AddOrMoveVertex':
+	    self.AddOrMoveVertexUp(event)
+	elif self.mode == 'AddEdge':
+	    self.AddEdgeUp(event)
+	elif self.mode == 'DeleteEdgeOrVertex':
+	    self.DeleteEdgeOrVertexUp(event)
+	elif self.mode == 'SwapOrientation':
+	    self.SwapOrientationUp(event)
+	elif self.mode == 'EditWeight':
+	    self.EditWeightUp(event)
+	elif self.mode == 'EditProperties':
+	    self.EditPropertiesUp(event)
+
+
 
     def makeMenuBar(self):
 	self.menubar = Menu(self,tearoff=0)
@@ -272,27 +491,6 @@ class HMMEditor(SAGraphEditor):
 						  command=self.ToggleGridding)	
 	self.menubar.add_cascade(label="HMM", menu=self.graphMenu, 
 				 underline=0)
-
-	# Add Tools menu
-##	self.toolsMenu = Menu(self.menubar,tearoff=0)
-##	self.toolVar = StringVar()
-##	self.toolsMenu.add_radiobutton(label='Add or move vertex',  
-##				       command=self.ChangeTool,
-##				       var = self.toolVar, value='AddOrMoveVertex')
-##	self.toolsMenu.add_radiobutton(label='Add edge', 
-##				       command=self.ChangeTool,
-##				       var = self.toolVar, value='AddEdge')
-##	self.toolsMenu.add_radiobutton(label='Delete edge or vertex', 
-##				       command=self.ChangeTool,
-##				       var = self.toolVar, value='DeleteEdgeOrVertex')
-##	self.toolsMenu.add_radiobutton(label='Swap orientation', 
-##				       command=self.ChangeTool,
-##				       var = self.toolVar, value='SwapOrientation')
-##	self.toolsMenu.add_radiobutton(label='Edit Probabilities', 
-##					command=self.ChangeTool,
-##				       var = self.toolVar, value='EditWeight')
-##	self.menubar.add_cascade(label="Tools", menu=self.toolsMenu, 
-##				 underline=0)
 
 	self.master.configure(menu=self.menubar)
 
@@ -329,7 +527,7 @@ class HMMEditor(SAGraphEditor):
     def OpenGraph(self):	
 	file = askopenfilename(title="Open HMM",
 			       defaultextension=".xml",
-			       filetypes = (("XML", ".xml")
+			       filetypes = (("XML", ".xml"),
                                             )
 			       )
 	if file is "": 
@@ -338,17 +536,15 @@ class HMMEditor(SAGraphEditor):
 	    self.fileName = file
 	    self.graphName = stripPath(file)
 	    e = extension(file)
-
-	    if e == 'hmm':
-		self.HMM.Open(file)
-	    elif e == 'xml':
+            
+	    if e == 'xml':
 		self.HMM.OpenXML(file)
 	    else:
 		print "Unknown extension"
 		return
 
-	    self.ShowGraph(self.HMM.G,self.graphName)
-	    self.RegisterGraphInformer(WeightedGraphInformer(self.HMM.G,"probability"))
+	    self.ShowGraph(self.HMM.G, self.graphName)
+	    self.RegisterGraphInformer(WeightedGraphInformer(self.HMM.G, "probability"))
 	    self.SetTitle("HMMEd _VERSION_ - " + self.graphName)
 
 	    if not self.gridding:
@@ -407,19 +603,27 @@ class HMMEditor(SAGraphEditor):
 
 	    else: # We have a vertex
 		v = self.FindVertex(event)
-		if v != None and self.HMM.G.NrOfVertexWeights() > 0:
+		if v != None:
 
+
+                    state = self.HMM.state[v]
+                    if state.order > 0:
+                        print "Ooops. Cant edit higher order states"
+                        return
+
+                    print state.emissions
+                    
                     emission_probabilities = ProbEditorBasics.ProbDict({})
 
-                    count = self.HMM.G.NrOfVertexWeights()
-                    for i in xrange(count):
-                        weight = self.HMM.G.vertexWeights[i][v]
-                        try:
-                            label = "%s" % self.HMM.hmmAlphabet[i]
-                        except:
-                            label = "symbol %s" % i 
-                        emission_probabilities.update({label:weight})
+                    for code in self.HMM.hmmAlphabet.name.keys():
+                        label = self.HMM.hmmAlphabet.name[code]
+                        weight = state.emissions[code]
 
+                        print label, weight
+                        
+                        emission_probabilities.update({label:weight})
+                        
+                    # Normalize ... should be member function
                     if emission_probabilities.sum == 0:
                         key_list = emission_probabilities.keys()
                         for key in key_list:
@@ -428,16 +632,27 @@ class HMMEditor(SAGraphEditor):
                             
                     e = ProbEditorBasics.emission_data(emission_probabilities)
                     d = ProbEditorDialogs.emission_dialog(self, e,
-                                                          "emission probs of state %d" % v)
+                                                          "emission probs of state %s" % state.id)
                     if d.success():
                         # write back normalized probabilities
                         for key in emission_probabilities.keys():
-                            i = int(key[7:])
-                            self.HMM.G.vertexWeights[i][v] = emission_probabilities[key] / emission_probabilities.sum	
+                            code = self.HMM.hmmAlphabet.name2code[key]
+                            state.emissions[code] = emission_probabilities[key] / emission_probabilities.sum	
 
+    def EditPropertiesUp(self,event):
+	if event.widget.find_withtag(CURRENT):
+	    widget = event.widget.find_withtag(CURRENT)[0]
+	    tags = self.canvas.gettags(widget)
+	    if not "edges" in tags:
+		v = self.FindVertex(event)
+                d = EditObjectAttributesDialog(self, self.HMM.state[v], HMMState.editableAttr)
+
+                # We only show the label out of the editable items
+                self.HMM.G.labeling[v] = "%s\n%s" % (self.HMM.state[v].id, self.HMM.state[v].label) # XXX Hack Aaaargh!
+                self.UpdateVertexLabel(v, 0)
 
     def EditHMM(self):
-        d = EditObjectAttributesDialog.EditObjectAttributesDialog(self, self.HMM, self.HMM.editableAttr['HMM'])
+        d = EditObjectAttributesDialog(self, self.HMM, self.HMM.editableAttr['HMM'])
 
     def EditEmissions(self):
 	d = EditEmissionProbDialog(self, self.HMM.G)
