@@ -22,7 +22,6 @@ import os
 import bdb
 import whrandom
 import re 
-import regsub
 import string
 import StringIO
 import tokenize
@@ -51,7 +50,7 @@ def WMExtrasGeometry(window):
 
         NOTE: Does not work with tk8.0 style menus, since those are
               handled by WM (according to Tk8.1 docs) """
-    g = regsub.split(window.geometry(),"+") 
+    g = string.split(window.geometry(),"+") 
     trueRootx = string.atoi(g[1]) 
     trueRooty = string.atoi(g[2])
     

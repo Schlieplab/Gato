@@ -17,7 +17,7 @@
 ################################################################################
 
 import math
-import gsl.rng
+import pygsl.rng
 import Tkinter
 import ProbEditorBasics
 import ProbEditorWidgets
@@ -460,7 +460,7 @@ class gauss_function(plot_object):
         
     def get_value(self,x):
         "gauss function"
-        return self.a*gsl.rng.gaussian_pdf(x-self.mu,self.sigma)
+        return self.a*pygsl.rng.gaussian_pdf(x-self.mu,self.sigma)
 ##        n=(float(x)-self.mu)/self.sigma
 ##        return math.exp(n*n/-2.0)*self.a/self.sigma*self.norm
 
@@ -528,7 +528,7 @@ class gauss_tail_function_right(plot_object):
 
     def get_value(self,x):
         "gauss function"
-        return self.a*gsl.rng.gaussian_tail_pdf(x-self.mu,self.tail-self.mu,self.sigma)
+        return self.a*pygsl.rng.gaussian_tail_pdf(x-self.mu,self.tail-self.mu,self.sigma)
 
     def __repr__(self):
         return "gauss_function: x->%f/(%f*sqrt(2*pi))*exp(-(x-%f)**2/2*%f**2)"%(self.a,self.sigma,self.mu,self.sigma)
@@ -569,7 +569,7 @@ class gauss_tail_function_left(gauss_tail_function_right):
         
     def get_value(self,x):
         "gauss function"
-        return self.a*gsl.rng.gaussian_tail_pdf(self.mu-x,self.mu-self.tail,self.sigma)
+        return self.a*pygsl.rng.gaussian_tail_pdf(self.mu-x,self.mu-self.tail,self.sigma)
 
     def __repr__(self):
         return "gauss_function: x->%f/(%f*sqrt(2*pi))*exp(-(x-%f)**2/2*%f**2)"%(self.a,self.sigma,self.mu,self.sigma)

@@ -15,7 +15,6 @@
 #
 ################################################################################
 
-from regsub import split
 from GatoGlobals import *
 from DataStructures import Point2D, VertexLabeling, EdgeLabeling, EdgeWeight
 from math import log

@@ -30,7 +30,6 @@ from tkMessageBox import askokcancel
 import tkSimpleDialog 
 import whrandom
 import string
-import regsub
 
 import HMMXML
 import xml.dom.minidom
@@ -102,7 +101,6 @@ class HMM:
 	self.G.euclidian = 0
 
 	import regex 
-	from regsub import split
  
 	commentPat = regex.compile('[\t ]*\#.')
 	nrOfSymbolsPat = regex.compile('[\t ]*M[\t ]*=[\t ]*\([0-9]+\)')
