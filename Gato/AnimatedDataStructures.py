@@ -145,6 +145,7 @@ class AnimatedVertexQueue(Queue):
 	Queue.__init__(self)
 	self.Animator = theAnimator
 	self.Color = color
+	self.lastRemoved = None
 
     def Append(self,v):
 	Queue.Append(self,v)
@@ -153,6 +154,10 @@ class AnimatedVertexQueue(Queue):
     def Top(self):
 	v = Queue.Top(self)
 	self.Animator.SetVertexColor(v,cRemovedFromQueue)
+	if self.lastRemoved is not None:
+	    self.Animator.SetVertexFrameWidth(self.lastRemoved,gVertexFrameWidth)
+	self.Animator.SetVertexFrameWidth(v,6)
+	self.lastRemoved = v 
 	return v
 
     def Clear(self):
@@ -174,6 +179,7 @@ class AnimatedVertexStack(Stack):
 	Stack.__init__(self)
 	self.Animator = theAnimator
 	self.Color = color
+	self.lastRemoved = None
 
     def Push(self,v):
 	Stack.Push(self,v)
@@ -182,6 +188,10 @@ class AnimatedVertexStack(Stack):
     def Pop(self):
 	v = Stack.Pop(self)
 	self.Animator.SetVertexColor(v,cRemovedFromQueue)
+	if self.lastRemoved is not None:
+	    self.Animator.SetVertexFrameWidth(self.lastRemoved,gVertexFrameWidth)
+	self.Animator.SetVertexFrameWidth(v,6)
+	self.lastRemoved = v 
 	return v
 
     def Clear(self):

@@ -269,7 +269,7 @@ class GraphDisplay:
 	d = (gVertexRadius * self.zoomFactor) / 100.0
  	dv = self.canvas.create_oval(x-d, y-d, x+d, y+d, 
 				     fill=cVertexDefault, tag="vertices",
-				     width=2) 
+				     width=gVertexFrameWidth) 
 	self.canvas.tag_bind(dv, "<Any-Leave>", self.DefaultInfo)
 	self.canvas.tag_bind(dv, "<Any-Enter>", self.VertexInfo)
 	self.vertex[dv] = v # XXX

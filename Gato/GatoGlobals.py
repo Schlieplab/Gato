@@ -18,6 +18,7 @@
 
 # Globals
 gVertexRadius     = 12  
+gVertexFrameWidth      =  2     
 gEdgeWidth        =  3     
 gBlinkRate        = 50      # ms 100
 gBlinkRepeat      =  4      # One more than you want 4

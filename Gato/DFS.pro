@@ -13,11 +13,10 @@
 #
 #
 ################################################################################
+pickCallback = lambda v, a=A: A.SetVertexAnnotation(v,"source")
+PickVertex = lambda f=pickCallback: self.PickVertex(f)
 
-PickVertex = self.PickVertex
-A = self.GUI.graphDisplay
 Neighborhood = lambda v,a=A,g=G: AnimatedNeighborhood(a,g,v)
 Vertices = G.vertices          
 visited = AnimatedVertexLabeling(A)    
-Q = AnimatedVertexQueue(A)
 S = AnimatedVertexStack(A)

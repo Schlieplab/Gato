@@ -14,10 +14,10 @@
 #
 ################################################################################
 
-pickCallback = lambda v, a=A: A.SetVertexFrameWidth(v,6)
+pickCallback = lambda v, a=A: A.SetVertexAnnotation(v,"source")
 
-self.NeededProperties({'pMist':1})
-self.SetBreakpoints([7,9,2])
+#self.NeededProperties({'pMist':1})
+self.SetBreakpoints([11])
 PickVertex = lambda f=pickCallback: self.PickVertex(f)
 Neighborhood = lambda v,a=A,g=G: AnimatedNeighborhood(a,g,v)
 Vertices = G.vertices          

@@ -61,37 +61,10 @@ LICENCE       = GPL.txt
 EXECUTABLES   = $(EXECDIR)/Gato.py \
 		$(EXECDIR)/Gred.py
 
-ALGORITHMS    =	
+ALGORITHMS    =	BFS.alg BFS.pro \
+		DFS.alg DFS.pro
 
-#ALGORITHMS    =	BFS.alg BFS.pro \
-#		BipartiteMatching.alg BipartiteMatching.pro \
-#		DFS.alg DFS.pro \
-#	        Dijkstra.alg Dijkstra.pro \
-#		Findpath.alg Findpath.pro \
-#		FindpathEuclid.alg FindpathEuclid.pro \
-#		LabelCorrecting.alg LabelCorrecting.pro \
-#		MaximalMatching.alg MaximalMatching.pro \
-#		MFFordFulkerson.alg MFFordFulkerson.pro \
-#		MFPreflowPush.alg MFPreflowPush.pro \
-#		MFPreflowPush-NoResidual.alg MFPreflowPush-NoResidual.pro \
-#		MSTGreedy.alg MSTGreedy.pro \
-#		MSTGreedy1.alg MSTGreedy1.pro \
-#		MSTPrim.alg MSTPrim.pro 
-
-
-GRAPHS         = 
-#GRAPHS        = cm.cat \
-#		cmDir.cat \
-#		cmNeg.cat \
-#		cmNeg2.cat \
-#		mf2.cat \
-#		bipartite.cat \
-#		bipartite2.cat \
-#		bipartite2a.cat \
-#		bipartite3.cat \
-#		mfBig2.cat \
-#		mfford-worstcase.cat \
-#		mfpreflow-worstcase.cat
+GRAPHS        = sample.cat
 
 PHONY:
 	# 1) place executable distribution in ~gato/Gato
