@@ -959,10 +959,17 @@ class GraphDisplay:
     #				       
     # edit commands
     #
-    def AddVertex(self, x, y):
+    def AddVertex(self, x, y, v = None):
 	""" *Internal* Add a new vertex at (x,y) 
-            NOTE: Assumes x,y to be in embedding coordinates""" 
-	v = self.G.AddVertex()
+            NOTE: Assumes x,y to be in embedding coordinates
+            
+            If v is not None, then we assume that we can pass the
+            ID v to AddVertex. This is true, when G is a subgraph
+            """
+        if v == None:
+            v = self.G.AddVertex()
+        else:
+            self.G.AddVertex(v)
 	self.embedding[v]  = Point2D(x,y)
 	self.Labeling[v]   = v
 	self.drawVertex[v] = self.CreateDrawVertex(v)
@@ -1041,8 +1048,8 @@ class GraphDisplay:
 
     def DeleteVertex(self,v):
 	""" *Internal* Delete vertex v """ 
-	del(self.Labeling.label[v]) # XXX
-	del(self.embedding.label[v]) # XXX
+	#del(self.Labeling.label[v]) # XXX I am not sure why we had this here ...
+	#del(self.embedding.label[v]) # XXX
 	# if v has an annotation delete
 	if self.vertexAnnotation.QDefined(v):
 	    self.canvas.delete(self.vertexAnnotation[v])
