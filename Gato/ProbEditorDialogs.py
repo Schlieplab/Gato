@@ -327,7 +327,7 @@ class emission_dialog(Tkinter.Toplevel,ProbEditorBasics.emission_editor):
     def __init__(self,parent,emissions,title):
         Tkinter.Toplevel.__init__(self,parent)
         ProbEditorBasics.emission_editor.__init__(self,emissions)
-##        self.withdraw()
+        self.withdraw()
         self.title(title)
         self.emissions=emissions
 
@@ -344,13 +344,12 @@ class emission_dialog(Tkinter.Toplevel,ProbEditorBasics.emission_editor):
         tab_dict['bars']=bar_editor(self,self.emissions)
         tab_dict['scaled bars']=scaled_bar_editor(self,self.emissions)
         tabs=ProbEditorWidgets.tab_frame(self,tab_dict)
-
         w.pack(side=Tkinter.BOTTOM, padx=5, pady=5)
         figures.pack(side=Tkinter.LEFT,fill=Tkinter.Y)
         tabs.pack(side=Tkinter.LEFT,expand=1,fill=Tkinter.BOTH)
 
-##        self.update_idletasks()
-##        self.deiconify()
+        self.update_idletasks()
+        self.deiconify()
         self.wait_window(self)
 
     def ok(self,event=None):

@@ -520,7 +520,7 @@ class HMMEditor(SAGraphEditor):
                 transition_probabilities=ProbEditorBasics.ProbDict({})
 		for head in self.HMM.G.OutNeighbors(tail):
 		    weight=self.HMM.G.edgeWeights[0][(tail,head)]
-		    label = "->_%d" % head
+		    label = "-> %d" % head
                     transition_probabilities.update({label:weight})
 
                 if transition_probabilities.sum==0:
@@ -546,7 +546,7 @@ class HMMEditor(SAGraphEditor):
                     count = self.HMM.G.NrOfVertexWeights()
                     for i in xrange(count):
                         weight=self.HMM.G.vertexWeights[i][v]
-                        label = "symbol_%d" % i
+                        label = "symbol %d" % i
                         emission_probabilities.update({label:weight})
 
                     if emission_probabilities.sum==0:

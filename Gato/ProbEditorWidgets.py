@@ -50,14 +50,19 @@ class tab_frame(Tkinter.Frame):
         # change body
         if self.actual_tab!=None:
             self.widget_dict[self.actual_tab].forget()
-        self.widget_dict[key].pack(side=Tkinter.BOTTOM,in_=self,
+        self.widget_dict[key].pack(side=Tkinter.BOTTOM,in_=self.container,
                                    expand=1,fill=Tkinter.BOTH)
         self.actual_tab=key
 
-    def __init__(self,master,widget_dict,start=None):
-        Tkinter.Frame.__init__(self,master,width=300,height=300)
+    def __init__(self,master,widget_dict,start=None,**config):
+        Tkinter.Frame.__init__(self,master)
+
         self.lower()
         self.tabs=Tkinter.Canvas(self,height=25,highlightthickness=0)
+        # why are sizes here?
+        self.container=Tkinter.Frame(self,width=400,height=300)
+        self.container.pack_propagate(0)
+
         self.widget_dict=widget_dict
         key_list=widget_dict.keys()
         key_list.sort()
@@ -101,11 +106,6 @@ class tab_frame(Tkinter.Frame):
             self.tabs.tag_bind(text,'<Button-1>',self.tab_selected)
             self.tabs.tag_bind(tab,'<Button-1>',self.tab_selected)
 
-            # Widget auf Start-Größe
-            # widget_dict[key].configure(width=300)
-            # widget_dict[key].configure(height=300)
-            # nutzt nichts...
-
         # setze aktuellen Tab
         self.actual_tab=None
         if start!=None:
@@ -114,16 +114,30 @@ class tab_frame(Tkinter.Frame):
             self.change_tab(key_list[0])
 
         self.tabs.pack(side=Tkinter.TOP,fill=Tkinter.X)
+        self.container.pack(side=Tkinter.TOP,expand=1,fill=Tkinter.BOTH)
 
 #####################################################################################
 class flyout_decoration:
-
+    """
+    only on canvas
+    """
     def __init__(self,info_function):
         # prepare bindings
+        self.info_function=info_function
         self.add_bindings(info_function)
 
-    def add_bindings(info_function):
-        pass
+    def add_bindings(self,info_function):
+        items=self.find_withtag(Tkinter.ALL)
+        # init status
+        self.flyout_stat=0
+        # init id of after-timer
+        self.after_id=0
+        for item in items:
+            key_tag=filter(lambda t:t=='flyout_info',self.gettags(item))
+            if len(key_tag)==0: continue
+            self.tag_bind(item,'<Enter>',self.flyout_enter,'+')
+            self.tag_bind(item,'<Motion>',self.flyout_delay_start,'+')
+            self.tag_bind(item,'<Leave>',self.flyout_leave,'+')
 
     def create_bar_flyouts(self,prob_dict):
         self.flyout_stat=0
@@ -171,30 +185,25 @@ class flyout_decoration:
 
     def flyout_show(self,item,x,y):
         self.flyout_stat=2
-        key=filter(lambda t:t[:4]=='tag_',self.gettags(item))[0][4:]
-        coords=self.coords(item)
-        value=float(coords[2]-coords[0])/self.bar_factor
-        flyout_text=('%s: %f')%(key,value)
         text_x=self.canvasx(x)+15
         text_y=self.canvasy(y)+15
+        flyout_text=self.info_function(item)
         text_item=self.create_text((text_x,text_y),text=flyout_text,tags=('flyout'),
                                    anchor=Tkinter.NW)
         self.create_rectangle(self.bbox(text_item),fill='khaki',tags=('flyout'))
         self.lift(text_item)
-        
+
     def flyout_hide(self):
         self.flyout_stat=0
         flyout_elements=self.find_withtag('flyout')
         for element in flyout_elements:
             self.delete(element)
 
+######################################################################################
 
+class bar_chart_y(Tkinter.Canvas,flyout_decoration):
 
-#####################################################################################
-
-class bar_chart_y(Tkinter.Canvas):
-
-    def __init__(self,master,prob_dict,keys,colors):
+    def __init__(self,master,prob_dict,keys,colors,report_func=None):
         self.max_value=0.0
         for k in keys:
             if prob_dict[k]>self.max_value:
@@ -210,12 +219,27 @@ class bar_chart_y(Tkinter.Canvas):
                                 master,
                                 bg='white',
                                 highlightthickness=0,
-#                                width=self.text_length+self.bar_length+2*self.x_margin,
-#                                height=len(keys)*self.bar_step+self.text_length+2*self.y_margin
                                 )
         self.create_bars(prob_dict,keys,colors)
         self.config_bar_height(prob_dict)
-        self.create_bar_flyouts(prob_dict)
+        flyout_decoration.__init__(self,self.info_func)
+        self.report_func=None
+        if report_func!=None:
+            self.report_func=report_func
+        self.bind('<Configure>',self.bars_configure)
+
+    def info_func(self,item):
+        tag=filter(lambda t:t[:4]=='tag_',self.gettags(item))[0]
+        key=ProbEditorBasics.tag_to_key(tag[4:])
+        bar=filter(lambda i,s=self:'bar' in s.gettags(i),self.find_withtag(tag))[0]
+        coords=self.coords(bar)
+        value=float(coords[2]-coords[0])/self.bar_factor
+        if value>0:
+            precision=-math.floor(math.log10(value))+3
+        else:
+            precision=1
+        flyout_text=('%s: %s')%(key,str(round(value,precision)))
+        return flyout_text
 
     def create_bars(self,prob_dict,keys,colors):
         start_x=self.x_margin+self.text_length
@@ -223,6 +247,7 @@ class bar_chart_y(Tkinter.Canvas):
         text_anchor=Tkinter.W
         i=0
         for k in keys:
+            tag='tag_'+ProbEditorBasics.key_to_tag(k)
             pos_x=start_x
             pos_y=start_y+i*self.bar_step
             self.create_rectangle(pos_x,
@@ -230,75 +255,13 @@ class bar_chart_y(Tkinter.Canvas):
                                   pos_x,
                                   pos_y+self.bar_width,
                                   fill=colors[i],
-                                  tags=('bar','tag_'+k))
+                                  tags=('bar','flyout_info',tag))
             self.create_text(self.x_margin,pos_y+self.bar_width/2,
                              anchor=text_anchor,
                              text=k,
-                             tags=('text','tag_'+k))
+                             tags=('text',tag))
             i=i+1
 
-    def create_bar_flyouts(self,prob_dict):
-        self.flyout_stat=0
-        self.after_id=0
-        for key in prob_dict.keys():
-            items=self.find_withtag('tag_'+key)
-            if len(items)==0: continue
-            item=filter(lambda i,s=self:s.type(i)=='rectangle',items)
-            self.tag_bind(item,'<Enter>',self.flyout_enter)
-            self.tag_bind(item,'<Motion>',self.flyout_delay_start)
-            self.tag_bind(item,'<Leave>',self.flyout_leave)
-
-    def flyout_enter(self,event):
-        # stat:
-        # 0 no timer set, no flyout, after motion =>1
-        # 1 timer set, no flyout, after motion =>1, no motion =>2
-        # 2 flyout, no timer, after motion =>1
-        if self.flyout_stat!=0:
-            return
-        self.flyout_stat=0
-        self.after_id=0
-
-    def flyout_leave(self,event):
-        if self.flyout_stat==1:
-            self.after_cancel(self.after_id)
-        if self.flyout_stat==2:
-            self.flyout_hide()
-        self.flyout_stat=0
-
-    def flyout_delay_start(self,event):
-        item=self.find_withtag(Tkinter.CURRENT)[0]
-        if self.flyout_stat==1:
-            # moved again, no flyout set
-            self.after_cancel(self.after_id)
-        elif self.flyout_stat==2:
-            # flyout set
-            self.flyout_hide()
-        # moved
-        self.flyout_stat=1
-        self.after_id=self.after(1000,self.flyout_delay_end,item,event.x,event.y)
-
-    def flyout_delay_end(self,item,x,y):
-        self.flyout_stat==2
-        self.flyout_show(item,x,y)
-
-    def flyout_show(self,item,x,y):
-        self.flyout_stat=2
-        key=filter(lambda t:t[:4]=='tag_',self.gettags(item))[0][4:]
-        coords=self.coords(item)
-        value=float(coords[2]-coords[0])/self.bar_factor
-        flyout_text=('%s: %f')%(key,value)
-        text_x=self.canvasx(x)+15
-        text_y=self.canvasy(y)+15
-        text_item=self.create_text((text_x,text_y),text=flyout_text,tags=('flyout'),
-                                   anchor=Tkinter.NW)
-        self.create_rectangle(self.bbox(text_item),fill='khaki',tags=('flyout'))
-        self.lift(text_item)
-        
-    def flyout_hide(self):
-        self.flyout_stat=0
-        flyout_elements=self.find_withtag('flyout')
-        for element in flyout_elements:
-            self.delete(element)
 
     def get_max_value(self):
         dict=self.get_bar_values()
@@ -317,24 +280,38 @@ class bar_chart_y(Tkinter.Canvas):
             bar_items=self.find_withtag('bar')
             for bar_item in bar_items:
                 tags=self.gettags(bar_item)
-                key=filter(lambda t:'tag_'==t[:4],tags)[0][4:]
+                tag=filter(lambda t:'tag_'==t[:4],tags)[0][4:]
+                key=ProbEditorBasics.tag_to_key(tag)
                 coords=self.coords(bar_item)
                 value=float(coords[2]-coords[0])/self.bar_factor
                 dict.update({key:value})
         else:
-            # retur only keys in list
+            # return only keys in list
             for key in key_list:
-                items=self.find_withtag('tag_'+key)
+                tag='tag_'+ProbEditorBasics.key_to_tag(key)
+                items=self.find_withtag(tag)
                 if len(items)==0: continue
                 bar_item=filter(lambda i,s=self:'bar' in s.gettags(i),items)
                 coords=self.coords(bar_item)
                 value=float(coords[2]-coords[0])/self.bar_factor
                 dict.update({key:value})
         return dict
-            
+
+    def bars_configure(self,event):
+        actual_values=self.get_bar_values()
+        self.max_value=0.0
+        for key in actual_values.keys():
+            if actual_values[key]>self.max_value: self.max_value=actual_values[key]
+        self.bar_length=event.width-self.text_length-2*self.x_margin
+        self.bar_factor=self.bar_length/self.max_value
+        self.config_bar_height(actual_values)
+        if self.report_func!=None:
+            self.report_func('scale change',None,None)
+
     def config_bar_height(self,prob_dict):
         for key in prob_dict.keys():
-            items=self.find_withtag('tag_'+key)
+            tag='tag_'+ProbEditorBasics.key_to_tag(key)
+            items=self.find_withtag(tag)
             if len(items)==0: continue
             bar_item=filter(lambda i,s=self:'bar' in s.gettags(i),items)
             coords=self.coords(bar_item)
@@ -344,7 +321,8 @@ class bar_chart_y(Tkinter.Canvas):
     def config_bar_color(self,keys,color_list):
         bar_items=self.find_withtag('bar')
         for item in bar_items:
-            key=filter(lambda t:t[:4]=='tag_',self.gettags(item))[0][4:]
+            tag=filter(lambda t:t[:4]=='tag_',self.gettags(item))[0][4:]
+            key=ProbEditorBasics.tag_to_key(tag[4:])
             color=color_list[keys.index(key)]
             self.itemconfig(item,fill=color)
 
@@ -353,7 +331,8 @@ class bar_chart_y(Tkinter.Canvas):
         start_y=self.y_margin
         i=0
         for k in keys:
-            items=self.find_withtag('tag_'+key)
+            tag='tag_'+ProbEditorBasics.key_to_tag(key)
+            items=self.find_withtag(tag)
             if len(items)!=1:
                 continue
             bar_item=filter(lambda i,s=self:s.type(i)=='rectangle',items)
@@ -375,20 +354,39 @@ class e_bar_chart_y(bar_chart_y):
         bar_chart_y.__init__(self,master,prob_dict,keys,colors)
         # report value changes to this function
         self.report_func=report_func
-
         self.normal_cursor=self.cget('cursor')
         self.current_item=None
+        self.create_handles()
+        flyout_decoration.add_bindings(self,self.info_func)
+        self.config_handle_pos(prob_dict)
+
+    def create_handles(self):
         for item in self.find_withtag('bar'):
             coords=self.coords(item)
             tags=self.gettags(item)
             tag=filter(lambda tag: tag[:4]=='tag_',tags)[0]
             handle=self.create_rectangle((coords[2],coords[1],coords[2],coords[3]),
                                          fill='black',
-                                         tags=('bar_top',tag))
+                                         tags=('bar_top','flyout_info',tag))
             self.tag_bind(handle,'<Button-1>',self.handle_mouse_move_start)
             self.tag_bind(handle,'<Enter>',self.change_cursor)
             self.tag_bind(handle,'<Leave>',self.restore_cursor)
-        self.config_handle_pos(prob_dict)
+
+    def info_func(self,item):
+        tags=self.gettags(item)
+        if 'bar_top' in tags:
+            tag=filter(lambda t:t[:4]=='tag_',tags)[0]
+            key=ProbEditorBasics.tag_to_key(tag[4:])
+            coords=self.coords(item)
+            value=self.value_from_handle_coords(coords)
+            if value>0:
+                precision=-math.floor(math.log10(value))+3
+            else:
+                precision=1
+            flyout_text=('%s: %s')%(key,str(round(value,precision)))
+        else:
+            flyout_text=bar_chart_y.info_func(self,item)
+        return flyout_text
 
     def change_cursor(self,event):
         self.on_handle=1
@@ -405,7 +403,8 @@ class e_bar_chart_y(bar_chart_y):
     def handle_mouse_move_start(self,event):
         self.current_item=self.find_withtag(Tkinter.CURRENT)[0]
         tags=self.gettags(self.current_item)
-        self.current_key=filter(lambda tag: tag[:4]=='tag_',tags)[0][4:]
+        self.current_tag=filter(lambda tag: tag[:4]=='tag_',tags)[0]
+        self.current_key=ProbEditorBasics.tag_to_key(self.current_tag[4:])
         self.bind('<ButtonRelease-1>',self.handle_mouse_move_end)
         self.bind('<B1-Motion>',self.handle_mouse_move)
         coords=self.coords(self.current_item)
@@ -437,7 +436,8 @@ class e_bar_chart_y(bar_chart_y):
 
     def config_handle_pos(self,prob_dict):
         for key in prob_dict.keys():
-            items=self.find_withtag('tag_'+key)
+            tag='tag_'+ProbEditorBasics.key_to_tag(key)
+            items=self.find_withtag(tag)
             bar_item=filter(lambda i,s=self:'bar_top' in s.gettags(i),items)
             if len(bar_item)==0: continue
             coords=self.coords(bar_item)
@@ -463,11 +463,7 @@ class scale(Tkinter.Canvas):
                                 bg='white',
                                 highlightthickness=0
                                 )
-        self.bind('<Configure>',self.configure_event)
         self.draw_arrow(start_x,factor,max_value)
-
-    def configure_event(self,event):
-        print 'conf',event.width
 
     def draw_arrow(self,start_x,factor,max_value=None):
         self.create_line(start_x,
@@ -495,12 +491,13 @@ class scale(Tkinter.Canvas):
         if scale_frac*factor<50:
             scale_frac*=2
         # an der Teilung muß noch gefeilt werden
+        round_pos=-math.floor(math.log10(scale_frac))
         x_pos=0.0
         while x_pos<=max_value:
             pixel_x=start_x+x_pos*factor
             self.create_line(pixel_x,15,pixel_x,25,
                                    tags=('tic'))
-            self.create_text(pixel_x,15,text=repr(x_pos)[:3],
+            self.create_text(pixel_x,15,text=str(round(x_pos,round_pos)),
                              anchor=Tkinter.S,
                              tags=('tic','text'))
             x_pos=x_pos+scale_frac
@@ -523,10 +520,8 @@ class bar_chart_with_scale(Tkinter.Frame):
                                       command=self.bars.yview)
         region=self.bars.bbox(Tkinter.ALL)
         sregion=(0,0,region[2],region[3])
-        self.bars.config(height=300,
-                         scrollregion=sregion,
+        self.bars.config(scrollregion=sregion,
                          yscrollcommand=scrollbar.set)
-
 
         empty=Tkinter.Frame(self,bg='white')
         self.scale.grid(column=0,row=0,sticky=Tkinter.E+Tkinter.W)
@@ -540,6 +535,7 @@ class bar_chart_with_scale(Tkinter.Frame):
     def bar_report(self,what,key,value):
         if what=='move':
             self.move_count+=1
+            return
         if what=='max reached' and self.move_count>0:
             actual_values=self.bars.get_bar_values()
             self.bars.bar_factor/=2
@@ -548,8 +544,14 @@ class bar_chart_with_scale(Tkinter.Frame):
                                     self.bars.bar_factor,
                                     self.bars.bar_length/self.bars.bar_factor)
             self.move_count=0
-        self.report_func(what,key,value)
+            return
+        if what=='scale change':
+            self.scale.config_scale(self.bars.x_margin+self.bars.text_length,
+                                    self.bars.bar_factor,
+                                    self.bars.bar_length/self.bars.bar_factor)
+            return
 
+        self.report_func(what,key,value)
 
 
 ####################################################################################
@@ -638,7 +640,7 @@ class e_rod_chart(rod_chart):
 
 ####################################################################################
 
-class pie_chart(Tkinter.Canvas):
+class pie_chart(Tkinter.Canvas,flyout_decoration):
 
     def __init__(self,master,prob_dict,keys,colors):
         self.ProbDict=prob_dict
@@ -646,6 +648,19 @@ class pie_chart(Tkinter.Canvas):
         self.key_list=keys
         Tkinter.Canvas.__init__(self,master,bg='white',highlightthickness=0)
         self.draw_arcs(self.arc_box,keys,colors)
+        flyout_decoration.__init__(self,self.info_function)
+
+    def info_function(self,item):
+        tag=filter(lambda t:t=='other' or t[:4]=='tag_',self.gettags(item))[0]
+        sector=filter(lambda i,s=self:'sector' in s.gettags(i),self.find_withtag(tag))
+        if tag!='other':
+            key=ProbEditorBasics.tag_to_key(tag[4:])
+        else:
+            key='other'
+        value=abs(float(self.itemcget(sector,'extent')))/360.0*self.ProbDict.sum
+        l10_value=-math.floor(math.log10(value))
+        info='%s: %s'%(key,str(round(value,l10_value+3)))
+        return info
 
     def anchor(self,angle,angle_base):
         """
@@ -684,7 +699,7 @@ class pie_chart(Tkinter.Canvas):
             extent_angle=0
             if i<len(key_list):
                 key=key_list[i]
-                tag='tag_'+key
+                tag='tag_'+ProbEditorBasics.key_to_tag(key)
                 this_angle=start_angle+this_sum*full_angle/self.ProbDict.sum
                 extent_angle=self.ProbDict[key]*full_angle/self.ProbDict.sum
                 this_sum=this_sum+self.ProbDict[key]
@@ -696,7 +711,7 @@ class pie_chart(Tkinter.Canvas):
                     break
                 this_angle=start_angle+this_sum*full_angle/self.ProbDict.sum
                 extent_angle=start_angle+full_angle-this_angle
-                color=''
+                color=self.cget('bg')
             line_angle=0.0
             if abs(extent_angle)>=360:
                 # fast voller Kreis
@@ -705,11 +720,8 @@ class pie_chart(Tkinter.Canvas):
             sector=self.create_arc(circle_box,
                                    start=this_angle,
                                    extent=extent_angle,
-                                   tags=('sector',tag),
+                                   tags=('sector','flyout_info',tag),
                                    fill=color)
-
-            # self.tag_bind(sector,'<Enter>',self.create_info_line)
-            # self.tag_bind(sector,'<Leave>',self.clear_info_line)
             i=i+1
 
         for item in self.find_withtag('sector'):
@@ -723,7 +735,7 @@ class pie_chart(Tkinter.Canvas):
                 text='other'
                 tags=('other',)
             else:
-                text=tags[0][4:]
+                text=ProbEditorBasics.tag_to_key(tags[0][4:])
             m_x=math.cos(line_angle/180.0*math.pi)
             m_y=-math.sin(line_angle/180.0*math.pi)
             circle_middle_x=(coords[0]+coords[2])/2
@@ -782,7 +794,8 @@ class pie_chart(Tkinter.Canvas):
     def update_colors(self,order_list,color_list):
         sectors=self.find_withtag('sector')
         for sector in sectors:
-            key=filter(lambda t:t[:4]=='tag_',self.gettags(sector))[0][4:]
+            tag=filter(lambda t:t[:4]=='tag_',self.gettags(sector))[0]
+            key=ProbEditorBasics.tag_to_key(tag[4:])
             if len(keytag)!=1: continue
             color=color_list[order_list.index(key)]
             self.itemconfig(sector,color=color)
@@ -801,7 +814,7 @@ class pie_chart(Tkinter.Canvas):
             extent_angle=0
             if i<len(order_list):
                 key=order_list[i]
-                tag='tag_'+key
+                tag='tag_'+ProbEditorBasics.key_to_tag(key)
                 this_angle=start_angle+this_sum*full_angle/dict.sum
                 extent_angle=dict[key]*full_angle/dict.sum
                 this_sum=this_sum+dict[key]
@@ -845,6 +858,41 @@ class e_pie_chart(pie_chart):
         self.report_func=report_func
         self.oval_diam_x=self.oval_diam_y=4
         self.init_handles()
+        flyout_decoration.add_bindings(self,self.info_function)
+
+    def info_function(self,item):
+        tags=self.gettags(item)
+        if 'handle' in tags:
+            tag=filter(lambda t:t[:4]=='tag_' or t=='other',tags)[0]
+            if tag!='other':
+                key=ProbEditorBasics.tag_to_key(tag[4:])
+            else:
+                key='other'
+            arc=filter(lambda i,s=self:s.type(i)=='arc',
+                        self.find_withtag(tag))
+            neighbours=self.find_neighbours(arc)
+            neighbours.append(arc)
+            flyout_text=''
+            for item in neighbours:
+                flyout_text+=', '+pie_chart.info_function(self,item)
+            flyout_text=flyout_text[2:]
+        else:
+            flyout_text=pie_chart.info_function(self,item)
+        return flyout_text
+
+
+    def find_neighbours(self,sector_item):
+        # find neighbour sector
+        angle_pos=float(self.itemcget(sector_item,'start'))
+        sectors=self.find_withtag('sector')
+        neighbours=[]
+        for sector in sectors:
+            extent_angle=float(self.itemcget(sector,'extent'))
+            start_angle=float(self.itemcget(sector,'start'))
+            angle_diff=divmod(start_angle+extent_angle-angle_pos,360.0)[1]
+            if angle_diff<0.1 or angle_diff>359.9:
+                neighbours.append(sector)
+        return neighbours
 
     def move_start(self,event):
         # find sector belonging to handle
@@ -854,15 +902,7 @@ class e_pie_chart(pie_chart):
         self.current_arc1=filter(lambda i,s=self:s.type(i)=='arc',
                                  self.find_withtag(self.current_tag))
         # find neighbour sector
-        angle_pos=float(self.itemcget(self.current_arc1,'start'))
-        sectors=self.find_withtag('sector')
-        self.current_arc2=[]
-        for sector in sectors:
-            extent_angle=float(self.itemcget(sector,'extent'))
-            start_angle=float(self.itemcget(sector,'start'))
-            angle_diff=divmod(start_angle+extent_angle-angle_pos,360.0)[1]
-            if angle_diff<0.1 or angle_diff>359.9:
-                self.current_arc2.append(sector)
+        self.current_arc2=self.find_neighbours(self.current_arc1)
 
         # really found one?
         if len(self.current_arc2)==0:
@@ -935,6 +975,15 @@ class e_pie_chart(pie_chart):
         # set new arc angles
         new_start2=self.angle_start
         new_extent1=self.angle_extent-new_extent2
+        # pitfall! extent>=360°
+        if new_extent1>359.9:
+            new_extent1=359.9
+        elif new_extent1<-359.9:
+            new_extent1=-359.9
+        if new_extent2>359.9:
+            new_extent2=359.9
+        elif new_extent2<-359.9:
+            new_extent2=-359.9
         self.itemconfig(self.current_arc1,start=new_start1)
         self.itemconfig(self.current_arc2,start=new_start2)
         self.itemconfig(self.current_arc1,extent=new_extent1)
@@ -956,24 +1005,24 @@ class e_pie_chart(pie_chart):
         self.unbind('<ButtonRelease-1>')
         # read new values from graphic
         tags=self.gettags(self.current_arc1)
-        key1=filter(lambda tag: tag[:4]=='tag_',tags)
+        tag1=filter(lambda tag: tag[:4]=='tag_' or tag=='other',tags)[0]
+        if tag1!='other':
+            key1=ProbEditorBasics.tag_to_key(tag1[4:])
+        else:
+            key1='other'
         tags=self.gettags(self.current_arc2)
-        key2=filter(lambda tag: tag[:4]=='tag_',tags)
+        tag2=filter(lambda tag: tag[:4]=='tag_' or tag=='other',tags)[0]
+        if tag2!='other':
+            key2=ProbEditorBasics.tag_to_key(tag2[4:])
+        else:
+            key2='other'
         value1=abs(float(self.itemcget(self.current_arc1,
                                        'extent')))/360.0*self.ProbDict.sum
         value2=abs(float(self.itemcget(self.current_arc2,
                                        'extent')))/360.0*self.ProbDict.sum
         report_dict={}
-        if len(key1)!=0:
-            report_dict[key1[0][4:]]=value1
-        else:
-            # handle other
-            report_dict['other']=value1
-        if len(key2)!=0:
-            report_dict[key2[0][4:]]=value2
-        else:
-            # handle other
-            report_dict['other']=value2
+        report_dict[key1]=value1
+        report_dict[key2]=value2
         self.report_func('new value',report_dict)
         self.current_tag=None
         self.current_key=None
@@ -993,7 +1042,7 @@ class e_pie_chart(pie_chart):
             oval_y=-math.sin(angle/180.0*math.pi)*diam_y+center_y
             oval=self.create_oval(oval_x-self.oval_diam_x,oval_y-self.oval_diam_y,
                                   oval_x+self.oval_diam_x,oval_y+self.oval_diam_y,
-                                  fill='black',tags=('handle',tag))
+                                  fill='black',tags=('handle','flyout_info',tag))
             self.tag_bind(oval,'<Button-1>',self.move_start)
 
     def update_handles(self):
