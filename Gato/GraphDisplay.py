@@ -1108,6 +1108,12 @@ class GraphDisplay:
 	    self.canvas.itemconfig(de, fill=oldColor) # Should call SetEdgeColor
 	    self.drawEdges[(head,tail)] = de
 	    self.canvas.lower(de,"vertices")
+
+    def RaiseEdge(self,tail,head):
+        """ *Internal* Raise edge above others ... useful for subgraphs on
+        grid graphs
+        """
+        self.canvas.tkraise(self.drawEdges[(tail,head)], "edges")
 	    
     def SwapEdgeOrientation(self,tail,head):
 	""" *Internal* If graph is directed and we do not have edges in both
