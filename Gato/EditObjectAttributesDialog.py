@@ -19,10 +19,12 @@ from Tkinter import *
 from ScrolledText import *
 import tkSimpleDialog 
 import tkMessageBox
+from tkColorChooser import askcolor
 import copy
 import sys
 import os
 import types
+
 
 def typed_assign(var, val):
     result = type(var)(val)
@@ -181,7 +183,62 @@ class TkPopupSelector:
         # Cant choose invalid value with popup
         pass
     
+class TkStringPopupSelector:
+    def __init__(self, master, strings):
 
+        self.strings = strings
+        self.popupvalue = StringVar()
+	if len(self.strings) > 0:
+            self.popupvalue.set(self.strings[0]) # XXX first value as default 
+
+	width = max(map(len, self.strings))
+        args = (master, self.popupvalue) + tuple(self.strings)
+        self.tkwidget = apply(OptionMenu, args)
+        self.tkwidget.config(height=1, width=width)
+
+    def tkWidget(self):
+        return self.tkwidget
+
+    def get(self):
+        return self.popupvalue.get()
+
+    def set(self, value):
+        try:
+            self.popupvalue.set(value)
+        except:
+            self.popupvalue.set(self.strings[0]) # XXX first value as default       
+
+    def select(self):    
+        # Cant choose invalid value with popup
+        pass
+    
+
+class TkColorSelector:
+    def __init__(self, master, color='black'):
+        #self.tkwidget = Button(master, width=8, command=self.editColor)
+        self.tkwidget = Frame(master, height=18, width=60, relief=RIDGE, borderwidth=1)
+        self.tkwidget.bind("<ButtonRelease-1>", self.editColor)
+	self.set(color)
+
+    def editColor(self, event):
+	print event
+        color = askcolor(self.color)[1]
+	if color is not None:
+            self.set(color)
+	
+    def tkWidget(self):
+        return self.tkwidget
+
+    def get(self):
+        return self.color
+
+    def set(self, value):
+        self.color = value
+	self.tkwidget.config(bg=self.color)
+
+    def select(self):    
+        # Cant choose invalid value with popup
+        pass
 
 
 
