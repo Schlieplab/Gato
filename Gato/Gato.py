@@ -34,7 +34,7 @@ from GraphUtil import *
 from GraphDisplay import GraphDisplayToplevel
 from GatoUtil import *
 from GatoGlobals import *
-from GatoDialogs import AboutBox, SplashScreen
+from GatoDialogs import AboutBox, SplashScreen, AboutAlgorithm
 
 
 # put someplace else
@@ -159,11 +159,15 @@ class AlgoWin(Frame):
 	    self.apple=Menu(self.menubar, tearoff=0, name='apple')
 	    self.apple.add_command(label='About Gato',	
 				   command=self.AboutBox)
+	    self.apple.add_command(label='About Algorithm',	
+				   command=self.AboutAlgorithm)
 	    self.menubar.add_cascade(menu=self.apple)
 	else: # ... on other systems we add a help menu 
 	    self.helpMenu=Menu(self.menubar, tearoff=0, name='help')
 	    self.helpMenu.add_command(label='About Gato',	
 				      command=self.AboutBox)
+	    self.helpMenu.add_command(label='About Algorithm',	
+				      command=self.AboutAlgorithm)
 	    self.menubar.add_cascade(label="Help", menu=self.helpMenu, 
 				     underline=0)
 
@@ -442,6 +446,10 @@ class AlgoWin(Frame):
 
     def AboutBox(self):
 	d = AboutBox(self.master)
+
+    def AboutAlgorithm(self):
+	d = AboutAlgorithm(self.algorithm.About(), self.master)
+
 
     ############################################################
     #
@@ -816,6 +824,7 @@ class Algorithm:
 	self.graphIsDirty = 0       # If graph was changed by running
 	self.algoGlobals = {}       # Sandbox for Algorithm
 	self.logAnimator = 0
+	self.about = None
 
     def SetGUI(self, itsGUI):
 	""" Set the connection to its GUI """
@@ -832,34 +841,86 @@ class Algorithm:
 	
 	# Now read in the prolog as a module to get access to the following data
 	# Maybe should obfuscate the names ala xxx_<bla>, have one dict ?
-  	import imp
 	input = open(os.path.splitext(self.algoFileName)[0] + ".pro", 'r')
-	mod = imp.load_source('xxx', os.path.split(self.algoFileName)[0], input)
+	options = self.ReadPrologOptions(input)
 	input.close()
 
 	try:
-	    self.breakpoints   = mod.__dict__['breakpoints']
+	    self.breakpoints   = options['breakpoints']
 	except:
 	    self.breakpoints   = []
 	try:
-	    self.interactive   = mod.__dict__['interactive']
+	    self.interactive   = options['interactive']
 	except:
 	    self.interactive   = []
 	try:
-	    self.graphDisplays = mod.__dict__['graphDisplays']
+	    self.graphDisplays = options['graphDisplays']
 	except:
 	    self.graphDisplays = None
 	try:
-	    self.about         = mod.__dict__['about']
+	    self.about         = options['about']
 	except:
-	    self.about         = """<HTML><BODY>
-	    <H3>No information available</H3></BODY></HTML> """
-	
+	    self.about         = None
+
 
 	if self.graphDisplays != None:
 	    if self.graphDisplays == 1:
 		self.GUI.WithdrawSecondaryGraphDisplay()
 
+
+    def ReadPrologOptions(self, file):
+	""" Prolog files should contain the following variables:
+	    - breakpoints = [] a list of line numbers which are choosen as default
+                               breakpoints
+            - interactive = [] a list of line numbers which contain interactive commands
+                               (e.g., PickVertex)
+	    - graphDisplays = 1 | 2 the number of graphDisplays needed by the algorithm
+            - about = \"\"\"<HTML-code>\"\"\" information about the algorithm
+
+	"""
+ 	import re
+	import sys
+
+	text = file.read()
+	options = {}
+	optionPattern = {'breakpoints':'breakpoints[ \t]*=[ \t]*(\[[^\]]+\])',
+			 'interactive':'interactive[ \t]*=[ \t]*(\[[^\]]+\])',
+			 'graphDisplays':'graphDisplays[ \t]*=[ \t]*([1-2])'}
+	# about is more complicated
+
+	for patternName in optionPattern.keys():
+	    compPattern = re.compile(optionPattern[patternName])
+	    match = compPattern.search(text) 
+
+	    #print patternName, match.group()
+
+	    if match != None:
+		options[patternName] = eval(match.group(1))	
+
+	# Special case with about (XXX: assuming about = """ ... """)
+
+	try:
+	    aboutStartPat = re.compile('about[ \t]*=[ \t]*"""')
+	    aboutEndPat   = re.compile('"""')
+	    left = aboutStartPat.search(text).end() 
+	    right = aboutEndPat.search(text, left).start()
+
+	    options['about'] = text[left:right]
+	except:
+	    print "Boom in ReadPrologOptions"
+	    pass
+
+	return options
+
+
+
+
+    def About(self):
+	""" Return a HTML-page giving information about the algorithm """
+	if self.about != None:
+	    return self.about
+	else:
+	    return "<HTML><BODY> <H3>No information available</H3></BODY></HTML>"
 
     def OpenGraph(self,file):
 	""" Read in a graph from file and open the display """
@@ -911,12 +972,15 @@ class Algorithm:
 	    self.algoGlobals['A'] = self.GUI.graphDisplay
 	# XXX
 	# explictely loading packages we want to make available to the algorithm
-	exec("from DataStructures import *", self.algoGlobals, self.algoGlobals)
-	exec("from AnimatedDataStructures import *", self.algoGlobals, self.algoGlobals)
-	exec("from AnimatedAlgorithms import *", self.algoGlobals, self.algoGlobals)
-	exec("from GraphUtil import *", self.algoGlobals, self.algoGlobals)
-	exec("from GatoUtil import *", self.algoGlobals, self.algoGlobals)
-	
+	modules = ['DataStructures', 
+		   'AnimatedDataStructures', 
+		   'AnimatedAlgorithms',
+		   'GraphUtil',
+		   'GatoUtil']
+
+	for m in modules:
+	    exec("from %s import *" % m, self.algoGlobals, self.algoGlobals)
+
 	
 	# Read in prolog and execute it
 	try:

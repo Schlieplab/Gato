@@ -1,5 +1,10 @@
 
 * Tastaturbefehle zum Steppen etc.
+       self.master.bind_all('s', self.KeyStart)
+        self.master.bind_all('x', self.KeyStop)
+        self.master.bind_all('<space>', self.KeyStep)
+        self.master.bind_all('c', self.KeyContinue)
+        self.master.bind_all('t', self.KeyTrace)
 
 - Okay? How to control Hide/Show of second window ? Do we need to ? WM kills
   do a withdraw so we can resuse

@@ -120,3 +120,42 @@ class SplashScreen(Toplevel):
 	self.withdraw()
 
 
+class AboutAlgorithm(tkSimpleDialog.Dialog):
+    
+    def __init__(self, text, master=None):
+	self.text = text
+	tkSimpleDialog.Dialog.__init__(self, master)
+
+    def buttonbox(self):
+	# Stolen from tkSimpleDialog.py
+        # add standard button box. override if you don't want the
+        # standard buttons
+        box = Frame(self)
+        w = Button(box, text="OK", width=10, command=self.ok, default=ACTIVE)
+        w.pack(side=RIGHT, padx=5, pady=5)
+        self.bind("<Return>", self.ok)
+        box.pack(side=BOTTOM,fill=X)
+
+   
+    def body(self, master):
+	#self.resizable(0,0)
+	#self.catIconImage = PhotoImage(file=os.path.join(gatoPath(), 'gato.gif'))
+	#self.catIcon = Label(master, image=self.catIconImage)
+	#self.catIcon.pack(side=TOP)
+	#label = Label(master, text=crnotice1)
+	#label.pack(side=TOP)
+	#label = Label(master, font="Helvetica 10", text=crnotice2, justify=LEFT)
+	#label.pack(side=TOP)
+ 	color = self.config("bg")[4]
+	self.infoText = ScrolledText(master, relief=FLAT, 
+				     padx=3, pady=3,
+				     background=color, 
+				     #foreground="black",
+				     wrap='word',
+				     width=60, height=12,
+				     font="Times 10")
+	self.infoText.pack(expand=0, fill=BOTH, side=BOTTOM)
+	self.infoText.delete('0.0', END)
+	self.infoText.insert('0.0', self.text)	
+	self.infoText.configure(state=DISABLED)
+	self.title("About Algorithm")
