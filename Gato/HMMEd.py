@@ -298,9 +298,15 @@ class HMMState:
 
             # XXX Produce uniform emission probs, if we dont have the correct number of
             # parameters
+            
             size = self.itsHMM.hmmAlphabet.size()**(order+1)
             if len(self.emissions) != size:
-                self.emissions = [1.0/size] * size
+                tmp = [1.0/self.itsHMM.hmmAlphabet.size()] * self.itsHMM.hmmAlphabet.size()
+                if order == 0:
+                    self.emissions = tmp
+                else:
+                    self.emissions = tmp * self.itsHMM.hmmAlphabet.size()**order
+                    
                 
             if order > 0:
                 writeData(XMLDoc, node, 'emissions', csvFromList(self.emissions,
