@@ -55,7 +55,7 @@ SOURCES	      = AnimatedAlgorithms.py \
 		Gred.py \
 		catbox-splash.gif
 
-LICENCE       = Lizenz.txt
+LICENCE       = GPL.txt
 
 EXECUTABLES   = $(EXECDIR)/Gato.py \
 		$(EXECDIR)/Gred.py

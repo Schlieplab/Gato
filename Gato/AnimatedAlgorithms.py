@@ -9,7 +9,9 @@
 #
 #       _COPYRIGHT_
 #
-#       This file has version _FILE_REVISION_ from _FILE_DATE_
+#       This file is version $Revision$ 
+#                       from $Date$
+#             last change by $Author$.
 #
 ################################################################################
 from GatoGlobals import *
