@@ -634,14 +634,17 @@ class GraphDisplay:
 	return self.canvas.itemconfig(dv, "fill")[4]
 
  
-    def SetAllVerticesColor(self,color,graph=None):
+    def SetAllVerticesColor(self,color,graph=None,vertices=None):
 	""" Change the color of all vertices to 'color' at once 
-            You can also pass an induced subgraph  """
-	if graph == None:
+            You can also pass an induced subgraph  or a list of vertices
+        """
+	if graph == None and vertices == None: # All vertices of graph shown
 	    self.canvas.itemconfig("vertices", fill=color)
-	else: # induced subgraph
-	    for v in graph.vertices:
-		self.canvas.itemconfig(self.drawVertex[v], fill=color)
+	elif graph is not None: # all vertices of induced subgraph
+	    vertices = graph.vertices
+        if vertices is not None: # all specified vertices
+	    for v in vertices:
+		self.canvas.itemconfig(self.drawVertex[v], fill=color)            
 	self.update()        
         self.lastAnimation = []
         
@@ -1086,7 +1089,7 @@ class GraphDisplay:
 		self.G.edgeWeights[i][(tail,head)] = 0
 	
 	except GraphNotSimpleError:
-            log.error("Inserting edge would result in non-simple graph")
+            log.error("Inserting edge (%d,%d) would result in non-simple graph" % (tail,head))
 	    return
 
 
