@@ -138,7 +138,7 @@ class NamedDistributions:
     def add(self, name):
         order = tkSimpleDialog.askinteger("Distribution %s" % name, "Order", initialvalue=0)
         tmp = [1.0 / self.itsHMM.hmmAlphabet.size()] * self.itsHMM.hmmAlphabet.size()
-        p = tmp * (order + 1)
+        p = tmp * (self.itsHMM.hmmAlphabet.size() ** order)
         print "adding", name, order, p
         self.addDistribution(name, order, p)
 
