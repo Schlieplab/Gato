@@ -35,7 +35,7 @@ import string
 import sys
 import os
 
-import Embedder
+import GraphCreator, Embedder
 
 class GredSplashScreen(GatoDialogs.SplashScreen):
 
@@ -176,19 +176,73 @@ class SAGraphEditor(GraphEditor, Frame):
 	    self.tkraise()
 	
 
+    def SetGraphMenuDirected(self,directed):
+	if directed:
+	    if not self.directedVar.get():
+		self.graphMenu.invoke(self.graphMenu.index('Directed'))
+	else:
+	    if self.directedVar.get():
+		self.graphMenu.invoke(self.graphMenu.index('Directed'))	    
+	    
+
+    def SetGraphMenuEuclidean(self,euclidean):
+	if euclidean:
+	    if not self.euclideanVar.get():
+		self.graphMenu.invoke(self.graphMenu.index('Euclidean'))
+	else:
+	    if self.euclideanVar.get():
+		self.graphMenu.invoke(self.graphMenu.index('Euclidean'))
+	    
+
+    def SetGraphMenuIntegerVertexWeights(self,IntegerVertexWeights):
+	if IntegerVertexWeights:
+	    if not self.vertexIntegerWeightsVar.get():
+		self.graphMenu.invoke(self.graphMenu.
+				      index('Integer Vertex Weights'))
+	else:
+	    if self.vertexIntegerWeightsVar.get():
+		self.graphMenu.invoke(self.graphMenu.
+				      index('Integer Vertex Weights'))
+
+
+    def SetGraphMenuVertexWeights(self,VertexWeights):
+	self.vertexWeightsSubmenu.invoke(self.vertexWeightsSubmenu.index(VertexWeights))
+
+
+    def SetGraphMenuIntegerEdgeWeights(self,IntegerEdgeWeights):
+	if IntegerEdgeWeights:
+	    if not self.edgeIntegerWeightsVar.get():
+		self.graphMenu.invoke(self.graphMenu.
+				      index('Integer Edge Weights'))
+	else:
+	    if self.edgeIntegerWeightsVar.get():
+		self.graphMenu.invoke(self.graphMenu.
+				      index('Integer Edge Weights'))
+
+
+    def SetGraphMenuEdgeWeights(self,EdgeWeights):
+	self.edgeWeightsSubmenu.invoke(self.edgeWeightsSubmenu.index(EdgeWeights))
+
+
+    def SetGraphMenuGrid(self,Grid):
+	if Grid:
+	    if not self.gridding:
+		self.graphMenu.invoke(self.graphMenu.index('Grid'))
+	else:
+	    if self.gridding:
+		self.graphMenu.invoke(self.graphMenu.index('Grid'))
+
 
     def SetGraphMenuOptions(self):
-	if not self.directedVar.get():
-	    self.graphMenu.invoke(self.graphMenu.index('Directed'))	
-	if not self.euclideanVar.get():
-	    self.graphMenu.invoke(self.graphMenu.index('Euclidean'))
-	if not self.gridding:
-	    self.graphMenu.invoke(self.graphMenu.index('Grid'))	
+	self.SetGraphMenuDirected(1)
+	self.SetGraphMenuEuclidean(1)
+	self.SetGraphMenuGrid(1)
 	self.defaultButton.select()
 	#self.toolVar.set('Add or move vertex')
-	self.edgeWeightsSubmenu.invoke(self.edgeWeightsSubmenu.index('One'))
-	self.vertexWeightsSubmenu.invoke(self.vertexWeightsSubmenu.index('None'))
-
+	self.SetGraphMenuIntegerVertexWeights(0)
+	self.SetGraphMenuVertexWeights('None')
+	self.SetGraphMenuIntegerEdgeWeights(0)
+	self.SetGraphMenuEdgeWeights('One')
 
     def SetTitle(self,title):
 	self.master.title(title)
@@ -372,18 +426,31 @@ class SAGraphEditor(GraphEditor, Frame):
   	# Add extras menu
 	self.extrasMenu = Menu(self.menubar, tearoff=0)
 
+	# --------------------------------------------------------------
+	# Add a menue item for all creators found in Creator.creator
+	for create in GraphCreator.creator:
+
+	    self.extrasMenu.add_command(label=create.Name(),
+					command=lambda e=create,s=self:e.Create(s))
+	# --------------------------------------------------------------
+
+	# --------------------------------------------------------------
 	# Add a menue item for all embedders found in Embedder.embedder
+	self.extrasMenu.add_separator()
 	for embed in Embedder.embedder:
 
 	    self.extrasMenu.add_command(label=embed.Name(),
 					command=lambda e=embed,s=self:e.Embed(s))
 	# --------------------------------------------------------------
+
+    	# --------------------------------------------------------------
 	self.extrasMenu.add_separator()
 
 	self.extrasMenu.add_command(label='Randomize Edge Weights',
 				  command=self.RandomizeEdgeWeights)
 	self.menubar.add_cascade(label="Extras", menu=self.extrasMenu, 
 				 underline=0)
+    	# --------------------------------------------------------------
 
 	# On a Mac we put our about box under the Apple menu ... 
 	if os.name == 'mac':
@@ -408,19 +475,26 @@ class SAGraphEditor(GraphEditor, Frame):
     # the menu items.
     #
 
-    def NewGraph(self):
+    def NewGraph(self, Directed=1, Euclidean=1, IntegerVertexWeights=0, VertexWeights='None',
+		 IntegerEdgeWeights=0, EdgeWeights='One', Grid=1):
+	G=None
+	self.SetGraphMenuDirected(Directed)
+	self.SetGraphMenuEuclidean(Euclidean)
+	self.SetGraphMenuIntegerVertexWeights(IntegerVertexWeights)
+	self.SetGraphMenuVertexWeights(VertexWeights)
+	self.SetGraphMenuIntegerEdgeWeights(IntegerEdgeWeights)
+	self.SetGraphMenuEdgeWeights(EdgeWeights)
+	self.SetGraphMenuGrid(Grid)
+	self.defaultButton.select()
+
 	G = Graph()
-	G.directed = 1
+	G.directed = Directed
+	G.euclidian = Euclidean
 	self.graphName = "New"
 	self.ShowGraph(G,self.graphName)
 	self.RegisterGraphInformer(WeightedGraphInformer(G,"weight"))
 	self.fileName = None
 	self.SetTitle("Gred _VERSION_ - New Graph")
-	self.SetGraphMenuOptions()
-	if self.edgeIntegerWeightsVar.get():
-	    self.graphMenu.invoke(self.graphMenu.index('Integer Edge Weights'))
-	if self.vertexIntegerWeightsVar.get():
-	    self.graphMenu.invoke(self.graphMenu.index('Integer Vertex Weights'))
 
     def OpenGraph(self):	
 	file = askopenfilename(title="Open Graph",
