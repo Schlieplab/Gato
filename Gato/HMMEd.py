@@ -405,29 +405,30 @@ class HMMEditor(SAGraphEditor):
 				 underline=0)
 
 	# Add Tools menu
-	self.toolsMenu = Menu(self.menubar,tearoff=1)
-	self.toolVar = StringVar()
-	self.toolsMenu.add_radiobutton(label='Add or move vertex',  
-				       command=self.ChangeTool,
-				       var = self.toolVar, value='AddOrMoveVertex')
-	self.toolsMenu.add_radiobutton(label='Add edge', 
-				       command=self.ChangeTool,
-				       var = self.toolVar, value='AddEdge')
-	self.toolsMenu.add_radiobutton(label='Delete edge or vertex', 
-				       command=self.ChangeTool,
-				       var = self.toolVar, value='DeleteEdgeOrVertex')
-	self.toolsMenu.add_radiobutton(label='Swap orientation', 
-				       command=self.ChangeTool,
-				       var = self.toolVar, value='SwapOrientation')
-	self.toolsMenu.add_radiobutton(label='Edit Probabilities', 
-					command=self.ChangeTool,
-				       var = self.toolVar, value='EditWeight')
-	self.menubar.add_cascade(label="Tools", menu=self.toolsMenu, 
-				 underline=0)
+##	self.toolsMenu = Menu(self.menubar,tearoff=0)
+##	self.toolVar = StringVar()
+##	self.toolsMenu.add_radiobutton(label='Add or move vertex',  
+##				       command=self.ChangeTool,
+##				       var = self.toolVar, value='AddOrMoveVertex')
+##	self.toolsMenu.add_radiobutton(label='Add edge', 
+##				       command=self.ChangeTool,
+##				       var = self.toolVar, value='AddEdge')
+##	self.toolsMenu.add_radiobutton(label='Delete edge or vertex', 
+##				       command=self.ChangeTool,
+##				       var = self.toolVar, value='DeleteEdgeOrVertex')
+##	self.toolsMenu.add_radiobutton(label='Swap orientation', 
+##				       command=self.ChangeTool,
+##				       var = self.toolVar, value='SwapOrientation')
+##	self.toolsMenu.add_radiobutton(label='Edit Probabilities', 
+##					command=self.ChangeTool,
+##				       var = self.toolVar, value='EditWeight')
+##	self.menubar.add_cascade(label="Tools", menu=self.toolsMenu, 
+##				 underline=0)
+
 	self.master.configure(menu=self.menubar)
 
     def SetGraphMenuOptions(self):
-	self.toolsMenu.invoke(self.toolsMenu.index('Add or move vertex'))	
+##	self.toolsMenu.invoke(self.toolsMenu.index('Add or move vertex'))	
 	if not self.gridding:
 	    self.graphMenu.invoke(self.graphMenu.index('Grid'))	
 	
@@ -514,56 +515,52 @@ class HMMEditor(SAGraphEditor):
 	    if "edges" in tags:
  		(tail,head) = self.edge[widget]
 
-		weights = ()
-		intFlag = ()
-		label = ()
-		count = 0
+                import ProbEditorBasics
+                import ProbEditorDialogs
+                transition_probabilities=ProbEditorBasics.ProbDict({})
 		for head in self.HMM.G.OutNeighbors(tail):
-		    weights = weights + (self.HMM.G.edgeWeights[0][(tail,head)],)
-		    intFlag = intFlag + (0,)
-		    label = label + ("-> %d" % head,)
-		    count = count + 1
+		    weight=self.HMM.G.edgeWeights[0][(tail,head)]
+		    label = "->_%d" % head
+                    transition_probabilities.update({label:weight})
 
-		d = EditWeightsDialog(self, "trans. probs from %d" % tail, 
-				      count, weights, intFlag, label) 
-		if d.result is not None:
-		    # Normalize Probabilities
-		    sum = 0.0
-		    for i in xrange(count):
-			sum = sum + d.result[i]
-
-		    N = self.HMM.G.OutNeighbors(tail)
-		    for i in xrange(count):
-			head = N[i]
-			self.HMM.G.edgeWeights[0][(tail,head)] = d.result[i] / sum
-			#print (tail,head),d.result[i], self.HMM.G.edgeWeights[0][(tail,head)] 
-
+                if transition_probabilities.sum==0:
+                    key_list=transition_probabilities.keys()
+                    for key in key_list:
+                        transition_probabilities[key]=1.0/len(key_list)
+                e=ProbEditorBasics.emission_data(transition_probabilities)
+                d = ProbEditorDialogs.emission_dialog(self,
+                                                      e,
+                                                      "trans. probs from %d" % tail)
+                # write back normalized probabilities
+                for key in transition_probabilities.keys():
+                    head = int(key[3:])
+                    self.HMM.G.edgeWeights[0][(tail,head)]=transition_probabilities[key]/transition_probabilities.sum
 
 	    else: # We have a vertex
 		v = self.FindVertex(event)
 		if v != None and self.HMM.G.NrOfVertexWeights() > 0:
-		    weights = ()
-		    intFlag = ()
-		    label = ()
-		    count = self.HMM.G.NrOfVertexWeights()
-		    for i in xrange(count):
-			weights = weights + (self.HMM.G.vertexWeights[i][v],)
-			intFlag = intFlag + (0,)
-			label = label + ("symbol %d" % i,)
+                    import ProbEditorBasics
+                    import ProbEditorDialogs
+                    emission_probabilities=ProbEditorBasics.ProbDict({})
+                
+                    count = self.HMM.G.NrOfVertexWeights()
+                    for i in xrange(count):
+                        weight=self.HMM.G.vertexWeights[i][v]
+                        label = "symbol_%d" % i
+                        emission_probabilities.update({label:weight})
 
-
-		    d = EditWeightsDialog(self, "Edit vertex weights %d" % v, 
-					      count, weights, intFlag, label) 
-
-		    if d.result is not None:
-			# Normalize Probabilities
-			sum = 0.0
-			for i in xrange(count):
-			    sum = sum + d.result[i]
-
-			for i in xrange(count):
-			    self.HMM.G.vertexWeights[i][v] = d.result[i] / sum
-	
+                        if emission_probabilities.sum==0:
+                            key_list=emission_probabilities.keys()
+                            for key in key_list:
+                                emission_probabilities[key]=1.0/len(key_list)
+                        e=ProbEditorBasics.emission_data(emission_probabilities)
+                        d = ProbEditorDialogs.emission_dialog(self,
+                                                              e,
+                                                              "trans. probs from %d" % tail)
+                        # write back normalized probabilities
+                        for key in emission_probabilities.keys():
+                            i = int(key[8:])
+                            self.HMM.G.vertexWeights[i][v]=emission_probabilities[key]/emission_probabilities.sum	
 
     def EditEmissions(self):
 	d = EditEmissionProbDialog(self, self.HMM.G)
