@@ -53,7 +53,9 @@ class Logger:
                 print "%s: [%s] %s" %(prefix, self.module, message)
             if exc_info:
                 exc_info = sys.exc_info()           
-                print exc_info
+                #print exc_info
+                import traceback
+                traceback.print_exc(file=sys.stdout) # Prettier output
             
     def info(self, message):
         self.log(message,"INFO")

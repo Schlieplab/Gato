@@ -250,7 +250,10 @@ class GraphDisplay:
     def ShowGraph(self, G, graphName):	
 	""" Display graph G name graphName. Currently we assume that for 
 	    the embedding (x,y) of every vertex  < x < 1000 and 0 < y < 1000
-	    holds """
+	    holds.
+
+            NOTE: We need both a proper embedding and a labelling
+            XXX: Fix (Randomize embedding, identity labeling if none given """
 	self.G          = G
 	self.embedding  = G.embedding # Assuming 0 < x < 1000 and 0 < y < 1000
 	self.Labeling   = G.labeling
