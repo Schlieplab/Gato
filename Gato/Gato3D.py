@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.2
+#!/usr/bin/env python2.3
 ################################################################################
 #
 #       This file is part of Gato (Graph Animation Toolbox) 
@@ -9,7 +9,7 @@
 #	author: Alexander Schliep (schliep@molgen.mpg.de)
 #
 #       Copyright (C) 1998-2004, Alexander Schliep, Winfried Hochstaettler and 
-#       ZAIK/ZPR, Universitaet zu Koeln
+#       Copyright 1998-2001 ZAIK/ZPR, Universitaet zu Koeln
 #                                   
 #       Contact: schliep@molgen.mpg.de, wh@zpr.uni-koeln.de             
 #
