@@ -154,7 +154,6 @@ class Dialog(tkSimpleDialog.Dialog):
 #----------------------------------------------------------------------
 def CompleteEdges(G,n,direction):
     Edges=[]
-
     for i in range(0,n):
 	source=G.vertices[i]
 	for j in range(i+1,n):   

@@ -116,6 +116,41 @@ from tkMessageBox import showwarning
 
 from DataStructures import Stack
 
+"""
+def center(G):
+
+    # Floyd-Algorithm
+    INFTY=9999999
+    dist={}
+    for v in G.vertices:
+	for w in G.vertices:
+	    if w in G.InOutNeighbors(v):
+		dist[v,w]=1
+	    elif v==w: 
+		dist[v,w]=0
+	    else:
+		dist[v,w]=INFTY
+
+    for u in G.vertices:
+	for v in G.vertices:
+	    for w in G.vertices:		
+		if dist[v,u]+dist[u,w]<dist[v,w]:
+		    dist[v,w]=dist[v,u]+dist[u,w]
+
+    max1=INFTY
+    center=G.vertices[0]
+    for u in G.vertices:
+	max2=0
+	for v in G.vertices:
+	    if dist[u,v]>max2:
+		max2=dist[u,v]
+	if max2<max1: 
+	    center=u
+	    max1=max2
+
+    return center
+"""
+
 class TreeLayoutDialog(tkSimpleDialog.Dialog):
 
     def __init__(self, master):
@@ -127,7 +162,8 @@ class TreeLayoutDialog(tkSimpleDialog.Dialog):
         self.resizable(0,0)
         
         self.root=StringVar()
-        self.root.set("1")
+	self.root.set("1")
+        #self.root.set(center(self.G))
         label = Label(master, text="root (1-%i) :" %self.G.Order(), anchor=W)
         label.grid(row=0, column=0, padx=0, pady=2, sticky="w")
         entry=Entry(master, width=6, exportselection=FALSE,textvariable=self.root)
@@ -144,7 +180,6 @@ class TreeLayoutDialog(tkSimpleDialog.Dialog):
 	radio=Radiobutton(master, text="horizontal", variable=self.orientation,
 			  value="horizontal")
 	radio.grid(row=1, column=2, padx=2, pady=2, sticky="w") 
-
 
     def validate(self):
         try: 
