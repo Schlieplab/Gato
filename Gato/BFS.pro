@@ -14,6 +14,25 @@
 #
 ################################################################################
 
+breakpoints = []
+interactive = []
+graphDisplays = 1
+about = """<HTML>
+<HEAD>
+<TITLE>Breadth-First-Search</TITLE>
+</HEAD>
+<BODY>
+
+This algorithm traverses a graph in breadth-first
+order.
+
+</BODY></HTML>
+"""
+
+
+
+
+
 pickCallback = lambda v, a=A: A.SetVertexAnnotation(v,"source")
 
 #self.NeededProperties({'pMist':1})

@@ -28,7 +28,7 @@ DOCDIR        = $(GATODIR)/pub/Documentation
 
 # Tools
 
-PERL          = /vol/gnu/bin/perl
+PERL          = /zpr/gnu/bin/perl
 RM            = /usr/bin/rm -rf 
 
 VERSIONIZE    = $(PERL) -pi -e "s/_VERSION_/$(VERSION)/" 
