@@ -24,6 +24,9 @@ import whrandom
 import re 
 import regsub
 import string
+import StringIO
+import tokenize
+
 from Tkinter import *
 from tkFileDialog import askopenfilename, asksaveasfilename
 from tkMessageBox import askokcancel, showerror, askyesno
@@ -82,6 +85,16 @@ class AlgoWin(Frame):
     def __init__(self, parent=None):
 	Frame.__init__(self,parent)
 	Splash = SplashScreen(self.master)
+
+	self.algoFontBase = "Courier 10"
+	self.keywordsList = [
+	    "del", "from", "lambda", "return",
+	    "and", "elif", "global", "not", "try",
+	    "break", "else", "if", "or", "while",
+	    "class", "except", "import", "pass",
+	    "continue", "finally", "in", "print",
+	    "def", "for", "is", "raise"]
+
 
 	# Create widgets
 	self.pack()
@@ -247,16 +260,35 @@ class AlgoWin(Frame):
 				     padx=3, pady=3,
 				     background="white", wrap='none',
 				     width=15, height=30,
-				     #font="Courier 10 bold" XXX
+				     font=self.algoFontBase
 				     )
 	self.algoText.pack(expand=1, fill=BOTH)
 	borderFrame.pack(side=TOP, expand=1, fill=BOTH)
+
+	# GUI-related tags
 	self.algoText.tag_config('Interactive', foreground='#009900',background="#E5E5E5")
 	self.algoText.tag_config('Break',       foreground='#ff0000',background="#E5E5E5")
 	self.algoText.tag_config('Blue',        foreground='#0000ff')
 	self.algoText.tag_config('Active',      background='#bbbbff')
+	
+	# syntax highlighting tags
+	self.algoText.tag_config('keyword', font=self.algoFontBase + " bold")
+	self.algoText.tag_config('string',  font=self.algoFontBase + " italic")
+	self.algoText.tag_config('comment', font=self.algoFontBase + " italic")
+	self.algoText.tag_config('identifier',font=self.algoFontBase + " bold")
+# 	self.algoText.tag_config('keyword', foreground='#00AAAA', 
+# 			     font=self.algoFontBase + " bold")
+# 	self.algoText.tag_config('string', foreground='#009900')
+# 	self.algoText.tag_config('comment', foreground='#FF0000', 
+# 			     font=self.algoFontBase + " italic")
+# 	self.algoText.tag_config('identifier', foreground='#0000FF')
+	
+
 	self.algoText.bind("<ButtonRelease>", self.handleMouse)
-	self.algoText['state'] = DISABLED 
+	self.algoText['state'] = DISABLED  
+
+	
+
 
     def OpenSecondaryGraphDisplay(self):
 	""" Pops up a second graph window """
@@ -320,6 +352,22 @@ class AlgoWin(Frame):
 	for l in lines:
 	    self.tagLine(l, tag)
 
+    def tokenEater(self, type, token, (srow, scol), (erow, ecol), line):
+	#print "%d,%d-%d,%d:\t%s\t%s" % \
+	#     (srow, scol, erow, ecol, type, repr(token))
+
+	if type == 1:    # Name 
+	    if token in self.keywordsList:
+		self.algoText.tag_add('keyword','%d.%d' % (srow, scol),
+				      '%d.%d' % (erow, ecol))
+	elif type == 3:  # String
+	    self.algoText.tag_add('string','%d.%d' % (srow, scol),
+				  '%d.%d' % (erow, ecol))
+	elif type == 39: # Comment
+	    self.algoText.tag_add('comment','%d.%d' % (srow, scol),
+				  '%d.%d' % (erow, ecol))
+
+
     ############################################################
     #
     # Menu Commands
@@ -351,6 +399,11 @@ class AlgoWin(Frame):
 
 	    self.tagLines(self.algorithm.GetInteractiveLines(), 'Interactive')
 	    self.tagLines(self.algorithm.GetBreakpointLines(), 'Break')
+
+	    # Syntax highlighting
+	    tokenize.tokenize(StringIO.StringIO(self.algorithm.GetSource()).readline, 
+			      self.tokenEater)
+	    
 
 	    if self.algorithm.ReadyToStart():
 		self.buttonStart['state'] = NORMAL 
