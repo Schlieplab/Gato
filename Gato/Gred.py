@@ -38,7 +38,7 @@ from GatoGlobals import *
 import GatoGlobals # Needed for help viewer.XXX
 from Graph import Graph
 from DataStructures import EdgeWeight, VertexWeight
-from GraphUtil import OpenCATBoxGraph, OpenGMLGraph, SaveCATBoxGraph, WeightedGraphInformer
+from GraphUtil import OpenCATBoxGraph, OpenGMLGraph, OpenDotGraph, SaveCATBoxGraph, WeightedGraphInformer
 from GraphEditor import GraphEditor
 from Tkinter import *
 import tkFont
@@ -548,8 +548,8 @@ class SAGraphEditor(GraphEditor, Frame):
     def OpenGraph(self):	
 	file = askopenfilename(title="Open Graph",
 			       defaultextension=".cat",
-			       filetypes = [  ("Gato", ".cat")
-					     #,("GML", ".gml")
+			       filetypes = [("Gato", ".cat"),
+                                            ("Dot", ".dotted")
 					     #,("Graphlet", ".let")
 					   ]
 			       )
@@ -564,6 +564,8 @@ class SAGraphEditor(GraphEditor, Frame):
 		G = OpenCATBoxGraph(file)
 	    elif e == 'gml':
 		G = OpenGMLGraph(file)
+	    elif e == 'dotted':
+		G = OpenDotGraph(file)
 	    else:
                 log.error("Unknown extension %s" % e)
 
@@ -606,6 +608,14 @@ class SAGraphEditor(GraphEditor, Frame):
 
 	    self.RegisterGraphInformer(WeightedGraphInformer(G,"weight"))
 	    self.ShowGraph(G,self.graphName)
+
+     	    if e == 'dotted': # Show annotations
+                for v in G.Vertices():
+                    self.SetVertexAnnotation(v,self.G.vertexAnnotation[v])
+                for e in G.Edges():
+                    self.SetEdgeAnnotation(e[0],e[1],self.G.edgeAnnotation[e])
+               
+            
 	    self.SetTitle("Gred _VERSION_ - " + self.graphName)
 
 
