@@ -922,7 +922,8 @@ class AlgorithmDebugger(bdb.Bdb):
 	    if line in self.GUI.breakpoints:
 		self.GUI.mode = 2
 	    self.GUI.GUI.ShowActive(line)
-	    self.interaction(frame, None)	
+	    # TO Avoid multiple steps in def line of called fun
+            #self.interaction(frame, None)	
 	    self.doTrace = 0
 	else:
 	    pass
@@ -943,7 +944,8 @@ class AlgorithmDebugger(bdb.Bdb):
 	frame.f_locals['__return__'] = return_value
 	#print '--Return--'
 	#self.doTrace = 0 #YYY
-	self.interaction(frame, None)
+	# TO Avoid multiple steps in return line of called fun
+	#self.interaction(frame, None)
 
  
     def user_exception(self, frame, (exc_type, exc_value, exc_traceback)):
