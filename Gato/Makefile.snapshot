@@ -11,8 +11,8 @@
 
 # Vars
 
-VERSION       = 0.91A
-DATE          = 10/9/1999
+VERSION       = 0.91E
+DATE          = 10/10/1999
 DISTNAME      = Gato
 DISTNAMEMAC   = $(DISTNAME)-Mac
 DISTNAMEDOC   = $(DISTNAME)-Doc
@@ -87,7 +87,7 @@ PHONY:
 	# Create Mac-version
 	cd $(EXECDIR); cp -f *.py *.alg *.pro *.cat *.txt *.gif $(MACDIR)
 	#cd $(EXECDIR); cp -f *.py *.txt *.gif $(MACDIR)
-	$(MACIFY) $(MACDIR)/*.py $(MACDIR)/*.txt #$(MACDIR)/*.alg $(MACDIR)/*.pro $(MACDIR)/*.cat 
+	$(MACIFY) $(MACDIR)/*.py $(MACDIR)/*.txt $(MACDIR)/*.alg $(MACDIR)/*.pro $(MACDIR)/*.cat 
 	chmod 644 $(MACDIR)/*.*
 	chgrp -f catbox $(MACDIR)/*
 	$(RM) $(WWWDIR)/$(DISTNAMEMAC)-$(VERSION).tar

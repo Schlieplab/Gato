@@ -22,6 +22,7 @@ from GatoGlobals import *
 from GatoUtil import orthogonal
 from DataStructures import Point2D, VertexLabeling, EdgeLabeling
 import os
+import colorsys
 
 class ZoomVar(StringVar):
     """ *Internal* helper class to have TK update variable correspoding
@@ -286,7 +287,10 @@ class GraphDisplay:
 	    labeling """
         x = (self.embedding[v].x * self.zoomFactor)  / 100.0
 	y = (self.embedding[v].y * self.zoomFactor)  / 100.0
-	# Label in vertex	
+	# To make label more readable on darker vertices we change colors
+	# depending on brightness
+	#
+	# XXX Note: we assume that the defaults are reasonable 
 	dl = self.canvas.create_text(x, y, anchor="center", justify="center", 
 				       text=self.Labeling[v], fill=cLabelDefault,
 				       tag="labels")
@@ -481,8 +485,25 @@ class GraphDisplay:
     #
     def SetVertexColor(self, v, color):
 	""" Change color of v to color. No error checking! """
+	rgb_color = self.winfo_rgb(self.GetVertexColor(v))
+	# Tk has 16 bits per color 
+	hls_color = colorsys.rgb_to_hls(rgb_color[0] / 65536.0, 
+					rgb_color[1] / 65536.0, 
+					rgb_color[2] / 65536.0)
+	lightness =  hls_color[1]
+	if lightness < 0.4: 
+	    self.canvas.itemconfig( self.drawLabel[v], fill=cLabelDefaultInverted)
+	else:
+	    self.canvas.itemconfig( self.drawLabel[v], fill=cLabelDefault)
 	self.canvas.itemconfig( self.drawVertex[v], fill=color)
 	self.update()
+
+
+    def GetVertexColor(self,v):
+	""" Return the color of v """
+	dv = self.drawVertex[v]
+	return self.canvas.itemconfig(dv, "fill")[4]
+
 
     def SetAllVerticesColor(self,color,graph=None):
 	""" Change the color of all vertices to 'color' at once 

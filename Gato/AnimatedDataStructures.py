@@ -166,14 +166,16 @@ class AnimatedVertexLabeling(VertexLabeling):
 	- cInitial if val = 0,None,gInfinity
 	- "blue" else """
 
-    def __init__(self, theAnimator):
-	""" theAnimator will usually be the GraphDisplay(Frame/Toplevel) """
+    def __init__(self, theAnimator, initial=0):
+	""" theAnimator will usually be the GraphDisplay(Frame/Toplevel) 
+            initial is the value to cause coloring in cInitial """
 	VertexLabeling.__init__(self)
 	self.Animator = theAnimator
+	self.initial=initial
 
     def __setitem__(self, v, val):
 	VertexLabeling.__setitem__(self, v, val)
-	if val == 0 or val == None or val == gInfinity:
+	if val == self.initial or val == None or val == gInfinity:
 	    self.Animator.SetVertexColor(v,cInitial)
 	else:
 	    self.Animator.SetVertexColor(v,"blue") #cVisited)

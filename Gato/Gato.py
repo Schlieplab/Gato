@@ -936,7 +936,6 @@ class Algorithm:
 
 	    options['about'] = text[left:right]
 	except:
-	    print "Boom in ReadPrologOptions"
 	    pass
 
 	return options

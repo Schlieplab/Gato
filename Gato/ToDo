@@ -4,7 +4,8 @@ Einordnen:
 
 * VertexLabel in weiss, wenn Knoten dunkel (alle Farben < 128 ???)
 
-* MouseUp ohne MouseDown vorher ignorieren (Tk-Problem?)
+* MouseUp ohne MouseDown vorher ignorieren (Tk-Problem? nur unter 
+  Windooze ?)
 
 * Sortieren Algorithmen/Graphen Kapitelweise
 

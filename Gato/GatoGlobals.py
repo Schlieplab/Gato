@@ -36,6 +36,7 @@ cVertexDefault    = "red"
 cVertexBlink      = "black"
 cEdgeDefault      = "black"
 cLabelDefault     = "black"
+cLabelDefaultInverted = "white"
 cLabelBlink       = "green"
 
 cInitial          = "green"
