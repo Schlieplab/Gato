@@ -96,6 +96,20 @@ class Graph:
 	self.invAdjLists[id] = []
 	return id
 
+    def DeleteVertex(self, v):
+        """ Delete the vertex v and its incident edges """
+	outVertices = self.OutNeighbors(v)[:] # Need a copy here
+	inVertices = self.InNeighbors(v)[:]
+	for w in outVertices:
+	    self.DeleteEdge(v,w)
+	for w in inVertices:
+	    if w != v: # We have already deleted loops
+		self.DeleteEdge(w,v)
+ 	self.vertices.remove(v)
+        #self.adjLists[v] = None
+        #self.invAdjLists[v] = None 
+        # XXX Should clean up all other stuff too ...
+
 
     def AddEdge(self,tail,head):
 	""" Add an edge (tail,head). Returns nothing
@@ -148,7 +162,7 @@ class Graph:
 	if self.directed == 1:	
 	    return head in self.adjLists[tail]
 	else: 
-	    return head in self.adjLists[tail] or tail in self.adjLists[head]
+	    return (head in self.adjLists[tail]) or (tail in self.adjLists[head])
 
 
     def Neighborhood(self,v):
@@ -395,7 +409,11 @@ class SubGraph(Graph):
 	    self.adjLists[tail].append(head)
 	    self.invAdjLists[head].append(tail)
 	    self.size = self.size + 1
-	    self.totalWeight =  self.totalWeight + self.superGraph.edgeWeights[0][(tail,head)]
+            try:
+                w = self.superGraph.edgeWeights[0][(tail,head)]
+            except KeyError:
+                w = 0.0 # XXX we dont have w weight for the edge. Make totalWeight configurable/subclass
+	    self.totalWeight += w
 	    
 	except (KeyError, NoSuchVertexError, NoSuchEdgeError):
 	    raise NoSuchEdgeError
