@@ -636,7 +636,7 @@ class FlowWrapper:
 
         flow = FlowWrapper(G,A,R,RA,G.edgeWeights[0],R.edgeWeights[0],G.vertexWeights[0])
     """
-    def __init__(self,  G, GA, R, RA, flow, res, excess=None, cost=None):
+    def __init__(self,  G, GA, R, RA, flow, res, excess=None):
         self.G      = G
         self.GA     = GA
         self.R      = R
@@ -645,7 +645,6 @@ class FlowWrapper:
         self.cap    = copy.deepcopy(res)
         self.res    = res
         self.excess = excess
-        self.cost   = cost
 	if self.excess == None:        ## if no startup excess set all to zero
             self.excess = {}
 	    for v in self.G.vertices:
