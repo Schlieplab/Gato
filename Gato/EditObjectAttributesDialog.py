@@ -154,7 +154,10 @@ class TkPopupSelector:
         return self.pop2value[self.popupvalue.get()]
 
     def set(self, value):
-        self.popupvalue.set(self.value2pop[value])
+        try:
+            self.popupvalue.set(self.value2pop[value])
+        except:
+            self.popupvalue.set(self.pop2value.keys()[0]) # XXX first value as default       
 
     def select(self):    
         # Cant choose invalid value with popup
@@ -194,7 +197,7 @@ class EditObjectAttributesDialog(tkSimpleDialog.Dialog):
 
         attr = object.__dict__[attr_name]
         attr_type = type(attr)
-        print attr_name, attr_type, attr.__dict__, object.__dict__
+        #print attr_name, attr_type, attr.__dict__, object.__dict__
 
         widget = None
         default = isinstance(attr, WithDefault) # has a WithDefault mixin
@@ -254,7 +257,7 @@ class EditObjectAttributesDialog(tkSimpleDialog.Dialog):
 	
         for attr_name in self.edit.keys():
             try:
-                print attr_name, self.edit[attr_name].get(), type(self.edit[attr_name].get())
+                #print attr_name, self.edit[attr_name].get(), type(self.edit[attr_name].get())
                 
                 # In python 2.2 we can subclass attributes and add a validate method
                 # to attributes
@@ -269,10 +272,10 @@ class EditObjectAttributesDialog(tkSimpleDialog.Dialog):
 		return 0
         
         # Everything is valid => set values
-        print "before typed_assign", self.object.__dict__
+        #print "before typed_assign", self.object.__dict__
         for attr_name in self.edit.keys():            
             self.object.__dict__[attr_name] = typed_assign(self.object.__dict__[attr_name], self.edit[attr_name].get())
-        print "after typed_assign", self.object.__dict__
+        #print "after typed_assign", self.object.__dict__
            
 	return 1
 

@@ -40,6 +40,8 @@ import xml.dom.minidom
 import EditObjectAttributesDialog
 from EditObjectAttributesDialog import EditObjectAttributesDialog, ValidatingString, ValidatingInt, ValidatingFloat, PopupableInt, Probability, DefaultedInt, DefaultedString
 
+from MapEditor import MapEditor
+
 def typed_assign(var, val):
     result = type(var)(val)
     result.__dict__ = copy.copy(var.__dict__)
@@ -47,6 +49,32 @@ def typed_assign(var, val):
 
 def listFromCSV(s, type):
     return map(type,string.split(s,','))
+
+def csvFromList(list, perRow = None):
+    if perRow == None:
+        return string.join(map(str,list), ', ')
+    else:
+        result = ""
+        for start in xrange(0, len(list), perRow):
+            result += string.join(map(str,list[start:start+perRow]), ', ') + ',\n'
+        return result[0:len(result)-2]
+
+def writeContents(XMLDoc, XMLNode, data):
+    contents = XMLDoc.createTextNode("%s" % data)
+    XMLNode.appendChild(contents)
+
+def writeData(XMLDoc, XMLNode, dataKey, dataValue):
+    data = XMLDoc.createElement("data")
+    data.setAttribute('key', "%s" % dataKey)
+    contents = XMLDoc.createTextNode("%s" % dataValue)
+    data.appendChild(contents)
+    XMLNode.appendChild(data)
+
+def writeXMLData(XMLDoc, XMLNode, dataKey, XMLData):
+    data = XMLDoc.createElement("data")
+    data.setAttribute('key', "%s" % dataKey)
+    data.appendChild(XMLData)
+    XMLNode.appendChild(data)
 
 class DOM_Map:
     def __init__(self):
@@ -86,8 +114,18 @@ class DOM_Map:
             else:
                 self.addCode(symbolCode, symbolName)
                 
-    def toDom(self):
-        return None
+    def toDOM(self, XMLDoc, XMLNode):
+        XMLNode.setAttribute('hmm:low', "%s" % self.low())
+        XMLNode.setAttribute('hmm:high', "%s" % self.high())
+        map = XMLDoc.createElement("map")  
+        for key in self.name.keys():
+            symbol = XMLDoc.createElement("symbol")
+            symbol.setAttribute('code', "%s" % key)
+            if self.hasDesc:
+                symbol.setAttribute('desc', "%s" % self.desc[key])
+            writeContents(XMLDoc, symbol, "%s" % self.name[key])
+            map.appendChild(symbol)
+        XMLNode.appendChild(map)
    
 
 class DiscreteHMMAlphabet(DOM_Map):
@@ -104,6 +142,15 @@ class DiscreteHMMAlphabet(DOM_Map):
         else:
             print "DiscreteHMMAlphabet wrong type %s" % XMLNode.getAttribute("hmm:type") 
 
+    def toDOM(self, XMLDoc, XMLNode):
+        hmmalphabet = XMLDoc.createElement("hmm:alphabet")
+        hmmalphabet.setAttribute('hmm:type', 'discrete')
+        DOM_Map.toDOM(self, XMLDoc, hmmalphabet)
+        XMLNode.appendChild(hmmalphabet)
+
+    def size(self):
+        return len(self.name.keys())
+
     
 class HMMClass(DOM_Map):
     def __init__(self):
@@ -113,6 +160,28 @@ class HMMClass(DOM_Map):
         """Take dom subtree representing a <hmm:class></hmm:class> element"""
         self.initialize()
         self.symbolsFromDom(XMLNode)
+
+    def toDOM(self, XMLDoc, XMLNode):
+        hmmclass = XMLDoc.createElement("hmm:class")   
+        DOM_Map.toDOM(self, XMLDoc, hmmclass)
+        XMLNode.appendChild(hmmclass)
+
+    def edit(self, master):        
+        mapedit = MapEditor(master, [self.name, self.desc], ['code','name','desc'], [3,5,35])
+        print mapedit.result
+        if mapedit.result != None:
+            
+            new_keys = []
+            for (code_str, name, desc) in mapedit.result:
+                code = int(code_str)
+                self.name[code] = name
+                self.desc[code] = desc
+                new_keys.append(code)
+            
+            for key in self.name.keys():
+                if key not in new_keys:
+                    del self.name[key] 
+                    del self.desc[key]
 
     
 class HMMState:
@@ -186,20 +255,47 @@ class HMMState:
                                    float(pos.attributes['y'].nodeValue))
                 
             elif  dataKey == 'emissions':
-                print dataKey, "\"%s\"" % dataValue
-                data.normalize()
-                dataValue = data.firstChild.nodeValue
-                if dataValue == None:
-                    self.emissions = [] # XXX Can happen for tied states
-                else:
-                    self.emissions = listFromCSV(dataValue, types.FloatType)
+                # collect all strings from childnodes
+                dataValue = ""
+                for child in data.childNodes:
+                    dataValue += child.nodeValue
+                self.emissions = listFromCSV(dataValue, types.FloatType)
+                #print self.emissions
                     
             else:
                 print "HMMState.fromDOM: unknown key %s of value %s" % (dataKey, dataValue)
         
 
-class HMM:
-    
+    def toDOM(self, XMLDoc, XMLNode):
+        node = XMLDoc.createElement("node")
+        node.setAttribute('id', "%s" % self.id)
+
+        # Mandatory elems
+        writeData(XMLDoc, node, 'label', self.label)
+        writeData(XMLDoc, node, 'class', self.state_class)
+        writeData(XMLDoc, node, 'initial', self.initial)
+        pos = self.itsHMM.G.embedding[self.index]
+        pos_elem = XMLDoc.createElement("pos")
+        pos_elem.setAttribute('x', "%s" % pos.x)
+        pos_elem.setAttribute('y', "%s" % pos.y)
+        writeXMLData(XMLDoc, node, 'ngeom', pos_elem)
+
+        if not self.order.useDefault:
+            writeData(XMLDoc, node, 'order', self.order)
+
+        if not self.tiedto.useDefault:
+            writeData(XMLDoc, node, 'tiedto', self.tiedto)
+        else:
+            if not self.order.useDefault and self.order > 0:
+                writeData(XMLDoc, node, 'emissions', csvFromList(self.emissions,
+                                                                 self.itsHMM.hmmAlphabet.size()))
+            else:
+                writeData(XMLDoc, node, 'emissions', csvFromList(self.emissions))
+            
+        XMLNode.appendChild(node)
+
+
+class HMM:    
     def __init__(self, XMLFileName = None):
 
  	self.G = Graph()
@@ -220,6 +316,12 @@ class HMM:
         if XMLFileName != None:
             self.OpenXML(XMLFileName)
 
+
+    def AddState(self, v):
+        state = HMMState(v, self)
+        self.state[v] = state
+        
+
     def fromDOM(self, XMLNode):
         
         self.hmmClass.fromDOM(XMLNode.getElementsByTagName("hmm:class")[0]) # One class!
@@ -235,7 +337,6 @@ class HMM:
 
             self.G.embedding[i] = state.pos
             self.G.labeling[i] = "%s\n%s" % (state.id, state.label) # XXX Hack Aaaargh!
-
 
         edges = XMLNode.getElementsByTagName("edge")
         for edge in edges:
@@ -253,112 +354,103 @@ class HMM:
             self.G.AddEdge(i, j)
             self.G.edgeWeights[0][(i,j)] = p
 
+    def toDOM(self, XMLDoc, XMLNode):
+        graphml = XMLDoc.createElement("graphml")
+        XMLNode.appendChild(graphml)
 
+        self.hmmClass.toDOM(XMLDoc, graphml)
+        self.hmmAlphabet.toDOM(XMLDoc, graphml) 
+
+        graph = XMLDoc.createElement("graph")
+        for s in self.state:
+            self.state[s].toDOM(XMLDoc, graph)
+
+        for e in self.G.Edges():
+            edge_elem = XMLDoc.createElement("edge")
+            edge_elem.setAttribute('source', "%s" % e[0])
+            edge_elem.setAttribute('target', "%s" % e[1])
+            writeData(XMLDoc, edge_elem, 'prob', self.G.edgeWeights[0][e])
+            graph.appendChild(edge_elem)
+            
+        graphml.appendChild(graph)
 
     def OpenXML(self, fileName):
-
         dom = xml.dom.minidom.parse(fileName)
         assert dom.documentElement.tagName == "graphml"   
         self.fromDOM(dom)
         dom.unlink()
 
-##        self.hmmAlphabet = gml.hmmAlphabet
-
-##        # Nr of Symbols:
-##        self.nrOfSymbols = gml.hmmAlphabet.high - gml.hmmAlphabet.low + 1
-##        for i in xrange(self.nrOfSymbols):
-##            self.G.vertexWeights[i] = VertexWeight(self.G)
-
-##        # Adding vertices
-##        #
-##        # XXX We assume we have label, initial, pos
-##        for n in gml.graph.nodes:
-##            i = self.G.AddVertex()
-##            self.index[n.id] = i
-##            self.id[i] = n.id
-##            self.G.labeling[i] = "%s\n%s" % (n.id, n.label) # XXX Hack Aaaargh!
-##            self.Pi.append(n.initial)
-##            self.G.embedding[i] = Point2D(float(n.ngeom.x),float(n.ngeom.y))
-##            for j in xrange(self.nrOfSymbols):
-##                #print n.id, i, j
-##                self.G.vertexWeights[j][i] = n.emissions[j]
-            
-##        # Adding Edges
-##        for e in gml.graph.edges:
-##            i = self.index[e.source]
-##            j = self.index[e.target]
-##            #print i,j
-##            self.G.AddEdge(i, j)
-##            self.G.edgeWeights[0][(i,j)] = e.prob            
-
-
+    def WriteXML(self, fileName):
+        doc = xml.dom.minidom.Document()
+        self.toDOM(doc, doc)
+        file = open(fileName, 'w')
+        file.write(doc.toprettyxml())
+        file.close()
+        doc.unlink()
 
     def SaveAs(self, fileName):
-        return
-	file = open(fileName, 'w')
+        self.WriteXML(fileName)
+	#file = open(fileName, 'w')
    
 
 
 
-class EditEmissionProbDialog(tkSimpleDialog.Dialog):
+##class EditEmissionProbDialog(tkSimpleDialog.Dialog):
 
-    def __init__(self, master, G):
-	self.G = G
-	tkSimpleDialog.Dialog.__init__(self, master, "Edit emission probabilities")
+##    def __init__(self, master, G):
+##	self.G = G
+##	tkSimpleDialog.Dialog.__init__(self, master, "Edit emission probabilities")
   
-    def body(self, master):
-	self.resizable(0,0)	
+##    def body(self, master):
+##	self.resizable(0,0)	
 
-	label = Label(master, text="Vertex", anchor=W)
-	label.grid(row=0, column=0, padx=4, pady=3)
+##	label = Label(master, text="Vertex", anchor=W)
+##	label.grid(row=0, column=0, padx=4, pady=3)
 
-	n = self.G.NrOfVertexWeights()
-	self.entry = {}
+##	n = self.G.NrOfVertexWeights()
+##	self.entry = {}
 
-	for j in xrange(n):
-	    label = Label(master, text="%d" % j, anchor=W)
-	    label.grid(row=0, column=j+1, padx=4, pady=3)
+##	for j in xrange(n):
+##	    label = Label(master, text="%d" % j, anchor=W)
+##	    label.grid(row=0, column=j+1, padx=4, pady=3)
 	    
-	i = 0
-	for v in self.G.vertices:
-	    label = Label(master, text=self.G.labeling[v], anchor=W)
-	    label.grid(row=i+1, column=0, padx=2, pady=1, sticky="e")
+##	i = 0
+##	for v in self.G.vertices:
+##	    label = Label(master, text=self.G.labeling[v], anchor=W)
+##	    label.grid(row=i+1, column=0, padx=2, pady=1, sticky="e")
  
-	    for j in xrange(n):
-		self.entry[(v,j)] = Entry(master, width=6, exportselection=FALSE)
-		self.entry[(v,j)].insert(0,"%1.3f" % self.G.vertexWeights[j][v])
-		self.entry[(v,j)].grid(row=i+1, column=j+1, padx=2, pady=1)
+##	    for j in xrange(n):
+##		self.entry[(v,j)] = Entry(master, width=6, exportselection=FALSE)
+##		self.entry[(v,j)].insert(0,"%1.3f" % self.G.vertexWeights[j][v])
+##		self.entry[(v,j)].grid(row=i+1, column=j+1, padx=2, pady=1)
 
-	    i = i + 1  
+##	    i = i + 1  
 
 
-    def validate(self):
-	
-	for k in self.entry.keys():
-	    try:
-		val = string.atof(self.entry[k].get())
-		#if val < 0.0 or val > 1.0:
-	        #   raise ValueError
-	    except ValueError:
-		m = "Please enter a floating point number for probability of %d emitting %d" % (k[0],k[1]) 
-		tkMessageBox.showwarning("Invalid Value", m, parent=self)
-		self.entry[k].selection_range(0,"end")
-		self.entry[k].focus_set()
-		return 0
+##    def validate(self):
+##	for k in self.entry.keys():
+##	    try:
+##		val = string.atof(self.entry[k].get())
+##		#if val < 0.0 or val > 1.0:
+##	        #   raise ValueError
+##	    except ValueError:
+##		m = "Please enter a floating point number for probability of %d emitting %d" % (k[0],k[1]) 
+##		tkMessageBox.showwarning("Invalid Value", m, parent=self)
+##		self.entry[k].selection_range(0,"end")
+##		self.entry[k].focus_set()
+##		return 0
 	    
-	for v in self.G.vertices:
-	    sum = 0.0
-	    for i in xrange(self.G.NrOfVertexWeights()):
-		sum = sum + string.atof(self.entry[(v,i)].get())
+##	for v in self.G.vertices:
+##	    sum = 0.0
+##	    for i in xrange(self.G.NrOfVertexWeights()):
+##		sum = sum + string.atof(self.entry[(v,i)].get())
 
-	    for i in xrange(self.G.NrOfVertexWeights()):
-		if sum < 0.000001: # Uniform distribution
-		    self.G.vertexWeights[i][v] = 1.0 / self.G.NrOfVertexWeights()
-		else:
-		    self.G.vertexWeights[i][v] = string.atof(self.entry[(v,i)].get()) / sum
-
-
-	return 1
+##	    for i in xrange(self.G.NrOfVertexWeights()):
+##		if sum < 0.000001: # Uniform distribution
+##		    self.G.vertexWeights[i][v] = 1.0 / self.G.NrOfVertexWeights()
+##		else:
+##		    self.G.vertexWeights[i][v] = string.atof(self.entry[(v,i)].get()) / sum
+##	return 1
 
 class HMMEditor(SAGraphEditor):
 
@@ -484,7 +576,8 @@ class HMMEditor(SAGraphEditor):
 	
 	self.graphMenu = Menu(self.menubar, tearoff=0)
 	self.graphMenu.add_command(label='Edit HMM', command=self.EditHMM)
-	self.graphMenu.add_command(label='Edit Emissions', command=self.EditEmissions)
+	self.graphMenu.add_command(label='Edit Class label', command=self.EditClassLabel)
+	#self.graphMenu.add_command(label='Edit Emissions', command=self.EditEmissions)
 	self.graphMenu.add_command(label='Edit Prior', command=self.EditPrior)
 	self.graphMenu.add_separator()
 	self.graphMenu.add_checkbutton(label='Grid', 
@@ -610,17 +703,22 @@ class HMMEditor(SAGraphEditor):
                     if state.order > 0:
                         print "Ooops. Cant edit higher order states"
                         return
-
-                    print state.emissions
+                    
+                    if state.tiedto != '':
+                        msg = "The emission parameters of state %s you attempted to edit are tied to those of state %s." %  (state.id, state.tiedto)
+                        #print "Note:", msg
+                        if not askokcancel("Edit Tied State", msg + "Edit those of state %s instead?" % state.tiedto):
+                            return
+                        else:
+                            state = self.HMM.state[self.HMM.id2index[state.tiedto]]
+                        
+                    #print state.emissions
                     
                     emission_probabilities = ProbEditorBasics.ProbDict({})
 
                     for code in self.HMM.hmmAlphabet.name.keys():
                         label = self.HMM.hmmAlphabet.name[code]
                         weight = state.emissions[code]
-
-                        print label, weight
-                        
                         emission_probabilities.update({label:weight})
                         
                     # Normalize ... should be member function
@@ -650,48 +748,44 @@ class HMMEditor(SAGraphEditor):
                 # We only show the label out of the editable items
                 self.HMM.G.labeling[v] = "%s\n%s" % (self.HMM.state[v].id, self.HMM.state[v].label) # XXX Hack Aaaargh!
                 self.UpdateVertexLabel(v, 0)
+                self.HMM.id2index[self.HMM.state[v].id] = v
+
 
     def EditHMM(self):
         d = EditObjectAttributesDialog(self, self.HMM, self.HMM.editableAttr['HMM'])
 
-    def EditEmissions(self):
-	d = EditEmissionProbDialog(self, self.HMM.G)
-
+    def EditClassLabel(self):
+        self.HMM.hmmClass.edit(self)
+        
     def EditPrior(self):
 	if self.HMM.G.Order() == 0:
 	    return
         
-        pi_keys = self.HMM.Pi.keys()
-	if len(pi_keys) == 0: # No prior yet, set uniform
-            u = 1.0 / (self.HMM.G.Order() - 1)
-            for id in self.HMM.G.vertices:
-                self.HMM.Pi[id] = EditObjectAttributesDialog.ValidatingFloat(u)
-        elif len(pi_keys) < self.HMM.G.Order(): # States have been added ... add a corresponding number of '0's
-            for id in self.HMM.G.vertices:
-                if id not in pi_keys:
-                    self.HMM.Pi[id] = EditObjectAttributesDialog.ValidatingFloat(0.0)
-
         emission_probabilities = ProbEditorBasics.ProbDict({})
-        for i in xrange(self.HMM.G.Order()):
-            state = self.HMM.G.vertices[i]           
-            label = "state %s" % state # XXX Ughhhhh! Must correspond to int(key[6:])
-            weight = self.HMM.Pi[state]
+        for state in self.HMM.state.values():
+            label = state.id
+            weight = state.initial
             emission_probabilities.update({label:weight})
 
         e = ProbEditorBasics.emission_data(emission_probabilities)
         d = ProbEditorDialogs.emission_dialog(self, e, "initial probabilities")
+        u = 1.0 / len(emission_probabilities.keys())
+        
         if d.success():
             # write back normalized probabilities
             for key in emission_probabilities.keys():
-                state = int(key[6:])
-                self.HMM.Pi[state] = emission_probabilities[key] / emission_probabilities.sum
+                state = self.HMM.state[self.HMM.id2index[key]]
+                if emission_probabilities.sum == 0.0:
+                    state.initial = typed_assign(state.initial, u)
+                else:
+                    state.initial = typed_assign(state.initial,
+                                                 emission_probabilities[key] / emission_probabilities.sum)
                 
                 
-    def AddVertex(self,x,y):
-	v = GraphDisplay.AddVertex(self, x, y)
-	n = self.HMM.G.NrOfVertexWeights()
-	for i in xrange(n):
-	    self.HMM.G.vertexWeights[i][v] = 1.0 / n
+    def AddVertexCanvas(self,x,y):
+	v = GraphDisplay.AddVertexCanvas(self, x, y)
+        print "AddVertex at ",x,y
+        self.HMM.AddState(v)
 	
 	
 
