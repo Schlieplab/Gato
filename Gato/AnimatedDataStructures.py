@@ -388,6 +388,39 @@ class AnimatedVertexQueue(Queue):
 	    self.Animator.SetVertexFrameWidth(self.lastRemoved,gVertexFrameWidth)
             self.lastRemoved = None
 
+class AnimatedVertexPriorityQueue(PriorityQueue):    
+    """ Visualizes status of vertices in relation to the PriorityQueue by
+        coloring them
+
+	- cOnQueue if they are in the queue
+	- cRemovedFromQueue if they have been on the queue and were
+	  removed """
+
+    def __init__(self, theAnimator, colorOn=cOnQueue, colorOff=cRemovedFromQueue):
+	""" theAnimator will usually be the GraphDisplay(Frame/Toplevel) """
+	PriorityQueue.__init__(self)
+	self.Animator = theAnimator
+	self.ColorOn = colorOn
+	self.ColorOff = colorOff
+	self.lastRemoved = None
+
+    def Insert(self,value,sortKey):
+        PriorityQueue.Insert(self,value,sortKey)
+	self.Animator.SetVertexColor(value, self.ColorOn)
+
+    def DecreaseKey(self,value,newSortKey):
+        PriorityQueue.Insert(self,value,newSortKey)
+        self.Animator.BlinkVertex(value)
+
+    def DeleteMin(self):
+        v = PriorityQueue.DeleteMin(self)
+	self.Animator.SetVertexColor(v, self.ColorOff)
+	if self.lastRemoved is not None:
+	    self.Animator.SetVertexFrameWidth(self.lastRemoved,gVertexFrameWidth)
+	self.Animator.SetVertexFrameWidth(v,6)
+	self.lastRemoved = v 
+	return v
+        
 
 class AnimatedVertexStack(Stack):
     """ Visualizes status of vertices in relation to the Stack by
@@ -427,22 +460,22 @@ class AnimatedVertexStack(Stack):
             self.lastRemoved = None
 
 
-class AnimatedPriorityQueue(PriorityQueue):
-    def __init__(self, theAnimator, color=cVisited):
-	""" theAnimator will usually be the GraphDisplay(Frame/Toplevel) """
-	self.Animator = theAnimator
-        self.color = color        
-        PriorityQueue.__init__(self)
+##class AnimatedPriorityQueue(PriorityQueue):
+##    def __init__(self, theAnimator, color=cVisited):
+##	""" theAnimator will usually be the GraphDisplay(Frame/Toplevel) """
+##	self.Animator = theAnimator
+##        self.color = color        
+##        PriorityQueue.__init__(self)
 
-    def Insert(self,value,sortKey):
-        # XXX For compat. to AnimatedVertexSet (yuk)
-        PriorityQueue.Insert(self,value,sortKey)
+##    def Insert(self,value,sortKey):
+##        # XXX For compat. to AnimatedVertexSet (yuk)
+##        PriorityQueue.Insert(self,value,sortKey)
 
-    def DeleteMin(self):
-        """ Return and delete minimal value with minimal sortKey from queue. """
-	v = PriorityQueue.DeleteMin(self)
- 	self.Animator.SetVertexColor(v,self.color)
-        return v
+##    def DeleteMin(self):
+##        """ Return and delete minimal value with minimal sortKey from queue. """
+##	v = PriorityQueue.DeleteMin(self)
+## 	self.Animator.SetVertexColor(v,self.color)
+##        return v
        
     
 

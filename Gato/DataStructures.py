@@ -320,7 +320,7 @@ class PriorityQueue:
 
     def DecreaseKey(self,value,newSortKey):
         self.pq[value] = newSortKey
-        
+
     def Clear(self):
         del self.pq
         self.pq = PQImplementation()

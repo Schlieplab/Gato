@@ -327,7 +327,7 @@ class AlgoWin(Frame):
 	self.algoText.tag_config('identifier', font=bf)
 
     def SetFromConfig(self):
-	c = self.config.get
+	c = self.config.get # Shortcut to accessor
 	self.SetAlgorithmFont(c('algofont'), int(c('algofontsize')))
 	self.algoText.config(fg=c('algofg'), bg=c('algobg'))
 	self.algoText.tag_config('Interactive', 

@@ -542,7 +542,7 @@ class SAGraphEditor(GraphEditor, Frame):
 	    elif e == 'gml':
 		G = OpenGMLGraph(file)
 	    else:
-                log.error("Unknown extension %s" % s)
+                log.error("Unknown extension %s" % e)
 
 	    if not self.gridding:
 		self.graphMenu.invoke(self.graphMenu.index('Grid'))	
@@ -806,10 +806,11 @@ class Start:
 ################################################################################
 if __name__ == '__main__':
 
+
 ##    globals()['gVertexRadius'] = 12
 ##    globals()['gVertexFrameWidth'] = 0
 ##    globals()['gEdgeWidth'] = 2
-##    cVertexDefault = '#000099'
+    GatoGlobals.cVertexDefault = '#000099'
 ##    globals()['cEdgeDefault'] = '#999999'
 ##    globals()['cLabelDefault'] = 'white'
 
