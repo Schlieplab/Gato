@@ -28,12 +28,16 @@ class ZoomVar(StringVar):
     """ *Internal* helper class to have TK update variable correspoding
         to pop-up state """
 
-    def __init__(self, graphDisplay):
+    def __init__(self, graphDisplay,initialValue):
 	self.graphDisplay = graphDisplay
 	StringVar.__init__(self)
+	StringVar.set(self,initialValue)
 
     def set(self, value):
-	self.graphDisplay.Zoom(value)
+	try:
+	    self.graphDisplay.Zoom(value)
+	except:
+	    None
 	return StringVar.set(self,value)
 
 
@@ -92,27 +96,42 @@ class GraphDisplay:
 	factor = zoomFactor[percent] / self.zoomFactor	    
 	self.zoomFactor = zoomFactor[percent]
 	#if factor != 1:
-	try:
-	    bb = self.canvas.bbox("all") # Bounding box of all elements on canvas
-	    width = bb[0]
-	    height = bb[1]
-	    self.canvas.scale("all", width, height, factor, factor)
-	    bb = self.canvas.bbox("all") # Bounding box of all elements on canvas
-	    xmove = max(-bb[0],0)
-	    ymove = max(-bb[1],0)
-	    self.canvas.move("all", xmove, ymove)
-	    self.zoomTranslation = Point2D(xmove, ymove)
-	    bb = self.canvas.bbox("all") # Bounding box of all elements on canvas
-	    self.canvas.config(scrollregion=(0,0,bb[2],bb[3]))
-	    # Scroll s.t. bounding box starte in upper left corner
-	    bb = self.canvas.bbox("all") # Bounding box of all elements on canvas
-	    self.canvas.xview("moveto",float(bb[0])/float(gPaperHeight))
-	    self.canvas.yview("moveto",float(bb[1])/float(gPaperWidth))
+	#try:
+	bb = self.canvas.bbox("all") # Bounding box of all elements on canvas
+	width = bb[0]
+	height = bb[1]
+	self.canvas.scale("all", width, height, factor, factor)
+	bb = self.canvas.bbox("all") # Bounding box of all elements on canvas
+	xmove = max(-bb[0],0)
+	ymove = max(-bb[1],0)
+	self.canvas.move("all", xmove, ymove)
+	self.zoomTranslation = self.GetCanvasTranlation()
+	print "self.zoomTranslation = ",self.zoomTranslation.x,self.zoomTranslation.y
+	bb = self.canvas.bbox("all") # Bounding box of all elements on canvas
+	self.canvas.config(scrollregion=(0,0,bb[2],bb[3]))
+	# Scroll s.t. bounding box starte in upper left corner
+	self.canvas.xview("moveto",float(bb[0])/float(gPaperHeight))
+	self.canvas.yview("moveto",float(bb[1])/float(gPaperWidth))
 
-	    if doUpdate:
-		self.update()
-	except: # To surpress error when Initialising ZoomVar
-	    return None
+	if doUpdate:
+	    self.update()
+	#except: # To surpress error when Initialising ZoomVar
+        #   return None
+
+    def GetCanvasTranlation(self):
+	""" *Internal* For coordinate conversion the following holds:
+            
+            embedding * scale + translation = canvas 
+	    
+	    This methods computes the translation part. """
+	try:    
+	    v = self.drawVertex.keys()[0] # Get any draw vertex
+	    canvas = self.VertexPosition(v)
+	    x_trans  = self.embedding[v].x * self.zoomFactor / 100.0 - canvas.x
+	    y_trans  = self.embedding[v].y * self.zoomFactor / 100.0 - canvas.y
+	    return Point2D(x_trans,y_trans)
+	except IndexError:
+	    return Point2D(0,0)
 
     def CanvasToEmbedding(self,x,y):
 	""" *Internal* Convert canvas coordinates to embedding """
@@ -122,8 +141,8 @@ class GraphDisplay:
 	
     def EmbeddingToCanvas(self,x,y):
 	""" *Internal* Convert Embedding coordinates to Canvas """
-	x = (x * self.zoomFactor) / 100.0 + self.zoomTranslation.x
-	y = (y * self.zoomFactor) / 100.0 + self.zoomTranslation.y
+	x = x * self.zoomFactor / 100.0 + self.zoomTranslation.x
+	y = y * self.zoomFactor / 100.0 + self.zoomTranslation.y
 	return x,y
 	
 
@@ -133,8 +152,8 @@ class GraphDisplay:
 	self.infoframe = Frame(self, relief=FLAT)
 	self.infoframe.pack(side=BOTTOM, fill=X)
 	
-	self.zoomValue = ZoomVar(self)
-	self.zoomValue.set('100 %')
+	self.zoomValue = ZoomVar(self,'100 %')
+	# XXX self.zoomValue.set('100 %')
 	self.zoomMenu = OptionMenu(self.infoframe, self.zoomValue, 
 				  ' 50 %',' 75 %', '100 %','125 %','150 %')
 	self.zoomMenu.config(height=1)
@@ -202,9 +221,12 @@ class GraphDisplay:
 	    # Honor whatever zoom the user has choosen
 	    oldZoom = "%3d %c" % (int(self.zoomFactor), '%')
 	    self.zoomFactor = 100.0
+
+	self.zoomTranslation = Point2D(0,0)
 	    
 	self.CreateDrawItems()
-	self.Zoom(oldZoom, 0) # Delay update
+	#self.Zoom(oldZoom, 0) # Delay update
+	self.Zoom(oldZoom) # Dont Delay update
 	self.hasGraph = 1
 	self.SetTitle("Gato - " + graphName)
 	self.update()
@@ -232,7 +254,9 @@ class GraphDisplay:
 		self.drawEdges[(v,w)] = self.CreateDrawEdge(v,w)
 
 	for v in self.G.vertices:
-	    self.drawVertex[v] = self.CreateDrawVertex(v)
+	    x = self.embedding[v].x * self.zoomFactor / 100.0
+	    y = self.embedding[v].y * self.zoomFactor / 100.0
+	    self.drawVertex[v] = self.CreateDrawVertex(v,x,y)
 
 	for v in self.G.vertices:
 	    self.drawLabel[v] = self.CreateDrawLabel(v)
@@ -931,6 +955,7 @@ class GraphDisplay:
 	    x = 0.5 * (coords[2] - coords[0]) + coords[0]
 	    y = 0.5 * (coords[3] - coords[1]) + coords[1]
 	except: # Vertex is not on the canvas yet
+	    print "XXX VertexPosition excepted: No draw Vertex ?"
 	    x,y = self.EmbeddingToCanvas(self.embedding[v].x,self.embedding[v].y)
 
 	return Point2D(x,y)

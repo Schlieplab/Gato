@@ -61,6 +61,9 @@ class VertexLabeling:
     def __getitem__(self, v):
 	return self.label[v]
 
+    def keys(self):
+	return self.label.keys()
+
     def QDefined(self,v):
 	return v in self.label.keys()
 

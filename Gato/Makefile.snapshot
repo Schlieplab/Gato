@@ -11,8 +11,8 @@
 
 # Vars
 
-VERSION       = 0.95
-DATE          = 11/07/2000
+VERSION       = 0.96
+DATE          = 02/14/2001
 DISTNAME      = Gato
 DISTNAMEMAC   = $(DISTNAME)-Mac
 DISTNAMEDOC   = $(DISTNAME)-Doc
@@ -36,7 +36,7 @@ PERL          = /zpr/gnu/bin/perl
 RM            = /usr/bin/rm -rf 
 
 #DOCTOOL       = doc.py Gato
-DOCTOOL       = /homes/schliep/bin/HappyDoc/happydoc.py -t Gato -d $(DOCSRCDIR)
+DOCTOOL       = happydoc -t Gato -d $(DOCSRCDIR)
 
 VERSIONIZE    = $(PERL) -pi -e "s/_VERSION_/$(VERSION)/" 
 DATEIZE       = $(PERL) -pi -e "s|_BUILDDATE_|$(DATE)|" 
