@@ -37,7 +37,8 @@ class RandomizeEdgeWeightsDialog(tkSimpleDialog.Dialog):
 
         If user cancelled, self.result is None """
 
-    def __init__(self, master, nrOfWeights):
+    def __init__(self, master, nrOfWeights, keepFirst):
+	self.keepFirst = keepFirst
 	self.nrOfWeights = nrOfWeights
 	tkSimpleDialog.Dialog.__init__(self, master, "Randomize Edge Weights")
 	
@@ -45,30 +46,51 @@ class RandomizeEdgeWeightsDialog(tkSimpleDialog.Dialog):
 	self.resizable(0,0)
 	label = Label(master, text="Weight", anchor=W)
 	label.grid(row=0, column=0, padx=4, pady=3, sticky="e")
-	label = Label(master, text="Minimum", anchor=W)
+	label = Label(master, text="Randomize", anchor=W)
 	label.grid(row=0, column=1, padx=4, pady=3, sticky="e")
-	label = Label(master, text="Maximum", anchor=W)
+	label = Label(master, text="Minimum", anchor=W)
 	label.grid(row=0, column=2, padx=4, pady=3, sticky="e")
+	label = Label(master, text="Maximum", anchor=W)
+	label.grid(row=0, column=3, padx=4, pady=3, sticky="e")
 
 	self.minimum = []
 	self.maximum = []
+	self.check = []
+	self.checkVar = []
 
 	for i in xrange(self.nrOfWeights):
-	    #self.check[i] = 
-	    self.minimum.append(Entry(master, width=6, exportselection=FALSE))
-	    self.minimum[i].insert(0,"0")
-	    self.minimum[i].grid(row=i+1, column=1, padx=4, pady=3, sticky="e")
-	    self.maximum.append(Entry(master, width=6, exportselection=FALSE))
-	    self.maximum[i].insert(0,"100")
-	    self.maximum[i].grid(row=i+1, column=2, padx=4, pady=3, sticky="e")
+	    label = Label(master, text="%d" % (i+1), anchor=W)
+	    label.grid(row=i+1, column=0, padx=4, pady=3, sticky="e")
+	    
+	    if (i == 0 and not self.keepFirst) or i > 0:
+		self.checkVar.append(IntVar())
+		self.check.append(Checkbutton(master, 
+					      variable=self.checkVar[i]))
+		self.check[i].select()
+		self.check[i].grid(row=i+1, column=1, padx=4, pady=3, sticky="e")
+		
+		self.minimum.append(Entry(master, width=6, exportselection=FALSE))
+		self.minimum[i].insert(0,"0")
+		self.minimum[i].grid(row=i+1, column=2, padx=4, pady=3, sticky="e")
+		
+		self.maximum.append(Entry(master, width=6, exportselection=FALSE))
+		self.maximum[i].insert(0,"100")
+		self.maximum[i].grid(row=i+1, column=3, padx=4, pady=3, sticky="e")
+	    else:
+		self.checkVar.append(None)
+		self.check.append(None)
+		self.minimum.append(None)
+		self.maximum.append(None)
 	    
     def validate(self):
 	self.result = []
  	for i in xrange(self.nrOfWeights):
-	    self.result.append( (1, 
-				 string.atof(self.minimum[i].get()),
-				 string.atof(self.maximum[i].get())))
-
+	    if self.checkVar[i] != None:
+		self.result.append( (self.checkVar[i].get(), 
+				     string.atof(self.minimum[i].get()),
+				     string.atof(self.maximum[i].get())))
+	    else:
+		self.result.append( (0, None, None))
 # 	    try:
 # 		minimun = string.atof(self.minimum[i].get())
 # 	    except ValueError:
@@ -378,7 +400,7 @@ class SAGraphEditor(GraphEditor, Frame):
 
     def RandomizeEdgeWeights(self):
 	count = len(self.G.edgeWeights.keys())
-	d = RandomizeEdgeWeightsDialog(self, count) 
+	d = RandomizeEdgeWeightsDialog(self, count, self.G.QEuclidian()) 
 	if d.result is None:
 	    return
 
