@@ -1,0 +1,46 @@
+Software:
+Python-2.2.1 (http://www.python.org)
+Installer-5b3.1 (http://www.mcmillan-inc.com)
+
+Versionen:
+tcl/tk Version 8.3
+
+Python vorbereiten:
+configure:
+Python mit dynamischem Loader bauen, dabei keine zusätzlichen linker-Abhängigkeiten einbauen.
+-> ein paar Dinge rausnehmen aus pyconfig.h
+/* Define if you have the forkpty function.  */
+#define HAVE_FORKPTY 1
+/* Define if you have the openpty function.  */
+#define HAVE_OPENPTY 1
+-> in config.status kann dann auch -lutil entfernt werden...
+s%@LIBS@%-ldl  -lpthread -lutil%g
+-> in Makefile Makefile.pre auch die variable LIBS anpassen
+-> Setup.local editieren, insbesondere für _tkinter nur -ltcl -ltk als Linkargumente
+-> expat statisch an pyexpat.so linken...
+
+make:
+anschließend mit strip Symbole von den Binaries entfernen:
+strip python
+strip build/lib.linux-i586-2.2/*.so
+
+make install
+
+Installer vorbereiten:
+Patches:
+In carchive.py das Modul strop elemenieren.
+In Build.py::TOC die Methoden __iadd__ und __isub__ einfügen
+In Build.py::COLLECT die Aufrufe  shutil.copy2 durch eine entsprechende update Methode ersetzen
+In bindep.py::excludes um die Pfade /usr/X11R6/lib u.ä. erweitern.
+
+cd sources/linux
+~/my/python2.2 Make.py
+make
+cd ../..
+~/my/python2.2 Configure.py
+
+Gato:
+cd Gato
+~/my/python2.2 ~/my/Installer/Build.py Installer/Gato.spec
+
+Fertig...
