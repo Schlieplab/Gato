@@ -24,6 +24,65 @@ from GatoGlobals import *
 
 from tkFileDialog import askopenfilename, asksaveasfilename
 from tkMessageBox import askokcancel
+import tkSimpleDialog 
+import whrandom
+import string
+
+
+class RandomizeEdgeWeightsDialog(tkSimpleDialog.Dialog):
+    """ self.result is an array of triples (randomize, min, max)
+        where 'randomize' indicates whether to randomize weight i
+	and min and max give the range the random values are drawn
+        from.
+
+        If user cancelled, self.result is None """
+
+    def __init__(self, master, nrOfWeights):
+	self.nrOfWeights = nrOfWeights
+	tkSimpleDialog.Dialog.__init__(self, master, "Randomize Edge Weights")
+	
+    def body(self, master):
+	self.resizable(0,0)
+	label = Label(master, text="Weight", anchor=W)
+	label.grid(row=0, column=0, padx=4, pady=3, sticky="e")
+	label = Label(master, text="Minimum", anchor=W)
+	label.grid(row=0, column=1, padx=4, pady=3, sticky="e")
+	label = Label(master, text="Maximum", anchor=W)
+	label.grid(row=0, column=2, padx=4, pady=3, sticky="e")
+
+	self.minimum = []
+	self.maximum = []
+
+	for i in xrange(self.nrOfWeights):
+	    #self.check[i] = 
+	    self.minimum.append(Entry(master, width=6, exportselection=FALSE))
+	    self.minimum[i].insert(0,"0")
+	    self.minimum[i].grid(row=i+1, column=1, padx=4, pady=3, sticky="e")
+	    self.maximum.append(Entry(master, width=6, exportselection=FALSE))
+	    self.maximum[i].insert(0,"100")
+	    self.maximum[i].grid(row=i+1, column=2, padx=4, pady=3, sticky="e")
+	    
+    def validate(self):
+	self.result = []
+ 	for i in xrange(self.nrOfWeights):
+	    self.result.append( (1, 
+				 string.atof(self.minimum[i].get()),
+				 string.atof(self.maximum[i].get())))
+
+# 	    try:
+# 		minimun = string.atof(self.minimum[i].get())
+# 	    except ValueError:
+# 		minimum = "Please enter an floating point number for minimum of weight %d." % (i+1) 
+# 	    try:
+# 		maximum = string.atof(self.maximum[i].get())
+# 	    except ValueError:
+# 		m = "Please enter an floating point number for maximum of weight %d." % (i+1) 
+# 	    try:
+# 		maximum = string.atof(self.maximum[i].get())
+# 	    except ValueError:
+# 		m = "Please enter an floating point number for maximum of weight %d." % (i+1) 
+	return 1
+		
 
 
 
@@ -131,7 +190,16 @@ class SAGraphEditor(GraphEditor, Frame):
 				 underline=0)
 	self.master.configure(menu=self.menubar)
 
-   
+  	# Add extras menu
+	self.extrasMenu = Menu(self.menubar, tearoff=0)
+	self.extrasMenu.add_command(label='Randomize Layout',
+				  command=self.RandomizeLayout)
+	self.extrasMenu.add_separator()
+	self.extrasMenu.add_command(label='Randomize Edge Weights',
+				  command=self.RandomizeEdgeWeights)
+	self.menubar.add_cascade(label="Extras", menu=self.extrasMenu, 
+				 underline=0)
+ 
     ############################################################
     #
     # Menu Commands
@@ -281,6 +349,8 @@ class SAGraphEditor(GraphEditor, Frame):
 	else:
 	    if 2 not in k:
 		self.G.edgeWeights[2] = EdgeWeight(self.G, initialWeight)  
+		if self.G.edgeWeights[0].QInteger():
+		    self.G.edgeWeights[2].Integerize()
 	    
 	if n == 1:
 	    if 1 in k:
@@ -288,12 +358,38 @@ class SAGraphEditor(GraphEditor, Frame):
 	else:
 	    if 1 not in k:
 		self.G.edgeWeights[1] = EdgeWeight(self.G, initialWeight)  
+		if self.G.edgeWeights[0].QInteger():
+		    self.G.edgeWeights[1].Integerize()
 
 
 
     #----- Tools Menu callbacks
     def ChangeTool(self):
 	self.SetEditMode(self.toolVar.get())
+
+    #----- Extras Menu callbacks
+
+    def RandomizeLayout(self):
+	for v in self.G.vertices:
+	    self.MoveVertex(v, 
+			    whrandom.randint(10,990),
+			    whrandom.randint(10,990), 
+			    1)
+
+    def RandomizeEdgeWeights(self):
+	count = len(self.G.edgeWeights.keys())
+	d = RandomizeEdgeWeightsDialog(self, count) 
+	if d.result is None:
+	    return
+
+	for e in self.G.Edges():
+	    for i in xrange(count):
+		if d.result[i][0] == 1:
+		    val = whrandom.uniform(d.result[i][1],d.result[i][2])
+		    if self.G.edgeWeights[i].QInteger():
+			self.G.edgeWeights[i][e] = round(int(val))
+		    else:
+			self.G.edgeWeights[i][e] = val
 
 
 ################################################################################

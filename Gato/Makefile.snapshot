@@ -15,6 +15,7 @@ VERSION       = 0.87
 DATE          = 3/24/1999
 DISTNAME      = Gato
 DISTNAMEMAC   = $(DISTNAME)-Mac
+DISTNAMEDOC   = $(DISTNAME)-Doc
 
 # Directories
 
@@ -126,6 +127,7 @@ PHONY:
 	$(DATEIZE) $(WWWDIR)/build.info
 	$(PERL) -pi -e 's/_DISTNAME_/$(DISTNAME)-$(VERSION).tar/' $(WWWDIR)/build.info
 	$(PERL) -pi -e 's/_DISTNAMEMAC_/$(DISTNAMEMAC)-$(VERSION).tar/' $(WWWDIR)/build.info
+	$(PERL) -pi -e 's/_DISTNAMEDOC_/$(DISTNAMEDOC)-$(VERSION).tar/' $(WWWDIR)/build.info
 	# update lizenz.txt
 	cp -f Lizenz.txt  $(WWWDIR)
 	chmod 444 $(WWWDIR)/Lizenz.txt
@@ -138,7 +140,7 @@ PHONY:
 	chmod -f g+r $(DOCDIR)/*
 	chmod -f a+r $(DOCDIR)/*
 	chgrp -f catbox $(DOCDIR)/*
-	$(RM) $(DOCDIR)/$(DISTNAME)-$(VERSION)-Doc.tar
-	cd $(SRCDIR); tar cf $(DOCDIR)/$(DISTNAME)-$(VERSION)-Doc.tar Doc/*
-	chmod 444 $(DOCDIR)/$(DISTNAME)-$(VERSION)-Doc.tar
-	chgrp -f catbox $(DOCDIR)/$(DISTNAME)-$(VERSION)-Doc.tar
+	$(RM) $(DOCDIR)/$(DISTNAMEDOC)-$(VERSION).tar
+	cd $(SRCDIR); tar cf $(DOCDIR)/$(DISTNAMEDOC)-$(VERSION).tar Doc/*
+	chmod 444 $(DOCDIR)/$(DISTNAMEDOC)-$(VERSION).tar
+	chgrp -f catbox $(DOCDIR)/$(DISTNAMEDOC)-$(VERSION).tar

@@ -279,7 +279,7 @@ class GraphEditor(GraphDisplay):
 		count = len(self.G.edgeWeights.keys())
 		for i in xrange(count):
 		    weights = weights + (self.G.edgeWeights[i][(tail,head)],)
-		    intFlag = intFlag + (self.G.edgeWeights[0].QInteger(),)
+		    intFlag = intFlag + (self.G.edgeWeights[i].QInteger(),)
 
 		d = EditWeightsDialog(self, (tail,head), count, weights, intFlag) 
 		if d.result is not None:

@@ -664,11 +664,16 @@ class GraphDisplay:
 	return v
 
 
-    def MoveVertex(self,v,x,y):
+    def MoveVertex(self,v,x,y,doUpdate=None):
 	""" *Internal* Move vertex v to position (x,y) """ 
+	if doUpdate != None:
+	    dv = self.drawVertex[v]
+	    pos = self.VertexPosition(v)
+	    self.canvas.move(dv, x - pos[0], y - pos[1])
+	    self.canvas.move(self.drawLabel[v], x - pos[0], y - pos[1])
 	# The widget has been moved already, so no update required
 	self.embedding[v]  = Point2D((x * 100.0) / self.zoomFactor, 
-				     (y * 100.0) / self.zoomFactor)
+				     (y * 100.0) / self.zoomFactor)	    
 	# move incident edges
 	outVertices = self.G.OutNeighbors(v)[:] # Need a copy here
 	inVertices = self.G.InNeighbors(v)[:]
