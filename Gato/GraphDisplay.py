@@ -804,7 +804,7 @@ class GraphDisplay:
 				   text=annotation,
 				   fill=color)
 	    self.update()
-        self.animateEdge((tail, head), self.drawEdge[(tail,head)])
+        self.animateEdge((tail, head), self.drawEdges[(tail,head)])
 
     def UpdateVertexLabel(self, v, blink=1, color=None):
 	""" Visualize the changing of v's label. After changing G.labeling[v],
