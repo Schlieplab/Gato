@@ -186,12 +186,12 @@ class TreeLayoutDialog(tkSimpleDialog.Dialog):
         self.resizable(0,0)
         
         self.root=StringVar()
-	self.root.set("1")
+	self.root.set(self.G.vertices[0])
         #self.root.set(center(self.G))
-        label = Label(master, text="root (1-%i) :" %self.G.Order(), anchor=W)
+        label = Label(master, text="root :", anchor=W)
         label.grid(row=0, column=0, padx=0, pady=2, sticky="w")
         entry=Entry(master, width=6, exportselection=FALSE,textvariable=self.root)
-        entry.selection_range(0,1)
+        entry.selection_range(0,"end")
         entry.focus_set()
 	entry.grid(row=0,column=1, padx=2, pady=2, sticky="w")
         
@@ -208,15 +208,17 @@ class TreeLayoutDialog(tkSimpleDialog.Dialog):
     def validate(self):
         try: 
             if (string.atoi(self.root.get())<0 or 
-		string.atoi(self.root.get())>self.G.Order()):
+		string.atoi(self.root.get()) not in self.G.vertices):
                 raise rootError
             self.result=[]
             self.result.append(string.atoi(self.root.get()))
             self.result.append(self.orientation.get())
             return self.result
         except:
-           showwarning("Warning", "Please try again !")
-           return 0
+	    showwarning("Warning", 
+			"Invalid root !!!\n"
+                        "Please try again !")
+	    return 0
 
 
 def TreeCoords(G, root, orientation):
@@ -345,7 +347,8 @@ class TreeEmbedder(Embedder):
 	theGraphEditor.config(cursor="watch")
 
 	dial = TreeLayoutDialog(theGraphEditor)
-	if dial.result is None: 
+	if dial.result is None:
+	    theGraphEditor.config(cursor="")
 	    return	
 
         if TreeCoords(theGraphEditor.G, dial.result[0], dial.result[1]):
@@ -367,11 +370,11 @@ class BFSLayoutDialog(tkSimpleDialog.Dialog):
         self.resizable(0,0)
         
         self.root=StringVar()
-        self.root.set("1")
-        label = Label(master, text="root (1-%i) :" %self.G.Order(), anchor=W)
+        self.root.set(self.G.vertices[0])
+        label = Label(master, text="root :" , anchor=W)
         label.grid(row=0, column=0, padx=0, pady=2, sticky="w")
         entry=Entry(master, width=6, exportselection=FALSE,textvariable=self.root)
-        entry.selection_range(0,1)
+        entry.selection_range(0,"end")
         entry.focus_set()
 	entry.grid(row=0,column=1, padx=2, pady=2, sticky="w")
         
@@ -388,16 +391,18 @@ class BFSLayoutDialog(tkSimpleDialog.Dialog):
 
     def validate(self):
         try: 
-            if (string.atoi(self.root.get())<0
-		or string.atoi(self.root.get())>self.G.Order()):
+            if (string.atoi(self.root.get())<0 or
+		string.atoi(self.root.get()) not in self.G.vertices):
                 raise rootError
             self.result=[]
             self.result.append(string.atoi(self.root.get()))
             self.result.append(self.direction.get())
             return self.result
         except:
-           showwarning("Warning", "Please try again !")
-           return 0
+	    showwarning("Warning", 
+			"Invalid root !!!\n"
+                        "Please try again !")
+	    return 0
 
 def BFSTreeCoords(G, root, direction):
     BFSdistance = BFS(G,root,direction)[0]
@@ -440,6 +445,7 @@ class BFSTreeEmbedder(Embedder):
 
 	dial = BFSLayoutDialog(theGraphEditor)
 	if dial.result is None: 
+	    theGraphEditor.config(cursor="")
 	    return	
 
         if BFSTreeCoords(theGraphEditor.G, dial.result[0], dial.result[1]):
