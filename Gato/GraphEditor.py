@@ -113,8 +113,6 @@ class GraphEditor(GraphDisplay):
 	self.movedVertex = None
 	self.startx = None # position where MouseDown first occurred
 	self.starty = None
-	self.lastx = None # position at last MouseMove
-	self.lasty = None
 	self.gridSize = gGridSize
 	self.gridding = 0
 	self.mode = 'AddOrMoveVertex'
@@ -141,9 +139,9 @@ class GraphEditor(GraphDisplay):
 	    y = self.canvas.canvasy(event.y,self.gridSize)
 	return (x,y)
 
-    def Zoom(self,percent,doUpdate=1):
+    def Zoom(self,percent):
 	try:
-	    GraphDisplay.Zoom(self,percent,doUpdate)
+	    GraphDisplay.Zoom(self,percent)
 	    self.gridSize = (gGridSize * self.zoomFactor) / 100.0
 	except:
 	    return None
@@ -152,6 +150,7 @@ class GraphEditor(GraphDisplay):
 	""" Add additional bindings with proper callbacks to canvas  """
 	GraphDisplay.CreateWidgets(self)
 
+	Widget.bind(self.canvas, "<Motion>", self.MouseMotion)
 	Widget.bind(self.canvas, "<1>", self.MouseDown) 
         Widget.bind(self.canvas, "<B1-Motion>", self.MouseMove)
         Widget.bind(self.canvas, "<B1-ButtonRelease>", self.MouseUp) 
@@ -159,52 +158,82 @@ class GraphEditor(GraphDisplay):
         Widget.bind(self.canvas, "<B2-Motion>", self.Mouse2Move)
         Widget.bind(self.canvas, "<B2-ButtonRelease>", self.Mouse2Up) 
         Widget.bind(self.canvas, "<B3-ButtonRelease>", self.Mouse3Up)
-
+	Widget.bind(self.canvas, "<Enter>", self.CanvasEnter)
+	Widget.bind(self.canvas, "<Leave>", self.CanvasLeave)
 
 	
 
     #===== ACTIONS ==============================================================
 
+    def ShowCoords(self,event):
+        x,y = self.WindowToCanvasCoords(event)
+        v = self.FindVertex(event)
+        e = self.FindEdge(event)
+        if e!=None:
+	    infoString = "Edge (%d,%d)" % (e[0], e[1]) 
+	elif v!=None:
+	    infoString = "Vertex %d at position (%d,%d)" % (v, 
+							    self.embedding[v].x, 
+							    self.embedding[v].y)
+	elif x>=0 and y>=0:
+	    x,y = self.CanvasToEmbedding(x,y)
+            infoString = "(%d,%d)" % (x,y)
+	else:
+	    infoString = ""
+	self.UpdateInfo(infoString)
+            
+
     def AddOrMoveVertexDown(self,event):
 	v = self.FindVertex(event)
-	if v == None: 
-	    (x,y) = self.WindowToCanvasCoords(event)
-	    self.AddVertexCanvas(x,y)
+	if v == None:
+            x,y = self.WindowToCanvasCoords(event)
+	    x = max(x,0)
+	    y = max(y,0)
+            if not event.widget.find_overlapping(x,y,x,y):
+                self.AddVertexCanvas(x,y)
 	    self.movedVertex = None
 	else:
-	    self.canvas.addtag("mySel", "withtag", self.drawVertex[v])
-	    self.canvas.addtag("mySel", "withtag", self.drawLabel[v])
-	    # We want to start off with user clicking smack in middle of
-	    # vertex -- cant force him, so we fake it
-	    c = self.canvas.coords(self.drawVertex[v])
-	    # c already canvas coordinates
-	    self.lastx = (c[2] - c[0])/2 + c[0]
-	    self.lasty = (c[3] - c[1])/2 + c[1]
-	    self.movedVertex = v
-	    self.didMoveVertex = 0
+            self.canvas.addtag("mySel", "withtag", self.drawVertex[v])
+            self.canvas.addtag("mySel", "withtag", self.drawLabel[v])
+	    self.canvas.lift("mySel")
+            # We want to start off with user clicking smack in middle of
+            # vertex -- cant force him, so we fake it
+            c = self.canvas.coords(self.drawVertex[v])
+            # c already canvas coordinates
+            self.oldx = (c[2] - c[0])/2 + c[0]
+            self.oldy = (c[3] - c[1])/2 + c[1]
+            self.movedVertex = v
+            self.didMoveVertex = 0
 
 
     def AddOrMoveVertexMove(self,event):
-	x = self.canvas.canvasx(event.x)
-	y = self.canvas.canvasy(event.y)
-	self.update_idletasks()
-	try:
-	    self.canvas.move("mySel", x - self.lastx, y - self.lasty)
-	    self.lastx = x
-	    self.lasty = y
-	    self.didMoveVertex = 1
-	except:
-	    i = 1 # Need instruction after except
+	if not self.canvasleft:
+	    self.newx,self.newy = self.WindowToCanvasCoords(event)
+	    self.newx = max(self.newx,0)
+	    self.newy = max(self.newy,0)
+	    self.update_idletasks()
+	    try:
+		self.canvas.lift("mySel")
+		self.canvas.move("mySel", 
+				 self.newx - self.oldx, 
+				 self.newy - self.oldy)
+		self.oldx = self.newx
+		self.oldy = self.newy
+
+		x,y = self.CanvasToEmbedding(self.newx,self.newy)
+		infoString = "Vertex %d at position (%d,%d)" % (self.movedVertex,x,y)
+		self.UpdateInfo(infoString)
+
+		self.didMoveVertex = 1
+	    except:
+		i = 1 # Need instruction after except
 
     def AddOrMoveVertexUp(self,event):
 	if self.movedVertex != None:
-	    (x,y) = self.WindowToCanvasCoords(event)
 	    # Moving within vertex oval does not move vertex
 	    self.update_idletasks()
 	    if self.didMoveVertex:
-		self.canvas.move("mySel", x - self.lastx, y - self.lasty)
-		self.MoveVertex(self.movedVertex,x,y)
-		#self.VertexInfo(event)
+		self.MoveVertex(self.movedVertex,self.newx,self.newy)
 	    self.movedVertex = None
 	    self.canvas.dtag("mySel")
 
@@ -319,6 +348,10 @@ class GraphEditor(GraphDisplay):
 
     #===== GUI-Bindings FOR ACTIONS ================================================
 
+    def MouseMotion(self,event):
+	if self.mode == 'AddOrMoveVertex':	
+	    self.ShowCoords(event)
+
     def MouseDown(self,event):
 	if self.mode == 'AddOrMoveVertex':
 	    self.AddOrMoveVertexDown(event)
@@ -354,6 +387,12 @@ class GraphEditor(GraphDisplay):
 
     def Mouse3Up(self,event):
 	self.DeleteEdgeOrVertexUp(event)
+
+    def CanvasEnter(self,event):
+	self.canvasleft = 0
+
+    def CanvasLeave(self, event):
+	self.canvasleft = 1
 
 
 class GraphEditorFrame(GraphEditor, Frame):

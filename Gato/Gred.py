@@ -505,7 +505,8 @@ class SAGraphEditor(GraphEditor, Frame):
 					     )
 			       )
 	if file is "": 
-	    print "cancelled"
+	    pass
+	    #print "cancelled"
 	else:
 	    #print file
 	    self.fileName = file

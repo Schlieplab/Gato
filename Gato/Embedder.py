@@ -15,6 +15,7 @@
 #
 ################################################################################
 
+from GatoGlobals import *
 
 class Embedder:
     """ This class provides an abstract Embedder as
@@ -35,6 +36,7 @@ def RedrawGraph(theGraphEditor):
     for v in theGraphEditor.G.vertices:
         theGraphEditor.MoveVertex(v, theGraphEditor.G.xCoord[v],
                                   theGraphEditor.G.yCoord[v], 1)
+
 #----------------------------------------------------------------------
 import whrandom
 

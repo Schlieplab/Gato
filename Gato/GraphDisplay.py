@@ -65,7 +65,6 @@ class GraphDisplay:
 	self.label = {}  # XXX ditto for label
 
 	self.zoomFactor = 100.0 # percent
-	self.zoomTranslation = Point2D(0,0) 
 
 	self.CreateWidgets()
 	self.SetTitle("Gato - Graph")
@@ -79,69 +78,59 @@ class GraphDisplay:
 	return (gPaperWidth/2, gPaperHeight/2)
 
 
-    def Zoom(self,percent,doUpdate=1):
-	""" *Internal* Perform a zoom to specified level 
+    def Zoom(self,percent):
+	""" *Internal* Perform a zoom to specified level """
 
-            - Scale stuff (relative from center of bounding box)
-            - Move until bounding box hast positive top left corner
-            - Enlarge Scroll region so that we can see it all """
-	# Should zooming do centering the window ? Center the visible 
-	# area over the whole bb ?
 	zoomFactor = {' 50 %':50.0, 
 		      ' 75 %':75.0, 
 		      '100 %':100.0,
 		      '125 %':125.0,
 		      '150 %':150.0,
 		      '':100.0}
+
+	self.newXview = self.canvas.xview()
+	self.newYview = self.canvas.yview()
+
+	try:
+	    if (self.newXview != self.oldXview or 
+		self.newYview != self.oldYview or
+		self.zoomIn == 0):
+		self.Xview = self.newXview[0]
+		self.Yview = self.newYview[0]   
+	except:
+	    self.Xview = self.newXview[0]
+	    self.Yview = self.newYview[0] 
+
+	if zoomFactor[percent] < self.zoomFactor:
+	    self.zoomIn = 1
+	else:
+	    self.zoomIn = 0
+
 	factor = zoomFactor[percent] / self.zoomFactor	    
 	self.zoomFactor = zoomFactor[percent]
-	#if factor != 1:
-	#try:
-	bb = self.canvas.bbox("all") # Bounding box of all elements on canvas
-	width = bb[0]
-	height = bb[1]
-	self.canvas.scale("all", width, height, factor, factor)
-	bb = self.canvas.bbox("all") # Bounding box of all elements on canvas
-	xmove = max(-bb[0],0)
-	ymove = max(-bb[1],0)
-	self.canvas.move("all", xmove, ymove)
-	self.zoomTranslation = self.GetCanvasTranlation()
-	bb = self.canvas.bbox("all") # Bounding box of all elements on canvas
-	self.canvas.config(scrollregion=(0,0,bb[2],bb[3]))
-	# Scroll s.t. bounding box starte in upper left corner
-	self.canvas.xview("moveto",float(bb[0])/float(gPaperHeight))
-	self.canvas.yview("moveto",float(bb[1])/float(gPaperWidth))
+	self.canvas.scale("all", 0, 0, factor, factor)	
 
-	if doUpdate:
-	    self.update()
-	#except: # To surpress error when Initialising ZoomVar
-        #   return None
+	newWidth = (self.zoomFactor / 100.0) * float(gPaperWidth)
+	newHeight = (self.zoomFactor/ 100.0) * float(gPaperHeight)
 
-    def GetCanvasTranlation(self):
-	""" *Internal* For coordinate conversion the following holds:
-            
-            embedding * scale + translation = canvas 
-	    
-	    This methods computes the translation part. """
-	try:    
-	    v = self.drawVertex.keys()[0] # Get any draw vertex
-	    canvas = self.VertexPosition(v)
-	    x_trans  = self.embedding[v].x * self.zoomFactor / 100.0 - canvas.x
-	    y_trans  = self.embedding[v].y * self.zoomFactor / 100.0 - canvas.y
-	    return Point2D(x_trans,y_trans)
-	except IndexError:
-	    return Point2D(0,0)
+	self.canvas.config(width=newWidth,height=newHeight,
+			   scrollregion=(0,0,newWidth,newHeight))	
+	self.canvas.xview("moveto",self.Xview)
+	self.canvas.yview("moveto",self.Yview)
+
+	self.oldXview = self.canvas.xview()
+	self.oldYview = self.canvas.yview()
 
     def CanvasToEmbedding(self,x,y):
 	""" *Internal* Convert canvas coordinates to embedding """
-	x = (x - self.zoomTranslation.x) * 100.0 / self.zoomFactor  
-	y = (y - self.zoomTranslation.y) * 100.0 / self.zoomFactor
+	x = x * 100.0 / self.zoomFactor  
+	y = y * 100.0 / self.zoomFactor
 	return x,y
 	
     def EmbeddingToCanvas(self,x,y):
 	""" *Internal* Convert Embedding coordinates to Canvas """
-	x = x * self.zoomFactor / 100.0 + self.zoomTranslation.x
-	y = y * self.zoomFactor / 100.0 + self.zoomTranslation.y
+	x = x * self.zoomFactor / 100.0
+	y = y * self.zoomFactor / 100.0
 	return x,y
 	
 
@@ -178,10 +167,10 @@ class GraphDisplay:
 	# To make things more windows like, we put the canvas
         # in a separate frame	
 	borderFrame = Frame(self, relief=SUNKEN, bd=2)
-	self.canvas = Canvas(borderFrame, width="5i", height="5i", 
+	self.canvas = Canvas(borderFrame, width=gPaperWidth, height=gPaperHeight, 
 			     background="white",
-			     scrollregion=(0, 0, gPaperHeight, gPaperWidth))
-	
+			     scrollregion=(0, 0, gPaperWidth, gPaperHeight))
+
 	# Vertical scroll bar in a frame and with corner 
 	vbarFrame = Frame(borderFrame,borderwidth=0)
 	vbarFrame.pack(fill=Y, side=RIGHT)
@@ -202,9 +191,15 @@ class GraphDisplay:
 	self.canvas['xscrollcommand']  = self.canvas.hbar.set
         self.canvas.hbar['command'] = self.canvas.xview
         self.canvas.hbar.pack(side=BOTTOM, fill=X)
-	self.canvas.pack(side=TOP, expand=1, fill=BOTH)
-	borderFrame.pack(side=TOP, expand=1, fill=BOTH)
-	    
+
+	self.canvas.pack(anchor=W, side=TOP)
+	borderFrame.pack(anchor=W, side=TOP, expand=1, fill=BOTH)
+
+	self.master.geometry("500x483")
+	#print self.infoframe.cget('width')
+	#print self.infoframe.cget('height')
+
+
     def ShowGraph(self, G, graphName):	
 	""" Display graph G name graphName. Currently we assume that for 
 	    the embedding (x,y) of every vertex  < x < 1000 and 0 < y < 1000
@@ -220,11 +215,8 @@ class GraphDisplay:
 	    # Honor whatever zoom the user has choosen
 	    oldZoom = "%3d %c" % (int(self.zoomFactor), '%')
 	    self.zoomFactor = 100.0
-
-	self.zoomTranslation = Point2D(0,0)
 	    
 	self.CreateDrawItems()
-	#self.Zoom(oldZoom, 0) # Delay update
 	self.Zoom(oldZoom) # Dont Delay update
 	self.hasGraph = 1
 	self.SetTitle("Gato - " + graphName)
@@ -750,7 +742,7 @@ class GraphDisplay:
 
 
     def FindVertex(self,event):
-	""" *Internal* Given an event find the correspoding vertex """ 
+	""" *Internal* Given an event find the correspoding vertex """
 	if not event.widget.find_withtag(CURRENT):
 	    return None
 	else:
@@ -808,8 +800,6 @@ class GraphDisplay:
 	for i in xrange(0,self.G.NrOfVertexWeights()):
 	    self.G.vertexWeights[i][v] = 0
 	return v
-	
-
 
     def MoveVertex(self,v,x,y,doUpdate=None):
 	""" *Internal* Move vertex v to position (x,y) 
@@ -1031,7 +1021,7 @@ class GraphDisplay:
 		e = self.FindEdge(event)
 		if e != None:
 		    self.clickhandler('edge',e)
-
+	
 
 class GraphDisplayFrame(GraphDisplay, Frame):
     """ Provides graph display in a frame """
