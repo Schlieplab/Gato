@@ -169,7 +169,7 @@ class GraphEditor(GraphDisplay):
 	v = self.FindVertex(event)
 	if v == None: 
 	    (x,y) = self.WindowToCanvasCoords(event)
-	    self.AddVertex(x,y)
+	    self.AddVertexCanvas(x,y)
 	    self.movedVertex = None
 	else:
 	    self.canvas.addtag("mySel", "withtag", self.drawVertex[v])

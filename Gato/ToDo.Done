@@ -1,3 +1,6 @@
+
+* Gred: MoveVertex funktioniert nicht bei Zoom != 100% 
+
 - "File" menu disabling doesnt look right on Windows 
   very likely a Tk Bug. No disabling any more
 

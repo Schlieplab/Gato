@@ -398,7 +398,11 @@ class AlgoWin(Frame):
 						 ("Python Code", ".py"))
 				   )
 	if file is not "": 
-	    self.algorithm.Open(file)
+	    try:
+		self.algorithm.Open(file)
+	    except (EOFError, IOError):
+		self.HandleFileIOError("Algorithm",file)
+		return 
 
 	    self.algoText['state'] = NORMAL 
 	    self.algoText.delete('0.0', END)
@@ -411,14 +415,15 @@ class AlgoWin(Frame):
 	    # Syntax highlighting
 	    tokenize.tokenize(StringIO.StringIO(self.algorithm.GetSource()).readline, 
 			      self.tokenEater)
-	    
+
 
 	    if self.algorithm.ReadyToStart():
 		self.buttonStart['state'] = NORMAL 
 	    self.master.title("Gato _VERSION_- " + stripPath(file))
 
 	    if self.AboutAlgorithmDialog:
-		self.AboutAlgorithmDialog.Update(self.algorithm.About(), "About Algorithm")
+		self.AboutAlgorithmDialog.Update(self.algorithm.About(),"About Algorithm")
+
 
 
     def OpenGraph(self,file=""):
@@ -439,8 +444,13 @@ class AlgoWin(Frame):
 						 )
 				   )
 	    
-	if file is not "": 
-	    self.algorithm.OpenGraph(file)
+	if file is not "":
+	    try:
+		self.algorithm.OpenGraph(file)
+	    except (EOFError, IOError):
+		self.HandleFileIOError("Graph",file)
+		return 
+		
 	    if self.algorithm.ReadyToStart():
 		self.buttonStart['state'] = NORMAL 
 	    if self.AboutGraphDialog:
@@ -788,6 +798,10 @@ class AlgoWin(Frame):
 	    return self.clickResult[1]
 
 
+    def HandleFileIOError(self, fileDescription, fileName):
+	print fileDescription," file named: ",fileName, " produced an error"
+
+
 # Endof: AlgoWin ---------------------------------------------------------------
 
 
@@ -987,13 +1001,17 @@ class Algorithm:
 	input=open(file, 'r')
        	self.source = input.read()
 	input.close()
-	
+	 
 	
 	# Now read in the prolog as a module to get access to the following data
 	# Maybe should obfuscate the names ala xxx_<bla>, have one dict ?
-	input = open(os.path.splitext(self.algoFileName)[0] + ".pro", 'r')
-	options = self.ReadPrologOptions(input)
-	input.close()
+	try:
+	    input = open(os.path.splitext(self.algoFileName)[0] + ".pro", 'r')
+	    options = self.ReadPrologOptions(input)
+	    input.close()
+	except EOFError, IOError:
+	    self.GUI.HandleFileIOError("Prolog",file)
+	    return 	
 
 	try:
 	    self.breakpoints   = options['breakpoints']

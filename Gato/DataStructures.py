@@ -26,8 +26,16 @@ from GatoGlobals import *
 ################################################################################
 class Point2D:
     """ Simple Wrapper class for a point in 2D-space. Used for Graph
-        Embeddings. """
-    def __init__(self, x = 0, y = 0):
+        Embeddings.  Use: Point2D([x,y]) or Point2D(x,y) """
+    def __init__(self, x = None, y = None):	
+	if y == None:
+	    if x == None:
+		self.x = 0
+		self.y = 0
+	    else:
+		self.x = x[0]
+		self.y = x[1]
+	
 	self.x = x
 	self.y = y
 

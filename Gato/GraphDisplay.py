@@ -61,6 +61,7 @@ class GraphDisplay:
 	self.label = {}  # XXX ditto for label
 
 	self.zoomFactor = 100.0 # percent
+	self.zoomTranslation = Point2D(0,0) 
 
 	self.CreateWidgets()
 	self.SetTitle("Gato - Graph")
@@ -89,17 +90,18 @@ class GraphDisplay:
 		      '150 %':150.0,
 		      '':100.0}
 	factor = zoomFactor[percent] / self.zoomFactor	    
+	self.zoomFactor = zoomFactor[percent]
 	#if factor != 1:
 	try:
 	    bb = self.canvas.bbox("all") # Bounding box of all elements on canvas
 	    width = bb[0]
 	    height = bb[1]
 	    self.canvas.scale("all", width, height, factor, factor)
-	    self.zoomFactor = zoomFactor[percent]
 	    bb = self.canvas.bbox("all") # Bounding box of all elements on canvas
 	    xmove = max(-bb[0],0)
 	    ymove = max(-bb[1],0)
 	    self.canvas.move("all", xmove, ymove)
+	    self.zoomTranslation = Point2D(xmove, ymove)
 	    bb = self.canvas.bbox("all") # Bounding box of all elements on canvas
 	    self.canvas.config(scrollregion=(0,0,bb[2],bb[3]))
 	    # Scroll s.t. bounding box starte in upper left corner
@@ -111,6 +113,19 @@ class GraphDisplay:
 		self.update()
 	except: # To surpress error when Initialising ZoomVar
 	    return None
+
+    def CanvasToEmbedding(self,x,y):
+	""" *Internal* Convert canvas coordinates to embedding """
+	x = (x - self.zoomTranslation.x) * 100.0 / self.zoomFactor  
+	y = (y - self.zoomTranslation.y) * 100.0 / self.zoomFactor
+	return x,y
+	
+    def EmbeddingToCanvas(self,x,y):
+	""" *Internal* Convert Embedding coordinates to Canvas """
+	x = (x * self.zoomFactor) / 100.0 + self.zoomTranslation.x
+	y = (y * self.zoomFactor) / 100.0 + self.zoomTranslation.y
+	return x,y
+	
 
     def CreateWidgets(self):
 	""" *Internal* Create UI-Elements (except Frame/Toplevel) """
@@ -195,6 +210,7 @@ class GraphDisplay:
 	self.update()
 	self.DefaultInfo()
 
+
     def RegisterGraphInformer(self, Informer):
 	""" A graph informer is an object which supplies information
             about the graph, its vertices and its edges. It needs methods
@@ -265,13 +281,12 @@ class GraphDisplay:
 	self.canvas.delete("edgeAnno")
 	pass
 
-    def CreateDrawVertex(self,v):
+    def CreateDrawVertex(self,v,x=None,y=None):
 	""" *Internal* Create a draw vertex for v on the canvas. Position is
-            determined by the embedding specified """
-	# x = self.embedding[v].x  
-	# y = self.embedding[v].y
-	x = (self.embedding[v].x * self.zoomFactor)  / 100.0
-	y = (self.embedding[v].y * self.zoomFactor)  / 100.0
+            determined by the embedding unless explictely passed as x,y in
+            canvas coordinates """
+	if x == None and y == None:
+	    x,y = self.EmbeddingToCanvas(self.embedding[v].x, self.embedding[v].y)
 	d = (gVertexRadius * self.zoomFactor) / 100.0
  	dv = self.canvas.create_oval(x-d, y-d, x+d, y+d, 
 				     fill=cVertexDefault, tag="vertices",
@@ -284,22 +299,29 @@ class GraphDisplay:
     def CreateDrawLabel(self,v):
 	""" *Internal* Create a draw label for v on the canvas. Position is
             determined by the embedding specified. Text is specified by the
-	    labeling """
-        x = (self.embedding[v].x * self.zoomFactor)  / 100.0
-	y = (self.embedding[v].y * self.zoomFactor)  / 100.0
+	    labeling:  
+
+	    Call only after CreateDrawVertex() """
+	    
+        pos = self.VertexPosition(v)
 	# To make label more readable on darker vertices we change colors
 	# depending on brightness
 	#
 	# XXX Note: we assume that the defaults are reasonable 
-	dl = self.canvas.create_text(x, y, anchor="center", justify="center", 
-				       text=self.Labeling[v], fill=cLabelDefault,
-				       tag="labels")
+	dl = self.canvas.create_text(pos.x, pos.y, 
+				     anchor="center", 
+				     justify="center", 
+				     text=self.Labeling[v], 
+				     fill=cLabelDefault,
+				     tag="labels")
 	self.canvas.tag_bind(dl, "<Any-Enter>", self.VertexInfo)
 	self.label[dl] = v # XXX
         return dl
 	# Label to the bottom, to the right
 	#d = gVertexRadius
 	#return self.canvas.create_text(x+d+1, y+d+1, anchor="w", justify="left", text=v)
+
+
 
     def CreateUndirectedLoopDrawEdge(self, v, w, orientation=None):
 	""" *Internal* Create an undirected loop draw edge. v is a Point2D """
@@ -379,21 +401,8 @@ class GraphDisplay:
 	""" *Internal* Create a draw edge for (tail,head) on the canvas. Position is
             determined by the position of the vertices (or the embedding if the draw
             vertices do not exist yet)."""
-	try:
-	    t = Point2D()
-	    coords = self.canvas.coords(self.drawVertex[tail])
-	    t.x = 0.5 * (coords[2] - coords[0]) + coords[0]
-	    t.y = 0.5 * (coords[3] - coords[1]) + coords[1]
-	except:
-	   t = self.embedding[tail]
- 
-	try:
-	    h = Point2D()
-	    coords = self.canvas.coords(self.drawVertex[head])
-	    h.x = 0.5 * (coords[2] - coords[0]) + coords[0]
-	    h.y = 0.5 * (coords[3] - coords[1]) + coords[1]
-	except:
-	    h = self.embedding[head]
+	t = self.VertexPosition(tail)
+	h = self.VertexPosition(head)
 
 	if self.G.edgeWidth == None:
 	    w = gEdgeWidth
@@ -438,44 +447,42 @@ class GraphDisplay:
 		de = self.CreateUndirectedLoopDrawEdge(t,w)
 	    else:
 		de = self.CreateUndirectedDrawEdge(t,h,w)
+
 	self.edge[de] = (tail,head) # XXX
 	self.canvas.tag_bind(de, "<Any-Leave>", self.DefaultInfo)
 	self.canvas.tag_bind(de, "<Any-Enter>", self.EdgeInfo)
 	return de
 
+
     def CreateVertexAnnotation(self,v,annotation,color):
 	""" *Internal* Create a vertex annotation for v on the canvas. Position is
-            determined by the embedding specified. """
-	# Try to handle zooming ...  
-	coords = self.canvas.coords(self.drawVertex[v])
-	x = 0.5 * (coords[2] - coords[0]) + coords[0]
-	y = 0.5 * (coords[3] - coords[1]) + coords[1]
-
+            determined by the position of the corresponding draw vertex 
+            on the canvas. """
+	pos = self.VertexPosition(v)    
 	# Label to the bottom, to the right
-	da =  self.canvas.create_text(x+gVertexRadius+1, y+gVertexRadius+1, 
-				      anchor="w", justify="left", text=annotation,
-				      tag="vertexAnno",fill=color)
+	da =  self.canvas.create_text(pos.x+gVertexRadius+1, pos.y+gVertexRadius+1, 
+				      anchor="w", 
+				      justify="left", 
+				      text=annotation,
+				      tag="vertexAnno",
+				      fill=color)
         return da
+
 
     def CreateEdgeAnnotation(self,tail,head,annotation,color):
 	""" *Internal* Create an edge annotation for (tail,head) on the canvas. 
 	    Position is determined by the embedding specified. """
-	t = Point2D()
- 	coords = self.canvas.coords(self.drawVertex[tail])
-	t.x = 0.5 * (coords[2] - coords[0]) + coords[0]
-	t.y = 0.5 * (coords[3] - coords[1]) + coords[1]
-
-	h = Point2D()
- 	coords = self.canvas.coords(self.drawVertex[head])
-	h.x = 0.5 * (coords[2] - coords[0]) + coords[0]
-	h.y = 0.5 * (coords[3] - coords[1]) + coords[1]
+	t = self.VertexPosition(tail)  
+	h = self.VertexPosition(head)  
 
 	(mX,mY) = orthogonal((h.x - t.x, h.y - t.y))
 	c = gVertexRadius
 	x = t.x + .5 * (h.x - t.x) + c * mX
 	y = t.y + .5 * (h.y - t.y) + c * mY
 	# Label to the bottom, to the right
-	da =  self.canvas.create_text(x, y, anchor="center", justify="center", 
+	da =  self.canvas.create_text(x, y, 
+				      anchor="center", 
+				      justify="center", 
 				      text=annotation,
 				      tag="edgeAnno",fill=color)
         return da
@@ -507,7 +514,7 @@ class GraphDisplay:
 	dv = self.drawVertex[v]
 	return self.canvas.itemconfig(dv, "fill")[4]
 
-
+ 
     def SetAllVerticesColor(self,color,graph=None):
 	""" Change the color of all vertices to 'color' at once 
             You can also pass an induced subgraph  """
@@ -755,11 +762,10 @@ class GraphDisplay:
     # edit commands
     #
     def AddVertex(self, x, y):
-	""" *Internal* Add a new vertex at (x,y) """ 
+	""" *Internal* Add a new vertex at (x,y) 
+            NOTE: Assumes x,y to be in embedding coordinates""" 
 	v = self.G.AddVertex()
-	self.embedding[v]  = Point2D((x * 100.0) / self.zoomFactor, 
-				     (y * 100.0) / self.zoomFactor)
-	#print "Adding Vertex x,y=",x,y,"Embed=",self.embedding[v].x,self.embedding[v].y
+	self.embedding[v]  = Point2D(x,y)
 	self.Labeling[v]   = v
 	self.drawVertex[v] = self.CreateDrawVertex(v)
 	self.drawLabel[v]  = self.CreateDrawLabel(v)
@@ -767,17 +773,44 @@ class GraphDisplay:
 	    self.G.vertexWeights[i][v] = 0
 	return v
 
+    def AddVertexCanvas(self, x, y):
+	""" *Internal* Add a new vertex at (x,y) 
+            NOTE: Assumes x,y to be in canvas coordinates""" 
+	v = self.G.AddVertex()
+        embed_x, embed_y = self.CanvasToEmbedding(x,y)
+	self.embedding[v]  = Point2D(embed_x,embed_y)
+	self.Labeling[v]   = v
+	self.drawVertex[v] = self.CreateDrawVertex(v,x,y)
+	self.drawLabel[v]  = self.CreateDrawLabel(v)
+	for i in xrange(0,self.G.NrOfVertexWeights()):
+	    self.G.vertexWeights[i][v] = 0
+	return v
+	
+
 
     def MoveVertex(self,v,x,y,doUpdate=None):
-	""" *Internal* Move vertex v to position (x,y) """ 
-	if doUpdate != None:
-	    dv = self.drawVertex[v]
+	""" *Internal* Move vertex v to position (x,y) 
+            NOTE: Assumes x,y to be in canvas coordinates if 
+                  doUpdate=None and in embedding coordinates else 
+        """ 	    
+        if doUpdate == None: # User has moved drawvertex
+	    newX, newY = self.CanvasToEmbedding(x,y)
+	    self.embedding[v] = Point2D(newX, newY)
+
+	else:
+	    # Here translation of canvas does not matter, since we
+	    # move vertex relatively anyways   
 	    pos = self.VertexPosition(v)
-	    self.canvas.move(dv, x - pos[0], y - pos[1])
-	    self.canvas.move(self.drawLabel[v], x - pos[0], y - pos[1])
-	# The widget has been moved already, so no update required
-	self.embedding[v]  = Point2D((x * 100.0) / self.zoomFactor, 
-				     (y * 100.0) / self.zoomFactor)	    
+	    canvas_x,canvas_y = self.EmbeddingToCanvas(x,y)
+	    dx = canvas_x - pos.x
+	    dy = canvas_y - pos.y
+	    
+	    dv = self.drawVertex[v]
+	    self.canvas.move(dv, dx, dy)
+	    self.canvas.move(self.drawLabel[v], dx, dy)
+	    self.embedding[v] = Point2D(x,y)
+
+
 	# move incident edges
 	outVertices = self.G.OutNeighbors(v)[:] # Need a copy here
 	inVertices = self.G.InNeighbors(v)[:]
@@ -810,6 +843,8 @@ class GraphDisplay:
 	    if euclidian:
 		t = self.embedding[w]
 		self.G.edgeWeights[0][(w,v)] = sqrt((h.x - t.x)**2 + (h.y - t.y)**2)
+
+
 
 
     def DeleteVertex(self,v):
@@ -850,7 +885,7 @@ class GraphDisplay:
 		h = self.embedding[head]
 		self.G.edgeWeights[0][(tail,head)] = sqrt((h.x - t.x)**2 + (h.y - t.y)**2)
 	    else:
-		self.G.edgeWeights[0][(tail,head)] = 0
+ 		self.G.edgeWeights[0][(tail,head)] = 0
 	    for i in xrange(1,self.G.NrOfEdgeWeights()):
 		self.G.edgeWeights[i][(tail,head)] = 0
 	
@@ -891,10 +926,15 @@ class GraphDisplay:
 
     def VertexPosition(self,v):
 	""" Return the position of vertex v in canvas coordinates """
-	coords = self.canvas.coords(self.drawVertex[v])
-	x = 0.5 * (coords[2] - coords[0]) + coords[0]
-	y = 0.5 * (coords[3] - coords[1]) + coords[1]
-	return (x,y)
+	try:
+	    coords = self.canvas.coords(self.drawVertex[v])
+	    x = 0.5 * (coords[2] - coords[0]) + coords[0]
+	    y = 0.5 * (coords[3] - coords[1]) + coords[1]
+	except: # Vertex is not on the canvas yet
+	    x,y = self.EmbeddingToCanvas(self.embedding[v].x,self.embedding[v].y)
+
+	return Point2D(x,y)
+
 
     ############################################################################
     #				       
