@@ -1,13 +1,29 @@
 ################################################################################
 #
 #       This file is part of Gato (Graph Animation Toolbox) 
-#       version _VERSION_ from _BUILDDATE_. You can find more information at 
+#       version 0.96G from 04/09/2001. You can find more information at 
 #       http://www.zpr.uni-koeln.de/~gato
 #
 #	file:   AnimatedDataStructures.py
 #	author: Alexander Schliep (schliep@zpr.uni-koeln.de)
 #
-#       _COPYRIGHT_
+#       Copyright (C) 1998-2000, ZAIK/ZPR, Universität zu Köln
+#
+#       This library is free software; you can redistribute it and/or
+#       modify it under the terms of the GNU Library General Public
+#       License as published by the Free Software Foundation; either
+#       version 2 of the License, or (at your option) any later version.
+#
+#       This library is distributed in the hope that it will be useful,
+#       but WITHOUT ANY WARRANTY; without even the implied warranty of
+#       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+#       Library General Public License for more details.
+#
+#       You should have received a copy of the GNU Library General Public
+#       License along with this library; if not, write to the Free
+#       Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+#
 #
 #       This file is version $Revision$ 
 #                       from $Date$
@@ -338,20 +354,21 @@ class AnimatedVertexQueue(Queue):
 	- cRemovedFromQueue if they have been on the queue and were
 	  removed """
 
-    def __init__(self, theAnimator, color=cOnQueue):
+    def __init__(self, theAnimator, colorOn=cOnQueue, colorOff=cRemovedFromQueue):
 	""" theAnimator will usually be the GraphDisplay(Frame/Toplevel) """
 	Queue.__init__(self)
 	self.Animator = theAnimator
-	self.Color = color
+	self.ColorOn = colorOn
+	self.ColorOff = colorOff
 	self.lastRemoved = None
 
     def Append(self,v):
 	Queue.Append(self,v)
-	self.Animator.SetVertexColor(v,self.Color)
+	self.Animator.SetVertexColor(v, self.ColorOn)
 
     def Top(self):
 	v = Queue.Top(self)
-	self.Animator.SetVertexColor(v,cRemovedFromQueue)
+	self.Animator.SetVertexColor(v, self.ColorOff)
 	if self.lastRemoved is not None:
 	    self.Animator.SetVertexFrameWidth(self.lastRemoved,gVertexFrameWidth)
 	self.Animator.SetVertexFrameWidth(v,6)
@@ -360,7 +377,7 @@ class AnimatedVertexQueue(Queue):
 
     def Clear(self):
 	for v in self.contents:
-	    self.Animator.SetVertexColor(v,cRemovedFromQueue)
+	    self.Animator.SetVertexColor(v, self.ColorOff)
 	Queue.Clear(self) 
 
 
@@ -372,20 +389,21 @@ class AnimatedVertexStack(Stack):
 	- cRemovedFromQueue if they have been on the queue and were
 	  removed """
 
-    def __init__(self, theAnimator, color=cOnQueue):
+    def __init__(self, theAnimator, colorOn=cOnQueue, colorOff=cRemovedFromQueue):
 	""" theAnimator will usually be the GraphDisplay(Frame/Toplevel) """
 	Stack.__init__(self)
 	self.Animator = theAnimator
-	self.Color = color
+	self.ColorOn = colorOn
+	self.ColorOff = colorOff
 	self.lastRemoved = None
 
     def Push(self,v):
 	Stack.Push(self,v)
-	self.Animator.SetVertexColor(v,self.Color)
+	self.Animator.SetVertexColor(v, self.ColorOn)
 
     def Pop(self):
 	v = Stack.Pop(self)
-	self.Animator.SetVertexColor(v,cRemovedFromQueue)
+	self.Animator.SetVertexColor(v, self.ColorOff)
 	if self.lastRemoved is not None:
 	    self.Animator.SetVertexFrameWidth(self.lastRemoved,gVertexFrameWidth)
 	self.Animator.SetVertexFrameWidth(v,6)
@@ -394,8 +412,8 @@ class AnimatedVertexStack(Stack):
 
     def Clear(self):
 	for v in self.contents:
-	    self.Animator.SetVertexColor(v,cRemovedFromQueue)
-	Stack.Clear(self) 
+	    self.Animator.SetVertexColor(v, self.ColorOff)
+	Stack.Clear(self)
 
 
 class AnimatedVertexSet:
@@ -405,20 +423,21 @@ class AnimatedVertexSet:
 	- cVisited  if they have been in the set and were
 	  removed """
 
-    def __init__(self, theAnimator, vertexSet=None):
+    def __init__(self, theAnimator, vertexSet=None, color=cVisited):
 	""" theAnimator will usually be the GraphDisplay(Frame/Toplevel) """
 	if vertexSet == None:
 	    self.vertices = []
 	else:
 	    self.vertices = vertexSet
 	self.Animator = theAnimator
-	
+        self.color = color
+
     def Set(self, vertexSet):
 	""" Sets the set equal to a copy of vertexSet """
 	self.vertices = vertexSet[:]
-		
+
     def Remove(self, v):
-	self.Animator.SetVertexColor(v,cVisited)
+	self.Animator.SetVertexColor(v,self.color)
 	self.vertices.remove(v)
 
     def Add(self,v):
