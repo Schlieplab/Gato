@@ -73,8 +73,17 @@ def WMExtrasGeometry(window):
           else around the window 
 
         NOTE: Does not work with tk8.0 style menus, since those are
-              handled by WM (according to Tk8.1 docs) """
-    g = string.split(window.geometry(),"+") 
+              handled by WM (according to Tk8.1 docs)
+
+        NOTE: Some window managers return bad geometry definition
+              Handle in caller
+              """
+    try:
+        window.geometry() # XXX Sometimes first produced wrong results ...
+        g = string.split(window.geometry(),"+")
+    except TclError:
+        # bad geometry specifier: e.g. ... "-1949x260+1871+1"
+        return (32,32) 
     trueRootx = string.atoi(g[1]) 
     trueRooty = string.atoi(g[2])
     
@@ -82,6 +91,10 @@ def WMExtrasGeometry(window):
     rooty = window.winfo_rooty() # *WITHOUT* WM extras
     topWMExtra = abs(rooty - trueRooty) # WM adds that on top
     WMExtra    = abs(rootx - trueRootx) # and that on all other sides
+
+    # XXX KLUDGE topWMExtra,WMExtra should always be in 0...32 pixels, or?
+    topWMExtra = min(32,topWMExtra)
+    WMExtra = min(32, WMExtra)
     return (topWMExtra,WMExtra)
 
 ################################################################################
@@ -164,14 +177,17 @@ class AlgoWin(Frame):
 	# toolbar from vanishing when changing window size
 	# Packer has been running due to splash screen
 	wmExtras = WMExtrasGeometry(self.graphDisplay)
+        width = self.master.winfo_reqwidth()
+        height = self.master.winfo_reqheight()
+
+        # XXX Some WM + packer combinatios ocassionally produce absurd requested sizes
+        width = min(600, self.master.winfo_reqwidth())
+        height = min(750, self.master.winfo_reqheight())
 	if os.name == 'nt' or os.name == 'dos':
-	    self.master.minsize(self.master.winfo_reqwidth(),
-				self.master.winfo_reqheight() +
-				wmExtras[1])
+	    self.master.minsize(width, height + wmExtras[1])
 	else: # Unix & Mac 
-	    self.master.minsize(self.master.winfo_reqwidth(),
-				self.master.winfo_reqheight() +
-				wmExtras[0] + wmExtras[1])
+	    self.master.minsize(width, height + wmExtras[0] + wmExtras[1])
+
 	self.BindKeys(self.master)
 	self.BindKeys(self.graphDisplay)
 
@@ -713,8 +729,11 @@ class AlgoWin(Frame):
 	# Move AlgoWin so that the WM extras will be at 0,0 
 	# Silly enough one hast to specify the true coordinate at which
         # the window will appear
-	self.master.geometry("+%d+%d" % (pad, screenTop + pad)) 
-
+        try:
+            self.master.geometry("+%d+%d" % (pad, screenTop + pad)) 
+        except TclError:
+            log.debug("OneGraphWindow: self.master.geometry failed for +%d+%d" % (pad, screenTop + pad)) 
+            
         log.debug("OneGraphWindow: screen= (%d * %d), extras = (%d %d)" % (
             self.master.winfo_screenwidth(),
 	    self.master.winfo_screenheight(),
