@@ -196,9 +196,9 @@ class EditObjectAttributesDialog(tkSimpleDialog.Dialog):
         elif isinstance(attr, str):
 
             if default:
-                widget = TkDefaultStringEntry(master, min(32, len(attr)), attr.useDefault, attr.defaultValue)
+                widget = TkDefaultStringEntry(master, max(32, len(attr)), attr.useDefault, attr.defaultValue)
             else:
-                widget = TkStringEntry(master, min(32, len(attr)))
+                widget = TkStringEntry(master, max(32, len(attr)))
 
         elif isinstance(attr, int):
 
@@ -258,7 +258,11 @@ class EditObjectAttributesDialog(tkSimpleDialog.Dialog):
 		tkMessageBox.showwarning("Invalid Value", msg, parent=self)
                 self.edit[attr_name].select()
 		return 0
-
+        
+        # Everything is valid => set values
+        for attr_name in self.edit.keys():
+            self.object.__dict__[attr_name] = self.edit[attr_name].get()
+            
 	return 1
 
 
