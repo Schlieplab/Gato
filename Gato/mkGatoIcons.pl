@@ -13,11 +13,13 @@ use File::Basename;
 $header = '################################################################################
 #
 #       This file is part of Gato (Graph Animation Toolbox) 
-#       You can find more information at 
-#       http://gato.sf.net
 #
 #	file:   GatoIcons.py
-#	        automatically created by mkGatoIcons
+#
+#       NOTE:   Automatically created by mkGatoIcons.pl
+#               Do *not* edit this file manually
+#
+#
 #
 #       Copyright (C) 1998-2002, Alexander Schliep, Winfried Hochstaettler and 
 #       ZAIK/ZPR, Universitaet zu Koeln
