@@ -672,6 +672,53 @@ class randomTreeCreator(Creator):
 		DrawNewGraph(theGraphEditor,G,direction) 
 
 	theGraphEditor.config(cursor="")
+        
+#----------------------------------------------------------------------
+from math import ceil
+
+class rectangularGridGraph(Creator):
+
+    def Name(self):
+        return "Create rectangular grid graph"
+
+    def Create(self, theGraphEditor):
+	theGraphEditor.config(cursor="watch")
+        
+
+        print " FIXME XXX Dialog for #x, #y, delta_x, delta_y is missing"
+##         dial = TreeDialog(theGraphEditor, 1, "create random tree")
+##         if dial.result is None:
+## 	    theGraphEditor.config(cursor="")
+##             return
+        
+        G=Graph()
+        G.directed=0
+        G.xCoord={}
+        G.yCoord={}
+
+        maxI = 10
+        maxJ = 8
+
+        nodes = {}
+        count = 1
+        for i in xrange(maxI):
+            for j in xrange(maxJ):
+                v = G.AddVertex()
+                nodes[(i,j)] = v
+                G.xCoord[v] = j * 40 + 40
+                G.yCoord[v] = i * 40 + 40
+                count += 1
+
+        for i in xrange(maxI-1):
+            for j in xrange(maxJ-1):
+                G.AddEdge(nodes[(i,j)], nodes[(i+1,j)])
+                G.AddEdge(nodes[(i,j)], nodes[(i,j+1)])
+            G.AddEdge(nodes[(i,maxJ-1)], nodes[(i+1,maxJ-1)])
+        for  j in xrange(maxJ-1):
+            G.AddEdge(nodes[(maxI-1,j)], nodes[(maxI-1,j+1)])
+                
+        DrawNewGraph(theGraphEditor,G,G.directed) 
+        theGraphEditor.config(cursor="")
 
 #----------------------------------------------------------------------
 
@@ -679,4 +726,4 @@ class randomTreeCreator(Creator):
     a client. """
 creator = [completeGraphCreator(), randomGraphCreator(),
            maximalPlanarGraphCreator(), randomPlanarGraphCreator(),
-           completeTreeCreator(), randomTreeCreator()]
+           completeTreeCreator(), randomTreeCreator(), rectangularGridGraph()]
