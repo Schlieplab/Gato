@@ -18,6 +18,7 @@
 from Tkinter import *
 from ScrolledText import *
 from GatoUtil import gatoPath
+import GatoGlobals
 import GatoIcons
 import tkSimpleDialog 
 import sys
@@ -65,10 +66,7 @@ class AboutBox(tkSimpleDialog.Dialog):
 				     font="Times 10")
 	self.infoText.pack(expand=0, fill=X, side=BOTTOM)
 	self.infoText.delete('0.0', END)
-	inputFile=open(os.path.join(gatoPath(), 'LGPL.txt'), 'r')
-       	text = inputFile.read()
-	inputFile.close()
-	self.infoText.insert('0.0', text)	
+	self.infoText.insert('0.0', GatoGlobals.gLGPLText)	
 	self.infoText.configure(state=DISABLED)
 	self.title("Gato - About")
 

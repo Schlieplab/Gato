@@ -443,7 +443,7 @@ class AlgoWin(Frame):
 	    if self.algorithm.ReadyToStart():
 		self.buttonStart['state'] = NORMAL 
 	    if self.AboutGraphDialog:
-		self.AboutGraphDialog.Update(self.algorithm.graph.About(), "About Graph")
+		self.AboutGraphDialog.Update(self.graphDisplay.About(), "About Graph")
 
 
     def OptionColors(self):
@@ -568,7 +568,7 @@ class AlgoWin(Frame):
 	self.AboutAlgorithmDialog = d
 
     def AboutGraph(self):
-	d = HTMLViewer(self.algorithm.graph.About(), "About Graph", self.master)
+	d = HTMLViewer(self.graphDisplay.About(), "About Graph", self.master)
 	self.AboutGraphDialog = d
 
     ############################################################

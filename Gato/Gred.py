@@ -23,6 +23,7 @@ from Tkinter import *
 from GatoUtil import stripPath, extension, gatoPath
 from GatoGlobals import *
 import GatoDialogs
+import GatoGlobals
 import GatoIcons
 from ScrolledText import *
 
@@ -67,10 +68,7 @@ class GredAboutBox(GatoDialogs.AboutBox):
 				     font="Times 10")
 	self.infoText.pack(expand=0, fill=X, side=BOTTOM)
 	self.infoText.delete('0.0', END)
-	inputFile=open(os.path.join(gatoPath(), 'LGPL.txt'))
-       	text = inputFile.read()
-	inputFile.close()
-	self.infoText.insert('0.0', text)	
+	self.infoText.insert('0.0', GatoGlobals.gLGPLText)	
 	self.infoText.configure(state=DISABLED)
 	self.title("Gred - About")
 

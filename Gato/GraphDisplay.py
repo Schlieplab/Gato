@@ -923,6 +923,16 @@ class GraphDisplay:
 	    self.canvas.postscript(file=fileName, pagewidth="%dm" % printablePageWidth,
 				   x=x,y=y,height=height,width=width)	
 
+
+    def About(self):
+	""" Return a HTML-page giving information about the graph """
+	if self.hasGraph == 1:
+	    return self.G.About()
+	else:
+	    return "<HTML><BODY> <H3>No information available</H3></BODY></HTML>"
+   
+
+
 	    
     ############################################################################
     #				       
