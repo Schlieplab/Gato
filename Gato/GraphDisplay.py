@@ -564,6 +564,10 @@ class GraphDisplay:
 				      fill=color)
         return da
 
+    def UpdateVertexAnnotationPosition(self,v):
+        pos = self.VertexPosition(v)
+        da = self.vertexAnnotation[v]
+        self.canvas.move(da, pos.x + self.zVertexRadius+1,pos.y + self.zVertexRadius+1)
 
     def CreateEdgeAnnotation(self,tail,head,annotation,color):
 	""" *Internal* Create an edge annotation for (tail,head) on the canvas. 
@@ -1046,7 +1050,8 @@ class GraphDisplay:
 		t = self.embedding[w]
 		self.G.edgeWeights[0][(w,v)] = sqrt((h.x - t.x)**2 + (h.y - t.y)**2)
 
-
+	if self.vertexAnnotation.QDefined(v):
+            self.UpdateVertexAnnotationPosition(v)
 
 
     def DeleteVertex(self,v):
