@@ -1,16 +1,14 @@
 ################################################################################
 #
 #       This file is part of Gato (Graph Animation Toolbox) 
-#       version _VERSION_ from _BUILDDATE_. You can find more information at 
-#       http://www.zpr.uni-koeln.de/~gato
 #
 #	file:   Graph.py
-#	author: Alexander Schliep (schliep@zpr.uni-koeln.de)
+#	author: Alexander Schliep (schliep@molgen.mpg.de)
 #
 #       Copyright (C) 1998-2002, Alexander Schliep, Winfried Hochstaettler and 
 #       ZAIK/ZPR, Universitaet zu Koeln
 #                                   
-#       Contact: schliep@zpr.uni-koeln.de, wh@zpr.uni-koeln.de             
+#       Contact: schliep@molgen.mpg.de, wh@zpr.uni-koeln.de             
 #
 #       Information: http://gato.sf.net
 #

@@ -13,8 +13,8 @@ use File::Basename;
 $header = '################################################################################
 #
 #       This file is part of Gato (Graph Animation Toolbox) 
-#       version _VERSION_ from _BUILDDATE_. You can find more information at 
-#       http://www.zpr.uni-koeln.de/~gato
+#       You can find more information at 
+#       http://gato.sf.net
 #
 #	file:   GatoIcons.py
 #	        automatically created by mkGatoIcons
@@ -22,7 +22,7 @@ $header = '#####################################################################
 #       Copyright (C) 1998-2002, Alexander Schliep, Winfried Hochstaettler and 
 #       ZAIK/ZPR, Universitaet zu Koeln
 #                                   
-#       Contact: schliep@zpr.uni-koeln.de, wh@zpr.uni-koeln.de             
+#       Contact: schliep@molgen.mpg.de, wh@zpr.uni-koeln.de             
 #
 #       Information: http://gato.sf.net
 #

@@ -1,11 +1,9 @@
 ################################################################################
 #
 #       This file is part of Gato (Graph Animation Toolbox) 
-#       version _VERSION_ from _BUILDDATE_. You can find more information at 
-#       http://www.zpr.uni-koeln.de/~gato
 #
 #	file:   GatoDialogs.py
-#	author: Alexander Schliep (schliep@zpr.uni-koeln.de)
+#	author: Alexander Schliep (schliep@molgen.mpg.de)
 #
 #       Parts of the source from this file has been taken from
 #       the Python Tkinter demos.
@@ -29,11 +27,11 @@ import htmllib, formatter
 # Should be in GatoGlobals 
 crnotice1 = "Copyright (C) 1998-2002, ZAIK/ZPR, Universität zu Köln\n"\
 	    "Gato version _VERSION_ from _BUILDDATE_"
-crnotice2 = "Written by Alexander Schliep (schliep@zpr.uni-koeln.de).\n" \
+crnotice2 = "Written by Alexander Schliep (schliep@molgen.mpg.de).\n" \
  	    "Application Design: Alexander Schliep and \n" \
 	    "Winfried Hochstaettler. Additional developers: Torsten\n" \
 	    "Pattberg, Ramazan Buzdemir and Achim Gaedke.\n\n" \
-            "For Information see http://www.zpr.uni-koeln.de/~gato\n" \
+            "For Information see http://gato.sf.net\n" \
  	    "Gato comes with ABSOLUTELY NO WARRANTY.\n" \
             "This is free software, and you are welcome to redistribute\n" \
             "it under certain conditions. For details see 'LGPL.txt'.\n"

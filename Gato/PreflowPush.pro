@@ -1,7 +1,7 @@
 ################################################################################
 #
 #       This is part of CATBox (Combinatorial Algorithm Toolbox)
-#       version _VERSION_ from _BUILDDATE_. You can find more information at
+#       You can find more information at
 #       http://www.zpr.uni-koeln.de/CATBox
 #
 #	file:   PreflowPush.pro
