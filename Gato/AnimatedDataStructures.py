@@ -631,10 +631,8 @@ class FlowWrapper:
         self.excess = excess
 	for e in self.G.Edges():
             self.cap[e]  = self.flow[e]
-            self.res[e]  = self.flow[e] 
-	    self.flow[e] = 0
-        for v in self.G.vertices:
-            self.excess[v] = 0
+            self.res[e]  = self.flow[e]
+            self.flow[e] = 0 
 
     def __setitem__(self, e, val):
 	if (self.excess[e[0]] != gInfinity) and (self.excess[e[0]] != -gInfinity):
