@@ -498,7 +498,7 @@ class AlgoWin(Frame):
 	""" Align windows nicely for one graph window """
 	self.WithdrawSecondaryGraphDisplay()
 	self.master.update()
-
+	
 	if os.name == 'mac':
 	    screenTop = 19 # Take care of menubar
 	else:

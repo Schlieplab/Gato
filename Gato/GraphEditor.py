@@ -167,11 +167,14 @@ class GraphEditor(GraphDisplay):
 
     def ShowCoords(self,event):
         x,y = self.WindowToCanvasCoords(event)
-        v = self.FindVertex(event)
+	v=self.FindVertex(event)
+	if v == None and self.gridding:
+	    v = self.FindGridVertex(event)
         e = self.FindEdge(event)
         if e!=None:
 	    infoString = "Edge (%d,%d)" % (e[0], e[1]) 
 	elif v!=None:
+
 	    infoString = "Vertex %d at position (%d,%d)" % (v, 
 							    self.embedding[v].x, 
 							    self.embedding[v].y)
@@ -186,15 +189,19 @@ class GraphEditor(GraphDisplay):
     def AddOrMoveVertexDown(self,event):
 	v = self.FindVertex(event)
 	if v == None:
-            x,y = self.WindowToCanvasCoords(event)
-	    x = max(x,0)
-	    y = max(y,0)
-            if not event.widget.find_overlapping(x,y,x,y):
+	    if self.FindGridVertex(event) == None:
+		x,y = self.WindowToCanvasCoords(event)
+		x = max(x,0)
+		y = max(y,0)
                 self.AddVertexCanvas(x,y)
 	    self.movedVertex = None
 	else:
             self.canvas.addtag("mySel", "withtag", self.drawVertex[v])
             self.canvas.addtag("mySel", "withtag", self.drawLabel[v])
+	    try:
+		self.canvas.addtag("mySel", "withtag", self.drawEdges[(v,v)])
+	    except:
+		pass
 	    self.canvas.lift("mySel")
             # We want to start off with user clicking smack in middle of
             # vertex -- cant force him, so we fake it
@@ -216,6 +223,9 @@ class GraphEditor(GraphDisplay):
 		self.canvas.move("mySel", 
 				 self.newx - self.oldx, 
 				 self.newy - self.oldy)
+
+		#self.MoveVertex(self.movedVertex,self.newx,self.newy)
+		
 		self.oldx = self.newx
 		self.oldy = self.newy
 

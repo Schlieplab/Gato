@@ -17,7 +17,7 @@
 
 from Tkinter import * # Frame, Canvas, Toplevel, StringVar and lots of handy constants
 from Graph import Graph
-from math import sqrt
+from math import sqrt, pi, sin, cos
 from GatoGlobals import *
 from GatoUtil import orthogonal
 from DataStructures import Point2D, VertexLabeling, EdgeLabeling
@@ -108,18 +108,32 @@ class GraphDisplay:
 
 	factor = zoomFactor[percent] / self.zoomFactor	    
 	self.zoomFactor = zoomFactor[percent]
-	if self.directed == 1:
-	    arrowShape = ((16*self.zoomFactor) / 100.0,
-			  (20*self.zoomFactor) / 100.0,
-			  (6*self.zoomFactor)  / 100.0)
-	    self.canvas.itemconfigure("edges",arrowshape=arrowShape)
+
+	zEdgeWidth = (gEdgeWidth * self.zoomFactor) / 100.0
+	arrowShape = ((16*self.zoomFactor) / 100.0,
+		      (20*self.zoomFactor) / 100.0,
+		      (6*self.zoomFactor)  / 100.0)
+	for e in self.G.Edges():
+	    if self.G.edgeWidth != None:
+		zEdgeWidth = (self.G.edgeWidth[e] * self.zoomFactor) / 100.0
+	    de = self.drawEdges[e]
+	    self.canvas.itemconfigure(de, width=zEdgeWidth, arrowshape=arrowShape)
+	
+	zVertexFrameWidth = (gVertexFrameWidth * self.zoomFactor) / 100.0
+	FontSize = max(7,int((10 * self.zoomFactor) / 100.0))
+	for v in self.G.vertices:
+	    dv = self.drawVertex[v]
+	    dl = self.drawLabel[v]
+	    self.canvas.itemconfig(dv, width=zVertexFrameWidth)
+	    self.canvas.itemconfig(dl, font="Arial %d" %FontSize)
+
 	self.canvas.scale("all", 0, 0, factor, factor)	
 
 	newWidth = (self.zoomFactor / 100.0) * float(gPaperWidth)
 	newHeight = (self.zoomFactor/ 100.0) * float(gPaperHeight)
 
 	self.canvas.config(width=newWidth,height=newHeight,
-			   scrollregion=(0,0,newWidth,newHeight))	
+			   scrollregion=(0,0,newWidth,newHeight))
 	self.canvas.xview("moveto",self.Xview)
 	self.canvas.yview("moveto",self.Yview)
 
@@ -175,7 +189,7 @@ class GraphDisplay:
 	self.canvas = Canvas(borderFrame, width=gPaperWidth, height=gPaperHeight, 
 			     background="white",
 			     scrollregion=(0, 0, gPaperWidth, gPaperHeight))
-
+	
 	# Vertical scroll bar in a frame and with corner 
 	vbarFrame = Frame(borderFrame,borderwidth=0)
 	vbarFrame.pack(fill=Y, side=RIGHT)
@@ -200,10 +214,10 @@ class GraphDisplay:
 	self.canvas.pack(anchor=W, side=TOP)
 	borderFrame.pack(anchor=W, side=TOP, expand=1, fill=BOTH)
 
-	self.master.geometry("500x483")
-	#print self.infoframe.cget('width')
-	#print self.infoframe.cget('height')
-
+	try:
+	    self.geometry("500x483")
+	except:
+	    self.master.geometry("500x483")
 
     def ShowGraph(self, G, graphName):	
 	""" Display graph G name graphName. Currently we assume that for 
@@ -308,9 +322,11 @@ class GraphDisplay:
 	if x == None and y == None:
 	    x,y = self.EmbeddingToCanvas(self.embedding[v].x, self.embedding[v].y)
 	d = (gVertexRadius * self.zoomFactor) / 100.0
+	w = (gVertexFrameWidth * self.zoomFactor) / 100.0
  	dv = self.canvas.create_oval(x-d, y-d, x+d, y+d, 
-				     fill=cVertexDefault, tag="vertices",
-				     width=gVertexFrameWidth) 
+				     fill=cVertexDefault, 
+				     tag="vertices",
+				     width=w) 
 	self.canvas.tag_bind(dv, "<Any-Leave>", self.DefaultInfo)
 	self.canvas.tag_bind(dv, "<Any-Enter>", self.VertexInfo)
 	self.vertex[dv] = v # XXX
@@ -328,11 +344,13 @@ class GraphDisplay:
 	# depending on brightness
 	#
 	# XXX Note: we assume that the defaults are reasonable 
+	FontSize = max(7,int((10 * self.zoomFactor) / 100.0))
 	dl = self.canvas.create_text(pos.x, pos.y, 
 				     anchor="center", 
 				     justify="center", 
 				     text=self.Labeling[v], 
 				     fill=cLabelDefault,
+				     font="Arial %d" %FontSize,
 				     tag="labels")
 	self.canvas.tag_bind(dl, "<Any-Enter>", self.VertexInfo)
 	self.label[dl] = v # XXX
@@ -345,43 +363,41 @@ class GraphDisplay:
 
     def CreateUndirectedLoopDrawEdge(self, v, w, orientation=None):
 	""" *Internal* Create an undirected loop draw edge. v is a Point2D """
-	d = 32       # Diameter
-	offset = 10  # selected based on trial-and-error 
-	return self.canvas.create_line(v.x, v.y + offset, v.x - d, v.y - d, 
-				       v.x, v.y - 2*d + offset, v.x + d, v.y - d, 
-				       v.x, v.y + offset,
-				       fill=cEdgeDefault,
+	loopRadius = 2*((gVertexRadius*self.zoomFactor)/100.0)
+	xMiddle = v.x
+	yMiddle = v.y-((25*self.zoomFactor)/100.0)	
+	Coords = []
+	for degree in range(0,400,40):
+	    Coords.append(loopRadius*cos(degree*(pi/180))+xMiddle)
+	    Coords.append(loopRadius*sin(degree*(pi/180))+yMiddle)
+	return self.canvas.create_line(Coords,
+				       fill=cEdgeDefault, 
 				       width=w,
 				       smooth=TRUE,
 				       splinesteps=24,
 				       tag="edges")
 
+
     def CreateDirectedLoopDrawEdge(self,v,w, orientation=None):
 	""" *Internal* Create an directed loop draw edge. v is a Point2D """
-	d = 32       # Diameter
-	offset = 10  # selected based on trial-and-error 
-	l = sqrt((v.x + d - v.x)**2 + (v.y - d - v.y - offset)**2)
-	if l < 0.001:
-	    l = 0.001
-	zVertexRadius = (gVertexRadius * self.zoomFactor) / 100.0
-	c = (l - zVertexRadius)/l - 0.001 # Dont let them quite touch 
-	tmpX = v.x + c * (v.x + d - v.x) 
-	tmpY = v.y + offset + c * (v.y - d - v.y - offset)
+	loopRadius = 2*((gVertexRadius*self.zoomFactor)/100.0)
+	xMiddle = v.x
+	yMiddle = v.y-((25*self.zoomFactor)/100.0)
+	Coords = []
 	arrowShape = ((16*self.zoomFactor) / 100.0,
 		      (20*self.zoomFactor) / 100.0,
 		      (6*self.zoomFactor)  / 100.0)
-	return self.canvas.create_line(v.x, v.y + offset, v.x - d, v.y - d, 
-				       v.x, v.y - 2*d + offset, v.x + d, v.y - d, 
-				       v.x + offset, v.y - offset,
-				       #tmpX, tmpY,
+	for degree in range(100,450,40):
+	    Coords.append(loopRadius*cos(degree*(pi/180))+xMiddle)
+	    Coords.append(loopRadius*sin(degree*(pi/180))+yMiddle)
+	return self.canvas.create_line(Coords,
 				       arrow="last",
-				       arrowshape=arrowShape, 
-				       fill=cEdgeDefault,
+				       arrowshape=arrowShape,
+				       fill=cEdgeDefault, 
 				       width=w,
 				       smooth=TRUE,
 				       splinesteps=24,
-				       tag="edges")
-	
+				       tag="edges")	
 
     def CreateUndirectedDrawEdge(self,t,h,w):
 	""" *Internal* Create an undirected draw edge. t, h are Point2Ds """
@@ -435,9 +451,9 @@ class GraphDisplay:
 	h = self.VertexPosition(head)
 
 	if self.G.edgeWidth == None:
-	    w = gEdgeWidth
+	    w = (gEdgeWidth * self.zoomFactor) / 100.0
 	else:
-	    w = self.G.edgeWidth[(tail,head)]
+	    w = (self.G.edgeWidth[(tail,head)] * self.zoomFactor) / 100.0
 
 	if self.directed == 1:
 	    if tail == head:
@@ -451,9 +467,9 @@ class GraphDisplay:
 			self.canvas.delete(self.drawEdges[(head,tail)])
 			# ... and create a new curved one
 			if self.G.edgeWidth == None:
-			    wOld = gEdgeWidth
+			    wOld = (gEdgeWidth * self.zoomFactor) / 100.0
 			else:
-			    wOld = self.G.edgeWidth[(head,tail)]		    
+			    wOld = (self.G.edgeWidth[(head,tail)] * self.zoomFactor) / 100.0
 			de = self.CreateDirectedDrawEdge(h,t,1,wOld)
 			self.canvas.itemconfig(de, fill=oldColor) # Should call SetEdgeColor
 			self.drawEdges[(head,tail)] = de
@@ -491,12 +507,14 @@ class GraphDisplay:
 	pos = self.VertexPosition(v)    
 	# Label to the bottom, to the right
 	zVertexRadius = (gVertexRadius * self.zoomFactor) / 100.0
+	FontSize = max(7,int((10 * self.zoomFactor) / 100.0))
 	da =  self.canvas.create_text(pos.x+zVertexRadius+1, pos.y+zVertexRadius+1, 
 				      anchor="w", 
 				      justify="left", 
 				      text=annotation,
 				      tag="vertexAnno",
-				      fill=color)
+				      fill=color,
+				      font="Arial %d" %FontSize)
         return da
 
 
@@ -511,11 +529,14 @@ class GraphDisplay:
 	x = t.x + .5 * (h.x - t.x) + c * mX
 	y = t.y + .5 * (h.y - t.y) + c * mY
 	# Label to the bottom, to the right
+	FontSize = max(7,int((10 * self.zoomFactor) / 100.0))
 	da =  self.canvas.create_text(x, y, 
 				      anchor="center", 
 				      justify="center", 
 				      text=annotation,
-				      tag="edgeAnno",fill=color)
+				      tag="edgeAnno",
+				      fill=color,
+				      font="Arial %d" %FontSize)
         return da
 
 
@@ -775,6 +796,27 @@ class GraphDisplay:
 	    except:
 		return None
 
+
+    def FindGridVertex(self,event):
+	""" *Internal* Given an event find the correspoding grid vertex """
+	x,y = self.WindowToCanvasCoords(event)
+	if not event.widget.find_overlapping(x,y,x,y):
+	    return None
+	else:
+	    try:
+		widget = event.widget.find_overlapping(x,y,x,y)[-1]
+		tags = self.canvas.gettags(widget)
+		if "vertices" in tags:
+		    v = self.vertex[widget]
+		elif "labels" in tags:
+		    v = self.label[widget]
+		else:
+		    v = None
+		return v
+	    except:
+		return None
+
+
     def FindEdge(self,event):
 	""" *Internal* Given an event find the correspoding edge """ 
 	if not event.widget.find_withtag(CURRENT):
@@ -820,7 +862,7 @@ class GraphDisplay:
     def MoveVertex(self,v,x,y,doUpdate=None):
 	""" *Internal* Move vertex v to position (x,y) 
             NOTE: Assumes x,y to be in canvas coordinates if 
-                  doUpdate=None and in embedding coordinates else 
+                  doUpdate=None and in embedding coordinates else
         """ 	    
         if doUpdate == None: # User has moved drawvertex
 	    newX, newY = self.CanvasToEmbedding(x,y)
@@ -1076,6 +1118,3 @@ class GraphDisplayToplevel(GraphDisplay, Toplevel):
 	
     def SetTitle(self,title):
 	self.title(title)
-
-
-
