@@ -378,6 +378,8 @@ class SubGraph(Graph):
 	self.labeling      = self.superGraph.labeling
 	self.edgeWeights   = self.superGraph.edgeWeights
 
+        self.directed = self.superGraph.directed
+
 	self.totalWeight   = 0
 
 

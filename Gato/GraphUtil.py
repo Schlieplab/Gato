@@ -80,7 +80,7 @@ def BFS(G,root,direction='forward'):
     for v in G.vertices:
 	d[v] = gInfinity
     d[root] = 0
-    pred[root] = None
+    pred[root] = root
 
     Q.Append(root)
 
@@ -90,9 +90,11 @@ def BFS(G,root,direction='forward'):
 	    nbh = G.InNeighbors(v)
 	else:
 	    nbh = G.Neighborhood(v)
+            
 	for w in nbh:
 	    if d[w] == gInfinity:
 		d[w] = d[v] + 1
+                pred[w] = v
 		Q.Append(w)
 
     return (d,pred)
