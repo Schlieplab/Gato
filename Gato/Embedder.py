@@ -66,7 +66,108 @@ class CircularEmbedder(Embedder):
                 degree=degree+distance
 #----------------------------------------------------------------------
 
+from Tkinter import *
+import tkSimpleDialog 
+import string
+from tkMessageBox import showwarning
+from GraphUtil import BFS
+
+class BFSLayoutDialog(tkSimpleDialog.Dialog):
+
+    def __init__(self, master, G):
+        self.G = G
+        tkSimpleDialog.Dialog.__init__(self, master, "BFS Layout")
+        
+
+    def body(self, master):
+        self.resizable(0,0)
+        
+        self.root=StringVar()
+        self.root.set("1")
+        label = Label(master, text="root (1-%i):" %self.G.Order(), anchor=W)
+        label.grid(row=0, column=0, padx=4, pady=3, sticky="w")
+        entry=Entry(master, width=6, exportselection=FALSE,textvariable=self.root)
+        entry.selection_range(0,1)
+        entry.focus_set()
+	entry.grid(row=0,column=1, padx=4, pady=3, sticky="w")
+        
+        self.direction=StringVar()
+        self.direction.set("forward")
+        if self.G.QDirected():
+            radio=Radiobutton(master, text="forward", variable=self.direction, 
+                               value="forward")
+            radio.grid(row=0, column=2, padx=4, pady=3, sticky="w") 
+            radio=Radiobutton(master, text="backward", variable=self.direction,
+                               value="backward")
+            radio.grid(row=1, column=2, padx=4, pady=3, sticky="w") 
+
+
+    def validate(self):
+        try: 
+            if string.atoi(self.root.get())<0 or string.atoi(self.root.get())>self.G.Order():
+                raise rootError
+            self.result=[]
+            self.result.append(string.atoi(self.root.get()))
+            self.result.append(self.direction.get())
+            return self.result
+        except:
+           showwarning("Warning", "Please try again !")
+           return 0
+
+
+class BFSTreeEmbedder(Embedder):
+
+    def Name(self):
+	return "BFS-Tree Layout"
+
+    def Embed(self, theGraphEditor):
+	if theGraphEditor.G.Order()!=0:
+	    dial = BFSLayoutDialog(theGraphEditor, theGraphEditor.G)
+            if dial.result is None:
+                return
+
+            BFSdistance = BFS(theGraphEditor.G,dial.result[0],dial.result[1])[0]
+            maxDistance=0
+            maxBreadth=0
+            list = {}
+	    for v in theGraphEditor.G.vertices:
+                list[BFSdistance[v]] = []
+            for v in theGraphEditor.G.vertices:
+                list[BFSdistance[v]].append(v)
+            maxDistance=len(list)
+            for d in list.values():
+                if len(d)>maxBreadth: maxBreadth=len(d)
+            xDist=900/(maxDistance-1)
+            yDist=900/(maxBreadth-1)
+            xCoord=950
+            for d in list.values():
+		yCoord=500-(len(d)-1)*yDist/2
+                for v in d:
+                    theGraphEditor.MoveVertex(v,xCoord+whrandom.randint(-20,20),yCoord,1)
+                    yCoord=yCoord+yDist 
+                xCoord=xCoord-xDist
+#----------------------------------------------------------------------
+
+from PlanarEmbedding import *
+
+class FPP_PlanarEmbedder(Embedder):
+
+    def Name(self):
+	return "Planar Layout (FPP)"
+    
+    def Embed(self, theGraphEditor):
+	FPP_PlanarEmbedding(theGraphEditor)
+
+class Schnyder_PlanarEmbedder(Embedder):
+
+    def Name(self):
+	return "Planar Layout (Schnyder)"
+    
+    def Embed(self, theGraphEditor):
+	Schnyder_PlanarEmbedding(theGraphEditor)
+#----------------------------------------------------------------------
 
 """ Here instantiate all the embedders you want to make available to
     a client. """
-embedder = [RandomEmbedder(), CircularEmbedder()]
+embedder = [RandomEmbedder(), CircularEmbedder(), BFSTreeEmbedder(),
+            FPP_PlanarEmbedder(), Schnyder_PlanarEmbedder()]
