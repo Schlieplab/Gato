@@ -54,8 +54,14 @@ class RandomEmbedder(Embedder):
     def Embed(self, theGraphEditor):
         if theGraphEditor.G.Order()==0:
             return
+
+	theGraphEditor.config(cursor="watch")
+	theGraphEditor.update()
+
         if RandomCoords(theGraphEditor.G):
             RedrawGraph(theGraphEditor)
+
+	theGraphEditor.config(cursor="")
         
 #----------------------------------------------------------------------
 from math import pi, sin, cos
@@ -80,8 +86,14 @@ class CircularEmbedder(Embedder):
     def Embed(self, theGraphEditor):
         if theGraphEditor.G.Order()==0:
             return
+
+	theGraphEditor.config(cursor="watch")
+	theGraphEditor.update()
+
         if CircularCoords(theGraphEditor.G):
             RedrawGraph(theGraphEditor)
+
+	theGraphEditor.config(cursor="")
                 
 #----------------------------------------------------------------------
 from PlanarEmbedding import *
@@ -92,10 +104,16 @@ class FPP_PlanarEmbedder(Embedder):
 	return "Planar Layout (FPP)"
     
     def Embed(self, theGraphEditor):
+
+	theGraphEditor.config(cursor="watch")
+	theGraphEditor.update()
+
         if theGraphEditor.G.Order()==0:
             return
         if FPP_PlanarCoords(theGraphEditor.G):
             RedrawGraph(theGraphEditor)
+
+	theGraphEditor.config(cursor="")
 
 class Schnyder_PlanarEmbedder(Embedder):
 
@@ -105,8 +123,14 @@ class Schnyder_PlanarEmbedder(Embedder):
     def Embed(self, theGraphEditor):
         if theGraphEditor.G.Order()==0:
             return
+
+	theGraphEditor.config(cursor="watch")
+	theGraphEditor.update()
+
         if Schnyder_PlanarCoords(theGraphEditor.G):
             RedrawGraph(theGraphEditor)
+
+	theGraphEditor.config(cursor="")
         
 #----------------------------------------------------------------------
 from Tkinter import *
@@ -318,12 +342,16 @@ class TreeEmbedder(Embedder):
         if theGraphEditor.G.Order()==0:
             return
         
+	theGraphEditor.config(cursor="watch")
+
 	dial = TreeLayoutDialog(theGraphEditor)
 	if dial.result is None: 
 	    return	
 
         if TreeCoords(theGraphEditor.G, dial.result[0], dial.result[1]):
             RedrawGraph(theGraphEditor)
+
+	theGraphEditor.config(cursor="")
 
 #----------------------------------------------------------------------
 from GraphUtil import BFS
@@ -408,12 +436,16 @@ class BFSTreeEmbedder(Embedder):
         if theGraphEditor.G.Order()==0:
             return
         
+	theGraphEditor.config(cursor="watch")
+
 	dial = BFSLayoutDialog(theGraphEditor)
 	if dial.result is None: 
 	    return	
 
         if BFSTreeCoords(theGraphEditor.G, dial.result[0], dial.result[1]):
             RedrawGraph(theGraphEditor)
+
+	theGraphEditor.config(cursor="")
 
 #----------------------------------------------------------------------
 

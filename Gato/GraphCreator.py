@@ -34,6 +34,7 @@ class Creator:
 
 
 def DrawNewGraph(theGraphEditor,G,direction):
+
     theGraphEditor.NewGraph(direction,1,0,'None',0,'One',0)
 
     for v in G.vertices:
@@ -218,10 +219,13 @@ class completeGraphCreator(Creator):
 	return "create complete graph" 
     
     def Create(self, theGraphEditor):
+	theGraphEditor.config(cursor="watch")
+
         dial = Dialog(theGraphEditor, 0, 0, "create complete graph")
         if dial.result is None:
+	    theGraphEditor.config(cursor="")	    
             return
-        
+
         n=dial.result[0]
         direction=dial.result[2]
         layout=dial.result[3]
@@ -242,7 +246,9 @@ class completeGraphCreator(Creator):
 		DrawNewGraph(theGraphEditor,G,direction)
         else:
 	    if CircularCoords(G):
-		DrawNewGraph(theGraphEditor,G,direction)  
+		DrawNewGraph(theGraphEditor,G,direction)
+
+	theGraphEditor.config(cursor="")
 
 #----------------------------------------------------------------------
 class randomGraphCreator(Creator):
@@ -251,8 +257,11 @@ class randomGraphCreator(Creator):
 	return "create random graph" 
     
     def Create(self, theGraphEditor):
+	theGraphEditor.config(cursor="watch")
+
         dial = Dialog(theGraphEditor, 0, 1, "create random graph")
         if dial.result is None:
+	    theGraphEditor.config(cursor="")
             return
         
         n=dial.result[0]
@@ -278,7 +287,9 @@ class randomGraphCreator(Creator):
 		DrawNewGraph(theGraphEditor,G,direction)
         else:
 	    if CircularCoords(G):
-		DrawNewGraph(theGraphEditor,G,direction)           
+		DrawNewGraph(theGraphEditor,G,direction) 
+
+	theGraphEditor.config(cursor="")          
 
 #----------------------------------------------------------------------
 class maximalPlanarGraphCreator(Creator):
@@ -287,8 +298,11 @@ class maximalPlanarGraphCreator(Creator):
 	return "create maximal planar graph" 
     
     def Create(self, theGraphEditor):
+	theGraphEditor.config(cursor="watch")
+
         dial = Dialog(theGraphEditor, 1, 0, "create maximal planar graph")
         if dial.result is None:
+	    theGraphEditor.config(cursor="")
             return
 
         n=dial.result[0]
@@ -319,6 +333,8 @@ class maximalPlanarGraphCreator(Creator):
         else:
 	    if Schnyder_PlanarCoords(G):
 		DrawNewGraph(theGraphEditor,G,direction)  
+
+	theGraphEditor.config(cursor="")
 
 #----------------------------------------------------------------------
 from math import log10
@@ -329,8 +345,11 @@ class randomPlanarGraphCreator(Creator):
         return "create random planar graph" 
     
     def Create(self, theGraphEditor):
+	theGraphEditor.config(cursor="watch")
+
         dial = Dialog(theGraphEditor, 1, 1, "create random planar graph")
         if dial.result is None:
+	    theGraphEditor.config(cursor="")
             return
 
         n=dial.result[0]
@@ -363,7 +382,9 @@ class randomPlanarGraphCreator(Creator):
 		DrawNewGraph(theGraphEditor,G,direction)
         else:
 	    if Schnyder_PlanarCoords(G):
-		DrawNewGraph(theGraphEditor,G,direction)            
+		DrawNewGraph(theGraphEditor,G,direction)   
+
+	theGraphEditor.config(cursor="")         
         
 #----------------------------------------------------------------------
 class TreeDialog(tkSimpleDialog.Dialog):
@@ -511,8 +532,11 @@ class completeTreeCreator(Creator):
         return "create complete tree"
 
     def Create(self, theGraphEditor):
+	theGraphEditor.config(cursor="watch")
+
         dial = TreeDialog(theGraphEditor, 0, "create complete tree")
         if dial.result is None:
+	    theGraphEditor.config(cursor="")
             return
 
         degree=dial.result[0]
@@ -554,6 +578,8 @@ class completeTreeCreator(Creator):
 	    if BFSTreeCoords(G,G.vertices[0],"forward"):
 		DrawNewGraph(theGraphEditor,G,direction) 
 
+	theGraphEditor.config(cursor="")
+
 #----------------------------------------------------------------------
 from math import ceil
 
@@ -563,8 +589,11 @@ class randomTreeCreator(Creator):
         return "create random tree"
 
     def Create(self, theGraphEditor):
+	theGraphEditor.config(cursor="watch")
+
         dial = TreeDialog(theGraphEditor, 1, "create random tree")
         if dial.result is None:
+	    theGraphEditor.config(cursor="")
             return
 
         degree=dial.result[0]
@@ -622,6 +651,8 @@ class randomTreeCreator(Creator):
         else:
 	    if BFSTreeCoords(G,G.vertices[0],"forward"):
 		DrawNewGraph(theGraphEditor,G,direction) 
+
+	theGraphEditor.config(cursor="")
 
 #----------------------------------------------------------------------
 
