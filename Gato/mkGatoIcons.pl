@@ -21,7 +21,7 @@ $header = '#####################################################################
 #
 #
 #
-#       Copyright (C) 1998-2002, Alexander Schliep, Winfried Hochstaettler and 
+#       Copyright (C) 1998-2003, Alexander Schliep, Winfried Hochstaettler and 
 #       ZAIK/ZPR, Universitaet zu Koeln
 #                                   
 #       Contact: schliep@molgen.mpg.de, wh@zpr.uni-koeln.de             

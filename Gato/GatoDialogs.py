@@ -25,7 +25,7 @@ import htmllib, formatter
 
 
 # Should be in GatoGlobals 
-crnotice1 = "Copyright (C) 1998-2002, ZAIK/ZPR, Universität zu Köln\n"\
+crnotice1 = "Copyright (C) 1998-2003, ZAIK/ZPR, Universität zu Köln\n"\
 	    "Gato version _VERSION_ from _BUILDDATE_"
 crnotice2 = "Written by Alexander Schliep (schliep@molgen.mpg.de).\n" \
  	    "Application Design: Alexander Schliep and \n" \
