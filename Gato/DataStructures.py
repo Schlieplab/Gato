@@ -221,3 +221,33 @@ class Stack:
 
     def Contains(self,v):
 	return v in self.contents
+
+################################################################################
+#
+# Set
+#
+################################################################################
+
+    def __init__(self):
+        self.members = []
+        return
+
+    def __getitem__(self,key):
+	return self.members[key]
+
+    def Add(self, e):
+	self.members.append(e)
+        return
+ 		
+    def Delete(self, e):
+	try:
+            self.members.remove(e)
+        except:
+            None
+        return
+
+    def IsNotEmpty(self):
+	return len(self.members) > 0
+
+    def Contains(self,e):
+	return e in self.members
