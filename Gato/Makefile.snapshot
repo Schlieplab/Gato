@@ -11,8 +11,8 @@
 
 # Vars
 
-VERSION       = 0.97
-DATE          = 03/05/2002
+VERSION       = 0.98A
+DATE          = 03/14/2002
 DISTNAME      = Gato
 DISTNAMEMAC   = $(DISTNAME)-Mac
 DISTNAMEDOC   = $(DISTNAME)-Doc
@@ -50,8 +50,10 @@ CRNOTICE     = `cat $(SRCDIR)/COPYRIGHT`
 SOURCES	      = AnimatedAlgorithms.py \
 		AnimatedDataStructures.py \
 		DataStructures.py \
+		EditObjectAttributesDialog.py \
 		Embedder.py \
 		Gato.py \
+		GatoConfiguration.py \
                 GatoDialogs.py \
 		GatoGlobals.py \
 		GatoIcons.py \

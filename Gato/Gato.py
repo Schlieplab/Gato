@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.2
 ################################################################################
 #
 #       This file is part of Gato (Graph Animation Toolbox) 
@@ -279,13 +279,17 @@ class AlgoWin(Frame):
     def SetAlgorithmFont(self, font, size):
 	self.algoFont = font
 	self.algoFontSize = size
-	algoFontBase = "%s %d" % (font, size)
-	self.algoText.config(font=algoFontBase)
+
+	f = tkFont.Font(self, (font, size, tkFont.NORMAL))
+	bf = tkFont.Font(self, (font, size, tkFont.BOLD))
+	itf = tkFont.Font(self, (font, size, tkFont.ITALIC))
+
+	self.algoText.config(font=f)
 	# syntax highlighting tags
-	self.algoText.tag_config('keyword', font=algoFontBase + " bold")
-	self.algoText.tag_config('string',  font=algoFontBase + " italic")
-	self.algoText.tag_config('comment', font=algoFontBase + " italic")
-	self.algoText.tag_config('identifier',font=algoFontBase + " bold")
+	self.algoText.tag_config('keyword', font=bf)
+	self.algoText.tag_config('string', font=itf)
+	self.algoText.tag_config('comment', font=itf)
+	self.algoText.tag_config('identifier', font=bf)
 
     def SetFromConfig(self):
 	c = self.config.get
