@@ -218,6 +218,9 @@ class AlgoWin(Frame):
 	self.buttonStop['state']     = DISABLED	
 
 
+
+
+
     def makeAlgoTextWidget(self):
 	""" *Internal* Here we also define appearance of 
 	    - interactive lines 
@@ -547,26 +550,26 @@ class AlgoWin(Frame):
   
     def KeyStart(self, event):
 	""" Command linked to toolbar 'Start' """
-	if self.buttonStart['state'] == NORMAL:
+	if self.buttonStart['state'] != DISABLED:
 	    self.CmdStart()
 
     def KeyStop(self, event):
-	if self.buttonStop['state'] == NORMAL:
+	if self.buttonStop['state'] != DISABLED:
 	    self.CmdStop()
 
     def KeyStep(self, event):
 	""" Command linked to toolbar 'Step' """
-	if self.buttonStep['state'] == NORMAL:
+	if self.buttonStep['state'] != DISABLED:
 	    self.CmdStep()
 
     def KeyContinue(self, event):
 	""" Command linked to toolbar 'Continue' """
-	if self.buttonContinue['state'] == NORMAL:
+	if self.buttonContinue['state'] != DISABLED:
 	    self.CmdContinue()
 
     def KeyTrace(self, event):
 	""" Command linked to toolbar 'Trace' """
-	if self.buttonTrace['state'] == NORMAL:
+	if self.buttonTrace['state'] != DISABLED:
 	    self.CmdTrace() 
 
     def KeyBreak(self, event):
