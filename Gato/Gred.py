@@ -518,7 +518,6 @@ class SAGraphEditor(GraphEditor, Frame):
 		G = OpenGMLGraph(file)
 	    else:
 		print "Unknown extension" 
-	    self.SetTitle("Gred _VERSION_ - " + self.graphName)
 
 	    if not self.gridding:
 		self.graphMenu.invoke(self.graphMenu.index('Grid'))	
@@ -559,6 +558,7 @@ class SAGraphEditor(GraphEditor, Frame):
 
 	    self.RegisterGraphInformer(WeightedGraphInformer(G,"weight"))
 	    self.ShowGraph(G,self.graphName)
+	    self.SetTitle("Gred _VERSION_ - " + self.graphName)
 
 
 
