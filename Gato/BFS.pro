@@ -14,8 +14,9 @@
 #
 ################################################################################
 
-breakpoints = []
-interactive = []
+# Options ----------------------------------------------------------------------
+breakpoints = [9]
+interactive = [4]
 graphDisplays = 1
 about = """<HTML>
 <HEAD>
@@ -28,17 +29,14 @@ order.
 
 </BODY></HTML>
 """
-
-
-
-
+#--------------------------------------------------------------------------------
+#self.NeededProperties({'pMist':1})
 
 pickCallback = lambda v, a=A: A.SetVertexAnnotation(v,"source")
-
-#self.NeededProperties({'pMist':1})
-self.SetBreakpoints([11])
-PickVertex = lambda f=pickCallback: self.PickVertex(1,None,f)
+PickVertex   = lambda f=pickCallback: self.PickVertex(1,None,f)
 Neighborhood = lambda v,a=A,g=G: AnimatedNeighborhood(a,g,v)
-Vertices = G.vertices          
-visited = AnimatedVertexLabeling(A)    
-Q = AnimatedVertexQueue(A)
+Vertices     = G.vertices          
+visited      = AnimatedVertexLabeling(A)    
+Q            = AnimatedVertexQueue(A)
+
+# End-of BFS.pro

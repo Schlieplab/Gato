@@ -13,6 +13,8 @@
 #
 #
 ################################################################################
+
+# Options ----------------------------------------------------------------------
 breakpoints = []
 interactive = []
 graphDisplays = 1
@@ -27,11 +29,14 @@ order.
 
 </BODY></HTML>
 """
+#--------------------------------------------------------------------------------
 
 pickCallback = lambda v, a=A: A.SetVertexAnnotation(v,"source")
-PickVertex = lambda f=pickCallback: self.PickVertex(1,None,f)
+PickVertex   = lambda f=pickCallback: self.PickVertex(1,None,f)
 
 Neighborhood = lambda v,a=A,g=G: AnimatedNeighborhood(a,g,v)
-Vertices = G.vertices          
-visited = AnimatedVertexLabeling(A)    
-S = AnimatedVertexStack(A)
+Vertices     = G.vertices          
+visited      = AnimatedVertexLabeling(A)    
+S            = AnimatedVertexStack(A)
+
+# End-of DFS.pro

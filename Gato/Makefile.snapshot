@@ -11,8 +11,8 @@
 
 # Vars
 
-VERSION       = 0.91
-DATE          = 10/2/1999
+VERSION       = 0.91A
+DATE          = 10/9/1999
 DISTNAME      = Gato
 DISTNAMEMAC   = $(DISTNAME)-Mac
 DISTNAMEDOC   = $(DISTNAME)-Doc

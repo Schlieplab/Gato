@@ -1,4 +1,12 @@
+- breakPoints can only be at code lines (not blanks or comments-only lines)
 
+- Added "b" for toggling breakpoints
+
+- Interactive and break lines have now are grey background
+
+- PrologOptions (s.b.) do actually work now
+
+================================================================================
 * Tastaturbefehle zum Steppen etc.
        self.master.bind_all('s', self.KeyStart)
         self.master.bind_all('x', self.KeyStop)

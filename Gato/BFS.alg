@@ -11,4 +11,3 @@ while Q.IsNotEmpty():
 	if visited[w] == 0:
 	    visited[w] = 1
 	    Q.Append(w)
-

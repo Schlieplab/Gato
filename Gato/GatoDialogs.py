@@ -120,10 +120,13 @@ class SplashScreen(Toplevel):
 	self.withdraw()
 
 
-class AboutAlgorithm(tkSimpleDialog.Dialog):
+class HTMLViewer(tkSimpleDialog.Dialog):
+    """ Basic class which provides a scrollable area for viewing HTML
+        text and a Dismiss button """
     
-    def __init__(self, text, master=None):
+    def __init__(self, text, title, master=None):
 	self.text = text
+	self.titleText = title
 	tkSimpleDialog.Dialog.__init__(self, master)
 
     def buttonbox(self):
@@ -139,13 +142,6 @@ class AboutAlgorithm(tkSimpleDialog.Dialog):
    
     def body(self, master):
 	#self.resizable(0,0)
-	#self.catIconImage = PhotoImage(file=os.path.join(gatoPath(), 'gato.gif'))
-	#self.catIcon = Label(master, image=self.catIconImage)
-	#self.catIcon.pack(side=TOP)
-	#label = Label(master, text=crnotice1)
-	#label.pack(side=TOP)
-	#label = Label(master, font="Helvetica 10", text=crnotice2, justify=LEFT)
-	#label.pack(side=TOP)
  	color = self.config("bg")[4]
 	self.infoText = ScrolledText(master, relief=FLAT, 
 				     padx=3, pady=3,
@@ -154,8 +150,8 @@ class AboutAlgorithm(tkSimpleDialog.Dialog):
 				     wrap='word',
 				     width=60, height=12,
 				     font="Times 10")
-	self.infoText.pack(expand=0, fill=BOTH, side=BOTTOM)
+	self.infoText.pack(expand=1, fill=BOTH, side=BOTTOM)
 	self.infoText.delete('0.0', END)
 	self.infoText.insert('0.0', self.text)	
 	self.infoText.configure(state=DISABLED)
-	self.title("About Algorithm")
+	self.title(self.titleText)

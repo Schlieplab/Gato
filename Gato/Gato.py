@@ -20,7 +20,8 @@ import sys
 import traceback
 import os
 import bdb
-import whrandom 
+import whrandom
+import re 
 import regsub
 import string
 from Tkinter import *
@@ -34,7 +35,7 @@ from GraphUtil import *
 from GraphDisplay import GraphDisplayToplevel
 from GatoUtil import *
 from GatoGlobals import *
-from GatoDialogs import AboutBox, SplashScreen, AboutAlgorithm
+from GatoDialogs import AboutBox, SplashScreen, HTMLViewer
 
 
 # put someplace else
@@ -159,6 +160,9 @@ class AlgoWin(Frame):
 	    self.apple=Menu(self.menubar, tearoff=0, name='apple')
 	    self.apple.add_command(label='About Gato',	
 				   command=self.AboutBox)
+	    self.apple.add_command(label='Help',	
+				   command=self.HelpBox)
+	    self.apple.add_separator()
 	    self.apple.add_command(label='About Algorithm',	
 				   command=self.AboutAlgorithm)
 	    self.menubar.add_cascade(menu=self.apple)
@@ -166,6 +170,9 @@ class AlgoWin(Frame):
 	    self.helpMenu=Menu(self.menubar, tearoff=0, name='help')
 	    self.helpMenu.add_command(label='About Gato',	
 				      command=self.AboutBox)
+	    self.helpMenu.add_command(label='Help',	
+				   command=self.HelpBox)
+	    self.helpMenu.add_separator()
 	    self.helpMenu.add_command(label='About Algorithm',	
 				      command=self.AboutAlgorithm)
 	    self.menubar.add_cascade(label="Help", menu=self.helpMenu, 
@@ -226,8 +233,8 @@ class AlgoWin(Frame):
 				     )
 	self.algoText.pack(expand=1, fill=BOTH)
 	borderFrame.pack(side=TOP, expand=1, fill=BOTH)
-	self.algoText.tag_config('Interactive', foreground='#009900')
-	self.algoText.tag_config('Break',       foreground='#ff0000')
+	self.algoText.tag_config('Interactive', foreground='#009900',background="#E5E5E5")
+	self.algoText.tag_config('Break',       foreground='#ff0000',background="#E5E5E5")
 	self.algoText.tag_config('Blue',        foreground='#0000ff')
 	self.algoText.tag_config('Active',      background='#bbbbff')
 	self.algoText.bind("<ButtonRelease>", self.handleMouse)
@@ -289,11 +296,10 @@ class AlgoWin(Frame):
 	self.algoText.tag_remove(tag,'%d.0' % lineNo,'%d.0' % (lineNo + 1))
 
 
-    def showInteractiveLines(self, lines):
-	""" Tag every line in list lines with tag 'Interactive' """
+    def tagLines(self, lines, tag):
+	""" Tag every line in list lines with specified tag """
 	for l in lines:
-	    self.tagLine(l,'Interactive')
-
+	    self.tagLine(l, tag)
 
     ############################################################
     #
@@ -313,14 +319,19 @@ class AlgoWin(Frame):
 				   )
 	if file is not "": 
 	    self.algorithm.Open(file)
+
 	    self.algoText['state'] = NORMAL 
 	    self.algoText.delete('0.0', END)
 	    self.algoText.insert('0.0', self.algorithm.GetSource())
 	    self.algoText['state'] = DISABLED 
-	    self.showInteractiveLines(self.algorithm.GetInteractiveLines())
+
+	    self.tagLines(self.algorithm.GetInteractiveLines(), 'Interactive')
+	    self.tagLines(self.algorithm.GetBreakpointLines(), 'Break')
+
 	    if self.algorithm.ReadyToStart():
 		self.buttonStart['state'] = NORMAL 
 	    self.master.title("Gato _VERSION_- " + stripPath(file))
+
 
     def OpenGraph(self,file=""):
 	""" GUI to allow selection of graph to open 
@@ -339,8 +350,10 @@ class AlgoWin(Frame):
 	    if self.algorithm.ReadyToStart():
 		self.buttonStart['state'] = NORMAL 
 
+
     def OptionColors(self):
        	print "Menu->File->Options->Colors"
+
 
     def OptionSpeed(self):
 	print "Menu->File->Options->Speed"
@@ -447,9 +460,22 @@ class AlgoWin(Frame):
     def AboutBox(self):
 	d = AboutBox(self.master)
 
-    def AboutAlgorithm(self):
-	d = AboutAlgorithm(self.algorithm.About(), self.master)
+    def HelpBox(self):
+	text = """<HTML><HEAD>Gato Help</HEAD>
+        <BODY>
 
+        <H3>Keyboard Shortcuts</H3>
+        s Start
+        x Stop
+        <space> Step
+        c Continue
+        t trace
+        b toggle breakpoint
+	</BODY></HTML>"""
+	d = HTMLViewer(text, "Help", self.master)
+
+    def AboutAlgorithm(self):
+	d = HTMLViewer(self.algorithm.About(), "About Algorithm", self.master)
 
     ############################################################
     #
@@ -522,6 +548,7 @@ class AlgoWin(Frame):
 	self.master.bind_all('<space>', self.KeyStep)
 	self.master.bind_all('c', self.KeyContinue)
 	self.master.bind_all('t', self.KeyTrace)
+	self.master.bind_all('b', self.KeyBreak)
 
   
     def KeyStart(self, event):
@@ -547,6 +574,10 @@ class AlgoWin(Frame):
 	""" Command linked to toolbar 'Trace' """
 	if self.buttonTrace['state'] == NORMAL:
 	    self.CmdTrace() 
+
+    def KeyBreak(self, event):
+	""" Command for toggling breakpoints """
+	self.algorithm.ToggleBreakpoint()
 
 
     ############################################################
@@ -794,13 +825,13 @@ class AlgorithmDebugger(bdb.Bdb):
 	
     def currentLine(self, frame):
 	""" *Internal* returns the current line number  """ 
-	import linecache, string
-	name = frame.f_code.co_name
-	if not name: 
-	    name = '???'
-	fn = frame.f_code.co_filename
-	line = linecache.getline(fn, frame.f_lineno)
-	#print '+++', fn, frame.f_lineno, name, ':', string.strip(line)
+# 	import linecache, string
+# 	name = frame.f_code.co_name
+# 	if not name: 
+# 	    name = '???'
+# 	fn = frame.f_code.co_filename
+# 	line = linecache.getline(fn, frame.f_lineno)
+# 	#print '+++', fn, frame.f_lineno, name, ':', string.strip(line)
 	return frame.f_lineno 
 
 # Endof: AlgorithmDebugger  ----------------------------------------------------
@@ -812,7 +843,7 @@ class Algorithm:
     def __init__(self):
 	self.DB = AlgorithmDebugger(self)
        	self.source = ""            # Source as a big string
-       	self.interactiveLines = []  
+       	self.interactive = []  
        	self.breakpoints = []       # Doesnt debugger take care of it ?
 	self.algoFileName = ""
 	self.graphFileName = ""
@@ -825,6 +856,9 @@ class Algorithm:
 	self.algoGlobals = {}       # Sandbox for Algorithm
 	self.logAnimator = 0
 	self.about = None
+
+	self.commentPattern = re.compile('[ \t]*#')
+	
 
     def SetGUI(self, itsGUI):
 	""" Set the connection to its GUI """
@@ -989,16 +1023,19 @@ class Algorithm:
 	except:
 	    print "*** Bug in", os.path.splitext(self.algoFileName)[0] + ".pro"
 	    traceback.print_exc()
+
 	# Read in algo and execute it in the debugger
 	file = self.algoFileName
-	#self.DB.set_break(file,1)
-	# Show breakpoints remembered ...
+
+	# Switch on all shown breakpoints
 	for line in self.breakpoints:
-	    self.GUI.ShowBreakpoint(line)	    
+	    self.DB.set_break(self.algoFileName,line)
+
 	try:
 	    command = "execfile(\"" +file +"\")"
 	    self.DB.run(command, self.algoGlobals, self.algoGlobals)
 	except:
+	    # Do somethin useful here
 	    print "OOOppps bug in", self.algoFileName
 	    traceback.print_exc()
 	self.GUI.CommitStop()
@@ -1024,35 +1061,49 @@ class Algorithm:
 	self.breakpoints = []
 
     def SetBreakpoints(self, list):
-	""" NOTE: Use 'breakpoint' var in prolog instead. 
+	""" SetBreakpoints is depreciated 
+            NOTE: Use 'breakpoint' var in prolog instead. 
 
             Set all breakpoints in list: So an algorithm prolog
             can set a bunch of pre-assigned breakpoints at once """
+        print "SetBreakpoints() is depreciated. Use 'breakpoint' var in prolog instead. "
 	for line in list:
 	    self.GUI.ShowBreakpoint(line)
 	    self.breakpoints.append(line)
 	    self.DB.set_break(self.algoFileName,line)
 	    
 
-    def ToggleBreakpoint(self,line):
-	""" If we have a breakpoint on line, delete it, else add it. """
+    def ToggleBreakpoint(self,line = None):
+	""" If we have a breakpoint on line, delete it, else add it. 
+            If no line is passed we ask the DB for it"""
+
+        if line == None:
+	    line = self.DB.lastLine
 
 	if line in self.breakpoints:
 	    self.GUI.HideBreakpoint(line)
 	    self.breakpoints.remove(line)
 	    self.DB.clear_break(self.algoFileName,line)
 	else: # New Breakpoint
-	    # How to check for not breaking in comments nor on empty lines. 
-	    # Does it matter ?
-	    self.GUI.ShowBreakpoint(line)
-	    self.breakpoints.append(line)
-	    self.DB.set_break(self.algoFileName,line)
+
+	    # check for not breaking in comments nor on empty lines. 
+	    import linecache
+	    codeline = linecache.getline(self.algoFileName,line)
+	    if self.commentPattern.match(codeline) == None and codeline != "\n":
+		self.GUI.ShowBreakpoint(line)
+		self.breakpoints.append(line)
+		self.DB.set_break(self.algoFileName,line)
 
 	    
     def GetInteractiveLines(self):
-	""" Return lines on which user interaction (e.g., chooisng a 
-	    vertex occurrs. """	# How to get them ???
-	return self.interactiveLines
+	""" Return lines on which user interaction (e.g., choosing a 
+	    vertex occurrs. """
+	return self.interactive
+	
+    def GetBreakpointLines(self):
+	""" Return lines on which user interaction (e.g., choosing a 
+	    vertex occurrs. """
+	return self.breakpoints
 	
     def GetSource(self):
 	""" Return the algorithms source """  
