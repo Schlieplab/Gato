@@ -10,8 +10,9 @@
 #       Parts of the source from this file has been taken from
 #       the Python Tkinter demos.
 #
-#       This file has version $Revision$ from $Date$. Last change by
-#       $Author$.
+#       This file is version $Revision$ 
+#                       from $Date$
+#             last change by $Author$.
 #
 ################################################################################
 from Tkinter import *
