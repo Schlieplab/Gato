@@ -353,28 +353,7 @@ class sum_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
         self.sum.insert(Tkinter.END,
                         str(round(sum_value,self.entry_width)),
                         )
-        self.sum.bind('<Return>',self.renorm_return)
-
-        # create snd text label
-        # self.text2=Tkinter.Label(self,text='keep const',bg='white')
-
-        # create checkbutton
-        self.cb_stat=Tkinter.IntVar()
-        if self.data.fixed_sum>0:
-            self.cb_stat.set(1)
-        else:
-            self.cb_stat.set(0)
-        self.cb=Tkinter.Checkbutton(self,
-                                    command=self.renorm_const,
-                                    variable=self.cb_stat,
-                                    bg='white',
-                                    highlightthickness=0)
-
-        # pack together
-        # self.text1.pack(side=Tkinter.LEFT)
-        # self.sum.pack(side=Tkinter.LEFT)
-        # self.text2.pack(side=Tkinter.LEFT)
-        # self.cb.pack(side=Tkinter.LEFT)
+        self.sum.bind('<Return>',self.renorm_event)
 
         self.v=Tkinter.IntVar(self)
         self.v.set(100)
@@ -393,14 +372,14 @@ class sum_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
         Tkinter.Radiobutton(self,
                             text='custom',
                             variable=self.v,
-                            value=0,
+                            value=-1,
                             bg='white',
                             anchor=Tkinter.W).grid(column=0,row=3,sticky=Tkinter.EW)
         self.sum.grid(column=1,row=3)
         Tkinter.Radiobutton(self,
                             text='free',
                             variable=self.v,
-                            value=-1,
+                            value=0,
                             bg='white',
                             anchor=Tkinter.W).grid(column=0,row=4,sticky=Tkinter.EW)
         self.columnconfigure(3,weight=1)
@@ -426,21 +405,27 @@ class sum_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
                         )
         return new_sum
 
-    def renorm_return(self,event):
+    def renorm_event(self,event):
         """
         do renorming of data
         """
 
-        new_sum=self.get_sum_value()
-        if self.cb_stat.get()==1:
-            self.data.fixed_sum=new_sum
+        rb_sum=self.v.get()
+        new_sum=0.0
+        if rb_sum>=0:
+            new_sum=float(cb_sum)
+        else:
+            # read from textfield
+            new_sum=self.get_sum_value()
         # if necessary, force change-report to all
-        if abs(self.data.emissions.sum-new_sum)>self.data.precision:
-                self.data.emissions.renorm_to(new_sum)
-                change=ProbEditorBasics.emission_change_data(self,
-                                                                 self.data,
-                                                                 self.data.emissions)
-                self.send_change(change)
+        self.data.fixed_sum=new_sum
+        if new_sum>0 and \
+           abs(self.data.emissions.sum-new_sum)>self.data.precision:
+            self.data.emissions.renorm_to(new_sum)
+            change=ProbEditorBasics.emission_change_data(self,
+                                                         self.data,
+                                                         self.data.emissions)
+            self.send_change(change)
 
     def renorm_const(self):
         """

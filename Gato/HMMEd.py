@@ -163,10 +163,6 @@ class HMM:
 
 
 
-
-
-
-
     def SaveAs(self, fileName):
 	file = open(fileName, 'w')
    
@@ -256,6 +252,16 @@ class HMM:
 
 	file.write("};\n") # close HMM = {
 
+
+    def open_xml(self,filename):
+        """
+        parses an xml graph file
+        """
+
+        import xml_utils
+        parser_tree=xml_utils.parse(filename)
+        hmms=xml_utils.get_hmms(parser_tree)
+	xml_utils.set_hmm(hmms[0],self)
 
 class EditPriorDialog(tkSimpleDialog.Dialog):
     def __init__(self, master, Pi):

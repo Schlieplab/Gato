@@ -790,7 +790,7 @@ class bar_chart_with_scale(Tkinter.Frame):
         scrollr=self.bars.cget('scrollregion')
         scrollr=map(int,scrollr.split())
         # print "from config",scrollr
-        hier muesste noch ein config_scale rein
+        #hier muesste noch ein config_scale rein
         # self.scale.config_scale()
         if event.height>=(scrollr[3]-scrollr[1]):
             # print "y_scrollbar away"
