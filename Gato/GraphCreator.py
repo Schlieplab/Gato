@@ -62,48 +62,55 @@ class Dialog(tkSimpleDialog.Dialog):
         self.number_of_nodes=StringVar()
         self.number_of_nodes.set("1")
         label = Label(master, text="number of nodes :", anchor=W)
-        label.grid(row=0, column=0, padx=4, pady=3, sticky="w")
+        label.grid(row=0, column=0, padx=0, pady=2, sticky="w")
         entry=Entry(master, width=6, exportselection=FALSE,
 		    textvariable=self.number_of_nodes)
         entry.selection_range(0,1)
         entry.focus_set()
-	entry.grid(row=0,column=1, padx=4, pady=3, sticky="w")
+	entry.grid(row=0,column=1, padx=2, pady=2, sticky="w")
 	
         self.number_of_edges=StringVar()
         self.number_of_edges.set("0")
         if self.visible:
             label = Label(master, text="number of edges :", anchor=W)
-            label.grid(row=1, column=0, padx=4, pady=3, sticky="w")
+            label.grid(row=1, column=0, padx=0, pady=2, sticky="w")
             entry=Entry(master, width=6, exportselection=FALSE,
                         textvariable=self.number_of_edges)
             entry.selection_range(0,1)
             entry.focus_set()
-            entry.grid(row=1,column=1, padx=4, pady=3, sticky="w")
-	
+            entry.grid(row=1,column=1, padx=2, pady=2, sticky="w")
+
         self.direction=IntVar()
         self.direction.set(0)
         radio=Radiobutton(master, text="Undirected", variable=self.direction,
                           value=0)
-        radio.grid(row=0, column=2, padx=4, pady=3, sticky="w") 
+        radio.grid(row=0, column=2, padx=2, pady=2, sticky="w") 
         radio=Radiobutton(master, text="Directed", variable=self.direction,
                           value=1)
-        radio.grid(row=1, column=2, padx=4, pady=3, sticky="w")
+        radio.grid(row=1, column=2, padx=2, pady=2, sticky="w")
+
+        label = Label(master, text=" ")
+        label.grid(row=0, column=3, padx=5, pady=2) 
 
         self.layout=IntVar()
         self.layout.set(0)
         radio=Radiobutton(master, text="Randomize Layout",
-                          variable=self.layout, value=0)
-        radio.grid(row=0, column=3, padx=4, pady=3, sticky="w") 
+                          variable=self.layout, value=0,
+                          width=23, indicatoron=0, selectcolor="white")
+        radio.grid(row=0, column=4, padx=3, pady=2, sticky="w")  
         radio=Radiobutton(master, text="Circular Layout",
-                          variable=self.layout, value=1)
-        radio.grid(row=1, column=3, padx=4, pady=3, sticky="w")
+                          variable=self.layout, value=1,
+                          width=23, indicatoron=0, selectcolor="white")
+        radio.grid(row=1, column=4, padx=3, pady=2, sticky="w") 
         if self.planar:
             radio=Radiobutton(master, text="Planar Layout (FPP)",
-                              variable=self.layout, value=2)
-            radio.grid(row=0, column=4, padx=4, pady=3, sticky="w") 
+                              variable=self.layout, value=2,
+                              width=23, indicatoron=0, selectcolor="white")
+            radio.grid(row=3, column=4, padx=3, pady=2, sticky="w") 
             radio=Radiobutton(master, text="Planar Layout (Schnyder)",
-                              variable=self.layout, value=3)
-            radio.grid(row=1, column=4, padx=4, pady=3, sticky="w")
+                              variable=self.layout, value=3,
+                              width=23, indicatoron=0, selectcolor="white")
+            radio.grid(row=4, column=4, padx=3, pady=2, sticky="w")
 
     def validate(self):
         try:
@@ -373,57 +380,64 @@ class TreeDialog(tkSimpleDialog.Dialog):
         self.degree=StringVar()
         self.degree.set("2")
         label = Label(master, text="degree  :", anchor=W)
-        label.grid(row=0, column=0, padx=4, pady=3, sticky="w")
+        label.grid(row=0, column=0, padx=0, pady=2, sticky="w")
         entry=Entry(master, width=6, exportselection=FALSE,
                     textvariable=self.degree)
         entry.selection_range(0,1)
         entry.focus_set()
-        entry.grid(row=0,column=1, padx=4, pady=3, sticky="w")
-        
+        entry.grid(row=0,column=1, padx=2, pady=2, sticky="w")
+
         self.height=StringVar()
         self.height.set("0")
         label = Label(master, text="height   :", anchor=W)
-        label.grid(row=1, column=0, padx=4, pady=3, sticky="w")
+        label.grid(row=1, column=0, padx=0, pady=2, sticky="w")
         entry=Entry(master, width=6, exportselection=FALSE,
                     textvariable=self.height)
         entry.selection_range(0,1)
         entry.focus_set()
-        entry.grid(row=1,column=1, padx=4, pady=3, sticky="w")
-        
+        entry.grid(row=1,column=1, padx=2, pady=2, sticky="w")
+
         self.number_of_nodes=StringVar()
         self.number_of_nodes.set("1")
         if self.visible:
             label = Label(master, text="#nodes :", anchor=W)
-            label.grid(row=3, column=0, padx=4, pady=3, sticky="w")
+            label.grid(row=2, column=0, padx=0, pady=2, sticky="w")
             entry=Entry(master, width=6, exportselection=FALSE,
                         textvariable=self.number_of_nodes)
             entry.selection_range(0,1)
             entry.focus_set()
-            entry.grid(row=3,column=1, padx=4, pady=3, sticky="w")
-            
+            entry.grid(row=2,column=1, padx=2, pady=2, sticky="w")
+
         self.direction=IntVar()
         self.direction.set(0)
         radio=Radiobutton(master, text="Undirected", variable=self.direction,
                           value=0)
-        radio.grid(row=0, column=2, padx=4, pady=3, sticky="w") 
+        radio.grid(row=0, column=2, padx=2, pady=2, sticky="w") 
         radio=Radiobutton(master, text="Directed", variable=self.direction,
                           value=1)
-        radio.grid(row=1, column=2, padx=4, pady=3, sticky="w")
+        radio.grid(row=1, column=2, padx=2, pady=2, sticky="w")
+
+        label = Label(master, text=" ")
+        label.grid(row=0, column=3, padx=5, pady=2) 
         
         self.layout=IntVar()
         self.layout.set(0)
         radio=Radiobutton(master, text="Randomize Layout",
-                          variable=self.layout, value=0)
-        radio.grid(row=0, column=3, padx=4, pady=3, sticky="w") 
+                          variable=self.layout, value=0,
+                          width=17, indicatoron=0, selectcolor="white")
+        radio.grid(row=0, column=4, padx=3, pady=2, sticky="w") 
         radio=Radiobutton(master, text="Circular Layout",
-                          variable=self.layout, value=1)
-        radio.grid(row=1, column=3, padx=4, pady=3, sticky="w")
+                          variable=self.layout, value=1,
+                          width=17, indicatoron=0, selectcolor="white")
+        radio.grid(row=1, column=4, padx=3, pady=2, sticky="w")
         radio=Radiobutton(master, text="Tree Layout",
-                          variable=self.layout, value=2)
-        radio.grid(row=0, column=4, padx=4, pady=3, sticky="w") 
+                          variable=self.layout, value=2,
+                          width=17, indicatoron=0, selectcolor="white")
+        radio.grid(row=2, column=4, padx=3, pady=2, sticky="w") 
         radio=Radiobutton(master, text="BFS-Tree Layout",
-                          variable=self.layout, value=3)
-        radio.grid(row=1, column=4, padx=4, pady=3, sticky="w")
+                          variable=self.layout, value=3,
+                          width=17, indicatoron=0, selectcolor="white")
+        radio.grid(row=3, column=4, padx=3, pady=2, sticky="w")
 
     def validate(self):
         try:
@@ -460,15 +474,22 @@ class TreeDialog(tkSimpleDialog.Dialog):
 			    "max. #nodes = 1000")
 		return 0
             min_nodes=h+1
-            max_nodes=d**(h+1)-1
-            if min_nodes>max_nodes: max_nodes=min_nodes
+            if d==1:
+                max_nodes=h+1
+            else:
+                max_nodes=(d**(h+1)-1)/(d-1)
+            if min_nodes>max_nodes:
+                max_nodes=min_nodes
 	    if n<min_nodes or n>max_nodes:
                 showwarning("Please try again !",
                             "min. #nodes = %i\n"
                             "max. #nodes = %i" %(min_nodes,max_nodes))
                 return 0
         else:
-            max_height=int(log10(1000)/log10(d))
+            if d==1:
+                max_height=100
+            else:
+                max_height=int(log10(1000)/log10(d))
             if h>max_height:
                 showwarning("Please try again !",
                             "max. height = %i" %max_height)
@@ -533,6 +554,8 @@ class completeTreeCreator(Creator):
 		DrawNewGraph(theGraphEditor,G,direction) 
 
 #----------------------------------------------------------------------
+from math import ceil
+
 class randomTreeCreator(Creator):
 
     def Name(self):
@@ -552,34 +575,39 @@ class randomTreeCreator(Creator):
         G=Graph()
         G.directed=direction
 
-	edges=[]
 	nodes={}
 	nodes[0]=[]
-	G.AddVertex()
-	nodes[0].append(G.vertices[0])
+	new_v=G.AddVertex()
+	nodes[0].append(new_v)
+	children_nr={}
+	children_nr[new_v]=0
         for h in range(0,height):
             nodes[h+1]=[]
-	    min_nodes=max(1,(n-G.Order())/(degree**(height-h)-1)+1)
-	    max_nodes=min(n-height-h,len(nodes[h])*degree)
-	    print min_nodes, max_nodes
-	    for v in nodes[h]:
-		children_nr=degree
-		#children_nr=whrandom.randint(0,degree)
-		for d in range(0,children_nr):
-		    new_v=G.AddVertex()
-		    pos=whrandom.randint(0,len(edges))
-		    if direction==0: 
-			edges.insert(pos,(v,new_v))
-		    else:
-			if whrandom.randint(0,1):
-			    edges.insert(pos,(v,new_v))
-			else:
-			    edges.insert(pos,(new_v,v))
-		    nodes[h+1].append(new_v)
-
-	for e in edges:
-	    G.AddEdge(e[0],e[1])
-	
+            if degree==1:
+                min_nodes=1
+                max_nodes=1
+            else:
+                min_nodes=max(1,ceil(float(n-G.Order())/
+                                     float((degree**(height-h)-1)/(degree-1))))
+                max_nodes=min(n-G.Order()-height+h+1,len(nodes[h])*degree)     
+            nodes_nr=whrandom.randint(min_nodes,max_nodes)
+            for i in range(0,nodes_nr):
+                pos=whrandom.randint(0,len(nodes[h])-1)
+                v=nodes[h][pos]
+                children_nr[v]=children_nr[v]+1
+                if children_nr[v]==degree:
+                    del nodes[h][pos]
+                new_v=G.AddVertex()
+                children_nr[new_v]=0
+                if direction==0:
+                    G.AddEdge(v,new_v)
+                else:
+                    if whrandom.randint(0,1):
+                        G.AddEdge(v,new_v)
+                    else:
+                        G.AddEdge(new_v,v)
+                nodes[h+1].append(new_v)
+	    
         if layout==0:
 	    if RandomCoords(G):
 		DrawNewGraph(theGraphEditor,G,direction) 

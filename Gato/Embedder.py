@@ -128,22 +128,22 @@ class TreeLayoutDialog(tkSimpleDialog.Dialog):
         
         self.root=StringVar()
         self.root.set("1")
-        label = Label(master, text="root (1-%i):" %self.G.Order(), anchor=W)
-        label.grid(row=0, column=0, padx=4, pady=3, sticky="w")
+        label = Label(master, text="root (1-%i) :" %self.G.Order(), anchor=W)
+        label.grid(row=0, column=0, padx=0, pady=2, sticky="w")
         entry=Entry(master, width=6, exportselection=FALSE,textvariable=self.root)
         entry.selection_range(0,1)
         entry.focus_set()
-	entry.grid(row=0,column=1, padx=4, pady=3, sticky="w")
+	entry.grid(row=0,column=1, padx=2, pady=2, sticky="w")
         
         self.orientation=StringVar()
         self.orientation.set("vertical")
         
 	radio=Radiobutton(master, text="vertical", variable=self.orientation, 
 			  value="vertical")
-	radio.grid(row=0, column=2, padx=4, pady=3, sticky="w") 
+	radio.grid(row=0, column=2, padx=2, pady=2, sticky="w") 
 	radio=Radiobutton(master, text="horizontal", variable=self.orientation,
 			  value="horizontal")
-	radio.grid(row=1, column=2, padx=4, pady=3, sticky="w") 
+	radio.grid(row=1, column=2, padx=2, pady=2, sticky="w") 
 
 
     def validate(self):
@@ -305,22 +305,22 @@ class BFSLayoutDialog(tkSimpleDialog.Dialog):
         
         self.root=StringVar()
         self.root.set("1")
-        label = Label(master, text="root (1-%i):" %self.G.Order(), anchor=W)
-        label.grid(row=0, column=0, padx=4, pady=3, sticky="w")
+        label = Label(master, text="root (1-%i) :" %self.G.Order(), anchor=W)
+        label.grid(row=0, column=0, padx=0, pady=2, sticky="w")
         entry=Entry(master, width=6, exportselection=FALSE,textvariable=self.root)
         entry.selection_range(0,1)
         entry.focus_set()
-	entry.grid(row=0,column=1, padx=4, pady=3, sticky="w")
+	entry.grid(row=0,column=1, padx=2, pady=2, sticky="w")
         
         self.direction=StringVar()
         self.direction.set("forward")
         if self.G.QDirected():
             radio=Radiobutton(master, text="forward", variable=self.direction, 
                                value="forward")
-            radio.grid(row=0, column=2, padx=4, pady=3, sticky="w") 
+            radio.grid(row=0, column=2, padx=2, pady=2, sticky="w") 
             radio=Radiobutton(master, text="backward", variable=self.direction,
                                value="backward")
-            radio.grid(row=1, column=2, padx=4, pady=3, sticky="w") 
+            radio.grid(row=1, column=2, padx=2, pady=2, sticky="w") 
 
 
     def validate(self):
