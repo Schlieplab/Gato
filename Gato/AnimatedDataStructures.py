@@ -544,22 +544,30 @@ class FlowWrapper:
         cap     = {}
         flow    = FlowWrapper(G,A,R,RA,G.edgeWeights[0],cap,res)
     """
-    def __init__(self,  G, GA, R, RA, flow, cap, res):
-        self.G    = G
-        self.GA   = GA
-        self.R    = R
-        self.RA   = RA
-        self.flow = flow
-        self.cap  = cap
-        self.res  = res
+    def __init__(self,  G, GA, R, RA, flow, cap, res,excess={}):
+        self.G      = G
+        self.GA     = GA
+        self.R      = R
+        self.RA     = RA
+        self.flow   = flow
+        self.cap    = cap
+        self.res    = res
+        self.excess = excess
 	for e in self.G.Edges():
             self.cap[e]  = self.flow[e]
             self.res[e]  = self.flow[e] 
 	    self.flow[e] = 0
+        for v in self.G.vertices:
+            self.excess[v] = 0
 
-    def __setitem__(self, e, val):  
+    def __setitem__(self, e, val):
+	if self.excess[e[0]] != gInfinity:
+            self.excess[e[0]] = self.excess[e[0]] + self.flow[e] - val
+        if self.excess[e[1]] != gInfinity:
+            self.excess[e[1]] = self.excess[e[1]] - self.flow[e] + val  
         self.flow[e] = val
         if val == self.cap[e]:     
+            self.RA.SetEdgeColor(e[0],e[1],"black")            
             self.GA.SetEdgeColor(e[0],e[1],"blue")
             self.GA.SetEdgeAnnotation(e[0],e[1],"%d/%d" % (val,self.cap[e]),"black")
 	    try:
@@ -568,7 +576,7 @@ class FlowWrapper:
                 None
             if not self.R.QEdge(e[1],e[0]):
                 self.RA.AddEdge(e[1],e[0])
-        elif val == 0:             
+        elif val == 0: 
             self.GA.SetEdgeColor(e[0],e[1],"black")
             self.GA.SetEdgeAnnotation(e[0],e[1],"%d/%d" % (val, self.cap[e]),"gray")
 	    try:
@@ -578,6 +586,7 @@ class FlowWrapper:
             if not self.R.QEdge(e[0],e[1]):
                 self.RA.AddEdge(e[0],e[1])
         else:                      
+            self.RA.SetEdgeColor(e[0],e[1],"black")            
             self.GA.SetEdgeColor(e[0],e[1],"#AAAAFF")
             self.GA.SetEdgeAnnotation(e[0],e[1],"%d/%d" % (val,self.cap[e]),"black")
             if not self.R.QEdge(e[1],e[0]):
