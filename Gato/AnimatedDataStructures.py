@@ -670,6 +670,7 @@ class FlowWrapper:
         flow = FlowWrapper(G,A,R,RA,G.edgeWeights[0],R.edgeWeights[0],G.vertexWeights[0])
     """
     def __init__(self,  G, GA, R, RA, flow, res, excess=None):
+        self.zeroEdgeColor = "black"
         self.G      = G
         self.GA     = GA
         self.R      = R
@@ -713,7 +714,7 @@ class FlowWrapper:
             if not self.R.QEdge(e[1],e[0]):
                 self.RA.AddEdge(e[1],e[0])
         elif val == 0: 
-            self.GA.SetEdgeColor(e[0],e[1],"black")
+            self.GA.SetEdgeColor(e[0],e[1],self.zeroEdgeColor)
             self.GA.SetEdgeAnnotation(e[0],e[1],"%d/%d" % (val, self.cap[e]),"gray")
 	    try:
                 self.RA.DeleteEdge(e[1],e[0])
