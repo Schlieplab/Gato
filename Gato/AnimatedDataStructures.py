@@ -254,6 +254,36 @@ class AnimatedSign:
 
 
 
+class AnimatedPotential:
+    def __init__(self,max,theAnimator1,theAnimator2=None):
+        self.pot      = {}
+        self.max      = max
+        self.colors   = ['#00FF00','#11EE00','#22DD00','#33CC00','#44BB00',
+                         '#55AA00','#669900','#778800','#887700','#996600',
+                         '#AA5500','#BB4400','#CC3300']
+        self.Animator1 = theAnimator1
+	if theAnimator2 == None:
+            self.Animator2 = theAnimator1
+	else:
+            self.Animator2 = theAnimator2 
+
+    def __setitem__(self,v,val):
+        self.pot[v] = val
+	if val > max:
+            val = max
+        self.Animator1.SetVertexColor(v,self.colors[(val*(len(self.colors)))/self.max])
+        if val == gInfinity:
+            self.Animator2.SetVertexAnnotation(v,"Inf")
+        elif val == -gInfinity:
+            self.Animator2.SetVertexAnnotation(v,"-Inf")
+        else:
+            self.Animator2.SetVertexAnnotation(v,"%d"%val)
+
+    def __getitem__(self,v):
+        return self.pot[v]
+            
+
+
 class BlinkingVertexLabeling(VertexLabeling):
     """ Visualizes changes of values of the VertexLabeling
         by blinking vertices """
