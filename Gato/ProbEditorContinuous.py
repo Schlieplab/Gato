@@ -143,9 +143,49 @@ class sum_function(plot_object):
         """
         return self.weight_list
 
-    def get_sample_values(self,x1,x2):
+    def get_sample_values_merge(self,x1,x2):
         """
         merge the sets of sample-values
+        """
+        
+        sample_lists=[]
+        parameter_values=[(0,0)]*len(self.sum_list)
+        new_list=[]
+
+        for sum_object in self.sum_list:
+            sample_lists.append(sum_object.get_sample_values(x1,x2))
+
+        ready=0
+        last=x1-1.0
+        while not ready:
+
+            # get next smallest value
+            min=x2
+            min_index=-1
+            index=0
+            for l in sample_lists:
+                if l and l[0]<=min:
+                    min=l[0]
+                    min_index=index
+                index+=1
+
+            # pop this from list
+            del sample_lists[min_index][0]
+            
+            if min!=last:
+                new_list.append(min)
+
+            if min==x2:
+                ready=1
+
+            #save it
+            last=min
+
+        return new_list
+
+    def get_sample_values_merge_best(self,x1,x2):
+        """
+        find best set of the merged sets of sample-values
         """
         x_list=[x1,x2]
         epsilon=abs(x1-x2)/200.0
@@ -191,6 +231,60 @@ class sum_function(plot_object):
                 x_list=new_list
                 
         return new_list
+
+    # choose one of the algorithms
+    get_sample_values=get_sample_values_merge
+
+    def get_points(self,x1,x2,res=0):
+        """
+        better ... and interpolate immediately
+        """
+
+        sample_lists=[]
+        parameter_values=[(0,0)]*len(self.sum_list)
+        new_list=[]
+
+        for sum_object in self.sum_list:
+            sample_lists.append(sum_object.get_points(x1,x2))
+
+        ready=0
+        last=x1-1.0
+        while not ready:
+
+            # get next smallest value
+            min=x2
+            min_index=-1
+            index=0
+            for l in sample_lists:
+                if l and l[0][0]<=min:
+                    min=l[0][0]
+                    min_index=index
+                index+=1
+
+            # new interpolation parameters
+            if len(sample_lists[min_index])>1:
+                a=(sample_lists[min_index][0][1]-sample_lists[min_index][1][1])/\
+                   (min-sample_lists[min_index][1][0])
+                b=sample_lists[min_index][0][1]-min*a
+                parameter_values[min_index]=(b,a)
+
+            # pop this from list
+            del sample_lists[min_index][0]
+            
+            if abs(min-last)>res:
+                sum=0
+                for interpolate in parameter_values:
+                    sum+=interpolate[0]+interpolate[1]*min
+                new_list.append((min,sum))
+
+            if min==x2:
+                ready=1
+
+            #save it
+            last=min
+
+        return new_list
+
 
 class line_function(plot_object):
     """
@@ -342,10 +436,16 @@ class gauss_tail_function(plot_object):
         # renormed distances
         n_min=(x_min-self.mu)/self.sigma
         n_max=(x_max-self.mu)/self.sigma
+        n_tail=(self.tail-self.mu)/self.sigma
         n_step=(n_max-n_min)/10.0
 
         n_list=[]
         n=n_min
+
+        if n<n_tail:
+            n_list.append(n)
+            n_list.append(n_tail-n_step/1000)
+            n=n_tail
 
         # boring range <5
         while n<n_max and n<-res_map_start:
@@ -353,7 +453,7 @@ class gauss_tail_function(plot_object):
             n+=n_step
 
         # interesting range
-        n=max(-res_map_start,n_min)
+        n=max(-res_map_start,n_min,n_tail)
         while n<n_max and n<res_map_start:
             n_list.append(n)
             n+=1.0/float(res_map[abs(int(n))])
