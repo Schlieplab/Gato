@@ -100,7 +100,38 @@ def BFS(G,root,direction='forward'):
     return (d,pred)
 
 
+def ConnectedComponents(G):
+    """ Compute the connected components of the undirected graph G.
+        Returns a list of lists of vertices. """
 
+
+    result = []
+    visited = {}
+    for v in G.vertices:
+	visited[v] = None
+
+    for root in G.vertices:
+        if visited[root] is not None:
+            continue
+        else: # Found a new component
+            component = [root]
+            visited[root] = 1
+            
+            Q = Queue()
+            Q.Append(root)
+
+            while Q.IsNotEmpty():
+                v = Q.Top()
+                nbh = G.Neighborhood(v)
+                for w in nbh:
+                    if visited[w] == None:
+                        visited[w] = 1
+                        Q.Append(w)
+                        component.append(w)
+
+            result.append(component)
+            
+    return result
 
 
 

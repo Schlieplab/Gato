@@ -644,11 +644,17 @@ def showPathByPredecessorArray(source,sink,pred,A,color="red"):
 	(default is 'red') """
 
     v = sink
+
+    seen = [v] # avoid getting stuck in cycles
     
     while (pred[v] != None) and (pred[v] != v):
 	A.SetVertexColor(v,color)
 	A.SetEdgeColor(pred[v],v,color)
 	v = pred[v]
+        if v in seen:
+            return
+        else:
+            seen.append(v)
 
     A.SetVertexColor(v,color)
 

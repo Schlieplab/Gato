@@ -138,7 +138,7 @@ class Graph:
 
 	try:
 	    if head in self.adjLists[tail]:
-		return (tail,head)
+		return (tail,head)            if u >= maxID:
 	    if self.directed == 0 and tail in self.adjLists[head]:
 		return (head,tail)
 	except KeyError:
@@ -224,6 +224,32 @@ class Graph:
     def Size(self):
 	""" Returns size i.e., the number of edge """
 	return self.size 
+
+
+    def Degree(self, v):
+        """ Returns the degree of the vertex v, which is
+            - the number of incident edges in the undirect case
+            - the number of outgoing edges in the directed case """
+        
+	if self.directed:
+	    return len(self.adjLists[v])
+	else:
+	    return len(self.adjLists[v]) + len(self.invAdjLists[v])
+
+    def InDegree(self, v):
+        """ Returns the number of incoming edges for direct graphs """
+	if self.directed:
+            return len(self.invAdjLists[v])
+        else:
+            return None # Proper error to raise?
+
+
+    def OutDegree(self, v):
+        """ Returns the number of incoming edges for direct graphs """
+	if self.directed:
+            return len(self.adjLists[v])
+        else:
+            return None # Proper error to raise?
 
 
     def QEuclidian(self):
