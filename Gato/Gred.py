@@ -65,7 +65,7 @@ class GredAboutBox(GatoDialogs.AboutBox):
 				     font="Times 10")
 	self.infoText.pack(expand=0, fill=X, side=BOTTOM)
 	self.infoText.delete('0.0', END)
-	inputFile=open(sys.path[0] +"/GPL.txt", 'r')
+	inputFile=open(sys.path[0] +"/LGPL.txt", 'r')
        	text = inputFile.read()
 	inputFile.close()
 	self.infoText.insert('0.0', text)	

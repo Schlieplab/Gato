@@ -12,7 +12,7 @@
 # Vars
 
 VERSION       = 0.90
-DATE          = 4/12/1999
+DATE          = 4/30/1999
 DISTNAME      = Gato
 DISTNAMEMAC   = $(DISTNAME)-Mac
 DISTNAMEDOC   = $(DISTNAME)-Doc
@@ -56,7 +56,7 @@ SOURCES	      = AnimatedAlgorithms.py \
 		gato.gif \
 		gred.gif 
 
-LICENCE       = GPL.txt
+LICENCE       = LGPL.txt
 
 EXECUTABLES   = $(EXECDIR)/Gato.py \
 		$(EXECDIR)/Gred.py

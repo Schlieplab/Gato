@@ -21,13 +21,13 @@ import tkSimpleDialog
 import sys
 import os
 
-crnotice1 = "Copyright (C) 1998-1999, ZPR, Universität zu Köln\n"\
+crnotice1 = "Copyright (C) 1998-1999, ZAIK/ZPR, Universität zu Köln\n"\
 	    "Gato version _VERSION_ from _BUILDDATE_"
 crnotice2 = "Written by Alexander Schliep (schliep@zpr.uni-koeln.de)\n" \
             "For Information see http://www.zpr.uni-koeln.de/~gato\n" \
  	    "Gato comes with ABSOLUTELY NO WARRANTY.\n" \
             "This is free software, and you are welcome to redistribute\n" \
-            "it under certain conditions. For details see 'GPL.txt'.\n"
+            "it under certain conditions. For details see 'LGPL.txt'.\n"
 
 
 class AboutBox(tkSimpleDialog.Dialog):
@@ -62,7 +62,7 @@ class AboutBox(tkSimpleDialog.Dialog):
 				     font="Times 10")
 	self.infoText.pack(expand=0, fill=X, side=BOTTOM)
 	self.infoText.delete('0.0', END)
-	inputFile=open(sys.path[0] +"/GPL.txt", 'r')
+	inputFile=open(sys.path[0] +"/LGPL.txt", 'r')
        	text = inputFile.read()
 	inputFile.close()
 	self.infoText.insert('0.0', text)	
