@@ -111,6 +111,10 @@ class Graph:
         # XXX Should clean up all other stuff too ...
 
 
+    def QVertex(self, v):
+         """ Check whether v is a vertex """
+         return v in self.vertices
+
     def AddEdge(self,tail,head):
 	""" Add an edge (tail,head). Returns nothing
 	    Raises GraphNotSimpleError if
@@ -215,6 +219,9 @@ class Graph:
 	    tmp = tmp + self.OutEdges(v)
 	return tmp
 
+    def Vertices(self):
+	""" Returns all edges """		
+	return self.vertices
 
     def printMy(self):
 	""" Debugging only """
