@@ -1,6 +1,20 @@
 ----------------------------------------------------------------
 Einordnen:
 ----------------------------------------------------------------
+* 
+
+* <space> sollte Algo starten
+
+* KB-commands klemmen ab und zu (nur bei TP?)
+
+* Im MST Graph Informer steht immer "weight of mst", obwohl es doch
+  (meistens) noch garkein MST ist.
+ 
+*  Koennte man in einer AnimatedNeighborhood(v) nicht den Knoten v mit einer
+   FrameWidth 6 versehen?
+
+* In dem AnimatedEdgeSet gibt es AddEdge und Remove, besser waere doch
+  AddEdge und DeleteEdge wie im normalen Graphen auch, oder?
 
 * MouseUp ohne MouseDown vorher ignorieren (Tk-Problem? nur unter 
   Windooze ?)
@@ -25,7 +39,6 @@ Algorithms:
 ----------------------------------------------------------------
 Specific Algorithms:
 ----------------------------------------------------------------
-* BFS/DFS mit parent-array und BFS/DFS-Baum Darstellung
 
 - MSTKruskal/Greedy Tree info # components #vertices in largest, 
   sum of weights largest.
@@ -41,6 +54,9 @@ Specific Algorithms:
 ----------------------------------------------------------------
 Editor:
 ----------------------------------------------------------------
+
+- floating toolbar menu (tearoffcommand, accelerator, selectimage)
+
 * gred: directed toggle status bei Speichern undirected, und dann New
 
 * gred: start mit window in groesse wie Gato 2-window layout
@@ -65,7 +81,6 @@ Editor:
 ---------------------------------------------------------------
 GUI:
 ----------------------------------------------------------------
-* Info-Fenster (Legende Farben, Info text)
 
 * Syntax-Highlight ? Farben/Fonts ?
 

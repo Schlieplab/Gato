@@ -19,8 +19,8 @@ from Gato import *
 
 testPath = "../CATBox/"
 
-tests = [ ("FindpathEuclid.alg","cm.cat"),
-	  ("Findpath.alg","cm.cat") ]
+tests = [ ("04-MinimalSpanningTrees/Kruskal.alg",
+	   "04-MinimalSpanningTrees/MinimalSpanningTrees08.cat")]
 
 
 if __name__ == '__main__':
