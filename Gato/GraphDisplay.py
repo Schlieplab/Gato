@@ -955,7 +955,7 @@ class GraphDisplay:
 	    x = 0.5 * (coords[2] - coords[0]) + coords[0]
 	    y = 0.5 * (coords[3] - coords[1]) + coords[1]
 	except: # Vertex is not on the canvas yet
-	    print "XXX VertexPosition excepted: No draw Vertex ?"
+	    #print "XXX VertexPosition excepted: No draw Vertex ?"
 	    x,y = self.EmbeddingToCanvas(self.embedding[v].x,self.embedding[v].y)
 
 	return Point2D(x,y)

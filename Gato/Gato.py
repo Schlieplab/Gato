@@ -1321,23 +1321,28 @@ if __name__ == '__main__':
     #import sys
     #print sys.path
 
-    app = AlgoWin()    
-    #======================================================================
-    #
-    # Gato.py <algorithm> <graph>
-    #
-    if (len(sys.argv) > 1):
-	algorithm = sys.argv[1]
-	graph = sys.argv[2]
+    if (len(sys.argv) == 1 or  len(sys.argv) == 3):
 
-	app.OpenAlgorithm(algorithm)
-	app.update_idletasks()
-	app.update()
-	app.OpenGraph(graph)
-	app.update_idletasks()
-	app.update()
-	app.after_idle(app.CmdContinue) # after idle needed since CmdStart
-	app.CmdStart()
-	app.update_idletasks()
+	app = AlgoWin()    
+	#======================================================================
+	#
+	# Gato.py <algorithm> <graph>
+	#
+	if (len(sys.argv) == 3):
+	    algorithm = sys.argv[1]
+	    graph = sys.argv[2]
 
-    app.mainloop()
+	    app.OpenAlgorithm(algorithm)
+	    app.update_idletasks()
+	    app.update()
+	    app.OpenGraph(graph)
+	    app.update_idletasks()
+	    app.update()
+	    app.after_idle(app.CmdContinue) # after idle needed since CmdStart
+	    app.CmdStart()
+	    app.update_idletasks()
+
+	app.mainloop()
+    else:
+	print "Usage: gato algorithm.alg graph.cat"
+
