@@ -21,6 +21,15 @@ import tkSimpleDialog
 import sys
 import os
 
+crnotice1 = "Copyright (C) 1998-1999, ZPR, Universität zu Köln\n"\
+	    "Gato version _VERSION_ from _BUILDDATE_"
+crnotice2 = "Written by Alexander Schliep (schliep@zpr.uni-koeln.de)\n" \
+            "For Information see http://www.zpr.uni-koeln.de/~gato\n" \
+ 	    "Gato comes with ABSOLUTELY NO WARRANTY.\n" \
+            "This is free software, and you are welcome to redistribute\n" \
+            "it under certain conditions. For details see 'GPL.txt'.\n"
+
+
 class AboutBox(tkSimpleDialog.Dialog):
  
     def buttonbox(self):
@@ -36,9 +45,13 @@ class AboutBox(tkSimpleDialog.Dialog):
    
     def body(self, master):
 	self.resizable(0,0)
-	self.catIconImage = PhotoImage(file=sys.path[0] + "/catbox-splash.gif")
+	self.catIconImage = PhotoImage(file=sys.path[0] + "/gato.gif")
 	self.catIcon = Label(master, image=self.catIconImage)
 	self.catIcon.pack(side=TOP)
+	label = Label(master, text=crnotice1)
+	label.pack(side=TOP)
+	label = Label(master, font="Helvetica 10", text=crnotice2, justify=LEFT)
+	label.pack(side=TOP)
  	color = self.config("bg")[4]
 	self.infoText = ScrolledText(master, relief=FLAT, 
 				     padx=3, pady=3,
@@ -47,7 +60,7 @@ class AboutBox(tkSimpleDialog.Dialog):
 				     wrap='word',
 				     width=60, height=12,
 				     font="Times 10")
-	self.infoText.pack(expand=0, fill=X)
+	self.infoText.pack(expand=0, fill=X, side=BOTTOM)
 	self.infoText.delete('0.0', END)
 	inputFile=open(sys.path[0] +"/GPL.txt", 'r')
        	text = inputFile.read()
@@ -91,9 +104,14 @@ class SplashScreen(Toplevel):
 	self.geometry("+%d+%d" % (x0, y0))
     
     def CreateWidgets(self):
-	self.catIcon = PhotoImage(file=sys.path[0] + "/catbox-splash.gif")
+	self.catIcon = PhotoImage(file=sys.path[0] + "/gato.gif")
 	self.label = Label(self, image=self.catIcon)
 	self.label.pack(side=TOP)
+	self.label = Label(self, text=crnotice1)
+	self.label.pack(side=TOP)
+	label = Label(self, font="Helvetica 10", text=crnotice2, justify=LEFT)
+	label.pack(side=TOP)
+
 		
     def Destroy(self):
 	self.main.update()
