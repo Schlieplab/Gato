@@ -16,6 +16,8 @@
 ################################################################################
 from Gato import *
 
+testPath = "../CATBox/"
+
 tests = [ ("FindpathEuclid.alg","cm.cat"),
 	  ("Findpath.alg","cm.cat") ]
 
@@ -26,11 +28,11 @@ if __name__ == '__main__':
     
     for case in tests:
 	print "=== TEST ===",case[0],"===",case[1],"==="
-	app.OpenAlgorithm(case[0])
+	app.OpenAlgorithm(testPath + case[0])
 	app.algorithm.ClearBreakpoints()
 	app.update_idletasks()
 	app.update()
-	app.OpenGraph(case[1])
+	app.OpenGraph(testPath + case[1])
 	app.update_idletasks()
 	app.update()
 	# Run it ...
