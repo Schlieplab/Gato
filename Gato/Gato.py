@@ -461,18 +461,7 @@ class AlgoWin(Frame):
 	d = AboutBox(self.master)
 
     def HelpBox(self):
-	text = """<HTML><HEAD>Gato Help</HEAD>
-        <BODY>
-
-        <H3>Keyboard Shortcuts</H3>
-        s Start
-        x Stop
-        <space> Step
-        c Continue
-        t trace
-        b toggle breakpoint
-	</BODY></HTML>"""
-	d = HTMLViewer(text, "Help", self.master)
+	d = HTMLViewer(gGatoHelp, "Help", self.master)
 
     def AboutAlgorithm(self):
 	d = HTMLViewer(self.algorithm.About(), "About Algorithm", self.master)
@@ -511,6 +500,11 @@ class AlgoWin(Frame):
 	self.buttonTrace['state']    = DISABLED
 	self.buttonContinue['state'] = DISABLED
 	self.buttonStop['state']     = DISABLED
+
+	# Un-activate last line 
+	if self.lastActiveLine != 0:
+	    self.unTagLine(self.lastActiveLine,'Active')
+	self.update() # Forcing redraw
 	self.activateMenu()
 	
 
@@ -858,6 +852,7 @@ class Algorithm:
 	self.about = None
 
 	self.commentPattern = re.compile('[ \t]*#')
+	self.blankLinePattern = re.compile('[ \t]*\n')
 	
 
     def SetGUI(self, itsGUI):
@@ -977,12 +972,10 @@ class Algorithm:
     def ReadyToStart(self):
 	""" Return 1 if we are ready to run. That is when we user
             has opened both an algorithm and a graph.  """
-	retVal = 1
-	if self.graphFileName == "":
-	    retVal = 0
-	if self.algoFileName == "":
-	    retVal = 0
-	return retVal
+	if self.graphFileName != "" and self.algoFileName != "":
+	    return 1
+	else:
+	    return 0
 
     def Start(self):
 	""" Start an loaded algorithm. It firsts execs the prolog and
@@ -1089,7 +1082,7 @@ class Algorithm:
 	    # check for not breaking in comments nor on empty lines. 
 	    import linecache
 	    codeline = linecache.getline(self.algoFileName,line)
-	    if self.commentPattern.match(codeline) == None and codeline != "\n":
+	    if codeline != '' and self.commentPattern.match(codeline) == None and self.blankLinePattern.match(codeline) == None:
 		self.GUI.ShowBreakpoint(line)
 		self.breakpoints.append(line)
 		self.DB.set_break(self.algoFileName,line)

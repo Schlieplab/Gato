@@ -21,6 +21,7 @@ from GatoUtil import gatoPath
 import tkSimpleDialog 
 import sys
 import os
+import htmllib, formatter
 
 crnotice1 = "Copyright (C) 1998-1999, ZAIK/ZPR, Universität zu Köln\n"\
 	    "Gato version _VERSION_ from _BUILDDATE_"
@@ -119,39 +120,131 @@ class SplashScreen(Toplevel):
 	self.main.deiconify()
 	self.withdraw()
 
+class HTMLWriter(formatter.DumbWriter):
+    
+    def __init__(self, textWidget, viewer):
+	formatter.DumbWriter.__init__(self, self)
+	self.textWidget = textWidget
+	self.viewer = viewer
+	self.indent = ""
 
-class HTMLViewer(tkSimpleDialog.Dialog):
+    def write(self, data):
+	self.textWidget.insert( 'insert', data)
+
+    def new_margin(self, margin, level):
+	self.indent = '\t' * level
+
+    def send_label_data(self, data):
+	self.write(self.indent + data + ' ')
+
+
+
+class HTMLViewer(Toplevel):
     """ Basic class which provides a scrollable area for viewing HTML
         text and a Dismiss button """
     
-    def __init__(self, text, title, master=None):
-	self.text = text
-	self.titleText = title
-	tkSimpleDialog.Dialog.__init__(self, master)
+    def __init__(self, htmlcode, title, master=None):
 
-    def buttonbox(self):
-	# Stolen from tkSimpleDialog.py
-        # add standard button box. override if you don't want the
-        # standard buttons
-        box = Frame(self)
-        w = Button(box, text="OK", width=10, command=self.ok, default=ACTIVE)
-        w.pack(side=RIGHT, padx=5, pady=5)
-        self.bind("<Return>", self.ok)
-        box.pack(side=BOTTOM,fill=X)
-
-   
-    def body(self, master):
-	#self.resizable(0,0)
- 	color = self.config("bg")[4]
-	self.infoText = ScrolledText(master, relief=FLAT, 
+	Toplevel.__init__(self, master)
+	#self.protocol('WM_DELETE_WINDOW',self.withdraw)
+	self.titleprefix = title
+	color = self.config("bg")[4]
+	borderFrame = Frame(self, relief=SUNKEN, bd=2) # Extra Frame
+	self.text = ScrolledText(borderFrame, relief=FLAT, 
 				     padx=3, pady=3,
 				     background=color, 
 				     #foreground="black",
 				     wrap='word',
 				     width=60, height=12,
 				     font="Times 10")
-	self.infoText.pack(expand=1, fill=BOTH, side=BOTTOM)
-	self.infoText.delete('0.0', END)
-	self.infoText.insert('0.0', self.text)	
-	self.infoText.configure(state=DISABLED)
-	self.title(self.titleText)
+	self.text.pack(expand=1, fill=BOTH)
+	#self.text.insert('0.0', text)
+	self.text['state'] = DISABLED 
+	borderFrame.pack(side=TOP,expand=1,fill=BOTH)
+        box = Frame(self)
+        w = Button(box, text="Dismiss", width=10, command=self.withdraw, default=ACTIVE)
+        w.pack(side=RIGHT, padx=5, pady=5)
+        self.bind("<Return>", self.withdraw)
+        box.pack(side=BOTTOM,fill=BOTH)
+	self.insert(htmlcode)
+	
+
+    def insert(self, htmlcode):
+	self.text['state'] = NORMAL
+
+	writer = HTMLWriter(self.text, self)
+	format = formatter.AbstractFormatter(writer)
+	parser = htmllib.HTMLParser(format)
+
+	parser.feed(htmlcode)
+	parser.close()
+	
+	self.text['state'] = DISABLED 
+	if parser.title != None:
+	    self.title(self.titleprefix + " - " + parser.title)
+	else:
+	    self.title(self.titleprefix)
+
+about = """<HTML>
+<HEAD>
+<TITLE>Breadth-First-Search</TITLE>
+</HEAD>
+<BODY>
+
+<H2>Description</H2>
+
+This algorithm traverses a graph in breadth-first
+order.
+<P>
+
+<H2>Visualisation</H2>
+
+You see
+
+
+<H4>Implementation</h4>
+ 
+This was done by 
+
+<pre>
+asasdadasdasdaaasssssssssssssssssssssssssssssssssssssssssssssssss
+</pre>
+<tt>Blaeh</tt>
+<a href="module-sgmllib.html">sgmllib</a><a name="l2h-1953"></a>. 
+<P>
+The following is a summary of the interface defined by
+<tt class=class>sgmllib.SGMLParser</tt>:
+
+<P>
+
+<ol>
+<LI>The interface
+
+<LI>Its <b>implementation</b>
+
+<LI>WHat not
+</OL>
+
+
+
+<UL>
+<LI>The interface
+
+<LI>Its implementation
+
+<LI>WHat not
+</UL>
+
+<dl>
+<dt>x</dt> <dd>does wild things</dd>
+<dt>y</dt> <dd>is even wilder</dd>
+</dl>
+
+
+</BODY></HTML>
+"""
+if __name__ == '__main__':
+    
+    win = HTMLViewer(about, "Dummy")
+    import Tkinter
+    Tkinter.Tk().mainloop()

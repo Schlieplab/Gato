@@ -76,6 +76,23 @@ gProperty = {}
 
 
 
+gGatoHelp = """
+<HTML>
+<HEAD><TITLE>Gato __VERSION__ </TITLE></HEAD>
+<BODY>
+
+<H3>Keyboard Shortcuts</H3>
+
+<ul>
+<li> <tt>s</tt> Start
+<li> <tt>x</tt> Stop
+<li> <tt>[space]</tt> Step
+<li> <tt>c</tt> Continue
+<li> <tt>t</tt> trace
+<li> <tt>b</tt> toggle breakpoint
+</ul>
+</BODY>
+</HTML>"""
 
 
 
