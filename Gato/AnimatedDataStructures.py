@@ -222,6 +222,37 @@ class AnimatedVertexLabeling(VertexLabeling):
 	else:
 	    self.Animator.SetVertexColor(v,"blue") #cVisited)
 
+class AnimatedSign:
+    """ Visualizes the sign of the vertex or edge:
+        weight > 0 : green
+               = 0 : grey
+               < 0 : red """
+
+    def __init__(self,theAnimator):
+        self.Animator = theAnimator
+        self.sign     = {}
+
+    def __setitem__(self, i, val):
+        self.sign[i] = val
+        if type(i) == type(2): # vertex
+            if val>0:
+                self.Animator.SetVertexColor(i,"green")
+            elif val<0:
+                self.Animator.SetVertexColor(i,"red")
+            else:
+                self.Animator.SetVertexColor(i,"grey")
+        else:
+            if val>0:
+                self.Animator.SetEdgeColor(i,"green")
+            elif val<0:
+                self.Animator.SetEdgeColor(i,"red")
+            else:
+                self.Animator.SetEdgeColor(i,"grey")
+
+    def __getitem__(self, i):
+        return self.sign[i]
+
+
 
 class BlinkingVertexLabeling(VertexLabeling):
     """ Visualizes changes of values of the VertexLabeling
