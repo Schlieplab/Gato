@@ -4,7 +4,7 @@
 #       version _VERSION_ from _BUILDDATE_. You can find more information at 
 #       http://www.zpr.uni-koeln.de/~gato
 #
-#	file:   Creator.py
+#	file:   GraphCreator.py
 #	author: Ramazan Buzdemir
 #
 #       _COPYRIGHT_
