@@ -22,13 +22,55 @@ from GraphEditor import GraphEditor
 from Tkinter import *
 from GatoUtil import stripPath, extension
 from GatoGlobals import *
+import GatoDialogs
+from ScrolledText import *
 
 from tkFileDialog import askopenfilename, asksaveasfilename
 from tkMessageBox import askokcancel
 import tkSimpleDialog 
 import whrandom
 import string
+import sys
+import os
 
+class GredSplashScreen(GatoDialogs.SplashScreen):
+
+    def CreateWidgets(self):
+	self.catIcon = PhotoImage(file=sys.path[0] + "/gred.gif")
+	self.label = Label(self, image=self.catIcon)
+	self.label.pack(side=TOP)
+	self.label = Label(self, text=GatoDialogs.crnotice1)
+	self.label.pack(side=TOP)
+	label = Label(self, font="Helvetica 10", text=GatoDialogs.crnotice2, justify=LEFT)
+	label.pack(side=TOP)
+
+class GredAboutBox(GatoDialogs.AboutBox):
+
+    def body(self, master):
+	self.resizable(0,0)
+	self.catIconImage = PhotoImage(file=sys.path[0] + "/gred.gif")
+	self.catIcon = Label(master, image=self.catIconImage)
+	self.catIcon.pack(side=TOP)
+	label = Label(master, text=GatoDialogs.crnotice1)
+	label.pack(side=TOP)
+	label = Label(master, font="Helvetica 10", text=GatoDialogs.crnotice2, justify=LEFT)
+	label.pack(side=TOP)
+ 	color = self.config("bg")[4]
+	self.infoText = ScrolledText(master, relief=FLAT, 
+				     padx=3, pady=3,
+				     background=color, 
+				     #foreground="black",
+				     wrap='word',
+				     width=60, height=12,
+				     font="Times 10")
+	self.infoText.pack(expand=0, fill=X, side=BOTTOM)
+	self.infoText.delete('0.0', END)
+	inputFile=open(sys.path[0] +"/GPL.txt", 'r')
+       	text = inputFile.read()
+	inputFile.close()
+	self.infoText.insert('0.0', text)	
+	self.infoText.configure(state=DISABLED)
+	self.title("Gred - About")
 
 class RandomizeEdgeWeightsDialog(tkSimpleDialog.Dialog):
     """ self.result is an array of triples (randomize, min, max)
@@ -113,6 +155,7 @@ class SAGraphEditor(GraphEditor, Frame):
 
     def __init__(self, master=None):
 	Frame.__init__(self, master)
+	Splash = GredSplashScreen(self.master)
 	self.G = None
 	self.pack() 
 	self.pack(expand=1,fill=BOTH) # Makes whole window resizeable
@@ -122,6 +165,7 @@ class SAGraphEditor(GraphEditor, Frame):
 	self.dirty = 0
 	#self.zoomMenu['state'] = DISABLED
 	self.SetGraphMenuOptions()
+	Splash.Destroy()
 
     def SetGraphMenuOptions(self):
 	if not self.directedVar.get():
@@ -251,6 +295,21 @@ class SAGraphEditor(GraphEditor, Frame):
 				  command=self.RandomizeEdgeWeights)
 	self.menubar.add_cascade(label="Extras", menu=self.extrasMenu, 
 				 underline=0)
+
+	# On a Mac we put our about box under the Apple menu ... 
+	if os.name == 'mac':
+	    self.apple=Menu(self.menubar, tearoff=0, name='apple')
+	    self.apple.add_command(label='About Gred',	
+				   command=self.AboutBox)
+	    self.menubar.add_cascade(menu=self.apple)
+	else: # ... on other systems we add a help menu 
+	    self.helpMenu=Menu(self.menubar, tearoff=0, name='help')
+	    self.helpMenu.add_command(label='About Gred',	
+				      command=self.AboutBox)
+	    self.menubar.add_cascade(label="Help", menu=self.helpMenu, 
+				     underline=0)
+
+
  
     ############################################################
     #
@@ -497,6 +556,10 @@ class SAGraphEditor(GraphEditor, Frame):
 			self.G.edgeWeights[i][e] = round(int(val))
 		    else:
 			self.G.edgeWeights[i][e] = val
+
+    def AboutBox(self):
+	print "AboutBox"
+	d = GredAboutBox(self.master)
 
 
 ################################################################################
