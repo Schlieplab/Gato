@@ -152,13 +152,16 @@ class Graph:
 	"""  Handles undirected graphs by return correct ordered
 	     vertices as (tail,head). Raises NoSuchEdgeError upon error. """
 
-	try:
-	    if head in self.adjLists[tail]:
-		return (tail,head)
-	    if self.directed == 0 and tail in self.adjLists[head]:
-		return (head,tail)
-	except KeyError:
+        if tail not in self.vertices or head not in self.vertices:
 	    raise NoSuchEdgeError
+            
+        if head in self.adjLists[tail]:
+            return (tail,head)
+        elif self.directed == 0 and tail in self.adjLists[head]:
+            return (head,tail)
+        else:
+    	    raise NoSuchEdgeError
+            
 
     def QEdge(self,tail,head):
 	""" Returns 1 if (tail,head) is an edge in G. If G is undirected
@@ -443,7 +446,8 @@ class SubGraph(Graph):
 	""" Delete edge from subgraph. Raises NoSuchEdgeError
 	    upon error """
 	if tail in self.vertices and head in self.vertices:
-	    self.totalWeight =  self.totalWeight - self.superGraph.edgeWeights[0][(tail,head)]
+            superEdge = self.superGraph.Edge(tail,head)
+	    self.totalWeight =  self.totalWeight - self.superGraph.edgeWeights[0][superEdge]
 	    self.adjLists[tail].remove(head)
 	    self.invAdjLists[head].remove(tail)
 	    self.size = self.size - 1
