@@ -288,7 +288,7 @@ class sum_function(plot_object):
 
 class line_function(plot_object):
     """
-    x->a*x+b
+    x-> a*x+b not normated to 1
     """
     def __init__(self,a=0,b=0,color=None):
         "init parameters"
