@@ -44,7 +44,7 @@ def gatoPath():
 def extension(pathAndFile):
     """ Return ext if path/filename.ext is given """
     import string
-    return string.split(stripPath(pathAndFile),".")[1]
+    return string.split(stripPath(pathAndFile),".")[-1]
 
 def stripPath(pathAndFile):
     """ Return filename.ext if path/filename.ext is given """
