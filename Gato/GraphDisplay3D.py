@@ -497,7 +497,12 @@ class GraphDisplay3D:
 	    self.vertexAnnotation[v] = self.CreateVertexAnnotation(v,annotation,color)
 	else:
 	    da = self.vertexAnnotation[v]
-            da.text = annotation
+            if annotation == "":
+                da.visible = 0
+            else:
+                da.text = annotation
+
+        
 
     def SetEdgeAnnotation(self,tail,head,annotation,color="black"):
 	""" Add an annotation to (tail,head). Annotations are displayed to the left and

@@ -16,6 +16,8 @@
 #
 ################################################################################
 
+import visual
+
 #### Options #################################################
 
 breakpoints = [9,29]
@@ -67,11 +69,15 @@ def FindExcessVertex():
     maxpotv = None
 
     for v in Vertices():
-	if excess(v) > 0:
-	    if (v != s) and (v != t):
+	if (v != s) and (v != t):
+	    if excess(v) > 0:
 		if pot[v] > maxpot:
 		    maxpot  = pot[v]
                     maxpotv = v
+		#A.SetVertexAnnotation(v,"e")
+	    else:
+		A.SetVertexAnnotation(v,"")
+		pass
 
     if maxpotv:
         RA.SetVertexFrameWidth(OldExcessVertex,2)
@@ -97,10 +103,10 @@ def _ShowCut(A,R,s):
 		Q.Append(w)
 		C.append(w)
 
-    A.SetAllVerticesColor("red")
+    #A.SetAllVerticesColor("red")
 
     for v in C:
-        A.SetVertexColor(v,"green")
+        #A.SetVertexColor(v,"green")
 	for w in G.Neighborhood(v):
 	    if not w in C:
 		A.SetEdgeColor(v,w,"yellow")
@@ -167,8 +173,11 @@ class AnimatedPotential3D:
 	if val > self.max:
             val = self.max
         self.Animator1.SetVertexColor(v,self.colors[(val*(len(self.colors)-1))/self.max])
-	(x,y,z) = self.Animator1.VertexPosition(v)
-	self.Animator1.MoveVertex(v, x, y, val * 8)
+	(x,y,oldz) = self.Animator1.VertexPosition(v)
+	z = oldz
+	while z < val * 8:
+	    z += 0.05
+	    self.Animator1.MoveVertex(v, x, y, z)
 
     def __getitem__(self,v):
         return self.pot[v]
