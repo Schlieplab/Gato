@@ -106,7 +106,6 @@ class GraphDisplay:
 	ymove = max(-bb[1],0)
 	self.canvas.move("all", xmove, ymove)
 	self.zoomTranslation = self.GetCanvasTranlation()
-	print "self.zoomTranslation = ",self.zoomTranslation.x,self.zoomTranslation.y
 	bb = self.canvas.bbox("all") # Bounding box of all elements on canvas
 	self.canvas.config(scrollregion=(0,0,bb[2],bb[3]))
 	# Scroll s.t. bounding box starte in upper left corner

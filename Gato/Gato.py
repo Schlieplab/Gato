@@ -841,9 +841,16 @@ class AlgorithmDebugger(bdb.Bdb):
 	    # First call of dispatch since reset()
 	    self.botframe = frame
 	    return self.trace_dispatch
-	if not (self.stop_here(frame) or self.break_anywhere(frame)):
-	    # No need to trace this function
-	    return # None
+	# Fixed wrong handling of breakpoints in recursively called
+	# funs:
+	# Was: if not (self.stop_here(frame) or self.break_anywhere(frame)):
+	#         return # Note: not return None
+	# self.stop_here(frame) is always 1: Why ?
+	# This seems to work:
+	if self.break_anywhere(frame):
+	    return self.trace_dispatch
+	else:
+	    return
 	self.user_call(frame, arg)
 	if self.quitting: raise bdb.BdbQuit
 	if doTrace == 1:

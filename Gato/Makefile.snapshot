@@ -11,8 +11,8 @@
 
 # Vars
 
-VERSION       = 0.96
-DATE          = 02/14/2001
+VERSION       = 0.96F
+DATE          = 04/08/2001
 DISTNAME      = Gato
 DISTNAMEMAC   = $(DISTNAME)-Mac
 DISTNAMEDOC   = $(DISTNAME)-Doc
@@ -49,6 +49,7 @@ CRNOTICE     = `cat $(SRCDIR)/COPYRIGHT`
 
 SOURCES	      = AnimatedAlgorithms.py \
 		AnimatedDataStructures.py \
+		DataStructures.py \
 		Embedder.py \
 		Gato.py \
                 GatoDialogs.py \
@@ -56,12 +57,15 @@ SOURCES	      = AnimatedAlgorithms.py \
 		GatoIcons.py \
 		GatoTest.py \
 		GatoUtil.py \
-		DataStructures.py \
 		Graph.py \
+		GraphCreator.py \
 		GraphDisplay.py \
 		GraphEditor.py \
 		GraphUtil.py \
-		Gred.py
+		Gred.py \
+		PlanarEmbedding.py \
+		PlanarityTest.py
+
 
 
 LICENCE       = LGPL.txt
