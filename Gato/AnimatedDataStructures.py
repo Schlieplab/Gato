@@ -576,6 +576,8 @@ class FlowWrapper:
                 None
             if not self.R.QEdge(e[1],e[0]):
                 self.RA.AddEdge(e[1],e[0])
+            else:
+                self.RA.SetEdgeColor(e[1],e[0],"black")            
         elif val == 0: 
             self.GA.SetEdgeColor(e[0],e[1],"black")
             self.GA.SetEdgeAnnotation(e[0],e[1],"%d/%d" % (val, self.cap[e]),"gray")
@@ -585,14 +587,19 @@ class FlowWrapper:
                 None
             if not self.R.QEdge(e[0],e[1]):
                 self.RA.AddEdge(e[0],e[1])
+            else:
+                self.RA.SetEdgeColor(e[0],e[1],"black")            
         else:                      
-            self.RA.SetEdgeColor(e[0],e[1],"black")            
             self.GA.SetEdgeColor(e[0],e[1],"#AAAAFF")
             self.GA.SetEdgeAnnotation(e[0],e[1],"%d/%d" % (val,self.cap[e]),"black")
             if not self.R.QEdge(e[1],e[0]):
                 self.RA.AddEdge(e[1],e[0])
+            else:
+                self.RA.SetEdgeColor(e[1],e[0],"black")            
             if not self.R.QEdge(e[0],e[1]):
                 self.RA.AddEdge(e[0],e[1])
+            else:
+                self.RA.SetEdgeColor(e[0],e[1],"black")            
 	if self.G.QEdge(e[0],e[1]):
             self.res[(e[1],e[0])]  = val
             self.res[(e[0],e[1])]  = self.cap[(e[0],e[1])] - val
