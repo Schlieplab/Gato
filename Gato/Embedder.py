@@ -476,10 +476,119 @@ class BFSTreeEmbedder(Embedder):
 
 	theGraphEditor.config(cursor="")
 
+
+from math import *
+from DataStructures import Queue
+
+def RadialTreeBFS(G,root,direction='forward'):
+    """ Calculate BFS distances and predecessor without showing animations.
+        Also compute angles for a radial layout
+        If G is directed, direction does matter:
+
+        - 'forward'  BFS will use outgoing edges
+        - 'backward' BFS will use incoming edges
+
+	It uses gInfinity (from GatoGlobals.py) as infinite distance.
+        returns (dist,pred) """
+
+
+    Q = Queue()
+    d = {}
+    pred = {}
+    angle = {}
+    childrenrange = {}
+
+
+    for v in G.vertices:
+	d[v] = gInfinity
+    d[root] = 0
+    pred[root] = None
+    angle[root] = 0
+    childrenrange[root] = (0, 2 * pi)
+
+    Q.Append(root)
+
+    while Q.IsNotEmpty():
+        v = Q.Top()
+	if G.QDirected() == 1 and direction == 'backward':
+	    nbh = G.InNeighbors(v)
+	else:
+	    nbh = G.Neighborhood(v)
+
+
+        # Compute size of unseen Nbh
+        unseen = 0 
+        for w in nbh:
+	    if d[w] == gInfinity:
+                unseen += 1
+
+        if unseen > 0:
+            range = childrenrange[v][1] - childrenrange[v][0]
+            delta = range / float(unseen)
+            delta2 = delta * 0.5
+            left = childrenrange[v][0] + delta2
+
+            for w in nbh:
+                if d[w] == gInfinity:
+                    angle[w] = left + delta2
+                    childrenrange[w] = (left,left+delta)
+                    left += delta
+                    d[w] = d[v] + 1
+                    #print (v,w), "angle = ", angle[w]," range = ", childrenrange[w]
+                    Q.Append(w)
+
+    return (d,pred,angle)
+
+
+def RadialToXY(degree, r, offset):
+    return (r*sin(degree) + offset[0], r*cos(degree) + offset[1])
+
+
+def BFSRadialTreeCoords(G, root, direction):
+    (BFSdistance,pred,angle) = RadialTreeBFS(G,root,direction)
+    maxdist = max(max(BFSdistance.values()),1)
+
+    G.xCoord={}
+    G.yCoord={}
+    offset = (500,500)
+    d = 450 / maxdist
+    for v in G.vertices:
+        (G.xCoord[v], G.yCoord[v]) = RadialToXY(angle[v], BFSdistance[v] * d, offset)
+    return 1
+
+
+
+class BFSRadialTreeEmbedder(Embedder):
+
+    def Name(self):
+	return "BFS-Radial Tree Layout"
+
+    def Embed(self, theGraphEditor):
+        if theGraphEditor.G.Order()==0:
+            return
+        
+	theGraphEditor.config(cursor="watch")
+
+	dial = BFSLayoutDialog(theGraphEditor)
+	if dial.result is None: 
+	    theGraphEditor.config(cursor="")
+	    return	
+
+        if BFSRadialTreeCoords(theGraphEditor.G, dial.result[0], dial.result[1]):
+            RedrawGraph(theGraphEditor)
+
+	theGraphEditor.config(cursor="")
+
+    
+
+
+
+
+
 #----------------------------------------------------------------------
 
 """ Here instantiate all the embedders you want to make available to
     a client. """
 embedder = [RandomEmbedder(), CircularEmbedder(),
             FPP_PlanarEmbedder(), Schnyder_PlanarEmbedder(),
-            TreeEmbedder(), BFSTreeEmbedder()]
+            TreeEmbedder(), BFSTreeEmbedder(), BFSRadialTreeEmbedder()]
