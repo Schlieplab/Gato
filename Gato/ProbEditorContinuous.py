@@ -6,7 +6,7 @@
 #	file:   ProbEditorContinuous.py
 #	author: Achim Gaedke (achim.gaedke@zpr.uni-koeln.de)
 #
-#       Copyright (C) 1998-2003, Alexander Schliep, Winfried Hochstaettler and 
+#       Copyright (C) 1998-2002, Alexander Schliep, Winfried Hochstaettler and 
 #       ZAIK/ZPR, Universitaet zu Koeln
 #                                   
 #       Contact: schliep@molgen.mpg.de, wh@zpr.uni-koeln.de             
@@ -34,7 +34,7 @@
 #             last change by $Author$.
 #
 ################################################################################
-
+import sys
 import math
 import pygsl.rng
 import Tkinter
@@ -266,6 +266,14 @@ class sum_function(plot_object):
         for sum_object in self.sum_list:
             sample_lists.append(sum_object.get_points(x1,x2))
 
+        index2=0
+
+	for l in sample_lists:
+            a=(l[0][1]-l[1][1])/(x1-l[1][0])
+            b=l[0][1]-x1*a
+            parameter_values[index2]=(b,a)
+            index2+=1
+
         ready=0
         last=x1-1.0
         while not ready:
@@ -369,7 +377,7 @@ class box_function(plot_object):
             l.append(box_points[0]-res_max/2.0)
             l.append(box_points[0]+res_max/2.0)
 
-        if box_points[1]<frame_points[1]:
+        if box_points[1]<frame_points[1] and box_points[1]>=frame_points[0]:
             l.append(box_points[1]-res_max/2.0)
             l.append(box_points[1]+res_max/2.0)
 
@@ -400,6 +408,176 @@ class box_function(plot_object):
         self.start=values[0]
         self.stop=values[1]
         self.a=float(values[2])
+        
+class exponential_function(plot_object):
+
+    def __init__(self,start=3,stop=4,a=0.2,color=None):
+        plot_object.__init__(self,color)
+        ss=[float(start),float(stop)]
+        ss.sort()
+        self.start=ss[0]
+        self.stop=ss[1]
+        self.a=float(a)
+         
+    def get_sample_values(self,x1,x2):
+
+        global comp
+        comp=1
+        ss_points=[self.start,self.stop]
+        ss_points.sort()
+        if x1>x2:
+            x_max=x1
+            x_min=x2
+        else:
+            x_max=x2
+            x_min=x1
+            
+        if ss_points[0]>x_min:
+            mu=ss_points[0]
+        else:
+            mu=x_min
+        alpha=(ss_points[1]-ss_points[0])/4.0
+        res_map={5: 2, 4: 3, 3: 4,2: 5,1: 7, 0: 4}
+        n_list=[]
+        epsilon=0.0001
+        n=x_min
+        n_step=(x_max-x_min)/10
+        n_list.append(n)
+        n+=epsilon
+        
+        while n<mu and n<x_max:
+              n_list.append(n)
+              n+=n_step
+
+        if mu<x_max:
+            n=mu-epsilon
+            n_list.append(n)
+            n=mu 
+            while n<=mu+5.0 and n<x_max:
+                n_list.append(n)
+                n+=1.0/float(res_map[abs(int(n-mu))])*alpha
+            while n<x2:
+                n_list.append(n)
+                n+=n_step
+
+        n_list.append(x_max)
+
+        return n_list
+ 
+    def get_parameters(self):
+       
+        return (self.start,self.stop,self.a)
+
+    def set_parameters(self,values):
+        self.start=values[0]
+        self.stop=values[1]
+        self.a=float(values[2])
+        
+    def get_value(self,x):
+        ss_points=[self.start,self.stop]
+        ss_points.sort()
+        global comp
+        mu=ss_points[0]
+        alpha=(ss_points[1]-ss_points[0])/4.0
+        if x<mu:
+            return 0.0
+	elif comp: 
+            ##n=-(float(x)-mu)
+            ##y=math.exp(n)*self.a*alpha
+            y=self.a*pygsl.rng.exponential_pdf(x-mu,alpha)  
+	    if y>0.001:
+                 return y
+            else:
+                 comp=0
+                 return 0.0
+        else:
+            return 0.0
+    def __repr__(self):
+        return "exponetial_function: x->%f*%f*exp(-(x*%f-%f))"%(self.a,self.sigma,self.sigma,self.mu)
+
+
+class exp_other_function(plot_object):
+
+    def __init__(self,start=3,stop=4,a=0.2,color=None):
+        plot_object.__init__(self,color)
+        ss=[float(start),float(stop)]
+        ss.sort()
+        self.start=ss[0]
+        self.stop=ss[1]
+        self.a=float(a)
+         
+    def get_sample_values(self,x1,x2):
+
+       
+        ss_points=[self.start,self.stop]
+        ss_points.sort()
+        if x1>x2:
+            x_max=x1
+            x_min=x2
+        else:
+            x_max=x2
+            x_min=x1
+            
+        if ss_points[1]>x_min:
+            mu=ss_points[1]
+        else:
+            mu=x_min
+        alpha=(ss_points[1]-ss_points[0])/4.0
+        res_map={5: 2, 4: 3, 3: 4,2: 5,1: 7, 0: 4}
+        n_list=[]
+        epsilon=0.001
+        n=x_max
+        n_step=(x_max-x_min)/10
+        n_list.append(n)
+        n-=epsilon
+        while n>mu and n>x_min:
+            n_list.append(n)
+            n-=n_step
+        n=(mu+epsilon)
+        n_list.append(n)
+        n=mu
+        while n>x_min and n>(mu-5.0):
+             n_list.append(n)
+             n-=1.0/float(res_map[abs(int(n-mu))])*alpha 
+        while n>x_min:
+            n_list.append(n)
+            n-=n_step
+        
+        n_list.append(x_min)
+        n_list.sort()
+        return n_list
+ 
+    def get_parameters(self):
+       
+        return (self.start,self.stop,self.a)
+
+    def set_parameters(self,values):
+        self.start=values[0]
+        self.stop=values[1]
+        self.a=float(values[2])
+        
+    def get_value(self,x):
+        ss_points=[self.start,self.stop]
+        ss_points.sort()
+        mu=ss_points[1]
+        alpha=(ss_points[1]-ss_points[0])/4.0 
+        
+       
+        if x>mu:
+            return 0.0
+        else:
+            ##n=-(float(x)-mu)
+            ##y=math.exp(n)*self.a*alpha
+            y=self.a*pygsl.rng.exponential_pdf(-x+mu,alpha)  
+	    if y>0.001:
+                 return y
+            else:                
+                 return 0.0
+      
+    def __repr__(self):
+        return "exponetial_function: x->%f*%f*exp(-(x*%f-%f))"%(self.a,self.sigma,self.sigma,self.mu)
+
+
 
 class gauss_function(plot_object):
     """
@@ -607,7 +785,7 @@ class plot_canvas(Tkinter.Canvas):
         # defined elsewhere
         self.scale_x=1.0
         self.scale_y=1.0
-        self.orig_x=0.0
+        self.orig_x=-5.0
         self.orig_y=0.0
 
         # init list of pairs : (plotted objects,item_number)
@@ -625,6 +803,7 @@ class plot_canvas(Tkinter.Canvas):
         self.scale_offset_y=self.plot_box[3]
         self.scale_end_x=self.plot_box[2]
         self.scale_end_y=self.plot_box[1]
+        self.origo=self.calculate_tic_distance(self.scale_x,self.scale_end_x-self.scale_offset_x)*-self.orig_x*self.scale_x
         (self.end_x,self.end_y)=self.canvasxy_to_xy((self.scale_end_x,self.scale_end_y))
         if self.configured==0:
             self.create_scale()
@@ -652,12 +831,13 @@ class plot_canvas(Tkinter.Canvas):
         """
         creates and configures scale-arrows and provides tics
         """
+       
         self.scale_item_x=self.create_line(self.scale_offset_x,self.scale_offset_y,
                                            self.scale_end_x,self.scale_offset_y,
                                            arrow=Tkinter.LAST,
                                            tags=('x_arrow'))
-        self.scale_item_y=self.create_line(self.scale_offset_x,self.scale_offset_y,
-                                           self.scale_offset_x,self.scale_end_y,
+        self.scale_item_y=self.create_line(self.scale_offset_x+self.origo,self.scale_offset_y,
+                                           self.scale_offset_x+self.origo,self.scale_end_y,
                                            arrow=Tkinter.LAST,
                                            tags=('y_arrow'))
         self.new_tics()
@@ -670,8 +850,8 @@ class plot_canvas(Tkinter.Canvas):
         #configure arrows
         self.coords(self.scale_item_x,self.scale_offset_x,self.scale_offset_y,
                     self.scale_end_x,self.scale_offset_y)
-        self.coords(self.scale_item_y,self.scale_offset_x,self.scale_offset_y,
-                    self.scale_offset_x,self.scale_end_y)
+        self.coords(self.scale_item_y,self.scale_offset_x+self.origo,self.scale_offset_y,
+                    self.scale_offset_x+self.origo,self.scale_end_y)
         self.del_tics()
         self.new_tics()
 
@@ -727,7 +907,7 @@ class plot_canvas(Tkinter.Canvas):
                                  self.scale_offset_y+2)
             text=self.create_text(pixel_x,self.scale_offset_y+2,
                                   anchor=Tkinter.N,
-                                  text=str(round(pos_x,prec)))
+                                  text=str(round(pos_x+self.orig_x,prec)))
             self.tic_list.append(tic)
             self.tic_list.append(text)
             pos_x+=dist
@@ -739,13 +919,13 @@ class plot_canvas(Tkinter.Canvas):
         pos_y=math.floor(self.orig_y/dist)*dist
         while pos_y<=self.end_y:
             pixel_y=-pos_y*self.scale_y+self.scale_offset_y
-            tic=self.create_line(self.scale_offset_x-2,
+            tic=self.create_line(self.scale_offset_x-2+self.origo,
                                  pixel_y,
-                                 self.scale_offset_x+2,
+                                 self.scale_offset_x+2+self.origo,
                                  pixel_y)
-            text=self.create_text(self.scale_offset_x-2,pixel_y,
+            text=self.create_text(self.scale_offset_x-2+self.origo,pixel_y,
                                   anchor=Tkinter.E,
-                                  text=str(round(pos_y,prec)))
+                                  text=str(pos_y))
             self.tic_list.append(tic)
             self.tic_list.append(text)
             pos_y-=dist
@@ -1086,6 +1266,240 @@ class box_handle(handle_base):
 
 ####################################################################################
 
+class exp_handle(handle_base):
+   
+    def __init__(self,canvas,report_function,values,**conf):
+        """
+        """
+        # for argument dictionaries of other function calls
+        conf.update(conf.get('arg_dict',{}))
+        self.color=conf.get('color','')
+        self.pos_x=conf.get('pos_x',0.0)
+        self.pos_y=conf.get('pos_y',0.0)
+        self.d_x=conf.get('d_x',1.0)
+        self.d_y=conf.get('d_y',1.0)
+        
+        handle_base.__init__(self,canvas,
+                             report_function,
+                             values)
+        self.cursor_change(self.box_line,'sb_h_double_arrow')
+        self.cursor_change(self.start_handle,'sb_h_double_arrow')
+        self.cursor_change(self.stop_handle,'sb_h_double_arrow')
+
+    def create_items(self):
+        """
+        three items are created:
+
+        - handle rectangle for start and stop
+
+        - line between two handles
+        """
+        self.box_line=self.canvas.create_line((0,0,0,0),
+                                              fill=self.color,
+                                              tag='box_line')
+        self.start_handle=self.canvas.create_line((0,0,0,0),
+                                                  fill=self.color,
+                                                  tag='start_handle')
+        self.stop_handle=self.canvas.create_line((0,0,0,0),
+                                                 fill=self.color,
+                                                 tag='stop_handle')
+
+    def set_values(self,values):
+        """
+        takes (start,stop) as value
+        """
+        dist=math.sqrt(self.d_x*self.d_x+self.d_y*self.d_y)
+        step_x=self.d_x/dist
+        step_y=self.d_y/dist
+        p_step_x=step_y
+        p_step_y=-step_x
+        pos_start=(self.pos_x+self.d_x*values[0],
+                   self.pos_y+self.d_y*values[0])
+        pos_stop=(self.pos_x+self.d_x*values[1],
+                  self.pos_y+self.d_y*values[1])
+
+        self.canvas.coords(self.start_handle,(pos_start[0]+p_step_x*3,
+                                              pos_start[1]+p_step_y*3,
+                                              pos_start[0]-p_step_x*3,
+                                              pos_start[1]-p_step_y*3,))
+        self.canvas.coords(self.stop_handle,(pos_stop[0]+p_step_x*3,
+                                             pos_stop[1]+p_step_y*3,
+                                             pos_stop[0]-p_step_x*3,
+                                             pos_stop[1]-p_step_y*3,))
+        self.canvas.coords(self.box_line,(pos_start[0],
+                                          pos_start[1],
+                                          pos_stop[0],
+                                          pos_stop[1],))
+        self.values=values
+
+    def get_values(self):
+        """
+        returns internal value cache
+        """
+        return self.values
+
+    def bind_handle(self):
+        """
+        binds the three handles
+        """
+        self.canvas.tag_bind(self.start_handle,'<Button-1>',self.start_move_event)
+        self.canvas.tag_bind(self.stop_handle,'<Button-1>',self.start_move_event)
+        self.canvas.tag_bind(self.box_line,'<Button-1>',self.start_move_event)
+
+    def start_move_event(self,event):
+        """
+        finds out, which part of the handle is selected and prepares for move tracing
+        """
+        current=self.canvas.find_withtag(Tkinter.CURRENT)[0]
+        if self.start_handle==current or \
+           self.stop_handle==current or \
+           self.box_line==current:
+            handle_base.start_move_event(self,event)
+        else:
+            print self.start_move_event.__name__,\
+                  ": don't know what to do with this event"
+        return
+
+    def values_from_mouse(self,event):
+        """
+        project the value to the handle base line and calculate new value
+        """
+        c_x=self.canvas.canvasx(event.x)-self.pos_x
+        c_y=self.canvas.canvasy(event.y)-self.pos_y
+        v=(self.d_x*c_x+self.d_y*c_y)/\
+           (self.d_x*self.d_x+self.d_y*self.d_y)
+        values=None
+        if self.start_handle==self.current:
+            values=(v,self.values[1])
+        elif self.stop_handle==self.current:
+            values=(self.values[0],v)
+        elif self.box_line==self.current:
+            diff=abs(self.values[1]-self.values[0])/2.0
+            values=(v-diff,v+diff)
+        else:
+            print self.move_event.__name__,\
+                  ": don't know what to do with this event"
+        return values
+
+
+class exp_other_handle(handle_base):
+   
+    def __init__(self,canvas,report_function,values,**conf):
+        """
+        """
+        # for argument dictionaries of other function calls
+        conf.update(conf.get('arg_dict',{}))
+        self.color=conf.get('color','')
+        self.pos_x=conf.get('pos_x',0.0)
+        self.pos_y=conf.get('pos_y',0.0)
+        self.d_x=conf.get('d_x',1.0)
+        self.d_y=conf.get('d_y',1.0)
+        
+        handle_base.__init__(self,canvas,
+                             report_function,
+                             values)
+        self.cursor_change(self.box_line,'sb_h_double_arrow')
+        self.cursor_change(self.start_handle,'sb_h_double_arrow')
+        self.cursor_change(self.stop_handle,'sb_h_double_arrow')
+
+    def create_items(self):
+        """
+        three items are created:
+
+        - handle rectangle for start and stop
+
+        - line between two handles
+        """
+        self.box_line=self.canvas.create_line((0,0,0,0),
+                                              fill=self.color,
+                                              tag='box_line')
+        self.start_handle=self.canvas.create_line((0,0,0,0),
+                                                  fill=self.color,
+                                                  tag='start_handle')
+        self.stop_handle=self.canvas.create_line((0,0,0,0),
+                                                 fill=self.color,
+                                                 tag='stop_handle')
+
+    def set_values(self,values):
+        """
+        takes (start,stop) as value
+        """
+        dist=math.sqrt(self.d_x*self.d_x+self.d_y*self.d_y)
+        step_x=self.d_x/dist
+        step_y=self.d_y/dist
+        p_step_x=step_y
+        p_step_y=-step_x
+        pos_start=(self.pos_x+self.d_x*values[0],
+                   self.pos_y+self.d_y*values[0])
+        pos_stop=(self.pos_x+self.d_x*values[1],
+                  self.pos_y+self.d_y*values[1])
+
+        self.canvas.coords(self.start_handle,(pos_start[0]+p_step_x*3,
+                                              pos_start[1]+p_step_y*3,
+                                              pos_start[0]-p_step_x*3,
+                                              pos_start[1]-p_step_y*3,))
+        self.canvas.coords(self.stop_handle,(pos_stop[0]+p_step_x*3,
+                                             pos_stop[1]+p_step_y*3,
+                                             pos_stop[0]-p_step_x*3,
+                                             pos_stop[1]-p_step_y*3,))
+        self.canvas.coords(self.box_line,(pos_start[0],
+                                          pos_start[1],
+                                          pos_stop[0],
+                                          pos_stop[1],))
+        self.values=values
+
+    def get_values(self):
+        """
+        returns internal value cache
+        """
+        return self.values
+
+    def bind_handle(self):
+        """
+        binds the three handles
+        """
+        self.canvas.tag_bind(self.start_handle,'<Button-1>',self.start_move_event)
+        self.canvas.tag_bind(self.stop_handle,'<Button-1>',self.start_move_event)
+        self.canvas.tag_bind(self.box_line,'<Button-1>',self.start_move_event)
+
+    def start_move_event(self,event):
+        """
+        finds out, which part of the handle is selected and prepares for move tracing
+        """
+        current=self.canvas.find_withtag(Tkinter.CURRENT)[0]
+        if self.start_handle==current or \
+           self.stop_handle==current or \
+           self.box_line==current:
+            handle_base.start_move_event(self,event)
+        else:
+            print self.start_move_event.__name__,\
+                  ": don't know what to do with this event"
+        return
+
+    def values_from_mouse(self,event):
+        """
+        project the value to the handle base line and calculate new value
+        """
+        c_x=self.canvas.canvasx(event.x)-self.pos_x
+        c_y=self.canvas.canvasy(event.y)-self.pos_y
+        v=(self.d_x*c_x+self.d_y*c_y)/\
+           (self.d_x*self.d_x+self.d_y*self.d_y)
+        values=None
+        if self.start_handle==self.current:
+            values=(v,self.values[1])
+        elif self.stop_handle==self.current:
+            values=(self.values[0],v)
+        elif self.box_line==self.current:
+            diff=abs(self.values[1]-self.values[0])/2.0
+            values=(v-diff,v+diff)
+        else:
+            print self.move_event.__name__,\
+                  ": don't know what to do with this event"
+        return values
+
+
+####################################################################################
+
 class gaussian_handle(handle_base):
     """
     handle for parameters of gaussian curve 
@@ -1345,7 +1759,7 @@ class gauss_editor(Tkinter.Frame):
         self.plot_area.scale_x=50.0
 
 ##        d={}
-##        color_list=['red','green','blue','orange']
+##        color_list=['red','green','blue','orange','black']
 ##
 ##        for i in range(1,5):
 ##            o=box_function(start=i*2.0-1.0,
@@ -1356,11 +1770,14 @@ class gauss_editor(Tkinter.Frame):
 ##            self.plot_area.add_plot_object(o)
 ##            d[str(i)]=i/2.0
         
-        self.plot_list=[box_function(start=0.2,stop=1.0,a=0.2,color='blue'),
-                        gauss_function(mu=2,sigma=0.6,a=0.2,color='green'),
+        self.plot_list=[box_function(start=0.2,stop=1.0,a=0.1,color='blue'),
+                        gauss_function(mu=2,sigma=0.6,a=0.2,color='green'),                     
                         gauss_tail_function_right(mu=6,sigma=1,tail=5,a=0.2,color='orange'),
-                                                gauss_tail_function_left(mu=4,sigma=1,tail=4.7,a=0.2,color='grey')]
+                        gauss_tail_function_left(mu=4,sigma=1,tail=4.7,a=0.2,color='grey'),
+                        exponential_function(start=2.0,stop=6.0,a=0.2,color='magenta'),
+                        exp_other_function(start=1.0,stop=5.0,a=0.1,color='brown')]
 
+        
         i=1
         d={}
         color_list=[]
@@ -1449,6 +1866,20 @@ class gauss_editor(Tkinter.Frame):
                                                   color=o.get_color(),
                                                   pos_y=pos+10)
                 self.handle_list.append(handle)
+            elif o.__class__.__name__=='exponential_function':
+                handle=exp_handle(self.edit_area,
+                                       self.handle_report,
+                                       (o.start,o.stop),
+                                       color=o.get_color(),
+                                       pos_y=pos+10)
+                self.handle_list.append(handle)
+            elif o.__class__.__name__=='exp_other_function':
+                handle=exp_other_handle(self.edit_area,
+                                       self.handle_report,
+                                       (o.start,o.stop),
+                                       color=o.get_color(),
+                                       pos_y=pos+10)
+                self.handle_list.append(handle)
             else:
                 print "no handle for %s"%(o.__class__.__name__)
             pos+=10
@@ -1472,10 +1903,50 @@ class gauss_editor(Tkinter.Frame):
             h.set_values(values)
             i+=1
 
+def die():
+    sys.exit(0)
+    
+def box():
+    print "Soll Box_fkt darstellen"
+    ##editor.remove_plot_object(box_function)
+def gauss():
+    print "Soll Gauss-fkt darstellen"
+
+def expl():
+    print "Soll Exp-fkt darstellen"
+
+def expr():
+    print "Soll Exp_Other-fkt darstellen"
+
+def gaussl():
+    print "Soll GaussianTL-fkt darstellen"
+
+def gaussr():
+    print "Soll GaussianTR-fkt darstellen"
+
 if __name__=='__main__':
     root=Tkinter.Tk()
+    
+    bar = Tkinter.Menu(root)
+
+    filem =Tkinter.Menu(bar)
+    filem.add_command(label="End",command=die)
+    editm = Tkinter.Menu(bar)
+    editm.add_radiobutton(label="Box-fkt",command=box)
+    editm.add_radiobutton(label="Gaussian-fkt",command=gauss)
+    editm.add_radiobutton(label="Exp-Left-fkt",command=expl)
+    editm.add_radiobutton(label="Exp-Right-fkt",command=expr)
+    editm.add_radiobutton(label="Gaussian-left-fkt",command=gaussl)
+    editm.add_radiobutton(label="Gaussian-right-fkt",command=gaussr)
+    
+    bar.add_cascade(label="Files", menu=filem)
+    bar.add_cascade(label="Edit", menu=editm)
+    
     editor=gauss_editor(root,width=300,height=300)
     # fast quit by <Escape>
     root.bind('<Escape>',lambda e:e.widget.quit())
     editor.pack(expand=1,fill=Tkinter.BOTH)
+    
+    root.config(menu=bar)
+    
     root.mainloop()
