@@ -19,8 +19,15 @@ from Gato import *
 
 testPath = "../CATBox/"
 
-tests = [ ("04-MinimalSpanningTrees/Kruskal.alg",
-	   "04-MinimalSpanningTrees/MinimalSpanningTrees08.cat")]
+tests = [ ("04-MinimalSpanningTrees/Prim.alg",
+	   "04-MinimalSpanningTrees/MinimalSpanningTrees08.cat"),
+          ("04-MinimalSpanningTrees/Kruskal.alg",
+	   "04-MinimalSpanningTrees/MinimalSpanningTrees08.cat"),
+          ("06-MaximalFlows/FordFulkerson.alg",
+	   "06-MaximalFlows/FordFulkerson3.cat"),
+          ("06-MaximalFlows/PreflowPush.alg",
+	   "06-MaximalFlows/PreflowPush2.cat")
+        ]
 
 
 if __name__ == '__main__':
