@@ -36,7 +36,7 @@
 #
 ################################################################################
 from GatoGlobals import *
-from DataStructures import VertexLabeling, Queue, Stack
+from DataStructures import VertexLabeling, Queue, Stack, PriorityQueue
 from Graph import SubGraph
 import copy
 
@@ -426,6 +426,25 @@ class AnimatedVertexStack(Stack):
 	    self.Animator.SetVertexFrameWidth(self.lastRemoved,gVertexFrameWidth)
             self.lastRemoved = None
 
+
+class AnimatedPriorityQueue(PriorityQueue):
+    def __init__(self, theAnimator, color=cVisited):
+	""" theAnimator will usually be the GraphDisplay(Frame/Toplevel) """
+	self.Animator = theAnimator
+        self.color = color        
+        PriorityQueue.__init__(self)
+
+    def Insert(self,value,sortKey):
+        # XXX For compat. to AnimatedVertexSet (yuk)
+        PriorityQueue.Insert(self,value,sortKey)
+
+    def DeleteMin(self):
+        """ Return and delete minimal value with minimal sortKey from queue. """
+	v = PriorityQueue.DeleteMin(self)
+ 	self.Animator.SetVertexColor(v,self.color)
+        return v
+       
+    
 
 
 class AnimatedVertexSet:
