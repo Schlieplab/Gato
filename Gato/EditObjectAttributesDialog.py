@@ -286,6 +286,10 @@ class EditObjectAttributesDialog(tkSimpleDialog.Dialog):
         #print "before typed_assign", self.object.__dict__
         for attr_name in self.edit.keys():            
             self.object.__dict__[attr_name] = typed_assign(self.object.__dict__[attr_name], self.edit[attr_name].get())
+
+            if isinstance(self.object.__dict__[attr_name], WithDefault):
+                self.object.__dict__[attr_name].useDefault = self.edit[attr_name].useDefault.get()
+
         #print "after typed_assign", self.object.__dict__
            
 	return 1

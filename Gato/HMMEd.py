@@ -196,18 +196,18 @@ class HMMState:
 
         self.index = nodeIndex # The node index in the underlying graph
         
-        self.id = ValidatingString()
+        self.id = ValidatingString("%s" % nodeIndex)
         self.state_class = PopupableInt()        
         self.state_class.setPopup(itsHMM.hmmClass.name, itsHMM.hmmClass.name2code, 10)
 
-        self.label = ValidatingString()
+        self.label = ValidatingString("<none>")
 
         self.order = DefaultedInt()
         self.order.setDefault(1, 0)
 
         self.emissions = []
 
-        self.initial = Probability()
+        self.initial = Probability("0.0")
         self.tiedto = DefaultedString()
         self.tiedto.setDefault(1, '')
         self.desc = self.id
@@ -271,14 +271,14 @@ class HMMState:
                 print "HMMState.fromDOM: unknown key %s of value %s" % (dataKey, dataValue)
         
 
-    def toDOM(self, XMLDoc, XMLNode):
+    def toDOM(self, XMLDoc, XMLNode, initial_sum):
         node = XMLDoc.createElement("node")
         node.setAttribute('id', "%s" % self.id)
 
         # Mandatory elems
         writeData(XMLDoc, node, 'label', self.label)
         writeData(XMLDoc, node, 'class', self.state_class)
-        writeData(XMLDoc, node, 'initial', self.initial)
+        writeData(XMLDoc, node, 'initial', self.initial / initial_sum)
         pos = self.itsHMM.G.embedding[self.index]
         pos_elem = XMLDoc.createElement("pos")
         pos_elem.setAttribute('x', "%s" % pos.x)
@@ -381,14 +381,25 @@ class HMM:
         self.hmmAlphabet.toDOM(XMLDoc, graphml) 
 
         graph = XMLDoc.createElement("graph")
+
+        # Compute sums of initial probabilities for renormalization 
+        initial_sum = 0.0
         for s in self.state:
-            self.state[s].toDOM(XMLDoc, graph)
+            initial_sum = initial_sum + self.state[s].initial
+        
+        for s in self.state:
+            self.state[s].toDOM(XMLDoc, graph, initial_sum)
+        
+        # Compute sums of outgoing probabilities for renormalization of transition probabilities
+        out_sum = [0.0] * (self.G.Order() + 1)
+        for e in self.G.Edges():
+            out_sum[e[0]] = out_sum[e[0]] + self.G.edgeWeights[0][e]
 
         for e in self.G.Edges():
             edge_elem = XMLDoc.createElement("edge")
             edge_elem.setAttribute('source', "%s" % self.state[e[0]].id)
             edge_elem.setAttribute('target', "%s" % self.state[e[1]].id)
-            writeData(XMLDoc, edge_elem, 'prob', self.G.edgeWeights[0][e])
+            writeData(XMLDoc, edge_elem, 'prob', self.G.edgeWeights[0][e] / out_sum[e[0]])
             graph.appendChild(edge_elem)
             
         graphml.appendChild(graph)
@@ -743,7 +754,10 @@ class HMMEditor(SAGraphEditor):
 	v = GraphDisplay.AddVertexCanvas(self, x, y)
         print "AddVertex at ",x,y
         self.HMM.AddState(v)
-	
+
+    def AddEdge(self,tail,head):
+        GraphDisplay.AddEdge(self,tail,head)
+        self.HMM.G.edgeWeights[0][(tail, head)] = 1.0
 	
     def DeleteVertex(self,v):
         self.HMM.DeleteState(v)
