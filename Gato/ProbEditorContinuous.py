@@ -320,6 +320,68 @@ class line_function(plot_object):
     def __repr__(self):
         return "line_function: x->%f*x+%f"%(self.a,self.b)
 
+class box_function(plot_object):
+    """
+    box
+    """
+    def __init__(self,start=0,stop=1,a=1,color=None):
+        "init parameters"
+        plot_object.__init__(self,color)
+        ss=[float(start),float(stop)]
+        ss.sort()
+        self.start=ss[0]
+        self.stop=ss[1]
+        self.a=float(a)
+
+    def get_sample_values(self,x1,x2):
+        """
+        make different resolutions
+        """
+        l=[]
+        box_points=[self.start,self.stop]
+        box_points.sort()
+        frame_points=[x1,x2]
+        frame_points.sort()
+        res_max=(frame_points[1]-frame_points[0])/1000.0
+
+        l.append(frame_points[0])
+
+        if box_points[0]>=frame_points[0] and box_points[0]<=frame_points[1]:
+            l.append(box_points[0]-res_max/2.0)
+            l.append(box_points[0]+res_max/2.0)
+
+        if box_points[1]<frame_points[1]:
+            l.append(box_points[1]-res_max/2.0)
+            l.append(box_points[1]+res_max/2.0)
+
+        l.append(frame_points[1])
+
+        return l
+
+    def get_value(self,x):
+        "box is constant between start and stop"
+        ss=[self.start,self.stop]
+        ss.sort()
+        if x>=ss[0] and x<=ss[1]:
+            return self.a/abs(self.stop-self.start)
+        return 0.0
+
+    def get_parameters(self):
+        """
+        returns (start,stop)
+        """
+        return (self.start,self.stop,self.a)
+
+    def set_parameters(self,values):
+        """
+        sets start and stop from (start,stop)
+        """
+        ss=[float(values[0]),float(values[1])]
+        ss.sort()
+        self.start=values[0]
+        self.stop=values[1]
+        self.a=float(values[2])
+
 class gauss_function(plot_object):
     """
     gauss function
@@ -405,7 +467,8 @@ class gauss_function(plot_object):
     def __repr__(self):
         return "gauss_function: x->%f/(%f*sqrt(2*pi))*exp(-(x-%f)**2/2*%f**2)"%(self.a,self.sigma,self.mu,self.sigma)
 
-class gauss_tail_function(plot_object):
+
+class gauss_tail_function_right(plot_object):
     """
     gauss tail function
     """
@@ -417,62 +480,36 @@ class gauss_tail_function(plot_object):
         self.sigma=float(sigma)
         self.tail=float(tail)
         self.a=float(a)
-##        self.norm=1.0/math.sqrt(2.0*math.pi)
 
     def get_sample_values(self,x1,x2):
         """
         make different resolutions
         """
-        if x1>x2:
-            x_max=x1
-            x_min=x2
+
+        l=[]
+        x_max=max(x1,x2)
+        x_min=min(x1,x2)
+        res_max=(x_max-x_min)/1000.0
+        x=x_min
+
+        if x<self.tail:
+            l.append(x)
+            l.append(self.tail-res_max/2.0)
+            x=self.tail+res_max/2.0
+
+        res_map={}
+        if self.tail<self.mu:
+            res_map={0:10.0,1:5.0,2:10.0,3:3.0}
         else:
-            x_max=x2
-            x_min=x1
+            res_map={0:10.0,1:10.0,2:10.0,3:2.0}
+            
+        while x<x_max:
+            l.append(x)
+            x+=max(self.sigma/res_map[min(int(abs((x-self.tail)/self.sigma)),3)],res_max)
 
-        # epiric values
-        res_map={5: 3, 4: 3, 3: 3,2: 5,1: 5, 0: 7}
-        res_map_start=5.0
-        # renormed distances
-        n_min=(x_min-self.mu)/self.sigma
-        n_max=(x_max-self.mu)/self.sigma
-        n_tail=(self.tail-self.mu)/self.sigma
-        n_step=(n_max-n_min)/10.0
+        l.append(x_max)
 
-        n_list=[]
-        n=n_min
-
-        if n<n_tail:
-            n_list.append(n)
-            n_list.append(n_tail-n_step/1000)
-            n=n_tail
-
-        # boring range <5
-        while n<n_max and n<-res_map_start:
-            n_list.append(n)
-            n+=n_step
-
-        # interesting range
-        n=max(-res_map_start,n_min,n_tail)
-        while n<n_max and n<res_map_start:
-            n_list.append(n)
-            n+=1.0/float(res_map[abs(int(n))])
-
-        # boring range >5
-        while n<n_max:
-            n_list.append(n)
-            n+=n_step
-
-        n_list.append(n_max)
-
-        # convert n_list to x_list
-        i=0
-        l=len(n_list)
-        while i<l:
-            n_list[i]=n_list[i]*self.sigma+self.mu
-            i+=1
-
-        return n_list
+        return l
 
     def get_parameters(self):
         """
@@ -492,6 +529,47 @@ class gauss_tail_function(plot_object):
     def get_value(self,x):
         "gauss function"
         return self.a*gsl.rng.gaussian_tail_pdf(x-self.mu,self.tail-self.mu,self.sigma)
+
+    def __repr__(self):
+        return "gauss_function: x->%f/(%f*sqrt(2*pi))*exp(-(x-%f)**2/2*%f**2)"%(self.a,self.sigma,self.mu,self.sigma)
+
+
+class gauss_tail_function_left(gauss_tail_function_right):
+    """
+    gauss tail function
+    """
+
+    def __init__(self,mu=0,sigma=1,tail=0,a=1,color=None):
+        gauss_tail_function_right.__init__(self,mu,sigma,tail,a,color)
+
+    def get_sample_values(self,x1,x2):
+
+        l=[]
+        x_max=max(x1,x2)
+        x_min=min(x1,x2)
+        res_max=(x_max-x_min)/1000.0
+        x=x_min
+
+        res_map={}
+        if self.tail>self.mu:
+            res_map={0:10.0,1:5.0,2:10.0,3:3.0}
+        else:
+            res_map={0:10.0,1:10.0,2:10.0,3:2.0}
+            
+        while x<self.tail and x<x_max:
+            l.append(x)
+            x+=max(self.sigma/res_map[min(int(abs((x-self.tail)/self.sigma)),3)],res_max)
+
+        if x<x_max:
+            l.append(self.tail-res_max/2.0)
+            l.append(self.tail+res_max/2.0)
+        l.append(x_max)
+
+        return l
+        
+    def get_value(self,x):
+        "gauss function"
+        return self.a*gsl.rng.gaussian_tail_pdf(self.mu-x,self.mu-self.tail,self.sigma)
 
     def __repr__(self):
         return "gauss_function: x->%f/(%f*sqrt(2*pi))*exp(-(x-%f)**2/2*%f**2)"%(self.a,self.sigma,self.mu,self.sigma)
@@ -836,6 +914,120 @@ class handle_base:
         if self.report_function is not None:
             self.report_function(self,reason,self.get_values())
 
+################################################################################
+
+class box_handle(handle_base):
+    """
+    handle for parameters of a box
+    """
+
+    def __init__(self,canvas,report_function,values,**conf):
+        """
+        """
+        # for argument dictionaries of other function calls
+        conf.update(conf.get('arg_dict',{}))
+        self.color=conf.get('color','')
+        self.pos_x=conf.get('pos_x',0.0)
+        self.pos_y=conf.get('pos_y',0.0)
+        self.d_x=conf.get('d_x',1.0)
+        self.d_y=conf.get('d_y',1.0)
+        
+        handle_base.__init__(self,canvas,
+                             report_function,
+                             values)
+
+    def create_items(self):
+        """
+        three items are created:
+
+        - handle rectangle for start and stop
+
+        - line between two handles
+        """
+        self.box_line=self.canvas.create_line((0,0,0,0),
+                                              fill=self.color,
+                                              tag='box_line')
+        self.start_handle=self.canvas.create_line((0,0,0,0),
+                                                  fill=self.color,
+                                                  tag='start_handle')
+        self.stop_handle=self.canvas.create_line((0,0,0,0),
+                                                 fill=self.color,
+                                                 tag='stop_handle')
+
+    def set_values(self,values):
+        """
+        takes (start,stop) as value
+        """
+        dist=math.sqrt(self.d_x*self.d_x+self.d_y*self.d_y)
+        step_x=self.d_x/dist
+        step_y=self.d_y/dist
+        p_step_x=step_y
+        p_step_y=-step_x
+        pos_start=(self.pos_x+self.d_x*values[0],
+                   self.pos_y+self.d_y*values[0])
+        pos_stop=(self.pos_x+self.d_x*values[1],
+                  self.pos_y+self.d_y*values[1])
+
+        self.canvas.coords(self.start_handle,(pos_start[0]+p_step_x*3,
+                                              pos_start[1]+p_step_y*3,
+                                              pos_start[0]-p_step_x*3,
+                                              pos_start[1]-p_step_y*3,))
+        self.canvas.coords(self.stop_handle,(pos_stop[0]+p_step_x*3,
+                                             pos_stop[1]+p_step_y*3,
+                                             pos_stop[0]-p_step_x*3,
+                                             pos_stop[1]-p_step_y*3,))
+        self.canvas.coords(self.box_line,(pos_start[0],
+                                          pos_start[1],
+                                          pos_stop[0],
+                                          pos_stop[1],))
+        self.values=values
+
+    def get_values(self):
+        """
+        returns internal value cache
+        """
+        return self.values
+
+    def bind_handle(self):
+        """
+        binds the three handles
+        """
+        self.canvas.tag_bind(self.start_handle,'<Button-1>',self.start_move_event)
+        self.canvas.tag_bind(self.stop_handle,'<Button-1>',self.start_move_event)
+
+    def start_move_event(self,event):
+        """
+        finds out, which part of the handle is selected and prepares for move tracing
+        """
+        current=self.canvas.find_withtag(Tkinter.CURRENT)[0]
+        if self.start_handle==current or \
+           self.stop_handle==current:
+            handle_base.start_move_event(self,event)
+        else:
+            print self.start_move_event.__name__,\
+                  ": don't know what to do with this event"
+        return
+
+    def values_from_mouse(self,event):
+        """
+        project the value to the handle base line and calculate new value
+        """
+        c_x=self.canvas.canvasx(event.x)-self.pos_x
+        c_y=self.canvas.canvasy(event.y)-self.pos_y
+        v=(self.d_x*c_x+self.d_y*c_y)/\
+           (self.d_x*self.d_x+self.d_y*self.d_y)
+        values=None
+        if self.start_handle==self.current:
+            values=(v,self.values[1])
+        elif self.stop_handle==self.current:
+            values=(self.values[0],v)
+        else:
+            print self.move_event.__name__,\
+                  ": don't know what to do with this event"
+        return values
+
+####################################################################################
+
 class gaussian_handle(handle_base):
     """
     handle for parameters of gaussian curve 
@@ -966,7 +1158,7 @@ class gaussian_handle(handle_base):
                   ": don't know what to do with this event"
         return values
 
-class gaussian_tail_handle(gaussian_handle):
+class gaussian_tail_handle_right(gaussian_handle):
     """
     handle for parameters of gaussian curve 
     """
@@ -976,6 +1168,8 @@ class gaussian_tail_handle(gaussian_handle):
         """
         self.tail=values[2]
         values=(values[0],values[1])
+        if conf.has_key('arg_dict'):
+            conf.update(conf['arg_dict'])
         gaussian_handle.__init__(self,canvas,report_function,values,arg_dict=conf)
 
     def create_items(self):
@@ -983,9 +1177,9 @@ class gaussian_tail_handle(gaussian_handle):
         adds the tail-handle as a circle
         """
         gaussian_handle.create_items(self)
-        self.tail_handle=self.canvas.create_oval((0,0,0,0),
-                                                 fill=self.color,
-                                                 outline=self.color)
+        self.tail_handle=self.canvas.create_polygon((0,0,0,0,0,0),
+                                                    fill=self.color,
+                                                    outline=self.color)
 
     def set_values(self,values):
         """
@@ -994,10 +1188,12 @@ class gaussian_tail_handle(gaussian_handle):
         if len(values)>2:
             self.tail=values[2]
         self.canvas.coords(self.tail_handle,
-                           self.d_x*self.tail+self.pos_x+3,
-                           self.d_y*self.tail+self.pos_y+3,
-                           self.d_x*self.tail+self.pos_x-3,
-                           self.d_y*self.tail+self.pos_y-3)
+                           self.d_x*self.tail+self.pos_x,
+                           self.d_y*self.tail+self.pos_y+4,
+                           self.d_x*self.tail+self.pos_x,
+                           self.d_y*self.tail+self.pos_y-4,
+                           self.d_x*self.tail+self.pos_x+4,
+                           self.d_y*self.tail+self.pos_y)
         gaussian_handle.set_values(self,(values[0],values[1]))
 
     def get_values(self):
@@ -1042,6 +1238,32 @@ class gaussian_tail_handle(gaussian_handle):
                 return (values[0],values[1],self.tail)
             else:
                 return None
+
+class gaussian_tail_handle_left(gaussian_tail_handle_right):
+    """
+    handle for parameters of gaussian curve 
+    """
+
+    def __init__(self,canvas,report_function,values,**conf):
+        """
+        """
+        gaussian_tail_handle_right.__init__(self,canvas,report_function,values,arg_dict=conf)
+
+    def set_values(self,values):
+        """
+        accepts tuples (mu,sigma,tail) and (mu,sigma)
+        """
+        if len(values)>2:
+            self.tail=values[2]
+     
+        self.canvas.coords(self.tail_handle,
+                           self.d_x*self.tail+self.pos_x,
+                           self.d_y*self.tail+self.pos_y+4,
+                           self.d_x*self.tail+self.pos_x,
+                           self.d_y*self.tail+self.pos_y-4,
+                           self.d_x*self.tail+self.pos_x-4,
+                           self.d_y*self.tail+self.pos_y)
+        gaussian_handle.set_values(self,(values[0],values[1])) 
             
 class gauss_editor(Tkinter.Frame):
     """
@@ -1061,21 +1283,35 @@ class gauss_editor(Tkinter.Frame):
         self.handle_list=[]
         
         #some nonsence data
-        self.plot_area.scale_y=100.0
-        self.plot_area.scale_x=50.0        
+        self.plot_area.scale_y=500.0
+        self.plot_area.scale_x=50.0
 
+##        d={}
+##        color_list=['red','green','blue','orange']
+##
+##        for i in range(1,5):
+##            o=box_function(start=i*2.0-1.0,
+##                           stop=i*2.0+1.0,
+##                           a=i/2.0,
+##                           color=color_list[i-1])
+##            self.plot_list.append(o)
+##            self.plot_area.add_plot_object(o)
+##            d[str(i)]=i/2.0
+        
+        self.plot_list=[box_function(start=0.2,stop=1.0,a=0.2,color='blue'),
+                        gauss_function(mu=2,sigma=0.6,a=0.2,color='green'),
+                        gauss_tail_function_right(mu=6,sigma=1,tail=5,a=0.2,color='orange'),
+                                                gauss_tail_function_left(mu=4,sigma=1,tail=4.7,a=0.2,color='grey')]
+
+        i=1
         d={}
-        color_list=['red','green','blue','yellow']
-
-        for i in range(1,5):
-            o=gauss_tail_function(mu=i*2.0,
-                                  sigma=1.0,
-                                  tail=0.0,
-                                  a=i/2.0,
-                                  color=color_list[i-1])
-            self.plot_list.append(o)
+        color_list=[]
+        for o in self.plot_list:
             self.plot_area.add_plot_object(o)
-            d[str(i)]=i/2.0
+            color_list.append(o.color)
+            d[str(i)]=o.a
+            i+=1
+
         self.dict=ProbEditorBasics.ProbDict(d)
 
         self.plot_sum=sum_function(sum_list=self.plot_list,color='red')
@@ -1134,12 +1370,26 @@ class gauss_editor(Tkinter.Frame):
                                        color=o.get_color(),
                                        pos_y=pos+10)
                 self.handle_list.append(handle)
-            elif o.__class__.__name__=='gauss_tail_function':
-                handle=gaussian_tail_handle(self.edit_area,
-                                            self.handle_report,
-                                            (o.mu,o.sigma,o.tail),
-                                            color=o.get_color(),
-                                            pos_y=pos+10)
+            elif o.__class__.__name__=='gauss_tail_function_left':
+                handle=gaussian_tail_handle_left(self.edit_area,
+                                                 self.handle_report,
+                                                 (o.mu,o.sigma,o.tail),
+                                                 color=o.get_color(),
+                                                 pos_y=pos+10)
+                self.handle_list.append(handle)
+            elif o.__class__.__name__=='box_function':
+                handle=box_handle(self.edit_area,
+                                  self.handle_report,
+                                  (o.start,o.stop),
+                                  color=o.get_color(),
+                                  pos_y=pos+10)
+                self.handle_list.append(handle)
+            elif o.__class__.__name__=='gauss_tail_function_right':
+                handle=gaussian_tail_handle_right(self.edit_area,
+                                                  self.handle_report,
+                                                  (o.mu,o.sigma,o.tail),
+                                                  color=o.get_color(),
+                                                  pos_y=pos+10)
                 self.handle_list.append(handle)
             else:
                 print "no handle for %s"%(o.__class__.__name__)
