@@ -868,6 +868,7 @@ class Algorithm:
        	self.source = input.read()
 	input.close()
 	
+	
 	# Now read in the prolog as a module to get access to the following data
 	# Maybe should obfuscate the names ala xxx_<bla>, have one dict ?
 	input = open(os.path.splitext(self.algoFileName)[0] + ".pro", 'r')

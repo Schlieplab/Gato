@@ -164,8 +164,11 @@ class EdgeWeight(EdgeLabeling):
 class Queue:
     """ Simple Queue class implemented as a Python list """
 
-    def __init__(self):
-	self.contents = []
+    def __init__(self, elems=None):
+	if elems == None: 
+	    self.contents = []
+	else:
+	    self.contents = elems[:]
 
     def Append(self,v):
 	self.contents.append(v)
