@@ -615,33 +615,50 @@ class FlowWrapper:
     """ This class visualizes the flow in a directed graph G
         with animator GA and it's residual network R with
         animator RA.
+        
+        flow = FlowWrapper(G,A,R,RA,G.edgeWeights[0],R.edgeWeights[0])
 
-        res     = R.edgeWeights[0] 
-        cap     = {}
-        flow    = FlowWrapper(G,A,R,RA,G.edgeWeights[0],cap,res)
+        or
+
+        flow = FlowWrapper(G,A,R,RA,G.edgeWeights[0],R.edgeWeights[0],G.vertexWeights[0])
+
     """
-    def __init__(self,  G, GA, R, RA, flow, cap, res,excess={}):
+    def __init__(self,  G, GA, R, RA, flow, res, excess=None, cost=None):
         self.G      = G
         self.GA     = GA
         self.R      = R
         self.RA     = RA
         self.flow   = flow
-        self.cap    = cap
+        self.cap    = copy.deepcopy(res)
         self.res    = res
         self.excess = excess
+        self.cost   = cost
+	if self.excess == None:        ## if no startup excess set all to zero
+            self.excess = {}
+	    for v in self.G.vertices:
+                self.excess[v] = 0
 	for e in self.G.Edges():
-            self.cap[e]  = self.flow[e]
-            self.res[e]  = self.flow[e]
             self.flow[e] = 0 
-
+   
     def __setitem__(self, e, val):
 	if (self.excess[e[0]] != gInfinity) and (self.excess[e[0]] != -gInfinity):
             self.excess[e[0]] = self.excess[e[0]] + self.flow[e] - val
 	if (self.excess[e[1]] != gInfinity) and (self.excess[e[1]] != -gInfinity):
             self.excess[e[1]] = self.excess[e[1]] - self.flow[e] + val  
+        if self.excess[e[0]] > 0:
+            self.RA.SetVertexColor(e[0],"green")
+        elif self.excess[e[0]] < 0:
+            self.RA.SetVertexColor(e[0],"red")
+        else:
+            self.RA.SetVertexColor(e[0],"gray")
+        if self.excess[e[1]] > 0:
+            self.RA.SetVertexColor(e[1],"green")
+        elif self.excess[e[1]] < 0:
+            self.RA.SetVertexColor(e[1],"red")
+        else:
+            self.RA.SetVertexColor(e[1],"gray")
         self.flow[e] = val
         if val == self.cap[e]:     
-            self.RA.SetEdgeColor(e[0],e[1],"black")            
             self.GA.SetEdgeColor(e[0],e[1],"blue")
             self.GA.SetEdgeAnnotation(e[0],e[1],"%d/%d" % (val,self.cap[e]),"black")
 	    try:
@@ -650,8 +667,6 @@ class FlowWrapper:
                 None
             if not self.R.QEdge(e[1],e[0]):
                 self.RA.AddEdge(e[1],e[0])
-            else:
-                self.RA.SetEdgeColor(e[1],e[0],"black")            
         elif val == 0: 
             self.GA.SetEdgeColor(e[0],e[1],"black")
             self.GA.SetEdgeAnnotation(e[0],e[1],"%d/%d" % (val, self.cap[e]),"gray")
@@ -661,19 +676,13 @@ class FlowWrapper:
                 None
             if not self.R.QEdge(e[0],e[1]):
                 self.RA.AddEdge(e[0],e[1])
-            else:
-                self.RA.SetEdgeColor(e[0],e[1],"black")            
         else:                      
             self.GA.SetEdgeColor(e[0],e[1],"#AAAAFF")
             self.GA.SetEdgeAnnotation(e[0],e[1],"%d/%d" % (val,self.cap[e]),"black")
             if not self.R.QEdge(e[1],e[0]):
                 self.RA.AddEdge(e[1],e[0])
-            else:
-                self.RA.SetEdgeColor(e[1],e[0],"black")            
             if not self.R.QEdge(e[0],e[1]):
                 self.RA.AddEdge(e[0],e[1])
-            else:
-                self.RA.SetEdgeColor(e[0],e[1],"black")            
 	if self.G.QEdge(e[0],e[1]):
             self.res[(e[1],e[0])]  = val
             self.res[(e[0],e[1])]  = self.cap[(e[0],e[1])] - val
