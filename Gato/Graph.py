@@ -138,7 +138,7 @@ class Graph:
 
 	try:
 	    if head in self.adjLists[tail]:
-		return (tail,head)            if u >= maxID:
+		return (tail,head)
 	    if self.directed == 0 and tail in self.adjLists[head]:
 		return (head,tail)
 	except KeyError:
