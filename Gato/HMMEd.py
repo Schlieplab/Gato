@@ -32,13 +32,68 @@ import whrandom
 import string
 import regsub
 
+import HMMXML
+import xml.dom.minidom
+
 
 class HMM:
     def __init__(self):
 	self.G = Graph()
 	self.G.directed = 1
 	self.G.euclidian = 0
-	self.Pi = None
+	self.Pi = []
+
+
+    def OpenXML(self, fileName):
+	self.G = Graph()
+	self.G.simple = 0
+	self.G.directed = 1
+	self.G.euclidian = 0
+
+        self.index = {} # Map id to index
+        self.id    = {} # Map index to id
+        self.label = {}
+
+        dom = xml.dom.minidom.parse(fileName)
+        assert dom.documentElement.tagName == "graphml"   
+
+        gml = HMMXML.GraphML()
+        gml.handleGraphML(dom)
+        print gml
+        dom.unlink()
+
+        self.hmmAlphabet = gml.hmmAlphabet
+
+        # Nr of Symbols:
+        self.nrOfSymbols = gml.hmmAlphabet.high - gml.hmmAlphabet.low + 1
+        for i in xrange(self.nrOfSymbols):
+            self.G.vertexWeights[i] = VertexWeight(self.G)
+
+        # Adding vertices
+        #
+        # XXX We assume we have label, initial, pos
+        for n in gml.graph.nodes:
+            i = self.G.AddVertex()
+            self.index[n.id] = i
+            self.id[i] = n.id
+            self.G.labeling[i] = "%s\n%s" % (n.id, n.label) # XXX Hack Aaaargh!
+            self.Pi.append(n.initial)
+            self.G.embedding[i] = Point2D(float(n.ngeom.x),float(n.ngeom.y))
+            for j in xrange(self.nrOfSymbols):
+                #print n.id, i, j
+                self.G.vertexWeights[j][i] = n.emissions[j]
+            
+        # Adding Edges
+        for e in gml.graph.edges:
+            i = self.index[e.source]
+            j = self.index[e.target]
+            #print i,j
+            self.G.AddEdge(i, j)
+            self.G.edgeWeights[0][(i,j)] = e.prob            
+
+            
+
+
 
     def Open(self, fileName):
 	self.G = Graph()
@@ -253,16 +308,6 @@ class HMM:
 	file.write("};\n") # close HMM = {
 
 
-    def open_xml(self,filename):
-        """
-        parses an xml graph file
-        """
-
-        import xml_utils
-        parser_tree=xml_utils.parse(filename)
-        hmms=xml_utils.get_hmms(parser_tree)
-	xml_utils.set_hmm(hmms[0],self)
-
 class EditPriorDialog(tkSimpleDialog.Dialog):
     def __init__(self, master, Pi):
 	self.Pi = Pi
@@ -467,7 +512,7 @@ class HMMEditor(SAGraphEditor):
     def OpenGraph(self):	
 	file = askopenfilename(title="Open HMM",
 			       defaultextension=".cat",
-			       filetypes = ( ("HMM", ".hmm"),
+			       filetypes = ( ("HMM", ".hmm"), ("XML", ".xml")
 					     )
 			       )
 	if file is "": 
@@ -479,6 +524,8 @@ class HMMEditor(SAGraphEditor):
 
 	    if e == 'hmm':
 		self.HMM.Open(file)
+	    elif e == 'xml':
+		self.HMM.OpenXML(file)
 	    else:
 		print "Unknown extension"
 		return
@@ -553,7 +600,7 @@ class HMMEditor(SAGraphEditor):
                     count = self.HMM.G.NrOfVertexWeights()
                     for i in xrange(count):
                         weight=self.HMM.G.vertexWeights[i][v]
-                        label = "symbol %d" % i
+                        label = "%s" % self.HMM.hmmAlphabet[i] # XXX
                         emission_probabilities.update({label:weight})
 
                     if emission_probabilities.sum==0:
