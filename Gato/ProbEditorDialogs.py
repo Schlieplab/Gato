@@ -105,7 +105,9 @@ class combined_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
             
         if len(self.key_list2)>0:
             # draw pie and bars
-            bg_canvas=Tkinter.Canvas(self,width=400,height=300,bg='white',
+            bg_canvas=Tkinter.Canvas(self,
+#                                     width=400,height=300,
+                                     bg='white',
                                      highlightthickness=0,
                                      scrollregion=(0,0,400,1000))
             # display first bar value in pie too
@@ -204,7 +206,6 @@ class scaled_bar_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
                 change=ProbEditorBasics.emission_change_data(self,self.data,dict)
                 self.send_change(change)
         
-
     def __init__(self,master,emissions):
         Tkinter.Frame.__init__(self,master)
         ProbEditorBasics.emission_editor.__init__(self,emissions)
@@ -213,7 +214,7 @@ class scaled_bar_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
                                                          self.data.order_list,
                                                          self.data.color_list,
                                                          self.bar_report)
-        self.bars.pack()
+        self.bars.pack(fill=Tkinter.BOTH,expand=1)
 
     def recieve_change(self,change):
         if change.__class__==ProbEditorBasics.emission_change_data:
@@ -330,14 +331,12 @@ class emission_dialog(Tkinter.Toplevel,ProbEditorBasics.emission_editor):
         tab_dict['combined']=combined_editor(self,self.emissions)
         tab_dict['pie']=pie_editor(self,self.emissions)
         tab_dict['bars']=bar_editor(self,self.emissions)
-        tab_dict['scaled_bars']=scaled_bar_editor(self,self.emissions)
+        tab_dict['scaled bars']=scaled_bar_editor(self,self.emissions)
         tabs=ProbEditorWidgets.tab_frame(self,tab_dict)
-        empty=Tkinter.Frame(self)
 
         w.pack(side=Tkinter.BOTTOM, padx=5, pady=5)
         figures.pack(side=Tkinter.LEFT,fill=Tkinter.Y,expand=1)
-        tabs.pack(side=Tkinter.LEFT,expand=1,fill=Tkinter.BOTH)        
-        empty.pack(fill=Tkinter.BOTH)
+        tabs.pack(side=Tkinter.LEFT,expand=1,fill=Tkinter.BOTH)
 
         self.update_idletasks()
         self.deiconify()

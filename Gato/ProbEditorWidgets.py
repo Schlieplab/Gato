@@ -27,21 +27,23 @@ class tab_frame(Tkinter.Frame):
         selected_item=event.widget.find_withtag(Tkinter.CURRENT)[0]
         selected_tags=event.widget.gettags(selected_item)
         tab_name=filter(lambda t: t[:4]=='tab_',selected_tags)[0][9:]
-        if tab_name!=self.actual_tab:
-            self.change_tab(tab_name)
+        key=ProbEditorBasics.tag_to_key(tab_name)
+        if key!=self.actual_tab:
+            self.change_tab(key)
 
     def change_tab(self,key):
         # change tabs
         if self.actual_tab!=None:
-            poly_list=self.tabs.find_withtag('tab_poly_'+self.actual_tab)
+            poly_list=self.tabs.find_withtag('tab_poly_'+ProbEditorBasics.key_to_tag(self.actual_tab))
             for item in poly_list:
                 self.tabs.itemconfigure(item,fill='')
 
-        poly_list=self.tabs.find_withtag('tab_poly_'+key)
+        tag=ProbEditorBasics.key_to_tag(key)
+        poly_list=self.tabs.find_withtag('tab_poly_'+tag)
         for item in poly_list:
             self.tabs.itemconfigure(item,fill='white')
             self.tabs.lift(item)
-        text_list=self.tabs.find_withtag('tab_text_'+key)
+        text_list=self.tabs.find_withtag('tab_text_'+tag)
         for item in text_list:
             self.tabs.lift(item)
         
@@ -67,11 +69,12 @@ class tab_frame(Tkinter.Frame):
         for key in key_list:
             # Reiter malen
             # erst den Text
-            tab_text=key.replace('_',' ')
+            tab_text=key
+            tag=ProbEditorBasics.key_to_tag(key)
             text=self.tabs.create_text((pos_x,text_base_y),
-                                       text=tab_text,
+                                       text=key,
                                        anchor=text_anchor,
-                                       tags=('tab_text_'+key))
+                                       tags=('tab_text_'+tag))
             text_box=self.tabs.bbox(text)
 
             #dann den Rand:
@@ -88,7 +91,7 @@ class tab_frame(Tkinter.Frame):
                                           far_left,very_deep),
                                          fill='',
                                          outline='black',
-                                         tags=('tab_poly_'+key),
+                                         tags=('tab_poly_'+tag)
                                          )
             # Text nach oben
             self.tabs.lift(text)
@@ -105,123 +108,8 @@ class tab_frame(Tkinter.Frame):
         else:
             self.change_tab(key_list[0])
 
-        self.tabs.pack(side=Tkinter.TOP,fill=Tkinter.X)
+        self.tabs.pack(side=Tkinter.TOP,fill=Tkinter.X,expand=1)
 
-####################################################################################
-
-class bar_chart_x(Tkinter.Canvas):
-
-    def __init__(self,master,prob_dict,keys,colors):
-        self.max_value=0
-        for k in keys:
-            if prob_dict[k]>self.max_value:
-                self.max_value=prob_dict[k]
-        self.bar_box=(10,10,300,250)
-        Tkinter.Canvas.__init__(self,master,
-                                bg='white',highlightthickness=0,
-                                width=400,height=320)
-        self.bar_step=50
-        self.bar_width=30
-        self.bar_height=(self.bar_box[1]-self.bar_box[3])/self.max_value
-
-        self.create_bars(prob_dict,keys,colors)
-        self.config_bar_height(prob_dict)
-
-    def create_bars(self,prob_dict,keys,colors):
-        start_x=self.bar_box[0]
-        start_y=self.bar_box[3]
-        text_x=self.bar_width/2
-        text_y=5
-        text_anchor=Tkinter.N
-        i=0
-        for k in keys:
-            pos_x=start_x+i*self.bar_step
-            pos_y=start_y
-            self.create_rectangle(pos_x,
-                                  pos_y,
-                                  pos_x+self.bar_width,
-                                  pos_y,
-                                  fill=colors[i],
-                                  tags=('bar','tag_'+k))
-            self.create_text(pos_x+text_x,pos_y+text_y,
-                             anchor=text_anchor,
-                             text=k,
-                             tags=('text','tag_'+k))
-            i=i+1
-        
-    def config_bar_height(self,prob_dict):
-
-        for key in prob_dict.keys():
-            items=self.find_withtag('tag_'+key)
-            item=filter(lambda i,s=self:s.type(i)=='rectangle',items)
-            coords=self.coords(item)
-            self.coords(item,coords[2],coords[3],
-                        coords[0],coords[3]+prob_dict[key]*self.bar_height)
-
-    def config_bar_color(self,keys,color_list):
-        bar_items=self.find_withtag('bar')
-
-        for item in bar_items:
-            key=filter(lambda t:t[:4]=='tag_',self.gettags(item))[0][4:]
-            color=color_list[keys.index(key)]
-            self.itemconfig(item,fill=color)
-
-    def config_bar_order(self,keys):
-        text_x=self.bar_width/2
-        start_x=self.bar_box[0]
-        start_y=self.bar_box[3]
-        i=0
-        for k in keys:
-            items=self.find_withtag('tag_'+key)
-            if len(items)==0:
-                continue
-            bar_item=filter(lambda i,s=self:s.type(i)=='rectangle',items)
-            text_item=filter(lambda i,s=self:s.type(i)=='text',items)
-            pos_x=start_x+i*self.bar_step
-            pos_y=start_y
-            bar_coords=self.coords(bar_item)
-            self.coords(bar_item,
-                        pos_x,
-                        bar_coords[1],
-                        pos_x+self.bar_width,
-                        bar_coords[3])
-            text_coords=self.coords(text_item)
-            self.coords(text_item,pos_x+text_x,text_coords[1])
-            i=i+1
-
-class e_bar_chart_x(bar_chart_x):
-
-    def __init__(self,master,prob_dict,keys,colors,report_func):
-        bar_chart_x.__init__(self,master,prob_dict,keys,colors)
-        # report value changes to this function
-        self.report_func=report_func
-
-        for item in self.find_withtag('bar'):
-            self.tag_bind(item,'<Button-1>',self.handle_mouse_move_start)
-
-    def handle_mouse_move_start(self,event):
-        self.current_item=self.find_withtag(Tkinter.CURRENT)[0]
-        coords=self.coords(self.current_item)
-        if event.y>coords[1]+2:
-            return
-        self.bind('<ButtonRelease-1>',self.handle_mouse_move_end)
-        self.bind('<B1-Motion>',self.handle_mouse_move)
-
-    def handle_mouse_move(self,event):
-        coords=self.coords(self.current_item)
-        if event.y>coords[3] or event.y<self.bar_box[1]:
-            return
-        coords[1]=event.y
-        self.coords(self.current_item,tuple(coords))
-
-    def handle_mouse_move_end(self,event):
-        self.unbind('<ButtonRelease-1>')
-        self.unbind('<B1-Motion>')
-        tags=self.gettags(self.current_item)
-        tag=filter(lambda tag: tag[:4]=='tag_',tags)[0]
-        coords=self.coords(self.current_item)
-        new_value=float(coords[1]-coords[3])/self.bar_height
-        self.report_func(tag[4:],new_value)
 
 #####################################################################################
 
@@ -243,8 +131,9 @@ class bar_chart_y(Tkinter.Canvas):
                                 master,
                                 bg='white',
                                 highlightthickness=0,
-                                width=self.text_length+self.bar_length+2*self.x_margin,
-                                height=len(keys)*self.bar_step+self.text_length+2*self.y_margin)
+#                                width=self.text_length+self.bar_length+2*self.x_margin,
+#                                height=len(keys)*self.bar_step+self.text_length+2*self.y_margin
+                                )
         self.create_bars(prob_dict,keys,colors)
         self.config_bar_height(prob_dict)
         self.create_bar_flyouts(prob_dict)
@@ -331,6 +220,16 @@ class bar_chart_y(Tkinter.Canvas):
         flyout_elements=self.find_withtag('flyout')
         for element in flyout_elements:
             self.delete(element)
+
+    def get_max_value(self):
+        dict=self.get_bar_values()
+        max_value=0
+        max_key=''
+        for k in dict.keys():
+            if dict[k]>self.max_value:
+                max_value=dict[k]
+                max_key=dict[k]
+        return (max_key,max_value)
 
     def get_bar_values(self,key_list=None):
         dict={}
@@ -476,31 +375,74 @@ class e_bar_chart_y(bar_chart_y):
 
 ####################################################################################
 
-class bar_chart_with_scale(Tkinter.Frame):
+class scale(Tkinter.Canvas):
+        
+    def __init__(self,master,start_x,factor,max_value=None):
+        Tkinter.Canvas.__init__(self,
+                                master,
+#                                width=start_x+factor*max_value+20,
+                                height=25,
+                                bg='white',
+                                highlightthickness=0
+                                )
+        self.bind('<Configure>',self.configure_event)
+        self.draw_arrow(start_x,factor,max_value)
 
-    def bar_report(self,what,key,value):
-        if what=='move':
-            self.move_count+=1
-        if what=='max reached' and self.move_count>1:
-            actual_values=self.bars.get_bar_values()
-            self.bars.bar_factor/=2
-            self.bars.config_bar_height(actual_values)
-            self.config_scale()
-            self.move_count=0
-        self.report_func(what,key,value)
+    def configure_event(self,event):
+        print 'conf'
+
+    def draw_arrow(self,start_x,factor,max_value=None):
+        self.create_line(start_x,
+                         20,
+                         start_x+factor*max_value+10,
+                         20,
+                         arrow=Tkinter.LAST,
+                         tags=('arrow'))
+        if max_value!=None:
+            self.config_scale(start_x,factor,max_value)
+
+    def config_scale(self,start_x,factor,max_value):
+        tic_tags=self.find_withtag('tic')
+        for tag in tic_tags:
+            self.delete(tag)
+        arrow=self.find_withtag('arrow')
+        self.coords(arrow,
+                    start_x,
+                    20,
+                    start_x+factor*max_value+10,
+                    20)
+        scale_frac=10.0**(math.floor(math.log10(max_value)))
+        if scale_frac*factor>100:
+            scale_frac/=2
+        if scale_frac*factor<50:
+            scale_frac*=2
+        # an der Teilung muﬂ noch gefeilt werden
+        x_pos=0.0
+        while x_pos<=max_value:
+            pixel_x=start_x+x_pos*factor
+            self.create_line(pixel_x,15,pixel_x,25,
+                                   tags=('tic'))
+            self.create_text(pixel_x,15,text=repr(x_pos)[:3],
+                             anchor=Tkinter.S,
+                             tags=('tic','text'))
+            x_pos=x_pos+scale_frac
+
+
+####################################################################################
+
+class bar_chart_with_scale(Tkinter.Frame):
 
     def __init__(self,master,prob_dict,keys,colors,report_func):
         Tkinter.Frame.__init__(self,master)
         self.bars=e_bar_chart_y(self,prob_dict,keys,colors,self.bar_report)
-        self.scale=Tkinter.Canvas(self,
-                                  width=self.bars.cget('width'),
-                                  height=25,
-                                  bg='white',
-                                  highlightthickness=0
-                                  )
-        self.draw_scale()
-        self.scale.grid(row=0,column=0)
-        self.bars.grid(row=1,column=0)
+        scale_start_x=self.bars.x_margin+self.bars.text_length
+        factor=self.bars.bar_factor
+        scale_max=self.bars.max_value
+        self.scale=scale(self,scale_start_x,factor,scale_max)
+        # self.scale.config(width=self.bars.cget('width'))
+
+        self.scale.grid(row=0,column=0,sticky=Tkinter.W+Tkinter.E)
+        self.bars.grid(row=1,column=0,sticky=Tkinter.NW+Tkinter.SE)
         self.report_func=report_func
         scrollbar = Tkinter.Scrollbar(self,orient=Tkinter.VERTICAL,
                                       command=self.bars.yview)
@@ -510,41 +452,22 @@ class bar_chart_with_scale(Tkinter.Frame):
                          scrollregion=sregion,
                          yscrollcommand=scrollbar.set)
         scrollbar.grid(row=1,column=1,sticky=Tkinter.N+Tkinter.S)
-        self.move_count=0
+        self.move_count=1
 
-    def draw_scale(self):
-        scale_start_x=self.bars.x_margin+self.bars.text_length
-        self.scale.create_line(scale_start_x,
-                               20,
-                               scale_start_x+self.bars.bar_length+10,
-                               20,
-                               arrow=Tkinter.LAST,
-                               tags=('arrow'))
-        self.config_scale()
+    def bar_report(self,what,key,value):
+        if what=='move':
+            self.move_count+=1
+        if what=='max reached' and self.move_count>0:
+            actual_values=self.bars.get_bar_values()
+            self.bars.bar_factor/=2
+            self.bars.config_bar_height(actual_values)
+            self.scale.config_scale(self.bars.x_margin+self.bars.text_length,
+                                    self.bars.bar_factor,
+                                    self.bars.bar_length/self.bars.bar_factor)
+            self.move_count=0
+        self.report_func(what,key,value)
 
-    def config_scale(self):
-        tic_tags=self.scale.find_withtag('tic')
-        for tag in tic_tags:
-            self.scale.delete(tag)
-        arrow=self.scale.find_withtag('arrow')
-        scale_start_x=self.bars.x_margin+self.bars.text_length
-        self.scale.coords(scale_start_x,
-                          20,
-                          scale_start_x+self.bars.bar_length+10,
-                          20)
-        scale_max=self.bars.bar_length/self.bars.bar_factor
-        scale_frac=10.0**(math.floor(math.log10(scale_max)))/2
-        scale_pixels=scale_frac*self.bars.bar_factor
-        # an der Teilung muﬂ noch gefeilt werden
-        x_pos=0
-        while x_pos<=scale_max:
-            pixel_x=scale_start_x+x_pos*self.bars.bar_factor
-            self.scale.create_line(pixel_x,15,pixel_x,25,
-                                   tags=('tic'))
-            self.scale.create_text(pixel_x,15,text=repr(x_pos),
-                                   anchor=Tkinter.S,
-                                   tags=('tic','text'))
-            x_pos=x_pos+scale_frac
+
 
 ####################################################################################
 
@@ -554,7 +477,8 @@ class rod_chart(Tkinter.Canvas):
         self.rod_box=(10,10,300,60)
         Tkinter.Canvas.__init__(self,master,
                                 bg='white',highlightthickness=0,
-                                width=200,height=320)
+                                width=200,height=320
+                                )
         self.draw_rods(keys,colors)
 
     def draw_rods(self,keys,colors):
@@ -637,8 +561,9 @@ class pie_chart(Tkinter.Canvas):
         self.ProbDict=prob_dict
         self.arc_box=(100,50,300,250)
         self.key_list=keys
-        Tkinter.Canvas.__init__(self,master,bg='white',highlightthickness=0,
-                                width=400,height=300)
+        Tkinter.Canvas.__init__(self,master,bg='white',highlightthickness=0
+                                # width=400,height=300
+                                )
         self.draw_arcs(self.arc_box,keys,colors)
 
     def anchor(self,angle,angle_base):

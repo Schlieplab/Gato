@@ -16,6 +16,31 @@
 #
 ################################################################################
 
+
+import string
+
+def key_to_tag(key):
+    i=string.find(key,'_')
+    while i!=-1:
+        key=key[:i]+'/'+key[i:]
+        i=string.find(key,'_',i+2)
+    i=string.find(key,' ')
+    while i!=-1:
+        key=key[:i]+'_'+key[i+1:]
+        i=string.find(key,' ',i+1)
+    return key
+
+def tag_to_key(tag):
+    i=string.find(tag,'_')
+    while i!=-1:
+        if i>0 and tag[i-1]=='/':
+            tag=tag[:i-1]+tag[i:]
+        else:
+            tag=tag[:i]+' '+tag[i+1:]
+            i+=1
+        i=string.find(tag,'_',i)
+    return tag
+
 import UserDict
 
 class ProbDict(UserDict.UserDict):
