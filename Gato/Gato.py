@@ -464,7 +464,7 @@ class AlgoWin(Frame):
 						 ,("Python Code", ".py")
 					       ]
 				   )
-	if file is not "":
+	if file is not "" and file is not ():
 	    try:
 		self.algorithm.Open(file)
 	    except (EOFError, IOError):
@@ -513,7 +513,7 @@ class AlgoWin(Frame):
 					       ]
 				   )
 	    
-	if file is not "":
+	if file is not "" and file is not ():
 	    try:
 		self.algorithm.OpenGraph(file)
 	    except (EOFError, IOError):
