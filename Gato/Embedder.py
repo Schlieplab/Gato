@@ -30,9 +30,21 @@ class Embedder:
             Return value != none designates error/warning message """
 	return none
 
-
+def RedrawGraph(theGraphEditor):
+    theGraphEditor.SetGraphMenuGrid(0)
+    for v in theGraphEditor.G.vertices:
+        theGraphEditor.MoveVertex(v, theGraphEditor.G.xCoord[v],
+                                  theGraphEditor.G.yCoord[v], 1)
 #----------------------------------------------------------------------
 import whrandom
+
+def RandomCoords(G):
+    G.xCoord={}
+    G.yCoord={}
+    for v in G.vertices:
+        G.xCoord[v]=whrandom.randint(10,990)
+        G.yCoord[v]=whrandom.randint(10,990)
+    return 1
 
 class RandomEmbedder(Embedder):
 
@@ -40,15 +52,25 @@ class RandomEmbedder(Embedder):
 	return "Randomize Layout"
     
     def Embed(self, theGraphEditor):
-	theGraphEditor.SetGraphMenuGrid(0)
-	for v in theGraphEditor.G.vertices:
-	    theGraphEditor.MoveVertex(v, 
-				      whrandom.randint(10,990),
-				      whrandom.randint(10,990), 
-				      1)
+        if theGraphEditor.G.Order()==0:
+            return
+        if RandomCoords(theGraphEditor.G):
+            RedrawGraph(theGraphEditor)
+        
 #----------------------------------------------------------------------
-
 from math import pi, sin, cos
+
+def CircularCoords(G):
+    G.xCoord={}
+    G.yCoord={}
+    distance = 2*pi/G.Order()
+    degree = 0
+    xMiddle=500; yMiddle=500; radius=450
+    for v in G.vertices:
+        G.xCoord[v]=radius*cos(degree)+xMiddle
+        G.yCoord[v]=radius*sin(degree)+yMiddle
+        degree=degree+distance
+    return 1
 
 class CircularEmbedder(Embedder):
 
@@ -56,18 +78,37 @@ class CircularEmbedder(Embedder):
 	return "Circular Layout"
     
     def Embed(self, theGraphEditor):
-	theGraphEditor.SetGraphMenuGrid(0)
-        if theGraphEditor.G.Order()!=0: 
-            distance = 2*pi/theGraphEditor.G.Order()
-            degree = 0
-            xMiddle=500; yMiddle=500; radius=450
-            for v in theGraphEditor.G.vertices:
-                xCoord=radius*cos(degree)+xMiddle
-                yCoord=radius*sin(degree)+yMiddle
-                theGraphEditor.MoveVertex(v,xCoord,yCoord,1)
-                degree=degree+distance
+        if theGraphEditor.G.Order()==0:
+            return
+        if CircularCoords(theGraphEditor.G):
+            RedrawGraph(theGraphEditor)
+                
 #----------------------------------------------------------------------
+from PlanarEmbedding import *
 
+class FPP_PlanarEmbedder(Embedder):
+
+    def Name(self):
+	return "Planar Layout (FPP)"
+    
+    def Embed(self, theGraphEditor):
+        if theGraphEditor.G.Order()==0:
+            return
+        if FPP_PlanarCoords(theGraphEditor.G):
+            RedrawGraph(theGraphEditor)
+
+class Schnyder_PlanarEmbedder(Embedder):
+
+    def Name(self):
+	return "Planar Layout (Schnyder)"
+    
+    def Embed(self, theGraphEditor):
+        if theGraphEditor.G.Order()==0:
+            return
+        if Schnyder_PlanarCoords(theGraphEditor.G):
+            RedrawGraph(theGraphEditor)
+        
+#----------------------------------------------------------------------
 from Tkinter import *
 import tkSimpleDialog 
 import string
@@ -77,8 +118,8 @@ from DataStructures import Stack
 
 class TreeLayoutDialog(tkSimpleDialog.Dialog):
 
-    def __init__(self, master, G):
-        self.G = G
+    def __init__(self, master):
+        self.G = master.G
         tkSimpleDialog.Dialog.__init__(self, master, "Tree Layout")
         
 
@@ -118,141 +159,144 @@ class TreeLayoutDialog(tkSimpleDialog.Dialog):
            showwarning("Warning", "Please try again !")
            return 0
 
+
+def TreeCoords(G, root, orientation):
+    S = Stack()
+    visited = {}
+    d = {}
+    leaves = []
+    number_of_leaves = 0
+    height = 0
+    nodes = {}
+    children = {}
+    father = {}
+
+    for v in G.vertices:
+        visited[v] = 0	
+    visited[root] = 1
+    S.Push(root)
+    d[root] = 0
+    nodes[0] = []
+    children[root] = []
+    father[root] = None 
+
+    while S.IsNotEmpty():
+        v = S.Pop()
+        if orientation=="vertical":
+            nodes[d[v]].insert(0,v)
+            if v!=root: children[father[v]].insert(0,v)
+        else:
+            nodes[d[v]].append(v)
+            if v!=root: children[father[v]].append(v)
+        isleaf = 1
+        for w in G.InOutNeighbors(v):
+            if visited[w] == 0:
+                isleaf = 0
+                visited[w] = 1
+                d[w] = d[v] + 1
+                children[w] = []
+                father[w] = v
+                if d[w]>height:
+                    height = d[w]
+                    nodes[height] = []
+                S.Push(w)
+        if isleaf:
+            number_of_leaves = number_of_leaves + 1
+            if orientation=="vertical":
+                leaves.insert(0,v)
+            else:
+                leaves.append(v)
+
+    # Test whether the graph is connected and
+    # acyclic.(=test whether the graph is a tree)
+    for v in G.vertices:
+            
+        if visited[v]==0:
+            showwarning("Warning", 
+                        "Graph is not a tree,\n"
+                        "not connected !!!")
+            return 0
+            
+        ch_len = len(children[v])
+        if v!=root: ch_len = ch_len + 1
+        if ch_len<len(G.InOutNeighbors(v)):
+            showwarning("Warning", 
+                        "Graph is not a tree,\n"
+                        "contains cycles !!!")                
+            return 0
+
+
+    if number_of_leaves<=19:
+        dist1 = 50
+    else:
+        dist1 = 900 / (number_of_leaves-1)
+
+    if height+1<=19:
+        dist2 = 50
+    else:
+        dist2 = 900 / height
+
+    if dist1<25 or dist2<30: 
+        showwarning("Warning", 
+                    "Tree-Layout not possible,\n"
+                    "the tree is too large !!!")
+        return 0
+
+
+    Coord1 = {}
+    Coord2 = {}
+    i = 0
+    for v in leaves:
+        Coord1[v] = 50 + i * dist1
+        Coord2[v] = 50 + d[v] * dist2
+        i = i + 1
+	    
+    i = height - 1
+    while i>=0:
+        for v in nodes[i]:
+            if children[v]!=[]:
+                Coord2[v] = 50 + d[v] * dist2
+                if len(children[v])==1:
+                    Coord1[v] = Coord1[children[v][0]]
+                else:
+                    Coord1[v] = ( Coord1[children[v][0]] +
+                                  (Coord1[children[v][-1]] - 
+                                   Coord1[children[v][0]]) / 2)  
+        i=i-1
+
+    if orientation=="vertical":
+        G.xCoord=Coord1
+        G.yCoord=Coord2
+    else:
+        G.xCoord=Coord2
+        G.yCoord=Coord1
+
+    return 1
+
+
 class TreeEmbedder(Embedder):
 
     def Name(self):
 	return "Tree Layout"
 
     def Embed(self, theGraphEditor):
-	G=theGraphEditor.G
-	if G.Order()==0: 
-	    return
-
-	dial = TreeLayoutDialog(theGraphEditor, G)
+        if theGraphEditor.G.Order()==0:
+            return
+        
+	dial = TreeLayoutDialog(theGraphEditor)
 	if dial.result is None: 
 	    return	
 
-	root=dial.result[0]
-	orientation=dial.result[1]
+        if TreeCoords(theGraphEditor.G, dial.result[0], dial.result[1]):
+            RedrawGraph(theGraphEditor)
 
-	S = Stack()
-	visited = {}
-	d = {}
-	leafs = []
-	number_of_leafs = 0
-	height = 0
-        nodes = {}
-        children = {}
-        father = {}
-
-	for v in G.vertices:
-	    visited[v] = 0	
-	visited[root] = 1
-	S.Push(root)
-        d[root] = 0
-        nodes[0] = []
-        children[root] = []
-        father[root] = None 
-
-	while S.IsNotEmpty():
-	    v = S.Pop()
-            if orientation=="vertical":
-                nodes[d[v]].insert(0,v)
-                if v!=root: children[father[v]].insert(0,v)
-            else:
-                nodes[d[v]].append(v)
-                if v!=root: children[father[v]].append(v)
-	    isleaf = 1
-	    for w in G.InOutNeighbors(v):
-		if visited[w] == 0:
-		    isleaf = 0
-		    visited[w] = 1
-		    d[w] = d[v] + 1
-                    children[w] = []
-                    father[w] = v
-		    if d[w]>height:
-                        height = d[w]
-                        nodes[height] = []
-		    S.Push(w)
-	    if isleaf:
-		number_of_leafs = number_of_leafs + 1
-                if orientation=="vertical":
-                    leafs.insert(0,v)
-                else:
-                    leafs.append(v)
-
-        # Test whether the graph is connected and
-        # acyclic.(=test whether the graph is a tree)
-        for v in G.vertices:
-            
-            if visited[v]==0:
-                showwarning("Warning", 
-                            "Graph is not a tree,\n"
-                            "not connected !!!")
-                return
-            
-            ch_len = len(children[v])
-            if v!=root: ch_len = ch_len + 1
-            if ch_len<len(G.InOutNeighbors(v)):
-                showwarning("Warning", 
-                            "Graph is not a tree,\n"
-                            "contains cycles !!!")                
-                return
-
-
-	if number_of_leafs<=19:
-	    dist1 = 50
-	else:
-            dist1 = 900 / (number_of_leafs-1)
-
-	if height+1<=19:
-	    dist2 = 50
-	else:
-            dist2 = 900 / height
-
-	if dist1<25 or dist2<30: 
-	    showwarning("Warning", 
-			"Tree-Layout not possible,\n"
-			"the tree is too large !!!")
-	    return	
-
-
-	Coord1 = {}
-	Coord2 = {}
-	i = 0
-	for v in leafs:
-	    Coord1[v] = 50 + i * dist1
-	    Coord2[v] = 50 + d[v] * dist2
-	    i = i + 1
-	    
-	i = height - 1
-	while i>=0:
-	    for v in nodes[i]:
-		if children[v]!=[]:
-		    Coord2[v] = 50 + d[v] * dist2
-		    if len(children[v])==1:
-			Coord1[v] = Coord1[children[v][0]]
-		    else:
-			Coord1[v] = ( Coord1[children[v][0]] +
-				      (Coord1[children[v][-1]] - 
-				       Coord1[children[v][0]]) / 2)  
-	    i=i-1
-
-
-	theGraphEditor.SetGraphMenuGrid(0)
-	for v in G.vertices:
-	    if orientation=="vertical": 
-		theGraphEditor.MoveVertex(v,Coord1[v],Coord2[v],1)
-	    else:
-		theGraphEditor.MoveVertex(v,Coord2[v],Coord1[v],1)
 #----------------------------------------------------------------------
-
 from GraphUtil import BFS
 
 class BFSLayoutDialog(tkSimpleDialog.Dialog):
 
-    def __init__(self, master, G):
-        self.G = G
+    def __init__(self, master):
+        self.G = master.G
         tkSimpleDialog.Dialog.__init__(self, master, "BFS Layout")
         
 
@@ -292,6 +336,33 @@ class BFSLayoutDialog(tkSimpleDialog.Dialog):
            showwarning("Warning", "Please try again !")
            return 0
 
+def BFSTreeCoords(G, root, direction):
+    BFSdistance = BFS(G,root,direction)[0]
+    maxDistance=0
+    maxBreadth=0
+    list = {}
+    for v in G.vertices:
+        list[BFSdistance[v]] = []
+    for v in G.vertices:
+        list[BFSdistance[v]].append(v)
+    maxDistance=len(list)
+    for d in list.values():
+        if len(d)>maxBreadth: maxBreadth=len(d)
+    xDist=900/(maxDistance-1)
+    yDist=900/(maxBreadth-1)
+    Coord1=950
+
+    G.xCoord={}
+    G.yCoord={}
+    for d in list.values():
+        Coord2=500-(len(d)-1)*yDist/2
+        for v in d:
+            G.xCoord[v]=Coord1+whrandom.randint(-20,20)
+            G.yCoord[v]=Coord2
+            Coord2=Coord2+yDist 
+        Coord1=Coord1-xDist
+    return 1
+
 
 class BFSTreeEmbedder(Embedder):
 
@@ -299,55 +370,20 @@ class BFSTreeEmbedder(Embedder):
 	return "BFS-Tree Layout"
 
     def Embed(self, theGraphEditor):
-	if theGraphEditor.G.Order()!=0:
-	    dial = BFSLayoutDialog(theGraphEditor, theGraphEditor.G)
-            if dial.result is None:
-                return
+        if theGraphEditor.G.Order()==0:
+            return
+        
+	dial = BFSLayoutDialog(theGraphEditor)
+	if dial.result is None: 
+	    return	
 
-            BFSdistance = BFS(theGraphEditor.G,dial.result[0],dial.result[1])[0]
-	    maxDistance=0
-            maxBreadth=0
-            list = {}
-	    for v in theGraphEditor.G.vertices:
-                list[BFSdistance[v]] = []
-            for v in theGraphEditor.G.vertices:
-                list[BFSdistance[v]].append(v)
-            maxDistance=len(list)
-            for d in list.values():
-                if len(d)>maxBreadth: maxBreadth=len(d)
-            xDist=900/(maxDistance-1)
-            yDist=900/(maxBreadth-1)
-            xCoord=950
+        if BFSTreeCoords(theGraphEditor.G, dial.result[0], dial.result[1]):
+            RedrawGraph(theGraphEditor)
 
-	    theGraphEditor.SetGraphMenuGrid(0)
-            for d in list.values():
-		yCoord=500-(len(d)-1)*yDist/2
-                for v in d:
-                    theGraphEditor.MoveVertex(v,xCoord+whrandom.randint(-20,20),yCoord,1)
-                    yCoord=yCoord+yDist 
-                xCoord=xCoord-xDist
-#----------------------------------------------------------------------
-
-from PlanarEmbedding import *
-
-class FPP_PlanarEmbedder(Embedder):
-
-    def Name(self):
-	return "Planar Layout (FPP)"
-    
-    def Embed(self, theGraphEditor):
-	FPP_PlanarEmbedding(theGraphEditor)
-
-class Schnyder_PlanarEmbedder(Embedder):
-
-    def Name(self):
-	return "Planar Layout (Schnyder)"
-    
-    def Embed(self, theGraphEditor):
-	Schnyder_PlanarEmbedding(theGraphEditor)
 #----------------------------------------------------------------------
 
 """ Here instantiate all the embedders you want to make available to
     a client. """
-embedder = [RandomEmbedder(), CircularEmbedder(), TreeEmbedder(),
-            BFSTreeEmbedder(), FPP_PlanarEmbedder(), Schnyder_PlanarEmbedder()]
+embedder = [RandomEmbedder(), CircularEmbedder(),
+            FPP_PlanarEmbedder(), Schnyder_PlanarEmbedder(),
+            TreeEmbedder(), BFSTreeEmbedder()]

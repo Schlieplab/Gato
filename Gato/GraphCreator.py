@@ -15,6 +15,8 @@
 #
 ################################################################################
 
+from Graph import *
+from Embedder import *
 import whrandom
 
 class Creator:
@@ -29,7 +31,17 @@ class Creator:
     def Create(self, theGraphEditor):
 	""" Create a new graph. """
 	return none
-    
+
+
+def DrawNewGraph(theGraphEditor,G,direction):
+    theGraphEditor.NewGraph(direction,1,0,'None',0,'One',0)
+
+    for v in G.vertices:
+	theGraphEditor.AddVertex(G.xCoord[v],G.yCoord[v])
+        
+    for e in G.Edges():
+        theGraphEditor.AddEdge(e[0],e[1])
+
 #----------------------------------------------------------------------
 from Tkinter import *
 import tkSimpleDialog 
@@ -77,16 +89,31 @@ class Dialog(tkSimpleDialog.Dialog):
                           value=1)
         radio.grid(row=1, column=2, padx=4, pady=3, sticky="w")
 
+        self.layout=IntVar()
+        self.layout.set(0)
+        radio=Radiobutton(master, text="Randomize Layout",
+                          variable=self.layout, value=0)
+        radio.grid(row=0, column=3, padx=4, pady=3, sticky="w") 
+        radio=Radiobutton(master, text="Circular Layout",
+                          variable=self.layout, value=1)
+        radio.grid(row=1, column=3, padx=4, pady=3, sticky="w")
+        if self.planar:
+            radio=Radiobutton(master, text="Planar Layout (FPP)",
+                              variable=self.layout, value=2)
+            radio.grid(row=0, column=4, padx=4, pady=3, sticky="w") 
+            radio=Radiobutton(master, text="Planar Layout (Schnyder)",
+                              variable=self.layout, value=3)
+            radio.grid(row=1, column=4, padx=4, pady=3, sticky="w")
 
     def validate(self):
         try:
             n=string.atoi(self.number_of_nodes.get())
-            if n<1 or n>100:
+            if n<1 or n>200:
                 raise nodeError
         except:
            showwarning("Please try again !",
                        "min. number of nodes = 1\n" 
-                       "max. number of nodes = 100")
+                       "max. number of nodes = 200")
            return 0            
 
         try:
@@ -114,42 +141,32 @@ class Dialog(tkSimpleDialog.Dialog):
         self.result.append(n)
         self.result.append(m)
         self.result.append(self.direction.get())
+        self.result.append(self.layout.get())
         return self.result
     
 #----------------------------------------------------------------------
-def DrawNewNodes(theGraphEditor,result):
-    n=result[0] # number of nodes
-
-    theGraphEditor.NewGraph(result[2],1,0,'None',0,'One',0)
-
-    for i in range(0,n):
-	theGraphEditor.AddVertex(whrandom.randint(10,990),
-				 whrandom.randint(10,990))
-
-def CompleteEdges(theGraphEditor,result):
+def CompleteEdges(G,n,direction):
     Edges=[]
-    n=result[0]
 
     for i in range(0,n):
-	source=theGraphEditor.G.vertices[i]
+	source=G.vertices[i]
 	for j in range(i+1,n):   
-	    target=theGraphEditor.G.vertices[j]
+	    target=G.vertices[j]
 	    Edges.append((source,target))
-	    if result[2]: Edges.append((target,source))
+	    if direction==1: Edges.append((target,source))
     return Edges
 
-def MaximalPlanarEdges(theGraphEditor,result):
-    n=result[0]
-
+def MaximalPlanarEdges(G,n,direction):
     Edges=[] #6*n
+    
     AdjEdges={}
-    for v in theGraphEditor.G.vertices:
+    for v in G.vertices:
         AdjEdges[v]=[]
 
     index=0
-    a=theGraphEditor.G.vertices[index]
+    a=G.vertices[index]
     index=index+1
-    b=theGraphEditor.G.vertices[index]
+    b=G.vertices[index]
     index=index+1
     
     Edges.append((a,b))
@@ -160,7 +177,7 @@ def MaximalPlanarEdges(theGraphEditor,result):
     m=2
     while index < n:
         e=Edges[whrandom.randint(0,m-1)]
-        v=theGraphEditor.G.vertices[index]
+        v=G.vertices[index]
         index=index+1
 
         while e[1]!=v:
@@ -180,7 +197,7 @@ def MaximalPlanarEdges(theGraphEditor,result):
             else:
                 e=AdjEdges[e[1]][index2-1]
 
-    if result[2]==0: # undirected
+    if direction==0: # undirected
         m=m-1
         while m>0:
           del Edges[m]
@@ -192,81 +209,349 @@ def MaximalPlanarEdges(theGraphEditor,result):
 class completeGraphCreator(Creator):
 
     def Name(self):
-	return "create complete Graph" 
+	return "create complete graph" 
     
     def Create(self, theGraphEditor):
-        dial = Dialog(theGraphEditor, 0, 0, "create complete Graph")
+        dial = Dialog(theGraphEditor, 0, 0, "create complete graph")
         if dial.result is None:
             return
+        
+        n=dial.result[0]
+        direction=dial.result[2]
+        layout=dial.result[3]
+        
+        G=Graph()
+        G.directed=direction
 
-	DrawNewNodes(theGraphEditor,dial.result)
-	Edges=CompleteEdges(theGraphEditor,dial.result)
+        for v in range(0,n):
+            G.AddVertex()
 
-	for e in Edges:
-	    theGraphEditor.AddEdge(e[0],e[1])
+        Edges=CompleteEdges(G,n,direction)
 
+        for e in Edges:
+            G.AddEdge(e[0],e[1])
+
+        if layout==0:
+            RandomCoords(G)
+        else:
+            CircularCoords(G)
+            
+        DrawNewGraph(theGraphEditor,G,direction)
+            
 #----------------------------------------------------------------------
 class randomGraphCreator(Creator):
 
     def Name(self):
-	return "create random Graph" 
+	return "create random graph" 
     
     def Create(self, theGraphEditor):
-        dial = Dialog(theGraphEditor, 0, 1, "create random Graph")
+        dial = Dialog(theGraphEditor, 0, 1, "create random graph")
         if dial.result is None:
             return
+        
+        n=dial.result[0]
+        m=dial.result[1]
+        direction=dial.result[2]
+        layout=dial.result[3]
+        
+        G=Graph()
+        G.directed=direction
 
-	DrawNewNodes(theGraphEditor,dial.result)
-	Edges=CompleteEdges(theGraphEditor,dial.result)
+        for v in range(0,n):
+            G.AddVertex()
 
-	m=dial.result[1] # number of edges
+        Edges=CompleteEdges(G,n,direction)
+
         for i in range(0,m):
             pos=whrandom.randint(0,len(Edges)-1)
-            theGraphEditor.AddEdge(Edges[pos][0],Edges[pos][1])
+            G.AddEdge(Edges[pos][0],Edges[pos][1])
             del Edges[pos]
+
+        if layout==0:
+            RandomCoords(G)
+        else:
+            CircularCoords(G)
             
+        DrawNewGraph(theGraphEditor,G,direction)
+        
 #----------------------------------------------------------------------
 class maximalPlanarGraphCreator(Creator):
 
     def Name(self):
-	return "create maximal planar Graph" 
+	return "create maximal planar graph" 
     
     def Create(self, theGraphEditor):
-        dial = Dialog(theGraphEditor, 1, 0, "create maximal planar Graph")
+        dial = Dialog(theGraphEditor, 1, 0, "create maximal planar graph")
         if dial.result is None:
             return
 
-	DrawNewNodes(theGraphEditor,dial.result)
-        if dial.result[0]>1:
-            Edges=MaximalPlanarEdges(theGraphEditor,dial.result)
-            for e in Edges:
-                theGraphEditor.AddEdge(e[0],e[1])
+        n=dial.result[0]
+        if n<=1: return
+        direction=dial.result[2]
+        layout=dial.result[3]
+        
+        G=Graph()
+        G.directed=direction
+
+        for v in range(0,n):
+            G.AddVertex()
+
+        Edges=MaximalPlanarEdges(G,n,direction)
+
+        for e in Edges:
+            G.AddEdge(e[0],e[1])
+
+        if layout==0:
+            RandomCoords(G)
+        elif layout==1:
+            CircularCoords(G)
+        elif layout==2:
+            FPP_PlanarCoords(G)
+        else:
+            Schnyder_PlanarCoords(G)
+            
+        DrawNewGraph(theGraphEditor,G,direction)
 
 #----------------------------------------------------------------------
+from math import log10
+
 class randomPlanarGraphCreator(Creator):
 
     def Name(self):
-        return "create random planar Graph" 
+        return "create random planar graph" 
     
     def Create(self, theGraphEditor):
-        dial = Dialog(theGraphEditor, 1, 1, "create random planar Graph")
+        dial = Dialog(theGraphEditor, 1, 1, "create random planar graph")
         if dial.result is None:
             return
 
-	DrawNewNodes(theGraphEditor,dial.result)
+        n=dial.result[0]
+        if n<=1: return
+        m=dial.result[1]
+        direction=dial.result[2]
+        layout=dial.result[3]
+        
+        G=Graph()
+        G.directed=direction
 
-        if dial.result[0]>1:
-            Edges=MaximalPlanarEdges(theGraphEditor,dial.result)
-            m=dial.result[1] # number of edges
-            for i in range(0,m):
-                pos=whrandom.randint(0,len(Edges)-1)
-                theGraphEditor.AddEdge(Edges[pos][0],Edges[pos][1])
-                del Edges[pos]
+        for v in range(0,n):
+            G.AddVertex()
+
+        Edges=MaximalPlanarEdges(G,n,direction)
+
+        for i in range(0,m):
+            pos=whrandom.randint(0,len(Edges)-1)
+            G.AddEdge(Edges[pos][0],Edges[pos][1])
+            del Edges[pos]
+
+        if layout==0:
+            RandomCoords(G)
+        elif layout==1:
+            CircularCoords(G)
+        elif layout==2:
+            FPP_PlanarCoords(G)
+        else:
+            Schnyder_PlanarCoords(G)
+            
+        DrawNewGraph(theGraphEditor,G,direction)
         
 #----------------------------------------------------------------------
+class TreeDialog(tkSimpleDialog.Dialog):
 
+    def __init__(self, master, visible, Text):
+        self.visible=visible
+        tkSimpleDialog.Dialog.__init__(self, master, Text)
+        
+
+    def body(self, master):
+        self.resizable(0,0)
+
+        self.degree=StringVar()
+        self.degree.set("2")
+        label = Label(master, text="degree  :", anchor=W)
+        label.grid(row=0, column=0, padx=4, pady=3, sticky="w")
+        entry=Entry(master, width=6, exportselection=FALSE,
+                    textvariable=self.degree)
+        entry.selection_range(0,1)
+        entry.focus_set()
+        entry.grid(row=0,column=1, padx=4, pady=3, sticky="w")
+        
+        self.height=StringVar()
+        self.height.set("0")
+        label = Label(master, text="height   :", anchor=W)
+        label.grid(row=1, column=0, padx=4, pady=3, sticky="w")
+        entry=Entry(master, width=6, exportselection=FALSE,
+                    textvariable=self.height)
+        entry.selection_range(0,1)
+        entry.focus_set()
+        entry.grid(row=1,column=1, padx=4, pady=3, sticky="w")
+        
+        self.number_of_nodes=StringVar()
+        self.number_of_nodes.set("1")
+        if self.visible:
+            label = Label(master, text="#nodes :", anchor=W)
+            label.grid(row=3, column=0, padx=4, pady=3, sticky="w")
+            entry=Entry(master, width=6, exportselection=FALSE,
+                        textvariable=self.number_of_nodes)
+            entry.selection_range(0,1)
+            entry.focus_set()
+            entry.grid(row=3,column=1, padx=4, pady=3, sticky="w")
+            
+        self.direction=IntVar()
+        self.direction.set(0)
+        radio=Radiobutton(master, text="Undirected", variable=self.direction,
+                          value=0)
+        radio.grid(row=0, column=2, padx=4, pady=3, sticky="w") 
+        radio=Radiobutton(master, text="Directed", variable=self.direction,
+                          value=1)
+        radio.grid(row=1, column=2, padx=4, pady=3, sticky="w")
+        
+        self.layout=IntVar()
+        self.layout.set(0)
+        radio=Radiobutton(master, text="Randomize Layout",
+                          variable=self.layout, value=0)
+        radio.grid(row=0, column=3, padx=4, pady=3, sticky="w") 
+        radio=Radiobutton(master, text="Circular Layout",
+                          variable=self.layout, value=1)
+        radio.grid(row=1, column=3, padx=4, pady=3, sticky="w")
+        radio=Radiobutton(master, text="Tree Layout",
+                          variable=self.layout, value=2)
+        radio.grid(row=0, column=4, padx=4, pady=3, sticky="w") 
+        radio=Radiobutton(master, text="BFS-Tree Layout",
+                          variable=self.layout, value=3)
+        radio.grid(row=1, column=4, padx=4, pady=3, sticky="w")
+
+    def validate(self):
+        try:
+            d=string.atoi(self.degree.get())
+            if d<1 or d>100:
+                raise degreeError   
+        except:
+            showwarning("Please try again !",
+                        "min. degree = 1\n"
+                        "max. degree = 100")
+            return 0
+
+        try:
+            h=string.atoi(self.height.get())
+            if h<0 or h>100:
+                raise heightError   
+        except:
+            showwarning("Please try again !",
+                        "min. height = 0\n"
+                        "max. height = 100")
+            return 0
+
+        try:
+            n=string.atoi(self.number_of_nodes.get())
+        except:
+            showwarning("Invalid value !",
+                        "Please enter an integer\n"
+                        "value for #nodes !")
+            return 0
+
+        if self.visible:
+	    if n>1000:
+		showwarning("Please try again !",
+			    "max. #nodes = 1000")
+		return 0
+            min_nodes=h+1
+            max_nodes=d**(h+1)-1
+            if min_nodes>max_nodes: max_nodes=min_nodes
+	    if n<min_nodes or n>max_nodes:
+                showwarning("Please try again !",
+                            "min. #nodes = %i\n"
+                            "max. #nodes = %i" %(min_nodes,max_nodes))
+                return 0
+        else:
+            max_height=int(log10(1000)/log10(d))-1
+            if h>max_height:
+                showwarning("Please try again !",
+                            "max. height = %i" %max_height)
+                return 0
+
+        self.result=[]
+        self.result.append(d)
+        self.result.append(h)
+        self.result.append(n)
+        self.result.append(self.direction.get())
+        self.result.append(self.layout.get())
+        return self.result
+    
+#----------------------------------------------------------------------
+class completeTreeCreator(Creator):
+
+    def Name(self):
+        return "create complete tree"
+
+    def Create(self, theGraphEditor):
+        dial = TreeDialog(theGraphEditor, 0, "create complete tree")
+        if dial.result is None:
+            return
+
+        degree=dial.result[0]
+        height=dial.result[1]
+        direction=dial.result[3]
+        layout=dial.result[4]
+
+        G=Graph()
+        G.directed=direction
+
+        for h in range(0,height):
+            pass
+        
+        #G.AddVertex()
+        #G.AddEdge(Edges[pos][0],Edges[pos][1])
+
+        #if layout==0:
+        #    RandomCoords(G)
+        #elif layout==1:
+        #    CircularCoords(G)
+        #elif layout==2:
+        #    TreeCoords(G)
+        #else:
+        #    BFSTreeCoords(G)
+            
+        #DrawNewGraph(theGraphEditor,G,direction)       
+
+#----------------------------------------------------------------------
+class randomTreeCreator(Creator):
+
+    def Name(self):
+        return "create random tree"
+
+    def Create(self, theGraphEditor):
+        dial = TreeDialog(theGraphEditor, 1, "create random tree")
+        if dial.result is None:
+            return
+
+        degree=dial.result[0]
+        height=dial.result[1]
+        n=dial.result[2]
+        direction=dial.result[3]
+        layout=dial.result[4]
+
+        G=Graph()
+        G.directed=direction
+
+        #G.AddVertex()
+        #G.AddEdge(Edges[pos][0],Edges[pos][1])
+
+        #if layout==0:
+        #    RandomCoords(G)
+        #elif layout==1:
+        #    CircularCoords(G)
+        #elif layout==2:
+        #    TreeCoords(G)
+        #else:
+        #    BFSTreeCoords(G)
+            
+        #DrawNewGraph(theGraphEditor,G,direction) 
+
+#----------------------------------------------------------------------
 
 """ Here instantiate all the creators you want to make available to
     a client. """
 creator = [completeGraphCreator(), randomGraphCreator(),
-           maximalPlanarGraphCreator(), randomPlanarGraphCreator()]
+           maximalPlanarGraphCreator(), randomPlanarGraphCreator(),
+           completeTreeCreator(), randomTreeCreator()]
