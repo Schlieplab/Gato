@@ -138,15 +138,10 @@ class EditPreferencesDialog(tkSimpleDialog.Dialog):
 
 
     def pane(self, master, name, desc):
-	frame = Frame(master, relief=RIDGE, borderwidth=2)
-	labelframe = Frame(frame)
-	label = Label(labelframe, font="Helvetica 10 bold", 
-		      text=name, justify=LEFT, fg="black")
-	label.pack(expand=1, side=LEFT, anchor=W)
-	label = Label(labelframe, font="Helvetica 10 italic", 
-		      text=desc, justify=RIGHT, fg="black")
-	label.pack(expand=1, side=RIGHT, anchor=E)
-	labelframe.pack(expand=1, fill=X, side=TOP)
+        if desc == "":
+            frame = LabelFrame(master, relief=RIDGE, borderwidth=2, text=name)
+        else:
+            frame = LabelFrame(master, relief=RIDGE, borderwidth=2, text=name + ":" + desc)            
 	frame.pack(expand=1, fill=BOTH, side=TOP)
 	result = Frame(frame)
 	return result
@@ -155,7 +150,7 @@ class EditPreferencesDialog(tkSimpleDialog.Dialog):
 	self.resizable(0,0)	
 
 	#------------------ pane ------------------------------------------
-	pane = self.pane(master, "Animation", "Speed and Visuals")
+	pane = self.pane(master, "Animation", "")
 	row = 0
 	Label(pane, text="Delay between instructions:").grid(row=row, 
 							     column=0, sticky=E)	
@@ -172,7 +167,7 @@ class EditPreferencesDialog(tkSimpleDialog.Dialog):
 	pane.pack(expand=1, fill=BOTH, padx=4, pady=4, side=BOTTOM)
 	
 	#------------------ pane ------------------------------------------
-	pane = self.pane(master, "Algorithm", "Fonts and Colors")
+	pane = self.pane(master, "Algorithm Font", "")
 	row = 1
 	Label(pane, text="Font:").grid(row=row, column=0, sticky=E)	
 	self.widgets['algofont'] = TkStringPopupSelector(pane, self.gatoconfig.fonts)
@@ -185,8 +180,11 @@ class EditPreferencesDialog(tkSimpleDialog.Dialog):
 	self.widgets['algofontsize'].tkWidget().grid(row=row, column=1, sticky=W)
 	self.widgets['algofontsize'].set(12)
 
+	pane.pack(expand=1, fill=BOTH, padx=4, pady=4, side=BOTTOM)
+	#------------------ pane ------------------------------------------
+	pane = self.pane(master, "Algorithm Colors", "")
 	
-	row += 1
+	row = 1
 	Label(pane, text="Foreground").grid(row=row, column=1, sticky=W)
 	Label(pane, text="Background").grid(row=row, column=2, sticky=W)
 
