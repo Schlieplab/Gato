@@ -5,7 +5,7 @@
 #       http://www.zpr.uni-koeln.de/~gato
 #
 #	file:   Embedder.py
-#	author: Alexander Schliep (schliep@zpr.uni-koeln.de)
+#	author: Ramazan Buzdemir
 #
 #       _COPYRIGHT_
 #
