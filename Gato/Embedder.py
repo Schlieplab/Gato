@@ -47,7 +47,26 @@ class RandomEmbedder(Embedder):
 				      1)
 #----------------------------------------------------------------------
 
+from math import pi, sin, cos
+
+class CircularEmbedder(Embedder):
+
+    def Name(self):
+	return "Circular Layout"
+    
+    def Embed(self, theGraphEditor):
+        if theGraphEditor.G.Order()!=0: 
+            distance = 2*pi/theGraphEditor.G.Order()
+            degree = 0
+            xMiddle=500; yMiddle=500; radius=450
+            for v in theGraphEditor.G.vertices:
+                xCoord=radius*cos(degree)+xMiddle
+                yCoord=radius*sin(degree)+yMiddle
+                theGraphEditor.MoveVertex(v,xCoord,yCoord,1)
+                degree=degree+distance
+#----------------------------------------------------------------------
+
 
 """ Here instantiate all the embedders you want to make available to
     a client. """
-embedder = [RandomEmbedder()]
+embedder = [RandomEmbedder(), CircularEmbedder()]

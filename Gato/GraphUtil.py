@@ -63,7 +63,11 @@ def BFS(G,root,direction='forward'):
 
     while Q.IsNotEmpty():
         v = Q.Top()
-	for w in G.InNeighbors(v):
+	if G.QDirected() == 1 and direction == 'backward':
+	    nbh = G.InNeighbors(v)
+	else:
+	    nbh = G.Neighborhood(v)
+	for w in nbh:
 	    if d[w] == gInfinity:
 		d[w] = d[v] + 1
 		Q.Append(w)
