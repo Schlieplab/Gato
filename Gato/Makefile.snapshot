@@ -11,8 +11,8 @@
 
 # Vars
 
-VERSION       = 0.98A
-DATE          = 03/14/2002
+VERSION       = 0.98B
+DATE          = 03/15/2002
 DISTNAME      = Gato
 DISTNAMEMAC   = $(DISTNAME)-Mac
 DISTNAMEDOC   = $(DISTNAME)-Doc
@@ -40,7 +40,28 @@ DOCTOOL       = happydoc -t Gato -d $(DOCSRCDIR)
 
 VERSIONIZE    = $(PERL) -pi -e "s/_VERSION_/$(VERSION)/" 
 DATEIZE       = $(PERL) -pi -e "s|_BUILDDATE_|$(DATE)|" 
-COPYRIGHTIZE  = $(PERL) -pi -e "s|_COPYRIGHT_|$(CRNOTICE)|" 
+COPYRIGHTIZE  = $(PERL) -pi -e "s|Copyright (C) 1998-2002, Alexander Schliep, Winfried Hochstaettler and 
+#       ZAIK/ZPR, Universitaet zu Koeln
+#                                   
+#       Contact: schliep@zpr.uni-koeln.de, wh@zpr.uni-koeln.de             
+#
+#       Information: http://gato.sf.net
+#
+#       This library is free software; you can redistribute it and/or
+#       modify it under the terms of the GNU Library General Public
+#       License as published by the Free Software Foundation; either
+#       version 2 of the License, or (at your option) any later version.
+#
+#       This library is distributed in the hope that it will be useful,
+#       but WITHOUT ANY WARRANTY; without even the implied warranty of
+#       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+#       Library General Public License for more details.
+#
+#       You should have received a copy of the GNU Library General Public
+#       License along with this library; if not, write to the Free
+#       Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+#|$(CRNOTICE)|" 
 MACIFY        = $(PERL) -pi -e "s/\n/\x0D/"
 UNMACIFY      = $(PERL) -pi -e "s/\x0D/\n/g"
 
