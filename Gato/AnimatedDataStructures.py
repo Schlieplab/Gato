@@ -409,7 +409,7 @@ class AnimatedVertexPriorityQueue(PriorityQueue):
 	self.Animator.SetVertexColor(value, self.ColorOn)
 
     def DecreaseKey(self,value,newSortKey):
-        PriorityQueue.Insert(self,value,newSortKey)
+        PriorityQueue.DecreaseKey(self,value,newSortKey)
         self.Animator.BlinkVertex(value)
 
     def DeleteMin(self):

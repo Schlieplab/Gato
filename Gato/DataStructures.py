@@ -319,8 +319,12 @@ class PriorityQueue:
 	return self.pq.deleteMin()
 
     def DecreaseKey(self,value,newSortKey):
-        self.pq[value] = newSortKey
-
+        if self.pq.has_key(value):
+            self.pq[value] = newSortKey
+        else:
+            print "PriorityQueue: DecreaseKey of non-existing key"
+            raise KeyError, "PriorityQueue: DecreaseKey of non-existing key"
+            
     def Clear(self):
         del self.pq
         self.pq = PQImplementation()
