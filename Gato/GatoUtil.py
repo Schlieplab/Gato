@@ -15,6 +15,8 @@
 #
 ################################################################################
 
+from Tkinter import *
+
 def gatoPath():
     """ Returns the path to the directory containint Gato.py or Gred.py """
     import os
@@ -85,6 +87,26 @@ class MethodLogger:
 	return apply(self.method,args)
 
 
+class ImageCache:
+    """ Provides a global cache for PhotoImages displayed in the 
+        application. Singleton Pattern """
+	
+    images = None	
+
+    def __init__(self):
+	if ImageCache.images == None:
+	    ImageCache.images = {}
+
+    def __getitem__(self, relURL):
+	""" Given a relative URL to an image file return the 
+	    corresponding PhotoImage. """
+	try:    
+	    if relURL not in self.images.keys():
+		ImageCache.images[relURL] = PhotoImage(file=relURL)
+	    return ImageCache.images[relURL]
+	except IndexError, IOError:
+	    print "XXX: Fix me. Error finding image ",relURL
 
 
-
+    def AddImage(self, relURL, imageData):
+	ImageCache.images[relURL] = PhotoImage(data=imageData)

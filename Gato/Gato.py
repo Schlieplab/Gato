@@ -39,7 +39,7 @@ from GraphDisplay import GraphDisplayToplevel
 from GatoUtil import *
 from GatoGlobals import *
 from GatoDialogs import AboutBox, SplashScreen, HTMLViewer
-
+import GatoIcons
 
 # put someplace else
 def WMExtrasGeometry(window):
@@ -95,6 +95,7 @@ class AlgoWin(Frame):
 	    "continue", "finally", "in", "print",
 	    "def", "for", "is", "raise"]
 
+	GatoIcons.Init()
 
 	# Create widgets
 	self.pack()
@@ -502,6 +503,13 @@ class AlgoWin(Frame):
 	# Silly enough one hast to specify the true coordinate at which
         # the window will appear
 	self.master.geometry("+%d+%d" % (pad, screenTop + pad)) 
+
+	# XXX-DEBUG-XXX
+	print "OneGraphWindow: screen= (%d * %d), extras = (%d %d)" % (
+	    self.master.winfo_screenwidth(),
+	    self.master.winfo_screenheight(),
+	    WMExtra,
+	    topWMExtra)
 
 	# Move graph win to take up the rest of the screen
 	screenwidth  = self.master.winfo_screenwidth()
@@ -1103,6 +1111,7 @@ class Algorithm:
 	self.algoGlobals = {}
 	self.algoGlobals['self'] = self
 	self.algoGlobals['G'] = self.graph
+
 	if self.logAnimator:
 	    self.algoGlobals['A'] = MethodLogger(self.GUI.graphDisplay)
 	else:
@@ -1118,6 +1127,8 @@ class Algorithm:
 	for m in modules:
 	    exec("from %s import *" % m, self.algoGlobals, self.algoGlobals)
 
+	# transfer required globals
+	self.algoGlobals['gInteractive'] = globals()['gInteractive']
 	
 	# Read in prolog and execute it
 	try:
@@ -1242,8 +1253,13 @@ class Algorithm:
               if the passed vertex is acceptable
 
             - visual is a function which takes the vertex as its 
-              only argument and cause e.g. some visual feedback """ 
-        v = self.GUI.PickInteractive('vertex', filter)
+              only argument and cause e.g. some visual feedback """
+        v = None
+
+	print "pickVertex ",globals()['gInteractive']
+        if globals()['gInteractive'] == 1:
+	    v = self.GUI.PickInteractive('vertex', filter)
+
 	if v == None:
 	    if default == None:
 		v = whrandom.choice(self.graph.vertices)
@@ -1264,7 +1280,11 @@ class Algorithm:
 
             - visual is a function which takes the edge as its 
               only argument and cause e.g. some visual feedback """ 
- 	e = self.GUI.PickInteractive('edge', filter)
+        e = None
+
+        if globals()['gInteractive'] == 1:
+	    e = self.GUI.PickInteractive('edge', filter)
+
 	if e == None:
 	    if default == None:
 		e = whrandom.choice(self.graph.Edges())
@@ -1282,8 +1302,8 @@ if __name__ == '__main__':
     #print sys.path
     #import sys
     #print sys.path
-    app = AlgoWin()    
 
+    app = AlgoWin()    
     #======================================================================
     #
     # Gato.py <algorithm> <graph>

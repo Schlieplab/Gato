@@ -17,7 +17,7 @@
 ################################################################################
 from Tkinter import *
 from ScrolledText import *
-from GatoUtil import gatoPath
+import GatoUtil
 import GatoGlobals
 import GatoIcons
 import tkSimpleDialog 
@@ -137,6 +137,18 @@ class HTMLWriter(formatter.DumbWriter):
 	self.write(self.indent + data + ' ')
 
 
+class MyHTMLParser(htmllib.HTMLParser):
+    """ Basic parser with image support added. output is supposed to be
+        the textwidget for output """
+
+    def __init__(self, formatter, output):
+	htmllib.HTMLParser.__init__(self, formatter)
+	self.output = output
+
+    def handle_image(self, source, alt, ismap, align, width, height):
+	imageCache = GatoUtil.ImageCache() # ImageCache is a singleton
+	self.output.image_create('insert', image=imageCache[source], align='baseline') 
+
 
 class HTMLViewer(Toplevel):
     """ Basic class which provides a scrollable area for viewing HTML
@@ -150,12 +162,13 @@ class HTMLViewer(Toplevel):
 	color = self.config("bg")[4]
 	borderFrame = Frame(self, relief=SUNKEN, bd=2) # Extra Frame
 	self.text = ScrolledText(borderFrame, relief=FLAT, 
-				     padx=3, pady=3,
-				     background=color, 
-				     #foreground="black",
-				     wrap='word',
-				     width=60, height=12,
-				     font="Times 10")
+				 padx=3, pady=3,
+				 #background='white', 
+				 background=color, 
+				 #foreground="black",
+				 wrap='word',
+				 width=60, height=12,
+				 font="Times 10")
 	self.text.pack(expand=1, fill=BOTH)
 	#self.text.insert('0.0', text)
 	self.text['state'] = DISABLED 
@@ -167,6 +180,7 @@ class HTMLViewer(Toplevel):
         box.pack(side=BOTTOM,fill=BOTH)
 	self.insert(htmlcode)
 
+
     def Update(self,htmlcode, title):
 	self.titleprefix = title
 	self.insert(htmlcode)
@@ -177,7 +191,8 @@ class HTMLViewer(Toplevel):
 
 	writer = HTMLWriter(self.text, self)
 	format = formatter.AbstractFormatter(writer)
-	parser = htmllib.HTMLParser(format)
+	#parser = htmllib.HTMLParser(format)
+	parser = MyHTMLParser(format, self.text)
 
 	parser.feed(htmlcode)
 	parser.close()
@@ -231,13 +246,15 @@ The following is a summary of the interface defined by
 
 
 <UL>
-<LI>The interface
+<LI><img src="Icons/vertex.gif">The interface
 
 <LI>Its implementation
 
 <LI>WHat not
 </UL>
-
+<img src="Icons/vertex.gif">
+<img src="Icons/edge.gif">
+<img src="Icons/delete.gif">
 <dl>
 <dt>x</dt> <dd>does wild things</dd>
 <dt>y</dt> <dd>is even wilder</dd>

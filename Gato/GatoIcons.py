@@ -156,7 +156,6 @@ CT++EHo5bMWLaTrBtPtT2Sm7xScHL78GpUzwylUp57xc7P5TEeHORye9dNNPRz11
 1VdnvXXXX188AgA7
 """
 
-
 delete = """
 R0lGODdhIAAgAPcPAAAAAIAAAACAAICAAAAAgIAAgACAgMDAwICAgP8AAAD/AP//
 AAAA//8A/wD//////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
@@ -179,7 +178,6 @@ ocOHECNKNAigosWLFiUCOMCxo8cDFSNu/PhxIwCII0l6NPkwpUqOI082dPkypcyF
 NFW6vJkwp86OPBH6JLkT58uSK40eBZpU4VCiTYUuXRn1IMarGEs6ncoUqFKuNhk+
 RQpTLFeYZc2eZTnzLEiQDseuDLp1Ld2eWPNO3Mu3r9+/CwMCADs=
 """
-
 
 edge = """
 R0lGODdhIAAgAPcPAAAAAIAAAACAAICAAAAAgIAAgACAgMDAwICAgP8AAAD/AP//
@@ -204,7 +202,6 @@ Nm8azKlzpMyePlf25Ak0AFGgR4f+LGp0aVGbNZXGHPrR5c2WGnViFcpxK1WVT5My
 HUs2YUAAOw==
 """
 
-
 edit = """
 R0lGODdhIAAgAPcPAAAAAIAAAACAAICAAAAAgIAAgACAgMDAwICAgP8AAAD/AP//
 AAAA//8A/wD//////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
@@ -227,7 +224,6 @@ gUMEDCMCeEgRosSEDglmvHhwo0aLHD8a9BhSIEmTIEuiFKnyY8WULVGevPiyZs2G
 NnPOHKkzJ86eNxcCtflzKMWiRncWTFoRaVKnRqEOlQqUak+rOrH6FMr0oVaiMcOK
 HUu2ZEAAOw==
 """
-
 
 gato = """
 R0lGODlhXgGuAOb/AP///wgICBgYGDExMTk5OUpKSmNjY2tra3t7e4SEhJSUlK2t
@@ -411,7 +407,6 @@ wTnUZHNuc1X3Mnf49wgtMAMcMEbUEoMyOIM0WIM2eIPVMio0cCBbd2or+IOtUAIx
 QCscsAFGWISGESdwsoRF2IRM+IROmIQntYRSWIVUeIVIiIVT6IRcCIVbyIVWiIRN
 2IVkaISmEgMwgAEjEAIr4hWDQPiGcBiHcjiHdFiHdniHeHiHgQAAOw==
 """
-
 
 gred = """
 R0lGODlhXgGuAOb/AP///wgICCEhITExMTk5OUpKSmNjY2tra3t7e4SEhJSUlLW1
@@ -619,7 +614,6 @@ AY8UsiEgso/0sR87siVEsim7shiAsiZrsiobsyjbsiELsydbsjgLszN7szxLsyw7
 szursx8Lslq0AhaAAh1ASTlQA82ksU77tFAbtVI7tVRbtVZ7tYwTCAA7
 """
 
-
 swap = """
 R0lGODdhIAAgAPcPAAAAAIAAAACAAICAAAAAgIAAgACAgMDAwICAgP8AAAD/AP//
 AAAA//8A/wD//////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
@@ -643,7 +637,6 @@ Jivm1LlxJsSPKBHePMiTYM2DQ4m6XBi0YFKiSosSfHrx6FSqE60OvImzqlSBXHv6
 dBlW6MOfL7Fu7WoUbVqPb6MmLHsVbk+uXfE6tSsUr1+7MBOwffu3bODBSAsDVnmX
 Lli+Fx2LjTt5LuLKWzFrHhgQADs=
 """
-
 
 vertex = """
 R0lGODdhIAAgAPcPAAAAAIAAAACAAICAAAAAgIAAgACAgMDAwICAgP8AAAD/AP//
@@ -669,4 +662,15 @@ KFcaFEnzpk+cAHQS5Gnyp1GTQjcOLGr0aEqLApk2dQo1gNSpPmFitAoA61StBSle
 ZEWUThUvfOlS4+DKljNrzhwQADs=
 """
 
+def Init():
+    import GatoUtil
+    imageCache = GatoUtil.ImageCache() # singleton
+    imageCache.AddImage("Icons/catbox_splash.gif",catbox_splash)
+    imageCache.AddImage("Icons/delete.gif",delete)
+    imageCache.AddImage("Icons/edge.gif",edge)
+    imageCache.AddImage("Icons/edit.gif",edit)
+    imageCache.AddImage("Icons/gato.gif",gato)
+    imageCache.AddImage("Icons/gred.gif",gred)
+    imageCache.AddImage("Icons/swap.gif",swap)
+    imageCache.AddImage("Icons/vertex.gif",vertex)
 

@@ -79,7 +79,6 @@ gProperty = {}
 #	     }
 
 
-
 gGatoHelp = """
 <HTML>
 <HEAD><TITLE>Gato __VERSION__ </TITLE></HEAD>
@@ -95,6 +94,9 @@ gGatoHelp = """
 <li> <tt>t</tt> trace
 <li> <tt>b</tt> toggle breakpoint
 </ul>
+
+<img src="Icons/gato.gif">
+
 </BODY>
 </HTML>"""
 

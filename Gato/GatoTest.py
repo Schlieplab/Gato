@@ -33,10 +33,13 @@ tests = [ ("04-MinimalSpanningTrees/Prim.alg",
 if __name__ == '__main__':
     app = AlgoWin()    
     app.algorithm.logAnimator=1
-    
+    globals()['gInteractive'] = 0
+    print "GatoTest",globals()['gInteractive']
+   
     for case in tests:
 	print "=== TEST ===",case[0],"===",case[1],"==="
 	app.OpenAlgorithm(testPath + case[0])
+	globals()['gInteractive'] = 0
 	app.algorithm.ClearBreakpoints()
 	app.update_idletasks()
 	app.update()

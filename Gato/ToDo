@@ -1,14 +1,25 @@
 ----------------------------------------------------------------
 
-CATBox/Gato To-Do Stand: 4/3/00
+CATBox/Gato To-Do Stand: 9/15/00
 
 
 
 ----------------------------------------------------------------
 Einordnen:
 ----------------------------------------------------------------
-  
 
+* Gred: MoveVertex funktioniert nicht bei Zoom != 100% 
+
+* Gred: RandomizeEdgeWeights only for non-euclidean graphs
+
+* Gred: validate bei Randomize Weights ???
+
+* Gred: FileIO Error (protections, space)
+
+* Gred: Loops, Löschen, Directed vs. undirected.
+
+* TESTEN
+ 
 * gato2eps command-line
 
 * Im MST Graph Informer steht immer "weight of mst", obwohl es doch

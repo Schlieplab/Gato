@@ -33,6 +33,11 @@ open(FILE,">$outfile") || warn "Cannot open file $outfile!\n";
 
 print FILE $header;
 
+$init = 'def Init():
+    import GatoUtil
+    imageCache = GatoUtil.ImageCache() # singleton
+';
+
 foreach $file (@ARGV) {
 
   print "# working on $file\n";
@@ -40,7 +45,8 @@ foreach $file (@ARGV) {
 
   print FILE "$name = \"\"\"\n";
   print FILE `$base64 $file`;
-  print FILE "\"\"\"\n\n\n";
-  
+  print FILE "\"\"\"\n\n";
+  $init = $init . "    imageCache.AddImage(\"Icons/$name.gif\",$name)\n";
 }
 
+print FILE "$init\n";
