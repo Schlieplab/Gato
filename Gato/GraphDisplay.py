@@ -485,12 +485,13 @@ class GraphDisplay:
     #
     def SetVertexColor(self, v, color):
 	""" Change color of v to color. No error checking! """
-	rgb_color = self.winfo_rgb(self.GetVertexColor(v))
+	rgb_color = self.winfo_rgb(color)
 	# Tk has 16 bits per color 
 	hls_color = colorsys.rgb_to_hls(rgb_color[0] / 65536.0, 
 					rgb_color[1] / 65536.0, 
 					rgb_color[2] / 65536.0)
 	lightness =  hls_color[1]
+	#print rgb_color, hls_color
 	if lightness < 0.4: 
 	    self.canvas.itemconfig( self.drawLabel[v], fill=cLabelDefaultInverted)
 	else:
