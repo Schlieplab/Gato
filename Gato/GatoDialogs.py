@@ -25,7 +25,9 @@ import sys
 import os
 import htmllib, formatter
 
-crnotice1 = "Copyright (C) 1998-2000, ZAIK/ZPR, Universität zu Köln\n"\
+
+# Should be in GatoGlobals 
+crnotice1 = "Copyright (C) 1998-2002, ZAIK/ZPR, Universität zu Köln\n"\
 	    "Gato version _VERSION_ from _BUILDDATE_"
 crnotice2 = "Written by Alexander Schliep (schliep@zpr.uni-koeln.de).\n" \
  	    "Application Design: Alexander Schliep and \n" \
@@ -38,6 +40,7 @@ crnotice2 = "Written by Alexander Schliep (schliep@zpr.uni-koeln.de).\n" \
 
 
 class AboutBox(tkSimpleDialog.Dialog):
+    """ The application's about box """
  
     def buttonbox(self):
 	# Stolen from tkSimpleDialog.py
@@ -206,6 +209,7 @@ class HTMLViewer(Toplevel):
 	else:
 	    self.title(self.titleprefix)
 
+#---------------------------------- test code -----------------------------------
 about = """<HTML>
 <HEAD>
 <TITLE>Breadth-First-Search</TITLE>
@@ -251,7 +255,7 @@ The following is a summary of the interface defined by
 <UL>
 <LI><img src="Icons/vertex.gif">The interface
 
-<LI>Its implementation
+<LI><img src="Icons/edge.gif">Its implementation
 
 <LI>WHat not
 </UL>

@@ -16,13 +16,17 @@
 #
 ################################################################################
 
-# Globals
+# Globals 
+# NOTE: Values will be replaced by values read from gato.cfg 
 gVertexRadius     = 12  
 gVertexFrameWidth      =  2     
 gEdgeWidth        =  3     
+
+# Animation
 gBlinkRate        = 50      # ms 100
 gBlinkRepeat      =  4      # One more than you want 4
 
+# Printing
 gPaperHeight      = 1500 # "20i" XXX Should be real paper size
 gPaperWidth       = 1500 # "20i"
 

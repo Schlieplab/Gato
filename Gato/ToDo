@@ -1,13 +1,29 @@
 ----------------------------------------------------------------
 
-CATBox/Gato To-Do Stand: 9/15/00
+CATBox/Gato To-Do Stand: 6/21/00
 
+
+----------------------------------------------------------------
+Additional features:
+----------------------------------------------------------------
+
+* Make Animated Data Structures switchable on and off
+  (checkbox: ???)
 
 
 ----------------------------------------------------------------
 Einordnen:
 ----------------------------------------------------------------
+* Gred: Wenn Grid an, uebereinanderliegende Knoten abfangen
 
+* GraphDisplay: Moving vertices done delete/new
+
+
+* GraphDisplay: Move Annotations with vertices/edges
+
+
+* TESTEN
+ 
 * gato2eps command-line
 
 * Im MST Graph Informer steht immer "weight of mst", obwohl es doch

@@ -25,13 +25,13 @@ import re
 import string
 import StringIO
 import tokenize
+import tkFont
 
 from Tkinter import *
 from tkFileDialog import askopenfilename, asksaveasfilename
 from tkMessageBox import askokcancel, showerror, askyesno
 from ScrolledText import ScrolledText
-
-
+from GatoConfiguration import GatoConfiguration
 from Graph import Graph
 from GraphUtil import *
 from GraphDisplay import GraphDisplayToplevel
@@ -85,7 +85,9 @@ class AlgoWin(Frame):
 	Frame.__init__(self,parent)
 	Splash = SplashScreen(self.master)
 
-	self.algoFontBase = "Courier 10"
+	self.algoFont = "Courier"
+	self.algoFontSize = 10
+
 	self.keywordsList = [
 	    "del", "from", "lambda", "return",
 	    "and", "elif", "global", "not", "try",
@@ -95,6 +97,7 @@ class AlgoWin(Frame):
 	    "def", "for", "is", "raise"]
 
 	GatoIcons.Init()
+	self.config = GatoConfiguration(self)
 
 	# Create widgets
 	self.pack()
@@ -144,6 +147,7 @@ class AlgoWin(Frame):
 	self.BindKeys(self.master)
 	self.BindKeys(self.graphDisplay)
 
+	self.SetFromConfig() # Set values read in config
 
     ############################################################
     #
@@ -159,20 +163,13 @@ class AlgoWin(Frame):
 				  command=self.OpenAlgorithm)
 	self.fileMenu.add_command(label='Open Graph...',	
 				  command=self.OpenGraph)
-	self.fileMenu.add_separator()
-
-	# Options Submenu
-	optionsSubmenu = Menu(self.fileMenu, tearoff=0)
-	optionsSubmenu.add_command(label='Colors...',	
-				   command=self.OptionColors)
-	optionsSubmenu.add_command(label='Speed...',	
-				   command=self.OptionSpeed)
-	optionsSubmenu.add_checkbutton(label='Interactive', 
-				       command=self.OptionInteractive)
-	#self.fileMenu.add_cascade(label='Options', menu=optionsSubmenu)
-	#self.fileMenu.add_separator()
-	self.fileMenu.add_command(label='Export EPSF...',	
+	self.fileMenu.add_command(label='Reload Algorithm & Graph',	
+				  command=self.ReloadAlgorithmGraph)
+	self.fileMenu.add_command(label='Export Graph as EPS...',	
 				  command=self.ExportEPSF)
+	self.fileMenu.add_separator()
+	self.fileMenu.add_command(label='Preferences...',	
+				  command=self.Preferences)
 	self.fileMenu.add_separator()
 	self.fileMenu.add_command(label='Quit',		
 				  command=self.Quit)
@@ -254,9 +251,6 @@ class AlgoWin(Frame):
 	self.buttonStop['state']     = DISABLED	
 
 
-
-
-
     def makeAlgoTextWidget(self):
 	""" *Internal* Here we also define appearance of 
 	    - interactive lines 
@@ -268,35 +262,48 @@ class AlgoWin(Frame):
 				     padx=3, pady=3,
 				     background="white", wrap='none',
 				     width=15, height=30,
-				     font=self.algoFontBase
 				     )
+	self.SetAlgorithmFont(self.algoFont, self.algoFontSize)
 	self.algoText.pack(expand=1, fill=BOTH)
 	borderFrame.pack(side=TOP, expand=1, fill=BOTH)
 
 	# GUI-related tags
 	self.algoText.tag_config('Interactive', foreground='#009900',background="#E5E5E5")
 	self.algoText.tag_config('Break',       foreground='#ff0000',background="#E5E5E5")
-	self.algoText.tag_config('Blue',        foreground='#0000ff')
 	self.algoText.tag_config('Active',      background='#bbbbff')
-	
-	# syntax highlighting tags
-	self.algoText.tag_config('keyword', font=self.algoFontBase + " bold")
-	self.algoText.tag_config('string',  font=self.algoFontBase + " italic")
-	self.algoText.tag_config('comment', font=self.algoFontBase + " italic")
-	self.algoText.tag_config('identifier',font=self.algoFontBase + " bold")
-# 	self.algoText.tag_config('keyword', foreground='#00AAAA', 
-# 			     font=self.algoFontBase + " bold")
-# 	self.algoText.tag_config('string', foreground='#009900')
-# 	self.algoText.tag_config('comment', foreground='#FF0000', 
-# 			     font=self.algoFontBase + " italic")
-# 	self.algoText.tag_config('identifier', foreground='#0000FF')
-	
+
 	self.algoText.bind("<ButtonRelease-1>", self.handleMouse)
 	self.algoText['state'] = DISABLED  
 
+
+    def SetAlgorithmFont(self, font, size):
+	self.algoFont = font
+	self.algoFontSize = size
+	algoFontBase = "%s %d" % (font, size)
+	self.algoText.config(font=algoFontBase)
+	# syntax highlighting tags
+	self.algoText.tag_config('keyword', font=algoFontBase + " bold")
+	self.algoText.tag_config('string',  font=algoFontBase + " italic")
+	self.algoText.tag_config('comment', font=algoFontBase + " italic")
+	self.algoText.tag_config('identifier',font=algoFontBase + " bold")
+
+    def SetFromConfig(self):
+	c = self.config.get
+	self.SetAlgorithmFont(c('algofont'), int(c('algofontsize')))
+	self.algoText.config(fg=c('algofg'), bg=c('algobg'))
+	self.algoText.tag_config('Interactive', 
+				 foreground=c('interactivefg'),
+				 background=c('interactivebg'))
+ 	self.algoText.tag_config('Break', 
+ 				 foreground=c('breakpointfg'),
+ 				 background=c('breakpointbg'))
+ 	self.algoText.tag_config('Active', 
+ 				 foreground=c('activefg'),
+ 				 background=c('activebg'))
+	globals()['gBlinkRate'] = int(c('blinkrate'))
+	globals()['gBlinkRepeat'] = int(c('blinkrepeat'))
+
 	
-
-
     def OpenSecondaryGraphDisplay(self):
 	""" Pops up a second graph window """
 	if self.secondaryGraphDisplay == None:
@@ -305,10 +312,12 @@ class AlgoWin(Frame):
 	else:
 	    self.secondaryGraphDisplay.Show()
 
+
     def WithdrawSecondaryGraphDisplay(self):
 	""" Hide window containing second graph """
 	if self.secondaryGraphDisplay != None:
 	    self.secondaryGraphDisplay.Withdraw()
+
 
     ############################################################
     #
@@ -395,6 +404,7 @@ class AlgoWin(Frame):
 				   defaultextension=".py",
 				   filetypes = ( ("Gato Algorithm", ".alg"),
 						 ("Python Code", ".py"))
+
 				   )
 	if file is not "": 
 	    try:
@@ -456,20 +466,21 @@ class AlgoWin(Frame):
 		self.AboutGraphDialog.Update(self.graphDisplay.About(), "About Graph")
 
 
-    def OptionColors(self):
-       	print "Menu->File->Options->Colors"
+    def ReloadAlgorithmGraph(self):
+	if self.algorithmIsRunning:
+	    self.CmdStop()
+	    self.commandAfterStop = self.ReloadAlgorithmGraph
+	    return
+	
+	if self.algorithm.algoFileName is not "":
+	    self.OpenAlgorithm(self.algorithm.algoFileName)
+	if self.algorithm.graphFileName is not "":
+	    self.OpenGraph(self.algorithm.graphFileName)
 
 
-    def OptionSpeed(self):
-	print "Menu->File->Options->Speed"
-
-
-    def OptionInteractive(self):
-	""" GUI to toggle interactive mode """
-	if globals()['gInteractive'] == 1:
-	    globals()['gInteractive'] = 0
-	else:
-	    globals()['gInteractive'] = 1
+    def Preferences(self):
+	""" Handle editing preferences """
+	self.config.edit()
 
 
     def ExportEPSF(self):
