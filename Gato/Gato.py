@@ -134,8 +134,8 @@ class AlgoWin(Frame):
 				   command=self.OptionSpeed)
 	optionsSubmenu.add_checkbutton(label='Interactive', 
 				       command=self.OptionInteractive)
-	self.fileMenu.add_cascade(label='Options', menu=optionsSubmenu)
-	self.fileMenu.add_separator()
+	#self.fileMenu.add_cascade(label='Options', menu=optionsSubmenu)
+	#self.fileMenu.add_separator()
 	self.fileMenu.add_command(label='Export EPSF...',	
 				  command=self.ExportEPSF)
 	self.fileMenu.add_separator()
