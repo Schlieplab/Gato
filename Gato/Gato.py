@@ -6,7 +6,7 @@
 #	file:   Gato.py
 #	author: Alexander Schliep (schliep@molgen.mpg.de)
 #
-#       Copyright (C) 1998-2003, Alexander Schliep, Winfried Hochstaettler and 
+#       Copyright (C) 1998-2004, Alexander Schliep, Winfried Hochstaettler and 
 #       ZAIK/ZPR, Universitaet zu Koeln
 #                                   
 #       Contact: schliep@molgen.mpg.de, wh@zpr.uni-koeln.de             
@@ -212,8 +212,8 @@ class AlgoWin(Frame):
 				  command=self.OpenGraph)
 	self.fileMenu.add_command(label='New Graph...',	
 				  command=self.NewGraph)
-	self.fileMenu.add_command(label='Open GatoFile...',
-				  command=self.OpenGatoFile)
+	#self.fileMenu.add_command(label='Open GatoFile...',
+	#			  command=self.OpenGatoFile)
 	#self.fileMenu.add_command(label='Save GatoFile...',
 	#			  command=self.SaveGatoFile)
 	self.fileMenu.add_command(label='Reload Algorithm & Graph',	
@@ -223,7 +223,7 @@ class AlgoWin(Frame):
 	self.fileMenu.add_separator()
 	self.fileMenu.add_command(label='Preferences...',
 				  command=self.Preferences)
-        self.gatoInstaller.addMenuEntry(self.fileMenu)
+        #self.gatoInstaller.addMenuEntry(self.fileMenu)
 	self.fileMenu.add_separator()
 	self.fileMenu.add_command(label='Quit',		
 				  command=self.Quit)
