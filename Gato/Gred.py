@@ -23,6 +23,7 @@ from Tkinter import *
 from GatoUtil import stripPath, extension, gatoPath
 from GatoGlobals import *
 import GatoDialogs
+import GatoIcons
 from ScrolledText import *
 
 from tkFileDialog import askopenfilename, asksaveasfilename
@@ -36,8 +37,8 @@ import os
 class GredSplashScreen(GatoDialogs.SplashScreen):
 
     def CreateWidgets(self):
-	self.catIcon = PhotoImage(file=os.path.join(gatoPath(), 'gred.gif'))
-	self.label = Label(self, image=self.catIcon)
+	self.Icon = PhotoImage(data=GatoIcons.gred)
+	self.label = Label(self, image=self.Icon)
 	self.label.pack(side=TOP)
 	self.label = Label(self, text=GatoDialogs.crnotice1)
 	self.label.pack(side=TOP)
@@ -48,7 +49,7 @@ class GredAboutBox(GatoDialogs.AboutBox):
 
     def body(self, master):
 	self.resizable(0,0)
-	self.catIconImage = PhotoImage(file=os.path.join(gatoPath(), 'gred.gif'))
+	self.catIconImage = PhotoImage(data=GatoIcons.gred)
 	self.catIcon = Label(master, image=self.catIconImage)
 	self.catIcon.pack(side=TOP)
 	label = Label(master, text=GatoDialogs.crnotice1)
@@ -167,6 +168,14 @@ class SAGraphEditor(GraphEditor, Frame):
 	#self.zoomMenu['state'] = DISABLED
 	self.SetGraphMenuOptions()
 	Splash.Destroy()
+	# Fix focus and stacking
+	if os.name == 'nt' or os.name == 'dos':
+	    self.master.tkraise()
+	    self.master.focus_force()
+	else:
+	    self.tkraise()
+	
+
 
     def SetGraphMenuOptions(self):
 	if not self.directedVar.get():
@@ -175,13 +184,84 @@ class SAGraphEditor(GraphEditor, Frame):
 	    self.graphMenu.invoke(self.graphMenu.index('Euclidean'))
 	if not self.gridding:
 	    self.graphMenu.invoke(self.graphMenu.index('Grid'))	
-	self.toolsMenu.invoke(self.toolsMenu.index('Add or move vertex'))	
+	self.defaultButton.select()
+	#self.toolVar.set('Add or move vertex')
 	self.edgeWeightsSubmenu.invoke(self.edgeWeightsSubmenu.index('One'))
 	self.vertexWeightsSubmenu.invoke(self.vertexWeightsSubmenu.index('None'))
 
 
     def SetTitle(self,title):
 	self.master.title(title)
+	
+    def CreateWidgets(self):
+
+	toolbar = Frame(self, cursor='hand2', relief=FLAT)
+	toolbar.pack(side=LEFT, fill=Y) # Allows horizontal growth
+
+	extra = Frame(toolbar, cursor='hand2', relief=SUNKEN, borderwidth=2)
+	extra.pack(side=TOP) # Allows horizontal growth
+	extra.rowconfigure(5,weight=1)
+	extra.bind("<Enter>", lambda e, gd=self:gd.DefaultInfo())
+
+	px = 0 
+	py = 3 
+
+	self.toolVar = StringVar()
+
+	# Load Icons
+        self.vertexIcon = PhotoImage(data=GatoIcons.vertex)
+	self.edgeIcon   = PhotoImage(data=GatoIcons.edge)
+	self.deleteIcon = PhotoImage(data=GatoIcons.delete)
+	self.swapIcon   = PhotoImage(data=GatoIcons.swap)
+	self.editIcon   = PhotoImage(data=GatoIcons.edit)
+	
+	b = Radiobutton(extra, width=32, padx=px, pady=py, 
+			text='Add or move vertex',  
+			command=self.ChangeTool,
+			var = self.toolVar, value='AddOrMoveVertex', 
+			indicator=0, image=self.vertexIcon)
+	b.grid(row=0, column=0, padx=2, pady=2)
+	b.bind("<Enter>", lambda e, gd=self:gd.UpdateInfo('Add or move vertex'))
+	self.defaultButton = b # default doesnt work as config option
+
+
+	b = Radiobutton(extra, width=32, padx=px, pady=py, 
+			text='Add edge', 
+			command=self.ChangeTool,
+			var = self.toolVar, value='AddEdge', indicator=0,
+			image=self.edgeIcon)
+	b.grid(row=1, column=0, padx=2, pady=2)
+	b.bind("<Enter>", lambda e, gd=self:gd.UpdateInfo('Add edge'))
+
+
+	b = Radiobutton(extra, width=32, padx=px, pady=py, 
+			text='Delete edge or vertex', 
+			command=self.ChangeTool,
+			var = self.toolVar, value='DeleteEdgeOrVertex', indicator=0,
+			image=self.deleteIcon)
+	b.grid(row=2, column=0, padx=2, pady=2)
+	b.bind("<Enter>", lambda e, gd=self:gd.UpdateInfo('Delete edge or vertex'))
+
+
+	b = Radiobutton(extra, width=32, padx=px, pady=py, 
+			text='Swap orientation', 
+			command=self.ChangeTool,
+			var = self.toolVar, value='SwapOrientation', indicator=0,
+			image=self.swapIcon)
+	b.grid(row=3, column=0, padx=2, pady=2)
+	b.bind("<Enter>", lambda e, gd=self:gd.UpdateInfo('Swap orientation'))
+
+
+	b = Radiobutton(extra, width=32, padx=px, pady=py, 
+			text='Edit Weight', 
+			command=self.ChangeTool,
+			var = self.toolVar, value='EditWeight', indicator=0,
+			image=self.editIcon)
+	b.grid(row=4, column=0, padx=2, pady=2)
+	b.bind("<Enter>", lambda e, gd=self:gd.UpdateInfo('Edit Weight'))
+	
+	GraphEditor.CreateWidgets(self)
+
 	
     def makeMenuBar(self):
 	self.menubar = Menu(self,tearoff=0)
@@ -266,26 +346,28 @@ class SAGraphEditor(GraphEditor, Frame):
 
 
 	# Add Tools menu
-	self.toolsMenu = Menu(self.menubar,tearoff=1)
-	self.toolVar = StringVar()
-	self.toolsMenu.add_radiobutton(label='Add or move vertex',  
-				       command=self.ChangeTool,
-				       var = self.toolVar, value='AddOrMoveVertex')
-	self.toolsMenu.add_radiobutton(label='Add edge', 
-				       command=self.ChangeTool,
-				       var = self.toolVar, value='AddEdge')
-	self.toolsMenu.add_radiobutton(label='Delete edge or vertex', 
-				       command=self.ChangeTool,
-				       var = self.toolVar, value='DeleteEdgeOrVertex')
-	self.toolsMenu.add_radiobutton(label='Swap orientation', 
-				       command=self.ChangeTool,
-				       var = self.toolVar, value='SwapOrientation')
-	self.toolsMenu.add_radiobutton(label='Edit Weight', 
-					command=self.ChangeTool,
-				       var = self.toolVar, value='EditWeight')
-	self.menubar.add_cascade(label="Tools", menu=self.toolsMenu, 
-				 underline=0)
-	self.master.configure(menu=self.menubar)
+# 	self.toolsMenu = Menu(self.menubar,tearoff=1)
+# 	self.toolVar = StringVar()
+# 	self.toolsMenu.add_radiobutton(label='Add or move vertex',  
+# 				       command=self.ChangeTool,
+# 				       var = self.toolVar, value='AddOrMoveVertex')
+# 	self.toolsMenu.add_radiobutton(label='Add edge', 
+# 				       command=self.ChangeTool,
+# 				       var = self.toolVar, value='AddEdge')
+# 	self.toolsMenu.add_radiobutton(label='Delete edge or vertex', 
+# 				       command=self.ChangeTool,
+# 				       var = self.toolVar, value='DeleteEdgeOrVertex')
+# 	self.toolsMenu.add_radiobutton(label='Swap orientation', 
+# 				       command=self.ChangeTool,
+# 				       var = self.toolVar, value='SwapOrientation')
+# 	self.toolsMenu.add_radiobutton(label='Edit Weight', 
+# 					command=self.ChangeTool,
+# 				       var = self.toolVar, value='EditWeight')
+# 	self.menubar.add_cascade(label="Tools", menu=self.toolsMenu, 
+# 				 underline=0)
+
+
+ 	self.master.configure(menu=self.menubar)
 
   	# Add extras menu
 	self.extrasMenu = Menu(self.menubar, tearoff=0)

@@ -18,6 +18,7 @@
 from Tkinter import *
 from ScrolledText import *
 from GatoUtil import gatoPath
+import GatoIcons
 import tkSimpleDialog 
 import sys
 import os
@@ -47,7 +48,7 @@ class AboutBox(tkSimpleDialog.Dialog):
    
     def body(self, master):
 	self.resizable(0,0)
-	self.catIconImage = PhotoImage(file=os.path.join(gatoPath(), 'gato.gif'))
+	self.catIconImage = PhotoImage(data=GatoIcons.gato) # statt file=
 	self.catIcon = Label(master, image=self.catIconImage)
 	self.catIcon.pack(side=TOP)
 	label = Label(master, text=crnotice1)
@@ -106,8 +107,8 @@ class SplashScreen(Toplevel):
 	self.geometry("+%d+%d" % (x0, y0))
     
     def CreateWidgets(self):
-	self.catIcon = PhotoImage(file=os.path.join(gatoPath(), 'gato.gif'))
-	self.label = Label(self, image=self.catIcon)
+	self.catIconImage = PhotoImage(data=GatoIcons.gato) # statt file=
+	self.label = Label(self, image=self.catIconImage)
 	self.label.pack(side=TOP)
 	self.label = Label(self, text=crnotice1)
 	self.label.pack(side=TOP)

@@ -121,6 +121,14 @@ class AlgoWin(Frame):
 
 	self.master.protocol('WM_DELETE_WINDOW',self.Quit) # Handle WM Kills
 	Splash.Destroy()
+	# Fix focus and stacking
+	if os.name == 'nt' or os.name == 'dos':
+	    self.graphDisplay.tkraise()
+	    self.master.tkraise()
+	    self.master.focus_force()
+	else:
+	    self.tkraise()
+
 	# Make AlgoWins requested size its minimal size to keep
 	# toolbar from vanishing when changing window size
 	# Packer has been running due to splash screen
@@ -283,8 +291,7 @@ class AlgoWin(Frame):
 # 			     font=self.algoFontBase + " italic")
 # 	self.algoText.tag_config('identifier', foreground='#0000FF')
 	
-
-	self.algoText.bind("<ButtonRelease>", self.handleMouse)
+	self.algoText.bind("<ButtonRelease-1>", self.handleMouse)
 	self.algoText['state'] = DISABLED  
 
 	
@@ -430,6 +437,7 @@ class AlgoWin(Frame):
 						 ("Graphlet", ".let")
 						 )
 				   )
+	    
 	if file is not "": 
 	    self.algorithm.OpenGraph(file)
 	    if self.algorithm.ReadyToStart():
@@ -1275,10 +1283,6 @@ if __name__ == '__main__':
     #import sys
     #print sys.path
     app = AlgoWin()    
-    # XXX GvR recommended clutch for forcing AlgoWin to front on windows
-    #root.iconify()
-    #root.update()
-    #root.deiconify()
 
     #======================================================================
     #

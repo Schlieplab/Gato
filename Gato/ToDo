@@ -1,11 +1,15 @@
 ----------------------------------------------------------------
+
+CATBox/Gato To-Do Stand: 4/3/00
+
+
+
+----------------------------------------------------------------
 Einordnen:
 ----------------------------------------------------------------
-* 
+  
 
-* <space> sollte Algo starten
-
-* KB-commands klemmen ab und zu (nur bei TP?)
+* gato2eps command-line
 
 * Im MST Graph Informer steht immer "weight of mst", obwohl es doch
   (meistens) noch garkein MST ist.
@@ -16,16 +20,7 @@ Einordnen:
 * In dem AnimatedEdgeSet gibt es AddEdge und Remove, besser waere doch
   AddEdge und DeleteEdge wie im normalen Graphen auch, oder?
 
-* MouseUp ohne MouseDown vorher ignorieren (Tk-Problem? nur unter 
-  Windooze ?)
-
-* Sortieren Algorithmen/Graphen Kapitelweise
-
-* Breakpoints löschen/setzen klemmt manchmal
-
 * globaler Skalierungsfaktor für EdgeWidth
-
-* MS/DOS Zeilenende-Kennung ignorieren
 
 
 ----------------------------------------------------------------
@@ -40,26 +35,36 @@ Algorithms:
 Specific Algorithms:
 ----------------------------------------------------------------
 
+- Welchen Algo als Demo
+
+- Färbungsheuristiken (Diplomarbeit Roland Dzallas)
+
+- Tests: Planarität, Zusammenhang, Bipartit
+
+- Layout
+
+- Markovketten, HMMs animiert
+
 - MSTKruskal/Greedy Tree info # components #vertices in largest, 
   sum of weights largest.
 
-- Label Correcting, better instance
-
 - Implement short-cycle-finder
-
-- MFFordFulkerson
-  Flow in Graph window sichtbar machen (rosa?)
 
 
 ----------------------------------------------------------------
 Editor:
 ----------------------------------------------------------------
 
-- floating toolbar menu (tearoffcommand, accelerator, selectimage)
+- Adjazenzmatrix/Adjazenzlisten/Inzidenzmatrix/ Darstellung
 
-* gred: directed toggle status bei Speichern undirected, und dann New
+- Listbox fürs Gewichte editieren (alle Kante, alle Gewichte)
 
-* gred: start mit window in groesse wie Gato 2-window layout
+- in-place Editierung (wenn Gewichte im Editor an der Kante gezeigt
+  werden)
+
+- directed toggle status bei Speichern undirected, und dann New
+
+- start mit window in groesse wie Gato 2-window layout
 
 - Q: global grab for edge weight dialog ?
 
@@ -82,9 +87,14 @@ Editor:
 GUI:
 ----------------------------------------------------------------
 
-* Syntax-Highlight ? Farben/Fonts ?
+- Windows: Verzeichniswahl in den Dialogboxen. Kann man die sich
+  die Pfade merken ?
 
-* Window layout
+- Am Anfang 2*mal Start
+
+- Windowlayout nach Algorithmen laden (optional)
+
+- HTML-Viewer mehr HTML beibringen
 
 - Enable tracing button only on traceable lines (+color of lines) 
 
@@ -95,23 +105,25 @@ GUI:
 
 - Eventually add Zoom to fit 
 
-- "File" menu disabling doesnt look right on Windows 
-  very likely a Tk Bug
+- Windows: Ersetzung des Tk-Icons geht unter Tcl/Tk mit der Winico-DLL.
+  Python: unclear 
 
-- Hiding console under Windows (no Tk solution -- need Win32Api
-  which is callable from python. Bummer!) 
-  Maybe: console hide in Tk ? ? ? ? Would be Tcl console, right ?
+- Windows: Doppelclick in open-file erzeugt extra Mouseclick in widget
+  drunter. Fixed in Tk 8.3.0
 
 ----------------------------------------------------------------
 I/O:
 ----------------------------------------------------------------
 
-- Property Support in Files
+- MS/DOS (und Mac) Zeilenende-Kennung(en) richtig behandeln
 
-- Add label name support
-
-- GML. Add Mma, LEDA(Does one exist?) graph format. Invent proprietary ?
-  Are there any standards ?
+- CATBox Fileformat 
+	HTML-Informationen ueber Graphen reinbasteln,
+        Knotengewichte, Property Support in Files
+        Add label name support
+     
+- Other Fileformats:
+  GML. Add Mma, LEDA(Does one exist?) graph format. 
 
 
 ----------------------------------------------------------------
@@ -120,9 +132,32 @@ Documentation:
 
 - Animation API Documentation
 
+----------------------------------------------------------------
+Deployment:
+----------------------------------------------------------------
+
+- pyw (um console zu verstecken)
+
+- Icons: Anstatt als externe Dateien Python-Modul mit base64-encodierten
+  Strings (Automatisieren):
+  base64 -base64 -e -in gato.gif -out gato-gif.txt 
+
+  import GatoIcons
+  self.catIconImage = PhotoImage(data=GatoIcons.gato_gif) # statt file=
+
+- Installer:
+
+  Mac:  1.5.2b1 version has cool BuildApplication. Probably needs
+        shared lib (could be in same folder?)
+ 
+  Windows: TP untersuchts
+
+  Unix: Patches exist to turn tcl/tk into libtk.a libtcl.a without
+        *any* external scripts. Together with freeze should suffice. 
+
 
 ----------------------------------------------------------------
-Quality Assurance:
+Quality Control:
 ----------------------------------------------------------------
 - Implement regression test cases for algorithms
 
@@ -130,27 +165,13 @@ Quality Assurance:
 
 - How to exercise gred ?
 
-- Consider Deployment options
-
-  All:  
-
-  Package icons, and texts into CATBoxGlobals.py (to avoid having
-  to locate catbox-splash.gif etc.)
-
-  Mac:  
- 
-  1.5.2b1 version has cool BuildApplication. Probably needs
-  shared lib (could be in same folder?)
- 
-  Windows: ?
-
-  Unix: 
-  Patches exist to turn tcl/tk into libtk.a libtcl.a without
-  *any* external scripts. Together with freeze should suffice. 
 
 ----------------------------------------------------------------
 Design:
 ----------------------------------------------------------------
+- Implement error (try/catch) all-over the place
+
+- make LGPL internal (global var)
 
 - Implement error handling in algorithms
 
