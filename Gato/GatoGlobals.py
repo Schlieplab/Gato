@@ -104,7 +104,7 @@ gProperty = {}
 
 gGatoHelp = """
 <HTML>
-<HEAD><TITLE>Gato __VERSION__ </TITLE></HEAD>
+<HEAD><TITLE>Gato _VERSION_ </TITLE></HEAD>
 <BODY>
 
 <H3>Keyboard Shortcuts</H3>

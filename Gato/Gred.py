@@ -514,7 +514,7 @@ class SAGraphEditor(GraphEditor, Frame):
 	self.ShowGraph(G,self.graphName)
 	self.RegisterGraphInformer(WeightedGraphInformer(G,"weight"))
 	self.fileName = None
-	self.SetTitle("Gred 0.99A - New Graph")
+	self.SetTitle("Gred _VERSION_ - New Graph")
 
     def OpenGraph(self):	
 	file = askopenfilename(title="Open Graph",
@@ -577,7 +577,7 @@ class SAGraphEditor(GraphEditor, Frame):
 
 	    self.RegisterGraphInformer(WeightedGraphInformer(G,"weight"))
 	    self.ShowGraph(G,self.graphName)
-	    self.SetTitle("Gred 0.99A - " + self.graphName)
+	    self.SetTitle("Gred _VERSION_ - " + self.graphName)
 
 
 
@@ -600,7 +600,7 @@ class SAGraphEditor(GraphEditor, Frame):
 	    self.dirty = 0
 	    SaveCATBoxGraph(self.G,file)
 	    self.graphName = stripPath(file)
-	    self.SetTitle("Gred 0.99A - " + self.graphName)
+	    self.SetTitle("Gred _VERSION_ - " + self.graphName)
 
     def ExportEPSF(self):
 	file = asksaveasfilename(title="Export EPSF",
