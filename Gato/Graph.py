@@ -42,7 +42,7 @@ class Graph:
 	for vertices.
 
 	At least one set of edge weights is assumed to exist and accessible
-	as self.edgeWeights[0]; self.euclidian and Euclify refer to this
+	as self.edgeWeights[0]; self.euclidian and Euclidify refer to this
 	self.edgeWeights[0]
 
     """
@@ -59,6 +59,7 @@ class Graph:
 	self.labeling         = VertexLabeling() # Names of vertices
 	self.edgeWeights      = {}   # Dictionary of edge labellings
 	self.edgeWeights[0]   = EdgeWeight(self)
+	self.vertexWeights    = {}   # None by default
 	self.size             = 0
 	self.edgeWidth        = None
 	self.vertexAnnotation = None
@@ -227,6 +228,9 @@ class Graph:
 
     def NrOfEdgeWeights(self):
 	return len(self.edgeWeights.keys())
+
+    def NrOfVertexWeights(self):
+	return len(self.vertexWeights.keys())
 
     def Euclidify(self):
 	""" Replace edge weights with weightID = 0 with Euclidean distance 

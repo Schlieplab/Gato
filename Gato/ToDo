@@ -47,6 +47,8 @@ Specific Algorithms:
 Editor:
 ----------------------------------------------------------------
 
+- Randomize Edge weights 
+
 - Q: global grab for edge weight dialog ?
 
 - How to prevent user from editing first weight in Euclidean graphs

@@ -26,12 +26,21 @@ import string
 import tkMessageBox
 
 class EditWeightsDialog(tkSimpleDialog.Dialog):
-
-    def __init__(self, master, edge, nrOfWeights, weights, intFlag):
+    """ Provide a dialog for editing vertex and edge weigths
+         
+         - title        the title in the dialog box
+         - nrOfWeights  how many weights are there
+         - weights      an array of initial values 
+         - intFlag      an array denoting whether the corresponding
+                        entry is an integer (=1) or a float (=0) 
+			Hack: A negative value will disable editing
+         - label        an optional array of strings to use for weight names """
+    def __init__(self, master, title, nrOfWeights, weights, intFlag, label=None):
 	self.nrOfWeights = nrOfWeights
 	self.weights = weights
 	self.intFlag = intFlag
-	tkSimpleDialog.Dialog.__init__(self, master, "Edit edge weights (%d,%d)" % edge)
+	self.label = label
+	tkSimpleDialog.Dialog.__init__(self, master, title)
 
 
     def body(self, master):
@@ -44,7 +53,10 @@ class EditWeightsDialog(tkSimpleDialog.Dialog):
 	self.entry = [None] * self.nrOfWeights
 
 	for i in xrange(self.nrOfWeights):
-	    label = Label(master, text="Weight %d" %(i+1), anchor=W)
+	    if self.label == None:
+		label = Label(master, text="Weight %d" %(i+1), anchor=W)
+	    else:
+		label = Label(master, text=self.label[i], anchor=W)
 	    label.grid(row=i+1, column=0, padx=4, pady=3, sticky="e")
 	    self.entry[i] = Entry(master, width=6, exportselection=FALSE)
 	    if self.intFlag[i]:
@@ -105,7 +117,7 @@ class GraphEditor(GraphDisplay):
 	self.gridSize = gGridSize
 	self.gridding = 0
 	self.mode = 'AddOrMoveVertex'
-        # 'AddEdge' 'DeleteEdgeOrVertex' 'SwapOrientation' 'EditEdgeWeight'
+        # 'AddEdge' 'DeleteEdgeOrVertex' 'SwapOrientation' 'EditWeight'
 
     def ToggleGridding(self):
 	""" Toggle gridding """
@@ -233,12 +245,14 @@ class GraphEditor(GraphDisplay):
 	    if widget:
 		widget = widget[0]
 		tags = self.canvas.gettags(widget)
+		head = None
 		if "vertices" in tags:
 		    head = self.vertex[widget]
 		elif "labels" in tags:
 		    head = self.label[widget]
 
-		self.AddEdge(self.tail,head)
+		if head != None:
+		    self.AddEdge(self.tail,head)
 		# DEBUG print "edge weight", self.G.edgeWeights[0][(self.tail,head)]
 
 
@@ -266,7 +280,7 @@ class GraphEditor(GraphDisplay):
 		self.SwapEdgeOrientation(tail,head)
 
 
-    def EditEdgeWeightUp(self,event):
+    def EditWeightUp(self,event):
 	if event.widget.find_withtag(CURRENT):
 	    widget = event.widget.find_withtag(CURRENT)[0]
 	    tags = self.canvas.gettags(widget)
@@ -280,11 +294,27 @@ class GraphEditor(GraphDisplay):
 		    weights = weights + (self.G.edgeWeights[i][(tail,head)],)
 		    intFlag = intFlag + (self.G.edgeWeights[i].QInteger(),)
 
-		d = EditWeightsDialog(self, (tail,head), count, weights, intFlag) 
+		d = EditWeightsDialog(self, "Edit edge weights (%d,%d)" % (tail,head), 
+				      count, weights, intFlag) 
 		if d.result is not None:
 		    for i in xrange(count):
 			self.G.edgeWeights[i][(tail,head)] = d.result[i]
-	
+	    else: # We have a vertex
+		v = self.FindVertex(event)
+		if v != None and self.G.NrOfVertexWeights() > 0:
+		    weights = ()
+		    intFlag = ()
+		    count = len(self.G.vertexWeights.keys())
+		    for i in xrange(count):
+			weights = weights + (self.G.vertexWeights[i][v],)
+			intFlag = intFlag + (self.G.vertexWeights[i].QInteger(),)
+
+		    d = EditWeightsDialog(self, "Edit vertex weights %d" % v, 
+					      count, weights, intFlag) 
+		    if d.result is not None:
+			for i in xrange(count):
+			    self.G.vertexWeights[i][v] = d.result[i]
+		    
 
     #===== GUI-Bindings FOR ACTIONS ================================================
 
@@ -309,8 +339,8 @@ class GraphEditor(GraphDisplay):
 	    self.DeleteEdgeOrVertexUp(event)
 	elif self.mode == 'SwapOrientation':
 	    self.SwapOrientationUp(event)
-	elif self.mode == 'EditEdgeWeight':
-	    self.EditEdgeWeightUp(event)
+	elif self.mode == 'EditWeight':
+	    self.EditWeightUp(event)
 
     def Mouse2Down(self,event):
 	self.AddEdgeDown(event)

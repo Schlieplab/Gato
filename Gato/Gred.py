@@ -15,7 +15,7 @@
 #
 ################################################################################
 from Graph import Graph
-from DataStructures import EdgeWeight
+from DataStructures import EdgeWeight, VertexWeight
 from GraphUtil import OpenCATBoxGraph, OpenGMLGraph, SaveCATBoxGraph, WeightedGraphInformer
 from GraphEditor import GraphEditor
 from Tkinter import *
@@ -130,7 +130,8 @@ class SAGraphEditor(GraphEditor, Frame):
 	if not self.gridding:
 	    self.graphMenu.invoke(self.graphMenu.index('Grid'))	
 	self.toolsMenu.invoke(self.toolsMenu.index('Add or move vertex'))	
-	self.weightsSubmenu.invoke(self.weightsSubmenu.index('One'))
+	self.edgeWeightsSubmenu.invoke(self.edgeWeightsSubmenu.index('One'))
+	self.vertexWeightsSubmenu.invoke(self.vertexWeightsSubmenu.index('None'))
 
 
     def SetTitle(self,title):
@@ -162,25 +163,53 @@ class SAGraphEditor(GraphEditor, Frame):
 	self.graphMenu.add_checkbutton(label='Euclidean', 
 				       command=self.graphEuclidean,
 				       var = self.euclideanVar)
-	self.integerVar = IntVar()
-	self.graphMenu.add_checkbutton(label='Integer Weights', 
-				       command=self.graphIntegerWeights,
-				       var = self.integerVar)
 	self.graphMenu.add_separator()
 
-	self.weightsSubmenu = Menu(self.graphMenu, tearoff=0)
-	self.weightVar = IntVar()
-	self.weightsSubmenu.add_radiobutton(label="One", 
+	# vertex weigths
+	self.vertexIntegerWeightsVar = IntVar()
+	self.graphMenu.add_checkbutton(label='Integer Vertex Weights', 
+				       command=self.vertexIntegerWeights,
+				       var = self.vertexIntegerWeightsVar)
+
+	self.vertexWeightsSubmenu = Menu(self.graphMenu, tearoff=0)
+	self.vertexWeightVar = IntVar()
+	self.vertexWeightsSubmenu.add_radiobutton(label="None", 
+					    command=self.ChangeVertexWeights,
+					    var = self.vertexWeightVar, value=0)
+	self.vertexWeightsSubmenu.add_radiobutton(label="One", 
+					    command=self.ChangeVertexWeights,
+					    var = self.vertexWeightVar, value=1)
+	self.vertexWeightsSubmenu.add_radiobutton(label="Two", 
+					    command=self.ChangeVertexWeights,
+					    var = self.vertexWeightVar, value=2)
+	self.vertexWeightsSubmenu.add_radiobutton(label="Three", 
+					    command=self.ChangeVertexWeights,
+					    var = self.vertexWeightVar, value=3)
+	self.graphMenu.add_cascade(label='Vertex Weights', 
+				   menu=self.vertexWeightsSubmenu)
+
+    
+
+	# edge weigths
+	self.edgeIntegerWeightsVar = IntVar()
+	self.graphMenu.add_checkbutton(label='Integer Edge Weights', 
+				       command=self.edgeIntegerWeights,
+				       var = self.edgeIntegerWeightsVar)
+
+	self.edgeWeightsSubmenu = Menu(self.graphMenu, tearoff=0)
+	self.edgeWeightVar = IntVar()
+	self.edgeWeightsSubmenu.add_radiobutton(label="One", 
 					    command=self.ChangeEdgeWeights,
-					    var = self.weightVar, value=1)
-	self.weightsSubmenu.add_radiobutton(label="Two", 
+					    var = self.edgeWeightVar, value=1)
+	self.edgeWeightsSubmenu.add_radiobutton(label="Two", 
 					    command=self.ChangeEdgeWeights,
-					    var = self.weightVar, value=2)
-	self.weightsSubmenu.add_radiobutton(label="Three", 
+					    var = self.edgeWeightVar, value=2)
+	self.edgeWeightsSubmenu.add_radiobutton(label="Three", 
 					    command=self.ChangeEdgeWeights,
-					    var = self.weightVar, value=3)
+					    var = self.edgeWeightVar, value=3)
 	self.graphMenu.add_cascade(label='Edge Weights', 
-				   menu=self.weightsSubmenu)
+				   menu=self.edgeWeightsSubmenu)
+
 
     
 	self.graphMenu.add_separator()
@@ -205,9 +234,9 @@ class SAGraphEditor(GraphEditor, Frame):
 	self.toolsMenu.add_radiobutton(label='Swap orientation', 
 				       command=self.ChangeTool,
 				       var = self.toolVar, value='SwapOrientation')
-	self.toolsMenu.add_radiobutton(label='Edit Edge Weight', 
+	self.toolsMenu.add_radiobutton(label='Edit Weight', 
 					command=self.ChangeTool,
-				       var = self.toolVar, value='EditEdgeWeight')
+				       var = self.toolVar, value='EditWeight')
 	self.menubar.add_cascade(label="Tools", menu=self.toolsMenu, 
 				 underline=0)
 	self.master.configure(menu=self.menubar)
@@ -233,15 +262,16 @@ class SAGraphEditor(GraphEditor, Frame):
     def NewGraph(self):
 	G = Graph()
 	G.directed = 1
-	G.simple = 0
 	self.graphName = "New"
 	self.ShowGraph(G,self.graphName)
 	self.RegisterGraphInformer(WeightedGraphInformer(G,"weight"))
 	self.fileName = None
 	self.SetTitle("Gred _VERSION_ - New Graph")
 	self.SetGraphMenuOptions()
-	if self.integerVar.get():
-	    self.graphMenu.invoke(self.graphMenu.index('Integer Weights'))
+	if self.edgeIntegerWeightsVar.get():
+	    self.graphMenu.invoke(self.graphMenu.index('Integer Edge Weights'))
+	if self.vertexIntegerWeightsVar.get():
+	    self.graphMenu.invoke(self.graphMenu.index('Integer Vertex Weights'))
 
     def OpenGraph(self):	
 	file = askopenfilename(title="Open Graph",
@@ -276,15 +306,33 @@ class SAGraphEditor(GraphEditor, Frame):
 	    if G.QEuclidian() != self.euclideanVar.get():
 		self.graphMenu.invoke(self.graphMenu.index('Euclidean'))	
 	    
-	    if G.edgeWeights[0].QInteger() != self.integerVar.get():
-		self.graphMenu.invoke(self.graphMenu.index('Integer Weights'))
+	    if G.edgeWeights[0].QInteger() != self.edgeIntegerWeightsVar.get():
+		self.graphMenu.invoke(self.graphMenu.index('Integer Edge Weights'))
+		self.graphMenu.invoke(self.graphMenu.index('Integer Vertex Weights')) 
+		# Just one integer flag for vertex and edge weights 
 
 	    if G.NrOfEdgeWeights() == 1:
-	    	self.weightsSubmenu.invoke(self.weightsSubmenu.index('One'))
+	    	self.edgeWeightsSubmenu.invoke(self.edgeWeightsSubmenu.index('One'))
 	    elif G.NrOfEdgeWeights() == 2:
-	    	self.weightsSubmenu.invoke(self.weightsSubmenu.index('Two'))
+	    	self.edgeWeightsSubmenu.invoke(self.edgeWeightsSubmenu.index('Two'))
 	    elif G.NrOfEdgeWeights() == 3:
-	    	self.weightsSubmenu.invoke(self.weightsSubmenu.index('Three')) 
+	    	self.edgeWeightsSubmenu.invoke(self.edgeWeightsSubmenu.index('Three')) 
+
+	    if G.NrOfVertexWeights() == 0 or (G.NrOfVertexWeights() > 0 and 
+					      G.vertexWeights[0].QInteger()):
+		self.graphMenu.invoke(self.graphMenu.index('Integer Vertex Weights'))
+	
+
+	    if G.NrOfVertexWeights() == 0:
+	    	self.vertexWeightsSubmenu.invoke(self.vertexWeightsSubmenu.index('None'))
+	    elif G.NrOfVertexWeights() == 1:
+	    	self.vertexWeightsSubmenu.invoke(self.vertexWeightsSubmenu.index('One'))
+	    elif G.NrOfVertexWeights() == 2:
+	    	self.vertexWeightsSubmenu.invoke(self.vertexWeightsSubmenu.index('Two'))
+	    elif G.NrOfVertexWeights() == 3:
+	    	self.vertexWeightsSubmenu.invoke(self.vertexWeightsSubmenu.index('Three'))
+
+
 
 	    self.RegisterGraphInformer(WeightedGraphInformer(G,"weight"))
 	    self.ShowGraph(G,self.graphName)
@@ -350,16 +398,24 @@ class SAGraphEditor(GraphEditor, Frame):
 	    else:
 		self.G.Euclidify()
 
-    def graphIntegerWeights(self):
+    def edgeIntegerWeights(self):
 	if self.G != None:
 	    if not self.G.edgeWeights[0].QInteger():
 		self.G.Integerize('all')
+	    
+    def vertexIntegerWeights(self):
+	if self.G != None:
+	    for i in xrange(0,self.G.NrOfVertexWeights()):
+		if not self.G.vertexWeights[i].QInteger(): 
+		    self.G.vertexWeights[i].Integerize()
+		else:
+		    self.G.vertexWeights[i] = 0
 	    
 
     def ChangeEdgeWeights(self):
 	if self.G == None:
 	    return
-	n = self.weightVar.get()
+	n = self.edgeWeightVar.get()
 	k = self.G.edgeWeights.keys()
 	if self.G.edgeWeights[0].QInteger():
 	    initialWeight = 0
@@ -383,6 +439,33 @@ class SAGraphEditor(GraphEditor, Frame):
 		self.G.edgeWeights[1] = EdgeWeight(self.G, initialWeight)  
 		if self.G.edgeWeights[0].QInteger():
 		    self.G.edgeWeights[1].Integerize()
+
+
+    def ChangeVertexWeights(self):
+	if self.G == None:
+	    return
+	n = self.vertexWeightVar.get()
+	old = self.G.NrOfVertexWeights()
+	k = self.G.vertexWeights.keys()
+	if self.vertexIntegerWeightsVar.get() == 1:
+	    initialWeight = 0
+	else:
+	    initialWeight = 0.0	
+		
+	if n > old: # Add additional weigths
+	    for i in xrange(old,n):
+		self.G.vertexWeights[i] = VertexWeight(self.G, initialWeight) 
+		if self.vertexIntegerWeightsVar.get() == 1:
+		    self.G.vertexWeights[i].Integerize()
+	else:       # Delete superfluos weigths
+	    for i in xrange(n,old):
+		del(self.G.vertexWeights[i])
+	
+	# Integerize remaining weigths if necessary
+	if self.vertexIntegerWeightsVar.get() == 1:
+	    for i in xrange(0,min(n,old)): 
+		self.G.vertexWeights[i].Integerize()
+	    
 
 
 

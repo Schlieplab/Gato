@@ -701,6 +701,8 @@ class GraphDisplay:
 	self.Labeling[v]   = v
 	self.drawVertex[v] = self.CreateDrawVertex(v)
 	self.drawLabel[v]  = self.CreateDrawLabel(v)
+	for i in xrange(0,self.G.NrOfVertexWeights()):
+	    self.G.vertexWeights[i][v] = 0
 	return v
 
 
@@ -789,6 +791,7 @@ class GraphDisplay:
 	except GraphNotSimpleError:
 	    #print "Inserting edge would result in non-simple graph"
 	    return
+
 
     def DeleteEdge(self,tail,head):
 	""" *Internal* Delete edge (tail,head) """ 

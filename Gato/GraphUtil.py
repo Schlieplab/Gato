@@ -17,7 +17,7 @@
 from regsub import split
 from GatoGlobals import *
 from Graph import Graph
-from DataStructures import Point2D, VertexLabeling, EdgeLabeling, EdgeWeight, Queue
+from DataStructures import Point2D, VertexLabeling, EdgeLabeling, EdgeWeight, VertexWeight, Queue
 
 ################################################################################
 #
@@ -176,9 +176,13 @@ def OpenCATBoxGraph(fileName):
 	    G.simple = eval(split(splitLine[1],':')[1])
 	    G.euclidian = eval(split(splitLine[2],':')[1])
 	    intWeights = eval(split(splitLine[3],':')[1])
-	    nrOfWeights = eval(split(splitLine[4],':')[1])
-	    for i in xrange(nrOfWeights):
+	    nrOfEdgeWeights = eval(split(splitLine[4],':')[1])
+	    nrOfVertexWeights = eval(split(splitLine[5],':')[1])
+	    for i in xrange(nrOfEdgeWeights):
 		G.edgeWeights[i] = EdgeWeight(G)
+	    for i in xrange(nrOfVertexWeights):
+		G.vertexWeights[i] = VertexWeight(G)
+
 
 	if lineNr == 5: # Read nr of vertices
 	    nrOfVertices = eval(split(line[:-2],':')[1]) # Strip of "\n" and ; 
@@ -190,6 +194,10 @@ def OpenCATBoxGraph(fileName):
 	    v = G.AddVertex()
 	    x = eval(split(splitLine[1],':')[1])
 	    y = eval(split(splitLine[2],':')[1])
+	    for i in xrange(nrOfVertexWeights):
+		w = eval(split(splitLine[3+i],':')[1])
+		G.vertexWeights[i][v] = w
+
 	    E[v] = Point2D(x,y)
 	    
 	if lineNr == lastVertexLineNr + 1: # Read Nr of edges
@@ -202,7 +210,7 @@ def OpenCATBoxGraph(fileName):
 	    h = eval(split(splitLine[0],':')[1])
 	    t = eval(split(splitLine[1],':')[1])
 	    G.AddEdge(t,h)
-	    for i in xrange(nrOfWeights):
+	    for i in xrange(nrOfEdgeWeights):
 		G.edgeWeights[i][(t,h)] = eval(split(splitLine[3+i],':')[1])
  
 	lineNr = lineNr + 1
@@ -217,6 +225,8 @@ def OpenCATBoxGraph(fileName):
     G.labeling  = L
     if intWeights:
 	G.Integerize('all')
+	for i in xrange(nrOfVertexWeights):
+	    G.vertexWeights[i].Integerize()
 
     return G
 
@@ -225,13 +235,14 @@ def SaveCATBoxGraph(G, fileName):
     
     file = open(fileName, 'w')
   
+    nrOfVertexWeights = len(G.vertexWeights.keys())
     nrOfEdgeWeights = len(G.edgeWeights.keys())
-    integerWeights = G.edgeWeights[0].QInteger()
+    integerEdgeWeights = G.edgeWeights[0].QInteger()
 
     file.write("graph:\n")
-    file.write("dir:%d; simp:%d; eucl:%d; int:%d; ew:%d; vw:0;\n" %
-	       (G.QDirected(), G.simple, G.QEuclidian(), integerWeights,
-	       nrOfEdgeWeights))
+    file.write("dir:%d; simp:%d; eucl:%d; int:%d; ew:%d; vw:%d;\n" %
+	       (G.QDirected(), G.simple, G.QEuclidian(), integerEdgeWeights,
+	       nrOfEdgeWeights, nrOfVertexWeights))
     file.write("scroller:\n")
     file.write("vdim:1000; hdim:1000; vlinc:10; hlinc:10; vpinc:50; hpinc:50;\n")
     file.write("vertices:" + `G.Order()` + ";\n")
@@ -239,21 +250,28 @@ def SaveCATBoxGraph(G, fileName):
     # Force continous numbering of vertices
     count = 1
     save = {}
-    for i in G.vertices:
-	save[i] = count
+    for v in G.vertices:
+	save[v] = count
 	#print "i=",i,"save=",save[i]
 	count = count + 1
-	file.write("n:%d; x:%d; y:%d;\n" % (save[i], G.embedding[i].x, G.embedding[i].y))
+	file.write("n:%d; x:%d; y:%d;" % (save[v], G.embedding[v].x, G.embedding[v].y))
+	for i in xrange(nrOfVertexWeights):
+	    if integerEdgeWeights: # XXX
+		file.write(" w:%d;" % int(round(G.vertexWeights[i][v])))
+	    else:
+		file.write(" w:%d;" % G.vertexWeights[i][v])	    
+	file.write("\n")
+
     file.write("edges:" + `G.Size()` + ";\n")
     for tail in G.vertices:
 	for head in G.OutNeighbors(tail):
 	    file.write("h:%d; t:%d; e:2;" % (save[head], save[tail]))
 
 	    for i in xrange(nrOfEdgeWeights):
-		if integerWeights:
+		if integerEdgeWeights:
 		    file.write(" w:%d;" % int(round(G.edgeWeights[i][(tail,head)])))
 		else:
-		    file.write(" w:%d;" % G.edgeWeights[i][(tail,head)])
+		    file.write(" w:%f;" % G.edgeWeights[i][(tail,head)])
 		    
 	    file.write("\n")
 		

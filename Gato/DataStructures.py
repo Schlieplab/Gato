@@ -55,6 +55,31 @@ class VertexLabeling:
     def QDefined(self,v):
 	return v in self.label.keys()
 
+class VertexWeight(VertexLabeling):
+
+    def __init__(self, theGraph, initialWeight = None):
+	VertexLabeling.__init__(self)
+	self.G = theGraph
+	self.integer = 0
+	if initialWeight is not None:
+	    self.SetAll(initialWeight)
+
+    def QInteger(self):
+	""" Returns 1 if all weights are integers, 0 else """
+	return self.integer
+
+    def Integerize(self):
+	if not self.integer:
+	    for v in self.label.keys():
+		self.label[v] = int(round(self.label[v]))
+	    self.integer = 1	
+
+    def SetAll(self, initialWeight):
+	for v in self.G.vertices:
+	    self.label[v] = initialWeight
+	   
+
+
 ################################################################################
 #
 # Edge Labeling
