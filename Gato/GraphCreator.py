@@ -232,12 +232,12 @@ class completeGraphCreator(Creator):
             G.AddEdge(e[0],e[1])
 
         if layout==0:
-            RandomCoords(G)
+	    if RandomCoords(G):
+		DrawNewGraph(theGraphEditor,G,direction)
         else:
-            CircularCoords(G)
-            
-        DrawNewGraph(theGraphEditor,G,direction)
-            
+	    if CircularCoords(G):
+		DrawNewGraph(theGraphEditor,G,direction)  
+
 #----------------------------------------------------------------------
 class randomGraphCreator(Creator):
 
@@ -268,12 +268,12 @@ class randomGraphCreator(Creator):
             del Edges[pos]
 
         if layout==0:
-            RandomCoords(G)
+	    if RandomCoords(G):
+		DrawNewGraph(theGraphEditor,G,direction)
         else:
-            CircularCoords(G)
-            
-        DrawNewGraph(theGraphEditor,G,direction)
-        
+	    if CircularCoords(G):
+		DrawNewGraph(theGraphEditor,G,direction)           
+
 #----------------------------------------------------------------------
 class maximalPlanarGraphCreator(Creator):
 
@@ -302,15 +302,17 @@ class maximalPlanarGraphCreator(Creator):
             G.AddEdge(e[0],e[1])
 
         if layout==0:
-            RandomCoords(G)
+	    if RandomCoords(G):
+		DrawNewGraph(theGraphEditor,G,direction)
         elif layout==1:
-            CircularCoords(G)
+	    if CircularCoords(G):
+		DrawNewGraph(theGraphEditor,G,direction)
         elif layout==2:
-            FPP_PlanarCoords(G)
+	    if FPP_PlanarCoords(G):
+		DrawNewGraph(theGraphEditor,G,direction)
         else:
-            Schnyder_PlanarCoords(G)
-            
-        DrawNewGraph(theGraphEditor,G,direction)
+	    if Schnyder_PlanarCoords(G):
+		DrawNewGraph(theGraphEditor,G,direction)  
 
 #----------------------------------------------------------------------
 from math import log10
@@ -345,15 +347,17 @@ class randomPlanarGraphCreator(Creator):
             del Edges[pos]
 
         if layout==0:
-            RandomCoords(G)
+	    if RandomCoords(G):
+		DrawNewGraph(theGraphEditor,G,direction)
         elif layout==1:
-            CircularCoords(G)
+	    if CircularCoords(G):
+		DrawNewGraph(theGraphEditor,G,direction)
         elif layout==2:
-            FPP_PlanarCoords(G)
+	    if FPP_PlanarCoords(G):
+		DrawNewGraph(theGraphEditor,G,direction)
         else:
-            Schnyder_PlanarCoords(G)
-            
-        DrawNewGraph(theGraphEditor,G,direction)
+	    if Schnyder_PlanarCoords(G):
+		DrawNewGraph(theGraphEditor,G,direction)            
         
 #----------------------------------------------------------------------
 class TreeDialog(tkSimpleDialog.Dialog):
@@ -464,7 +468,7 @@ class TreeDialog(tkSimpleDialog.Dialog):
                             "max. #nodes = %i" %(min_nodes,max_nodes))
                 return 0
         else:
-            max_height=int(log10(1000)/log10(d))-1
+            max_height=int(log10(1000)/log10(d))
             if h>max_height:
                 showwarning("Please try again !",
                             "max. height = %i" %max_height)
@@ -497,22 +501,36 @@ class completeTreeCreator(Creator):
         G=Graph()
         G.directed=direction
 
+	nodes={}
+	nodes[0]=[]
+	G.AddVertex()
+	nodes[0].append(G.vertices[0])
         for h in range(0,height):
-            pass
-        
-        #G.AddVertex()
-        #G.AddEdge(Edges[pos][0],Edges[pos][1])
-
-        #if layout==0:
-        #    RandomCoords(G)
-        #elif layout==1:
-        #    CircularCoords(G)
-        #elif layout==2:
-        #    TreeCoords(G)
-        #else:
-        #    BFSTreeCoords(G)
-            
-        #DrawNewGraph(theGraphEditor,G,direction)       
+            nodes[h+1]=[]
+	    for v in nodes[h]:
+		for d in range(0,degree):
+		    new_v=G.AddVertex()
+		    if direction==0: 
+			G.AddEdge(v,new_v)
+		    else:
+			if whrandom.randint(0,1):
+			    G.AddEdge(v,new_v)
+			else:
+			    G.AddEdge(new_v,v)
+		    nodes[h+1].append(new_v)
+   
+        if layout==0:
+	    if RandomCoords(G):
+		DrawNewGraph(theGraphEditor,G,direction) 
+        elif layout==1:
+	    if CircularCoords(G):
+		DrawNewGraph(theGraphEditor,G,direction) 
+        elif layout==2:
+	    if TreeCoords(G,G.vertices[0],"vertical"):
+		DrawNewGraph(theGraphEditor,G,direction) 
+        else:
+	    if BFSTreeCoords(G,G.vertices[0],"forward"):
+		DrawNewGraph(theGraphEditor,G,direction) 
 
 #----------------------------------------------------------------------
 class randomTreeCreator(Creator):
@@ -534,19 +552,46 @@ class randomTreeCreator(Creator):
         G=Graph()
         G.directed=direction
 
-        #G.AddVertex()
-        #G.AddEdge(Edges[pos][0],Edges[pos][1])
+	edges=[]
+	nodes={}
+	nodes[0]=[]
+	G.AddVertex()
+	nodes[0].append(G.vertices[0])
+        for h in range(0,height):
+            nodes[h+1]=[]
+	    min_nodes=max(1,(n-G.Order())/(degree**(height-h)-1)+1)
+	    max_nodes=min(n-height-h,len(nodes[h])*degree)
+	    print min_nodes, max_nodes
+	    for v in nodes[h]:
+		children_nr=degree
+		#children_nr=whrandom.randint(0,degree)
+		for d in range(0,children_nr):
+		    new_v=G.AddVertex()
+		    pos=whrandom.randint(0,len(edges))
+		    if direction==0: 
+			edges.insert(pos,(v,new_v))
+		    else:
+			if whrandom.randint(0,1):
+			    edges.insert(pos,(v,new_v))
+			else:
+			    edges.insert(pos,(new_v,v))
+		    nodes[h+1].append(new_v)
 
-        #if layout==0:
-        #    RandomCoords(G)
-        #elif layout==1:
-        #    CircularCoords(G)
-        #elif layout==2:
-        #    TreeCoords(G)
-        #else:
-        #    BFSTreeCoords(G)
-            
-        #DrawNewGraph(theGraphEditor,G,direction) 
+	for e in edges:
+	    G.AddEdge(e[0],e[1])
+	
+        if layout==0:
+	    if RandomCoords(G):
+		DrawNewGraph(theGraphEditor,G,direction) 
+        elif layout==1:
+	    if CircularCoords(G):
+		DrawNewGraph(theGraphEditor,G,direction) 
+        elif layout==2:
+	    if TreeCoords(G,G.vertices[0],"vertical"):
+		DrawNewGraph(theGraphEditor,G,direction) 
+        else:
+	    if BFSTreeCoords(G,G.vertices[0],"forward"):
+		DrawNewGraph(theGraphEditor,G,direction) 
 
 #----------------------------------------------------------------------
 
