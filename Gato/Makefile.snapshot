@@ -11,8 +11,8 @@
 
 # Vars
 
-VERSION       = 0.86D
-DATE          = 3/22/1999
+VERSION       = 0.87
+DATE          = 3/24/1999
 DISTNAME      = Gato
 DISTNAMEMAC   = $(DISTNAME)-Mac
 
@@ -22,6 +22,7 @@ SRCDIR        = /homes/schliep/Src/Gato
 EXECDIR       = /homes/gato/Gato
 MACDIR        = /homes/gato/Gato-Mac
 WWWDIR        = /homes/gato/pub/Download
+DOCDIR        = /homes/gato/pub/Documentation
 
 # Tools
 
@@ -50,42 +51,45 @@ SOURCES	      = AnimatedAlgorithms.py \
 		GraphDisplay.py \
 		GraphEditor.py \
 		GraphUtil.py \
-		gred.py \
+		Gred.py \
 		catbox-splash.gif
 
 LICENCE       = Lizenz.txt
 
 EXECUTABLES   = $(EXECDIR)/Gato.py \
-		$(EXECDIR)/gred.py
+		$(EXECDIR)/Gred.py
 
-ALGORITHMS    =	BFS.alg BFS.pro \
-		BipartiteMatching.alg BipartiteMatching.pro \
-		DFS.alg DFS.pro \
-	        Dijkstra.alg Dijkstra.pro \
-		Findpath.alg Findpath.pro \
-		FindpathEuclid.alg FindpathEuclid.pro \
-		LabelCorrecting.alg LabelCorrecting.pro \
-		MaximalMatching.alg MaximalMatching.pro \
-		MFFordFulkerson.alg MFFordFulkerson.pro \
-		MFPreflowPush.alg MFPreflowPush.pro \
-		MFPreflowPush-NoResidual.alg MFPreflowPush-NoResidual.pro \
-		MSTGreedy.alg MSTGreedy.pro \
-		MSTGreedy1.alg MSTGreedy1.pro \
-		MSTPrim.alg MSTPrim.pro 
+ALGORITHMS    =	
+
+#ALGORITHMS    =	BFS.alg BFS.pro \
+#		BipartiteMatching.alg BipartiteMatching.pro \
+#		DFS.alg DFS.pro \
+#	        Dijkstra.alg Dijkstra.pro \
+#		Findpath.alg Findpath.pro \
+#		FindpathEuclid.alg FindpathEuclid.pro \
+#		LabelCorrecting.alg LabelCorrecting.pro \
+#		MaximalMatching.alg MaximalMatching.pro \
+#		MFFordFulkerson.alg MFFordFulkerson.pro \
+#		MFPreflowPush.alg MFPreflowPush.pro \
+#		MFPreflowPush-NoResidual.alg MFPreflowPush-NoResidual.pro \
+#		MSTGreedy.alg MSTGreedy.pro \
+#		MSTGreedy1.alg MSTGreedy1.pro \
+#		MSTPrim.alg MSTPrim.pro 
 
 
-GRAPHS        = cm.cat \
-		cmDir.cat \
-		cmNeg.cat \
-		cmNeg2.cat \
-		mf2.cat \
-		bipartite.cat \
-		bipartite2.cat \
-		bipartite2a.cat \
-		bipartite3.cat \
-		mfBig2.cat \
-		mfford-worstcase.cat \
-		mfpreflow-worstcase.cat
+GRAPHS         = 
+#GRAPHS        = cm.cat \
+#		cmDir.cat \
+#		cmNeg.cat \
+#		cmNeg2.cat \
+#		mf2.cat \
+#		bipartite.cat \
+#		bipartite2.cat \
+#		bipartite2a.cat \
+#		bipartite3.cat \
+#		mfBig2.cat \
+#		mfford-worstcase.cat \
+#		mfpreflow-worstcase.cat
 
 PHONY:
 	# 1) place executable distribution in ~gato/Gato
@@ -96,23 +100,24 @@ PHONY:
 	$(VERSIONIZE) $(EXECDIR)/*.*
 	$(DATEIZE) $(EXECDIR)/*.*
 	$(COPYRIGHTIZE) $(EXECDIR)/*.*
-	chgrp -f gato $(EXECDIR)/*.*
+	chgrp -f catbox $(EXECDIR)/*.*
 	chmod 444 $(EXECDIR)/*.*
 	chmod 555 $(EXECUTABLES)
 
 	# 2) put tar-archives into ~gato/pub/Beta
-	cd $(EXECDIR);tar cf $(DISTNAME)-$(VERSION).tar *.py *.alg *.pro *.cat *.txt *.gif
+	cd $(EXECDIR);tar cf $(DISTNAME)-$(VERSION).tar *.py *.gif *.txt #*.alg *.pro *.cat
 	chmod 444 $(EXECDIR)/$(DISTNAME)-$(VERSION).tar
 	mv -f $(EXECDIR)/$(DISTNAME)-$(VERSION).tar $(WWWDIR)	
 
 	# Create Mac-version
-	cd $(EXECDIR); cp -f *.py *.alg *.pro *.cat *.txt *.gif $(MACDIR)
-	$(MACIFY) $(MACDIR)/*.py $(MACDIR)/*.alg $(MACDIR)/*.pro $(MACDIR)/*.cat $(MACDIR)/*.txt
+	#cd $(EXECDIR); cp -f *.py *.alg *.pro *.cat *.txt *.gif $(MACDIR)
+	cd $(EXECDIR); cp -f *.py *.txt *.gif $(MACDIR)
+	$(MACIFY) $(MACDIR)/*.py $(MACDIR)/*.txt #$(MACDIR)/*.alg $(MACDIR)/*.pro $(MACDIR)/*.cat 
 	chmod 444 $(MACDIR)/*.*
 	$(RM) $(MACDIR)/$(DISTNAMEMAC)-$(VERSION).tar
-	cd $(MACDIR); tar cf $(DISTNAMEMAC)-$(VERSION).tar *.py *.alg *.pro *.cat *.txt *.gif
+	cd $(MACDIR); tar cf $(DISTNAMEMAC)-$(VERSION).tar *.py *.gif *.txt #*.alg *.pro *.cat
 	chmod 444 $(MACDIR)/$(DISTNAMEMAC)-$(VERSION).tar
-	chgrp -f gato $(MACDIR)/*
+	chgrp -f catbox $(MACDIR)/*
 	mv -f $(MACDIR)/$(DISTNAMEMAC)-$(VERSION).tar $(WWWDIR)	
 	
 	# 3) change ~gato/pub/Beta/build.info
@@ -125,14 +130,15 @@ PHONY:
 	cp -f Lizenz.txt  $(WWWDIR)
 	chmod 444 $(WWWDIR)/Lizenz.txt
 	chmod 444 $(WWWDIR)/build.info
-	chgrp -f gato $(WWWDIR)/*
+	chgrp -f catbox $(WWWDIR)/*
 
 	# 4) update and distribute documentation
 	cd $(SRCDIR)/Doc; doc.py Gato $(SRCDIR)
-	cp -f $(SRCDIR)/Doc/*.html $(WWWDIR)/Doc/
-	chmod 444 $(WWWDIR)/Doc/*
-	chgrp -f gato $(WWWDIR)/Doc/*
-	$(RM) $(WWWDIR)/$(DISTNAME)-$(VERSION)-Doc.tar
-	cd $(WWWDIR); tar cf $(DISTNAME)-$(VERSION)-Doc.tar Doc/*
-	chmod 444 $(WWWDIR)/$(DISTNAME)-$(VERSION)-Doc.tar
-	chgrp -f gato $(WWWDIR)/$(DISTNAME)-$(VERSION)-Doc.tar
+	cp -f $(SRCDIR)/Doc/*.html $(DOCDIR)/
+	chmod -f g+r $(DOCDIR)/*
+	chmod -f a+r $(DOCDIR)/*
+	chgrp -f catbox $(DOCDIR)/*
+	$(RM) $(DOCDIR)/$(DISTNAME)-$(VERSION)-Doc.tar
+	cd $(SRCDIR); tar cf $(DOCDIR)/$(DISTNAME)-$(VERSION)-Doc.tar Doc/*
+	chmod 444 $(DOCDIR)/$(DISTNAME)-$(VERSION)-Doc.tar
+	chgrp -f catbox $(DOCDIR)/$(DISTNAME)-$(VERSION)-Doc.tar
