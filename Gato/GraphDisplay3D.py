@@ -38,6 +38,17 @@ from Tkinter import * # Frame, Canvas, Toplevel, StringVar and lots of handy con
 from Graph import Graph
 from math import sqrt, pi, sin, cos
 from GatoGlobals import *
+### Internal Color Names for GraphDisplay and such
+### This will be set in GraphDisplay.ReadConfiguration()
+cVertexDefault    = "red"
+cVertexBlink      = "black"
+cEdgeDefault      = "black"
+LabelDefault     = "black"
+cLabelDefaultInverted = "white"
+cLabelBlink       = "green"
+gVertexRadius = 12  
+gVertexFrameWidth =  2     
+gEdgeWidth =  3     
 from GatoUtil import orthogonal
 from DataStructures import Point2D, VertexLabeling, EdgeLabeling
 import os

@@ -120,6 +120,9 @@ class AlgoWin(Frame):
 
     def __init__(self, parent=None):
 	Frame.__init__(self,parent)
+        #XXX import tkoptions
+        #tkoptions.tkoptions(self)
+        
 	Splash = SplashScreen(self.master)
 
 	self.algoFont = "Courier"
@@ -892,6 +895,11 @@ class AlgoWin(Frame):
 	widget.bind('t', self.KeyTrace)
 	widget.bind('b', self.KeyBreak)
 
+        if isinstance(widget,GraphDisplayToplevel):
+            widget.bind('r', widget.highlightLastAnimation)
+        else:
+            widget.bind('r', self.graphDisplay.highlightLastAnimation)
+    
   
     def KeyStart(self, event):
 	""" Command linked to toolbar 'Start' """
@@ -1606,6 +1614,7 @@ if __name__ == '__main__':
         log.info("Welcome! Gato logging facilities activated")
         
 	app = AlgoWin()
+       
 
 	#======================================================================
 

@@ -78,7 +78,7 @@ class AnimatedNeighborhood:
         self.lastEdge    = None
         self.lastColor   = None
         self.travColor   = "yellow"
-        self.Animator.SetVertexFrameWidth(self.v,6)
+        self.Animator.SetVertexFrameWidth(self.v,8)
 
     def __getitem__(self, i):
 	try:
@@ -97,7 +97,7 @@ class AnimatedNeighborhood:
 		self.Animator.BlinkEdge(self.v,self.nbh[i],self.blinkColor)
 	    return self.nbh[i]
 	else:
-            self.Animator.SetVertexFrameWidth(self.v,2)
+            self.Animator.SetVertexFrameWidth(self.v,self.Animator.gVertexFrameWidth)
 	    raise IndexError
 
     def __len__(self):

@@ -94,25 +94,26 @@ class GraphDisplay:
 	self.update()
 	self.graphInformer = None
 	self.clickhandler = None
-
+        self.lastAnimation = []
+        self.highlightedPath = {}
         self.ReadConfiguration()
 
 
     def ReadConfiguration(self):
-        self.gVertexRadius = 12
+        self.gVertexRadius = 14 # XXX
 
         self.gFontFamily = "Helvetica"
         self.gFontSize = 10
-        self.gFontStyle = tkFont.NORMAL
+        self.gFontStyle = tkFont.BOLD
 
-        self.gEdgeWidth = 3
+        self.gEdgeWidth = 4
 
-        self.gVertexFrameWidth = 2
-        self.cVertexDefault = "red"
+        self.gVertexFrameWidth = 0
+        self.cVertexDefault = "#000099" # 'red'
         self.cVertexBlink = "black"
-        self.cEdgeDefault = "black"
-        self.cLabelDefault = "black"
-        self.cLabelDefaultInverted = "white"
+        self.cEdgeDefault = "#EEEEEE"
+        self.cLabelDefault = "white"
+        self.cLabelDefaultInverted = "black"
         self.cLabelBlink = "green"
         
         # Used by ramazan's scaling code
@@ -584,6 +585,27 @@ class GraphDisplay:
 				      fill=color)
         return da
 
+    ############################################################################
+    #				       
+    # Animation history
+    #
+    def animate(self,elem_type, elem, canvas_elem):
+        self.lastAnimation = [elem_type, elem, canvas_elem]
+
+    def animateVertex(self, vertex, draw_vertex):
+        self.animate('vertex', vertex, draw_vertex)
+
+    def animateEdge(self, edge, draw_edge):
+        self.animate('edge', edge, draw_edge)
+    
+    def highlightLastAnimation(self, dummy):
+        if self.lastAnimation is not None:
+            if self.lastAnimation[0] == 'vertex':
+                self.BlinkVertex(self.lastAnimation[1],'yellow')
+            else:
+                self.BlinkEdge(self.lastAnimation[1][0], self.lastAnimation[1][1],'yellow')
+               
+
 
     ############################################################################
     #				       
@@ -597,12 +619,13 @@ class GraphDisplay:
 					rgb_color[1] / 65536.0, 
 					rgb_color[2] / 65536.0)
 	lightness =  hls_color[1]
-	if lightness < 0.4: 
+	if lightness < 0.2: 
 	    self.canvas.itemconfig( self.drawLabel[v], fill=self.cLabelDefaultInverted)
 	else:
 	    self.canvas.itemconfig( self.drawLabel[v], fill=self.cLabelDefault)
 	self.canvas.itemconfig( self.drawVertex[v], fill=color)
 	self.update()
+        self.animateVertex(v, self.drawVertex[v])
 
 
     def GetVertexColor(self,v):
@@ -619,7 +642,9 @@ class GraphDisplay:
 	else: # induced subgraph
 	    for v in graph.vertices:
 		self.canvas.itemconfig(self.drawVertex[v], fill=color)
-	self.update()
+	self.update()        
+        self.lastAnimation = []
+        
 	
     def SetAllEdgesColor(self,color,graph=None, leaveColors = None):
 	""" Change the color of all edges to 'color' at once
@@ -636,6 +661,7 @@ class GraphDisplay:
                 if leaveColors == None or not (self.GetEdgeColor(e[0],e[1]) in leaveColors):
                     self.SetEdgeColor(e[0],e[1],color)
 	self.update()
+        self.lastAnimation = []
 
 
     def SetEdgeColor(self, tail, head, color):
@@ -650,6 +676,7 @@ class GraphDisplay:
 		de = self.drawEdges[(head,tail)]	    
 	self.canvas.itemconfig( de, fill=color)
 	self.update()
+        self.animateEdge((tail,head), de)
 
 
     def GetEdgeColor(self, tail, head):
@@ -674,6 +701,7 @@ class GraphDisplay:
 	    self.canvas.after(gBlinkRate)
 	    self.canvas.itemconfig( dv, fill=oldColor)
 	    self.update()
+        self.animateVertex(v, self.drawVertex[v])
 
 
     def BlinkEdge(self, tail, head, color=None):
@@ -697,6 +725,7 @@ class GraphDisplay:
 	    self.canvas.after(gBlinkRate)
 	    self.canvas.itemconfig( de, fill=oldColor)
 	    self.update()
+        self.animateEdge((tail, head), de)
 
     def Blink(self, list, color=None):
 	""" Blink all edges or vertices in list with color.
@@ -740,6 +769,8 @@ class GraphDisplay:
 	self.update()
 	self.canvas.itemconfig(dv, outline = "black", width=(val * self.zoomFactor) / 100.0)
         self.update()
+        self.animateVertex(v, dv)
+        
 
     def SetVertexAnnotation(self,v,annotation,color="black"):
 	""" Add an annotation to v. Annotations are displayed to the left and
@@ -755,6 +786,8 @@ class GraphDisplay:
 				   text=annotation,
 				   fill=color)
 	    self.update()
+        self.animateVertex(v, self.drawVertex[v])
+      
 
     def SetEdgeAnnotation(self,tail,head,annotation,color="black"):
 	""" Add an annotation to (tail,head). Annotations are displayed to the left and
@@ -771,7 +804,7 @@ class GraphDisplay:
 				   text=annotation,
 				   fill=color)
 	    self.update()
-
+        self.animateEdge((tail, head), self.drawEdge[(tail,head)])
 
     def UpdateVertexLabel(self, v, blink=1, color=None):
 	""" Visualize the changing of v's label. After changing G.labeling[v],
@@ -797,7 +830,8 @@ class GraphDisplay:
 				    font=self.font(self.zFontSize),
 				    text=self.Labeling[v])
 	    self.update()
-
+        self.animateVertex(v, self.drawVertex[v])
+           
 	
     def UpdateInfo(self, neuText):
 	""" *Internal* Update text in info box """	
@@ -898,6 +932,27 @@ class GraphDisplay:
 		return e
 	    except:
 		return None
+
+
+    def HighlightPath(self, path, color, closed = 0):
+        """ Draw a wide poly line underneath the path in the graph """
+        pathID = tuple(path)
+        coords = ()
+        for v in path:
+            coords += (self.embedding[v].x * self.zoomFactor / 100.0,
+                       self.embedding[v].y * self.zoomFactor / 100.0)
+        if closed:
+            coords += (self.embedding[path[0]].x * self.zoomFactor / 100.0,
+                       self.embedding[path[0]].y * self.zoomFactor / 100.0)
+        c = self.canvas.create_line(coords, tag="highlight", fill=color,
+                                    width = 16)
+
+        self.canvas.lower(c,"edges")
+        self.highlightedPath[pathID] = c 
+        return pathID
+        
+    def HidePath(self, pathID):
+        self.canvas.delete(self.highlightedPath[pathID])
 
 
     ############################################################################

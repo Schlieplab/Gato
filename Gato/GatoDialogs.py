@@ -271,4 +271,4 @@ The following is a summary of the interface defined by
 """
 if __name__ == '__main__':
     win = HTMLViewer(about, "Dummy")
-    Tkinter.Tk().mainloop()
+    Tk().mainloop()
