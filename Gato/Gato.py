@@ -63,6 +63,7 @@ from GatoGlobals import *
 from GatoDialogs import AboutBox, SplashScreen, HTMLViewer
 import GatoIcons
 import GatoSystemConfiguration
+from AnimationHistory import AnimationHistory
 
 # put someplace else
 def WMExtrasGeometry(window):
@@ -706,8 +707,8 @@ class AlgoWin(Frame):
 
     def Quit(self):
 	if self.algorithmIsRunning:
-	    self.CmdStop()
 	    self.commandAfterStop = self.Quit
+	    self.CmdStop()
 	    return
 
 	if askokcancel("Quit","Do you really want to quit?"):
@@ -893,13 +894,11 @@ class AlgoWin(Frame):
 	widget.bind('<space>', self.KeyStep)
 	widget.bind('c', self.KeyContinue)
 	widget.bind('t', self.KeyTrace)
-	widget.bind('b', self.KeyBreak)
-
-        if isinstance(widget,GraphDisplayToplevel):
-            widget.bind('r', widget.highlightLastAnimation)
-        else:
-            widget.bind('r', self.graphDisplay.highlightLastAnimation)
-    
+	widget.bind('b', self.KeyBreak)        
+	widget.bind('r', self.KeyReplay)
+	widget.bind('u', self.KeyUndo)
+  	widget.bind('d', self.KeyDo)
+  
   
     def KeyStart(self, event):
 	""" Command linked to toolbar 'Start' """
@@ -930,6 +929,19 @@ class AlgoWin(Frame):
     def KeyBreak(self, event):
 	""" Command for toggling breakpoints """
 	self.algorithm.ToggleBreakpoint()
+
+    def KeyReplay(self, event):
+	""" Command for Replaying last animation """
+	self.algorithm.Replay()
+
+    def KeyUndo(self, event):
+	""" Command for Replaying last animation """
+	self.algorithm.Undo()
+
+    def KeyDo(self, event):
+	""" Command for Replaying last animation """
+	self.algorithm.Do()
+        
 
 
     ############################################################
@@ -1241,7 +1253,7 @@ class Algorithm:
         self.cleanGraphCopy = None  # this is the backup of the graph
 	self.graphIsDirty = 0       # If graph was changed by running
 	self.algoGlobals = {}       # Sandbox for Algorithm
-	self.logAnimator = 0
+	self.logAnimator = 1
 	self.about = None
 
 	self.commentPattern = re.compile('[ \t]*#')
@@ -1399,8 +1411,11 @@ class Algorithm:
 	self.algoGlobals['self'] = self
 	self.algoGlobals['G'] = self.graph
 
+        self.animation_history = None
+
 	if self.logAnimator:
-	    self.algoGlobals['A'] = MethodLogger(self.GUI.graphDisplay)
+            self.animation_history = AnimationHistory(self.GUI.graphDisplay)
+	    self.algoGlobals['A'] = self.animation_history
 	else:
 	    self.algoGlobals['A'] = self.GUI.graphDisplay
 	# XXX
@@ -1446,17 +1461,39 @@ class Algorithm:
 	self.mode = 0
 
     def Step(self):
+        if self.animation_history is not None:
+              self.animation_history.DoAll()        
 	self.DB.doTrace = 0
 	self.mode = 2 
     
     def Continue(self):
+        if self.animation_history is not None:
+              self.animation_history.DoAll()
 	self.DB.doTrace = 0
 	self.mode = 1
 
     def Trace(self):
-	self.mode = 2 
+        if self.animation_history is not None:
+              self.animation_history.DoAll()
+        self.mode = 2 
 	self.DB.doTrace = 1
 
+    def Replay(self):
+	#self.GUI.CmdStep()
+        if self.animation_history is not None:
+            self.animation_history.DoAll()
+            self.animation_history.Replay()
+
+    def Undo(self):
+	#self.GUI.CmdStep()
+        if self.animation_history is not None:
+            self.animation_history.Undo()
+
+    def Do(self):
+	#self.GUI.CmdStep()
+        if self.animation_history is not None:
+            self.animation_history.Do()    
+            
     def ClearBreakpoints(self):
 	""" Clear all breakpoints """
 	for line in self.breakpoints:

@@ -94,7 +94,6 @@ class GraphDisplay:
 	self.update()
 	self.graphInformer = None
 	self.clickhandler = None
-        self.lastAnimation = []
         self.highlightedPath = {}
         self.ReadConfiguration()
 
@@ -589,27 +588,6 @@ class GraphDisplay:
 				      fill=color)
         return da
 
-    ############################################################################
-    #				       
-    # Animation history
-    #
-    def animate(self,elem_type, elem, canvas_elem):
-        self.lastAnimation = [elem_type, elem, canvas_elem]
-
-    def animateVertex(self, vertex, draw_vertex):
-        self.animate('vertex', vertex, draw_vertex)
-
-    def animateEdge(self, edge, draw_edge):
-        self.animate('edge', edge, draw_edge)
-    
-    def highlightLastAnimation(self, dummy):
-        if self.lastAnimation is not None:
-            if self.lastAnimation[0] == 'vertex':
-                self.BlinkVertex(self.lastAnimation[1],'yellow')
-            else:
-                self.BlinkEdge(self.lastAnimation[1][0], self.lastAnimation[1][1],'yellow')
-               
-
 
     ############################################################################
     #				       
@@ -629,7 +607,6 @@ class GraphDisplay:
 	    self.canvas.itemconfig( self.drawLabel[v], fill=self.cLabelDefault)
 	self.canvas.itemconfig( self.drawVertex[v], fill=color)
 	self.update()
-        self.animateVertex(v, self.drawVertex[v])
 
 
     def GetVertexColor(self,v):
@@ -650,7 +627,6 @@ class GraphDisplay:
 	    for v in vertices:
 		self.canvas.itemconfig(self.drawVertex[v], fill=color)            
 	self.update()        
-        self.lastAnimation = []
         
 	
     def SetAllEdgesColor(self,color,graph=None, leaveColors = None):
@@ -668,7 +644,6 @@ class GraphDisplay:
                 if leaveColors == None or not (self.GetEdgeColor(e[0],e[1]) in leaveColors):
                     self.SetEdgeColor(e[0],e[1],color)
 	self.update()
-        self.lastAnimation = []
 
 
     def SetEdgeColor(self, tail, head, color):
@@ -683,7 +658,6 @@ class GraphDisplay:
 		de = self.drawEdges[(head,tail)]	    
 	self.canvas.itemconfig( de, fill=color)
 	self.update()
-        self.animateEdge((tail,head), de)
 
 
     def GetEdgeColor(self, tail, head):
@@ -708,7 +682,6 @@ class GraphDisplay:
 	    self.canvas.after(gBlinkRate)
 	    self.canvas.itemconfig( dv, fill=oldColor)
 	    self.update()
-        self.animateVertex(v, self.drawVertex[v])
 
 
     def BlinkEdge(self, tail, head, color=None):
@@ -732,7 +705,6 @@ class GraphDisplay:
 	    self.canvas.after(gBlinkRate)
 	    self.canvas.itemconfig( de, fill=oldColor)
 	    self.update()
-        self.animateEdge((tail, head), de)
 
     def Blink(self, list, color=None):
 	""" Blink all edges or vertices in list with color.
@@ -767,7 +739,12 @@ class GraphDisplay:
 	    self.update()
 		
 
-
+    def GetVertexFrameWidth(self,v):
+	""" Get the width of the black frame of a vertex"""
+       	dv = self.drawVertex[v]
+ 	return (float(self.canvas.itemcget(dv, "width")) * 100.0) /  self.zoomFactor
+        
+	
     def SetVertexFrameWidth(self,v,val):
 	""" Set the width of the black frame of a vertex to val """
 	dv = self.drawVertex[v]
@@ -776,8 +753,13 @@ class GraphDisplay:
 	self.update()
 	self.canvas.itemconfig(dv, outline = "black", width=(val * self.zoomFactor) / 100.0)
         self.update()
-        self.animateVertex(v, dv)
-        
+
+
+    def GetVertexAnnotation(self,v):
+ 	if not self.vertexAnnotation.QDefined(v):
+            return ""
+        else:
+            return self.canvas.itemcget(self.vertexAnnotation[v],"text")
 
     def SetVertexAnnotation(self,v,annotation,color="black"):
 	""" Add an annotation to v. Annotations are displayed to the left and
@@ -793,7 +775,6 @@ class GraphDisplay:
 				   text=annotation,
 				   fill=color)
 	    self.update()
-        self.animateVertex(v, self.drawVertex[v])
       
 
     def SetEdgeAnnotation(self,tail,head,annotation,color="black"):
@@ -811,7 +792,7 @@ class GraphDisplay:
 				   text=annotation,
 				   fill=color)
 	    self.update()
-        self.animateEdge((tail, head), self.drawEdges[(tail,head)])
+
 
     def UpdateVertexLabel(self, v, blink=1, color=None):
 	""" Visualize the changing of v's label. After changing G.labeling[v],
@@ -837,7 +818,6 @@ class GraphDisplay:
 				    font=self.font(self.zFontSize),
 				    text=self.Labeling[v])
 	    self.update()
-        self.animateVertex(v, self.drawVertex[v])
            
 	
     def UpdateInfo(self, neuText):

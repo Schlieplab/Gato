@@ -35,6 +35,7 @@
 ################################################################################
 
 from Tkinter import *
+import time
 
 def gatoPath():
     """ Returns the path to the directory containint Gato.py or Gred.py """
@@ -106,6 +107,38 @@ class MethodLogger:
     def caller(self,*args):
 	print self.methodName,"(",args,")"
 	return apply(self.method,args)
+
+
+
+class TimedMethodLogger:
+    """ Provide logging of method calls with parameters 
+        E.g., for regression testing
+
+	XXX specify output channel (or do it via redirect ?)
+    """
+
+    def __init__(self, object):
+	self.object = object
+        self.tml_calls = []
+        self.tml_log_method_names = ['SetEdgeColor','SetVertexColor']
+        self.tml_log_method_argnr = {'SetEdgeColor':2,
+                                     'SetVertexColor':1}
+        
+
+    def __getattr__(self,arg):
+	self.methodName = arg
+	self.method = getattr(self.object,arg)
+	return getattr(self,'caller')
+
+    def caller(self,*args):
+        if self.methodName in self.tml_log_method_names:
+            i = self.tml_log_method_argnr[self.methodName]
+            self.tml_calls.append( (time.time(), self.methodName, tuple(args[0:i])) + args[i:])
+            print self.tml_calls[-1]
+	return apply(self.method,args)
+
+    def getLog(self):
+        return self.tml_calls
 
 
 class ImageCache:

@@ -35,7 +35,7 @@
 ################################################################################
 # Take current snapshot of Gato and 
 #
-#   1) place executable distribution in ~gato/Gato
+#   1) place executable distribution in ~/tmp/Gato
 #
 #   2) put tar-archives into $(WWWDIR)
 #
@@ -49,38 +49,30 @@
 VERSION       = 0.98M
 DATE          = 10/21/2004
 DISTNAME      = Gato
-DISTNAMEMAC   = $(DISTNAME)-Mac
 DISTNAMEDOC   = $(DISTNAME)-Doc
 
 # Source directories
 
-SRCDIR        = /homes/schliep/Src/Gato
+SRCDIR        = /home/schliep/Src/Gato
 DOCSRCDIR     = ./Doc
 
 # Distribution directories
 
-GATODIR       = /homes/gato/
+GATODIR       = /home/schliep/tmp/
 EXECDIR       = $(GATODIR)/Gato
-MACDIR        = $(GATODIR)/Gato-Mac
-WWWDIR        = $(GATODIR)/pub/Download
-DOCDIR        = $(GATODIR)/pub/Documentation
+WWWDIR        = $(GATODIR)/Download
+DOCDIR        = $(GATODIR)/Documentation
 
 # Tools
 
-PERL          = /zpr/gnu/bin/perl
-RM            = /usr/bin/rm -rf
-MD5SUM        = /zpr/gnu/bin/md5sum
+PERL          = perl
+RM            = rm -rf
+MD5SUM        = md5sum
 
 DOCTOOL       = happydoc -t Gato -d $(DOCSRCDIR)
 
 VERSIONIZE    = $(PERL) -pi -e "s/_VERSION_/$(VERSION)/" 
 DATEIZE       = $(PERL) -pi -e "s|_BUILDDATE_|$(DATE)|" 
-#COPYRIGHTIZE  = $(PERL) -pi -e "s|_COPYRIGHT_|$(CRNOTICE)|" 
-MACIFY        = $(PERL) -pi -e "s/\n/\x0D/"
-UNMACIFY      = $(PERL) -pi -e "s/\x0D/\n/g"
-
-#CRNOTICE     = `cat $(SRCDIR)/COPYRIGHT`
-
 
 SOURCES	      = AnimatedAlgorithms.py \
 		AnimatedDataStructures.py \
@@ -108,8 +100,6 @@ SOURCES	      = AnimatedAlgorithms.py \
 		TextTreeWidget.py \
 		TreeWidget.py
 
-
-
 LICENCE       = LGPL.txt
 
 EXECUTABLES   = $(EXECDIR)/Gato.py \
@@ -123,14 +113,14 @@ GRAPHS        = sample.cat
 PHONY:
 	mkGatoIcons.pl Icons/*.gif
 	# 1) place executable distribution in ~gato/Gato
-	chmod -f 664 $(EXECDIR)/*.* 
+	#chmod -f 664 $(EXECDIR)/*.* 
 	$(RM) $(EXECDIR)/*.*
 	cp $(SOURCES) $(ALGORITHMS) $(GRAPHS) $(LICENCE) $(EXECDIR)
 	chmod 664 $(EXECDIR)/*.*
 	$(VERSIONIZE) $(EXECDIR)/*.*
 	$(DATEIZE) $(EXECDIR)/*.*
 	#$(COPYRIGHTIZE) $(EXECDIR)/*.*
-	chgrp -f catbox $(EXECDIR)/*.*
+	chgrp -f algogrp $(EXECDIR)/*.*
 	chmod 664 $(EXECDIR)/*.*
 	chmod 775 $(EXECUTABLES)
 
@@ -139,42 +129,35 @@ PHONY:
 	cd $(GATODIR);tar cf $(WWWDIR)/$(DISTNAME)-$(VERSION).tar Gato/*
 	chmod 664 $(WWWDIR)/$(DISTNAME)-$(VERSION).tar
 
-	# Create Mac-version
-	cd $(EXECDIR); cp -f *.py *.alg *.pro *.cat *.txt $(MACDIR)
-	#cd $(EXECDIR); cp -f *.py *.txt *.gif $(MACDIR)
-	$(MACIFY) $(MACDIR)/*.py $(MACDIR)/*.txt $(MACDIR)/*.alg $(MACDIR)/*.pro $(MACDIR)/*.cat 
-	chmod 664 $(MACDIR)/*.*
-	chgrp -f catbox $(MACDIR)/*
-	$(RM) $(WWWDIR)/$(DISTNAMEMAC)-$(VERSION).tar
-	cd $(GATODIR); tar cf $(WWWDIR)/$(DISTNAMEMAC)-$(VERSION).tar Gato-Mac/*
-	chmod 664 $(WWWDIR)/$(DISTNAMEMAC)-$(VERSION).tar
-	
 	# 3) change ~gato/pub/Beta/build.info
 	cp -f build.info $(WWWDIR)
 	$(VERSIONIZE) $(WWWDIR)/build.info
 	$(DATEIZE) $(WWWDIR)/build.info
-	$(PERL) -pi -e 's/_DISTNAME_/$(DISTNAME)-$(VERSION).tar/' $(WWWDIR)/build.info
-	$(PERL) -pi -e 's/_DISTNAMEMAC_/$(DISTNAMEMAC)-$(VERSION).tar/' $(WWWDIR)/build.info
-	$(PERL) -pi -e 's/_DISTNAMEDOC_/$(DISTNAMEDOC)-$(VERSION).tar/' $(WWWDIR)/build.info
+	$(PERL) -pi -e 's/_DISTNAME_/$(DISTNAME)-$(VERSION).tar.gz/' $(WWWDIR)/build.info
+	$(PERL) -pi -e 's/_DISTNAMEDOC_/$(DISTNAMEDOC)-$(VERSION).tar.gz/' $(WWWDIR)/build.info
 	# update lizenz.txt
 	chmod 664 $(WWWDIR)/build.info
-	chgrp -f catbox $(WWWDIR)/*
+	chgrp -f algogrp $(WWWDIR)/*
 
 	# 4) update and distribute documentation
-	cd $(SRCDIR); $(DOCTOOL) .
+	cd $(SRCDIR); rm -rf $(DOCSRCDIR); mkdir $(DOCSRCDIR); $(DOCTOOL) .
 	cp -rf $(DOCSRCDIR)/*.html $(DOCDIR)/Internal/
 	chmod -Rf g+r $(DOCDIR)/Internal/*
 	chmod -Rf a+r $(DOCDIR)/Internal/*
-	chgrp -Rf catbox $(DOCDIR)/*
+	chgrp -Rf algogrp $(DOCDIR)/*
 	$(RM) $(DOCDIR)/$(DISTNAMEDOC)-$(VERSION).tar
 	cd $(SRCDIR); tar cf $(WWWDIR)/$(DISTNAMEDOC)-$(VERSION).tar Doc/*
 	chmod 664 $(WWWDIR)/$(DISTNAMEDOC)-$(VERSION).tar
-	chgrp -f catbox $(WWWDIR)/$(DISTNAMEDOC)-$(VERSION).tar
+	chgrp -f algogrp $(WWWDIR)/$(DISTNAMEDOC)-$(VERSION).tar
+
+	gzip $(WWWDIR)/$(DISTNAMEDOC)-$(VERSION).tar
+	gzip $(WWWDIR)/$(DISTNAME)-$(VERSION).tar
 
 	# 5) Update md5 info
 	$(RM)  $(WWWDIR)/md5.info
-	$(MD5SUM) $(WWWDIR)/$(DISTNAME)-$(VERSION).tar > $(WWWDIR)/md5.info
-	$(MD5SUM) $(WWWDIR)/$(DISTNAMEMAC)-$(VERSION).tar >> $(WWWDIR)/md5.info
-	$(MD5SUM) $(WWWDIR)/$(DISTNAMEDOC)-$(VERSION).tar >> $(WWWDIR)/md5.info
+	$(MD5SUM) $(WWWDIR)/$(DISTNAME)-$(VERSION).tar.gz > $(WWWDIR)/md5.info
+	$(MD5SUM) $(WWWDIR)/$(DISTNAMEDOC)-$(VERSION).tar.gz >> $(WWWDIR)/md5.info
 	chmod 664 $(WWWDIR)/md5.info
-	chgrp -f catbox $(WWWDIR)/md5.info	
+	chgrp -f algogrp $(WWWDIR)/md5.info	
+
+	scp $(WWWDIR)/$(DISTNAME)-$(VERSION).tar.gz $(WWWDIR)/$(DISTNAMEDOC)-$(VERSION).tar.gz $(WWWDIR)/md5.info $(WWWDIR)/build.info gato.sf.net:pub-gato/Download/
