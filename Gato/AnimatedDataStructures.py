@@ -7,7 +7,7 @@
 #	file:   AnimatedDataStructures.py
 #	author: Alexander Schliep (schliep@molgen.mpg.de)
 #
-#       Copyright (C) 1998-2003, Alexander Schliep, Winfried Hochstaettler and 
+#       Copyright (C) 1998-2004, Alexander Schliep, Winfried Hochstaettler and 
 #       ZAIK/ZPR, Universitaet zu Koeln
 #                                   
 #       Contact: schliep@molgen.mpg.de, wh@zpr.uni-koeln.de             
@@ -255,19 +255,20 @@ class AnimatedVertexLabeling(VertexLabeling):
 	- cInitial if val = 0,None,gInfinity
 	- "blue" else """
 
-    def __init__(self, theAnimator, initial=0):
+    def __init__(self, theAnimator, initial=0, color="blue"):
 	""" theAnimator will usually be the GraphDisplay(Frame/Toplevel) 
             initial is the value to cause coloring in cInitial """
 	VertexLabeling.__init__(self)
 	self.Animator = theAnimator
 	self.initial=initial
+        self.color = color
 
     def __setitem__(self, v, val):
 	VertexLabeling.__setitem__(self, v, val)
 	if val == self.initial or val == None or val == gInfinity:
 	    self.Animator.SetVertexColor(v,cInitial)
 	else:
-	    self.Animator.SetVertexColor(v,"blue") #cVisited)
+	    self.Animator.SetVertexColor(v,self.color)
 
 
 class AnimatedSignIndicator:
