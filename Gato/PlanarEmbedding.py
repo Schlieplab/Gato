@@ -404,22 +404,50 @@ class pe_Graph:
     # EDGE LABELLING 
     #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     # Algorithm:
-    # 
+    # In triangle V1, V2, V3 (canonical order)
+    #     label V3->V1 with 1
+    #     label V3->V2 with 2
     #
-    #
-    #
-    #
-    #
-    #
+    # For k from 3 to n-1   
+    #     add Vk+1 to graph Gk
+    #     find all Vk+1's neighbours in Gk in order
+    #     label the left most edge from top to bottom with 1
+    #     label the right most edge from top to bottom with 2
+    #     label the rest from bottom to top with 3
     #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     #-------------------------------------------------------------------------
-
+    def labelling(self):
+	self.initLabel()
+	#steps
+	for k in range(3,len(self.nodes)):
+	    self.labelK=k
+	    self.labelStep()
+	    # looking for v4, v5, ..., vn
     #-------------------------------------------------------------------------
 
 
     #-------------------------------------------------------------------------
+    # label  label if the edge is indexP1 -> indexP2
+    #       -label if the edge is indexP2 -> indexP1
+    def labelEdge(self,indexP1,indexP2,label):
+	e=self.edges[0]
 
+	if e.p1==indexP1 and e.p2==indexP2:
+	    self.edges[0].label=label
+	    return
+	if e.p1==indexP2 and e.p2==indexP1:
+	    self.edges[0].label=-label 
+	    return
+
+	for i in range(1,len(self.edges)):
+	    e=self.edges[i]
+	    if e.p1==indexP1 and e.p2==indexP2:
+		e.label=label
+		return
+	    if e.p1==indexP2 and e.p2==indexP1:
+		e.label=-label
+		return
     #-------------------------------------------------------------------------
 
 
@@ -437,7 +465,62 @@ class pe_Graph:
 
 
     #-------------------------------------------------------------------------
+    def initLabel(self):
+	for j in range(0,len(self.edges)):
+	    self.edges[j].label=0
+             
+	self.indexV3=self.findIndexOfVk(3)
 
+	# find v1, v2, v3
+	v1=self.nodes[self.indexV1]
+	v2=self.nodes[self.indexV2]
+	v3=self.nodes[self.indexV3]
+
+	# labelling should be done at the same time as FPP is running
+	# (because we need the outface information)
+	# but we are doing this separately, for the sak of clearness
+
+	# label V3 -> V1 by 1
+	self.labelEdge(self.indexV3,self.indexV1,1)
+
+	# label V3 -> V2 by 2
+	self.labelEdge(self.indexV3,self.indexV2,2)
+	   
+	self.labelK = 3
+    #-------------------------------------------------------------------------
+
+
+    #-------------------------------------------------------------------------
+    def labelStep(self):
+	k=self.labelK
+	n=len(self.nodes)
+	   
+	if k<n:
+	    indexVkplus1=self.findIndexOfVk(k+1)
+	    vkplus1=self.nodes[indexVkplus1]
+
+	    # labelling should be done at the same time as FPP is running
+	    # (because we need the outface information)
+	    # case 1: vk+1 is "to the right" of vk
+	    # case 2: vk+1 is "to the left" of vk
+	    # case 3: vk+1 "covers" vk
+	    # all make the first element in Vk+1's oppositeNodes label 1, 
+	    #   	   last                                        2,
+	    #  		   rest        	   			       3.
+	    # oppositeNodes is done in FPP
+
+	    first=vkplus1.oppositeNodes[0]
+	    self.labelEdge(indexVkplus1,first,1)
+
+	    last=vkplus1.oppositeNodes[-1]
+	    self.labelEdge(indexVkplus1,last,2)
+
+	    if len(vkplus1.oppositeNodes)>2:
+		for l in range(1,len(vkplus1.oppositeNodes)-1):
+		    self.labelEdge(indexVkplus1,vkplus1.oppositeNodes[l],-3)
+
+	    self.labelK=self.labelK+1
+	return self.labelK
     #-------------------------------------------------------------------------
     
     #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -600,34 +683,200 @@ class pe_Graph:
     # SCHNYDER
     #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     # Algorithm:
-    #
-    #
-    #
-    #
-    #
-    #
-    #
+    # 4. Calculate for each interior vertex v
+    #              pathi : vertices on the i-path from v to v1, v2, or vn
+    #              pn : number of vertices on the i-path starting at v
+    #              ti : number of vertices in the subtree of Ti rooted at v
+    #              ri : number of vertices in region Ri(v) for v
+    # 5. Calculate barycentric representation for each v: vi'=ri - pi-1
+    #                                            v->(v1',v2',v3')/(n-1)
+    #    A barycentric representation of a graph G is 
+    #    an injective function v->(v1,v2,v3) that satisfies:
+    #      a.) v1+v2+v3=1 for all v
+    #      b.) for each edge (x,y) and each vertex z not x or y,
+    #          there is some k (k=1,2 or 3) such that xk < zk and yk < zk   
     #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     #-------------------------------------------------------------------------
+    def calculateP(self,path123):
+	for i in range(0,len(self.nodes)):
+	    v=self.nodes[i] 
+	    finalNode=0
 
+	    if (v.canOrder!=1 and v.canOrder!=2 and 
+		v.canOrder!=len(self.nodes)):
+		# v is an interior vertex
+		if path123==1:
+		    v.p1=1
+		    v.path1.append(i)
+		    finalNode=1
+		if path123==2:
+		    v.p2=1
+		    v.path2.append(i)
+		    finalNode=2
+		if path123==3:
+		    v.p3=1
+		    v.path3.append(i)
+		    finalNode=len(self.nodes)
+
+		vNext=v
+		while vNext.canOrder!=finalNode:
+		    j=0
+		    found=0
+		    while (not(found) and j<len(vNext.adjacentEdges)):
+			curEdge=self.edges[vNext.adjacentEdges[j]]
+			curLabel=curEdge.label
+
+			if ( ((curLabel==path123) and 
+			      (curEdge.p1==self.nodes.index(vNext))) or 
+			     ((curLabel==-path123) and
+			      (curEdge.p2==self.nodes.index(vNext))) ):
+			    found=1
+			    vNextIndex=vNext.adjacentNodes[j]
+			    vNext=self.nodes[vNextIndex]
+
+			    if path123==1:
+				v.p1=v.p1+1
+		 	  	v.path1.append(vNextIndex)
+			    if path123==2:
+		          	v.p2=v.p2+1
+		 	  	v.path2.append(vNextIndex)
+			    if path123==3:
+		          	v.p3=v.p3+1
+		 	  	v.path3.append(vNextIndex)
+			j=j+1
     #-------------------------------------------------------------------------
 
 
     #-------------------------------------------------------------------------
-
+    def traverse(self,label,v,count):
+	for j in range(0,len(v.adjacentEdges)):
+	    curEdge=self.edges[v.adjacentEdges[j]]
+	    curLabel=curEdge.label
+	    if ( ((curLabel==-label) and 
+		  (curEdge.p1==self.nodes.index(v))) or
+		 ((curLabel==label) and
+		  (curEdge.p2==self.nodes.index(v))) ):
+		vNextIndex=v.adjacentNodes[j]
+		vNext=self.nodes[vNextIndex]
+		count=count+1
+		count=self.traverse(label,vNext,count)
+	return count
     #-------------------------------------------------------------------------
 
 
     #-------------------------------------------------------------------------
+    def Schnyder(self):
+	# we need to compute p1, p2, p3 and t1, t2, t3 and
+	# r1, r2, r3 for each vertex
 
-    #-------------------------------------------------------------------------
+	# Initialize the data
+	for i in range(0,len(self.nodes)):
+	    tempnn1=self.nodes[i]
+	    tempnn1.p1=0
+	    tempnn1.p2=0
+	    tempnn1.p3=0
+	    tempnn1.t1=0
+	    tempnn1.t2=0
+	    tempnn1.t3=0
+	    tempnn1.r1=0
+	    tempnn1.r2=0
+	    tempnn1.r3=0
+	    tempnn1.xsch=0
+	    tempnn1.ysch=0
+	    tempnn1.path1=[]
+	    tempnn1.path2=[]
+	    tempnn1.path3=[]
+
+	# find those for v1, v2, and vn
+	v1=self.nodes[self.indexV1]
+	v2=self.nodes[self.indexV2]
+	vn=self.nodes[self.indexVn]
+	v1.t1=0; v1.t2=1; v1.t3=1;
+	v2.t1=1; v2.t2=0; v2.t3=1;
+	vn.t1=1; vn.t2=1; vn.t3=0;
+	v1.p1=0; vn.p1=1;
+	v2.p2=0; vn.p2=1;
+
+	v1.xsch=len(self.nodes)-1; v1.ysch=0;
+	v2.xsch=0; v2.ysch=len(self.nodes)-1;
+	vn.xsch=0; vn.ysch = 0;
 
 
-    #-------------------------------------------------------------------------
+	# can we get p1/p2/p3 while doing ordering or labelling???
+	# Not really!!! We cannot get p3 easily
 
-    #-------------------------------------------------------------------------
+	# calculate p1, p2, p3 by going through path1, path2, path3
+	self.calculateP(1)
+	self.calculateP(2)
+	self.calculateP(3)
+
+	# calculate t1, t2, t3
+	# exterior vertices are done in ordering
+	# for each interior vertex v
+	for i in range(0,len(self.nodes)):
+	    v=self.nodes[i]
+
+	    if (v.canOrder!=1 and v.canOrder!=2 and
+		v.canOrder!=len(self.nodes)):
+		# v is an interior vertex
+		v.t1=self.traverse(1,v,1) # Itself is in the subtree
+		v.t2=self.traverse(2,v,1) # Itself is in the subtree
+		v.t3=self.traverse(3,v,1) # Itself is in the subtree
+
+	# calculate r1, r2, r3
+	# we need 3 vectors in each vertex to store the path 1,2,3
+	# v.ri = ti of all vertices on P(i+1)+ti of all vertices on P(i-1)-ti
+	for i in range(0,len(self.nodes)):
+	    v=self.nodes[i]
+
+	    if (v.canOrder!=1 and v.canOrder!=2 and
+		v.canOrder!=len(self.nodes)):
+		# v is an interior vertex
+		v.r1=0; v.r2=0; v.r3=0;
+
+		# r1
+		for j in range(0,len(v.path2)):
+		    onPath=self.nodes[v.path2[j]]
+		    v.r1=v.r1+onPath.t1
+		for j in range(0,len(v.path3)):
+		    onPath=self.nodes[v.path3[j]]
+		    v.r1=v.r1+onPath.t1
+		v.r1=v.r1-v.t1
+
+		# r2
+		for j in range(0,len(v.path1)):
+		    onPath=self.nodes[v.path1[j]]
+		    v.r2=v.r2+onPath.t2
+		for j in range(0,len(v.path3)):
+		    onPath=self.nodes[v.path3[j]]
+		    v.r2=v.r2+onPath.t2
+		v.r2=v.r2-v.t2
+
+		# r3
+		for j in range(0,len(v.path1)):
+		    onPath=self.nodes[v.path1[j]]
+		    v.r3=v.r3+onPath.t3
+		for j in range(0,len(v.path2)):
+		    onPath=self.nodes[v.path2[j]]
+		    v.r3=v.r3+onPath.t3
+		v.r3=v.r3-v.t3
+
     
+	# The coordinates of each vertex is (v'1, v'2), 
+	# where v'i = ri - p(i-1)
+	# exterior vertices are done in ordering
+	# for each interior vertex v
+	for i in range(0,len(self.nodes)):
+	    v=self.nodes[i]
+
+	    if (v.canOrder!=1 and v.canOrder!=2 and
+		v.canOrder!=len(self.nodes)):
+		# v is an interior vertex
+		v.xsch=(v.r1-v.p3)
+	   	v.ysch=(v.r2-v.p1)
+    #-------------------------------------------------------------------------
+
     #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     
@@ -725,7 +974,7 @@ def FPP_PlanarEmbedding(theGraphEditor): # (2n-4)*(n-2) GRID
 
 
     #-------------------------------------------------------------------------
-    # REDRAW THE GRAPH
+    # MOVE VERTICES
     n=len(graph.nodes)
     for i in range(0,n):
         xCoord=graph.nodes[i].xfpp*float(900/(2*n-4))+50
@@ -738,7 +987,64 @@ def FPP_PlanarEmbedding(theGraphEditor): # (2n-4)*(n-2) GRID
 
 
 #=============================================================================#
-def Schnyder_PlanarEmbedding(self): # (n-1)*(n-1) GRID
-    pass
-        
+def Schnyder_PlanarEmbedding(theGraphEditor): # (n-1)*(n-1) GRID
+# Algorithm: 
+# 1. Triangulate orginal graph
+# 2. Canonical order all vertices
+# 3. Normal label interior edges of G to i->Ti (i=1,2,3)
+# 4. Calculate for each interior vertex v
+#              pathi : vertices on the i-path from v to v1, v2, or vn
+#              pn : number of vertices on the i-path starting at v
+#              ti : number of vertices in the subtree of Ti rooted at v
+#              ri : number of vertices in region Ri(v) for v
+# 5. Calculate barycentric representation for each v: vi'=ri - pi-1
+#                                            v->(v1',v2',v3')/(n-1)
+#    A barycentric representation of a graph G is 
+#    an injective function v->(v1,v2,v3) that satisfies:
+#      a.) v1+v2+v3=1 for all v
+#      b.) for each edge (x,y) and each vertex z not x or y,
+#          there is some k (k=1,2 or 3) such that xk < zk and yk < zk       
+
+    #-------------------------------------------------------------------------
+    # LOAD GRAPH
+    graph=load_graph(theGraphEditor.G)
+    if graph==0: return
+    #-------------------------------------------------------------------------
+
+
+    #-------------------------------------------------------------------------
+    # 1.TRIANGULATION
+    graph.triangulate()
+    #-------------------------------------------------------------------------
+
+
+    #-------------------------------------------------------------------------
+    # 2.CANONICAL ORDERING
+    graph.initOrder()
+    graph.ordering()
+    #-------------------------------------------------------------------------
+
+
+    #-------------------------------------------------------------------------
+    # 3. EDGE LABELLING 
+    graph.FPP() # outfaces
+    graph.labelling()
+    #-------------------------------------------------------------------------
+
+
+    #-------------------------------------------------------------------------
+    # 4+5. Schnyder
+    graph.Schnyder()
+    #-------------------------------------------------------------------------
+
+
+    #-------------------------------------------------------------------------
+    # MOVE VERTICES
+    n=len(graph.nodes)
+    for i in range(0,n):
+        xCoord=graph.nodes[i].xsch*float(900/(n-1))+50
+        yCoord=1000-(graph.nodes[i].ysch*float(900/(n-1))+50)
+        theGraphEditor.MoveVertex(theGraphEditor.G.vertices[i],xCoord,yCoord,1)
+    #-------------------------------------------------------------------------
+            
 #=============================================================================#
