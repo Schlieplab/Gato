@@ -1,3 +1,21 @@
+################################################################################
+#
+#       This file is part of Gato (Combinatorial Algorithm Toolbox) 
+#       version _VERSION_ from _BUILDDATE_. You can find more information at 
+#       http://www.zpr.uni-koeln.de/~gato
+#
+#	file:   PlanarityTest.py
+#	author: Ramazan Buzdemir
+#
+#       _COPYRIGHT_
+#
+#       This file is version $Revision$ 
+#                       from $Date$
+#             last change by $Author$.
+#
+################################################################################
+
+
 ###############################################################################
 ###############################################################################
 ###############################################################################
