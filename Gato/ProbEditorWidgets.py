@@ -22,8 +22,12 @@ import ProbEditorBasics
 
 class tab_frame(Tkinter.Frame):
     """
+    tabbed widgets
     """
     def tab_selected(self,event):
+        """
+        event handler for tabs
+        """
         selected_item=event.widget.find_withtag(Tkinter.CURRENT)[0]
         selected_tags=event.widget.gettags(selected_item)
         tab_name=filter(lambda t: t[:4]=='tab_',selected_tags)[0][9:]
@@ -32,6 +36,19 @@ class tab_frame(Tkinter.Frame):
             self.change_tab(key)
 
     def change_tab(self,key):
+        """
+        process of changing:
+        
+        - lifts actual tab
+        
+        - changes color of previous tab to background
+        
+        - actual tab is marked white
+
+        - releases (forget) previous widget
+
+        - pack actual widget
+        """
         # change tabs
         if self.actual_tab!=None:
             poly_list=self.tabs.find_withtag(\
@@ -56,7 +73,16 @@ class tab_frame(Tkinter.Frame):
         self.actual_tab=key
 
     def __init__(self,master,widget_dict,start=None,**config):
-        Tkinter.Frame.__init__(self,master)
+        """
+        init frame, containing:
+
+        - tabbs
+        
+        - frame with fixed width, height for switched widgets
+
+        size from slaves is not propagated
+        """
+        Tkinter.Frame.__init__(self,master,config)
 
         self.lower()
         self.tabs=Tkinter.Canvas(self,height=25,highlightthickness=0)
@@ -118,16 +144,23 @@ class tab_frame(Tkinter.Frame):
         self.container.pack(side=Tkinter.TOP,expand=1,fill=Tkinter.BOTH)
 
 #####################################################################################
+
 class flyout_decoration:
     """
-    only on canvas
+    works only with canvas derivatives
     """
     def __init__(self,info_function):
-        # prepare bindings
+        """
+        prepare bindings and store info-function
+        """
         self.info_function=info_function
+        # prepare bindings
         self.add_bindings(info_function)
 
     def add_bindings(self,info_function):
+        """
+        add bindings to canvas-items with 'flyout_info' tag
+        """
         items=self.find_withtag(Tkinter.ALL)
         # init status
         self.flyout_stat=0
@@ -140,18 +173,10 @@ class flyout_decoration:
             self.tag_bind(item,'<Motion>',self.flyout_delay_start,'+')
             self.tag_bind(item,'<Leave>',self.flyout_leave,'+')
 
-    def create_bar_flyouts(self,prob_dict):
-        self.flyout_stat=0
-        self.after_id=0
-        for key in prob_dict.keys():
-            items=self.find_withtag('tag_'+key)
-            if len(items)==0: continue
-            item=filter(lambda i,s=self:s.type(i)=='rectangle',items)
-            self.tag_bind(item,'<Enter>',self.flyout_enter)
-            self.tag_bind(item,'<Motion>',self.flyout_delay_start)
-            self.tag_bind(item,'<Leave>',self.flyout_leave)
-
     def flyout_enter(self,event):
+        """
+        a item is entered, initialise status
+        """
         # stat:
         # 0 no timer set, no flyout, after motion =>1
         # 1 timer set, no flyout, after motion =>1, no motion =>2
@@ -162,6 +187,15 @@ class flyout_decoration:
         self.after_id=0
 
     def flyout_leave(self,event):
+        """
+        the item is left:
+        
+        - cancel timer
+        
+        - hide flyout
+        
+        - reset status
+        """
         if self.flyout_stat==1:
             self.after_cancel(self.after_id)
         if self.flyout_stat==2:
@@ -169,6 +203,16 @@ class flyout_decoration:
         self.flyout_stat=0
 
     def flyout_delay_start(self,event):
+        """
+        mouse move over item:
+
+        - store item
+
+        - evtl. hide flyout and cancel previous timer
+        
+        - start new timer for move-timeout
+
+        """
         item=self.find_withtag(Tkinter.CURRENT)[0]
         if self.flyout_stat==1:
             # moved again, no flyout set
@@ -181,10 +225,18 @@ class flyout_decoration:
         self.after_id=self.after(1000,self.flyout_delay_end,item,event.x,event.y)
 
     def flyout_delay_end(self,item,x,y):
+        """
+        after-event handler:
+        
+        no move occured, we can create a flyout
+        """
         self.flyout_stat==2
         self.flyout_show(item,x,y)
 
     def flyout_show(self,item,x,y):
+        """
+        create the flyout, get info text from 'info_function'
+        """
         self.flyout_stat=2
         text_x=self.canvasx(x)+15
         text_y=self.canvasy(y)+15
@@ -195,6 +247,9 @@ class flyout_decoration:
         self.lift(text_item)
 
     def flyout_hide(self):
+        """
+        destroy flyout, reset state
+        """
         self.flyout_stat=0
         flyout_elements=self.find_withtag('flyout')
         for element in flyout_elements:
@@ -203,8 +258,13 @@ class flyout_decoration:
 ######################################################################################
 
 class bar_chart_y(Tkinter.Canvas,flyout_decoration):
-
+    """
+    
+    """
     def __init__(self,master,prob_dict,keys,colors,report_func=None):
+        """
+        
+        """
         self.max_value=0.0
         for k in keys:
             if prob_dict[k]>self.max_value:
