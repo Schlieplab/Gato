@@ -1,8 +1,8 @@
 ################################################################################
 #
-#       This is part of Gato (Graph Animation Toolbox) 
+#       This file is part of Gato (Graph Animation Toolbox) 
 #       version _VERSION_ from _BUILDDATE_. You can find more information at 
-#       http://www.zpr.uni-koeln.de/Gato
+#       http://www.zpr.uni-koeln.de/~gato
 #
 #	file:   Graph.py
 #	author: Alexander Schliep (schliep@zpr.uni-koeln.de)

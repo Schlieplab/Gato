@@ -11,8 +11,8 @@
 
 # Vars
 
-VERSION       = 0.87
-DATE          = 3/24/1999
+VERSION       = 0.87B
+DATE          = 3/25/1999
 DISTNAME      = Gato
 DISTNAMEMAC   = $(DISTNAME)-Mac
 DISTNAMEDOC   = $(DISTNAME)-Doc
@@ -32,12 +32,12 @@ RM            = /usr/bin/rm -rf
 
 VERSIONIZE    = $(PERL) -pi -e "s/_VERSION_/$(VERSION)/" 
 DATEIZE       = $(PERL) -pi -e "s|_BUILDDATE_|$(DATE)|" 
-COPYRIGHTIZE  = $(PERL) -pi -e "s/_COPYRIGHT_/$(CRNOTICE)/" 
+COPYRIGHTIZE  = $(PERL) -pi -e "s|_COPYRIGHT_|$(CRNOTICE)|" 
 MACIFY        = $(PERL) -pi -e "s/\n/\x0D/"
 UNMACIFY      = $(PERL) -pi -e "s/\x0D/\n/g"
 
-COPYRIGHT     = $(SRCDIR)/COPYRIGHT
-include $(COPYRIGHT)
+CRNOTICE     = `cat $(SRCDIR)/COPYRIGHT`
+#include $(COPYRIGHT)
 
 
 SOURCES	      = AnimatedAlgorithms.py \

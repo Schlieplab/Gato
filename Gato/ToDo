@@ -10,8 +10,6 @@ Einordnen:
 
 * Sortieren Algorithmen/Graphen Kapitelweise
 
-* BFS vergessen hast, die Wurzel am Anfang zu markieren
-
 * ADORN (visually keeping track of *the* active vertex)
 
 
@@ -47,8 +45,6 @@ Specific Algorithms:
 Editor:
 ----------------------------------------------------------------
 
-- Randomize Edge weights 
-
 - Q: global grab for edge weight dialog ?
 
 - How to prevent user from editing first weight in Euclidean graphs
@@ -57,7 +53,7 @@ Editor:
   Change grid size s.t. divisible by zoom factors: Use the supplied
   conversion to obtain grid point 
 
-- Add vertex weight, vertex label, vertex annotation, edge annotation 
+- Add vertex label, vertex annotation, edge annotation 
   support (editing in Dialog, Display File I/O)
 
 - Toggle visibility of: vertex number, vertex label, vertex annotation, 
