@@ -934,10 +934,10 @@ class GraphDisplay:
 	outVertices = self.G.OutNeighbors(v)[:] # Need a copy here
 	inVertices = self.G.InNeighbors(v)[:]
 	for w in outVertices:
-	    self.DeleteEdge(v,w)
+	    self.DeleteEdge(v,w,0)
 	for w in inVertices:
 	    if w != v: # We have already deleted loops
-		self.DeleteEdge(w,v)
+		self.DeleteEdge(w,v,0)
 	#del(self.G.adjLists[v]) # XXX
 	# and finally the vertex itself
 	self.G.vertices.remove(v) # XXX
@@ -965,9 +965,9 @@ class GraphDisplay:
 	    return
 
 
-    def DeleteEdge(self,tail,head):
+    def DeleteEdge(self,tail,head,repaint=1):
 	""" *Internal* Delete edge (tail,head) """ 
-	# print "Removing edge (",tail,",",head,")"
+	#print "Removing edge (",tail,",",head,")"
 	self.canvas.delete(self.drawEdges[(tail,head)])
 	# if (tail,head) has an annotation delete it
 	if self.edgeAnnotation.QDefined((tail,head)):
@@ -975,7 +975,7 @@ class GraphDisplay:
 	    del(self.edgeAnnotation.label[(tail,head)])
 	del(self.drawEdges.label[(tail,head)]) # XXX
 	self.G.DeleteEdge(tail,head)
-	if self.directed == 1 and tail in self.G.adjLists[head]: 
+	if repaint and self.directed == 1 and tail in self.G.adjLists[head]:
 	    # i.e. parallel edge
 	    oldColor = self.canvas.itemconfig(self.drawEdges[(head,tail)],
 					      "fill")[4] # Should call GetEdgeColor
