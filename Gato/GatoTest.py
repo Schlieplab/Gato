@@ -18,6 +18,7 @@
 from Gato import *
 
 testPath = "../CATBox/"
+testAchim
 
 tests = [ ("04-MinimalSpanningTrees/Prim.alg",
 	   "04-MinimalSpanningTrees/MinimalSpanningTrees08.cat"),
