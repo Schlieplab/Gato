@@ -51,7 +51,9 @@ class pie_editor(ProbEditorWidgets.scroll_canvas,ProbEditorBasics.emission_edito
             self.pie.update_position(self.data.emissions,self.data.order_list)
 
 class combined_editor(ProbEditorWidgets.scroll_canvas,ProbEditorBasics.emission_editor):
-
+    """
+    combines pie chart and bar chart
+    """
     def __init__(self,master,emissions):
         ProbEditorBasics.emission_editor.__init__(self,emissions)
         ProbEditorWidgets.scroll_canvas.__init__(self,master,bg='white')
@@ -92,18 +94,23 @@ class combined_editor(ProbEditorWidgets.scroll_canvas,ProbEditorBasics.emission_
 
     def body(self,master):
 
-        self.key_list1=[]
-        self.key_list2=[]
+        # sort for small quantities (i.e. <0.05 of sum)
+        self.key_list1=[] # big ones
+        self.sum1=0
+        self.key_list2=[] # small ones
+        self.sum2=0
         for k in self.data.order_list:
             value=self.data.emissions[k]
-            if value>0.05:
+            if value>0.05*self.data.emissions.sum:
                 self.key_list1.append(k)
+                self.sum1+=value
             else:
                 self.key_list2.append(k)
+                self.sum2+=value
 
-        # Ist ein Bar-Chart auch nötig?
+        # is Bar-Chart really necessary ?
         if len(self.key_list1)+len(self.key_list2)<5 or len(self.key_list2)<2:
-            # trennen in große und kleine Wkten hat keinen Sinn
+            # put them together again
             self.key_list1=self.data.order_list
             self.key_list2=[]
             
@@ -135,8 +142,8 @@ class combined_editor(ProbEditorWidgets.scroll_canvas,ProbEditorBasics.emission_
             bar_window=master.create_window(0,300,
                                             anchor=Tkinter.NW,
                                             window=self.bars,
-                                            width=bars_size[2],
-                                            height=bars_size[3])
+                                            width=400,
+                                            height=bars_size[3]+30)
         else:
             # only pie
             self.pie=ProbEditorWidgets.e_pie_chart(self,

@@ -369,12 +369,12 @@ class bar_chart_y(Tkinter.Canvas,flyout_decoration):
         """
         
         """
-        self.max_value=0.0
+        self.max_value=0
+        self.max_key=None
         for k in keys:
             if prob_dict[k]>self.max_value:
                 self.max_value=prob_dict[k]
-
-        print keys,prob_dict # XXX bei Zustand 2,3  wird nur ein Teil der keys uebergeben
+                self.max_key=k
 
         self.bar_step=30
         self.bar_width=20
@@ -382,7 +382,10 @@ class bar_chart_y(Tkinter.Canvas,flyout_decoration):
         self.x_margin=10
         self.y_margin=10
         self.bar_length=350
-        self.bar_factor=self.bar_length/self.max_value
+        if self.max_value!=0:
+            self.bar_factor=self.bar_length/self.max_value
+        else:
+            self.bar_factor=1.0
         Tkinter.Canvas.__init__(self,
                                 master,
                                 bg='white',
@@ -452,7 +455,7 @@ class bar_chart_y(Tkinter.Canvas,flyout_decoration):
         for k in dict.keys():
             if dict[k]>self.max_value:
                 max_value=dict[k]
-                max_key=k #XXX dict[k]
+                max_key=k
         return (max_key,max_value)
 
     def get_bar_values(self,key_list=None):
@@ -498,18 +501,19 @@ class bar_chart_y(Tkinter.Canvas,flyout_decoration):
             if actual_values[key]>self.max_value:
                 self.max_value=actual_values[key]
                 self.max_key=key
-        # set bar length (if necessary)
+        # expand bars (if necessary, fix to 100)
         if width!=None:
             self.bar_length=width-self.text_length-2*self.x_margin
         if self.bar_length<100:
             self.bar_length=100
         # decide to change scale
-        if self.max_value>self.bar_length/self.bar_factor or \
-           self.max_value<self.bar_length/self.bar_factor/2.0:
-            # scale change
-            self.bar_factor=self.bar_length/self.max_value
-            if self.report_func!=None:
-                self.report_func('scale change',None,None)
+        if self.max_value*self.bar_factor>self.bar_length or \
+           self.max_value*self.bar_factor<self.bar_length/2.0:
+            # scale change, if it is rational
+            if self.max_value!=0:
+                self.bar_factor=self.bar_length/self.max_value
+                if self.report_func!=None:
+                    self.report_func('scale change',None,None)
         else:
             # no scale change
             actual_values=prob_dict
@@ -1312,7 +1316,8 @@ class e_pie_chart(pie_chart):
 
 
     def init_handles(self):
-        sectors=self.find_withtag('sector')
+        sectors=list(self.find_withtag('sector'))
+        sectors.reverse()
         for sector in sectors:
             coords=self.coords(sector)
             tag=filter(lambda t:t[:4]=='tag_' or t=='other',self.gettags(sector))
@@ -1329,7 +1334,8 @@ class e_pie_chart(pie_chart):
             self.tag_bind(oval,'<Button-1>',self.move_start)
 
     def update_handles(self):
-        sectors=self.find_withtag('sector')
+        sectors=list(self.find_withtag('sector'))
+        sectors.reverse()
         for sector in sectors:
             coords=self.coords(sector)
             tag=filter(lambda t:t[:4]=='tag_' or t=='other',self.gettags(sector))
