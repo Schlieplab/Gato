@@ -40,7 +40,7 @@ import xml.dom.minidom
 import EditObjectAttributesDialog
 from EditObjectAttributesDialog import EditObjectAttributesDialog, ValidatingString, ValidatingInt, ValidatingFloat, PopupableInt, Probability, DefaultedInt, DefaultedString
 
-from MapEditor import MapEditor
+from MapEditor import MapEditor, NamedCollectionEditor
 
 def typed_assign(var, val):
     result = type(var)(val)
@@ -76,6 +76,67 @@ def writeXMLData(XMLDoc, XMLNode, dataKey, XMLData):
     data.setAttribute('key', "%s" % dataKey)
     data.appendChild(XMLData)
     XMLNode.appendChild(data)
+
+
+
+class NamedDistributions:
+    def __init__(self, itsHMM):
+        self.initialize()
+        self.itsHMM = itsHMM
+
+    def initialize(self):
+        self.dist = {}
+        self.order = {}
+       
+    def addDistribution(self, name, order, p): 
+        self.dist[name] = p
+        self.order[name] = order
+
+    def deleteDistribution(self, name):
+        del self.dist[name]
+        del self.order[name]
+   
+    def fromDOM(self, XMLNode):
+        self.initialize()
+        datas = XMLNode.getElementsByTagName("hmm:background")
+        for data in datas:
+            dataKey = data.attributes['key'].nodeValue
+            dataOrder = data.attributes['order'].nodeValue
+            dataValue = ""
+            for child in data.childNodes:
+                dataValue += child.nodeValue
+            p = listFromCSV(dataValue, types.FloatType)
+            self.addDistribution(dataKey, dataOrder, p)
+
+    def toDOM(self, XMLDoc, XMLNode):
+        for name in self.dist.keys():
+            background_elem = XMLDoc.createElement("hmm:background")
+            background_elem.setAttribute('key', "%s" % name)
+            background_elem.setAttribute('order', "%s" % self.order[name])
+            if self.order[name] == 0:
+                contents = XMLDoc.createTextNode(csvFromList(self.dist[name]))
+            else:
+                 contents = XMLDoc.createTextNode(csvFromList(self.dist[name],
+                                                              self.itsHMM.hmmAlphabet.size()))               
+            background_elem.appendChild(contents)
+            XMLNode.appendChild(background_elem)
+
+    def editDistributions(self, master):        
+        editor = NamedCollectionEditor(master, self)
+
+    def names(self):
+        return self.dist.keys()
+
+    def add(self, name):
+        print "adding ", name
+
+    def delete(self, name):
+        print "adding ", name
+        
+    def edit(self, name):
+        print "adding ", name
+        
+
 
 class DOM_Map:
     def __init__(self):
@@ -122,7 +183,7 @@ class DOM_Map:
         for key in self.name.keys():
             symbol = XMLDoc.createElement("symbol")
             symbol.setAttribute('code', "%s" % key)
-            if self.hasDesc:
+            if self.hasDesc and self.desc[key] != "":
                 symbol.setAttribute('desc', "%s" % self.desc[key])
             writeContents(XMLDoc, symbol, "%s" % self.name[key])
             map.appendChild(symbol)
@@ -152,6 +213,24 @@ class DiscreteHMMAlphabet(DOM_Map):
     def size(self):
         return len(self.name.keys())
 
+    def edit(self, master):        
+        mapedit = MapEditor(master, [self.name], ['code','name'], [3,5])
+        print mapedit.result
+        if mapedit.result != None:
+            
+            new_keys = []
+            for (code_str, name) in mapedit.result:
+                code = int(code_str)
+                self.name[code] = name
+                self.name2code[name] = code
+                new_keys.append(code)
+            
+            for key in self.name.keys():
+                if key not in new_keys:
+                    del self.name2code[self.name[key]]
+                    del self.name[key] 
+                else:
+                    self.name2code[self.name[key]] = key
     
 class HMMClass(DOM_Map):
     def __init__(self):
@@ -212,8 +291,16 @@ class HMMState:
         self.tiedto.setDefault(1, '')
         self.desc = self.id
 
+        self.reading_frame = PopupableInt(-1)
+        code2name = {-1:'None', 0:'0', 1:'1', 2:'2'}
+        name2code = {'None':-1, '0':0, '1':1, '2':2}
+        self.reading_frame.setPopup(code2name, name2code, 4)
 
-    editableAttr = ['id', 'state_class', 'label', 'order', 'initial', 'tiedto']
+        self.duration = DefaultedInt()
+        self.duration.setDefault(1, 0)
+
+
+    editableAttr = ['id', 'state_class', 'label', 'order', 'initial', 'tiedto', 'reading_frame', 'duration']
     xmlAttr = editableAttr + ['ngeom', 'emissions']
 
 
@@ -252,14 +339,20 @@ class HMMState:
                 else:
                     self.tiedto = typed_assign(self.tiedto, dataValue.encode('ascii', 'replace'))
                     self.tiedto.useDefault = 0
-                    
-            elif  dataKey == 'ngeom':
+
+            elif dataKey == 'reading-frame':
+                self.reading_frame = typed_assign(self.reading_frame, int(dataValue))
+
+            elif dataKey == 'duration':
+                self.duration = typed_assign(self.duration, int(dataValue))
+                                    
+            elif dataKey == 'ngeom':
                 # We only use pos
                 pos = XMLNode.getElementsByTagName('pos')[0] # Just one pos ...                
                 self.pos = Point2D(float(pos.attributes['x'].nodeValue),
                                    float(pos.attributes['y'].nodeValue))
                 
-            elif  dataKey == 'emissions':
+            elif dataKey == 'emissions':
                 # collect all strings from childnodes
                 dataValue = ""
                 for child in data.childNodes:
@@ -288,6 +381,12 @@ class HMMState:
         if not self.order.useDefault:
             writeData(XMLDoc, node, 'order', self.order)
 
+        if self.reading_frame != -1:
+            writeData(XMLDoc, node, 'reading-frame', self.reading_frame)
+
+        if not self.duration.useDefault:
+            writeData(XMLDoc, node, 'duration', self.duration)
+           
         if not self.tiedto == '':
             writeData(XMLDoc, node, 'tiedto', self.tiedto)
         else:
@@ -334,6 +433,8 @@ class HMM:
         self.desc = ValidatingString()       
 
         self.state = {}
+
+        self.backgroundDistributions = NamedDistributions(self)
 
         if XMLFileName != None:
             self.OpenXML(XMLFileName)
@@ -553,8 +654,11 @@ class HMMEditor(SAGraphEditor):
 	self.graphMenu = Menu(self.menubar, tearoff=0)
 	self.graphMenu.add_command(label='Edit HMM', command=self.EditHMM)
 	self.graphMenu.add_command(label='Edit Class label', command=self.EditClassLabel)
+        # XXX Note if we change alphabet, we have to change all emissions 
+	#self.graphMenu.add_command(label='Edit Alphabet', command=self.EditAlphabet)
 	#self.graphMenu.add_command(label='Edit Emissions', command=self.EditEmissions)
 	self.graphMenu.add_command(label='Edit Prior', command=self.EditPrior)
+	self.graphMenu.add_command(label='Edit Background Distributions', command=self.EditBackgroundDistributions)
 	self.graphMenu.add_separator()
 	self.graphMenu.add_checkbutton(label='Grid', 
 						  command=self.ToggleGridding)	
@@ -731,6 +835,9 @@ class HMMEditor(SAGraphEditor):
 
     def EditClassLabel(self):
         self.HMM.hmmClass.edit(self)
+
+    def EditAlphabet(self):
+        self.HMM.hmmAlphabet.edit(self)
         
     def EditPrior(self):
 	if self.HMM.G.Order() == 0:
@@ -755,7 +862,9 @@ class HMMEditor(SAGraphEditor):
                 else:
                     state.initial = typed_assign(state.initial,
                                                  emission_probabilities[key] / emission_probabilities.sum)
-                
+    def EditBackgroundDistributions(self):
+        self.HMM.backgroundDistributions.editDistributions(self)
+    
     def AddVertexCanvas(self,x,y):
 	v = GraphDisplay.AddVertexCanvas(self, x, y)
         print "AddVertex at ",x,y

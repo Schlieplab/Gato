@@ -123,10 +123,12 @@ class MapEditor(tkSimpleDialog.Dialog):
             self.entryWidget[i].pack(padx=4, pady=3, side=LEFT)
         yanf.pack(expand=YES,fill=Y, side=TOP)
         yanf = Frame(frame)
-        addButton = Button(yanf, text='Add/Update', foreground='red', command=self.addMapItem)
-        addButton.pack(padx=4, pady=3, side=RIGHT)
         addButton = Button(yanf, text='Delete', foreground='red', command=self.deleteSelection)
         addButton.pack(padx=4, pady=3, side=RIGHT)
+        addButton = Button(yanf, text='Update', foreground='red', command=self.updateMapItem)
+        addButton.pack(padx=4, pady=3, side=RIGHT)
+        addButton = Button(yanf, text='Add', foreground='red', command=self.addMapItem)
+        addButton.pack(padx=6, pady=3, side=RIGHT)
         yanf.pack(expand=YES,fill=Y)
         frame.pack(expand=YES,fill=Y)
         outer_frame.pack(expand=YES,fill=BOTH)
@@ -143,11 +145,17 @@ class MapEditor(tkSimpleDialog.Dialog):
             mapItem += (self.entryWidget[i].get(),)
             self.entryWidget[i].delete(0,END)
 
+        self.mlb.insert(END, mapItem)
+
+    def updateMapItem(self):
+        mapItem = ()
+        for i in xrange(len(self.map_titles)):
+            mapItem += (self.entryWidget[i].get(),)
+            self.entryWidget[i].delete(0,END)
+
         if self.mlb.curselection() == self.lastSelection:
             self.mlb.delete(self.lastSelection)           
             self.mlb.insert(self.lastSelection, mapItem)
-        else:
-            self.mlb.insert(END, mapItem)
 
     def deleteSelection(self):
         self.mlb.delete(self.mlb.curselection())
@@ -164,6 +172,68 @@ class MapEditor(tkSimpleDialog.Dialog):
         for i in range(self.mlb.size()):
             self.result.append(self.mlb.get(i))
         print self.result
+        tkSimpleDialog.Dialog.ok(self, event)
+
+    
+class NamedCollectionEditor(tkSimpleDialog.Dialog):
+    """ Provide a simple editor to
+        - add items
+        - remove items
+        - edit items
+        in a NamedCollection (e.g. a dictionary). The NamedCollection is responsible
+        for supplying:
+        - add(name)
+        - delete(name)
+        - edit(name)
+        - names() the name initially listed
+        methods, which should being up UI for add/edit if necessary. """ 
+        
+    def __init__(self, master, collection):
+        self.collection = collection
+	tkSimpleDialog.Dialog.__init__(self, master, "CollectionEditor")
+
+    def body(self, master):
+        outer_frame = Frame(master, relief=SUNKEN, bd=2)
+
+        scrollbar = Scrollbar(outer_frame, orient=VERTICAL)
+        self.lb = Listbox(outer_frame, yscrollcommand=scrollbar.set)
+        scrollbar.config(command=self.lb.yview)
+        scrollbar.pack(side=RIGHT, fill=Y)
+        self.lb.pack(expand=YES, fill=BOTH)
+
+        for name in self.collection.names():
+            self.lb.insert(END, name)
+
+        yanf = outer_frame
+
+        addButton = Button(yanf, text='Delete', foreground='red', command=self.deleteItem)
+        addButton.pack(padx=4, pady=3, side=RIGHT)
+        addButton = Button(yanf, text='Edit', foreground='red', command=self.editItem)
+        addButton.pack(padx=4, pady=3, side=RIGHT)
+        addButton = Button(yanf, text='New', foreground='red', command=self.newItem)
+        addButton.pack(padx=4, pady=3, side=RIGHT)
+        self.nameEntry = Entry(yanf,width=20, exportselection=FALSE)
+        self.nameEntry.pack(padx=6, pady=3, side=RIGHT)
+        yanf.pack(expand=YES,fill=Y)
+        outer_frame.pack(expand=YES,fill=BOTH)
+            
+    def newItem(self):
+        name = self.nameEntry.get()
+        self.collection.add(name)
+        self.lb.insert(END, name)
+        
+    def editItem(self):
+        name = self.lb.curselection()
+        print name
+        self.collection.edit(name)
+        
+    def deleteItem(self):
+        name = self.lb.curselection()
+        print name
+        self.collection.delete(name)
+        self.lb.delete(self.lb.curselection())
+
+    def ok(self, event=None):
         tkSimpleDialog.Dialog.ok(self, event)
     
 

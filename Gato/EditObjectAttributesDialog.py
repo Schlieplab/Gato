@@ -154,8 +154,14 @@ class TkPopupSelector:
         self.pop2value = pop2value
         self.popupvalue = StringVar()
         self.popupvalue.set(self.pop2value.keys()[0]) # XXX first value as default 
-    
-        args = (master, self.popupvalue) + tuple(self.pop2value.keys())
+
+        # XXX Uuughhh
+        keys = self.value2pop.keys()
+        keys.sort()
+        pops = map(lambda x: value2pop[x], keys)
+        #print "pops=", pops
+        args = (master, self.popupvalue) + tuple(pops)
+            
         self.tkwidget = apply(OptionMenu, args)
         self.tkwidget.config(height=1, width=width)
 
