@@ -292,6 +292,11 @@ class HMMState:
             writeData(XMLDoc, node, 'tiedto', self.tiedto)
         else:
             if not self.order.useDefault and self.order > 0:
+                # XXX Produce uniform emission probs, if we dont have the correct number of
+                # parameters
+                size = self.itsHMM.hmmAlphabet.size()**(self.order+1)
+                if len(self.emissions) != size:
+                    self.emissions = [1.0/size] * size
                 writeData(XMLDoc, node, 'emissions', csvFromList(self.emissions,
                                                                  self.itsHMM.hmmAlphabet.size()))
             else:
@@ -398,67 +403,7 @@ class HMM:
 
     def SaveAs(self, fileName):
         self.WriteXML(fileName)
-	#file = open(fileName, 'w')
-   
 
-
-
-##class EditEmissionProbDialog(tkSimpleDialog.Dialog):
-
-##    def __init__(self, master, G):
-##	self.G = G
-##	tkSimpleDialog.Dialog.__init__(self, master, "Edit emission probabilities")
-  
-##    def body(self, master):
-##	self.resizable(0,0)	
-
-##	label = Label(master, text="Vertex", anchor=W)
-##	label.grid(row=0, column=0, padx=4, pady=3)
-
-##	n = self.G.NrOfVertexWeights()
-##	self.entry = {}
-
-##	for j in xrange(n):
-##	    label = Label(master, text="%d" % j, anchor=W)
-##	    label.grid(row=0, column=j+1, padx=4, pady=3)
-	    
-##	i = 0
-##	for v in self.G.vertices:
-##	    label = Label(master, text=self.G.labeling[v], anchor=W)
-##	    label.grid(row=i+1, column=0, padx=2, pady=1, sticky="e")
- 
-##	    for j in xrange(n):
-##		self.entry[(v,j)] = Entry(master, width=6, exportselection=FALSE)
-##		self.entry[(v,j)].insert(0,"%1.3f" % self.G.vertexWeights[j][v])
-##		self.entry[(v,j)].grid(row=i+1, column=j+1, padx=2, pady=1)
-
-##	    i = i + 1  
-
-
-##    def validate(self):
-##	for k in self.entry.keys():
-##	    try:
-##		val = string.atof(self.entry[k].get())
-##		#if val < 0.0 or val > 1.0:
-##	        #   raise ValueError
-##	    except ValueError:
-##		m = "Please enter a floating point number for probability of %d emitting %d" % (k[0],k[1]) 
-##		tkMessageBox.showwarning("Invalid Value", m, parent=self)
-##		self.entry[k].selection_range(0,"end")
-##		self.entry[k].focus_set()
-##		return 0
-	    
-##	for v in self.G.vertices:
-##	    sum = 0.0
-##	    for i in xrange(self.G.NrOfVertexWeights()):
-##		sum = sum + string.atof(self.entry[(v,i)].get())
-
-##	    for i in xrange(self.G.NrOfVertexWeights()):
-##		if sum < 0.000001: # Uniform distribution
-##		    self.G.vertexWeights[i][v] = 1.0 / self.G.NrOfVertexWeights()
-##		else:
-##		    self.G.vertexWeights[i][v] = string.atof(self.entry[(v,i)].get()) / sum
-##	return 1
 
 class HMMEditor(SAGraphEditor):
 
@@ -756,6 +701,7 @@ class HMMEditor(SAGraphEditor):
                 self.UpdateVertexLabel(v, 0)
                 self.HMM.id2index[self.HMM.state[v].id] = v
 
+                
 
     def EditHMM(self):
         d = EditObjectAttributesDialog(self, self.HMM, self.HMM.editableAttr['HMM'])
