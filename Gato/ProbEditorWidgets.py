@@ -1133,6 +1133,29 @@ class e_pie_chart(pie_chart):
         self.configure_description(self.current_arc1)
         self.configure_description(self.current_arc2)
 
+        # report move
+        tags=self.gettags(self.current_arc1)
+        tag1=filter(lambda tag: tag[:4]=='tag_' or tag=='other',tags)[0]
+        if tag1!='other':
+            key1=ProbEditorBasics.tag_to_key(tag1[4:])
+        else:
+            key1='other'
+        tags=self.gettags(self.current_arc2)
+        tag2=filter(lambda tag: tag[:4]=='tag_' or tag=='other',tags)[0]
+        if tag2!='other':
+            key2=ProbEditorBasics.tag_to_key(tag2[4:])
+        else:
+            key2='other'
+        value1=abs(float(self.itemcget(self.current_arc1,
+                                       'extent')))/360.0*self.ProbDict.sum
+        value2=abs(float(self.itemcget(self.current_arc2,
+                                       'extent')))/360.0*self.ProbDict.sum
+        report_dict={}
+        report_dict[key1]=value1
+        report_dict[key2]=value2
+        self.report_func('move value',report_dict)
+
+
     def move_end(self,event):
         # no events!
         self.unbind('<B1-Motion>')

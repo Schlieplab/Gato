@@ -319,33 +319,144 @@ class figure_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
         elif change.__class__==ProbEditorBasics.emission_change_order:
             self.update_position(change)
 
+
+######################################################################################
+
+class renorm(Tkinter.Frame,ProbEditorBasics.emission_editor):
+
+    def __init__(self,master,data):
+        """
+        Widget with text "renorm to " and field for entries
+        """
+
+        ProbEditorBasics.emission_editor.__init__(self,data)
+        Tkinter.Frame.__init__(self,master)
+        # create first text label
+        self.text1=Tkinter.Label(self,text='renorm to ')
+        
+        # create number-widget
+        self.entry_width=int(math.ceil(-math.log10(self.data.precision)))
+        self.sum=Tkinter.Entry(self,width=self.entry_width)
+        if self.data.fixed_sum>0:
+            sum_value=self.data.fixed_sum
+        else:
+            sum_value=self.data.emissions.sum
+        self.sum.insert(Tkinter.END,
+                        str(round(sum_value,self.entry_width)),
+                        )
+        
+        self.sum.bind('<Return>',self.renorm_return)
+
+        # create snd text label
+        self.text2=Tkinter.Label(self,text='keep const')
+
+        # create checkbutton
+        self.cb_stat=Tkinter.IntVar()
+        if self.data.fixed_sum>0:
+            self.cb_stat.set(1)
+        else:
+            self.cb_stat.set(0)
+        self.cb=Tkinter.Checkbutton(self,
+                                    command=self.renorm_const,
+                                    variable=self.cb_stat)
+
+        # pack together
+        self.text1.pack(side=Tkinter.LEFT)
+        self.sum.pack(side=Tkinter.LEFT)
+        self.text2.pack(side=Tkinter.LEFT)
+        self.cb.pack(side=Tkinter.LEFT)
+
+    def get_sum_value(self):
+        """
+        get valid value from Entry Widget or set to actual sum
+        """
+        text=self.sum.get()
+        try:
+            new_sum=eval('float('+text+')')
+            if new_sum<=0:
+                new_sum=self.data.emmissions.sum
+        except Exception, e:
+            # nothing happens
+            print e
+            new_sum=self.data.emmissions.sum
+            
+        self.sum.delete(0,Tkinter.END)
+        self.sum.insert(Tkinter.END,
+                        str(round(new_sum,self.entry_width)),
+                        )
+        return new_sum
+
+    def renorm_return(self,event):
+        """
+        do renorming of data
+        """
+
+        new_sum=self.get_sum_value()
+        if self.cb_stat.get()==1:
+            self.data.fixed_sum=new_sum
+        # if necessary, force change-report to all
+        if abs(self.data.emissions.sum-new_sum)>self.data.precision:
+                self.data.emissions.renorm_to(new_sum)
+                change=ProbEditorBasics.emission_change_data(self,
+                                                                 self.data,
+                                                                 self.data.emissions)
+                self.send_change(change)
+
+    def renorm_const(self):
+        """
+        switch constraint on/off
+        """
+        status=self.cb_stat.get()
+        if status==0:
+            self.data.fixed_sum=0
+        else:
+            self.data.fixed_sum=self.get_sum_value()
+            if abs(self.data.emissions.sum-self.data.fixed_sum)>self.data.precision:
+                self.data.emissions.renorm_to(self.data.fixed_sum)
+                change=ProbEditorBasics.emission_change_data(self,
+                                                             self.data,
+                                                             self.data.emissions)
+                self.send_change(change)
+
 ###################################################################################
 
 class emission_dialog(Tkinter.Toplevel,ProbEditorBasics.emission_editor):
 
     def __init__(self,parent,emissions,title):
+        """
+        the entire dialog
+        """
         Tkinter.Toplevel.__init__(self,parent)
         ProbEditorBasics.emission_editor.__init__(self,emissions)
         self.withdraw()
         self.title(title)
         self.emissions=emissions
 
-        w = Tkinter.Button(self, text="Quit", width=10, command=self.ok,
-                           default=Tkinter.ACTIVE)
-        self.bind("<Escape>", self.cancel)
-        self.initial_focus=w
+        f=Tkinter.Frame(self)
+        w1 = Tkinter.Button(self, text="ok", width=10, command=self.ok,
+                            default=Tkinter.ACTIVE)
+        w2 = Tkinter.Button(self, text="cancel", width=10, command=self.cancel,
+                            default=Tkinter.ACTIVE)
+        norm=renorm(self,emissions)
 
-        figures=figure_editor(self,self.emissions)
+        self.bind("<Escape>", self.cancel)
+
+        figures=figure_editor(f,self.emissions)
 
         tab_dict={}
         tab_dict['combined']=combined_editor(self,self.emissions)
         tab_dict['pie']=pie_editor(self,self.emissions)
         tab_dict['bars']=bar_editor(self,self.emissions)
         tab_dict['scaled bars']=scaled_bar_editor(self,self.emissions)
-        tabs=ProbEditorWidgets.tab_frame(self,tab_dict)
-        w.pack(side=Tkinter.BOTTOM, padx=5, pady=5)
+        tabs=ProbEditorWidgets.tab_frame(f,tab_dict)
         figures.pack(side=Tkinter.LEFT,fill=Tkinter.Y)
         tabs.pack(side=Tkinter.LEFT,expand=1,fill=Tkinter.BOTH)
+        
+        f.pack(side=Tkinter.TOP,expand=1,fill=Tkinter.BOTH)
+        w2.pack(side=Tkinter.LEFT, expand=1, padx=5, pady=5)
+        norm.pack(side=Tkinter.LEFT)
+        w1.pack(side=Tkinter.RIGHT, expand=1,padx=5, pady=5)
+        self.initial_focus=w1
 
         self.update_idletasks()
         self.deiconify()
@@ -355,6 +466,7 @@ class emission_dialog(Tkinter.Toplevel,ProbEditorBasics.emission_editor):
         self.destroy()
         
     def cancel(self,event=None):
+        # to do: hier fehlt noch die Zurücksetzung auf alte Werte
         self.destroy()
 
     def recieve_change(self,change):

@@ -91,6 +91,15 @@ class ProbDict(UserDict.UserDict):
     def __repr__(self):
         return repr([self.data,self.sum])
 
+    def renorm_to(self,sum):
+        "renorm all items to given argument"
+        self.__calc_sum__()
+        factor=sum/self.sum
+        for key in self.data.keys():
+            self.data[key]*=factor
+        self.__calc_sum__()
+
+
 #####################################################################################
 
 class emission_change:
@@ -121,7 +130,7 @@ class emission_change_color(emission_change):
 
 class emission_change_order(emission_change):
     """
-    only color is changed
+    only order is changed
     """
     
     def __init__(self,sender,data,order_list):
@@ -133,7 +142,7 @@ class emission_change_order(emission_change):
 
 class emission_change_data(emission_change):
     """
-    only color is changed
+    only data are changed
     """
 
     def __init__(self,sender,data,dict):
@@ -148,11 +157,19 @@ class emission_change_data(emission_change):
 class emission_data:
     """
     emission data and display data shared by many editors
+    contains:
+
+    - probabilities in ProbDict
+
+    - precision
+
+    - constraints to sum (self.fixed_sum<=0: no constraints)
     """
     def __init__(self,emissions):
         self.viewer_list=[]
         self.emissions=emissions
         self.precision=1e-7
+        self.fixed_sum=1.0
         self.color_list=['red','green','yellow','blue','black',
                          'grey','orange','pink','gold','brown',
                          'tan','purple','magenta','firebrick','deeppink',
@@ -170,10 +187,20 @@ class emission_data:
         return i
 
     def recieve_change(self,change):
-        # inform all but calling viewer about changes
-        for v in self.viewer_list:
-            if change.sender!=v:
+
+        if self.fixed_sum<=0 or abs(self.fixed_sum-self.emissions.sum)<self.precision:
+            # inform all but calling viewer about changes
+            for v in self.viewer_list:
+                if change.sender!=v:
+                    v.recieve_change(change)
+        else:
+            # renorm the entries
+            self.emissions.renorm_to(self.fixed_sum)
+            change.dict=self.emissions.data
+            # inform all about changes
+            for v in self.viewer_list:
                 v.recieve_change(change)
+                    
 
 #####################################################################################
 
