@@ -11,8 +11,8 @@
 
 # Vars
 
-VERSION       = 0.98C
-DATE          = 04/02/2002
+VERSION       = 0.98F
+DATE          = 05/09/2003
 DISTNAME      = Gato
 DISTNAMEMAC   = $(DISTNAME)-Mac
 DISTNAMEDOC   = $(DISTNAME)-Doc
@@ -54,8 +54,10 @@ SOURCES	      = AnimatedAlgorithms.py \
 		Gato.py \
 		GatoConfiguration.py \
                 GatoDialogs.py \
+		GatoFile.py \
 		GatoGlobals.py \
 		GatoIcons.py \
+		GatoSystemConfiguration.py \
 		GatoTest.py \
 		GatoUtil.py \
 		Graph.py \
@@ -64,8 +66,11 @@ SOURCES	      = AnimatedAlgorithms.py \
 		GraphEditor.py \
 		GraphUtil.py \
 		Gred.py \
+		logging.py \
 		PlanarEmbedding.py \
-		PlanarityTest.py
+		PlanarityTest.py \
+		TextTreeWidget.py \
+		TreeWidget.py
 
 
 
@@ -116,14 +121,13 @@ PHONY:
 	$(PERL) -pi -e 's/_DISTNAMEMAC_/$(DISTNAMEMAC)-$(VERSION).tar/' $(WWWDIR)/build.info
 	$(PERL) -pi -e 's/_DISTNAMEDOC_/$(DISTNAMEDOC)-$(VERSION).tar/' $(WWWDIR)/build.info
 	# update lizenz.txt
-	cp -f Lizenz.txt  $(WWWDIR)
-	chmod 644 $(WWWDIR)/Lizenz.txt
 	chmod 644 $(WWWDIR)/build.info
 	chgrp -f catbox $(WWWDIR)/*
 
 	# 4) update and distribute documentation
-	$(RM) $(DOCSRCDIR)/*.html
-	# doc.py cd $(DOCSRCDIR); $(DOCTOOL) $(SRCDIR)
+	# $(RM) $(DOCSRCDIR)/*.html
+	# doc.py 
+	# cd $(DOCSRCDIR); $(DOCTOOL) $(SRCDIR)
 	cd $(SRCDIR); $(DOCTOOL) .
 	cp -f $(DOCSRCDIR)/*.html $(DOCDIR)/Internal/
 	chmod -f g+r $(DOCDIR)/Internal/*
