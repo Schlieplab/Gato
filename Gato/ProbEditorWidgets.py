@@ -20,6 +20,109 @@ import math
 import Tkinter
 import ProbEditorBasics
 
+class scroll_canvas(Tkinter.Canvas):
+    """
+    should avoid resizing by adding or removing scrollbars in x or y-direction or both
+    """
+
+    def __init__(self,master,cnf={},**kw):
+                #hidden frame
+        self.hidden_frame=Tkinter.Frame(master)
+        self.hidden_frame.rowconfigure(0,weight=1)
+        self.hidden_frame.columnconfigure(0,weight=1)
+
+        cnf=Tkinter._cnfmerge((cnf,kw))
+        if not cnf.has_key('highlightthickness'):
+            cnf['highlightthickness']=0
+        Tkinter.Canvas.__init__(self,self.hidden_frame,cnf)
+
+        Tkinter.Canvas.grid(self,row=0,column=0,sticky=Tkinter.NSEW)
+        self.hidden_frame.bind('<Configure>',self.config_event)
+        # prepare scrollbars
+        self.sb_y=Tkinter.Scrollbar(self.hidden_frame,
+                                    orient=Tkinter.VERTICAL,
+                                    command=self.yview)
+        self.sb_x=Tkinter.Scrollbar(self.hidden_frame,
+                                    orient=Tkinter.HORIZONTAL,
+                                    command=self.xview)
+        Tkinter.Canvas.configure(self,
+                                 yscrollcommand=self.sb_y.set,
+                                 xscrollcommand=self.sb_x.set)
+
+    def config_event(self,event):
+        # returns empty list, if no scrollregion exists
+        scrollr=Tkinter.Canvas.cget(self,'scrollregion')
+        if scrollr:
+            # print "from config",scrollr
+            scrollr=map(int,scrollr.split())
+        else:
+            # print "from bbox"
+            scrollr=self.bbox(Tkinter.ALL)
+            self.configure(scrollregion=scrollr)
+##        print "event: widht %d, height %d"%(event.width,event.height)
+##        print "scrollregion: ",scrollr
+##        print "winfo: widht %d, height %d"%(self.c.winfo_width(),
+##                                            self.c.winfo_height())
+##        print "winfo req: widht %d, height %d"%(self.c.winfo_reqwidth(),
+##                                                self.c.winfo_reqheight())
+        if event.width>=(scrollr[2]-scrollr[0]):
+            # print "x_scrollbar away"
+            self.sb_x.grid_remove()
+        else:
+            # print "x_scrollbar needed"
+            self.sb_x.grid(row=1,column=0,sticky=Tkinter.EW)
+
+        if event.height>=(scrollr[3]-scrollr[1]):
+            # print "y_scrollbar away"
+            self.sb_y.grid_remove()
+        else:
+            # print "y_scrollbar needed"
+            self.sb_y.grid(row=0,column=1,sticky=Tkinter.NS)
+
+        # hidden definitions for geometry methods
+        
+    def pack_configure(self, cnf={}, **kw):
+        cnf=Tkinter._cnfmerge((cnf,kw))
+        return self.hidden_frame.pack(cnf)
+    pack = pack_configure
+
+    def pack_forget(self):
+        return self.hidden_frame.pack_forget()
+    forget = pack_forget
+
+    def pack_info(self):
+        return self.hidden_frame.pack_info()
+
+    def place_configure(self, cnf={}, **kw):
+        cnf=Tkinter._cnfmerge((cnf,kw))
+        return self.hidden_frame.place(cnf=cnf)
+    place = place_configure
+
+    def place_forget(self):
+        return self.hidden_frame.place_forget()
+    forget = place_forget
+
+    def place_info(self):
+        return self.hidden_frame.place_info()
+       
+    def grid_configure(self, cnf={}, **kw):
+        cnf=Tkinter._cnfmerge((cnf,kw))
+        print cnf
+        return self.hidden_frame.grid(cnf=cnf)
+    grid = grid_configure
+
+    def grid_forget(self):
+        return self.hidden_frame.grid_forget()
+    forget = grid_forget
+
+    def grid_info(self):
+        return self.hidden_frame.grid_info()
+
+    def grid_location(self, x, y):
+        return self.hidden_frame.grid_location(x,y)
+
+    location = grid_location
+
 class tab_frame(Tkinter.Frame):
     """
     tabbed widgets
@@ -67,8 +170,9 @@ class tab_frame(Tkinter.Frame):
         
         # change body
         if self.actual_tab!=None:
-            self.widget_dict[self.actual_tab].forget()
-        self.widget_dict[key].pack(side=Tkinter.BOTTOM,in_=self.container,
+            self.widget_dict[self.actual_tab].pack_forget()
+        self.widget_dict[key].pack(side=Tkinter.BOTTOM,
+                                   in_=self.container,
                                    expand=1,fill=Tkinter.BOTH)
         self.actual_tab=key
 
@@ -653,6 +757,9 @@ class scale(Tkinter.Canvas):
 class bar_chart_with_scale(Tkinter.Frame):
 
     def __init__(self,master,prob_dict,keys,colors,report_func):
+        """
+        glue scale and barchart together
+        """
         Tkinter.Frame.__init__(self,master)
         self.bars=e_bar_chart_y(self,prob_dict,keys,colors,self.bar_report)
         scale_start_x=self.bars.x_margin+self.bars.text_length
@@ -661,20 +768,36 @@ class bar_chart_with_scale(Tkinter.Frame):
         self.scale=scale(self,scale_start_x,factor,scale_max)
 
         self.report_func=report_func
-        scrollbar = Tkinter.Scrollbar(self,orient=Tkinter.VERTICAL,
-                                      command=self.bars.yview)
+        self.scrollbar = Tkinter.Scrollbar(self,orient=Tkinter.VERTICAL,
+                                           command=self.bars.yview)
         region=self.bars.bbox(Tkinter.ALL)
         sregion=(0,0,region[2],region[3])
         self.bars.config(scrollregion=sregion,
-                         yscrollcommand=scrollbar.set)
+                         yscrollcommand=self.scrollbar.set)
 
         empty=Tkinter.Frame(self,bg='white')
         self.scale.grid(column=0,row=0,sticky=Tkinter.E+Tkinter.W)
         self.bars.grid(column=0,row=1,sticky=Tkinter.E+Tkinter.W+Tkinter.N+Tkinter.S)
-        scrollbar.grid(column=1,row=1,sticky=Tkinter.N+Tkinter.S)
         empty.grid(column=1,row=0,sticky=Tkinter.E+Tkinter.W+Tkinter.N+Tkinter.S)
         Tkinter.Frame.columnconfigure(self,0,weight=1)
         Tkinter.Frame.rowconfigure(self,1,weight=1)
+        self.bind('<Configure>',self.config_event)
+
+    def config_event(self,event):
+        """
+        add or remove scrollbar
+        """
+        scrollr=self.bars.cget('scrollregion')
+        scrollr=map(int,scrollr.split())
+        # print "from config",scrollr
+        hier muesste noch ein config_scale rein
+        # self.scale.config_scale()
+        if event.height>=(scrollr[3]-scrollr[1]):
+            # print "y_scrollbar away"
+            self.scrollbar.grid_remove()
+        else:
+            # print "y_scrollbar needed"
+            self.scrollbar.grid(column=1,row=1,sticky=Tkinter.NS)
 
     def bar_report(self,what,key,value):
         if what=='move':
