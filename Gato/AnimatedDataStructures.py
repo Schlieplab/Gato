@@ -327,6 +327,20 @@ class AnimatedSubGraph(SubGraph):
 	 except NoSuchVertexError, NoSuchEdgeError:
 	     return
 
+    def Clear(self, color="grey"):
+	""" Delete all vertices and edges from the animated subgraph. 
+            and color them with 'color' (grey is default) """
+
+        # GraphDisplay functions save several update()'s
+        self.Animator.SetAllVerticesColor(color,self)
+        self.Animator.SetAllEdgesColor(color,self)
+
+	self.vertices         = [] 
+	self.adjLists         = {}
+	self.invAdjLists      = {}   # Inverse Adjazenzlisten
+	self.size = 0
+	self.totalWeight   = 0
+
 
     def AddEdgeByVertices(self,tail,head):
 	 try:

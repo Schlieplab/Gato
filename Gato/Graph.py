@@ -378,6 +378,15 @@ class SubGraph(Graph):
 	else:
 	    raise NoSuchEdgeError
 
+    def Clear(self):
+	""" Delete all vertices and edges from the subgraph. """
+	self.vertices         = [] 
+	self.adjLists         = {}
+	self.invAdjLists      = {}   # Inverse Adjazenzlisten
+	self.size = 0
+	self.totalWeight   = 0
+	
+
     def GetNextVertexID(self):
 	""" *Internal* safeguard """
 	print "Induced Subgraph -> GetNextVertexID should never have been called"
