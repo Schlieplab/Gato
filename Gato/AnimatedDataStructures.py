@@ -138,14 +138,15 @@ class AnimatedVertexQueue(Queue):
 	- cRemovedFromQueue if they have been on the queue and were
 	  removed """
 
-    def __init__(self, theAnimator):
+    def __init__(self, theAnimator, color=cOnQueue):
 	""" theAnimator will usually be the GraphDisplay(Frame/Toplevel) """
 	Queue.__init__(self)
 	self.Animator = theAnimator
-   
+	self.Color = color
+
     def Append(self,v):
 	Queue.Append(self,v)
-	self.Animator.SetVertexColor(v,cOnQueue)
+	self.Animator.SetVertexColor(v,self.Color)
 
     def Top(self):
 	v = Queue.Top(self)
@@ -166,14 +167,15 @@ class AnimatedVertexStack(Stack):
 	- cRemovedFromQueue if they have been on the queue and were
 	  removed """
 
-    def __init__(self, theAnimator):
+    def __init__(self, theAnimator, color=cOnQueue):
 	""" theAnimator will usually be the GraphDisplay(Frame/Toplevel) """
 	Stack.__init__(self)
 	self.Animator = theAnimator
-   
+	self.Color = color
+
     def Push(self,v):
 	Stack.Push(self,v)
-	self.Animator.SetVertexColor(v,cOnQueue)
+	self.Animator.SetVertexColor(v,self.Color)
 
     def Pop(self):
 	v = Stack.Pop(self)
