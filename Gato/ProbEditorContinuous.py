@@ -1,4 +1,20 @@
-#!/usr/bin/env python2.0
+#!/usr/bin/env python
+################################################################################
+#
+#       This file is part of Gato (Combinatorial Algorithm Toolbox) 
+#       version _VERSION_ from _BUILDDATE_. You can find more information at 
+#       http://www.zpr.uni-koeln.de/~gato
+#
+#	file:   ProbEditorContinuous.py
+#	author: Achim Gaedke (achim.gaedke@zpr.uni-koeln.de)
+#
+#       _COPYRIGHT_
+#
+#       This file is version $Revision$ 
+#                       from $Date$
+#             last change by $Author$.
+#
+################################################################################
 
 import math
 import Tkinter
@@ -212,6 +228,7 @@ class gauss_function(plot_object):
 class plot_canvas(Tkinter.Canvas):
 
     def __init__(self,master,**cnf):
+        cnf.update({'highlightthickness':0})
         Tkinter.Canvas.__init__(self,master,**cnf)
         self.configured=0
 
@@ -441,7 +458,7 @@ class gauss_editor(Tkinter.Frame):
         """
         Tkinter.Frame.__init__(self,master,cnf)
         self.plot_area=plot_canvas(self,bg='white')
-        self.edit_area=Tkinter.Canvas(self,bg='white')
+        self.edit_area=Tkinter.Canvas(self,bg='white',highlightthickness=0)
         self.edit_area.bind('<Configure>',self.configure_handles)
 
         self.plot_list=[]
@@ -453,8 +470,10 @@ class gauss_editor(Tkinter.Frame):
         self.plot_area.scale_x=50.0        
 
         d={}
+        color_list=['red','green','blue','yellow']
+
         for i in range(1,5):
-            o=gauss_function(mu=i*2.0,sigma=1.0,a=i/2.0,color='blue')
+            o=gauss_function(mu=i*2.0,sigma=1.0,a=i/2.0,color=color_list[i-1])
             self.plot_list.append(o)
             self.plot_area.add_plot_object(o)
             d[str(i)]=i/2.0
@@ -467,7 +486,7 @@ class gauss_editor(Tkinter.Frame):
         self.pie=ProbEditorWidgets.e_pie_chart(self,
                                                self.dict,
                                                self.dict.keys(),
-                                               ['red','green','blue','yellow'],
+                                               color_list,
                                                self.pie_report)
         self.pie.configure(width=400,height=400)
         self.plot_area.configure(width=550)

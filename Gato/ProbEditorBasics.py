@@ -16,7 +16,6 @@
 #
 ################################################################################
 
-
 import string
 
 def key_to_tag(key):
@@ -169,7 +168,7 @@ class emission_data:
         self.viewer_list=[]
         self.emissions=emissions
         self.precision=1e-7
-        self.fixed_sum=1.0
+        self.fixed_sum=0.0
         self.color_list=['red','green','yellow','blue','black',
                          'grey','orange','pink','gold','brown',
                          'tan','purple','magenta','firebrick','deeppink',
@@ -216,7 +215,8 @@ class emission_editor:
         self.data.remove_viewer(self)
 
     def recieve_change(self,change):
-        print 'recieved '+repr(change)
+        # print 'recieved '+repr(change)
+        pass
 
     def send_change(self,change):
         change.data.recieve_change(change)

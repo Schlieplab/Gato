@@ -530,11 +530,12 @@ class HMMEditor(SAGraphEditor):
                 e=ProbEditorBasics.emission_data(transition_probabilities)
                 d = ProbEditorDialogs.emission_dialog(self,
                                                       e,
-                                                      "trans. probs from %d" % tail)
-                # write back normalized probabilities
-                for key in transition_probabilities.keys():
-                    head = int(key[3:])
-                    self.HMM.G.edgeWeights[0][(tail,head)]=transition_probabilities[key]/transition_probabilities.sum
+                                                      "transition probs from state %d" % tail)
+                if d.success():
+                    # write back normalized probabilities
+                    for key in transition_probabilities.keys():
+                        head = int(key[3:])
+                        self.HMM.G.edgeWeights[0][(tail,head)]=transition_probabilities[key]/transition_probabilities.sum
 
 	    else: # We have a vertex
 		v = self.FindVertex(event)
@@ -556,11 +557,12 @@ class HMMEditor(SAGraphEditor):
                     e=ProbEditorBasics.emission_data(emission_probabilities)
                     d = ProbEditorDialogs.emission_dialog(self,
                                                           e,
-                                                          "emission probs from %d"%v)
-                    # write back normalized probabilities
-                    for key in emission_probabilities.keys():
-                        i = int(key[7:])
-                        self.HMM.G.vertexWeights[i][v]=emission_probabilities[key]/emission_probabilities.sum	
+                                                          "emission probs of state %d"%v)
+                    if d.success():
+                        # write back normalized probabilities
+                        for key in emission_probabilities.keys():
+                            i = int(key[7:])
+                            self.HMM.G.vertexWeights[i][v]=emission_probabilities[key]/emission_probabilities.sum	
 
     def EditEmissions(self):
 	d = EditEmissionProbDialog(self, self.HMM.G)

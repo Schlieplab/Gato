@@ -428,6 +428,7 @@ class emission_dialog(Tkinter.Toplevel,ProbEditorBasics.emission_editor):
         """
         Tkinter.Toplevel.__init__(self,parent)
         ProbEditorBasics.emission_editor.__init__(self,emissions)
+        self.status=''
         self.withdraw()
         self.title(title)
         self.emissions=emissions
@@ -464,10 +465,15 @@ class emission_dialog(Tkinter.Toplevel,ProbEditorBasics.emission_editor):
 
     def ok(self,event=None):
         self.destroy()
+        self.status='ok'
         
     def cancel(self,event=None):
         # to do: hier fehlt noch die Zurücksetzung auf alte Werte
         self.destroy()
+        self.status='cancel'
+
+    def success(self):
+        return self.status
 
     def recieve_change(self,change):
         pass
