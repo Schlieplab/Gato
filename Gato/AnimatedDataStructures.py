@@ -235,18 +235,18 @@ class AnimatedVertexLabeling(VertexLabeling):
 	else:
 	    self.Animator.SetVertexColor(v,"blue") #cVisited)
 
-class AnimatedSign:
-    """ Visualizes the sign of the vertex or edge:
+class AnimatedSignIndicator:
+    """ Visualizes sign of vertex or edge:
         weight > 0 : green
                = 0 : grey
                < 0 : red """
 
     def __init__(self,theAnimator):
         self.Animator = theAnimator
-        self.sign     = {}
+        self.weight   = {}
 
     def __setitem__(self, i, val):
-        self.sign[i] = val
+        self.weight[i] = val
         if type(i) == type(2): # vertex
             if val>0:
                 self.Animator.SetVertexColor(i,"green")
@@ -263,11 +263,13 @@ class AnimatedSign:
                 self.Animator.SetEdgeColor(i,"grey")
 
     def __getitem__(self, i):
-        return self.sign[i]
+        return self.weight[i]
 
 
 
 class AnimatedPotential:
+    """ Visualizes the potential from 0 (green) to
+         max (brown) of a vertex. """
     def __init__(self,max,theAnimator1,theAnimator2=None):
         self.pot      = {}
         self.max      = max
