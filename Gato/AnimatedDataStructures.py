@@ -43,17 +43,22 @@ class AnimatedNeighborhood:
 	#    doSomething
 	will color all edges cTraversedEdge unless the edge has been colored
 	'red' at some point
+
+        if a blinkColor is specified the edge will blink
 	"""
 
-    def __init__(self,theAnimator,G,v,leaveColors = []):	
+    def __init__(self,theAnimator,G,v,leaveColors = [],blinkColor=None):	
 	""" theAnimator will usually be the GraphDisplay(Frame/Toplevel) """
 	self.Animator = theAnimator
 	self.nbh = G.Neighborhood(v)
 	self.v = v
 	self.leaveColors = leaveColors
-	
+	self.blinkColor = blinkColor
+
     def __getitem__(self, i):
 	if i < len(self.nbh):
+	    if self.blinkColor != None:
+		self.Animator.BlinkEdge(self.v,self.nbh[i],self.blinkColor)
 	    c = self.Animator.GetEdgeColor(self.v,self.nbh[i])
 	    if c not in self.leaveColors:
 		self.Animator.SetEdgeColor(self.v,self.nbh[i],cTraversedEdge)

@@ -1,3 +1,6 @@
+* VertexLabel in weiss, wenn Knoten dunkel (alle Farben < 128 ???)
+
+================================================================================
 - breakPoints can only be at code lines (not blanks or comments-only lines)
 
 - Added "b" for toggling breakpoints
