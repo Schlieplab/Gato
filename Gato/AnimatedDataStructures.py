@@ -379,6 +379,8 @@ class AnimatedVertexQueue(Queue):
 	for v in self.contents:
 	    self.Animator.SetVertexColor(v, self.ColorOff)
 	Queue.Clear(self) 
+	if self.lastRemoved is not None:
+	    self.Animator.SetVertexFrameWidth(self.lastRemoved,gVertexFrameWidth)
 
 
 class AnimatedVertexStack(Stack):
@@ -576,25 +578,27 @@ class AnimatedPredecessor(VertexLabeling):
         - coloring edges (pred[v],v) 'grey' if the value of
 	  pred[v] is changed """
 
-    def __init__(self,theAnimator):
+    def __init__(self, theAnimator, leaveColors = None):
 	VertexLabeling.__init__(self)
 	self.Animator = theAnimator
+	self.leaveColors = leaveColors
 	
     def __setitem__(self, v, val):
 	try:
 	    oldVal = VertexLabeling.__getitem__(self, v)
 	    if oldVal != None:
-		self.Animator.SetEdgeColor(oldVal,v,"grey")
+                if self.leaveColors == None or not (self.Animator.GetEdgeColor(oldVal,v) in self.leaveColors):
+		    self.Animator.SetEdgeColor(oldVal,v,"grey")
 	except:
-	    i = 0 
+	    pass 
 	if val != None:
 	    try:
-	        self.Animator.SetEdgeColor(val,v,"red")
+	        if self.leaveColors == None or not (self.Animator.GetEdgeColor(val,v) in self.leaveColors):
+	            self.Animator.SetEdgeColor(val,v,"red")
             except:
-                None
+                pass
         VertexLabeling.__setitem__(self, v, val)
      
-
 
 class ComponentMaker:
     """ Subsequent calls of method NewComponent() will return differently
