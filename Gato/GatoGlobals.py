@@ -65,9 +65,11 @@ GraphNotSimpleError = 'GraphNotSimpleError'
 NoSuchVertexError   = 'NoSuchVertexError'
 NoSuchEdgeError     = 'NoSuchEdgeError'
 
-#             property     explanation
-gProperty = {'Connected': 'has more than one connected component',
-	     'Directed':  'edges are not directed'
+#             property       explanation
+gProperty = {'Connected':     'has more than one connected component',
+	     'Directed':      'edges are not directed'
+	     'EdgeWeights':   'not enough weights on the edges' 
+	     'VertexWeights': 'not enough weights on the vertices' 
 	     }
 
 
