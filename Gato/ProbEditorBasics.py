@@ -163,16 +163,21 @@ class emission_data:
     - precision
 
     - constraints to sum (self.fixed_sum<=0: no constraints)
+
+    - color index for each value
     """
-    def __init__(self,emissions):
+    def __init__(self,emissions, color_list=None):
         self.viewer_list=[]
         self.emissions=emissions
         self.precision=1e-7
         self.fixed_sum=0.0
-        self.color_list=['red','green','yellow','blue','black',
-                         'grey','orange','pink','gold','brown',
-                         'tan','purple','magenta','firebrick','deeppink',
-                         'lavender','NavajoWhite','seagreen','violet','LightGreen']
+        if color_list is None:
+            self.color_list=['red','green','yellow','blue','black',
+                             'grey','orange','pink','gold','brown',
+                             'tan','purple','magenta','firebrick','deeppink',
+                             'lavender','NavajoWhite','seagreen','violet','LightGreen']
+        else:
+            self.color_list=color_list
         self.order_list=emissions.keys()
         self.order_list.sort(emissions.cmp_prob_val)
 
