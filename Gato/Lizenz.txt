@@ -1,0 +1,130 @@
+Lizenzbedingungen
+
+CATBox ist urheberrechtlich geschützt ist (Copyright 1997-1998 ZPR,
+Universität zu Köln). Jede aufgrund des Urheberrechtsgesetzes oder der
+nachstehenden Vertragsbestimmungen nicht erlaubte Verwendung dieses
+Produkts kann und wird gesetzlich geahndet werden.
+
+Die Lizenzierung erfolgt, um Teilergebnisse der Entwicklungsarbeiten
+in Form von Software, Dokumentation und weiterführenden Unterlagen
+(nachfolgend zusammen "Material" genannt) Benutzern zur Evaluation
+und zur Erprobung zur Verfügung zu stellen.
+
+Das ZPR räumt als Lizenzgeber dem Benutzer
+
+  bis zum 31.12.1998 befristete Nutzungsrechte 
+
+ein, sofern der Benutzer folgende Überlassungsbedingungen anerkennt:
+
+1. Das Material wird dem Benutzer per Zugang zu der Webseite
+   http://www.zpr.uni-koeln.de/CATBox/Beta überlassen. Lizenzgebühren werden
+   nicht erhoben.
+
+   Der Benutzer darf das Material auf seinem privaten Rechner installieren.
+   In diesem Fall und insbesondere bei Installation auf Mehrbenutzermaschinen 
+   hat der Benutzer Sorge zu tragen, daß nur Lizenzempfänger Zugriff auf 
+   das Material haben.
+
+2. Alle Rechte an dem Material - im Original oder in Kopie - bleiben beim
+   Lizenzgeber. Dem Benutzer ist nicht gestattet, Schutzrechtsvermerke
+   bzw. sonstige Rechtsinhabervermerke des Lizenzgebers, die sich auf dem
+   Material befinden, zu entfernen.
+
+3. Der Benutzer erhält das nicht übertragbare und nicht ausschließliche
+   Recht das überlassene Material selbst zu nutzen. Eine weitergehende
+   Verwertung, insbesondere eine Modifizierung oder Weitergabe an Dritte
+   ist nicht gestattet. Das Anfertigen von Kopien, Abschriften oder
+   Vervielfältigungen des Materials ist ausschließlich für den eigenen
+   Gebrauch zulässig, sofern Schutzrechts- bzw. sonstige
+   Rechtsinhabervermerke unverändert beibehalten werden.
+   Erlaubt ist das Modifizieren und Erstellen von Algorithmen (*.alg-Dateien 
+   und *.pro-Dateien). 
+
+
+4. Der Benutzer haftet dem Lizenzgeber gegenüber für Schäden aufgrund
+   mißbräuchlicher Nutzung des Materials. Verstößt der Benutzer gegen eine
+   Bestimmung aus Nr. 2 Satz 2 oder Nr. 3 dieser Bedingungen, so kann der
+   Lizenzgeber das dem Benutzer eingeräumte Benutzungsrecht an dem Material
+   mit sofortiger Wirkung kündigen, ohne das hierdurch die übrigen
+   Bestimmungen dieser Überlassungsbedingungen berührt werden. Bei
+   Kündigung der Lizenz nach diesem Vertrag ist der Benutzer verpflichtet,
+   unverzüglich den Gebrauch des Materials und der Dokumentation
+   einzustellen; er muß diese und evtl. Abschriften oder Kopien gemäß
+   Ziffer 3 an den Lizenzgeber zurückgeben und ist verpflichtet, 
+   unverzüglich eine Bestätigung über die Beendigung der Benutzung
+   abzugeben.
+
+5. Der Benutzer verpflichtet sich, Erfahrungen bei der Anwendung des
+   Materials, die geeignet sind, Materialeigenschaften zu verbessern, von
+   sich aus dem ZPR (Email: catbox@zpr.uni-koeln.de) offen zu legen. 
+   Der Lizenzgeber erhält für sich und seine Lizenznehmer einschließlich der 
+   Benutzer im Anwenderkreis kostenlose Nutzungsrechte an diesen Erfahrungen.
+
+6. Das Material befindet sich noch in der Erprobungsphase. Der Benutzer
+   erkennt an, daß es sich bei dem Material um eine vorläufige Version
+   handelt, die Fehler enthalten kann, die vom Lizenzgeber nicht beseitigt
+   werden müssen. Der Lizenzgeber übernimmt keinerlei Gewährleistung
+   irgendeiner Art für die Benutzbarkeit des Materials oder seiner
+   Brauchbarkeit für irgendeinen Zweck.
+
+   Der Lizenzgeber ist auf keinen Fall verantwortlich für irgendwelche
+   Schäden, die aufgrund der Benutzung des Materials entstehen,
+   einschließlich von indirekten Schäden, z.B. durch Verlust oder
+   fehlerhafte Verarbeitung von Daten und empfiehlt dem Benutzer, geeignete
+   und angemessene Sicherheitsmaßnahmen zum Schutz seiner Daten vor
+   Zerstörung vorzusehen.
+
+7. Ein Anspruch auf Unterstützung zur Anwendung sowie auf zukünftige
+   Wartung besteht nicht.
+
+8. Der Benutzer erklärt sich damit einverstanden, daß im Zusammenhang mit
+   der Überlassung des Materials Daten über ihn maschinell gespeichert
+   werden.
+
+9. Der Benutzer ist nicht berechtigt vom Lizenzgeber überlassenes Material
+   zu exportieren.
+
+10.Für diesen Vertrag gilt ausschließlich das Recht der Bundesrepublik
+   Deutschland.
+
+11.Nach Ablauf der Frist muß alles Material unverzüglich von sämtlichen
+   Datenträgern gelöscht werden, außer es erfolgt eine schriftliche
+   Lizenzverlängerung seitens des Lizenzgebers.
+
+   Dieser Vertrag regelt abschließend alle Vereinbarungen zwischen
+   Lizenzgeber und Benutzer betreffend den Vertragsgegenstand. Änderungen
+   dieses Vertrages bedürfen der Schriftform; dies gilt auch für die
+   Änderung dieser Bestimmung zum Schriftformerfordernis. Dem Benutzer wird
+   aufgrund dieses Vertrags eine Zugangsberechtigung zu 
+   http://www.zpr.uni-koeln.de/CATBox/Beta zugeteilt.
+
+   Falls einzelne Bestimmungen unwirksam sind, sollen sie durch ihnen
+   sinngemäß nahekommende, wirksame Bestimmungen ersetzt werden. Die
+   Gültigkeit der übrigen Bestimmungen wird dadurch nicht berührt.
+
+
+Benutzer:     _______________________________
+
+
+Anschrift:    _______________________________
+
+Telefon:      _______________________________
+
+Email:        _______________________________
+
+Matrikel-Nr.  _______________________________
+
+
+Datum:        _______________________________
+
+Unterschrift: _______________________________
+
+
+
+
+
+
+
+
+
+

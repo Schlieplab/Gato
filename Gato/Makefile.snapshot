@@ -1,0 +1,138 @@
+# Take current snapshot of Gato and 
+#
+#   1) place executable distribution in ~gato/Gato
+#
+#   2) put tar-archives into $(WWWDIR)
+#
+#   3) change $(WWWDIR)/build.info
+#
+#
+#
+
+# Vars
+
+VERSION       = 0.86D
+DATE          = 3/22/1999
+DISTNAME      = Gato
+DISTNAMEMAC   = $(DISTNAME)-Mac
+
+# Directories
+
+SRCDIR        = /homes/schliep/Src/Gato
+EXECDIR       = /homes/gato/Gato
+MACDIR        = /homes/gato/Gato-Mac
+WWWDIR        = /homes/gato/pub/Download
+
+# Tools
+
+PERL          = /vol/gnu/bin/perl
+RM            = /usr/bin/rm -rf 
+
+VERSIONIZE    = $(PERL) -pi -e "s/_VERSION_/$(VERSION)/" 
+DATEIZE       = $(PERL) -pi -e "s|_BUILDDATE_|$(DATE)|" 
+COPYRIGHTIZE  = $(PERL) -pi -e "s/_COPYRIGHT_/$(CRNOTICE)/" 
+MACIFY        = $(PERL) -pi -e "s/\n/\x0D/"
+UNMACIFY      = $(PERL) -pi -e "s/\x0D/\n/g"
+
+COPYRIGHT     = $(SRCDIR)/COPYRIGHT
+include $(COPYRIGHT)
+
+
+SOURCES	      = AnimatedAlgorithms.py \
+		AnimatedDataStructures.py \
+		Gato.py \
+                GatoDialogs.py \
+		GatoGlobals.py \
+		GatoTest.py \
+		GatoUtil.py \
+		DataStructures.py \
+		Graph.py \
+		GraphDisplay.py \
+		GraphEditor.py \
+		GraphUtil.py \
+		gred.py \
+		catbox-splash.gif
+
+LICENCE       = Lizenz.txt
+
+EXECUTABLES   = $(EXECDIR)/Gato.py \
+		$(EXECDIR)/gred.py
+
+ALGORITHMS    =	BFS.alg BFS.pro \
+		BipartiteMatching.alg BipartiteMatching.pro \
+		DFS.alg DFS.pro \
+	        Dijkstra.alg Dijkstra.pro \
+		Findpath.alg Findpath.pro \
+		FindpathEuclid.alg FindpathEuclid.pro \
+		LabelCorrecting.alg LabelCorrecting.pro \
+		MaximalMatching.alg MaximalMatching.pro \
+		MFFordFulkerson.alg MFFordFulkerson.pro \
+		MFPreflowPush.alg MFPreflowPush.pro \
+		MFPreflowPush-NoResidual.alg MFPreflowPush-NoResidual.pro \
+		MSTGreedy.alg MSTGreedy.pro \
+		MSTGreedy1.alg MSTGreedy1.pro \
+		MSTPrim.alg MSTPrim.pro 
+
+
+GRAPHS        = cm.cat \
+		cmDir.cat \
+		cmNeg.cat \
+		cmNeg2.cat \
+		mf2.cat \
+		bipartite.cat \
+		bipartite2.cat \
+		bipartite2a.cat \
+		bipartite3.cat \
+		mfBig2.cat \
+		mfford-worstcase.cat \
+		mfpreflow-worstcase.cat
+
+PHONY:
+	# 1) place executable distribution in ~gato/Gato
+	chmod -f 600 $(EXECDIR)/*.* 
+	$(RM) $(EXECDIR)/*.*
+	cp $(SOURCES) $(ALGORITHMS) $(GRAPHS) $(LICENCE) $(EXECDIR)
+	chmod 600 $(EXECDIR)/*.*
+	$(VERSIONIZE) $(EXECDIR)/*.*
+	$(DATEIZE) $(EXECDIR)/*.*
+	$(COPYRIGHTIZE) $(EXECDIR)/*.*
+	chgrp -f gato $(EXECDIR)/*.*
+	chmod 444 $(EXECDIR)/*.*
+	chmod 555 $(EXECUTABLES)
+
+	# 2) put tar-archives into ~gato/pub/Beta
+	cd $(EXECDIR);tar cf $(DISTNAME)-$(VERSION).tar *.py *.alg *.pro *.cat *.txt *.gif
+	chmod 444 $(EXECDIR)/$(DISTNAME)-$(VERSION).tar
+	mv -f $(EXECDIR)/$(DISTNAME)-$(VERSION).tar $(WWWDIR)	
+
+	# Create Mac-version
+	cd $(EXECDIR); cp -f *.py *.alg *.pro *.cat *.txt *.gif $(MACDIR)
+	$(MACIFY) $(MACDIR)/*.py $(MACDIR)/*.alg $(MACDIR)/*.pro $(MACDIR)/*.cat $(MACDIR)/*.txt
+	chmod 444 $(MACDIR)/*.*
+	$(RM) $(MACDIR)/$(DISTNAMEMAC)-$(VERSION).tar
+	cd $(MACDIR); tar cf $(DISTNAMEMAC)-$(VERSION).tar *.py *.alg *.pro *.cat *.txt *.gif
+	chmod 444 $(MACDIR)/$(DISTNAMEMAC)-$(VERSION).tar
+	chgrp -f gato $(MACDIR)/*
+	mv -f $(MACDIR)/$(DISTNAMEMAC)-$(VERSION).tar $(WWWDIR)	
+	
+	# 3) change ~gato/pub/Beta/build.info
+	cp -f build.info $(WWWDIR)
+	$(VERSIONIZE) $(WWWDIR)/build.info
+	$(DATEIZE) $(WWWDIR)/build.info
+	$(PERL) -pi -e 's/_DISTNAME_/$(DISTNAME)-$(VERSION).tar/' $(WWWDIR)/build.info
+	$(PERL) -pi -e 's/_DISTNAMEMAC_/$(DISTNAMEMAC)-$(VERSION).tar/' $(WWWDIR)/build.info
+	# update lizenz.txt
+	cp -f Lizenz.txt  $(WWWDIR)
+	chmod 444 $(WWWDIR)/Lizenz.txt
+	chmod 444 $(WWWDIR)/build.info
+	chgrp -f gato $(WWWDIR)/*
+
+	# 4) update and distribute documentation
+	cd $(SRCDIR)/Doc; doc.py Gato $(SRCDIR)
+	cp -f $(SRCDIR)/Doc/*.html $(WWWDIR)/Doc/
+	chmod 444 $(WWWDIR)/Doc/*
+	chgrp -f gato $(WWWDIR)/Doc/*
+	$(RM) $(WWWDIR)/$(DISTNAME)-$(VERSION)-Doc.tar
+	cd $(WWWDIR); tar cf $(DISTNAME)-$(VERSION)-Doc.tar Doc/*
+	chmod 444 $(WWWDIR)/$(DISTNAME)-$(VERSION)-Doc.tar
+	chgrp -f gato $(WWWDIR)/$(DISTNAME)-$(VERSION)-Doc.tar

@@ -1,0 +1,20 @@
+- Moving vertex fucks up euclidean edge weights
+  Correcting upon save ?
+
+- Directed/Euclidian etc. wird nicht gesetzt beim Laden
+
+- Algorithms: Remove initial Cont and Double Steps
+
+- Algorithms: PickVertex und PickEdge eingebaut
+
+- Clear fuer Queue/Stack
+
+- GUI: SetAllVerticesColor fuer SubGraphen
+
+- Im Prolog kann man jetzt mit self.NeededProperties({'name':val})
+  sicherstellen, dass der Graph ne bestimmte Eigenschaft hat.
+
+  Jetzt muss ich nur noch das File-Format aendern
+
+- SCOPE problems (fixed -- misconception about namespaces caused misbehaviour)
+
