@@ -522,12 +522,76 @@ def showPathByPredecessorArray(source,sink,pred,A,color="red"):
 
     v = sink
     
-    while pred[v] != None:
+    while (pred[v] != None) and (pred[v] != v):
 	A.SetVertexColor(v,color)
 	A.SetEdgeColor(pred[v],v,color)
 	v = pred[v]
 
     A.SetVertexColor(v,color)
 
+################################################################################
+#
+# Wrapper
+#
+################################################################################
 
+class FlowWrapper:
+    """ This class visualizes the flow in a directed graph G
+        with animator GA and it's residual network R with
+        animator RA.
+
+        res     = R.edgeWeights[0] 
+        cap     = {}
+        flow    = FlowWrapper(G,A,R,RA,G.edgeWeights[0],cap,res)
+    """
+    def __init__(self,  G, GA, R, RA, flow, cap, res):
+        self.G    = G
+        self.GA   = GA
+        self.R    = R
+        self.RA   = RA
+        self.flow = flow
+        self.cap  = cap
+        self.res  = res
+	for e in self.G.Edges():
+            self.cap[e]  = self.flow[e]
+            self.res[e]  = self.flow[e] 
+	    self.flow[e] = 0
+
+    def __setitem__(self, e, val):  
+        self.flow[e] = val
+        if val == self.cap[e]:     
+            self.GA.SetEdgeColor(e[0],e[1],"blue")
+            self.GA.SetEdgeAnnotation(e[0],e[1],"%d/%d" % (val,self.cap[e]),"black")
+	    try:
+                self.RA.DeleteEdge(e[0],e[1])
+            except:
+                None
+            if not self.R.QEdge(e[1],e[0]):
+                self.RA.AddEdge(e[1],e[0])
+        elif val == 0:             
+            self.GA.SetEdgeColor(e[0],e[1],"black")
+            self.GA.SetEdgeAnnotation(e[0],e[1],"%d/%d" % (val, self.cap[e]),"gray")
+	    try:
+                self.RA.DeleteEdge(e[1],e[0])
+            except:
+                None
+            if not self.R.QEdge(e[0],e[1]):
+                self.RA.AddEdge(e[0],e[1])
+        else:                      
+            self.GA.SetEdgeColor(e[0],e[1],"#AAAAFF")
+            self.GA.SetEdgeAnnotation(e[0],e[1],"%d/%d" % (val,self.cap[e]),"black")
+            if not self.R.QEdge(e[1],e[0]):
+                self.RA.AddEdge(e[1],e[0])
+            if not self.R.QEdge(e[0],e[1]):
+                self.RA.AddEdge(e[0],e[1])
+	if self.G.QEdge(e[0],e[1]):
+            self.res[(e[1],e[0])]  = val
+            self.res[(e[0],e[1])]  = self.cap[(e[0],e[1])] - val
+        else:
+            self.res[(e[0],e[1])]  = val
+            self.res[(e[1],e[0])]  = self.cap[(e[1],e[0])] - val
+        return
+
+    def __getitem__(self, e):
+        return self.flow[e]
 
