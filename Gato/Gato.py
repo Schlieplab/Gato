@@ -831,25 +831,32 @@ class AlgorithmDebugger(bdb.Bdb):
     def dispatch_call(self, frame, arg):
 	fn = frame.f_code.co_filename
         line = self.currentLine(frame)
-	doTrace = self.doTrace
+	doTrace = self.doTrace # value of self.doTrace might change 
 	if fn != self.GUI.algoFileName:
 	    return None
-	#print "dispatch_call",fn, line
+	import inspect
+	print "dispatch_call",fn, line, frame, self.stop_here(frame), self.break_anywhere(frame), self.break_here(frame) #frame.f_locals
+	print inspect.getframeinfo(frame)
 	frame.f_locals['__args__'] = arg
 	if self.botframe is None:
 	    # First call of dispatch since reset()
 	    self.botframe = frame
 	    return self.trace_dispatch
-	# Fixed wrong handling of breakpoints in recursively called
-	# funs:
+
+	# Handling of breakpoints in recursively called funs:
 	# Was: if not (self.stop_here(frame) or self.break_anywhere(frame)):
 	#         return # Note: not return None
 	# self.stop_here(frame) is always 1: Why ?
-	# This seems to work:
-	if self.break_anywhere(frame):
-	    return self.trace_dispatch
-	else:
-	    return
+	#YYY Wenn auskommentiert traced er immer 
+	#if self.break_anywhere(frame):
+	#    return self.trace_dispatch
+	#if self.break_here(frame):
+	#    return self.trace_dispatch
+	#else:
+	#    return
+	#if self.stop_here(frame) or self.break_anywhere(frame):
+        #    return self.trace_dispatch
+
 	self.user_call(frame, arg)
 	if self.quitting: raise bdb.BdbQuit
 	if doTrace == 1:
@@ -882,7 +889,7 @@ class AlgorithmDebugger(bdb.Bdb):
 	""" *Internal* This function is called when we stop or break
   	    at this line """
         line = self.currentLine(frame)
-        #print "*user_call*", line, argument_list
+        print "*user_call*", line, argument_list
 	if self.doTrace == 1:
 	    line = self.currentLine(frame)
 	    if line in self.GUI.breakpoints:
@@ -897,7 +904,7 @@ class AlgorithmDebugger(bdb.Bdb):
 	""" *Internal* This function is called when we stop or break at this line  """
 	self.doTrace = 0 # XXX
 	line = self.currentLine(frame)
-	#print "*user_line*", line
+	print "*user_line*", line
 	if line in self.GUI.breakpoints:
             self.GUI.mode = 2
 	self.GUI.GUI.ShowActive(line)
@@ -908,6 +915,7 @@ class AlgorithmDebugger(bdb.Bdb):
 	""" *Internal* This function is called when a return trap is set here """
 	frame.f_locals['__return__'] = return_value
 	#print '--Return--'
+	#self.doTrace = 0 #YYY
 	self.interaction(frame, None)
 
  
@@ -1182,9 +1190,11 @@ class Algorithm:
 	self.mode = 0
 
     def Step(self):
+	self.DB.doTrace = 0
 	self.mode = 2 
     
     def Continue(self):
+	self.DB.doTrace = 0
 	self.mode = 1
 
     def Trace(self):
