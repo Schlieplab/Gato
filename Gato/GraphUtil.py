@@ -143,8 +143,30 @@ class MSTGraphInformer(WeightedGraphInformer):
     def DefaultInfo(self):
         """ Provide an default text which is shown when no edge/vertex
 	    info is displayed """  
-	return "Spanning Tree has %d vertices and weight %5.2f" % (self.T.Order(),self.T.Weight())
+	return "Tree has %d vertices and weight %5.2f" % (self.T.Order(),self.T.Weight())
+
 		
+class FlowGraphInformer(GraphInformer):
+    def __init__(self,G,flow):
+	GraphInformer.__init__(self,G)
+	self.flow   = flow
+        self.cap    = flow.cap
+        self.excess = flow.excess
+
+    def EdgeInfo(self,v,w):
+        return "Edge (%d,%d) - flow: %d of %d" % (v,w, self.flow[(v,w)], self.cap[(v,w)])
+
+    def VertexInfo(self,v):
+        tmp = self.excess[v]
+        if tmp == gInfinity:
+            str1 = "Infinity"
+        elif tmp == -gInfinity:
+            str1 = "-Infinity"
+        else:
+            str1 = "%d"%tmp
+
+        return "Vertex %d - excess: %s" % (v, str1)
+
 
 ################################################################################
 #
