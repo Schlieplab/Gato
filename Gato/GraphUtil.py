@@ -36,6 +36,8 @@
 #
 ################################################################################
 
+import types
+import StringIO
 from string import split
 from GatoGlobals import *
 from Graph import Graph
@@ -206,7 +208,7 @@ class ResidualGraphInformer(FlowGraphInformer):
 #
 ################################################################################
 
-def OpenCATBoxGraph(fileName):
+def OpenCATBoxGraph(_file):
     """ Reads in a graph from file fileName. File-format is supposed
         to be from old CATBOX++ (*.cat) """
     G = Graph()
@@ -214,17 +216,26 @@ def OpenCATBoxGraph(fileName):
     W = EdgeWeight(G)
     L = VertexLabeling()
 
-    file = open(fileName, 'r')
+    # get file from name or file object
+    graphFile=None
+    if type(_file) in types.StringTypes:
+        graphFile = open(_file, 'r')
+    elif type(_file)==types.FileType or issubclass(_file.__class__,StringIO.StringIO):
+        graphFile=_file
+    else:
+        raise Exception("got wrong argument")
+
     lineNr = 1
 
     firstVertexLineNr = -1    
     lastVertexLineNr  = -1
     firstEdgeLineNr   = -1
     lastEdgeLineNr    = -1
+    intWeights        = 0
 
     while 1:
 	
-	line = file.readline()
+	line = graphFile.readline()
 	
 	if not line:
 	    break
@@ -274,8 +285,7 @@ def OpenCATBoxGraph(fileName):
  
 	lineNr = lineNr + 1
 
-
-    file.close()
+    graphFile.close()
 
     for v in G.vertices:
 	L[v] = v
@@ -289,10 +299,17 @@ def OpenCATBoxGraph(fileName):
 
     return G
 
-def SaveCATBoxGraph(G, fileName):
+def SaveCATBoxGraph(G, _file):
     """ Save graph to file fileName in file-format from old CATBOX++ (*.cat) """
-    
-    file = open(fileName, 'w')
+
+    # get file from name or file object
+    file=None
+    if type(_file) in types.StringTypes:
+        file = open(_file, 'w')
+    elif type(_file)==types.FileType or issubclass(_file.__class__,StringIO.StringIO):
+        file=_file
+    else:
+        raise Exception("got wrong argument")
   
     nrOfVertexWeights = len(G.vertexWeights.keys())
     nrOfEdgeWeights = len(G.edgeWeights.keys())
@@ -332,11 +349,6 @@ def SaveCATBoxGraph(G, fileName):
 		    file.write(" w:%f;" % G.edgeWeights[i][(tail,head)])
 		    
 	    file.write("\n")
-		
-
-
-   #file.close()
-
 
 #### GML
 

@@ -38,6 +38,7 @@
 #
 ################################################################################
 import sys
+import tempfile
 import traceback
 import os
 import bdb
@@ -47,6 +48,7 @@ import string
 import StringIO
 import tokenize
 import tkFont
+import copy
 
 from Tkinter import *
 from tkFileDialog import askopenfilename, asksaveasfilename
@@ -60,6 +62,7 @@ from GatoUtil import *
 from GatoGlobals import *
 from GatoDialogs import AboutBox, SplashScreen, HTMLViewer
 import GatoIcons
+import GatoSystemConfiguration
 
 # put someplace else
 def WMExtrasGeometry(window):
@@ -119,6 +122,7 @@ class AlgoWin(Frame):
 
 	GatoIcons.Init()
 	self.config = GatoConfiguration(self)
+        self.gatoInstaller=GatoSystemConfiguration.GatoInstaller()
 
 	# Create widgets
 	self.pack()
@@ -184,13 +188,18 @@ class AlgoWin(Frame):
 				  command=self.OpenAlgorithm)
 	self.fileMenu.add_command(label='Open Graph...',	
 				  command=self.OpenGraph)
+	self.fileMenu.add_command(label='Open GatoFile...',
+				  command=self.OpenGatoFile)
+	self.fileMenu.add_command(label='Save GatoFile...',
+				  command=self.SaveGatoFile)
 	self.fileMenu.add_command(label='Reload Algorithm & Graph',	
 				  command=self.ReloadAlgorithmGraph)
 	self.fileMenu.add_command(label='Export Graph as EPS...',	
 				  command=self.ExportEPSF)
 	self.fileMenu.add_separator()
-	self.fileMenu.add_command(label='Preferences...',	
+	self.fileMenu.add_command(label='Preferences...',
 				  command=self.Preferences)
+        self.gatoInstaller.addMenuEntry(self.fileMenu)
 	self.fileMenu.add_separator()
 	self.fileMenu.add_command(label='Quit',		
 				  command=self.Quit)
@@ -459,7 +468,6 @@ class AlgoWin(Frame):
 		self.AboutAlgorithmDialog.Update(self.algorithm.About(),"About Algorithm")
 
 
-
     def OpenGraph(self,file=""):
 	""" GUI to allow selection of graph to open 
             file parameter for testing purposes """
@@ -470,11 +478,12 @@ class AlgoWin(Frame):
 
   	if file == "": # caller did not specify file 
 	    file = askopenfilename(title="Open Graph",
-				   defaultextension=".cat",
-				   filetypes = ( ("Gato", ".cat"),
+				   defaultextension=".gato",
+				   filetypes = ( ("Gred", ".cat"),
 						 #("Gato Plus", ".cat"),
 						 #("LEDA", ".gph"),
-						 ("Graphlet", ".let")
+						 ("Graphlet", ".let"),
+                                                 ("Gato",".gato")
 						 )
 				   )
 	    
@@ -490,13 +499,158 @@ class AlgoWin(Frame):
 	    if self.AboutGraphDialog:
 		self.AboutGraphDialog.Update(self.graphDisplay.About(), "About Graph")
 
+    def SaveGatoFile(self,filename=""):
+        """
+        under Construction...
+        """
+        import GatoFile
+
+        # ToDo
+        if not askyesno("Ooops...",
+                        "...this feature is under developement.\nDo you want to proceed?"):
+            return
+        
+	if self.algorithmIsRunning:
+            # variable file is lost here!
+	    self.CmdStop()
+	    self.commandAfterStop = self.SaveGatoFile
+	    return
+
+        if filename == "": # caller did not specify file 
+	    filename = asksaveasfilename(title="Save Graph and Algorithm",
+                                         defaultextension=".gato",
+                                         filetypes = ( ("Gato",".gato"),("xml",".xml"))
+                                         )
+
+
+    def OpenGatoFile(self,filename=""):
+        """
+        menu command
+        """
+
+        import GatoFile
+
+	if self.algorithmIsRunning:
+            # variable file is lost here!
+	    self.CmdStop()
+	    self.commandAfterStop = self.OpenGatoFile
+	    return
+
+        if filename == "": # caller did not specify file 
+	    filename = askopenfilename(title="Open Graph and Algorithm",
+                                       defaultextension=".gato",
+                                       filetypes = ( ("Gato",".gato"),("xml",".xml"))
+                                       )
+
+        if filename is not "":
+            select={}
+            try:
+                # open xml file
+                f=GatoFile.GatoFile(filename)
+                select=f.getDefaultSelection()
+
+                if not select:
+                    # select the graph
+                    select=f.displaySelectionDialog(self)
+
+            except GatoFile.FileException, e:
+                self.HandleFileIOError("GatoFile: %s"%e.reason,filename)
+                return
+
+            # nothing selected
+            if select is None:
+                return
+
+            # a graph is selected
+            if select.get("graph"):
+                try:
+                    # open graph
+                    graphStream=select["graph"].getGraphAsStringIO()
+                    self.algorithm.OpenGraph(graphStream,
+                                             fileName="%s::%s"%(filename,
+                                                                select["graph"].getName()))
+                except (EOFError, IOError):
+                    self.HandleFileIOError("Gato",filename)
+                    return
+		
+                if self.algorithm.ReadyToStart():
+                    self.buttonStart['state'] = NORMAL 
+                if self.AboutGraphDialog:
+                    self.AboutGraphDialog.Update(self.graphDisplay.About(), "About Graph")
+
+            # great shit! create files to get old gato running
+            if select.get("algorithm"):
+                xmlAlgorithm=select.get("algorithm")
+                # save last algorithm tmp_name
+                lastAlgoFileName=None
+                if hasattr(self,"tmpAlgoFileName"):
+                    lastAlgoFileName=self.tmpAlgoFileName
+                lastAlgoDispalyName=None
+                if hasattr(self,"algoDisplayFileName"):
+                    lastAlgoDispalyName=self.algoDisplayFileName
+                # provide a temporary files for algortihm and prologue
+                tmpFileName=tempfile.mktemp()
+                self.tmpAlgoFileName="%s.alg"%tmpFileName
+                self.algoDisplayFileName="%s::%s"%(filename,xmlAlgorithm.getName())
+                tmp=file(self.tmpAlgoFileName,"w")
+                tmp.write(xmlAlgorithm.getText())
+                tmp.close()
+                proFileName="%s.pro"%tmpFileName
+                tmp=file(proFileName,"w")
+                tmp.write(xmlAlgorithm.getProlog())
+                tmp.close()
+                # open it!
+                # text copied from AlgoWin.OpenAlgorithm
+                try:
+                    self.algorithm.Open(self.tmpAlgoFileName)
+                except (EOFError, IOError):
+                    os.remove(self.tmpAlgoFileName)
+                    os.remove(proFileName)
+                    self.HandleFileIOError("Algorithm",self.tmpAlgoFileName)
+                    self.algoDisplayFileName=lastAlgoDispalyName
+                    self.tmpAlgoFileName=lastAlgoFileName
+                    return
+
+                # handle old tempfile
+                if lastAlgoFileName:
+                    os.remove(lastAlgoFileName)
+                    os.remove(lastAlgoFileName[:-3]+'pro')
+
+                # prepare algorithm text widget
+                self.algoText['state'] = NORMAL 
+                self.algoText.delete('0.0', END)
+                self.algoText.insert('0.0', self.algorithm.GetSource())
+                self.algoText['state'] = DISABLED
+                self.tagLines(self.algorithm.GetInteractiveLines(), 'Interactive')
+                self.tagLines(self.algorithm.GetBreakpointLines(), 'Break')
+                # Syntax highlighting
+                tokenize.tokenize(StringIO.StringIO(self.algorithm.GetSource()).readline, 
+                                  self.tokenEater)
+
+                # set the state
+                if self.algorithm.ReadyToStart():
+                    self.buttonStart['state'] = NORMAL
+                self.master.title("Gato _VERSION_- " + stripPath(self.algoDisplayFileName))
+
+                if self.AboutAlgorithmDialog:
+                    # to do ... alright for xml about ?!
+                    self.AboutAlgorithmDialog.Update(self.algorithm.About(),
+                                                     "About Algorithm")
+
+    def CleanUp(self):
+        """
+        removes the temporary files...
+        """
+        if hasattr(self,"tmpAlgoFileName") and self.tmpAlgoFileName:
+            os.remove(self.tmpAlgoFileName)
+            os.remove(self.tmpAlgoFileName[:-3]+'pro')
 
     def ReloadAlgorithmGraph(self):
 	if self.algorithmIsRunning:
 	    self.CmdStop()
 	    self.commandAfterStop = self.ReloadAlgorithmGraph
 	    return
-	
+
 	if self.algorithm.algoFileName is not "":
 	    self.OpenAlgorithm(self.algorithm.algoFileName)
 	if self.algorithm.graphFileName is not "":
@@ -527,7 +681,7 @@ class AlgoWin(Frame):
 
 	if askokcancel("Quit","Do you really want to quit?"):
 	    Frame.quit(self)
-
+            self.CleanUp()
 
     def OneGraphWindow(self):
 	""" Align windows nicely for one graph window """
@@ -1036,7 +1190,8 @@ class Algorithm:
 	# mode = 0  Stop
 	# mode = 1  Running
 	# mode = 2  Stepping
-	self.graph = None
+	self.graph = None           # graph for the algorithm
+        self.cleanGraphCopy = None  # this is the backup of the graph
 	self.graphIsDirty = 0       # If graph was changed by running
 	self.algoGlobals = {}       # Sandbox for Algorithm
 	self.logAnimator = 0
@@ -1058,8 +1213,7 @@ class Algorithm:
 	input=open(file, 'r')
        	self.source = input.read()
 	input.close()
-	 
-	
+
 	# Now read in the prolog as a module to get access to the following data
 	# Maybe should obfuscate the names ala xxx_<bla>, have one dict ?
 	try:
@@ -1068,7 +1222,7 @@ class Algorithm:
 	    input.close()
 	except EOFError, IOError:
 	    self.GUI.HandleFileIOError("Prolog",file)
-	    return 	
+	    return
 
 	try:
 	    self.breakpoints   = options['breakpoints']
@@ -1089,7 +1243,7 @@ class Algorithm:
 
 
 	if self.graphDisplays != None:
-	    if self.graphDisplays == 1:
+	    if self.graphDisplays == 1 and hasattr(self,"GUI"):
 		self.GUI.WithdrawSecondaryGraphDisplay()
 
 
@@ -1102,6 +1256,7 @@ class Algorithm:
 	    - graphDisplays = 1 | 2 the number of graphDisplays needed by the algorithm
             - about = \"\"\"<HTML-code>\"\"\" information about the algorithm
 
+            Parameter: filelike object
 	"""
  	import re
 	import sys
@@ -1142,15 +1297,23 @@ class Algorithm:
 	else:
 	    return "<HTML><BODY> <H3>No information available</H3></BODY></HTML>"
 
-    def OpenGraph(self,file):
+    def OpenGraph(self,file,fileName=None):
 	""" Read in a graph from file and open the display """
-	self.graphFileName = file
- 	self.graph = OpenCATBoxGraph(file)
+        if type(file) in types.StringTypes:
+            self.graphFileName = file
+        elif type(file)==types.FileType or issubclass(file.__class__,StringIO.StringIO):
+            self.graphFileName = fileName
+        else:
+            raise Exception("wrong types in argument list: expected string or file like object")
+        self.cleanGraphCopy = OpenCATBoxGraph(file)
+        self.restoreGraph()
 	self.GUI.graphDisplay.Show() # In case we are hidden
-	self.GUI.graphDisplay.ShowGraph(self.graph, stripPath(file))
+	self.GUI.graphDisplay.ShowGraph(self.graph, stripPath(self.graphFileName))
 	self.GUI.graphDisplay.RegisterGraphInformer(WeightedGraphInformer(self.graph))
-	self.graphIsDirty = 0
 
+    def restoreGraph(self):
+        self.graph=copy.deepcopy(self.cleanGraphCopy)
+	self.graphIsDirty = 0
 
     def OpenSecondaryGraph(self,G,title,informer=None):
 	""" Read in graph from file and open the the second display """
@@ -1174,7 +1337,11 @@ class Algorithm:
             globals (i.e., the top-level locals are in a dict we supply
             and for which we preload the packages we want to make available)"""
 	if self.graphIsDirty == 1:
-	    self.OpenGraph(self.graphFileName) # Does show 
+	    self.restoreGraph()
+            # Does show 
+            self.GUI.graphDisplay.Show() # In case we are hidden
+            self.GUI.graphDisplay.ShowGraph(self.graph, stripPath(self.graphFileName))
+            self.GUI.graphDisplay.RegisterGraphInformer(WeightedGraphInformer(self.graph))
 	else:
 	    self.GUI.graphDisplay.Show() # In case we are hidden
 	self.graphIsDirty = 1
@@ -1202,7 +1369,6 @@ class Algorithm:
 
 	# transfer required globals
 	self.algoGlobals['gInteractive'] = globals()['gInteractive']
-	
 	# Read in prolog and execute it
 	try:
 	    execfile(os.path.splitext(self.algoFileName)[0] + ".pro", 
@@ -1213,13 +1379,15 @@ class Algorithm:
 
 	# Read in algo and execute it in the debugger
 	file = self.algoFileName
+        # Filename must be handed over in a very safe way
+        # because of \ and ~1 under windows
+	self.algoGlobals['_tmp_file']=self.algoFileName
 
 	# Switch on all shown breakpoints
 	for line in self.breakpoints:
 	    self.DB.set_break(self.algoFileName,line)
-
 	try:
-	    command = "execfile(\"" +file +"\")"
+	    command = "execfile(_tmp_file)"
 	    self.DB.run(command, self.algoGlobals, self.algoGlobals)
 	except:
             log.exception("Bug in %s" % self.algoFileName)
@@ -1374,7 +1542,7 @@ class Algorithm:
 ################################################################################
 def usage():
     print "Usage: Gato.py"
-    print "       Gato.py -v algorithm.alg graph.cat"
+    print "       Gato.py -v algorithm.alg graph.cat | gato-file"
     print "               -v or --verbose switches on the debugging/logging information"
 
 
@@ -1387,7 +1555,7 @@ if __name__ == '__main__':
         usage()
         sys.exit(2)
               
-    if (len(args) == 0 or  len(args) == 2):
+    if (len(args) < 3):
 
         import logging
         log = logging.getLogger("Gato.py")
@@ -1401,11 +1569,11 @@ if __name__ == '__main__':
 	app = AlgoWin()
 
 	#======================================================================
+
 	# Gato.py <algorithm> <graph>
 	if len(args) == 2:
 	    algorithm = args[0]
 	    graph = args[1]
-
 	    app.OpenAlgorithm(algorithm)
 	    app.update_idletasks()
 	    app.update()
@@ -1415,8 +1583,15 @@ if __name__ == '__main__':
 	    app.after_idle(app.CmdContinue) # after idle needed since CmdStart
 	    app.CmdStart()
 	    app.update_idletasks()
-        
+
+        elif len(args)==1:
+            # expect gato file name or url
+            fileName=args[0]
+            app.OpenGatoFile(fileName)
+	    app.update_idletasks()
+	    app.update()
 	app.mainloop()
+
     else:
         usage()
         sys.exit(2)
