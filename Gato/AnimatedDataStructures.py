@@ -34,30 +34,48 @@ class Animator:
 class AnimatedNeighborhood:
     """ Visualizes visiting of neighbors by calling the Neighborhood
         method of graph for v and allowing to iterate over it, while 
-	coloring (v,w) 
-	"""
+	coloring (v,w) cTraversedEdge unless (v,w) is colored with
+	one of the colors in leaveColors.
 
-    def __init__(self,theAnimator,G,v):	
+	#Neighborhood = lambda v,a=A,g=G: AnimatedNeighborhood(a,g,v,['red'])
+	#
+	#for w in Neighborhood(v):
+	#    doSomething
+	will color all edges cTraversedEdge unless the edge has been colored
+	'red' at some point
+
+        if a blinkColor is specified the edge will blink
+       	"""
+
+    def __init__(self,theAnimator,G,v,leaveColors = [],blinkColor=None):	
 	""" theAnimator will usually be the GraphDisplay(Frame/Toplevel) """
-	self.Animator  = theAnimator
-	self.nbh       = G.Neighborhood(v)
-	self.v         = v
-        self.lastEdge  = None
-        self.lastColor = None
-        self.travColor = "yellow"
-        self.remvColor = "grey"
+	self.Animator    = theAnimator
+	self.nbh         = G.Neighborhood(v)
+	self.v           = v
+	self.leaveColors = leaveColors
+	self.blinkColor  = blinkColor
+        self.lastEdge    = None
+        self.lastColor   = None
+        self.travColor   = "yellow"
         self.Animator.SetVertexFrameWidth(self.v,6)
 
     def __getitem__(self, i):
 	try:
 	    if (self.Animator.GetEdgeColor(self.lastEdge[0],self.lastEdge[1]) == self.travColor):
-                self.Animator.SetEdgeColor(self.lastEdge[0],self.lastEdge[1],self.lastColor)
+                self.Animator.SetEdgeColor(self.lastEdge[0],self.lastEdge[1],cTraversedEdge)
         except:
             None
 	if i < len(self.nbh):
-            self.lastEdge  = (self.v,self.nbh[i])
-	    self.lastColor = self.Animator.GetEdgeColor(self.v,self.nbh[i])
-  	    self.Animator.SetEdgeColor(self.v,self.nbh[i],self.travColor)
+	    c = self.Animator.GetEdgeColor(self.v,self.nbh[i])
+	    if c not in self.leaveColors:
+                self.lastEdge  = (self.v,self.nbh[i])
+   	        self.lastColor = self.Animator.GetEdgeColor(self.v,self.nbh[i])
+  	        self.Animator.SetEdgeColor(self.v,self.nbh[i],self.travColor)
+            else:
+                self.lastEdge  = None
+                self.lastColor = None
+	    if self.blinkColor != None:
+		self.Animator.BlinkEdge(self.v,self.nbh[i],self.blinkColor)
 	    return self.nbh[i]
 	else:
             self.Animator.SetVertexFrameWidth(self.v,2)
