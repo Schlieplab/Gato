@@ -49,7 +49,7 @@ $header = '#####################################################################
 ';
 
 $outfile = "GatoIcons.py";
-$base64  = "base64 -base64 -e -in";
+$base64  = "./convert2base64.py";
 
 print "# --------- mkGatoIcons.pl - creating $outfile\n";
 open(FILE,">$outfile") || warn "Cannot open file $outfile!\n";

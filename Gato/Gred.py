@@ -34,15 +34,14 @@
 #             last change by $Author$.
 #
 ################################################################################
+from GatoGlobals import *
 from Graph import Graph
 from DataStructures import EdgeWeight, VertexWeight
 from GraphUtil import OpenCATBoxGraph, OpenGMLGraph, SaveCATBoxGraph, WeightedGraphInformer
 from GraphEditor import GraphEditor
 from Tkinter import *
 from GatoUtil import stripPath, extension, gatoPath
-from GatoGlobals import *
 import GatoDialogs
-import GatoGlobals
 import GatoIcons
 from ScrolledText import *
 
@@ -279,61 +278,95 @@ class SAGraphEditor(GraphEditor, Frame):
 	py = 3 
 
 	self.toolVar = StringVar()
+        self.lastTool = None
 
 	# Load Icons
-        self.vertexIcon = PhotoImage(data=GatoIcons.vertex)
-	self.edgeIcon   = PhotoImage(data=GatoIcons.edge)
-	self.deleteIcon = PhotoImage(data=GatoIcons.delete)
-	self.swapIcon   = PhotoImage(data=GatoIcons.swap)
-	self.editIcon   = PhotoImage(data=GatoIcons.edit)
-	
+        # 0 = "inactive", 1 = "mouse over", 2 = "active"
+        #
+
+        self.icons = {
+            'AddOrMoveVertex':[PhotoImage(data=GatoIcons.vertex_1),
+                               PhotoImage(data=GatoIcons.vertex_2),
+                               PhotoImage(data=GatoIcons.vertex_3)],
+            'AddEdge':[PhotoImage(data=GatoIcons.edge_1),
+                       PhotoImage(data=GatoIcons.edge_2),
+                       PhotoImage(data=GatoIcons.edge_3)],
+            'DeleteEdgeOrVertex':[PhotoImage(data=GatoIcons.delete_1),
+                                  PhotoImage(data=GatoIcons.delete_2),
+                                  PhotoImage(data=GatoIcons.delete_3)],
+            'SwapOrientation':[PhotoImage(data=GatoIcons.swap_1),
+                               PhotoImage(data=GatoIcons.swap_2),
+                               PhotoImage(data=GatoIcons.swap_3)],
+            'EditWeight':[PhotoImage(data=GatoIcons.edit_1),
+                          PhotoImage(data=GatoIcons.edit_2),
+                          PhotoImage(data=GatoIcons.edit_3)]
+            }
+
+        self.buttons = {}
+        
 	b = Radiobutton(extra, width=32, padx=px, pady=py, 
 			text='Add or move vertex',  
 			command=self.ChangeTool,
 			var = self.toolVar, value='AddOrMoveVertex', 
-			indicator=0, image=self.vertexIcon)
+			indicator=0, image=self.icons['AddOrMoveVertex'][0])
 	b.grid(row=0, column=0, padx=2, pady=2)
-	b.bind("<Enter>", lambda e, gd=self:gd.UpdateInfo('Add or move vertex'))
 	self.defaultButton = b # default doesnt work as config option
-
+        self.buttons['AddOrMoveVertex'] = b
 
 	b = Radiobutton(extra, width=32, padx=px, pady=py, 
 			text='Add edge', 
 			command=self.ChangeTool,
 			var = self.toolVar, value='AddEdge', indicator=0,
-			image=self.edgeIcon)
+			image=self.icons['AddEdge'][0])
 	b.grid(row=1, column=0, padx=2, pady=2)
-	b.bind("<Enter>", lambda e, gd=self:gd.UpdateInfo('Add edge'))
+        self.buttons['AddEdge'] = b
 
-
+        
 	b = Radiobutton(extra, width=32, padx=px, pady=py, 
 			text='Delete edge or vertex', 
 			command=self.ChangeTool,
 			var = self.toolVar, value='DeleteEdgeOrVertex', indicator=0,
-			image=self.deleteIcon)
+			image=self.icons['DeleteEdgeOrVertex'][0])
 	b.grid(row=2, column=0, padx=2, pady=2)
-	b.bind("<Enter>", lambda e, gd=self:gd.UpdateInfo('Delete edge or vertex'))
-
+        self.buttons['DeleteEdgeOrVertex'] = b
 
 	b = Radiobutton(extra, width=32, padx=px, pady=py, 
 			text='Swap orientation', 
 			command=self.ChangeTool,
 			var = self.toolVar, value='SwapOrientation', indicator=0,
-			image=self.swapIcon)
+			image=self.icons['SwapOrientation'][0])
 	b.grid(row=3, column=0, padx=2, pady=2)
-	b.bind("<Enter>", lambda e, gd=self:gd.UpdateInfo('Swap orientation'))
-
+        self.buttons['SwapOrientation'] = b
 
 	b = Radiobutton(extra, width=32, padx=px, pady=py, 
 			text='Edit Weight', 
 			command=self.ChangeTool,
 			var = self.toolVar, value='EditWeight', indicator=0,
-			image=self.editIcon)
+			image=self.icons['EditWeight'][0])
 	b.grid(row=4, column=0, padx=2, pady=2)
-	b.bind("<Enter>", lambda e, gd=self:gd.UpdateInfo('Edit Weight'))
-	
+        self.buttons['EditWeight'] = b
+
+        for b in self.buttons.values():
+            b.bind("<Enter>", lambda e,gd=self:gd.EnterButtonCallback(e))
+            b.bind("<Leave>", lambda e,gd=self:gd.LeaveButtonCallback(e))
+           
 	GraphEditor.CreateWidgets(self)
 
+    def EnterButtonCallback(self,e):
+        w = e.widget
+        text = string.join(w.config("text")[4])
+        self.UpdateInfo(text)
+        value = w.config("value")[4]
+        w.configure(image=self.icons[value][1])
+
+    def LeaveButtonCallback(self,e):
+        self.UpdateInfo("")
+        w = e.widget
+        value = w.config("value")[4]
+        if self.toolVar.get() == value: # the button we are leaving is depressed
+            w.configure(image=self.icons[value][2])
+        else:
+            w.configure(image=self.icons[value][0])        
 	
     def makeMenuBar(self, toplevel=0):
 	self.menubar = Menu(self,tearoff=0)
@@ -708,8 +741,14 @@ class SAGraphEditor(GraphEditor, Frame):
 
     #----- Tools Menu callbacks
     def ChangeTool(self):
-	self.SetEditMode(self.toolVar.get())
-
+        tool = self.toolVar.get()
+        if self.lastTool is not None:
+            self.buttons[self.lastTool].configure(image=self.icons[self.lastTool][0])
+	self.SetEditMode(tool)
+        self.lastTool = tool
+        self.buttons[tool].configure(image=self.icons[tool][2])
+    
+        
     #----- Extras Menu callbacks
 
     # NOTE: Embedder handled by lambda passed as command
@@ -793,6 +832,19 @@ class Start:
     
 ################################################################################
 if __name__ == '__main__':
+
+    print globals()['cVertexDefault']
+   
+    globals()['gVertexRadius'] = 12
+    globals()['gVertexFrameWidth'] = 0
+    globals()['gEdgeWidth'] = 2
+    cVertexDefault = '#000099'
+    globals()['cEdgeDefault'] = '#999999'
+    globals()['cLabelDefault'] = 'white'
+
+    print globals()['cVertexDefault']
+    print cVertexDefault
+   
     graphEditor = SAGraphEditor(Tk())
     graphEditor.NewGraph()
     import logging

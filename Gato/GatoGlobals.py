@@ -42,8 +42,8 @@ gVertexFrameWidth      =  2
 gEdgeWidth        =  3     
 
 # Animation
-gBlinkRate        = 50      # ms 100
-gBlinkRepeat      =  4      # One more than you want 4
+gBlinkRate        = 10      # ms 100
+gBlinkRepeat      =  3      # One more than you want 4
 
 # Printing
 gPaperHeight      = 1500 # "20i" XXX Should be real paper size
