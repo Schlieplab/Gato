@@ -379,6 +379,7 @@ class HMMState:
 
             elif dataKey == 'duration':
                 self.duration = typed_assign(self.duration, int(dataValue))
+                self.duration.useDefault = 0
                                     
             elif dataKey == 'ngeom':
                 # We only use pos
