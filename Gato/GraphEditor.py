@@ -313,7 +313,6 @@ class GraphEditor(GraphDisplay):
 
 		if head != None:
 		    self.AddEdge(self.tail,head)
-		# DEBUG print "edge weight", self.G.edgeWeights[0][(self.tail,head)]
 
 
     def DeleteEdgeOrVertexUp(self,event):
@@ -434,8 +433,7 @@ class GraphEditorFrame(GraphEditor, Frame):
 	GraphEditor.__init__(self)
 
     def SetTitle(self,title):
-	print "change window title to" + `title`
-	
+        sys.info("change window title to %s" % title)
 
 class GraphEditorToplevel(GraphEditor, Toplevel):
     """ A GraphEditor in a top-level window """

@@ -38,7 +38,10 @@
 
 from GatoGlobals import *
 from DataStructures import Point2D, VertexLabeling, EdgeLabeling, EdgeWeight
-from math import log
+#from math import log
+
+import logging
+log = logging.getLogger("Graph.py")
 
 ################################################################################
 #
@@ -372,18 +375,12 @@ class SubGraph(Graph):
 	    
 	except (KeyError, NoSuchVertexError, NoSuchEdgeError):
 	    raise NoSuchEdgeError
-	    #print "SubGraph.AddEdge",(tail,head)
-	    #print self.superGraph.vertices
-	    #print self.vertices
-	    #print self.superGraph.adjLists
-	    #print self.adjLists
-
 
     def AddSubGraph(self,G):
 	""" Add subgraph G to self. Will do nothing if self and G 
 	    have distinct supergraphs """
 	if self.superGraph != G.superGraph:
-	    print "SubGraph->Add: distinct superGraphs"
+            log.error("AddSubGraph: distinct superGraphs")
 	    return
 	for v in G.vertices:
 	    self.AddVertex(v)
@@ -413,7 +410,7 @@ class SubGraph(Graph):
 
     def GetNextVertexID(self):
 	""" *Internal* safeguard """
-	print "Induced Subgraph -> GetNextVertexID should never have been called"
+        log.error("Induced Subgraph -> GetNextVertexID should never have been called")
 
     def Weight(self):
 	""" Returns the total weight (= sum of edge weights) of subgraph """

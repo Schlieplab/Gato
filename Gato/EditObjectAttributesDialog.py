@@ -182,7 +182,7 @@ class TkPopupSelector:
         keys = self.value2pop.keys()
         keys.sort()
         pops = map(lambda x: value2pop[x], keys)
-        #print "pops=", pops
+        #log.debug("pops = %s" % pops)
         args = (master, self.popupvalue) + tuple(pops)
             
         self.tkwidget = apply(OptionMenu, args)
@@ -242,7 +242,6 @@ class TkColorSelector:
 	self.set(color)
 
     def editColor(self, event):
-	print event
         color = askcolor(self.color)[1]
 	if color is not None:
             self.set(color)
@@ -293,8 +292,6 @@ class EditObjectAttributesDialog(tkSimpleDialog.Dialog):
 
         attr = object.__dict__[attr_name]
         attr_type = type(attr)
-        #print attr_name, attr_type, attr.__dict__, object.__dict__
-
         widget = None
         default = isinstance(attr, WithDefault) # has a WithDefault mixin
 
@@ -349,7 +346,6 @@ class EditObjectAttributesDialog(tkSimpleDialog.Dialog):
 
     def validate(self):
         for attr_name in self.edit.keys():
-            print attr_name, self.edit[attr_name].get(), type(self.edit[attr_name].get())
             try:
                 
                 # In python 2.2 we can subclass attributes and add a validate method
@@ -367,14 +363,12 @@ class EditObjectAttributesDialog(tkSimpleDialog.Dialog):
 		return 0
         
         # Everything is valid => set values
-        #print "before typed_assign", self.object.__dict__
         for attr_name in self.edit.keys():            
             self.object.__dict__[attr_name] = typed_assign(self.object.__dict__[attr_name], self.edit[attr_name].get())
 
             if isinstance(self.object.__dict__[attr_name], WithDefault):
                 self.object.__dict__[attr_name].useDefault = self.edit[attr_name].useDefault.get()
 
-        #print "after typed_assign", self.object.__dict__
            
 	return 1
 
@@ -402,9 +396,6 @@ class Popupable:
        - width: maximal string length in pop up
     """
     def setPopup(self, val2pop, pop2val = None, width = None):
-
-        #print "Popupable.setPopup", val2pop, pop2val, width
-
         self.val2pop = val2pop
         self.pop2val = None
         self.width = None

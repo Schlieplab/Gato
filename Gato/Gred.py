@@ -527,9 +527,7 @@ class SAGraphEditor(GraphEditor, Frame):
 			       )
 	if file is "": 
 	    pass
-	    #print "cancelled"
 	else:
-	    #print file
 	    self.fileName = file
 	    self.dirty = 0
 	    self.graphName = stripPath(file)
@@ -539,7 +537,7 @@ class SAGraphEditor(GraphEditor, Frame):
 	    elif e == 'gml':
 		G = OpenGMLGraph(file)
 	    else:
-		print "Unknown extension" 
+                log.error("Unknown extension %s" % s)
 
 	    if not self.gridding:
 		self.graphMenu.invoke(self.graphMenu.index('Grid'))	
@@ -598,10 +596,7 @@ class SAGraphEditor(GraphEditor, Frame):
 					       ("Graphlet", ".let")
 					       )
 				 )
-	if file is "": 
-	    print "cancelled"
-	else:
-	    print file
+	if file is not "":
 	    self.fileName = file
 	    self.dirty = 0
 	    SaveCATBoxGraph(self.G,file)
@@ -614,10 +609,7 @@ class SAGraphEditor(GraphEditor, Frame):
 				 filetypes = ( ("Encapsulated PS", ".eps"),
 					       ("Postscript", ".ps")
 					       ))
-	if file is "": 
-	    print "cancelled"
-	else:
-	    print file
+	if file is not "": 
 	    self.PrintToPSFile(file)
 
 
@@ -738,7 +730,6 @@ class SAGraphEditor(GraphEditor, Frame):
 			self.G.edgeWeights[i][e] = val
 
     def AboutBox(self):
-	print "AboutBox"
 	d = GredAboutBox(self.master)
 
 
@@ -746,5 +737,7 @@ class SAGraphEditor(GraphEditor, Frame):
 if __name__ == '__main__':
     graphEditor = SAGraphEditor(Tk())
     graphEditor.NewGraph()
+    import logging
+    log = logging.getLogger("Gred.py")
     graphEditor.mainloop()
 

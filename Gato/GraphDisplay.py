@@ -45,6 +45,9 @@ from DataStructures import Point2D, VertexLabeling, EdgeLabeling
 import os
 import colorsys
 
+import logging
+log = logging.getLogger("GraphDisplay.py")
+
 class ZoomVar(StringVar):
     """ *Internal* helper class to have TK update variable correspoding
         to pop-up state """
@@ -276,7 +279,6 @@ class GraphDisplay:
 	    If none is registered, information will be produced by
 	    GraphDisplay. Infos are displayed in info field at the bottom
 	    of the graph window."""
-        # DEBUG print "RegisterGraphInformer", Informer
 	self.graphInformer = Informer
 
 
@@ -566,7 +568,6 @@ class GraphDisplay:
 					rgb_color[1] / 65536.0, 
 					rgb_color[2] / 65536.0)
 	lightness =  hls_color[1]
-	#print rgb_color, hls_color
 	if lightness < 0.4: 
 	    self.canvas.itemconfig( self.drawLabel[v], fill=cLabelDefaultInverted)
 	else:
@@ -913,15 +914,12 @@ class GraphDisplay:
 	# move incident edges
 	outVertices = self.G.OutNeighbors(v)[:] # Need a copy here
 	inVertices = self.G.InNeighbors(v)[:]
-	#print outVertices, inVertices
-
 	euclidian = self.G.QEuclidian()
 	
 	# Handle outgoing edges
 	t = self.embedding[v]
 	for w in outVertices:
 	    de = self.drawEdges[(v,w)]
-	    #print (v,w),de
 	    self.canvas.delete(de)
 	    de = self.CreateDrawEdge(v,w)
 	    self.drawEdges[(v,w)] = de
@@ -934,7 +932,6 @@ class GraphDisplay:
 	h = self.embedding[v]
 	for w in inVertices:
 	    de = self.drawEdges[(w,v)]
-	    #print (w,v),de
 	    self.canvas.delete(de)
 	    de = self.CreateDrawEdge(w,v)
 	    self.drawEdges[(w,v)] = de
@@ -989,13 +986,12 @@ class GraphDisplay:
 		self.G.edgeWeights[i][(tail,head)] = 0
 	
 	except GraphNotSimpleError:
-	    #print "Inserting edge would result in non-simple graph"
+            log.error("Inserting edge would result in non-simple graph")
 	    return
 
 
     def DeleteEdge(self,tail,head,repaint=1):
 	""" *Internal* Delete edge (tail,head) """ 
-	#print "Removing edge (",tail,",",head,")"
 	self.canvas.delete(self.drawEdges[(tail,head)])
 	# if (tail,head) has an annotation delete it
 	if self.edgeAnnotation.QDefined((tail,head)):
@@ -1030,7 +1026,6 @@ class GraphDisplay:
 	    x = 0.5 * (coords[2] - coords[0]) + coords[0]
 	    y = 0.5 * (coords[3] - coords[1]) + coords[1]
 	except: # Vertex is not on the canvas yet
-	    #print "XXX VertexPosition excepted: No draw Vertex ?"
 	    x,y = self.EmbeddingToCanvas(self.embedding[v].x,self.embedding[v].y)
 
 	return Point2D(x,y)
@@ -1119,8 +1114,7 @@ class GraphDisplayFrame(GraphDisplay, Frame):
 	GraphDisplay.__init__(self)
 
     def SetTitle(self,title):
-	print "change window title to" + `title`
-	
+        log.info("change window title to %s" % title)
 
 class GraphDisplayToplevel(GraphDisplay, Toplevel):
     """ Provides graph display in a top-level window """

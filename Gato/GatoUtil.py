@@ -128,8 +128,9 @@ class ImageCache:
 		ImageCache.images[relURL] = PhotoImage(file=relURL)
 	    return ImageCache.images[relURL]
 	except IndexError, IOError:
-	    print "XXX: Fix me. Error finding image ",relURL
-
+            import logging
+            log = logging.getLogger("GatoUtil.py")
+            log.exception("Error finding image %s" % relURL)
 
     def AddImage(self, relURL, imageData):
 	ImageCache.images[relURL] = PhotoImage(data=imageData)

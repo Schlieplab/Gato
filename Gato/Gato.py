@@ -394,8 +394,8 @@ class AlgoWin(Frame):
 	    self.tagLine(l, tag)
 
     def tokenEater(self, type, token, (srow, scol), (erow, ecol), line):
-	#print "%d,%d-%d,%d:\t%s\t%s" % \
-	#     (srow, scol, erow, ecol, type, repr(token))
+	#log.debug("%d,%d-%d,%d:\t%s\t%s" % \
+	#     (srow, scol, erow, ecol, type, repr(token)))
 
 	if type == 1:    # Name 
 	    if token in self.keywordsList:
@@ -549,12 +549,12 @@ class AlgoWin(Frame):
         # the window will appear
 	self.master.geometry("+%d+%d" % (pad, screenTop + pad)) 
 
-	# XXX-DEBUG-XXX
-	print "OneGraphWindow: screen= (%d * %d), extras = (%d %d)" % (
-	    self.master.winfo_screenwidth(),
+        log.debug("OneGraphWindow: screen= (%d * %d), extras = (%d %d)" % (
+            self.master.winfo_screenwidth(),
 	    self.master.winfo_screenheight(),
 	    WMExtra,
 	    topWMExtra)
+                  )
 
 	# Move graph win to take up the rest of the screen
 	screenwidth  = self.master.winfo_screenwidth()
@@ -834,7 +834,7 @@ class AlgoWin(Frame):
 
 
     def HandleFileIOError(self, fileDescription, fileName):
-	print fileDescription," file named: ",fileName, " produced an error"
+        log.error("%s file named %s produced an error" % (fileDescription, fileName))
 
 
 # Endof: AlgoWin ---------------------------------------------------------------
@@ -875,8 +875,8 @@ class AlgorithmDebugger(bdb.Bdb):
 	if fn != self.GUI.algoFileName:
 	    return None
 	#import inspect
-	#print "dispatch_call",fn, line, frame, self.stop_here(frame), self.break_anywhere(frame), self.break_here(frame)
-	#print inspect.getframeinfo(frame)
+	#log.debug("dispatch_call %s %s %s %s %s %s" % (fn, line, frame, self.stop_here(frame), self.break_anywhere(frame), self.break_here(frame)))
+	#log.debug("%s" % inspect.getframeinfo(frame))
 	frame.f_locals['__args__'] = arg
 	if self.botframe is None:
 	    # First call of dispatch since reset()
@@ -912,7 +912,7 @@ class AlgorithmDebugger(bdb.Bdb):
             return self.dispatch_return(frame, arg)
         if event == 'exception':
             return self.dispatch_exception(frame, arg)
-        print 'bdb.Bdb.dispatch: unknown debugging event:', `event`
+        log.debug("bdb.Bdb.dispatch: unknown debugging event: %s" % event)
 
     def reset(self):
 	""" *Internal* Put debugger into initial state, calls forget() """
@@ -937,7 +937,7 @@ class AlgorithmDebugger(bdb.Bdb):
 	""" *Internal* This function is called when we stop or break
   	    at this line """
         line = self.currentLine(frame)
-        # DEBUG print "*user_call*", line, argument_list
+        # log.debug("*user_call* %s %s" % (line, argument_list))
 	if self.doTrace == 1:
 	    line = self.currentLine(frame)
 	    if line in self.GUI.breakpoints:
@@ -953,7 +953,7 @@ class AlgorithmDebugger(bdb.Bdb):
 	""" *Internal* This function is called when we stop or break at this line  """
 	self.doTrace = 0 # XXX
 	line = self.currentLine(frame)
-	# DEBUG print "*user_line*", line
+	# log.debug("*user_line* %s" % line)
 	if line in self.GUI.breakpoints:
             self.GUI.mode = 2
 	self.GUI.GUI.ShowActive(line)
@@ -963,7 +963,7 @@ class AlgorithmDebugger(bdb.Bdb):
     def user_return(self, frame, return_value):
 	""" *Internal* This function is called when a return trap is set here """
 	frame.f_locals['__return__'] = return_value
-	#print '--Return--'
+	#log.debug('--Return--')
 	#self.doTrace = 0 #YYY
 	# TO Avoid multiple steps in return line of called fun
 	#self.interaction(frame, None)
@@ -976,7 +976,7 @@ class AlgorithmDebugger(bdb.Bdb):
 	if type(exc_type) == type(''):
 	    exc_type_name = exc_type
 	else: exc_type_name = exc_type.__name__
-	#print exc_type_name + ':', repr.repr(exc_value)
+	#log.debug("exc_type_name: %s" repr.repr(exc_value))
 	self.interaction(frame, exc_traceback)
 
 
@@ -994,7 +994,7 @@ class AlgorithmDebugger(bdb.Bdb):
 	if self.GUI.mode == 2:
 	    old = self.GUI.mode
 	    self.GUI.GUI.WaitNextEvent() # user event -- might change self.GUI.mode
-	    #print "self.GUI.mode: ",old, "-> ",self.GUI.mode
+	    #log.debug("self.GUI.mode: %s -> %s " % (old, self.GUI.mode))
 	    #if self.GUI.mode == 2: 
 	    #self.do_next()
 
@@ -1017,13 +1017,6 @@ class AlgorithmDebugger(bdb.Bdb):
 	
     def currentLine(self, frame):
 	""" *Internal* returns the current line number  """ 
-# 	import linecache, string
-# 	name = frame.f_code.co_name
-# 	if not name: 
-# 	    name = '???'
-# 	fn = frame.f_code.co_filename
-# 	line = linecache.getline(fn, frame.f_lineno)
-# 	#print '+++', fn, frame.f_lineno, name, ':', string.strip(line)
 	return frame.f_lineno 
 
 # Endof: AlgorithmDebugger  ----------------------------------------------------
@@ -1124,8 +1117,6 @@ class Algorithm:
 	    compPattern = re.compile(optionPattern[patternName])
 	    match = compPattern.search(text) 
 
-	    #print patternName, match.group()
-
 	    if match != None:
 		options[patternName] = eval(match.group(1))	
 
@@ -1217,8 +1208,8 @@ class Algorithm:
 	    execfile(os.path.splitext(self.algoFileName)[0] + ".pro", 
 		     self.algoGlobals, self.algoGlobals)
 	except:
-	    print "*** Bug in", os.path.splitext(self.algoFileName)[0] + ".pro"
-	    traceback.print_exc()
+            log.exception("Bug in %s.pro" % os.path.splitext(self.algoFileName)[0])
+	    #traceback.print_exc()
 
 	# Read in algo and execute it in the debugger
 	file = self.algoFileName
@@ -1231,9 +1222,9 @@ class Algorithm:
 	    command = "execfile(\"" +file +"\")"
 	    self.DB.run(command, self.algoGlobals, self.algoGlobals)
 	except:
-	    # Do somethin useful here
-	    print "OOOppps bug in", self.algoFileName
-	    traceback.print_exc()
+            log.exception("Bug in %s" % self.algoFileName)
+	    #traceback.print_exc()
+            
 	self.GUI.CommitStop()
 
     def Stop(self):
@@ -1264,7 +1255,7 @@ class Algorithm:
 
             Set all breakpoints in list: So an algorithm prolog
             can set a bunch of pre-assigned breakpoints at once """
-        print "SetBreakpoints() is depreciated. Use 'breakpoint' var in prolog instead. "
+        log.info("SetBreakpoints() is depreciated. Use 'breakpoint' var in prolog instead. ")
 	for line in list:
 	    self.GUI.ShowBreakpoint(line)
 	    self.breakpoints.append(line)
@@ -1340,7 +1331,7 @@ class Algorithm:
               only argument and cause e.g. some visual feedback """
         v = None
 
-	#print "pickVertex ",globals()['gInteractive']
+	#log.debug("pickVertex %s" %s globals()['gInteractive'])
         if globals()['gInteractive'] == 1:
 	    v = self.GUI.PickInteractive('vertex', filter)
 
@@ -1381,22 +1372,39 @@ class Algorithm:
 
 
 ################################################################################
+def usage():
+    print "Usage: Gato.py"
+    print "       Gato.py -v algorithm.alg graph.cat"
+    print "               -v or --verbose switches on the debugging/logging information"
+
+
 if __name__ == '__main__':
-    #root = Tk()
-    #print sys.path
-    #import sys
-    #print sys.path
+    import getopt
 
-    if (len(sys.argv) == 1 or  len(sys.argv) == 3):
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "v", ["verbose"])
+    except getopt.GetoptError:
+        usage()
+        sys.exit(2)
+              
+    if (len(args) == 0 or  len(args) == 2):
 
-	app = AlgoWin()    
+        import logging
+        log = logging.getLogger("Gato.py")
+
+        for o, a in opts:
+            if o in ("-v", "--verbose"):
+                logging.verbose = 1
+
+        log.info("Welcome! Gato logging facilities activated")
+        
+	app = AlgoWin()
+
 	#======================================================================
-	#
 	# Gato.py <algorithm> <graph>
-	#
-	if (len(sys.argv) == 3):
-	    algorithm = sys.argv[1]
-	    graph = sys.argv[2]
+	if len(args) == 2:
+	    algorithm = args[0]
+	    graph = args[1]
 
 	    app.OpenAlgorithm(algorithm)
 	    app.update_idletasks()
@@ -1407,8 +1415,9 @@ if __name__ == '__main__':
 	    app.after_idle(app.CmdContinue) # after idle needed since CmdStart
 	    app.CmdStart()
 	    app.update_idletasks()
-
+        
 	app.mainloop()
     else:
-	print "Usage: gato algorithm.alg graph.cat"
+        usage()
+        sys.exit(2)
 

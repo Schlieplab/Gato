@@ -171,7 +171,6 @@ class MapEditor(tkSimpleDialog.Dialog):
         self.result = []
         for i in range(self.mlb.size()):
             self.result.append(self.mlb.get(i))
-        print self.result
         tkSimpleDialog.Dialog.ok(self, event)
 
     

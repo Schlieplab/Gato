@@ -40,6 +40,8 @@ from string import split
 from GatoGlobals import *
 from Graph import Graph
 from DataStructures import Point2D, VertexLabeling, EdgeLabeling, EdgeWeight, VertexWeight, Queue
+import logging
+log = logging.getLogger("GraphUtil.py")
 
 ################################################################################
 #
@@ -309,7 +311,6 @@ def SaveCATBoxGraph(G, fileName):
     save = {}
     for v in G.vertices:
 	save[v] = count
-	#print "i=",i,"save=",save[i]
 	count = count + 1
 	file.write("n:%d; x:%d; y:%d;" % (save[v], G.embedding[v].x, G.embedding[v].y))
 	for i in xrange(nrOfVertexWeights):
@@ -363,8 +364,7 @@ def ParseGML(file):
 		retval.append((token[0], token[1]))
 
 	else:
-	    print "Serious format error in:", line
-
+            log.error("Serious format error line %s:" % line)
 
 
 def PairListToDictionary(l):
@@ -391,7 +391,7 @@ def OpenGMLGraph(fileName):
     file.close()
 
     if g[0][0] != 'graph':
-	print "Serious format error. first key is not graph"
+        log.error("Serious format error in %s. first key is not graph" % fileName)
 	return
     else:
 	l = g[0][1]
@@ -403,7 +403,6 @@ def OpenGMLGraph(fileName):
 	    if key == 'node':
 		
 		d = PairListToDictionary(value)
-		# print "Found node", value, d 
 		v = G.AddVertex()
 		
 		try:
@@ -418,7 +417,6 @@ def OpenGMLGraph(fileName):
 	    elif key == 'edge':
 
 		d = PairListToDictionary(value)
-		#print "Found edge", value, d
 
 		try:
 		    s = eval(d['source'])
