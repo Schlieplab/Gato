@@ -238,9 +238,8 @@ class GraphEditor(GraphDisplay):
 		elif "labels" in tags:
 		    head = self.label[widget]
 
-		if not self.tail == head:
-		    self.AddEdge(self.tail,head)
-		    # DEBUG print "edge weight", self.G.edgeWeights[0][(self.tail,head)]
+		self.AddEdge(self.tail,head)
+		# DEBUG print "edge weight", self.G.edgeWeights[0][(self.tail,head)]
 
 
     def DeleteEdgeOrVertexUp(self,event):

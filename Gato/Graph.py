@@ -48,6 +48,7 @@ class Graph:
     """
 
     def __init__(self):
+	self.simple           = 1
 	self.euclidian        = 1
 	self.directed         = 0
 	self.vertices         = [] 
@@ -82,7 +83,7 @@ class Graph:
 	    In case of directed graphs (tail,head) and (head,tail)
 	    are distinct edges """
 
-	if tail == head: # Loop
+	if self.simple == 1 and tail == head: # Loop
 	    raise GraphNotSimpleError
 	if self.directed == 0 and tail in self.adjLists[head]: 
 	    raise GraphNotSimpleError

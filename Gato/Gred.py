@@ -233,6 +233,7 @@ class SAGraphEditor(GraphEditor, Frame):
     def NewGraph(self):
 	G = Graph()
 	G.directed = 1
+	G.simple = 0
 	self.graphName = "New"
 	self.ShowGraph(G,self.graphName)
 	self.RegisterGraphInformer(WeightedGraphInformer(G,"weight"))

@@ -291,6 +291,40 @@ class GraphDisplay:
 	#d = gVertexRadius
 	#return self.canvas.create_text(x+d+1, y+d+1, anchor="w", justify="left", text=v)
 
+    def CreateUndirectedLoopDrawEdge(self, v, w, orientation=None):
+	""" *Internal* Create an undirected loop draw edge. v is a Point2D """
+	d = 32       # Diameter
+	offset = 10  # selected based on trial-and-error 
+	return self.canvas.create_line(v.x, v.y + offset, v.x - d, v.y - d, 
+				       v.x, v.y - 2*d + offset, v.x + d, v.y - d, 
+				       v.x, v.y + offset,
+				       fill=cEdgeDefault,
+				       width=w,
+				       smooth=TRUE,
+				       splinesteps=24,
+				       tag="edges")
+
+    def CreateDirectedLoopDrawEdge(self,v,w, orientation=None):
+	""" *Internal* Create an directed loop draw edge. v is a Point2D """
+	d = 32       # Diameter
+	offset = 10  # selected based on trial-and-error 
+	l = sqrt((v.x + d - v.x)**2 + (v.y - d - v.y - offset)**2)
+	c = (l - gVertexRadius)/l - 0.001 # Dont let them quite touch 
+	tmpX = v.x + c * (v.x + d - v.x) 
+	tmpY = v.y + offset + c * (v.y - d - v.y - offset)
+	return self.canvas.create_line(v.x, v.y + offset, v.x - d, v.y - d, 
+				       v.x, v.y - 2*d + offset, v.x + d, v.y - d, 
+				       v.x + offset, v.y - offset,
+				       #tmpX, tmpY,
+				       arrow="last",
+				       arrowshape=(16,20,6), 
+				       fill=cEdgeDefault,
+				       width=w,
+				       smooth=TRUE,
+				       splinesteps=24,
+				       tag="edges")
+	
+
     def CreateUndirectedDrawEdge(self,t,h,w):
 	""" *Internal* Create an undirected draw edge. t, h are Point2Ds """
 	return self.canvas.create_line(t.x,t.y,h.x,h.y,
@@ -355,37 +389,43 @@ class GraphDisplay:
 	    w = self.G.edgeWidth[(tail,head)]
 
 	if self.directed == 1:
-	    if tail in self.G.adjLists[head]:
-		# Remove old straight de for other direction ... 
-		try:
-		    oldColor = self.canvas.itemconfig(self.drawEdges[(head,tail)],
-						  "fill")[4] # Should call GetEdgeColor
-		    self.canvas.delete(self.drawEdges[(head,tail)])
-		    # ... and create a new curved one
-		    if self.G.edgeWidth == None:
-			wOld = gEdgeWidth
-		    else:
-			wOld = self.G.edgeWidth[(head,tail)]		    
-		    de = self.CreateDirectedDrawEdge(h,t,1,wOld)
-		    self.canvas.itemconfig(de, fill=oldColor) # Should call SetEdgeColor
-		    self.drawEdges[(head,tail)] = de
-		    self.edge[de] = (head,tail)
-		    self.canvas.tag_bind(de, "<Any-Leave>", self.DefaultInfo)
-		    self.canvas.tag_bind(de, "<Any-Enter>", self.EdgeInfo)
-		    try:
-			self.canvas.lower(de,"vertices")
-		    except TclError:
-			None # can get here when opening graph
-		except KeyError:
-		    oldColor = cEdgeDefault # When opening a graph we can get here
-		
-		# Finally create the one we wanted to ...
-		de = self.CreateDirectedDrawEdge(t,h,1,w)		
+	    if tail == head:
+		de = self.CreateDirectedLoopDrawEdge(t,w)		
 	    else:
-		de = self.CreateDirectedDrawEdge(t,h,0,w)
+		if tail in self.G.adjLists[head]:
+		    # Remove old straight de for other direction ... 
+		    try:
+			oldColor = self.canvas.itemconfig(self.drawEdges[(head,tail)],
+							  "fill")[4] # Should call GetEdgeColor
+			self.canvas.delete(self.drawEdges[(head,tail)])
+			# ... and create a new curved one
+			if self.G.edgeWidth == None:
+			    wOld = gEdgeWidth
+			else:
+			    wOld = self.G.edgeWidth[(head,tail)]		    
+			de = self.CreateDirectedDrawEdge(h,t,1,wOld)
+			self.canvas.itemconfig(de, fill=oldColor) # Should call SetEdgeColor
+			self.drawEdges[(head,tail)] = de
+			self.edge[de] = (head,tail)
+			self.canvas.tag_bind(de, "<Any-Leave>", self.DefaultInfo)
+			self.canvas.tag_bind(de, "<Any-Enter>", self.EdgeInfo)
+			try:
+			    self.canvas.lower(de,"vertices")
+			except TclError:
+			    None # can get here when opening graph
+		    except KeyError:
+			oldColor = cEdgeDefault # When opening a graph we can get here
+		
+		    # Finally create the one we wanted to ...
+		    de = self.CreateDirectedDrawEdge(t,h,1,w)		
+		else:
+		    de = self.CreateDirectedDrawEdge(t,h,0,w)
 		
 	else:
-	    de = self.CreateUndirectedDrawEdge(t,h,w)
+	    if tail == head:
+		de = self.CreateUndirectedLoopDrawEdge(t,w)
+	    else:
+		de = self.CreateUndirectedDrawEdge(t,h,w)
 	self.edge[de] = (tail,head) # XXX
 	self.canvas.tag_bind(de, "<Any-Leave>", self.DefaultInfo)
 	self.canvas.tag_bind(de, "<Any-Enter>", self.EdgeInfo)
@@ -722,7 +762,8 @@ class GraphDisplay:
 	for w in outVertices:
 	    self.DeleteEdge(v,w)
 	for w in inVertices:
-	    self.DeleteEdge(w,v)
+	    if w != v: # We have already deleted loops
+		self.DeleteEdge(w,v)
 	#del(self.G.adjLists[v]) # XXX
 	# and finally the vertex itself
 	self.G.vertices.remove(v) # XXX
@@ -755,7 +796,8 @@ class GraphDisplay:
 	self.canvas.delete(self.drawEdges[(tail,head)])
 	del(self.drawEdges.label[(tail,head)]) # XXX
 	self.G.DeleteEdge(tail,head)
-	if self.directed == 1 and tail in self.G.adjLists[head]: # i.e. parallel edge
+	if self.directed == 1 and tail in self.G.adjLists[head]: 
+	    # i.e. parallel edge
 	    oldColor = self.canvas.itemconfig(self.drawEdges[(head,tail)],
 					      "fill")[4] # Should call GetEdgeColor
 	    self.canvas.delete(self.drawEdges[(head,tail)])

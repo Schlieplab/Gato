@@ -173,6 +173,7 @@ def OpenCATBoxGraph(fileName):
 	if lineNr == 2: # Read directed and euclidian
 	    splitLine = split(line[:-1],';')	    
 	    G.directed = eval(split(splitLine[0],':')[1])
+	    G.simple = eval(split(splitLine[1],':')[1])
 	    G.euclidian = eval(split(splitLine[2],':')[1])
 	    intWeights = eval(split(splitLine[3],':')[1])
 	    nrOfWeights = eval(split(splitLine[4],':')[1])
@@ -228,8 +229,8 @@ def SaveCATBoxGraph(G, fileName):
     integerWeights = G.edgeWeights[0].QInteger()
 
     file.write("graph:\n")
-    file.write("dir:%d; simp:1; eucl:%d; int:%d; ew:%d; vw:0;\n" %
-	       (G.QDirected(), G.QEuclidian(), integerWeights,
+    file.write("dir:%d; simp:%d; eucl:%d; int:%d; ew:%d; vw:0;\n" %
+	       (G.QDirected(), G.simple, G.QEuclidian(), integerWeights,
 	       nrOfEdgeWeights))
     file.write("scroller:\n")
     file.write("vdim:1000; hdim:1000; vlinc:10; hlinc:10; vpinc:50; hpinc:50;\n")
