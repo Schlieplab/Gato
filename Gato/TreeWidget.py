@@ -5,8 +5,12 @@
 #       last change by $Author$.
 
 import Tkinter
+import sys
 import os
 import os.path
+import codecs
+import xml.dom
+import xml.dom.minidom
 
 class Node:
     """
@@ -22,7 +26,7 @@ class Node:
         self.name=name
         self.icon=icon
         self.anchor=anchor
-        self.selectable=1
+        self.selectable=0
         self.selected=0
         self.selectionItem=None
         # cached item tags
@@ -205,6 +209,10 @@ class Node:
         else:
             self.deselect()
 
+    def printNode(self,indent=""):
+        refcnt=sys.getrefcount(self)
+        print "%s%s:%d"%(indent,self.name,refcnt)
+
 class Leaf(Node):
     """
     the leaf cannot contain children.
@@ -274,15 +282,15 @@ class Branch(Node):
         self.expanded=0
         self.update()
 
-    def updateChildren(self):
+    def updateChildList(self):
         """
-        called before expanding the branch
+        called before expanding the branch in order to update all necessary children
         """
         pass
 
-    def cleanupChildren(self):
+    def cleanupChildList(self):
         """
-        called after collapsed the branch
+        called after collapsed the branch in order to destruct all unused children
         """
         pass
 
@@ -299,7 +307,7 @@ class Branch(Node):
             Node.display(self,recursive+1)
             (x0,y0,x1,y1)=apply(self.canvas.bbox,filter(None,[self.nameItem,self.iconItem]))
             (ix0,iy0,ix1,iy1)=self.canvas.bbox(self.iconItem)
-            self.updateChildren()
+            self.updateChildList()
             for child in self.children:
                 child.anchor=(ix1+1,y1+1)
                 child.display(recursive+1)
@@ -309,7 +317,7 @@ class Branch(Node):
             Node.display(self,recursive+1)
             for child in self.children:
                 child.conceal(recursive+1)
-            self.cleanupChildren()
+            self.cleanupChildList()
         # now take care about the rest...
         self.canvas.tag_bind(self.iconItem,"<Button-1>", self.toogleCallback)
         if recursive==0:
@@ -321,7 +329,7 @@ class Branch(Node):
         """
         for child in self.children:
             child.conceal(recursive+1)
-        self.cleanupChildren()
+        self.cleanupChildList()
         Node.conceal(self,recursive)
 
     def getAllItems(self):
@@ -371,11 +379,12 @@ class Branch(Node):
             # move them...
             (ox1,oy1,ox2,oy2)=apply(self.canvas.bbox,items)
             yoffset=ny2+1-oy1
-        #nothing to do...
-        if yoffset==0 and xoffset==0:
-            return
-        for item in items:
-            self.canvas.move(item,xoffset,yoffset)
+            # really nothing to do, because geometry not changed
+            if yoffset==0 and xoffset==0:
+                return
+            for item in items:
+                self.canvas.move(item,xoffset,yoffset)
+        # reorder parent
         self.parent.moveAfterChild(self)
 
     def toogleCallback(self,event):
@@ -394,6 +403,155 @@ class Branch(Node):
         Node.setParent(self,newParent)
         for child in self.children:
             child.setParent(self)
+
+    def printNode(self, indent=""):
+        Node.printNode(self,indent)
+        for child in self.children:
+            child.printNode(indent+"  ")
+
+class DirBranch(Branch):
+    """
+    a branch that displays a directory
+    it caches all selected or expanded children
+    """
+    def __init__(self,parent=None, anchor=(0,0), name=None, expanded=0):
+        """
+        instantiate a directory entry
+        """
+        Branch.__init__(self,parent=parent, anchor=anchor, name=name, expanded=expanded)
+        self.path=apply(os.path.join,self.getNamePath())
+        if not os.path.exists(self.path):
+            raise Exception("Path %s does not exist"%self.path)
+
+    def updateChildList(self):
+        """
+        create/update child list...
+        """
+        oldChildren=self.children
+        self.children=[]
+        entries=[]
+        try:
+            entries=os.listdir(self.path)
+        except OSError:
+            pass
+        entries.sort()
+        oldEntries=map(lambda c:c.name,oldChildren)
+        for entry in entries:
+            if entry in oldEntries:
+                self.children.append(oldChildren[oldEntries.index(entry)])
+            else:
+                if os.path.isdir(os.path.join(self.path,entry)):
+                    self.children.append(DirBranch(parent=self,name=entry))
+                else:
+                    self.children.append(Leaf(parent=self,name=entry))
+
+    def cleanupChildList(self):
+        """
+        collapse tree only if there are selections or expanded nodes
+        """
+        # remember all children, that have some nondefault status
+        oldChildren=self.children
+        self.children=[]
+        for child in oldChildren:
+            if issubclass(child.__class__,Branch):
+                child.cleanupChildList()
+                if child.expanded or child.children:
+                    self.children.append(child)
+            elif child.selected:
+                self.children.append(child)
+
+# code handling:
+# the data object model module is unicode
+# xml*Element functions return iso-8859-1 strings
+# tkinter does not like python unicode, it gets iso-8859-1 strings
+# file data are encoded to iso-8859-1
+
+# xmlDecode(unicode) returns iso char string
+(_isoEncoder,_isoDecoder,_isoStreamReader,_isoStreamWriter)=codecs.lookup("iso-8859-1")
+xmlDecode=lambda x:_isoEncoder(x)[0]
+# xmlEnocde(iso_char_string) returns unicode
+xmlEncode=lambda x:_isoDecoder(x)[0]
+# object that encodes stream data from unicode to iso-8859-1
+xmlEncodedStream=_isoStreamWriter
+
+class xmlElementBranch(Branch):
+    """
+    contains an xml dom element
+    """
+    def __init__(self, parent=None, anchor=(0,0), expanded=0, name=None, element=None):
+        self.element=element
+        if name is None:
+            name=xmlDecode(self.element.tagName)
+        Branch.__init__(self,
+                        parent=parent,
+                        anchor=anchor,
+                        name=name,
+                        expanded=expanded)
+
+    def updateChildList(self):
+        """
+        delete all unused child nodes
+        """
+        oldChildren=self.children
+        self.children=[]
+        oldElements=map(lambda c:c.element, oldChildren)
+        for child in self.element.childNodes:
+            if child in oldElements:
+                self.children.append(oldChildren[oldElements.index(child)])
+            else:
+                if child.nodeType==xml.dom.Node.ELEMENT_NODE:
+                    self.children.append(xmlElementBranch(parent=self,
+                                                          element=child))
+
+    def cleanupChildList(self):
+        """
+        cleanup tree only if there are no selections or expanded nodes
+        """
+        # remember all children, that have some nondefault status
+        oldChildren=self.children
+        self.children=[]
+        print map(lambda x:"%s ref=%d"%(x.name,sys.getrefcount(x)),oldChildren)
+        for child in oldChildren:
+            if issubclass(child.__class__,Branch):
+                child.cleanupChildList()
+                if child.expanded or child.children:
+                    self.children.append(child)
+            elif child.selected:
+                self.children.append(child)
+        print map(lambda c:c.name, self.children)
+
+    def __del__(self):
+        print "DOM Element %s deleted"%self.name
+
+class xmlFileBranch(xmlElementBranch):
+    """
+    support for DOM browsing
+    """
+    def __init__(self, parent=None, anchor=(0,0), name=None, expanded=0):
+
+        pathList=parent.getNamePath()
+        pathList.append(name)
+        self.path=apply(os.path.join,pathList)
+        if not os.path.isfile(self.path):
+            raise Exception("file %s does not exist"%self.path)
+
+        self.dom=None
+        try:
+            # pull dom out of file
+            self.dom = xml.dom.minidom.parse(self.path)
+        except xml.dom.DOMException, e:
+            self.dom=None
+
+        xmlElementBranch.__init__(self,
+                                  parent=parent,
+                                  anchor=anchor,
+                                  name=name,
+                                  expanded=expanded,
+                                  element=self.dom.documentElement)
+
+    def __del__(self):
+        print "DOM of file %s deleted"%self.path
+        xmlElementBranch.__del__(self)
 
 class Tree(Tkinter.Canvas):
     """
@@ -433,6 +591,7 @@ class scrolledTree(Tree):
 
     def moveAfterChild(self,child):
         # set new scrollregion, so all components are visible
+        child.printNode()
         self.config(scrollregion=self.bbox(Tkinter.ALL))
 
     def pack(self,*args,**kws):
@@ -500,58 +659,6 @@ class scrolledTree(Tree):
 
     def grid_size(self,*args,**kws):
         apply(self.hiddenFrame.grid_size,args,kws)
-
-class DirBranch(Branch):
-    """
-    a branch that displays a directory
-    it caches all selected or expanded children
-    """
-    def __init__(self,parent=None, anchor=(0,0), name=None, expanded=0):
-        """
-        instantiate a directory entry
-        """
-        Branch.__init__(self,parent=parent, anchor=anchor, name=name, expanded=expanded)
-        self.path=apply(os.path.join,self.getNamePath())
-        self.cachedChildren=[]
-        if not os.path.exists(self.path):
-            raise Exception("Path %s does not exist"%self.path)
-
-    def updateChildren(self):
-        """
-        create/update child list...
-        """
-        oldChildren=self.children
-        self.children=[]
-        entries=[]
-        try:
-            entries=os.listdir(self.path)
-        except OSError:
-            pass
-        entries.sort()
-        oldEntries=map(lambda c:c.name,oldChildren)
-        for entry in entries:
-            if entry in oldEntries:
-                self.children.append(oldChildren[oldEntries.index(entry)])
-            else:
-                if os.path.isdir(os.path.join(self.path,entry)):
-                    self.children.append(DirBranch(parent=self,name=entry))
-                else:
-                    self.children.append(Leaf(parent=self,name=entry))
-
-    def cleanupChildren(self):
-        """
-        collapse tree only if there are selections or expanded nodes
-        """
-        # remember all children, that have some nondefault status
-        oldChildren=self.children
-        self.children=[]
-        for child in oldChildren:
-            if issubclass(child.__class__,Branch):
-                child.cleanupChildren()
-                if child.expanded or child.children:
-                    self.children.append(child)
-            elif child.selected:
-                self.children.append(child)
 
 class WorkInProgress(scrolledTree):
 
