@@ -569,11 +569,11 @@ class ComponentMaker:
     def __init__(self,g,a):
 	self.G = g
 	self.A = a
-	self.colors = ['#FF0000','#00FF00','#0000FF', # Triangle
-		       '#999910','#991099','#109999', # Midpoints
-		       '#DD6610','#996666','#DD1066', # lower left
-		       '#666699','#1066DD','#6610DD', # lower right
-		       '#669966','#66DD10','#10DD66'] # Upper
+	self.colors = ['#FF0000','#00FF00','#0000FF',
+		       '#009999','#990099','#999900',
+		       '#996666','#669966','#666699',
+		       '#0066CC','#6600CC','#66CC00',
+		       '#00CC66','#CC0066','#CC6600']
 	self.lastColor = 0
 
     def NewComponent(self):
@@ -677,7 +677,7 @@ class FlowWrapper:
             if not self.R.QEdge(e[0],e[1]):
                 self.RA.AddEdge(e[0],e[1])
         else:                      
-            self.GA.SetEdgeColor(e[0],e[1],"#AAAAFF")
+            self.GA.SetEdgeColor(e[0],e[1],"#9999FF")
             self.GA.SetEdgeAnnotation(e[0],e[1],"%d/%d" % (val,self.cap[e]),"black")
             if not self.R.QEdge(e[1],e[0]):
                 self.RA.AddEdge(e[1],e[0])
