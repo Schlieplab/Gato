@@ -37,11 +37,13 @@
 import types
 import StringIO
 from string import split
+import string
 from GatoGlobals import *
 from Graph import Graph
 from DataStructures import Point2D, VertexLabeling, EdgeLabeling, EdgeWeight, VertexWeight, Queue
 import logging
 log = logging.getLogger("GraphUtil.py")
+
 
 ################################################################################
 #
@@ -485,3 +487,57 @@ def OpenGMLGraph(fileName):
 
     return G
 
+
+
+def OpenDotGraph(fileName):
+    """ Reads in a graph from file fileName. File-format is supposed
+        to be dot (*.dot) used in """
+    G = Graph()
+    G.directed = 1
+    E = VertexLabeling()
+    W = EdgeWeight(G)
+    L = VertexLabeling()
+    VLabel = VertexLabeling()
+    ELabel = EdgeLabeling()
+
+    import re
+    file = open(fileName, 'r')
+    lines = file.readlines()
+    file.close()
+
+    dot2graph = {}
+     
+    for l in lines[3:]:
+        items = string.split(l)
+        if len(items) < 2:
+            break
+        if items[1] != '->':
+            v = G.AddVertex()
+            dot_v = int(items[0])
+            L[v] = "%d" % dot_v
+            dot2graph[dot_v] = v
+            m = re.search('label=("[^"]+")', l)
+            VLabel[v] = m.group(1)[1:-1]
+            m = re.search('pos="(\d+),(\d+)"', l)
+            x = int(m.group(1))
+            y = int(m.group(2))
+            E[v] = Point2D(x,y)
+        else:
+            m = re.search('(\d+) -> (\d+)', l)
+            v = dot2graph[int(m.group(1))]
+            w = dot2graph[int(m.group(2))]
+            m = re.search('label=("[^"]+")', l)
+            #print l
+            #print v,w,m.group(1)
+            G.AddEdge(v,w)
+            weight = float(m.group(1)[1:-1])
+            W[(v,w)] = weight
+            ELabel[(v,w)] = "%0.2f" % weight
+        
+    G.embedding = E
+    G.labeling  = L
+    G.nrEdgeWeights = 1
+    G.edgeWeights[0] = W
+    G.vertexAnnotation = VLabel
+    G.edgeAnnotation = ELabel
+    return G
