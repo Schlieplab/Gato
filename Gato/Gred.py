@@ -35,6 +35,7 @@
 #
 ################################################################################
 from GatoGlobals import *
+import GatoGlobals # Needed for help viewer.XXX
 from Graph import Graph
 from DataStructures import EdgeWeight, VertexWeight
 from GraphUtil import OpenCATBoxGraph, OpenGMLGraph, SaveCATBoxGraph, WeightedGraphInformer
@@ -282,9 +283,7 @@ class SAGraphEditor(GraphEditor, Frame):
 
 	# Load Icons
         # 0 = "inactive", 1 = "mouse over", 2 = "active"
-        #
-
-        self.icons = {
+	self.icons = {
             'AddOrMoveVertex':[PhotoImage(data=GatoIcons.vertex_1),
                                PhotoImage(data=GatoIcons.vertex_2),
                                PhotoImage(data=GatoIcons.vertex_3)],
@@ -299,57 +298,31 @@ class SAGraphEditor(GraphEditor, Frame):
                                PhotoImage(data=GatoIcons.swap_3)],
             'EditWeight':[PhotoImage(data=GatoIcons.edit_1),
                           PhotoImage(data=GatoIcons.edit_2),
-                          PhotoImage(data=GatoIcons.edit_3)]
-            }
-
+                          PhotoImage(data=GatoIcons.edit_3)] }
         self.buttons = {}
-        
-	b = Radiobutton(extra, width=32, padx=px, pady=py, 
-			text='Add or move vertex',  
-			command=self.ChangeTool,
-			var = self.toolVar, value='AddOrMoveVertex', 
-			indicator=0, image=self.icons['AddOrMoveVertex'][0])
-	b.grid(row=0, column=0, padx=2, pady=2)
-	self.defaultButton = b # default doesnt work as config option
-        self.buttons['AddOrMoveVertex'] = b
+	values = ['AddOrMoveVertex','AddEdge','DeleteEdgeOrVertex',
+                  'SwapOrientation','EditWeight']
 
-	b = Radiobutton(extra, width=32, padx=px, pady=py, 
-			text='Add edge', 
-			command=self.ChangeTool,
-			var = self.toolVar, value='AddEdge', indicator=0,
-			image=self.icons['AddEdge'][0])
-	b.grid(row=1, column=0, padx=2, pady=2)
-        self.buttons['AddEdge'] = b
+        text = {'AddOrMoveVertex':'Add or move vertex','AddEdge':'Add edge',
+                'DeleteEdgeOrVertex':'Delete edge or vertex',
+                'SwapOrientation':'Swap orientation','EditWeight':'Edit Weight'}
 
-        
-	b = Radiobutton(extra, width=32, padx=px, pady=py, 
-			text='Delete edge or vertex', 
-			command=self.ChangeTool,
-			var = self.toolVar, value='DeleteEdgeOrVertex', indicator=0,
-			image=self.icons['DeleteEdgeOrVertex'][0])
-	b.grid(row=2, column=0, padx=2, pady=2)
-        self.buttons['DeleteEdgeOrVertex'] = b
-
-	b = Radiobutton(extra, width=32, padx=px, pady=py, 
-			text='Swap orientation', 
-			command=self.ChangeTool,
-			var = self.toolVar, value='SwapOrientation', indicator=0,
-			image=self.icons['SwapOrientation'][0])
-	b.grid(row=3, column=0, padx=2, pady=2)
-        self.buttons['SwapOrientation'] = b
-
-	b = Radiobutton(extra, width=32, padx=px, pady=py, 
-			text='Edit Weight', 
-			command=self.ChangeTool,
-			var = self.toolVar, value='EditWeight', indicator=0,
-			image=self.icons['EditWeight'][0])
-	b.grid(row=4, column=0, padx=2, pady=2)
-        self.buttons['EditWeight'] = b
-
-        for b in self.buttons.values():
+        row = 0
+        for val in values:
+            b = Radiobutton(extra, width=32, padx=px, pady=py, 
+                            text=text[val],  
+                            command=self.ChangeTool,
+                            var = self.toolVar, value=val, 
+                            indicator=0, image=self.icons[val][0],
+                            selectcolor="#AFAFAF",)
+            b.grid(row=row, column=0, padx=2, pady=2)
+            self.buttons[val] = b
             b.bind("<Enter>", lambda e,gd=self:gd.EnterButtonCallback(e))
             b.bind("<Leave>", lambda e,gd=self:gd.LeaveButtonCallback(e))
-           
+            row += 1
+            
+        self.defaultButton = self.buttons['AddOrMoveVertex']
+        # default doesnt work as config option           
 	GraphEditor.CreateWidgets(self)
 
     def EnterButtonCallback(self,e):
@@ -833,19 +806,19 @@ class Start:
 ################################################################################
 if __name__ == '__main__':
 
-    print globals()['cVertexDefault']
-   
-    globals()['gVertexRadius'] = 12
-    globals()['gVertexFrameWidth'] = 0
-    globals()['gEdgeWidth'] = 2
-    cVertexDefault = '#000099'
-    globals()['cEdgeDefault'] = '#999999'
-    globals()['cLabelDefault'] = 'white'
+##    globals()['gVertexRadius'] = 12
+##    globals()['gVertexFrameWidth'] = 0
+##    globals()['gEdgeWidth'] = 2
+##    cVertexDefault = '#000099'
+##    globals()['cEdgeDefault'] = '#999999'
+##    globals()['cLabelDefault'] = 'white'
 
-    print globals()['cVertexDefault']
-    print cVertexDefault
-   
-    graphEditor = SAGraphEditor(Tk())
+    # Overide default colors for widgets ... maybe shouldnt be doing that for Windows?
+    tk = Tk()
+    tk.option_add('*ActiveBackground','#EEEEEE')
+    tk.option_add('*background','#DDDDDD')
+    tk.option_add('Tk*Scrollbar.troughColor','#CACACA')
+    graphEditor = SAGraphEditor(tk)
     graphEditor.NewGraph()
     import logging
     log = logging.getLogger("Gred.py")
