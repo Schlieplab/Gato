@@ -181,7 +181,7 @@ class GraphEditor(GraphDisplay):
 	else:
 	    infoString = ""
 	self.UpdateInfo(infoString)
-            
+          
 
     def AddOrMoveVertexDown(self,event):
 	v = self.FindVertex(event)
@@ -204,7 +204,6 @@ class GraphEditor(GraphDisplay):
             self.oldy = (c[3] - c[1])/2 + c[1]
             self.movedVertex = v
             self.didMoveVertex = 0
-
 
     def AddOrMoveVertexMove(self,event):
 	if not self.canvasleft:
