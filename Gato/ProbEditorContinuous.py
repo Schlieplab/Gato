@@ -859,6 +859,37 @@ class handle_base:
         """
         pass
 
+    def cursor_change(self,item,cursor=None):
+        """
+        changes the mouse pointer to another cursor
+        if no cursor is given, bindings are removed
+        """
+        if cursor==None:
+            # remove cursor
+            self.canvas.tag_unbind(item,'<Enter>')
+            self.canvas.tag_unbind(item,'<Leave>')
+        else:
+            # add cursor binding
+            self.canvas.tag_bind(item,
+                                 '<Enter>',
+                                 lambda e,s=self,c=cursor:s.mouse_enters_handle(e,c))
+            self.canvas.tag_bind(item,
+                                 '<Leave>',
+                                 self.mouse_leaves_handle)
+            
+            
+    def mouse_enters_handle(self,event,cursor):
+        """
+        change cursor to predefined cursor
+        """
+        self.canvas.configure(cursor=cursor)
+
+    def mouse_leaves_handle(self,event):
+        """
+        change cursor to default cursor
+        """
+        self.canvas.configure(cursor='')
+        
     def start_move_event(self,event):
         """
         event handler for the first click on this handle
@@ -935,6 +966,9 @@ class box_handle(handle_base):
         handle_base.__init__(self,canvas,
                              report_function,
                              values)
+        self.cursor_change(self.box_line,'sb_h_double_arrow')
+        self.cursor_change(self.start_handle,'sb_h_double_arrow')
+        self.cursor_change(self.stop_handle,'sb_h_double_arrow')
 
     def create_items(self):
         """
@@ -994,6 +1028,7 @@ class box_handle(handle_base):
         """
         self.canvas.tag_bind(self.start_handle,'<Button-1>',self.start_move_event)
         self.canvas.tag_bind(self.stop_handle,'<Button-1>',self.start_move_event)
+        self.canvas.tag_bind(self.box_line,'<Button-1>',self.start_move_event)
 
     def start_move_event(self,event):
         """
@@ -1001,7 +1036,8 @@ class box_handle(handle_base):
         """
         current=self.canvas.find_withtag(Tkinter.CURRENT)[0]
         if self.start_handle==current or \
-           self.stop_handle==current:
+           self.stop_handle==current or \
+           self.box_line==current:
             handle_base.start_move_event(self,event)
         else:
             print self.start_move_event.__name__,\
@@ -1021,6 +1057,9 @@ class box_handle(handle_base):
             values=(v,self.values[1])
         elif self.stop_handle==self.current:
             values=(self.values[0],v)
+        elif self.box_line==self.current:
+            diff=abs(self.values[1]-self.values[0])/2.0
+            values=(v-diff,v+diff)
         else:
             print self.move_event.__name__,\
                   ": don't know what to do with this event"

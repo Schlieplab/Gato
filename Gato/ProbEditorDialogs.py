@@ -124,7 +124,7 @@ class combined_editor(ProbEditorWidgets.scroll_canvas,ProbEditorBasics.emission_
                                             anchor=Tkinter.NW,
                                             window=self.pie,
                                             width=400,
-                                            height=400)
+                                            height=300)
             self.color_list2=self.data.color_list[len(self.key_list1)-1:]
             self.bars=ProbEditorWidgets.e_bar_chart_y(self,
                                                       self.data.emissions,
@@ -132,7 +132,7 @@ class combined_editor(ProbEditorWidgets.scroll_canvas,ProbEditorBasics.emission_
                                                       self.color_list2,
                                                       self.report_bar)
             bars_size=self.bars.bbox(Tkinter.ALL)
-            bar_window=master.create_window(0,400,
+            bar_window=master.create_window(0,300,
                                             anchor=Tkinter.NW,
                                             window=self.bars,
                                             width=bars_size[2],
@@ -148,7 +148,7 @@ class combined_editor(ProbEditorWidgets.scroll_canvas,ProbEditorBasics.emission_
                                             anchor=Tkinter.NW,
                                             window=self.pie,
                                             width=400,
-                                            height=400)
+                                            height=300)
 
     def recieve_change(self,change):
         if change.__class__==ProbEditorBasics.emission_change_data:
@@ -340,47 +340,69 @@ class sum_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
 
         ProbEditorBasics.emission_editor.__init__(self,data)
         Tkinter.Frame.__init__(self,master,bg='white',highlightthickness=0)
-        # create first text label
-        # self.text1=Tkinter.Label(self,text='renorm to ',bg='white')
-        
+        # create headline
+        Tkinter.Label(self,text='sum of probability values',bg='white').grid(row=0,
+                                                                             column=0,
+                                                                             columnspan=2)
+
         # create number-widget
         self.entry_width=int(math.ceil(-math.log10(self.data.precision)))
-        self.sum=Tkinter.Entry(self,width=self.entry_width,bg='white')
+        self.sum=Tkinter.Entry(self,
+                               width=self.entry_width,
+                               highlightthickness=0,
+                               bg='white')
+        self.v=Tkinter.IntVar(self)
         if self.data.fixed_sum>0:
             sum_value=self.data.fixed_sum
+            if abs(sum_value-100.0)<self.data.precision:
+                # to 100 percent
+                self.v.set(100)
+            elif abs(sum_value-1.0)<self.data.precision:
+                # to 1.0
+                self.v.set(1)
+            else:
+                # to a custom value
+                self.v.set(-1)
         else:
+            self.v.set(0)
             sum_value=self.data.emissions.sum
         self.sum.insert(Tkinter.END,
                         str(round(sum_value,self.entry_width)),
                         )
         self.sum.bind('<Return>',self.renorm_event)
 
-        self.v=Tkinter.IntVar(self)
-        self.v.set(100)
         Tkinter.Radiobutton(self,
                             text='100',
                             variable=self.v,
+                            command=self.renorm_event,
                             value=100,
                             bg='white',
+                            highlightthickness=0,
                             anchor=Tkinter.W).grid(column=0,row=1,sticky=Tkinter.EW)
         Tkinter.Radiobutton(self,
                             text='1',
                             variable=self.v,
+                            command=self.renorm_event,
                             value=1,
                             bg='white',
+                            highlightthickness=0,
                             anchor=Tkinter.W).grid(column=0,row=2,sticky=Tkinter.EW)
         Tkinter.Radiobutton(self,
                             text='custom',
                             variable=self.v,
+                            command=self.renorm_event,
                             value=-1,
                             bg='white',
+                            highlightthickness=0,
                             anchor=Tkinter.W).grid(column=0,row=3,sticky=Tkinter.EW)
-        self.sum.grid(column=1,row=3)
+        self.sum.grid(column=1,row=3,sticky=Tkinter.EW)
         Tkinter.Radiobutton(self,
                             text='free',
                             variable=self.v,
+                            command=self.renorm_event,
                             value=0,
                             bg='white',
+                            highlightthickness=0,
                             anchor=Tkinter.W).grid(column=0,row=4,sticky=Tkinter.EW)
         self.columnconfigure(3,weight=1)
         self.rowconfigure(5,weight=1)
@@ -398,22 +420,21 @@ class sum_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
             # nothing happens
             print e
             new_sum=self.data.emmissions.sum
-            
+
         self.sum.delete(0,Tkinter.END)
         self.sum.insert(Tkinter.END,
                         str(round(new_sum,self.entry_width)),
                         )
         return new_sum
 
-    def renorm_event(self,event):
+    def renorm_event(self,event=None):
         """
         do renorming of data
         """
-
         rb_sum=self.v.get()
         new_sum=0.0
         if rb_sum>=0:
-            new_sum=float(cb_sum)
+            new_sum=float(rb_sum)
         else:
             # read from textfield
             new_sum=self.get_sum_value()
@@ -427,21 +448,18 @@ class sum_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
                                                          self.data.emissions)
             self.send_change(change)
 
-    def renorm_const(self):
+    def recieve_change(self,change):
         """
-        switch constraint on/off
+        if the sum changes and the custom constraint is not active,
+        display the actual sum
         """
-        status=self.cb_stat.get()
-        if status==0:
-            self.data.fixed_sum=0
-        else:
-            self.data.fixed_sum=self.get_sum_value()
-            if abs(self.data.emissions.sum-self.data.fixed_sum)>self.data.precision:
-                self.data.emissions.renorm_to(self.data.fixed_sum)
-                change=ProbEditorBasics.emission_change_data(self,
-                                                             self.data,
-                                                             self.data.emissions)
-                self.send_change(change)
+        if self.data.fixed_sum==0:
+            sum_value=self.data.emissions.sum
+            self.sum.delete(0,Tkinter.END)
+            self.sum.insert(Tkinter.END,
+                            str(round(sum_value,self.entry_width)),
+                            )
+
 
 ###################################################################################
 
