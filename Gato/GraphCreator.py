@@ -117,7 +117,78 @@ class Dialog(tkSimpleDialog.Dialog):
         return self.result
     
 #----------------------------------------------------------------------
+def DrawNewNodes(theGraphEditor,result):
+    n=result[0] # number of nodes
 
+    theGraphEditor.NewGraph(result[2],1,0,'None',0,'One',0)
+
+    for i in range(0,n):
+	theGraphEditor.AddVertex(whrandom.randint(10,990),
+				 whrandom.randint(10,990))
+
+def CompleteEdges(theGraphEditor,result):
+    Edges=[]
+    n=result[0]
+
+    for i in range(0,n):
+	source=theGraphEditor.G.vertices[i]
+	for j in range(i+1,n):   
+	    target=theGraphEditor.G.vertices[j]
+	    Edges.append((source,target))
+	    if result[2]: Edges.append((target,source))
+    return Edges
+
+def MaximalPlanarEdges(theGraphEditor,result):
+    n=result[0]
+
+    Edges=[] #6*n
+    AdjEdges={}
+    for v in theGraphEditor.G.vertices:
+        AdjEdges[v]=[]
+
+    index=0
+    a=theGraphEditor.G.vertices[index]
+    index=index+1
+    b=theGraphEditor.G.vertices[index]
+    index=index+1
+    
+    Edges.append((a,b))
+    AdjEdges[a].append((a,b))
+    Edges.append((b,a))
+    AdjEdges[b].append((b,a))
+
+    m=2
+    while index < n:
+        e=Edges[whrandom.randint(0,m-1)]
+        v=theGraphEditor.G.vertices[index]
+        index=index+1
+
+        while e[1]!=v:
+            x=(v,e[0])
+            Edges.append(x)
+            m=m+1
+            AdjEdges[v].append(x)
+
+            y=(e[0],v)
+            Edges.append(y)
+            m=m+1
+            AdjEdges[e[0]].insert(AdjEdges[e[0]].index(e)+1,y)
+
+            index2=AdjEdges[e[1]].index((e[1],e[0]))
+            if index2==0:
+                e=AdjEdges[e[1]][-1]
+            else:
+                e=AdjEdges[e[1]][index2-1]
+
+    if result[2]==0: # undirected
+        m=m-1
+        while m>0:
+          del Edges[m]
+          m=m-2
+          
+    return Edges
+
+#----------------------------------------------------------------------
 class completeGraphCreator(Creator):
 
     def Name(self):
@@ -128,24 +199,13 @@ class completeGraphCreator(Creator):
         if dial.result is None:
             return
 
-        theGraphEditor.NewGraph(dial.result[2],1,0,'None',0,'One',0)
+	DrawNewNodes(theGraphEditor,dial.result)
+	Edges=CompleteEdges(theGraphEditor,dial.result)
 
-        n=dial.result[0] # number of nodes
+	for e in Edges:
+	    theGraphEditor.AddEdge(e[0],e[1])
 
-        for i in range(0,n):
-            theGraphEditor.AddVertex(whrandom.randint(10,990),
-				     whrandom.randint(10,990))
-            
-        if theGraphEditor.G.QDirected()==0: # create a complete undirected Graph
-            for i in range(1,n+1):
-                for j in range(i+1,n+1): 
-                    theGraphEditor.AddEdge(i,j)
-        else:                               # create a complete directed Graph
-            for i in range(1,n+1):
-                for j in range(1,n+1):
-                    if j!=i: theGraphEditor.AddEdge(i,j)
 #----------------------------------------------------------------------
-
 class randomGraphCreator(Creator):
 
     def Name(self):
@@ -156,31 +216,16 @@ class randomGraphCreator(Creator):
         if dial.result is None:
             return
 
-        theGraphEditor.NewGraph(dial.result[2],1,0,'None',0,'One',0)
- 
-        n=dial.result[0] # number of nodes
-        m=dial.result[1] # number of edges
+	DrawNewNodes(theGraphEditor,dial.result)
+	Edges=CompleteEdges(theGraphEditor,dial.result)
 
-        for i in range(0,n):
-            theGraphEditor.AddVertex(whrandom.randint(10,990),
-				     whrandom.randint(10,990))
-
-        Edges=[]
-        if theGraphEditor.G.QDirected()==0: # create a random undirected Graph
-            for i in range(1,n+1):
-                for j in range(i+1,n+1): 
-                    Edges.append((i,j))
-        else:                               # create a random directed Graph
-            for i in range(1,n+1):
-                for j in range(1,n+1):
-                    if j!=i: Edges.append((i,j))
-                    
+	m=dial.result[1] # number of edges
         for i in range(0,m):
             pos=whrandom.randint(0,len(Edges)-1)
             theGraphEditor.AddEdge(Edges[pos][0],Edges[pos][1])
             del Edges[pos]
+            
 #----------------------------------------------------------------------
-
 class maximalPlanarGraphCreator(Creator):
 
     def Name(self):
@@ -191,55 +236,37 @@ class maximalPlanarGraphCreator(Creator):
         if dial.result is None:
             return
 
-        theGraphEditor.NewGraph(dial.result[2],1,0,'None',0,'One',0)
-        
-        n=dial.result[0] # number of nodes
+	DrawNewNodes(theGraphEditor,dial.result)
+        if dial.result[0]>1:
+            Edges=MaximalPlanarEdges(theGraphEditor,dial.result)
+            for e in Edges:
+                theGraphEditor.AddEdge(e[0],e[1])
 
-"""
-	#------------------------------------------------------------------#
-	# create a maximal planar Graph
-
-	theGraphEditor.AddVertex(whrandom.randint(10,990),
-				 whrandom.randint(10,990))
-	a=theGraphEditor.G.vertices[0]
-
-	n=n-1
-	if n==0: return
-
-	theGraphEditor.AddVertex(whrandom.randint(10,990),
-				 whrandom.randint(10,990))
-	b=theGraphEditor.G.vertices[1]
-
-	n=n-1
-
-	Edges=[] # 6*n
-
-	Edges.append((a,b))
-	Edges.append((b,a))
-
-	m=2
-
-	for i in range(1,n):
-	    e=Edges[whrandom.randint(0,m-1)]
-	    theGraphEditor.AddVertex(whrandom.randint(10,990),
-				     whrandom.randint(10,990))
-"""
 #----------------------------------------------------------------------
-
 class randomPlanarGraphCreator(Creator):
 
     def Name(self):
-	return "create random planar Graph" 
+        return "create random planar Graph" 
     
     def Create(self, theGraphEditor):
         dial = Dialog(theGraphEditor, 1, 1, "create random planar Graph")
         if dial.result is None:
             return
 
+	DrawNewNodes(theGraphEditor,dial.result)
+
+        if dial.result[0]>1:
+            Edges=MaximalPlanarEdges(theGraphEditor,dial.result)
+            m=dial.result[1] # number of edges
+            for i in range(0,m):
+                pos=whrandom.randint(0,len(Edges)-1)
+                theGraphEditor.AddEdge(Edges[pos][0],Edges[pos][1])
+                del Edges[pos]
+        
 #----------------------------------------------------------------------
 
 
 """ Here instantiate all the creators you want to make available to
     a client. """
-creator = [completeGraphCreator(), randomGraphCreator()]
-##         maximalPlanarGraphCreator(), randomPlanarGraphCreator()]
+creator = [completeGraphCreator(), randomGraphCreator(),
+           maximalPlanarGraphCreator(), randomPlanarGraphCreator()]
