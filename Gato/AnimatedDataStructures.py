@@ -381,6 +381,7 @@ class AnimatedVertexQueue(Queue):
 	Queue.Clear(self) 
 	if self.lastRemoved is not None:
 	    self.Animator.SetVertexFrameWidth(self.lastRemoved,gVertexFrameWidth)
+            self.lastRemoved = None
 
 
 class AnimatedVertexStack(Stack):
@@ -416,6 +417,10 @@ class AnimatedVertexStack(Stack):
 	for v in self.contents:
 	    self.Animator.SetVertexColor(v, self.ColorOff)
 	Stack.Clear(self)
+	if self.lastRemoved is not None:
+	    self.Animator.SetVertexFrameWidth(self.lastRemoved,gVertexFrameWidth)
+            self.lastRemoved = None
+
 
 
 class AnimatedVertexSet:

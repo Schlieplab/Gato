@@ -19,8 +19,6 @@ Einordnen:
 * In dem AnimatedEdgeSet gibt es AddEdge und Remove, besser waere doch
   AddEdge und DeleteEdge wie im normalen Graphen auch, oder?
 
-* globaler Skalierungsfaktor für EdgeWidth
-
 
 ----------------------------------------------------------------
 Algorithms:
