@@ -30,7 +30,8 @@ crnotice1 = "Copyright (C) 1998-2003, ZAIK/ZPR, Universität zu Köln\n"\
 crnotice2 = "Written by Alexander Schliep (schliep@molgen.mpg.de).\n" \
  	    "Application Design: Alexander Schliep and \n" \
 	    "Winfried Hochstaettler. Additional developers: Torsten\n" \
-	    "Pattberg, Ramazan Buzdemir and Achim Gaedke.\n\n" \
+	    "Pattberg, Ramazan Buzdemir, Achim Gaedke and\nWasinee Rungsarityotin." \
+	    "Screen Design: Heidrun Krimmel.\n\n" \
             "For Information see http://gato.sf.net\n" \
  	    "Gato comes with ABSOLUTELY NO WARRANTY.\n" \
             "This is free software, and you are welcome to redistribute\n" \
@@ -269,7 +270,5 @@ The following is a summary of the interface defined by
 </BODY></HTML>
 """
 if __name__ == '__main__':
-    
     win = HTMLViewer(about, "Dummy")
-    import Tkinter
     Tkinter.Tk().mainloop()
