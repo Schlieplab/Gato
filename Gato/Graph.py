@@ -212,7 +212,7 @@ class Graph:
 	return self.directed
 
 
-    def CalculateWidthFromWeight(self, weightID = 0):
+    def CalculateWidthFromWeight(self, scale, weightID = 0):
 	""" Calculate width of edges (self.edgeWidth will be used by 
 	    GraphDisplay if not none) from the specified set of edge
 	    weights. 
@@ -223,7 +223,7 @@ class Graph:
 	edges = self.Edges()
 	maxWeight = max(self.edgeWeights[weightID].label.values())
 	for e in edges:
-	    self.edgeWidth[e] = 1 + 35 * self.edgeWeights[weightID][e] / maxWeight 
+	    self.edgeWidth[e] = scale * (1 + 35 * self.edgeWeights[weightID][e] / maxWeight) 
 
     def NrOfEdgeWeights(self):
 	return len(self.edgeWeights.keys())
