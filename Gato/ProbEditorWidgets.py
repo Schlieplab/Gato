@@ -55,7 +55,7 @@ class tab_frame(Tkinter.Frame):
         self.actual_tab=key
 
     def __init__(self,master,widget_dict,start=None):
-        Tkinter.Frame.__init__(self,master)
+        Tkinter.Frame.__init__(self,master,width=300,height=300)
         self.lower()
         self.tabs=Tkinter.Canvas(self,height=25,highlightthickness=0)
         self.widget_dict=widget_dict
@@ -101,6 +101,11 @@ class tab_frame(Tkinter.Frame):
             self.tabs.tag_bind(text,'<Button-1>',self.tab_selected)
             self.tabs.tag_bind(tab,'<Button-1>',self.tab_selected)
 
+            # Widget auf Start-Größe
+            # widget_dict[key].configure(width=300)
+            # widget_dict[key].configure(height=300)
+            # nutzt nichts...
+
         # setze aktuellen Tab
         self.actual_tab=None
         if start!=None:
@@ -108,7 +113,81 @@ class tab_frame(Tkinter.Frame):
         else:
             self.change_tab(key_list[0])
 
-        self.tabs.pack(side=Tkinter.TOP,fill=Tkinter.X,expand=1)
+        self.tabs.pack(side=Tkinter.TOP,fill=Tkinter.X)
+
+#####################################################################################
+class flyout_decoration:
+
+    def __init__(self,info_function):
+        # prepare bindings
+        self.add_bindings(info_function)
+
+    def add_bindings(info_function):
+        pass
+
+    def create_bar_flyouts(self,prob_dict):
+        self.flyout_stat=0
+        self.after_id=0
+        for key in prob_dict.keys():
+            items=self.find_withtag('tag_'+key)
+            if len(items)==0: continue
+            item=filter(lambda i,s=self:s.type(i)=='rectangle',items)
+            self.tag_bind(item,'<Enter>',self.flyout_enter)
+            self.tag_bind(item,'<Motion>',self.flyout_delay_start)
+            self.tag_bind(item,'<Leave>',self.flyout_leave)
+
+    def flyout_enter(self,event):
+        # stat:
+        # 0 no timer set, no flyout, after motion =>1
+        # 1 timer set, no flyout, after motion =>1, no motion =>2
+        # 2 flyout, no timer, after motion =>1
+        if self.flyout_stat!=0:
+            return
+        self.flyout_stat=0
+        self.after_id=0
+
+    def flyout_leave(self,event):
+        if self.flyout_stat==1:
+            self.after_cancel(self.after_id)
+        if self.flyout_stat==2:
+            self.flyout_hide()
+        self.flyout_stat=0
+
+    def flyout_delay_start(self,event):
+        item=self.find_withtag(Tkinter.CURRENT)[0]
+        if self.flyout_stat==1:
+            # moved again, no flyout set
+            self.after_cancel(self.after_id)
+        elif self.flyout_stat==2:
+            # flyout set
+            self.flyout_hide()
+        # moved
+        self.flyout_stat=1
+        self.after_id=self.after(1000,self.flyout_delay_end,item,event.x,event.y)
+
+    def flyout_delay_end(self,item,x,y):
+        self.flyout_stat==2
+        self.flyout_show(item,x,y)
+
+    def flyout_show(self,item,x,y):
+        self.flyout_stat=2
+        key=filter(lambda t:t[:4]=='tag_',self.gettags(item))[0][4:]
+        coords=self.coords(item)
+        value=float(coords[2]-coords[0])/self.bar_factor
+        flyout_text=('%s: %f')%(key,value)
+        text_x=self.canvasx(x)+15
+        text_y=self.canvasy(y)+15
+        text_item=self.create_text((text_x,text_y),text=flyout_text,tags=('flyout'),
+                                   anchor=Tkinter.NW)
+        self.create_rectangle(self.bbox(text_item),fill='khaki',tags=('flyout'))
+        self.lift(text_item)
+        
+    def flyout_hide(self):
+        self.flyout_stat=0
+        flyout_elements=self.find_withtag('flyout')
+        for element in flyout_elements:
+            self.delete(element)
+
 
 
 #####################################################################################
@@ -380,7 +459,6 @@ class scale(Tkinter.Canvas):
     def __init__(self,master,start_x,factor,max_value=None):
         Tkinter.Canvas.__init__(self,
                                 master,
-#                                width=start_x+factor*max_value+20,
                                 height=25,
                                 bg='white',
                                 highlightthickness=0
@@ -389,7 +467,7 @@ class scale(Tkinter.Canvas):
         self.draw_arrow(start_x,factor,max_value)
 
     def configure_event(self,event):
-        print 'conf'
+        print 'conf',event.width
 
     def draw_arrow(self,start_x,factor,max_value=None):
         self.create_line(start_x,
@@ -439,10 +517,7 @@ class bar_chart_with_scale(Tkinter.Frame):
         factor=self.bars.bar_factor
         scale_max=self.bars.max_value
         self.scale=scale(self,scale_start_x,factor,scale_max)
-        # self.scale.config(width=self.bars.cget('width'))
 
-        self.scale.grid(row=0,column=0,sticky=Tkinter.W+Tkinter.E)
-        self.bars.grid(row=1,column=0,sticky=Tkinter.NW+Tkinter.SE)
         self.report_func=report_func
         scrollbar = Tkinter.Scrollbar(self,orient=Tkinter.VERTICAL,
                                       command=self.bars.yview)
@@ -451,7 +526,15 @@ class bar_chart_with_scale(Tkinter.Frame):
         self.bars.config(height=300,
                          scrollregion=sregion,
                          yscrollcommand=scrollbar.set)
-        scrollbar.grid(row=1,column=1,sticky=Tkinter.N+Tkinter.S)
+
+
+        empty=Tkinter.Frame(self,bg='white')
+        self.scale.grid(column=0,row=0,sticky=Tkinter.E+Tkinter.W)
+        self.bars.grid(column=0,row=1,sticky=Tkinter.E+Tkinter.W+Tkinter.N+Tkinter.S)
+        scrollbar.grid(column=1,row=1,sticky=Tkinter.N+Tkinter.S)
+        empty.grid(column=1,row=0,sticky=Tkinter.E+Tkinter.W+Tkinter.N+Tkinter.S)
+        Tkinter.Frame.columnconfigure(self,0,weight=1)
+        Tkinter.Frame.rowconfigure(self,1,weight=1)
         self.move_count=1
 
     def bar_report(self,what,key,value):
@@ -561,9 +644,7 @@ class pie_chart(Tkinter.Canvas):
         self.ProbDict=prob_dict
         self.arc_box=(100,50,300,250)
         self.key_list=keys
-        Tkinter.Canvas.__init__(self,master,bg='white',highlightthickness=0
-                                # width=400,height=300
-                                )
+        Tkinter.Canvas.__init__(self,master,bg='white',highlightthickness=0)
         self.draw_arcs(self.arc_box,keys,colors)
 
     def anchor(self,angle,angle_base):
@@ -618,12 +699,9 @@ class pie_chart(Tkinter.Canvas):
                 color=''
             line_angle=0.0
             if abs(extent_angle)>=360:
+                # fast voller Kreis
                 extent_angle=359.9
-##                # Volle Kreise zeichnen
-##                sector=self.create_oval(circle_box,
-##                                        tags=('sector',tag),
-##                                        fill=color)
-##            else:
+            # Volle Kreise zeichnen
             sector=self.create_arc(circle_box,
                                    start=this_angle,
                                    extent=extent_angle,
@@ -746,105 +824,144 @@ class pie_chart(Tkinter.Canvas):
             self.configure_description(sector)
             i=i+1
 
+    def angle(self,x,y):
+        if y==0:
+            if x<0: return 180.0
+            else: return 0.0
+        elif x==0:
+            if y<0: return 90.0
+            else: return 270.0
+        elif y<0:
+            return math.atan(x/y)/math.pi*180.0+90.0
+        else:
+            return math.atan(x/y)/math.pi*180.0+270.0
+
+######################################################################################
+
 class e_pie_chart(pie_chart):
 
     def __init__(self,master,prob_dict,keys,colors,report_func):
         pie_chart.__init__(self,master,prob_dict,keys,colors)
         self.report_func=report_func
-        for item in self.find_withtag('sector'):
-            self.tag_bind(item,'<Button-1>',self.handle_mouse_move_start)
+        self.oval_diam_x=self.oval_diam_y=4
+        self.init_handles()
 
-    def handle_mouse_move_start(self,event):
+    def move_start(self,event):
+        # find sector belonging to handle
         self.current_item=self.find_withtag(Tkinter.CURRENT)[0]
-        coords=self.coords(self.current_item)
-        center_x=(coords[0]+coords[2])/2.0 #center of oval
-        center_y=(coords[1]+coords[3])/2.0 #center of oval
-        diam_x=abs(coords[1]-coords[3])/2.0
-        diam_y=abs(coords[0]-coords[2])/2.0
-        rel_x=self.canvasx(event.x)-center_x
-        rel_y=self.canvasy(event.y)-center_y
-        dist2=(rel_x/diam_x)**2+(rel_y/diam_y)**2 # square of center distance
-        if dist2>1.0 or dist2<0.25:
+        self.current_tag=filter(lambda t:t[:4]=='tag_' or t=='other',
+                                self.gettags(self.current_item))[0]
+        self.current_arc1=filter(lambda i,s=self:s.type(i)=='arc',
+                                 self.find_withtag(self.current_tag))
+        # find neighbour sector
+        angle_pos=float(self.itemcget(self.current_arc1,'start'))
+        sectors=self.find_withtag('sector')
+        self.current_arc2=[]
+        for sector in sectors:
+            extent_angle=float(self.itemcget(sector,'extent'))
+            start_angle=float(self.itemcget(sector,'start'))
+            angle_diff=divmod(start_angle+extent_angle-angle_pos,360.0)[1]
+            if angle_diff<0.1 or angle_diff>359.9:
+                self.current_arc2.append(sector)
+
+        # really found one?
+        if len(self.current_arc2)==0:
+            print 'no neighbour found'
             return
-        # find arcs
-        items=[]
-        angle=self.angle(rel_x,rel_y)
-        for item in self.find_withtag('sector'):
-            start=float(self.itemcget(item,'start'))
-            extent=float(self.itemcget(item,'extent'))
-            end=divmod(start+extent,360.0)[1]
-            if divmod(abs(start-angle),360.0)[1]<1:
-                items.append(item)
-                self.itemconfigure(item,extent=-extent,start=end)
-            if divmod(abs(end-angle),360.0)[1]<1:
-                items.append(item)
-            
-        # no border
-        if len(items)==0:
+        if len(self.current_arc2)>1:
+            print 'too much neighbours found'
             return
 
-        if len(items)>2:
-            print "can not decide which arc to change"
-            return
+        self.current_arc2=self.current_arc2[0]
+        # cache coordinates
+        coords=self.coords(self.current_arc1)
+        self.current_center_x=(coords[0]+coords[2])/2.0 #center of arc
+        self.current_center_y=(coords[1]+coords[3])/2.0 #center of arc
+        self.current_diam_x=abs(coords[1]-coords[3])/2.0
+        self.current_diam_y=abs(coords[0]-coords[2])/2.0
+        # save angle sum
+        self.angle_start=float(self.itemcget(self.current_arc2,'start'))
+        self.angle_extent=float(self.itemcget(self.current_arc1,'extent'))+float(self.itemcget(self.current_arc2,'extent'))
 
-        if len(items)==1:
-            print "no second border"
-            return
+        self.bind('<B1-Motion>',self.move)
+        self.bind('<ButtonRelease-1>',self.move_end)
 
-        # compare extent-values
-        extent_1=float(self.itemcget(items[0],'extent'))
-        extent_2=float(self.itemcget(items[1],'extent'))
-        self.pos_extent_item=self.neg_extent_item=0
-        if extent_1>0:
-            self.pos_extent_item=items[0]
-            self.neg_extent_item=items[1]
-        else:
-            self.pos_extent_item=items[1]
-            self.neg_extent_item=items[0]
-        
-        self.bind('<ButtonRelease-1>',self.handle_mouse_move_end)
-        self.bind('<B1-Motion>',self.handle_mouse_move)
-
-    def handle_mouse_move(self,event):
-        coords=self.coords(self.current_item)
-        rel_x=self.canvasx(event.x)-(coords[0]+coords[2])/2.0 #center of oval
-        rel_y=self.canvasy(event.y)-(coords[1]+coords[3])/2.0 #center of oval
-        angle=self.angle(rel_x,rel_y)
-        start1=float(self.itemcget(self.pos_extent_item,'start'))
-        start2=float(self.itemcget(self.neg_extent_item,'start'))
-
-        # is that angle allowed?
-        if (start1<start2):
-            if angle>start1 and angle<start2:
-                self.itemconfigure(self.pos_extent_item, extent=angle-start1)
-                self.itemconfigure(self.neg_extent_item, extent=angle-start2)
-                self.configure_description(self.pos_extent_item)
-                self.configure_description(self.neg_extent_item)
-            return
-
-        if (start1>start2):
-            if not (angle<start1 and angle>start2):
-                if angle<start2:
-                    self.itemconfigure(self.pos_extent_item, extent=angle+360.0-start1)
-                    self.itemconfigure(self.neg_extent_item, extent=angle-start2)
+    def move(self,event):
+        # compute new angle
+        canvas_x=self.canvasx(event.x)
+        canvas_y=self.canvasy(event.y)
+        angle=self.angle(canvas_x-self.current_center_x,canvas_y-self.current_center_y)
+        # is this angle valid?
+        # and calcualte new start,extent angles
+        new_extent2=float(self.itemcget(self.current_arc2,'extent'))
+        new_start1=float(self.itemcget(self.current_arc1,'start'))
+        if self.angle_extent>0:
+            #anti-clockwise orientation
+            if self.angle_start>angle:
+                if self.angle_start+self.angle_extent<=angle+360:
+                    # valid
+                    new_start1=angle
+                    new_extent2=angle+360-self.angle_start
                 else:
-                    self.itemconfigure(self.pos_extent_item, extent=angle-start1)
-                    self.itemconfigure(self.neg_extent_item, extent=angle-360-start2)
-                self.configure_description(self.pos_extent_item)
-                self.configure_description(self.neg_extent_item)
-            return
+                    #invalid
+                    pass
+            else:
+                if self.angle_start+self.angle_extent<=angle:
+                    # valid
+                    new_start1=angle
+                    new_extent2=angle-self.angle_start
+                else:
+                    # invalid
+                    pass
+        else:
+            #clockwise orientation
+            if self.angle_start<angle:
+                if self.angle_start+self.angle_extent<=angle-360:
+                    # valid
+                    new_start1=angle
+                    new_extent2=angle-360-self.angle_start
+                else:
+                    # invalid
+                    pass
+            else:
+                if self.angle_start+self.angle_extent<=angle:
+                    # valid
+                    new_start1=angle
+                    new_extent2=angle-self.angle_start
+                else:
+                    # invalid
+                    pass
 
-        
-    def handle_mouse_move_end(self,event):
-        self.unbind('<ButtonRelease-1>')
+        # set new arc angles
+        new_start2=self.angle_start
+        new_extent1=self.angle_extent-new_extent2
+        self.itemconfig(self.current_arc1,start=new_start1)
+        self.itemconfig(self.current_arc2,start=new_start2)
+        self.itemconfig(self.current_arc1,extent=new_extent1)
+        self.itemconfig(self.current_arc2,extent=new_extent2)
+        # set handle
+        oval_x=math.cos(new_start1/180.0*math.pi)*self.current_diam_x+self.current_center_x
+        oval_y=-math.sin(new_start1/180.0*math.pi)*self.current_diam_y+self.current_center_y
+        oval=self.coords(self.current_item,
+                         oval_x-self.oval_diam_x,oval_y-self.oval_diam_y,
+                         oval_x+self.oval_diam_x,oval_y+self.oval_diam_y)
+
+        # set description
+        self.configure_description(self.current_arc1)
+        self.configure_description(self.current_arc2)
+
+    def move_end(self,event):
+        # no events!
         self.unbind('<B1-Motion>')
-        tags=self.gettags(self.pos_extent_item)
+        self.unbind('<ButtonRelease-1>')
+        # read new values from graphic
+        tags=self.gettags(self.current_arc1)
         key1=filter(lambda tag: tag[:4]=='tag_',tags)
-        tags=self.gettags(self.neg_extent_item)
+        tags=self.gettags(self.current_arc2)
         key2=filter(lambda tag: tag[:4]=='tag_',tags)
-        value1=abs(float(self.itemcget(self.pos_extent_item,
+        value1=abs(float(self.itemcget(self.current_arc1,
                                        'extent')))/360.0*self.ProbDict.sum
-        value2=abs(float(self.itemcget(self.neg_extent_item,
+        value2=abs(float(self.itemcget(self.current_arc2,
                                        'extent')))/360.0*self.ProbDict.sum
         report_dict={}
         if len(key1)!=0:
@@ -858,15 +975,45 @@ class e_pie_chart(pie_chart):
             # handle other
             report_dict['other']=value2
         self.report_func('new value',report_dict)
+        self.current_tag=None
+        self.current_key=None
 
-    def angle(self,x,y):
-        if y==0:
-            if x<0: return 180.0
-            else: return 0.0
-        elif x==0:
-            if y<0: return 90.0
-            else: return 270.0
-        elif y<0:
-            return math.atan(x/y)/math.pi*180.0+90.0
-        else:
-            return math.atan(x/y)/math.pi*180.0+270.0
+
+    def init_handles(self):
+        sectors=self.find_withtag('sector')
+        for sector in sectors:
+            coords=self.coords(sector)
+            tag=filter(lambda t:t[:4]=='tag_' or t=='other',self.gettags(sector))
+            angle=float(self.itemcget(sector,'start'))
+            center_x=(coords[0]+coords[2])/2.0 #center of arc
+            center_y=(coords[1]+coords[3])/2.0 #center of arc
+            diam_x=abs(coords[1]-coords[3])/2.0
+            diam_y=abs(coords[0]-coords[2])/2.0
+            oval_x=math.cos(angle/180.0*math.pi)*diam_x+center_x
+            oval_y=-math.sin(angle/180.0*math.pi)*diam_y+center_y
+            oval=self.create_oval(oval_x-self.oval_diam_x,oval_y-self.oval_diam_y,
+                                  oval_x+self.oval_diam_x,oval_y+self.oval_diam_y,
+                                  fill='black',tags=('handle',tag))
+            self.tag_bind(oval,'<Button-1>',self.move_start)
+
+    def update_handles(self):
+        sectors=self.find_withtag('sector')
+        for sector in sectors:
+            coords=self.coords(sector)
+            tag=filter(lambda t:t[:4]=='tag_' or t=='other',self.gettags(sector))
+            angle=float(self.itemcget(sector,'start'))
+            center_x=(coords[0]+coords[2])/2.0 #center of arc
+            center_y=(coords[1]+coords[3])/2.0 #center of arc
+            diam_x=abs(coords[1]-coords[3])/2.0
+            diam_y=abs(coords[0]-coords[2])/2.0
+            oval_x=math.cos(angle/180.0*math.pi)*diam_x+center_x
+            oval_y=-math.sin(angle/180.0*math.pi)*diam_y+center_y
+            oval=filter(lambda i,s=self:s.type(i)=='oval',
+                        self.find_withtag(tag))
+
+            self.coords(oval,oval_x-self.oval_diam_x,oval_y-self.oval_diam_y,
+                        oval_x+self.oval_diam_x,oval_y+self.oval_diam_y)
+
+    def update_position(self,dict,order_list):
+        pie_chart.update_position(self,dict,order_list)
+        self.update_handles()

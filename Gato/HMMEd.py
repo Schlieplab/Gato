@@ -542,25 +542,25 @@ class HMMEditor(SAGraphEditor):
                     import ProbEditorBasics
                     import ProbEditorDialogs
                     emission_probabilities=ProbEditorBasics.ProbDict({})
-                
+
                     count = self.HMM.G.NrOfVertexWeights()
                     for i in xrange(count):
                         weight=self.HMM.G.vertexWeights[i][v]
                         label = "symbol_%d" % i
                         emission_probabilities.update({label:weight})
 
-                        if emission_probabilities.sum==0:
-                            key_list=emission_probabilities.keys()
-                            for key in key_list:
-                                emission_probabilities[key]=1.0/len(key_list)
-                        e=ProbEditorBasics.emission_data(emission_probabilities)
-                        d = ProbEditorDialogs.emission_dialog(self,
-                                                              e,
-                                                              "trans. probs from %d" % tail)
-                        # write back normalized probabilities
-                        for key in emission_probabilities.keys():
-                            i = int(key[8:])
-                            self.HMM.G.vertexWeights[i][v]=emission_probabilities[key]/emission_probabilities.sum	
+                    if emission_probabilities.sum==0:
+                        key_list=emission_probabilities.keys()
+                        for key in key_list:
+                            emission_probabilities[key]=1.0/len(key_list)
+                    e=ProbEditorBasics.emission_data(emission_probabilities)
+                    d = ProbEditorDialogs.emission_dialog(self,
+                                                          e,
+                                                          "emission probs from %d"%v)
+                    # write back normalized probabilities
+                    for key in emission_probabilities.keys():
+                        i = int(key[7:])
+                        self.HMM.G.vertexWeights[i][v]=emission_probabilities[key]/emission_probabilities.sum	
 
     def EditEmissions(self):
 	d = EditEmissionProbDialog(self, self.HMM.G)

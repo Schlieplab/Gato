@@ -38,7 +38,7 @@ class pie_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
                                                self.data.order_list,
                                                self.data.color_list,
                                                self.report_func)
-        self.pie.pack()
+        self.pie.pack(fill=Tkinter.BOTH,expand=1)
 
     def recieve_change(self,change):
         if change.__class__==ProbEditorBasics.emission_change_data:
@@ -61,7 +61,9 @@ class combined_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
         else:
             return cmp(self.data[b],self.data[a])
 
-    def report_pie(self,dict):
+    def report_pie(self,what,dict):
+        if what!='new value':
+            return
         if len(self.key_list2)>0:
             if dict.has_key('other'):
                 other_val=dict['other']
@@ -106,10 +108,8 @@ class combined_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
         if len(self.key_list2)>0:
             # draw pie and bars
             bg_canvas=Tkinter.Canvas(self,
-#                                     width=400,height=300,
                                      bg='white',
-                                     highlightthickness=0,
-                                     scrollregion=(0,0,400,1000))
+                                     highlightthickness=0)
             # display first bar value in pie too
             self.key_list1.append(self.key_list2[0])
             self.pie=ProbEditorWidgets.e_pie_chart(self,
@@ -117,14 +117,24 @@ class combined_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
                                                    self.key_list1,
                                                    self.data.color_list,
                                                    self.report_pie)
-            pie_window=bg_canvas.create_window(0,0,anchor=Tkinter.NW,window=self.pie)
+            pie_size=self.pie.bbox(Tkinter.ALL)
+            pie_window=bg_canvas.create_window(0,0,
+                                               anchor=Tkinter.NW,
+                                               window=self.pie,
+                                               width=400,
+                                               height=400)
             self.color_list2=self.data.color_list[len(self.key_list1)-1:]
             self.bars=ProbEditorWidgets.e_bar_chart_y(self,
                                                       self.data.emissions,
                                                       self.key_list2,
                                                       self.color_list2,
                                                       self.report_bar)
-            bar_window=bg_canvas.create_window(0,400,anchor=Tkinter.NW,window=self.bars)
+            bars_size=self.bars.bbox(Tkinter.ALL)
+            bar_window=bg_canvas.create_window(0,400,
+                                               anchor=Tkinter.NW,
+                                               window=self.bars,
+                                               width=bars_size[2],
+                                               height=bars_size[3])
             region=bg_canvas.bbox(Tkinter.ALL)
             bg_canvas.pack(side=Tkinter.LEFT,expand=1,fill=Tkinter.BOTH)
             scrollbar = Tkinter.Scrollbar(self,orient=Tkinter.VERTICAL,
@@ -134,10 +144,11 @@ class combined_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
             scrollbar.pack(fill=Tkinter.Y,expand=1)
         else:
             # only pie
-            self.pie=ProbEditorWidgets.pie_chart(self,
-                                                 self.data.emissions,
-                                                 self.data.order_list,
-                                                 self.data.color_list)
+            self.pie=ProbEditorWidgets.e_pie_chart(self,
+                                                   self.data.emissions,
+                                                   self.data.order_list,
+                                                   self.data.color_list,
+                                                   self.report_pie)
             self.pie.pack(expand=1,fill=Tkinter.BOTH)
 
 
@@ -184,8 +195,8 @@ class bar_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
                          scrollregion=region,
                          yscrollcommand=scrollbar.set)
 
-        self.bars.pack(side=Tkinter.LEFT)
-        scrollbar.pack(fill=Tkinter.Y,expand=1)
+        self.bars.pack(side=Tkinter.LEFT,expand=1,fill=Tkinter.BOTH)
+        scrollbar.pack(side=Tkinter.LEFT,fill=Tkinter.Y)
 
     def recieve_change(self,change):
         if change.__class__==ProbEditorBasics.emission_change_data:
@@ -214,7 +225,7 @@ class scaled_bar_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
                                                          self.data.order_list,
                                                          self.data.color_list,
                                                          self.bar_report)
-        self.bars.pack(fill=Tkinter.BOTH,expand=1)
+        self.bars.pack(side=Tkinter.TOP,fill=Tkinter.BOTH,expand=1)
 
     def recieve_change(self,change):
         if change.__class__==ProbEditorBasics.emission_change_data:
@@ -316,7 +327,7 @@ class emission_dialog(Tkinter.Toplevel,ProbEditorBasics.emission_editor):
     def __init__(self,parent,emissions,title):
         Tkinter.Toplevel.__init__(self,parent)
         ProbEditorBasics.emission_editor.__init__(self,emissions)
-        self.withdraw()
+##        self.withdraw()
         self.title(title)
         self.emissions=emissions
 
@@ -335,11 +346,11 @@ class emission_dialog(Tkinter.Toplevel,ProbEditorBasics.emission_editor):
         tabs=ProbEditorWidgets.tab_frame(self,tab_dict)
 
         w.pack(side=Tkinter.BOTTOM, padx=5, pady=5)
-        figures.pack(side=Tkinter.LEFT,fill=Tkinter.Y,expand=1)
+        figures.pack(side=Tkinter.LEFT,fill=Tkinter.Y)
         tabs.pack(side=Tkinter.LEFT,expand=1,fill=Tkinter.BOTH)
 
-        self.update_idletasks()
-        self.deiconify()
+##        self.update_idletasks()
+##        self.deiconify()
         self.wait_window(self)
 
     def ok(self,event=None):
