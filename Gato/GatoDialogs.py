@@ -167,10 +167,14 @@ class HTMLViewer(Toplevel):
         self.bind("<Return>", self.withdraw)
         box.pack(side=BOTTOM,fill=BOTH)
 	self.insert(htmlcode)
-	
+
+    def Update(self,htmlcode, title):
+	self.titleprefix = title
+	self.insert(htmlcode)
 
     def insert(self, htmlcode):
 	self.text['state'] = NORMAL
+	self.text.delete('0.0', END)
 
 	writer = HTMLWriter(self.text, self)
 	format = formatter.AbstractFormatter(writer)

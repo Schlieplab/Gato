@@ -82,6 +82,8 @@ class AlgoWin(Frame):
     def __init__(self, parent=None):
 	Frame.__init__(self,parent)
 	Splash = SplashScreen(self.master)
+
+	# Create widgets
 	self.pack()
 	self.pack(expand=1,fill=BOTH) # Makes menuBar and toolBar sizeable
 	self.makeMenuBar()
@@ -89,12 +91,21 @@ class AlgoWin(Frame):
 	self.makeToolBar()
 	self.master.title("Gato _VERSION_ - Algorithm")
 	self.master.iconname("Gato _VERSION_")
+
 	self.algorithm = Algorithm()
-	self.algorithm.SetGUI(self) # So that algorithm can call us back
+	self.algorithm.SetGUI(self) # So that algorithm can call us
 	self.graphDisplay = GraphDisplayToplevel()
 	self.secondaryGraphDisplay = None
+	self.AboutAlgorithmDialog = None
+	self.AboutGraphDialog = None
+
 	self.lastActiveLine = 0
-	self.goOn = IntVar()
+
+	self.algorithmIsRunning = 0    # state
+	self.commandAfterStop = None   # command to call after forced Stop
+
+	self.goOn = IntVar()           # lock variable to avoid busy idling
+
 	self.master.protocol('WM_DELETE_WINDOW',self.Quit) # Handle WM Kills
 	Splash.Destroy()
 	# Make AlgoWins requested size its minimal size to keep
@@ -109,9 +120,9 @@ class AlgoWin(Frame):
 	    self.master.minsize(self.master.winfo_reqwidth(),
 				self.master.winfo_reqheight() +
 				wmExtras[0] + wmExtras[1])
+	self.BindKeys(self.master)
+	self.BindKeys(self.graphDisplay)
 
-
-	self.BindKeys()
 
     ############################################################
     #
@@ -165,6 +176,8 @@ class AlgoWin(Frame):
 	    self.apple.add_separator()
 	    self.apple.add_command(label='About Algorithm',	
 				   command=self.AboutAlgorithm)
+	    self.apple.add_command(label='About Graph',	
+				   command=self.AboutGraph)
 	    self.menubar.add_cascade(menu=self.apple)
 	else: # ... on other systems we add a help menu 
 	    self.helpMenu=Menu(self.menubar, tearoff=0, name='help')
@@ -175,6 +188,8 @@ class AlgoWin(Frame):
 	    self.helpMenu.add_separator()
 	    self.helpMenu.add_command(label='About Algorithm',	
 				      command=self.AboutAlgorithm)
+	    self.helpMenu.add_command(label='About Graph',	
+				      command=self.AboutGraph)
 	    self.menubar.add_cascade(label="Help", menu=self.helpMenu, 
 				     underline=0)
 
@@ -247,6 +262,7 @@ class AlgoWin(Frame):
 	""" Pops up a second graph window """
 	if self.secondaryGraphDisplay == None:
 	    self.secondaryGraphDisplay = GraphDisplayToplevel()
+	    self.BindKeys(self.secondaryGraphDisplay)
 	else:
 	    self.secondaryGraphDisplay.Show()
 
@@ -276,7 +292,7 @@ class AlgoWin(Frame):
 	    - CmdStop
 	    - CmdStep
 	    - CmdContinue """
-	self.goOn.set(self.goOn.get() + 1)
+	self.goOn.set(self.goOn.get() + 1) #XXX possible overflow
 
 
     def activateMenu(self):
@@ -314,6 +330,11 @@ class AlgoWin(Frame):
     def OpenAlgorithm(self,file=""):
 	""" GUI to allow selection of algorithm to open 
             file parameter for testing purposes """
+	if self.algorithmIsRunning:
+	    self.CmdStop()
+	    self.commandAfterStop = self.OpenAlgorithm
+	    return
+
 	if file == "": # caller did not specify file
 	    file = askopenfilename(title="Open Algorithm",
 				   defaultextension=".py",
@@ -335,10 +356,18 @@ class AlgoWin(Frame):
 		self.buttonStart['state'] = NORMAL 
 	    self.master.title("Gato _VERSION_- " + stripPath(file))
 
+	    if self.AboutAlgorithmDialog:
+		self.AboutAlgorithmDialog.Update(self.algorithm.About(), "About Algorithm")
+
 
     def OpenGraph(self,file=""):
 	""" GUI to allow selection of graph to open 
             file parameter for testing purposes """
+	if self.algorithmIsRunning:
+	    self.CmdStop()
+	    self.commandAfterStop = self.OpenGraph
+	    return
+
   	if file == "": # caller did not specify file 
 	    file = askopenfilename(title="Open Graph",
 				   defaultextension=".cat",
@@ -352,6 +381,8 @@ class AlgoWin(Frame):
 	    self.algorithm.OpenGraph(file)
 	    if self.algorithm.ReadyToStart():
 		self.buttonStart['state'] = NORMAL 
+	    if self.AboutGraphDialog:
+		self.AboutGraphDialog.Update(self.algorithm.graph.About(), "About Graph")
 
 
     def OptionColors(self):
@@ -382,6 +413,11 @@ class AlgoWin(Frame):
 
 
     def Quit(self):
+	if self.algorithmIsRunning:
+	    self.CmdStop()
+	    self.commandAfterStop = self.Quit
+	    return
+
 	if askokcancel("Quit","Do you really want to quit?"):
 	    Frame.quit(self)
 
@@ -468,6 +504,11 @@ class AlgoWin(Frame):
 
     def AboutAlgorithm(self):
 	d = HTMLViewer(self.algorithm.About(), "About Algorithm", self.master)
+	self.AboutAlgorithmDialog = d
+
+    def AboutGraph(self):
+	d = HTMLViewer(self.algorithm.graph.About(), "About Graph", self.master)
+	self.AboutGraphDialog = d
 
     ############################################################
     #
@@ -478,13 +519,13 @@ class AlgoWin(Frame):
     #
     def CmdStart(self):
 	""" Command linked to toolbar 'Start' """
-	self.deactivateMenu()
-	
+	# self.deactivateMenu()
 	self.buttonStart['state']    = DISABLED 
 	self.buttonStep['state']     = NORMAL 
 	self.buttonTrace['state']    = NORMAL
 	self.buttonContinue['state'] = NORMAL
 	self.buttonStop['state']     = NORMAL
+	self.algorithmIsRunning = 1
 	self.algorithm.Start()
 
 	
@@ -508,7 +549,11 @@ class AlgoWin(Frame):
 	if self.lastActiveLine != 0:
 	    self.unTagLine(self.lastActiveLine,'Active')
 	self.update() # Forcing redraw
-	self.activateMenu()
+	self.algorithmIsRunning = 0
+	if self.commandAfterStop != None:
+	    self.commandAfterStop()
+	    self.commandAfterStop = None
+	# self.activateMenu()
 	
 
     def CmdStep(self):
@@ -539,13 +584,14 @@ class AlgoWin(Frame):
     # Key commands for Tool bar Commands
     #
 
-    def BindKeys(self):
-	self.master.bind_all('s', self.KeyStart)
-	self.master.bind_all('x', self.KeyStop)
-	self.master.bind_all('<space>', self.KeyStep)
-	self.master.bind_all('c', self.KeyContinue)
-	self.master.bind_all('t', self.KeyTrace)
-	self.master.bind_all('b', self.KeyBreak)
+    def BindKeys(self, widget):
+        # self.master.bind_all screws up EPSF save dialog
+	widget.bind('s', self.KeyStart)
+	widget.bind('x', self.KeyStop)
+	widget.bind('<space>', self.KeyStep)
+	widget.bind('c', self.KeyContinue)
+	widget.bind('t', self.KeyTrace)
+	widget.bind('b', self.KeyBreak)
 
   
     def KeyStart(self, event):
@@ -561,6 +607,8 @@ class AlgoWin(Frame):
 	""" Command linked to toolbar 'Step' """
 	if self.buttonStep['state'] != DISABLED:
 	    self.CmdStep()
+	else:
+	    self.KeyStart(event)
 
     def KeyContinue(self, event):
 	""" Command linked to toolbar 'Continue' """
@@ -943,8 +991,6 @@ class Algorithm:
 	    pass
 
 	return options
-
-
 
 
     def About(self):

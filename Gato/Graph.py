@@ -286,6 +286,11 @@ class Graph:
 	except:
 	    return 'Unknown'
 
+    def About(self):
+	""" Return string containing HTML code providing information
+            about the graph """
+        return "<HTML><BODY> <H3>No information available</H3></BODY></HTML>"
+
 
 ################################################################################
 #
