@@ -2,15 +2,11 @@
 Einordnen:
 ----------------------------------------------------------------
 
-* CATBox update (TP -- einchecken)
-
-* Testen implementieren
+* VertexLabel in weiss, wenn Knoten dunkel (alle Farben < 128 ???)
 
 * MouseUp ohne MouseDown vorher ignorieren (Tk-Problem?)
 
 * Sortieren Algorithmen/Graphen Kapitelweise
-
-* DefaultInfo zurücksetzen bei Algorithmenstart
 
 * Breakpoints löschen/setzen klemmt manchmal
 
@@ -30,6 +26,7 @@ Algorithms:
 ----------------------------------------------------------------
 Specific Algorithms:
 ----------------------------------------------------------------
+* BFS/DFS mit parent-array und BFS/DFS-Baum Darstellung
 
 - MSTKruskal/Greedy Tree info # components #vertices in largest, 
   sum of weights largest.
@@ -41,15 +38,13 @@ Specific Algorithms:
 - MFFordFulkerson
   Flow in Graph window sichtbar machen (rosa?)
 
-- FindPath von source und sink gleichzeitig
-
-- Min Cost Flow
-
-- Interactive MST 
 
 ----------------------------------------------------------------
 Editor:
 ----------------------------------------------------------------
+* gred: directed toggle status bei Speichern undirected, und dann New
+
+* gred: start mit window in groesse wie Gato 2-window layout
 
 - Q: global grab for edge weight dialog ?
 
@@ -71,6 +66,11 @@ Editor:
 ---------------------------------------------------------------
 GUI:
 ----------------------------------------------------------------
+* Info-Fenster (Legende Farben, Info text)
+
+* Syntax-Highlight ? Farben/Fonts ?
+
+* Window layout
 
 - Enable tracing button only on traceable lines (+color of lines) 
 
@@ -80,9 +80,6 @@ GUI:
 	    Print to Printer on Unix ?
 
 - Eventually add Zoom to fit 
-
-- Okay? How to control Hide/Show of second window ? Do we need to ? WM kills
-  do a withdraw so we can resuse
 
 - "File" menu disabling doesnt look right on Windows 
   very likely a Tk Bug
@@ -104,7 +101,7 @@ I/O:
 
 
 ----------------------------------------------------------------
-Quality Assurance:
+Documentation:
 ----------------------------------------------------------------
 
 - Animation API Documentation

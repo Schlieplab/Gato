@@ -17,6 +17,8 @@
 from GatoGlobals import *
 from DataStructures import VertexLabeling, Queue, Stack
 from Graph import SubGraph
+import copy
+
 
 class Animator:
     """ *Debugging* Text only Animator providing animation functions which
@@ -59,7 +61,7 @@ class AnimatedNeighborhood:
 	else:
 	    raise IndexError
 
-    def len(self):
+    def __len__(self):
 	return len(self.nbh)
 
 
@@ -67,7 +69,7 @@ class BlinkingNeighborhood:
     """ Visualizes visiting blinking (v,w) for all w when iterating over
         the Neighborhood
 
-	#Neighborhood = lambda v,a=A,g=G: BlinkingNeighborhood(a,g,v)
+	#Neighborhood = lambda v,a=A,g=G: BlinkingNeighborhood(a,g,v,c)
 	#
 	#for w in Neighborhood(v):
 	#    doSomething
@@ -83,11 +85,43 @@ class BlinkingNeighborhood:
     def __getitem__(self, i):
 	if i < len(self.nbh):
 	    self.Animator.BlinkEdge(self.v,self.nbh[i],self.color)
-	return self.nbh[i]
+	    return self.nbh[i]
+	else:
+	    raise IndexError
 
-    def len(self):
+    def __len__(self):
 	return len(self.nbh)
 
+class BlinkingTrackLastNeighborhood(BlinkingNeighborhood):
+    """ Visualizes visiting blinking (v,w) for all w when iterating over
+        the Neighborhood. It also temporarily keeps the the last blinked
+        edge grey
+
+        #Neighborhood = lambda v,a=A,g=G: BlinkingTrackLastNeighborhood(a,g,v,c,track)
+	#
+	#for w in Neighborhood(v):
+	#    doSomething
+	will blink all edges with color c, the last blinked is tracked with color 
+        track """
+    old = None
+
+
+    def __init__(self,theAnimator,G,v,c,track="grey"):
+	BlinkingNeighborhood.__init__(self,theAnimator,G,v,c)
+	self.trackColor = track
+
+    def __getitem__(self, i):
+	if BlinkingTrackLastNeighborhood.old != None and i < len(self.nbh): 
+	    old = BlinkingTrackLastNeighborhood.old
+	    self.Animator.SetEdgeColor(old[0],old[1],old[2])
+	    
+	BlinkingTrackLastNeighborhood.old = (self.v,self.nbh[i],
+					     self.Animator.GetEdgeColor(self.v,self.nbh[i]))
+	retVal = BlinkingNeighborhood.__getitem__(self,i)
+	self.Animator.SetEdgeColor(self.v,self.nbh[i],self.trackColor)
+
+	return retVal
+   
 
 class BlinkingContainerWrapper:
     """ Visualizes iterating over a list of vertices and/or edges by
@@ -101,7 +135,7 @@ class BlinkingContainerWrapper:
 
     def __init__(self, theAnimator, l, c):	
 	self.Animator = theAnimator
-	self.list = l
+	self.list = copy.copy(l)
 	self.color = c
 	
     def __getitem__(self, i):
@@ -111,9 +145,11 @@ class BlinkingContainerWrapper:
 		self.Animator.BlinkVertex(item,self.color)
 	    else:
 		self.Animator.BlinkEdge(item[0],item[1],self.color)
-	return item
+	    return item
+	else:
+	    raise IndexError
 
-    def len(self):
+    def __len__(self):
 	return len(self.list)
 
 

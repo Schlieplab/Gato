@@ -192,6 +192,7 @@ class GraphDisplay:
 	self.hasGraph = 1
 	self.SetTitle("Gato - " + graphName)
 	self.update()
+	self.DefaultInfo()
 
     def RegisterGraphInformer(self, Informer):
 	""" A graph informer is an object which supplies information
@@ -221,12 +222,14 @@ class GraphDisplay:
 
     
     def DeleteDrawItems(self):
-	""" *Internal* Delete all items on the canvas """
+	""" *Internal* Delete all items on the canvas and clear up
+            our references to it"""
 	self.DeleteDrawEdges()
 	self.DeleteDrawVertices()
 	self.DeleteDrawLabels()
 	self.DeleteVertexAnnotations()
 	self.DeleteEdgeAnnotations()
+        self.canvas.delete("all") # Remove whatever is left
 	self.drawVertex       = VertexLabeling()
 	self.drawEdges        = EdgeLabeling()
 	self.drawLabel        = VertexLabeling()
@@ -254,10 +257,12 @@ class GraphDisplay:
     def DeleteVertexAnnotations(self):
 	""" *Internal* Delete all vertex annotations on the canvas """
 	self.canvas.delete("vertexAnno")
-	
+	pass
+
     def DeleteEdgeAnnotations(self):
 	""" *Internal* Delete all edge annotations on the canvas """
 	self.canvas.delete("edgeAnno")
+	pass
 
     def CreateDrawVertex(self,v):
 	""" *Internal* Create a draw vertex for v on the canvas. Position is

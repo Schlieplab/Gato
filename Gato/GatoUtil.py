@@ -15,6 +15,10 @@
 #
 ################################################################################
 
+def gatoPath():
+    """ Returns the path to the directory containint Gato.py or Gred.py """
+    import os
+    return os.path.dirname(__name__ == '__main__' and sys.argv[0] or __file__)
 
 def extension(pathAndFile):
     """ Return ext if path/filename.ext is given """

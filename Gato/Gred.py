@@ -20,7 +20,7 @@ from DataStructures import EdgeWeight, VertexWeight
 from GraphUtil import OpenCATBoxGraph, OpenGMLGraph, SaveCATBoxGraph, WeightedGraphInformer
 from GraphEditor import GraphEditor
 from Tkinter import *
-from GatoUtil import stripPath, extension
+from GatoUtil import stripPath, extension, gatoPath
 from GatoGlobals import *
 import GatoDialogs
 from ScrolledText import *
@@ -36,7 +36,7 @@ import os
 class GredSplashScreen(GatoDialogs.SplashScreen):
 
     def CreateWidgets(self):
-	self.catIcon = PhotoImage(file=sys.path[0] + "/gred.gif")
+	self.catIcon = PhotoImage(file=os.path.join(gatoPath(), 'gred.gif'))
 	self.label = Label(self, image=self.catIcon)
 	self.label.pack(side=TOP)
 	self.label = Label(self, text=GatoDialogs.crnotice1)
@@ -48,12 +48,13 @@ class GredAboutBox(GatoDialogs.AboutBox):
 
     def body(self, master):
 	self.resizable(0,0)
-	self.catIconImage = PhotoImage(file=sys.path[0] + "/gred.gif")
+	self.catIconImage = PhotoImage(file=os.path.join(gatoPath(), 'gred.gif'))
 	self.catIcon = Label(master, image=self.catIconImage)
 	self.catIcon.pack(side=TOP)
 	label = Label(master, text=GatoDialogs.crnotice1)
 	label.pack(side=TOP)
-	label = Label(master, font="Helvetica 10", text=GatoDialogs.crnotice2, justify=LEFT)
+	label = Label(master, font="Helvetica 10", 
+		      text=GatoDialogs.crnotice2, justify=LEFT)
 	label.pack(side=TOP)
  	color = self.config("bg")[4]
 	self.infoText = ScrolledText(master, relief=FLAT, 
@@ -65,7 +66,7 @@ class GredAboutBox(GatoDialogs.AboutBox):
 				     font="Times 10")
 	self.infoText.pack(expand=0, fill=X, side=BOTTOM)
 	self.infoText.delete('0.0', END)
-	inputFile=open(sys.path[0] +"/LGPL.txt", 'r')
+	inputFile=open(os.path.join(gatoPath(), 'LGPL.txt'))
        	text = inputFile.read()
 	inputFile.close()
 	self.infoText.insert('0.0', text)	

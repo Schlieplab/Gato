@@ -1,3 +1,37 @@
+
+* Tastaturbefehle zum Steppen etc.
+
+- Okay? How to control Hide/Show of second window ? Do we need to ? WM kills
+  do a withdraw so we can resuse
+  
+Alle Prologs sollten jetzt haben:
+
+breakpoints = [1,7,9]
+interactive = [1,2,3]
+graphDisplays = 1
+about = """<HEAD>
+<TITLE>The silly algorithm</TITLE>
+</HEAD>
+<BODY>
+
+dasdasdasda
+
+</BODY>
+"""
+
+* BlinkingNeighborhood letzte "geblinkte" Kante bleibt grau? bis
+  naechste Kante blinkt. Siehe BlinkingTrackLastNeighborhood
+
+* DefaultInfo zurücksetzen bei Algorithmenstart
+
+* PickVertex & PickEdge moeglich mit Default-Vertices/Edges statt
+  random
+  
+  Achtung: Syntax hat sich geandert: PickEdge(default=None, filter=None, visual=None)
+
+* Bei Start etc. alles im Canvas loeschen.
+
+================================================================================
 - Moving vertex fucks up euclidean edge weights
   Correcting upon save ?
 

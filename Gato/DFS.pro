@@ -14,7 +14,8 @@
 #
 ################################################################################
 pickCallback = lambda v, a=A: A.SetVertexAnnotation(v,"source")
-PickVertex = lambda f=pickCallback: self.PickVertex(f)
+
+PickVertex = lambda f=pickCallback: self.PickVertex(1,None,f)
 
 Neighborhood = lambda v,a=A,g=G: AnimatedNeighborhood(a,g,v)
 Vertices = G.vertices          

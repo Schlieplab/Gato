@@ -110,6 +110,8 @@ class AlgoWin(Frame):
 				wmExtras[0] + wmExtras[1])
 
 
+	self.BindKeys()
+
     ############################################################
     #
     # Create GUI
@@ -503,6 +505,44 @@ class AlgoWin(Frame):
 
     ############################################################
     #
+    # Key commands for Tool bar Commands
+    #
+
+    def BindKeys(self):
+	self.master.bind_all('s', self.KeyStart)
+	self.master.bind_all('x', self.KeyStop)
+	self.master.bind_all('<space>', self.KeyStep)
+	self.master.bind_all('c', self.KeyContinue)
+	self.master.bind_all('t', self.KeyTrace)
+
+  
+    def KeyStart(self, event):
+	""" Command linked to toolbar 'Start' """
+	if self.buttonStart['state'] == NORMAL:
+	    self.CmdStart()
+
+    def KeyStop(self, event):
+	if self.buttonStop['state'] == NORMAL:
+	    self.CmdStop()
+
+    def KeyStep(self, event):
+	""" Command linked to toolbar 'Step' """
+	if self.buttonStep['state'] == NORMAL:
+	    self.CmdStep()
+
+    def KeyContinue(self, event):
+	""" Command linked to toolbar 'Continue' """
+	if self.buttonContinue['state'] == NORMAL:
+	    self.CmdContinue()
+
+    def KeyTrace(self, event):
+	""" Command linked to toolbar 'Trace' """
+	if self.buttonTrace['state'] == NORMAL:
+	    self.CmdTrace() 
+
+
+    ############################################################
+    #
     # Mouse Commands
     #		
     
@@ -590,10 +630,7 @@ class AlgoWin(Frame):
 	
 	self.graphDisplay.DefaultInfo()
 	if self.clickResult[0] == 'auto':
-	    if type == 'vertex':
-		return whrandom.choice(self.algorithm.graph.vertices)
-	    else:	
-		return whrandom.choice(self.algorithm.graph.Edges())
+	    return None
 	else:
 	    return self.clickResult[1]
 
@@ -791,8 +828,37 @@ class Algorithm:
 	self.algoFileName = file
 	input=open(file, 'r')
        	self.source = input.read()
-	#self.breakpoints = []
-	#self.interactiveLines = [5, 7, 12]
+	input.close()
+	
+	# Now read in the prolog as a module to get access to the following data
+	# Maybe should obfuscate the names ala xxx_<bla>, have one dict ?
+  	import imp
+	input = open(os.path.splitext(self.algoFileName)[0] + ".pro", 'r')
+	mod = imp.load_source('xxx', os.path.split(self.algoFileName)[0], input)
+	input.close()
+
+	try:
+	    self.breakpoints   = mod.__dict__['breakpoints']
+	except:
+	    self.breakpoints   = []
+	try:
+	    self.interactive   = mod.__dict__['interactive']
+	except:
+	    self.interactive   = []
+	try:
+	    self.graphDisplays = mod.__dict__['graphDisplays']
+	except:
+	    self.graphDisplays = None
+	try:
+	    self.about         = mod.__dict__['about']
+	except:
+	    self.about         = """<HTML><BODY>
+	    <H3>No information available</H3></BODY></HTML> """
+	
+
+	if self.graphDisplays != None:
+	    if self.graphDisplays == 1:
+		self.GUI.WithdrawSecondaryGraphDisplay()
 
 
     def OpenGraph(self,file):
@@ -894,7 +960,9 @@ class Algorithm:
 	self.breakpoints = []
 
     def SetBreakpoints(self, list):
-	""" Set all breakpoints in list: So an algorithm prolog
+	""" NOTE: Use 'breakpoint' var in prolog instead. 
+
+            Set all breakpoints in list: So an algorithm prolog
             can set a bunch of pre-assigned breakpoints at once """
 	for line in list:
 	    self.GUI.ShowBreakpoint(line)
@@ -945,22 +1013,48 @@ class Algorithm:
 		if not r:
 		    self.GUI.CmdStop()
 
-    def PickVertex(self,callback=None):
-	""" Pick a vertex interactively  
-            callback is a function which takes the vertex as its 
-            only argument and cause e.g. some visual feedback""" 
-        v = self.GUI.PickInteractive('vertex')
-	if callback is not None:
-	    callback(v)
-  	return v
+    def PickVertex(self, default=None, filter=None, visual=None):
+	""" Pick a vertex interactively. 
+
+	    - default: specifies the vertex returned when user does not
+              want to select one. If default==None, a random
+              vertex not subject to filter will be returned
+
+            - filter: a function which should return a non-None value
+              if the passed vertex is acceptable
+
+            - visual is a function which takes the vertex as its 
+              only argument and cause e.g. some visual feedback """ 
+        v = self.GUI.PickInteractive('vertex', filter)
+	if v == None:
+	    if default == None:
+		v = whrandom.choice(self.graph.vertices)
+	    else:
+		v = default
+ 	if visual is not None:
+	    visual(v)
+ 	return v
 	
-    def PickEdge(self,callback=None):
+    def PickEdge(self, default=None, filter=None, visual=None):
 	""" Pick an edge interactively  
-            callback is a function which takes the edge as its 
-            only argument and cause e.g. some visual feedback  """  
- 	e = self.GUI.PickInteractive('edge')
-	if callback is not None:
-	    callback(e)
+	    - default: specifies the edge returned when user does not
+              want to select one. If default==None, a random
+              edge not subject to filter will be returned
+
+            - filter: a function which should return a non-None value
+              if the passed edge is acceptable
+
+            - visual is a function which takes the edge as its 
+              only argument and cause e.g. some visual feedback """ 
+ 	e = self.GUI.PickInteractive('edge', filter)
+	if e == None:
+	    if default == None:
+		e = whrandom.choice(self.graph.Edges())
+	    else:
+		e = default
+
+	if visual is not None:
+	    visual(e)
   	return e
 
 
@@ -968,9 +1062,30 @@ class Algorithm:
 if __name__ == '__main__':
     #root = Tk()
     #print sys.path
+    #import sys
+    #print sys.path
     app = AlgoWin()    
     # XXX GvR recommended clutch for forcing AlgoWin to front on windows
     #root.iconify()
     #root.update()
     #root.deiconify()
+
+    #======================================================================
+    #
+    # Gato.py <algorithm> <graph>
+    #
+    if (len(sys.argv) > 1):
+	algorithm = sys.argv[1]
+	graph = sys.argv[2]
+
+	app.OpenAlgorithm(algorithm)
+	app.update_idletasks()
+	app.update()
+	app.OpenGraph(graph)
+	app.update_idletasks()
+	app.update()
+	app.after_idle(app.CmdContinue) # after idle needed since CmdStart
+	app.CmdStart()
+	app.update_idletasks()
+
     app.mainloop()

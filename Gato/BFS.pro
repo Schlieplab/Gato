@@ -18,7 +18,7 @@ pickCallback = lambda v, a=A: A.SetVertexAnnotation(v,"source")
 
 #self.NeededProperties({'pMist':1})
 self.SetBreakpoints([11])
-PickVertex = lambda f=pickCallback: self.PickVertex(f)
+PickVertex = lambda f=pickCallback: self.PickVertex(1,None,f)
 Neighborhood = lambda v,a=A,g=G: AnimatedNeighborhood(a,g,v)
 Vertices = G.vertices          
 visited = AnimatedVertexLabeling(A)    
