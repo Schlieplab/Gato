@@ -442,22 +442,22 @@ class TreeDialog(tkSimpleDialog.Dialog):
     def validate(self):
         try:
             d=string.atoi(self.degree.get())
-            if d<1 or d>100:
+            if d<1 or d>20:
                 raise degreeError   
         except:
             showwarning("Please try again !",
                         "min. degree = 1\n"
-                        "max. degree = 100")
+                        "max. degree = 20")
             return 0
 
         try:
             h=string.atoi(self.height.get())
-            if h<0 or h>100:
+            if h<0 or h>50:
                 raise heightError   
         except:
             showwarning("Please try again !",
                         "min. height = 0\n"
-                        "max. height = 100")
+                        "max. height = 50")
             return 0
 
         try:
@@ -477,9 +477,11 @@ class TreeDialog(tkSimpleDialog.Dialog):
             if d==1:
                 max_nodes=h+1
             else:
-                max_nodes=(d**(h+1)-1)/(d-1)
+                max_nodes=(float(d)**(h+1)-1)/float(d-1)
             if min_nodes>max_nodes:
                 max_nodes=min_nodes
+	    if max_nodes>1000:
+		max_nodes=1000
 	    if n<min_nodes or n>max_nodes:
                 showwarning("Please try again !",
                             "min. #nodes = %i\n"
@@ -588,7 +590,8 @@ class randomTreeCreator(Creator):
                 max_nodes=1
             else:
                 min_nodes=max(1,ceil(float(n-G.Order())/
-                                     float((degree**(height-h)-1)/(degree-1))))
+                                     float((float(degree)**(height-h)-1)/
+					   (degree-1))))
                 max_nodes=min(n-G.Order()-height+h+1,len(nodes[h])*degree)     
             nodes_nr=whrandom.randint(min_nodes,max_nodes)
             for i in range(0,nodes_nr):
