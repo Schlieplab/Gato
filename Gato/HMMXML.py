@@ -5,7 +5,7 @@
 #       version _VERSION_ from _BUILDDATE_. You can find more information at 
 #       http://www.zpr.uni-koeln.de/~gato
 #
-#	file:   HMMEd.py
+#	file:   HMMXML.py
 #	author: Alexander Schliep (schliep@zpr.uni-koeln.de)
 #
 #       _COPYRIGHT_
@@ -68,6 +68,7 @@ class DataFactory:
         self.factories['intArray'] = lambda s, f=self.arrayFromCSV: f(s, int)
         self.factories['floatArray'] = lambda s, f=self.arrayFromCSV: f(s, float)
         self.factories['DiscreteProbDist'] = self.factories['floatArray']
+        self.factories['HigherDiscreteProbDist'] = self.factories['floatArray']
 
     def __call__(self, type, stringArg):
         return self.factories[type](stringArg)
@@ -77,6 +78,8 @@ class DataFactory:
 
     def arrayFromCSV(self, s, type):
         retVal = []
+
+        print "DataFactory.arrayFromCSV(", s, ")"
         
         items = string.split(s,',')
         for i in items:

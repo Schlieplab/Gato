@@ -8,6 +8,9 @@ CATBox/Gato To-Do Stand: 9/15/00
 Einordnen:
 ----------------------------------------------------------------
 
+* GraphDisplay: Moving vertices done delete/new
+
+* GraphDisplay: Move Annotations with vertices/edges
 
 * Gred: RandomizeEdgeWeights only for non-euclidean graphs
 
@@ -127,14 +130,7 @@ I/O:
 
 - MS/DOS (und Mac) Zeilenende-Kennung(en) richtig behandeln
 
-- CATBox Fileformat 
-	HTML-Informationen ueber Graphen reinbasteln,
-        Knotengewichte, Property Support in Files
-        Add label name support
-     
-- Other Fileformats:
-  GML. Add Mma, LEDA(Does one exist?) graph format. 
-
+- XML/GraphML einbauen
 
 ----------------------------------------------------------------
 Documentation:
