@@ -814,8 +814,7 @@ class AlgoWin(Frame):
 	self.AboutGraphDialog = d
 
     ############################################################
-    #
-    # Tool bar Commands
+    #    # Tool bar Commands
     #
     # The tool bar commands are passed as call back parameters to 
     # the tool bar buttons.
