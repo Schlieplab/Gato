@@ -622,9 +622,9 @@ class FlowWrapper:
             self.excess[v] = 0
 
     def __setitem__(self, e, val):
-	if self.excess[e[0]] != gInfinity:
+	if (self.excess[e[0]] != gInfinity) and (self.excess[e[0]] != -gInfinity):
             self.excess[e[0]] = self.excess[e[0]] + self.flow[e] - val
-        if self.excess[e[1]] != gInfinity:
+	if (self.excess[e[1]] != gInfinity) and (self.excess[e[1]] != -gInfinity):
             self.excess[e[1]] = self.excess[e[1]] - self.flow[e] + val  
         self.flow[e] = val
         if val == self.cap[e]:     
