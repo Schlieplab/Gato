@@ -570,14 +570,20 @@ class GraphDisplay:
 		self.canvas.itemconfig(self.drawVertex[v], fill=color)
 	self.update()
 	
-    def SetAllEdgesColor(self,color,graph=None):
+    def SetAllEdgesColor(self,color,graph=None, leaveColors = None):
 	""" Change the color of all edges to 'color' at once
             You can also pass an induced subgraph  """
 	if graph == None:
-	    self.canvas.itemconfig("edges", fill=color)
+            if leaveColors == None:	
+	        self.canvas.itemconfig("edges", fill=color)
+            else:
+                for e in self.G.Edges():
+                    if not self.GetEdgeColor(e[0],e[1]) in leaveColors:
+                        self.SetEdgeColor(e[0],e[1],color)
 	else: # induced subgraph
 	    for e in graph.Edges():
-		self.SetEdgeColor(e[0],e[1],color)
+                if leaveColors == None or not (self.GetEdgeColor(e[0],e[1]) in leaveColors):
+                    self.SetEdgeColor(e[0],e[1],color)
 	self.update()
 
 
