@@ -223,13 +223,12 @@ class NamedCollectionEditor(tkSimpleDialog.Dialog):
         self.lb.insert(END, name)
         
     def editItem(self):
-        name = self.lb.curselection()
-        print name
-        self.collection.edit(name)
+        name = self.lb.get(self.lb.curselection())
+        if name is not "":
+            self.collection.edit(self, name)
         
     def deleteItem(self):
-        name = self.lb.curselection()
-        print name
+        name = self.lb.get(self.lb.curselection())
         self.collection.delete(name)
         self.lb.delete(self.lb.curselection())
 

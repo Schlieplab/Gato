@@ -83,6 +83,9 @@ class NamedDistributions:
     def __init__(self, itsHMM):
         self.initialize()
         self.itsHMM = itsHMM
+        self.code2name = {-1:'None'}
+        self.name2code = {'None':-1}
+        self.maxCode = 0
 
     def initialize(self):
         self.dist = {}
@@ -91,17 +94,22 @@ class NamedDistributions:
     def addDistribution(self, name, order, p): 
         self.dist[name] = p
         self.order[name] = order
+        self.code2name[self.maxCode] = name
+        self.name2code[name] = self.maxCode
+        self.maxCode += 1
 
     def deleteDistribution(self, name):
         del self.dist[name]
         del self.order[name]
+        del self.code2name[self.name2code[name]]
+        del self.name2code[name]
    
     def fromDOM(self, XMLNode):
         self.initialize()
         datas = XMLNode.getElementsByTagName("hmm:background")
         for data in datas:
             dataKey = data.attributes['key'].nodeValue
-            dataOrder = data.attributes['order'].nodeValue
+            dataOrder = int(data.attributes['order'].nodeValue)
             dataValue = ""
             for child in data.childNodes:
                 dataValue += child.nodeValue
@@ -128,14 +136,34 @@ class NamedDistributions:
         return self.dist.keys()
 
     def add(self, name):
-        print "adding ", name
+        order = tkSimpleDialog.askinteger("Distribution %s" % name, "Order", initialvalue=0)
+        tmp = [1.0 / self.itsHMM.hmmAlphabet.size()] * self.itsHMM.hmmAlphabet.size()
+        p = tmp * (order + 1)
+        print "adding", name, order, p
+        self.addDistribution(name, order, p)
 
     def delete(self, name):
-        print "adding ", name
+        self.deleteDistribution(name)
         
-    def edit(self, name):
-        print "adding ", name
-        
+    def edit(self, master, name):
+        if self.order[name] != 0:
+            print "Sorry, cannot edit higher order distributions yet"
+        else:
+            emission_probabilities = ProbEditorBasics.ProbDict({})
+            
+            for code in self.itsHMM.hmmAlphabet.name.keys():
+                label = self.itsHMM.hmmAlphabet.name[code]
+                weight = self.dist[name][code]
+                emission_probabilities.update({label:weight})
+                
+            e = ProbEditorBasics.emission_data(emission_probabilities)
+            d = ProbEditorDialogs.emission_dialog(master, e,
+                                                  "background emission probs %s" % name)
+            if d.success():
+                # write back normalized probabilities
+                for key in emission_probabilities.keys():
+                    code = self.itsHMM.hmmAlphabet.name2code[key]
+                    weight = self.dist[name][code] = emission_probabilities[key] / emission_probabilities.sum
 
 
 class DOM_Map:
@@ -299,8 +327,11 @@ class HMMState:
         self.duration = DefaultedInt()
         self.duration.setDefault(1, 0)
 
+        self.background = PopupableInt(-1)
+        self.background.setPopup(self.itsHMM.backgroundDistributions.code2name, self.itsHMM.backgroundDistributions.name2code, 10)
 
-    editableAttr = ['id', 'state_class', 'label', 'order', 'initial', 'tiedto', 'reading_frame', 'duration']
+
+    editableAttr = ['id', 'state_class', 'label', 'order', 'initial', 'tiedto', 'reading_frame', 'duration', 'background']
     xmlAttr = editableAttr + ['ngeom', 'emissions']
 
 
@@ -343,6 +374,9 @@ class HMMState:
             elif dataKey == 'reading-frame':
                 self.reading_frame = typed_assign(self.reading_frame, int(dataValue))
 
+            elif dataKey == 'background':
+                self.background = typed_assign(self.background, self.itsHMM.backgroundDistributions.name2code[dataValue])
+
             elif dataKey == 'duration':
                 self.duration = typed_assign(self.duration, int(dataValue))
                                     
@@ -383,6 +417,9 @@ class HMMState:
 
         if self.reading_frame != -1:
             writeData(XMLDoc, node, 'reading-frame', self.reading_frame)
+
+        if self.background != -1:
+            writeData(XMLDoc, node, 'background', self.itsHMM.backgroundDistributions.code2name[self.background])
 
         if not self.duration.useDefault:
             writeData(XMLDoc, node, 'duration', self.duration)
@@ -452,6 +489,7 @@ class HMM:
         
         self.hmmClass.fromDOM(XMLNode.getElementsByTagName("hmm:class")[0]) # One class!
         self.hmmAlphabet.fromDOM(XMLNode.getElementsByTagName("hmm:alphabet")[0]) # One alphabet!
+        self.backgroundDistributions.fromDOM(XMLNode)
 
         nodes = XMLNode.getElementsByTagName("node")
         for n in nodes:
@@ -486,6 +524,7 @@ class HMM:
 
         self.hmmClass.toDOM(XMLDoc, graphml)
         self.hmmAlphabet.toDOM(XMLDoc, graphml) 
+        self.backgroundDistributions.toDOM(XMLDoc, graphml) 
 
         graph = XMLDoc.createElement("graph")
 

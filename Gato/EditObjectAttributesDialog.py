@@ -346,6 +346,25 @@ class Popupable:
     def validate(self, value):
         return 1
 
+##class PopupableStr(str):
+##    """Class for variables which can be edited via a pop-up menu
+##       - values: array of values 
+##       - width: maximal string length in pop up
+##    """
+##    def setPopup(self, values, width = None):
+
+##        self.values = values
+##        self.width = width
+
+##        if width == None:
+##            self.width = 0
+        
+##            for s in values:
+##                self.width = max(len(s), self.width)
+           
+##    def validate(self, value):
+##        return 1
+
 
 class AlwaysValidate:
     """Mix-in for variables which always are valid"""
