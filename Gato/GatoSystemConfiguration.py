@@ -45,8 +45,8 @@ try:
 except ImportError:
     # we are not on a windows system
     pass
-
-
+    
+    
 gatoMimeType="application/gato"
 gatoFileExtension="gato"
 gatoDescription="gato graph/algorithm tool"
@@ -58,18 +58,18 @@ class ConfigurationException(Exception):
     def __init__(self,message):
         Exception.__init__(self)
         self.message=message
-
+        
     def __repr__(self):
         if hasattr(self,"message"):
             return "%s: %s"%(self.__class__.__name__,self.message)
         else:
             return self.__class__.__name__
-
+            
 class configureOS:
     """
     system configuration for gato file type support
     """
-
+    
     def __init__(self,DialogMaster=None):
         """
         creates configurator object
@@ -77,45 +77,45 @@ class configureOS:
         # find script location
         self.myExecutable=os.path.abspath(sys.argv[0])
         self.DialogMaster=DialogMaster
-
+        
     def check(self):
         """
         check, if already configured, returns true, if this executable is installed
         """
         raise ConfigurationException("base class method should not be called")
-
+        
     def askUserInstall(self):
         """
         ask user, if she/he likes configuration
         """
         raise ConfigurationException("base class method should not be called")
-
+        
     def askUserUninstall(self):
         """
         ask user, if she/he likes uninstallation
         """
         raise ConfigurationException("base class method should not be called")
-
+        
     def configureSystem(self):
         """
         do system configuration
         """
         raise ConfigurationException("base class method should not be called")
-
+        
     def unconfigureSystem(self):
         """
         do system unconfiguration
         """
         raise ConfigurationException("base class method should not be called")
-
+        
     def runInstall(self):
         if not self.check() and self.askUserInstall():
             self.configureSystem()
-
+            
     def runUninstall(self):
         if self.check() and self.askUserUninstall():
             self.unconfigureSystem()
-
+            
     def installBinary(self,path):
         """
         installs this binary to another place
@@ -128,7 +128,7 @@ class configureOS:
             os.remove(newLocation)
         shutil.copy2(self.myExecutable,newLocation)
         self.myExecutable=os.path.abspath(newLocation)
-
+        
 class configureUnsupported(configureOS):
     """
     some tips and exit
@@ -139,87 +139,87 @@ class configureUnsupported(configureOS):
         """
         """
         print "unsupported operating system %s"%sys.platform
-
+        
 class configureUNIX(configureOS):
     """
     linux configuration
     expands mailcap file
     """
-
+    
     def __init__(self,DialogMaster=None):
         """
         find script location, configuration file location...
         """
         configureOS.__init__(self,DialogMaster)
-
+        
         # find mailcap file
         if not os.environ.has_key("HOME"):
             raise ConfigurationException("could not determine home directory")
         self.mailcapFile=os.path.join(os.environ["HOME"],".mailcap")
         self.mime_typesFile=os.path.join(os.environ["HOME"],".mime.types")
-
+        
     def check(self):
         """
         """
         self.cache_check_mailcap=self.check_mailcap()
         self.cache_check_mime_types=self.check_mime_types()
         return self.cache_check_mailcap and self.cache_check_mime_types
-
+        
     def check_mailcap(self):
         """        
         """
         if not os.access(self.mailcapFile,os.R_OK):
             return 0
-
+            
         mailcap=file(self.mailcapFile,"r")
         while 1:
             line=mailcap.readline()
             # line end
             if not line:
                 break
-
-            # skip comments
+                
+                # skip comments
             if line[0]=="#":
                 continue
-
+                
             line=line.strip()
             while line[-1]=="\\":
                 line=line[:-1]+mailcap.readline().rstrip()
             entries=line.split(";")
             (mimeType,viewCommand)=map(string.strip,entries[:2])
-
+            
             if (mimeType==gatoMimeType and
                 os.path.exists(viewCommand.split(" ")[0]) and
                 os.path.samefile(viewCommand.split(" ")[0],self.myExecutable)):
                 return 1
-
+                
         return 0
-
+        
     def check_mime_types(self):
         """
         """
         if not os.access(self.mime_typesFile,os.R_OK):
             return 0
-
+            
         mime_types=file(self.mime_typesFile,"r")
         while 1:
             line=mime_types.readline()
             # line end
             if not line:
                 break
-
-            # skip comments
+                
+                # skip comments
             if line[0]=="#":
                 continue
-
-            #catenate lines
+                
+                #catenate lines
             line=line.strip()
             while line[-1]=="\\":
                 newLine=mime_types.readline()
                 if newLine=="":
                     break
                 line=line[:-1]+newLine.rstrip()
-
+                
             mime_dict={}
             # format: key=value or key="value"
             kv_pair=re.compile("(\w+)=((?:\"[^\"]*\")|(?:[^\"\s]*))")
@@ -231,19 +231,19 @@ class configureUNIX(configureOS):
                 mime_dict[key]=value
             if mime_dict.get("type")=="application/gato" and mime_dict.get("exts")=="gato":
                 return 1
-
+                
         return 0
-
+        
     class askUserInstallDialog(tkSimpleDialog.Dialog):
         """
         dialog for system file manipulation of linux systems
         """
-
+        
         def __init__(self,master,title=None):
             if not title:
                 title="System Configuration"
             tkSimpleDialog.Dialog.__init__(self,master,title)
-        
+            
         def body(self, master):
             """
             """
@@ -256,7 +256,7 @@ class configureUNIX(configureOS):
                                 command=self.enablePathEntry).grid(row=row,column=1)
             Tkinter.Radiobutton(master, text="No",  variable=self.installQ, value=2,
                                 command=self.disablePathEntry).grid(row=row,column=2)
-
+            
             # install location
             row+=1
             self.installP=Tkinter.Entry(master)
@@ -268,7 +268,7 @@ class configureUNIX(configureOS):
                                         command=self.askInstallPrefix,
                                         pady=0)
             self.searchP.grid(row=row,column=1,columnspan=2)
-
+            
             # mime type reg?
             row+=1
             Tkinter.Label(master, text="add gato mime type").grid(row=row,column=0)
@@ -278,7 +278,7 @@ class configureUNIX(configureOS):
                                 value=1).grid(row=row,column=1)
             Tkinter.Radiobutton(master, text="No",  variable=self.mimeQ,
                                 value=2).grid(row=row,column=2)
-
+            
             # mime type reg?
             row+=1
             Tkinter.Label(master, text="add gato to .mailcap").grid(row=row,column=0)
@@ -288,7 +288,7 @@ class configureUNIX(configureOS):
                                 value=1).grid(row=row,column=1)
             Tkinter.Radiobutton(master, text="No",  variable=self.mailcapQ,
                                 value=2).grid(row=row,column=2)
-
+            
         def enablePathEntry(self):
             self.installP.grid(row=self.installP.rowLocation,column=self.installP.colLocation,sticky=Tkinter.EW)
             self.searchP["state"]=Tkinter.NORMAL
@@ -296,7 +296,7 @@ class configureUNIX(configureOS):
         def disablePathEntry(self):
             self.installP.grid_forget()
             self.searchP["state"]=Tkinter.DISABLED
-
+            
         def askInstallPrefix(self):
             """
             command for search button
@@ -310,7 +310,7 @@ class configureUNIX(configureOS):
             if newPrefix:
                 self.installP.delete(0, Tkinter.END)
                 self.installP.insert(0, newPrefix)
-
+                
         def apply(self):
             """
             return result as dictionary
@@ -326,13 +326,13 @@ class configureUNIX(configureOS):
                 self.result["mimeQ"]=self.mimeQ.get()==1
             if hasattr(self,"mailcapQ"):
                 self.result["mailcapQ"]=self.mailcapQ.get()==1
-
+                
     def askUserInstall(self):
         """
         """
         self.askedUser=self.askUserInstallDialog(self.DialogMaster).result
         return self.askedUser
-
+        
     class askUserUninstallDialog(tkSimpleDialog.Dialog):
         """
         dialog for system file manipulation of linux systems
@@ -341,7 +341,7 @@ class configureUNIX(configureOS):
             if not title:
                 title="System Configuration"
             tkSimpleDialog.Dialog.__init__(self,master,title)
-        
+            
         def body(self, master):
             """
             Are you sure...? Dialog...
@@ -351,17 +351,17 @@ class configureUNIX(configureOS):
             Tkinter.Label(master,
                           text="Install Gato from\n%s ?"%self.myExecutable
                           ).grid(row=row,column=0)
-
+            
         def apply(self):
             """
             return result as dictionary
             """
             self.result={}
-
+            
     def askUserUninstall(self):
         self.askedUser=self.askUserUnnstallDialog(self.DialogMaster).result
         return self.askedUser
-
+        
     def configureSystem(self):
         """
         """
@@ -371,7 +371,7 @@ class configureUNIX(configureOS):
             self.configure_mailcap()
         if not self.cache_check_mime_types and self.askedUser.get("mimeQ",0):
             self.configure_mime_types()
-
+            
     def configure_mailcap(self):
         """
         append my mime type to .mailcap
@@ -380,19 +380,19 @@ class configureUNIX(configureOS):
         # if this file exists
         if os.access(self.mailcapFile,os.R_OK):
             mailcap=file(self.mailcapFile,"r")
-
+            
             while 1:
                 line=mailcap.readline()
                 savedLine=line[:]
                 # line end
                 if not line:
                     break
-
-                # skip comments
+                    
+                    # skip comments
                 if line[0]=="#":
                     savedLines+=line
                     continue
-
+                    
                 line=line.strip()
                 continuedLines=[]
                 while line[-1]=="\\":
@@ -401,19 +401,19 @@ class configureUNIX(configureOS):
                     line=line[:-1]+savedLine.rstrip()
                 entries=line.split(";")
                 (mimeType,viewCommand)=map(string.strip,entries[:2])
-
+                
                 # skip my old entry
                 if mimeType==gatoMimeType:
                     continue
-
+                    
                 savedLines+=string.join(continuedLines,'')+savedLine
             mailcap.close()
-        # open for write access
+            # open for write access
         mailcap=file(self.mailcapFile,"w")
         mailcap.write(savedLines)
         mailcap.write("%s;%s \"%%s\"\n"%(gatoMimeType,self.myExecutable))
         mailcap.close()
-
+        
     def configure_mime_types(self):
         """
         append my information to .mime.types
@@ -422,19 +422,19 @@ class configureUNIX(configureOS):
         # if this file exists
         if os.access(self.mime_typesFile,os.R_OK):
             mime_types=file(self.mime_typesFile,"r")
-
+            
             while 1:
                 line=mime_types.readline()
                 savedLine=line[:]
                 # line end
                 if not line:
                     break
-
-                # skip comments
+                    
+                    # skip comments
                 if line[0]=="#":
                     savedLines+=line
                     continue
-
+                    
                 line=line.strip()
                 continuedLines=[]
                 while line[-1]=="\\":
@@ -442,7 +442,7 @@ class configureUNIX(configureOS):
                     savedLine=mime_types.readline()
                     line=line[:-1]+savedLine.rstrip()
                 entries=line.split(";")
-
+                
                 mime_dict={}
                 # format: key=value or key="value"
                 kv_pair=re.compile("(\w+)=((?:\"[^\"]*\")|(?:[^\"\s]*))")
@@ -455,21 +455,21 @@ class configureUNIX(configureOS):
                 if (mime_dict.get("type")==gatoMimeType and
                     mime_dict.get("exts")==gatoFileExtension):
                     continue
-
+                    
                 savedLines+=string.join(continuedLines,'')+savedLine
             mime_types.close()
         else:
             # fake Netscape MIME file
             savedLines+="#--Netscape Communications Corporation MIME Information\n"
-        # open for write access
+            # open for write access
         mime_types=file(self.mime_typesFile,"w")
         mime_types.write(savedLines)
         mime_types.write("# inserted by gato SystemConfiguration Module\n")
         mime_types.write("type=%s  \\\ndesc=\"%s\"  \\\nexts=\"%s\"\n"%
                          (gatoMimeType,gatoDescription,gatoFileExtension))
         mime_types.close()
-
-
+        
+        
 class configureLinux(configureUNIX):
     """
     """
@@ -478,7 +478,7 @@ class configureLinux(configureUNIX):
             raise ConfigurationException("tried to instantiate %s on %s"%
                                          (self.__class__.__name__,sys.platform))
         configureUNIX.__init__(self,DialogMaster)
-
+        
 class configureSUNOS(configureUNIX):
     """
     """
@@ -487,26 +487,26 @@ class configureSUNOS(configureUNIX):
             raise ConfigurationException("tried to instantiate %s on %s"%
                                          (self.__class__.__name__,sys.platform))
         configureUNIX.__init__(self,DialogMaster)
-
+        
 class configureWindows(configureOS):
     """
     Configuration module for windows
     contaminates the windows registry with our
     extension, program and mime type
     """
-
+    
     def __init__(self,DialogMaster=None):
         """
         find script location...
         """
         configureOS.__init__(self,DialogMaster)
-
+        
     def check(self):
         """
         """
         self.ClassesSection=self.findWritableClassesSection()
         return 0
-
+        
     class askUserInstallDialog(tkSimpleDialog.Dialog):
         """
         """
@@ -514,7 +514,7 @@ class configureWindows(configureOS):
             if not title:
                 title="System Configuration"
             tkSimpleDialog.Dialog.__init__(self,master,title)
-
+            
         def body(self, master):
             """
             dialog body
@@ -549,7 +549,7 @@ class configureWindows(configureOS):
             Tkinter.Label(master, text="Register MIME type %s:"%gatoMimeType).grid(row=row)
             Tkinter.Radiobutton(master, text="Yes", variable=self.mimeQ, value=1).grid(row=row,column=1)
             Tkinter.Radiobutton(master, text="No",  variable=self.mimeQ, value=2).grid(row=row,column=2)
-
+            
         def apply(self):
             """
             return result as dictionary
@@ -565,7 +565,7 @@ class configureWindows(configureOS):
                 self.result["mimeQ"]=self.mimeQ.get()==1
             if hasattr(self,"extensionsQ"):
                 self.result["extensionsQ"]=self.extensionsQ.get()==1
-
+                
         def enablePathEntry(self):
             self.installP.grid(row=self.installP.rowLocation,column=self.installP.colLocation,sticky=Tkinter.EW)
             self.searchP["state"]=Tkinter.NORMAL
@@ -573,7 +573,7 @@ class configureWindows(configureOS):
         def disablePathEntry(self):
             self.installP.grid_forget()
             self.searchP["state"]=Tkinter.DISABLED
-
+            
         def askInstallPrefix(self):
             """
             command for search button
@@ -587,13 +587,13 @@ class configureWindows(configureOS):
             if newPrefix:
                 self.installP.delete(0, Tkinter.END)
                 self.installP.insert(0, newPrefix)
-
+                
     def askUserInstall(self):
         """
         """
         self.askedUser=self.askUserInstallDialog(self.DialogMaster).result
         return self.askedUser
-
+        
     def configureSystem(self):
         """
         do the system configuration
@@ -602,7 +602,7 @@ class configureWindows(configureOS):
             self.installBinary(self.askedUser["installTo"])
         if self.askedUser.get("extensionQ",0) or self.askedUser.get("mimeQ",0):
             self.insertGatoEntries(self.ClassesSection)
-
+            
     def printGatoEntries(self):
         """
         start reading...
@@ -617,8 +617,8 @@ class configureWindows(configureOS):
         else:
             print "found Gato.File section:"
             self.printSubRegistry(GatoFileHandle)
-
-        # get Gato FileExtension Section
+            
+            # get Gato FileExtension Section
         GatoExtensionHandle=None
         try:
             GatoExtensionHandle=_winreg.OpenKey(reader,"."+gatoFileExtension)
@@ -627,8 +627,8 @@ class configureWindows(configureOS):
         else:
             print "found gato's extension"
             self.printSubRegistry(GatoExtensionHandle)
-
-        # get Gato mime Type section
+            
+            # get Gato mime Type section
         GatoMimeHandleGatoExt=None
         try:
             GatoMimeHandle=_winreg.OpenKey(reader,"MIME")
@@ -643,7 +643,7 @@ class configureWindows(configureOS):
         else:
             print "found %s mime type"%gatoMimeType
             self.printSubRegistry(GatoMimeHandleGatoExt)
-
+            
     def printSubRegistry(self,key,indent=""):
         """
         print all information of a subkey
@@ -656,7 +656,7 @@ class configureWindows(configureOS):
             subkey=_winreg.OpenKey(key,subkeyName)
             print indent,subkeyName
             self.printSubRegistry(subkey,indent+"  ")
-
+            
     def findWritableClassesSection(self):
         # first try in HKEY_CLASSES_ROOT
         try:
@@ -668,7 +668,7 @@ class configureWindows(configureOS):
             # print "could not access HKEY_CLASSES_ROOT/Gato.File"
             # self.traceback.print_exc()
             pass
-        # next try...
+            # next try...
         try:
             writer=_winreg.ConnectRegistry(None,_winreg.HKEY_CURRENT_USER)
             SoftwareSection=_winreg.OpenKey(writer,"Software")
@@ -680,7 +680,7 @@ class configureWindows(configureOS):
             # print "could not access HKEY_CURRENT_USER/Software/Classes Section"
             # self.traceback.print_exc()
             return None
-
+            
     def insertGatoEntries(self,ClassesSection):
         """
         updates registry database
@@ -692,8 +692,8 @@ class configureWindows(configureOS):
         except WindowsError:
             print "Could not create/update the Gato.File section"
             self.traceback.print_exc()
-
-        # update Gato.File's subsections
+            
+            # update Gato.File's subsections
         try:
             GatoShellHandle=_winreg.CreateKey(GatoFileHandle,"shell")
             GatoOpenHandle=_winreg.CreateKey(GatoShellHandle,"open")
@@ -702,8 +702,8 @@ class configureWindows(configureOS):
         except WindowsError:
             print "could not install open command for gato"
             self.traceback.print_exc()
-
-        # update .gato section    
+            
+            # update .gato section    
         try:
             GatoExtensionHandle=_winreg.CreateKey(ClassesSection,"."+gatoFileExtension)
             _winreg.SetValueEx(GatoExtensionHandle,"",0,_winreg.REG_SZ,"Gato.File")
@@ -711,8 +711,8 @@ class configureWindows(configureOS):
         except WindowsError:
             print "could not create/update FileExtension section"
             self.traceback.print_exc()
-
-        # access MIME Database section
+            
+            # access MIME Database section
         MimeContentTypeSection=None
         try:
             MimeSection=_winreg.CreateKey(ClassesSection,"MIME")
@@ -722,7 +722,7 @@ class configureWindows(configureOS):
             print "could not access MIME Content Type database"
             self.traceback.print_exc()
             return
-        # update gato's mime type
+            # update gato's mime type
         try:
             GatoMimeContentTypeHandle=_winreg.CreateKey(MimeContentTypeSection,gatoMimeType)
             _winreg.SetValueEx(GatoMimeContentTypeHandle,"Extension",0,
@@ -730,7 +730,7 @@ class configureWindows(configureOS):
         except WindowsError:
             print "could not update the gato MIME section"
             self.traceback.print_exc()
-
+            
 class GatoInstaller:
     """
     A instance of this class reflects the installation capabilities and status.
@@ -754,20 +754,20 @@ class GatoInstaller:
             return
         self.SysConfig=self.getConfigurator()
         self.state=self.SysConfig.check()
-
+        
     def __del__(self):
         """
         clean up and decrement
         """
         GatoInstaller.instanceCounter-=1
-
+        
     def enable(self):
         self.disabled=0
         self.SysConfig=getConfigurator()
         self.state=self.SysConfig.check()
         if self.menu is not None:
             self.insertMenuEntry()
-
+            
     def disable(self):
         self.disabled=1
         self.removeMenuEntry()
@@ -778,18 +778,18 @@ class GatoInstaller:
         if self.disabled:
             return
         self.insertMenuEntry()
-
+        
     def insertMenuEntry(self):
         if self.menu is None:
             return
         self.menu.insert_command(self.index)
         self.configureMenuEntry()
-
+        
     def removeMenuEntry(self):
         if self.menu is None:
             return
         self.menu.delete(self.index)
-
+        
     def configureMenuEntry(self):
         if self.menu is None:
             return
@@ -802,17 +802,17 @@ class GatoInstaller:
             self.menu.entryconfig(self.index,
                                   command=self.installCommand,
                                   label='Install Gato...')
-
+            
     def installCommand(self):
         self.SysConfig.runInstall()
         self.state=self.SysConfig.check()
         self.configureMenuEntry()
-
+        
     def uninstallCommand(self):
         print "uninstall"
         self.state=self.SysConfig.check()
         self.configureMenuEntry()
-
+        
     def getConfigurator(self):
         if sys.platform[:5]=="linux":
             return configureLinux()
@@ -822,10 +822,10 @@ class GatoInstaller:
             return configureSUNOS()
         else:
             return configureUnsupported()
-
+            
 if __name__=="__main__":
     i=GatoInstaller()
-
-
-
-
+    
+    
+    
+    

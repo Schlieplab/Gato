@@ -45,29 +45,29 @@ def shortestPath(G,A,s,t):
         path exists, it returns None """
     pred = AnimatedVertexLabeling(A)    
     Q    = AnimatedVertexQueue(A)    
-
+    
     A.SetAllEdgesColor("black")
     for v in G.vertices:
-	pred[v] = None	
+        pred[v] = None	
     Q.Append(s)
-
+    
     while Q.IsNotEmpty() and pred[t] == None:
-	v = Q.Top()
-	for w in AnimatedNeighborhood(A,G,v):
-	    if pred[w] == None and w != s:
-		pred[w] = v
-		Q.Append(w)
-
+        v = Q.Top()
+        for w in AnimatedNeighborhood(A,G,v):
+            if pred[w] == None and w != s:
+                pred[w] = v
+                Q.Append(w)
+                
     if pred[t] == None: # No augmenting path found
-	return None
-
+        return None
+        
     path = []
     v = t
     while pred[v] != None:
-	A.SetVertexColor(v,"red")
-	A.SetEdgeColor(pred[v],v,"red")
-	path.append((pred[v],v))
-	v = pred[v]
+        A.SetVertexColor(v,"red")
+        A.SetEdgeColor(pred[v],v,"red")
+        path.append((pred[v],v))
+        v = pred[v]
     A.SetVertexColor(v,"red")
     return path
-
+    

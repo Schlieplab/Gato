@@ -1449,4 +1449,4 @@ def Init():
     imageCache.AddImage("Icons/vertex.gif",vertex)
     imageCache.AddImage("Icons/whitnode.gif",whitnode)
     imageCache.AddImage("Icons/yellow.gif",yellow)
-
+    

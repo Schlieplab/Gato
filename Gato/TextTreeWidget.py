@@ -38,7 +38,7 @@ class dom_structure_widget(Tkinter.Frame):
     """
     this widget displays the structure of a dom tree
     """
-
+    
     class nodeDisplayProperties:
         """
         holds all properties for node
@@ -48,7 +48,7 @@ class dom_structure_widget(Tkinter.Frame):
             self.fg_color=""
             self.bg_color=""
             self.tag=""
-
+            
     def __init__(self,master,
                  dom,
                  report_function=None,
@@ -81,19 +81,19 @@ class dom_structure_widget(Tkinter.Frame):
         self.indent_step="    "
         self.expand_sign="+"
         self.collapse_sign="-"
-
+        
         #parameters for default isVisible function
         self.mergeText      = 0 # if contiguous text nodes should be merged
         self.textTypes      = [xml.dom.Node.TEXT_NODE, xml.dom.Node.CDATA_SECTION_NODE]
         self.ignorableTypes = self.textTypes # ignore text by default
-
+        
         # without normal state no key events
         self.textWidget.configure(state=Tkinter.NORMAL)
         # start with root element
         self.textWidget.mark_set(Tkinter.INSERT,Tkinter.END)
         self.textWidget.mark_gravity(Tkinter.INSERT,Tkinter.RIGHT)
         self.createNodeEntries("root",dom,"",Tkinter.INSERT,-1)
-
+        
         # enable node selection
         self.selectedTag=None
         self.textWidget.tag_bind("collapse","<Button-1>",self.collapseNodeEvent)
@@ -106,7 +106,7 @@ class dom_structure_widget(Tkinter.Frame):
         self.textWidget.bind("<Left>"  , self.collapseNodeEvent)
         self.textWidget.bind("<Right>", self.expandNodeEvent)
         self.textWidget.bind("<Return>",self.chooseNodeEvent)
-
+        
     def isVisible(self, node):
         """
         default function for visibility of nodes
@@ -114,20 +114,20 @@ class dom_structure_widget(Tkinter.Frame):
         # simple case: ignore all types of this case
         if node.nodeType in self.ignorableTypes:
             return 0
-
-        # merge subsequent text nodes and display only first.
+            
+            # merge subsequent text nodes and display only first.
         if self.mergeText and node.nodeType in self.textTypes:
             lastNode=node.previousSibling
             if lastNode:
                 return lastNode.nodeType in self.textTypes
             else:
                 return 1
-
+                
         return 1
-
+        
     def nameNode(self, node):
         return xmlDecode(node.nodeName)
-
+        
     def setNodeColor(self, node, fg="", bg=""):
         """
         sets the color of a node
@@ -142,7 +142,7 @@ class dom_structure_widget(Tkinter.Frame):
             self.textWidget.tag_config("nodeName-"+node.DisplayProperties.tag,
                                        foreground=node.DisplayProperties.fg_color,
                                        background=node.DisplayProperties.bg_color)
-
+            
     def createNodeEntries(self,subtag,subtree,indentation,mark_name,depth=-1):
         """
         recursive creation of all node entries
@@ -152,15 +152,15 @@ class dom_structure_widget(Tkinter.Frame):
         if not subtree.__dict__.has_key("DisplayProperties"):
             subtree.DisplayProperties=dom_structure_widget.nodeDisplayProperties()
         subtree.DisplayProperties.expanded=1
-
+        
         for node in subtree.childNodes:
-
+        
             # select nodes that are displayed
             if not self.isVisible(node):
                 # do not display it
                 i+=1
                 continue
-
+                
             this_subtag="%s-%d"%(subtag,i)
             # node will be displayed, so add property tag
             if not node.__dict__.has_key("DisplayProperties"):
@@ -169,26 +169,26 @@ class dom_structure_widget(Tkinter.Frame):
             self.textWidget.tag_config("nodeName-"+this_subtag,
                                        foreground=node.DisplayProperties.fg_color,
                                        background=node.DisplayProperties.bg_color)
-
+            
             # has this node visible children ? -> is it expandable ?
             if node.hasChildNodes() and filter(self.isVisible,node.childNodes):
                 # yes, it has children
-
+            
                 # decide if node is expanded or not
                 if depth==1:
                     node.DisplayProperties.expanded=0
                 elif depth>1:
                     node.DisplayProperties.expanded=1
-                # otherwise, do it as done last time
-
-                # indent
+                    # otherwise, do it as done last time
+                    
+                    # indent
                 self.textWidget.insert(mark_name, indentation, this_subtag)
                 # draw node
                 if node.DisplayProperties.expanded:
                     self.textWidget.insert(mark_name,self.collapse_sign,(this_subtag,"collapse"))
                 else:
                     self.textWidget.insert(mark_name,self.expand_sign,(this_subtag,"expand"))
-                # write name
+                    # write name
                 self.textWidget.insert(mark_name,
                                        self.nameNode(node),
                                        (this_subtag,"node","nodeName-"+this_subtag))
@@ -212,7 +212,7 @@ class dom_structure_widget(Tkinter.Frame):
                 # now end of line
                 self.textWidget.insert(mark_name, "\n", this_subtag)
             i+=1
-
+            
     def collapseNodeEvent(self,event):
         """
         find tag, that denotes the subtree and pass to collapse_tag
@@ -231,7 +231,7 @@ class dom_structure_widget(Tkinter.Frame):
             return "break"
         else:
             return
-
+            
     def expandNodeEvent(self,event):
         """
         find tag, that denotes the subtree and pass to collapse_tag
@@ -250,7 +250,7 @@ class dom_structure_widget(Tkinter.Frame):
             return "break"
         else:
             return
-
+            
     def selectNodeEvent(self,event):
         """
         clicked once on the node
@@ -263,7 +263,7 @@ class dom_structure_widget(Tkinter.Frame):
         # mark the node
         self.selectNode(tree_tags[0])
         return "break"
-
+        
     def nextNodeEvent(self,event):
         """
         event for down key
@@ -276,7 +276,7 @@ class dom_structure_widget(Tkinter.Frame):
         tree_tags=filter(lambda t:t[:4]=='root',my_tags)
         if len(tree_tags)!=1:
             print "not good: found ",tree_tags," to select!"
-        # mark the node
+            # mark the node
         self.selectNode(tree_tags[0])
         return "break"
         
@@ -292,10 +292,10 @@ class dom_structure_widget(Tkinter.Frame):
         tree_tags=filter(lambda t:t[:4]=='root',my_tags)
         if len(tree_tags)!=1:
             print "not good: found ",tree_tags," to select!"
-        # mark the node
+            # mark the node
         self.selectNode(tree_tags[0])
         return "break"
-
+        
     def selectNode(self,tree_tag):
         """
         mark node as selected
@@ -303,16 +303,16 @@ class dom_structure_widget(Tkinter.Frame):
         """
         if self.selectedNode:
             self.setNodeColor(self.selectedNode,bg="white")
-        # find node element for this line
-
+            # find node element for this line
+            
         subtree=self.subtree_from_tag(tree_tag,self.dom)
         self.setNodeColor(subtree,bg="green")
         self.selectedNode=subtree
-
+        
         if self.report_function and subtree:
             self.report_function("selectedNode",subtree)
-
-
+            
+            
     def chooseNodeEvent(self,event):
         """
         choose node: i.e. report to report function
@@ -324,7 +324,7 @@ class dom_structure_widget(Tkinter.Frame):
             tree_tags=filter(lambda t:t[:4]=='root',my_tags)
             if len(tree_tags)!=1:
                 print "not good: found ",tree_tags," to select!"
-            # select this node
+                # select this node
             self.selectNode(tree_tags[0])
             subtree=self.subtree_from_tag(tree_tags[0],self.dom)
         elif event.type=="2":
@@ -338,7 +338,7 @@ class dom_structure_widget(Tkinter.Frame):
         if self.report_function and subtree:
             self.report_function("chosenNode",subtree)
         return "break"
-
+        
     def collapse_tag(self,tag):
         """
         collapses the tree under the given tag
@@ -348,20 +348,20 @@ class dom_structure_widget(Tkinter.Frame):
         all_tags=self.textWidget.tag_names()
         # determine tags to delete
         tags_to_delete=filter(lambda s,t=tag+"-",l=len(tag)+1:s[:l]==t,all_tags)
-
+        
         # handle selected node, that may become invisible
         if self.selectedNode is not None and self.selectedNode.DisplayProperties.tag in tags_to_delete:
             self.selectNode(tag)
-        
+            
         for t in tags_to_delete:
             self.textWidget.delete(t+".first",t+".last")
             self.textWidget.tag_delete(t)
-
-        # change collapse symbol to expand symbol
+            
+            # change collapse symbol to expand symbol
         symbol_index=self.textWidget.tag_nextrange('collapse',tag+".first",tag+".last")
         self.textWidget.delete(symbol_index[0],symbol_index[1])
         self.textWidget.insert(symbol_index[0],self.expand_sign,('expand',tag))
-
+        
     def expand_tag(self,tag):
         """
         expand the tree under the tag
@@ -375,7 +375,7 @@ class dom_structure_widget(Tkinter.Frame):
         symbol_index=self.textWidget.tag_nextrange('expand',tag+".first",tag+".last")
         self.textWidget.delete(symbol_index[0],symbol_index[1])
         self.textWidget.insert(symbol_index[0],self.collapse_sign,('collapse',tag))
-
+        
         # determine indentation
         indentation=self.textWidget.get(tag+".first",symbol_index[0])
         self.createNodeEntries(tag,
@@ -383,7 +383,7 @@ class dom_structure_widget(Tkinter.Frame):
                                indentation+self.indent_step,
                                Tkinter.INSERT,
                                -1)
-
+        
     def subtree_from_tag(self,tag,dom):
         """
         parse tag and traverse tree
@@ -396,4 +396,4 @@ class dom_structure_widget(Tkinter.Frame):
                 index_nr=int(token)
                 subtree=subtree.childNodes[index_nr]
         return subtree
-
+        

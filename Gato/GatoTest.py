@@ -39,13 +39,13 @@ from Gato import *
 testPath = "../CATBox/"
 
 tests = [ ("04-MinimalSpanningTrees/Prim.alg",
-	   "04-MinimalSpanningTrees/MinimalSpanningTrees08.cat"),
+           "04-MinimalSpanningTrees/MinimalSpanningTrees08.cat"),
           ("04-MinimalSpanningTrees/Kruskal.alg",
-	   "04-MinimalSpanningTrees/MinimalSpanningTrees08.cat"),
+           "04-MinimalSpanningTrees/MinimalSpanningTrees08.cat"),
           ("06-MaximalFlows/FordFulkerson.alg",
-	   "06-MaximalFlows/FordFulkerson3.cat"),
+           "06-MaximalFlows/FordFulkerson3.cat"),
           ("06-MaximalFlows/PreflowPush.alg",
-	   "06-MaximalFlows/PreflowPush2.cat")
+           "06-MaximalFlows/PreflowPush2.cat")
         ]
 
 
@@ -54,20 +54,20 @@ if __name__ == '__main__':
     app.algorithm.logAnimator=1
     globals()['gInteractive'] = 0
     print "GatoTest",globals()['gInteractive']
-   
+    
     for case in tests:
-	print "=== TEST ===",case[0],"===",case[1],"==="
-	app.OpenAlgorithm(testPath + case[0])
-	globals()['gInteractive'] = 0
-	app.algorithm.ClearBreakpoints()
-	app.update_idletasks()
-	app.update()
-	app.OpenGraph(testPath + case[1])
-	app.update_idletasks()
-	app.update()
-	# Run it ...
-	app.after_idle(app.CmdContinue) # after idle needed since CmdStart
+        print "=== TEST ===",case[0],"===",case[1],"==="
+        app.OpenAlgorithm(testPath + case[0])
+        globals()['gInteractive'] = 0
+        app.algorithm.ClearBreakpoints()
+        app.update_idletasks()
+        app.update()
+        app.OpenGraph(testPath + case[1])
+        app.update_idletasks()
+        app.update()
+        # Run it ...
+        app.after_idle(app.CmdContinue) # after idle needed since CmdStart
         # does not return
-	app.CmdStart()
-	app.update_idletasks()
-	#app.mainloop()
+        app.CmdStart()
+        app.update_idletasks()
+        #app.mainloop()

@@ -59,79 +59,79 @@ class MultiListbox(Frame):
         sb.pack(expand=YES, fill=Y)
         self.lists[0]['yscrollcommand']=sb.set
         self.doubleclickCallback = doubleclickCallback
-
+        
     def _double_select(self, y):
         row = self.lists[0].nearest(y)
         self.selection_clear(0, END)
         self.selection_set(row)
         self.doubleclickCallback(self.curselection())
         return 'break'
-
+        
     def _select(self, y):
         row = self.lists[0].nearest(y)
         self.selection_clear(0, END)
         self.selection_set(row)
         return 'break'
-
+        
     def _button2(self, x, y):
         for l in self.lists: l.scan_mark(x, y)
         return 'break'
-
+        
     def _b2motion(self, x, y):
         for l in self.lists: l.scan_dragto(x, y)
         return 'break'
-
+        
     def _scroll(self, *args):
         for l in self.lists:
             apply(l.yview, args)
-
+            
     def curselection(self):
         return self.lists[0].curselection()
-
+        
     def delete(self, first, last=None):
         for l in self.lists:
             l.delete(first, last)
-
+            
     def get(self, first, last=None):
         result = []
         for l in self.lists:
             result.append(l.get(first,last))
         if last: return apply(map, [None] + result)
         return result
-            
+        
     def index(self, index):
         self.lists[0].index(index)
-
+        
     def insert(self, index, *elements):
         for e in elements:
             i = 0
             for l in self.lists:
                 l.insert(index, e[i])
                 i = i + 1
-
+                
     def size(self):
         return self.lists[0].size()
-
+        
     def see(self, index):
         for l in self.lists:
             l.see(index)
-
+            
     def selection_anchor(self, index):
         for l in self.lists:
             l.selection_anchor(index)
-
+            
     def selection_clear(self, first, last=None):
         for l in self.lists:
             l.selection_clear(first, last)
-
+            
     def selection_includes(self, index):
         return self.lists[0].selection_includes(index)
-
+        
     def selection_set(self, first, last=None):
         for l in self.lists:
             l.selection_set(first, last)
-
-
+            
+            
 class MapEditor(tkSimpleDialog.Dialog):
 
     def __init__(self, master, maps, map_titles, field_widths):
@@ -140,17 +140,17 @@ class MapEditor(tkSimpleDialog.Dialog):
         self.field_widths = field_widths
         self.entryWidget = []
         self.lastSelection = None
-	tkSimpleDialog.Dialog.__init__(self, master, "MapEditor")
-
+        tkSimpleDialog.Dialog.__init__(self, master, "MapEditor")
+        
     def body(self, master):
         outer_frame = Frame(master, relief=SUNKEN, bd=2)
-
+        
         args = ()
         for i in xrange(len(self.map_titles)):
             args += ((self.map_titles[i], self.field_widths[i]),)
         self.mlb = MultiListbox(outer_frame, args, self.editSelection)
         self.mlb.pack(expand=YES,fill=BOTH)
-
+        
         frame = Frame(outer_frame, relief=RAISED, bd=2)
         yanf = Frame(frame)
         for i in xrange(len(self.map_titles)):
@@ -167,7 +167,7 @@ class MapEditor(tkSimpleDialog.Dialog):
         yanf.pack(expand=YES,fill=Y)
         frame.pack(expand=YES,fill=Y)
         outer_frame.pack(expand=YES,fill=BOTH)
-
+        
         for k in self.maps[0].keys():
             mapItem = (k,)
             for i in xrange(len(self.maps)):
@@ -179,36 +179,36 @@ class MapEditor(tkSimpleDialog.Dialog):
         for i in xrange(len(self.map_titles)):
             mapItem += (self.entryWidget[i].get(),)
             self.entryWidget[i].delete(0,END)
-
+            
         self.mlb.insert(END, mapItem)
-
+        
     def updateMapItem(self):
         mapItem = ()
         for i in xrange(len(self.map_titles)):
             mapItem += (self.entryWidget[i].get(),)
             self.entryWidget[i].delete(0,END)
-
+            
         if self.mlb.curselection() == self.lastSelection:
             self.mlb.delete(self.lastSelection)           
             self.mlb.insert(self.lastSelection, mapItem)
-
+            
     def deleteSelection(self):
         self.mlb.delete(self.mlb.curselection())
-
+        
     def editSelection(self, selection):
         self.lastSelection = selection
         values = self.mlb.get(selection)
         for i in xrange(len(values)):
             self.entryWidget[i].delete(0,END)
             self.entryWidget[i].insert(0,"%s" % values[i])
-
+            
     def ok(self, event=None):
         self.result = []
         for i in range(self.mlb.size()):
             self.result.append(self.mlb.get(i))
         tkSimpleDialog.Dialog.ok(self, event)
-
-    
+        
+        
 class NamedCollectionEditor(tkSimpleDialog.Dialog):
     """ Provide a simple editor to
         - add items
@@ -221,25 +221,25 @@ class NamedCollectionEditor(tkSimpleDialog.Dialog):
         - edit(name)
         - names() the name initially listed
         methods, which should being up UI for add/edit if necessary. """ 
-        
+    
     def __init__(self, master, collection):
         self.collection = collection
-	tkSimpleDialog.Dialog.__init__(self, master, "CollectionEditor")
-
+        tkSimpleDialog.Dialog.__init__(self, master, "CollectionEditor")
+        
     def body(self, master):
         outer_frame = Frame(master, relief=SUNKEN, bd=2)
-
+        
         scrollbar = Scrollbar(outer_frame, orient=VERTICAL)
         self.lb = Listbox(outer_frame, yscrollcommand=scrollbar.set)
         scrollbar.config(command=self.lb.yview)
         scrollbar.pack(side=RIGHT, fill=Y)
         self.lb.pack(expand=YES, fill=BOTH)
-
+        
         for name in self.collection.names():
             self.lb.insert(END, name)
-
+            
         yanf = outer_frame
-
+        
         addButton = Button(yanf, text='Delete', foreground='red', command=self.deleteItem)
         addButton.pack(padx=4, pady=3, side=RIGHT)
         addButton = Button(yanf, text='Edit', foreground='red', command=self.editItem)
@@ -250,7 +250,7 @@ class NamedCollectionEditor(tkSimpleDialog.Dialog):
         self.nameEntry.pack(padx=6, pady=3, side=RIGHT)
         yanf.pack(expand=YES,fill=Y)
         outer_frame.pack(expand=YES,fill=BOTH)
-            
+        
     def newItem(self):
         name = self.nameEntry.get()
         self.collection.add(name)
@@ -260,20 +260,20 @@ class NamedCollectionEditor(tkSimpleDialog.Dialog):
         name = self.lb.get(self.lb.curselection())
         if name is not "":
             self.collection.edit(self, name)
-        
+            
     def deleteItem(self):
         name = self.lb.get(self.lb.curselection())
         self.collection.delete(name)
         self.lb.delete(self.lb.curselection())
-
+        
     def ok(self, event=None):
         tkSimpleDialog.Dialog.ok(self, event)
-    
-
-
+        
+        
+        
 if __name__ == '__main__':
     tk = Tk()
-
+    
     map = {"josef":1, "maria":2}
     sexMap = {"josef":'m', "maria":'w'}
     mapedit = MapEditor(tk,[map, sexMap],['Name','Age','Sex'],[32,5,5])

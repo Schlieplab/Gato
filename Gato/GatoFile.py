@@ -69,37 +69,37 @@ class FileException(Exception):
         takes the reason or explanation as argument
         """
         self.reason=reason
-
+        
 class GatoStorageCache:
     """
     singleton list for all accessed/used/cached storage locations
     """
     pass
-
+    
 class GatoStorageLocation:
     """
     bundle of common functions for file load/save/selection
     These functions act on the level of graphs and algorithms.
     they propagate the open and save calls to the different file implementations
     """
-
+    
     def __init__(self,fileName=None):
         """
         opens the file and prepares the access
         """
         self.fileName=fileName
-
+        
     def chooseLocation(self,accessMode="rw"):
         """
         opens a suitable dialog to choose a possible location for reading/writing gato data
         """
-
+        
     def __repr__(self):
         """
         a short representation of the instance
         """
         return "<%s: %s>"%(self.__class__.__name__,self.fileName)
-
+        
     def __str__(self):
         """
         should display the name in human understandable manner
@@ -111,25 +111,25 @@ class GatoStorageLocation:
         returns a Graph object
         """
         pass
-
+        
     def readAlgortihm(self, whichAlgorithm=None):
         """
         returns an Algorithm object
         """
         pass
-
+        
     def writeGraph(self, Graph, whichGraph=None):
         """
         puts a graph to the collection of graphs
         """
         pass
-
+        
     def writeAlgorithm(self, Algorithm, whichAlgorithm=None):
         """
         puts a graph to the collection of algorithms
         """
         pass
-
+        
 class GatoStorageLocationTest:
     """
     some tests for GatoStorageLocation
@@ -137,8 +137,8 @@ class GatoStorageLocationTest:
     def __init__(self):
         l=GatoStorageLocation("bla")
         print "human readable: %s, python representation %s"%(l,repr(l))
-
-
+        
+        
 class GatoDirBranch(TreeWidget.DirBranch):
     """
     """
@@ -172,19 +172,19 @@ class GatoDirBranch(TreeWidget.DirBranch):
                         self.children.append(algLeaf(parent=self,name=entry))
                     elif entry[-4:]==".cat":
                         self.children.append(catLeaf(parent=self,name=entry))
-
+                        
 class GatoFileBranch(TreeWidget.xmlFileBranch):
     """
     ToDo: supports xml files with gato root section
     """
     pass
-
+    
 class xmlGatoFileBranch(TreeWidget.xmlFileBranch):
     """
     ToDo supports xml files with gato sections inside
     """
     pass
-
+    
 class algLeaf(TreeWidget.Leaf):
     """
     old algortithm file
@@ -192,7 +192,7 @@ class algLeaf(TreeWidget.Leaf):
     def __init__(self,parent=None,name=None):
         TreeWidget.Leaf.__init__(self,parent=parent, name=name)
         self.selectable=1
-
+        
 class catLeaf(TreeWidget.Leaf):
     """
     old graph file
@@ -200,7 +200,7 @@ class catLeaf(TreeWidget.Leaf):
     def __init__(self,parent=None,name=None):
         TreeWidget.Leaf.__init__(self,parent=parent, name=name)
         self.selectable=1
-
+        
 class GatoTree(TreeWidget.scrolledTree):
     """
     """
@@ -214,46 +214,46 @@ class GatoTree(TreeWidget.scrolledTree):
         while current!=self.root.name:
             (current,piece)=os.path.split(current)
             currentList.insert(0,piece)
-        # expand all branches on the way
+            # expand all branches on the way
         thisNode=self.root
         thisNode.expand()
         for piece in currentList:
             thisNode=filter(lambda x:x.name==piece,thisNode.children)[0]
             thisNode.expand()
-
+            
         (Nx0,Ny0,Nx1,Ny1)=thisNode.getBoundingBox()
         (Cx0,Cy0,Cx1,Cy1)=self.bbox(Tkinter.ALL)
         self.yview(Tkinter.MOVETO,float(Ny0)/float(Cy1-Cy0))
         
-
+        
 class WorkInProgress(Tkinter.Tk):
     """
     my development and test class
     """
-
+    
     def __init__(self):
         Tkinter.Tk.__init__(self)
         self.tree=GatoTree(self)
         self.tree.pack(expand=1,fill=Tkinter.BOTH)
-
+        
     def run(self):
         self.mainloop()
         
-
+        
 class xmlAlgorithmElement:
 
     algorithmElementName="algorithm"
     sourceElementName="text"
     prologElementName="prolog"
     aboutElementName="about"
-
+    
     def __init__(self,dom):
         # test for right tag
         if dom.tagName!=self.algorithmElementName:
             raise FileException("Wrong element name: %s, %s expected"
                                 %(dom.tagName,self.algorithmElementName))
         self.domElement=dom
-
+        
     def setAlgorithmFromALGFile(self,fileName):
         """
         writes algorithm data to xml sections
@@ -267,7 +267,7 @@ class xmlAlgorithmElement:
             self.setProlog(file(PrologFileName).read())
         else:
             print "Warning: could not read prolog file %s"%PrologFileName
-
+            
     def setProlog(self,text):
         """
         creates/repaces the prolog section
@@ -288,7 +288,7 @@ class xmlAlgorithmElement:
             self.domElement.repaceChild(newProlog,existingProlog[0])
         else:
             self.domElement.appendChild(newProlog)
-        
+            
     def setAlgorithm(self,text):
         """
         creates/repaces the algorithm section
@@ -309,13 +309,13 @@ class xmlAlgorithmElement:
             self.domElement.repaceChild(newAlgorithm,existingAlgorithm[0])
         else:
             self.domElement.appendChild(newAlgorithm)
-
+            
     def setAbout(self,text):
         """
         ToDo
         """
         pass
-
+        
     def getTextFromElement(self,tagName):
         "returns the text of specified tag"
         requestedElements=self.domElement.getElementsByTagName(tagName)
@@ -328,14 +328,14 @@ class xmlAlgorithmElement:
                 e.nodeType==xml.dom.minidom.Node.CDATA_SECTION_NODE):
                 text+=e.data
         return xmlDecode(text)
-
+        
     def getText(self):
         t=self.getTextFromElement(self.sourceElementName)
         if t:
             return t
         else:
             return ""
-
+            
     def getAboutAsString(self):
         requestedElements=filter(lambda e:e.nodeType==xml.dom.Node.ELEMENT_NODE and \
                                  e.tagName==self.aboutElementName,
@@ -344,13 +344,13 @@ class xmlAlgorithmElement:
             return None
         else:
             return requestedElements[0].toxml()
-        
+            
     def getTextAsFile(self):
         """
         creates a StringIO Object from file
         """
         return StringIO.StringIO(self.getText())
-
+        
     def getProlog(self):
         "returns the prolog"
         p=self.getTextFromElement(self.prologElementName)
@@ -358,20 +358,20 @@ class xmlAlgorithmElement:
             return p
         else:
             return ""
-
+            
     def getPrologAsFile(self):
         return StringIO.StringIO(self.getProlog())
-
+        
     def getName(self):
         return xmlDecode(self.domElement.getAttribute("name"))
-
+        
     def setName(self,name):
         self.domElement.setAttribute("name",xmlEncode(name))
-
+        
 class xmlGraphElement:
 
     graphElementName="graph"
-
+    
     def __init__(self,graph,name=None):
         """
         called with a dom element: grants access to Graph
@@ -391,7 +391,7 @@ class xmlGraphElement:
             self.setGraph(graph)
         else:
             raise FileException("wrong arguments provided")
-
+            
     def getAboutAsString(self):
         requestedElements=filter(lambda e:e.nodeType==xml.dom.Node.ELEMENT_NODE and e.tagName=="about",
                                  self.domElement.childNodes)
@@ -399,13 +399,13 @@ class xmlGraphElement:
             return None
         else:
             return requestedElements[0].toxml()
-
+            
     def getGraph(self):
         """
         returns the Graph object constructed  from this dom element
         """
         return GraphUtil.OpenCATBoxGraph(self.getGraphAsStringIO())
-
+        
     def getGraphAsStringIO(self):
         text=StringIO.StringIO()
         for e in self.domElement.childNodes:
@@ -414,7 +414,7 @@ class xmlGraphElement:
                 text.write(xmlDecode(e.data))
         text.seek(0)
         return text
-    
+        
     def setGraph(self,graph):
         # we were called with a Graph and a name as arguments
         data=StringIO.StringIO()
@@ -434,7 +434,7 @@ class xmlGraphElement:
         else:
             newCDATASection=xml.dom.minidom.CDATASection(xmlEncode(data.getvalue()))
         self.domElement.appendChild(newCDATASection)
-
+        
     def setGraphFromCATFile(self,GraphFile):
         """
         creates a graph object from .cat file and sets it
@@ -444,17 +444,17 @@ class xmlGraphElement:
         
     def getName(self):
         return xmlDecode(self.domElement.getAttribute("name"))
-
+        
     def setName(self,name):
         self.domElement.setAttribute("name",xmlEncode(name))
-
+        
 class xmlGatoElement:
     """
     is an access and modification interface to the gato dom structure 
     """
-
+    
     gatoElementName="gato"
-
+    
     def __init__(self,_domElement):
         """
         creates the access and modification interface
@@ -464,7 +464,7 @@ class xmlGatoElement:
             raise FileException("Wrong element name: %s, %s expected"
                             %(_domElement.tagName,self.gatoElementName))
         self.domElement=_domElement
-
+        
     def createGraphElement(self,name=None):
         """
         creates a new graph Element
@@ -479,7 +479,7 @@ class xmlGatoElement:
         if name is not None:
             newElement.setName(name)
         return newElement
-
+        
     def createAlgorithmElement(self,name=None):
         """
         creates a new algorithm element
@@ -494,19 +494,19 @@ class xmlGatoElement:
         if name is not None:
             newElement.setName(name)
         return newElement
-    
+        
     def setName(self,name):
         """
         sets the name attribute for this element
         """
         self.domElement.setAttribute("name",xmlEncode(name))
-
+        
     def getName(self,name):
         """
         gets the name of this element, if unset an empty string
         """
         return xmlDecode(self.domElement.getAttribute("name"))
-
+        
     def getAboutAsString(self):
         requestedElements=filter(lambda e:e.nodeType==xml.dom.Node.ELEMENT_NODE and e.tagName=="about",
                                  self.domElement.childNodes)
@@ -514,7 +514,7 @@ class xmlGatoElement:
             return None
         else:
             return requestedElements[0].toxml()
-
+            
     def getGraphElements(self):
         """
         returns all direct child elements with graph's tagName
@@ -522,7 +522,7 @@ class xmlGatoElement:
         return filter(lambda x:(x.nodeType==xml.dom.minidom.Node.ELEMENT_NODE and
                                 x.tagName==xmlGraphElement.graphElementName),
                       self.domElement.childNodes)
-
+        
     def getAlgorithmElements(self):
         """
         returns all direct child elements with algorithm's tagName
@@ -530,7 +530,7 @@ class xmlGatoElement:
         return filter(lambda x:(x.nodeType==xml.dom.minidom.Node.ELEMENT_NODE and
                                 x.tagName==xmlAlgorithmElement.algorithmElementName),
                       self.domElement.childNodes)
-
+        
     def getGraphNames(self):
         """
         extracts all graph names
@@ -538,7 +538,7 @@ class xmlGatoElement:
         # return a list of name attribute values from graph elements
         return map(lambda x:xmlDecode(x.getAttribute("name")),
                    self.getGraphElements())
-
+        
     def getAlgorithmNames(self):
         """
         extracts all algorithm names
@@ -546,7 +546,7 @@ class xmlGatoElement:
         # return a list of name attribute values from graph elements
         return map(lambda x:xmlDecode(x.getAttribute("name")),
                    self.getAlgorithmElements())
-
+        
     def getGraphByName(self,name):
         """
         gets a xmlGraphElement by its name
@@ -554,7 +554,7 @@ class xmlGatoElement:
         graphs=filter(lambda x:x.getAttribute("name")==name,
                       self.getGraphElements())
         return xmlGraphElement(graphs[0])
-
+        
     def getAlgorithmByName(self,name):
         """
         gets a xmlAlgorithmElement by its name
@@ -562,7 +562,7 @@ class xmlGatoElement:
         graphs=filter(lambda x:x.getAttribute("name")==name,
                       self.getAlgorithmElements())
         return xmlAlgorithmElement(graphs[0])
-
+        
     def getDefaultSelection(self):
         """
         searches for the default selection, e.g.
@@ -577,17 +577,17 @@ class xmlGatoElement:
             if len(algorithms)==1:
                 defaultSelection["algorithm"]=self.getAlgorithmByName(algorithms[0])
             return defaultSelection
-
+            
         if self.domElement.hasAttribute("defaultGraph"):
             defaultSelection["graph"]=self.getGraphByName(
                 self.domElement.getAttribute("defaultGraph"))
-        
+            
         if self.domElement.hasAttribute("defaultAlgorithm"):
             defaultSelection["algorithm"]=self.getAlgorithmByName(
                 self.domElement.getAttribute("defaultAlgorithm"))
-
+            
         return defaultSelection
-
+        
     def updateGraphByName(self,graph,name=None):
         """
         appends or replaces a graph, if name not given, the graphs name is taken
@@ -604,7 +604,7 @@ class xmlGatoElement:
                 name=graph.getName()
         else:
             raise FileException("argument mismatch!")
-
+            
         graphs=filter(lambda x:x.getAttribute("name")==name,
                       self.getGraphElements())
         if len(graphs):
@@ -613,7 +613,7 @@ class xmlGatoElement:
         else:
             # append graph
             self.domElement.appendChild(newGraph.domElement)
-
+            
     def updateAlgorithmByName(self,algorithm,name=None):
         """
         appends or replaces an algorithm
@@ -630,7 +630,7 @@ class xmlGatoElement:
                 name=algorithm.getName()
         else:
             raise FileException("argument mismatch!")
-
+            
         algorithms=filter(lambda x:x.getAttribute("name")==name,
                           self.getAlgorithmElements())
         if len(algorithms):
@@ -639,7 +639,7 @@ class xmlGatoElement:
         else:
             # append graph
             self.domElement.appendChild(newAlgorithm.domElement)
-
+            
     def removeGraphByName(self,name):
         """
         removes the named graph
@@ -647,7 +647,7 @@ class xmlGatoElement:
         graphs=filter(lambda x:x.getAttribute("name")==name,
                       self.getGraphElements())
         map(self.domElement.removeChild,graphs)
-
+        
     def removeAlgorithmByName(self,name):
         """
         removes the named algorithm
@@ -655,7 +655,7 @@ class xmlGatoElement:
         algorithms=filter(lambda x:x.getAttribute("name")==name,
                           self.getAlgorithmElements())
         map(self.domElement.removeChild,algorithms)
-
+        
 class ElementDisplay(Tkinter.Frame):
     """
     displays the selected element
@@ -668,7 +668,7 @@ class ElementDisplay(Tkinter.Frame):
         self.pack_propagate(0) # keep everything in a rigid frame
         self.displayedWidget=None
         self.displayedNode=None
-
+        
     def clearDisplay(self):
         """
         cleanup and display nothing
@@ -678,7 +678,7 @@ class ElementDisplay(Tkinter.Frame):
             child.pack_forget()
             child.destroy()
         self.displayedNode=None
-
+        
     def setDisplay(self,node):
         """
         display node...
@@ -704,16 +704,16 @@ class ElementDisplay(Tkinter.Frame):
             self.displayedNode=node
         else:
             print "toDo: ",node
-
+            
         if displayedWidget:
             displayedWidget.pack(expand=1,fill=Tkinter.BOTH)
-
-
+            
+            
 class AlgorithmInfoWidget(Tkinter.Frame):
     """
     creates an algorithm widget
     """
-
+    
     def __init__(self,master,algorithmElement):
         """
         create it
@@ -729,26 +729,26 @@ class AlgorithmInfoWidget(Tkinter.Frame):
                                             font="Times 10")
         self.Text.insert(Tkinter.END, text_data)
         self.Text.pack(side=Tkinter.TOP,expand=1,fill=Tkinter.BOTH)
-	self.Text['state'] = Tkinter.DISABLED 
-
+        self.Text['state'] = Tkinter.DISABLED 
+        
 class AboutWidget(ScrolledText.ScrolledText):
     """
     displays html text
     copied and modified from GatoDialogs.py
     Basic class which provides a scrollable area for viewing HTML text
     """
-
+    
     def __init__(self, master, htmlcode):
-	ScrolledText.ScrolledText.__init__(self, master,
+        ScrolledText.ScrolledText.__init__(self, master,
                                            background='white', 
                                            wrap='word',
                                            font="Times 10",
                                            )
-	self.inserthtml(htmlcode)
-
+        self.inserthtml(htmlcode)
+        
     def Update(self,htmlcode):
-	self.inserthtml(htmlcode)
-
+        self.inserthtml(htmlcode)
+        
     def inserthtml(self, htmlcode):
         if htmlcode is None:
             htmlcode="""<html><body>
@@ -757,23 +757,23 @@ class AboutWidget(ScrolledText.ScrolledText):
             """
         import formatter
         import GatoDialogs
-	self['state'] = Tkinter.NORMAL
-	self.delete('0.0', Tkinter.END)
-
-	writer = GatoDialogs.HTMLWriter(self, self)
-	format = formatter.AbstractFormatter(writer)
-	parser = GatoDialogs.MyHTMLParser(format, self)
-	parser.feed(htmlcode)
-	parser.close()
-	
-	self['state'] = Tkinter.DISABLED
-
+        self['state'] = Tkinter.NORMAL
+        self.delete('0.0', Tkinter.END)
+        
+        writer = GatoDialogs.HTMLWriter(self, self)
+        format = formatter.AbstractFormatter(writer)
+        parser = GatoDialogs.MyHTMLParser(format, self)
+        parser.feed(htmlcode)
+        parser.close()
+        
+        self['state'] = Tkinter.DISABLED
+        
 class GatoFileButtonBar(Tkinter.Frame):
     """
     holds the buttons for the node selection dialog
     """
     def __init__(self, master, reporter, cnf={}, **config):
-
+    
         cnf.update(config)
         Tkinter.Frame.__init__(self,master,cnf=cnf)
         self.reporter=reporter
@@ -783,13 +783,13 @@ class GatoFileButtonBar(Tkinter.Frame):
         self.cancelButton.grid(row=0,column=1,sticky=Tkinter.E+Tkinter.W)
         self.columnconfigure(0,weight=1)
         self.columnconfigure(1,weight=1)
-
-
+        
+        
 class GatoFileStructureWidget(TextTreeWidget.dom_structure_widget):
     """
     customized for .gato files
     """
-
+    
     def __init__(self,master,dom,report_function,**conf):
         """
         report function coordinates the element display
@@ -812,7 +812,7 @@ class GatoFileStructureWidget(TextTreeWidget.dom_structure_widget):
                 if self.report_to and not self.report_to(event,node):
                     return
                 self.chosenNode(node,xmlGatoElement.gatoElementName)
-            # is it a valid graph or algorithm object?
+                # is it a valid graph or algorithm object?
             if self.isGatoMemberElement(node)!=1:
                 # nothing to do...
                 return
@@ -833,7 +833,7 @@ class GatoFileStructureWidget(TextTreeWidget.dom_structure_widget):
                 self.report_to(event, node)
         else:
             print event, opts
-
+            
     def chosenNode(self,node,register):
         """
         mark and save chosen node
@@ -848,7 +848,7 @@ class GatoFileStructureWidget(TextTreeWidget.dom_structure_widget):
             # new selection
             self.chosenNodes[register]=node
             self.setNodeColor(node,"red")
-
+            
     def nameNode(self,node):
         """
         chose proper names for node
@@ -868,7 +868,7 @@ class GatoFileStructureWidget(TextTreeWidget.dom_structure_widget):
                 return TextTreeWidget.dom_structure_widget.nameNode(self,node)
         else:
             return TextTreeWidget.dom_structure_widget.nameNode(self,node)
-
+            
     def isGatoMemberElement(self,node):
         """
         if this is a subtag of gato, return actual depth
@@ -888,7 +888,7 @@ class GatoFileStructureWidget(TextTreeWidget.dom_structure_widget):
                     return 0
         else:
             raise FileException("could not determine, if node is member of gato section")
-
+            
     def isVisible(self,node):
         """
         filter out subsections of graph and algorithm in gato sections
@@ -907,7 +907,7 @@ class GatoFileStructureWidget(TextTreeWidget.dom_structure_widget):
                 return 1
             else:
                 return 0
-
+                
 class GatoDOMDialog(Tkinter.Toplevel):
     """
     contains the xml structure and the display of selected element and some buttons
@@ -933,7 +933,7 @@ class GatoDOMDialog(Tkinter.Toplevel):
         self.buttons=GatoFileButtonBar(self,self.reportFromButtons)
         self.buttons.grid(row=1, column=0, columnspan=2, sticky=Tkinter.EW)
         self.protocol("WM_DELETE_WINDOW", lambda e=None: self.reportFromButtons("cancel"))
-
+        
     def reportFromStructure(self,event,node):
         """
         coordinates element display
@@ -945,7 +945,7 @@ class GatoDOMDialog(Tkinter.Toplevel):
             if node and node.nodeType==xml.dom.Node.ELEMENT_NODE and \
                (node.tagName in self.opt_choose or node.tagName in self.mand_choose):
                 return 1
-
+                
     def reportFromButtons(self,event):
         """
         gets interesting events from button bar
@@ -958,14 +958,14 @@ class GatoDOMDialog(Tkinter.Toplevel):
             else:
                 if xmlGraphElement.graphElementName in self.mand_choose:
                     return
-            # algorithm
+                    # algorithm
             algorithm=self.struct_widget.chosenNodes.get(xmlAlgorithmElement.algorithmElementName)
             if algorithm:
                 self.result[xmlAlgorithmElement.algorithmElementName]=xmlAlgorithmElement(algorithm)
             else:
                 if xmlAlgorithmElement.algorithmElementName in self.mand_choose:
                     return
-            # gato section
+                    # gato section
             gato=self.struct_widget.chosenNodes.get(xmlGatoElement.gatoElementName)
             if gato:
                 self.result[xmlGatoElement.gatoElementName]=xmlGatoElement(gato)
@@ -980,23 +980,23 @@ class GatoDOMDialog(Tkinter.Toplevel):
             self.quit()
         else:
             raise Exception("unknown event %s"%event)
-
+            
     def run(self):
         """
         runs this dialog
         """
         self.mainloop()
         return self.result
-
+        
 class GatoFile:
     """
     encapsulates the dom creation from file
     """
-
+    
     validModes=['r', # expect valid gato file and read this file
                 'w', # create new file or overwrite existing file
                 ]
-
+    
     def __init__(self,myFile=None, mode='r'):
         """
         open a file and read the dom from it, or provide an empty gato document
@@ -1006,7 +1006,7 @@ class GatoFile:
                 raise FileException("mode %c not supported"%mode)
             self.mode=mode
             import types
-        
+            
             # test if name or file is given
             if self.mode=='r':
                 self.file=None
@@ -1020,14 +1020,14 @@ class GatoFile:
                         self.file=urllib2.urlopen(urlRequest,"r")
                 elif type(myFile)==types.FileType:
                     self.file=myFile
-
+                    
                 try:
                     # pull dom out of file
                     self.dom = xml.dom.minidom.parse(self.file)
                 except xml.dom.DOMException, e:
                     print e
                     raise FileException(str(e))
-
+                    
             elif self.mode=='w':
                 if type(myFile) in types.StringTypes:
                     if os.access(myFile,os.W_OK):
@@ -1038,15 +1038,15 @@ class GatoFile:
                         self.file=urllib2.urlopen(urlRequest,"w")
                 else:
                     self.file=myFile
-
-                # create empty document
+                    
+                    # create empty document
                 self.dom = xml.dom.minidom.Document()
-
+                
         else: #myFile=None
             # without file, but create empty doc, too
             self.dom = xml.dom.minidom.Document()
             # self.dom.appendChild(self.dom.createElement(xmlGatoElement.gatoElementName))
-
+            
     def write(self,_file=None):
         """
         writes the (modified) dom to the file
@@ -1060,13 +1060,13 @@ class GatoFile:
                 _thisFile=_file
         else:
             _thisFile=self.file
-
+            
         encoding="iso-8859-1"
         _thisFile.write("<?xml version=\"1.0\" encoding=\"%s\" ?>\n"%encoding)
         if self.dom.hasChildNodes():
             for n in self.dom.childNodes:
                 n.writexml(xmlEncodedStream(_thisFile))
-
+                
     def getDefaultSelection(self):
         """
         returns the default selected elements
@@ -1076,13 +1076,13 @@ class GatoFile:
             return None
         else:
             return xmlGatoElement(self.dom.documentElement).getDefaultSelection()
-
+            
     def getGatoElements(self):
         """
         returns an xmlGatoElement instance
         """
         return self.dom.getElementsByTagName(xmlGatoElement.gatoElementName)
-
+        
     def appendGatoElement(self,newElement):
         """
         append the element without checking unique name
@@ -1093,12 +1093,12 @@ class GatoFile:
                 tmpGatoElement=self.dom.documentElement
                 self.dom.replaceChild(self.dom.createElement("xml"),tmpGatoElement)
                 self.dom.documentElement.appendChild(tmpGatoElement)
-            # append to document element
+                # append to document element
             self.dom.documentElement.appendChild(newElement.domElement)
         else:
             # start with a gato node as root element
             self.dom.appendChild(newElement.domElement)
-
+            
     def createGatoElement(self,name=None):
         """
         creates a new (opt. unnamed)  Gato element
@@ -1107,14 +1107,14 @@ class GatoFile:
         if name is not None:
             newElement.setName(name)
         return newElement
-
+        
     def displaySelectionDialog(self,master):
         """
         runs the dom structure
         """
         w=GatoDOMDialog(master,self.dom)
         return w.run()
-
+        
     def displayGraphSelectionDialog(self,master):
         w=GatoDOMDialog(master,self.dom,to_choose=(('graph',)))
         s=w.run()
@@ -1122,7 +1122,7 @@ class GatoFile:
             return s["graph"]
         else:
             return None
-
+            
     def displayAlgorithmSelectionDialog(self,master):
         w=GatoDOMDialog(master, self.dom,to_choose=(('algorithm',)))
         s=w.run()
@@ -1130,7 +1130,7 @@ class GatoFile:
             return s["algorithm"]
         else:
             return None
-
+            
 if __name__=='__main__':
     # some test progs
     WorkInProgress().run()
@@ -1138,5 +1138,5 @@ if __name__=='__main__':
     # old ones
     # f=GatoFile('DFS.gato') # parse an XML file by name
     # f.displayGraphSelectionDialog(Tkinter.Tk())
-
+    
     

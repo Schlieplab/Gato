@@ -75,18 +75,18 @@ cRemovedFromQueue = "grey"
 cTraversedEdge    = "grey"
 
 gColors = ['#333333','#663333','#993333','#CC3333',
-	  '#336633','#666633','#996633','#CC6633',
-	  '#339933','#669933','#999933','#CC9933',
-	  '#33CC33','#66CC33','#99CC33','#CCCC33',
-	  '#333366','#663366','#993366','#CC3366',
-	  '#336666','#666666','#996666','#CC6666',
-	  '#339966','#669966','#999966','#CC9966',
-	  '#33CC66','#66CC66','#99CC66','#CCCC66',
-	  '#3333CC','#6633CC','#9933CC','#CC33CC',
-	  '#3366CC','#6666CC','#9966CC','#CC66CC',
-	  '#3399CC','#6699CC','#9999CC','#CC99CC',
-	  '#33CCCC','#66CCCC','#99CCCC','#CCCCCC']
-	  
+          '#336633','#666633','#996633','#CC6633',
+          '#339933','#669933','#999933','#CC9933',
+          '#33CC33','#66CC33','#99CC33','#CCCC33',
+          '#333366','#663366','#993366','#CC3366',
+          '#336666','#666666','#996666','#CC6666',
+          '#339966','#669966','#999966','#CC9966',
+          '#33CC66','#66CC66','#99CC66','#CCCC66',
+          '#3333CC','#6633CC','#9933CC','#CC33CC',
+          '#3366CC','#6666CC','#9966CC','#CC66CC',
+          '#3399CC','#6699CC','#9999CC','#CC99CC',
+          '#33CCCC','#66CCCC','#99CCCC','#CCCCCC']
+
 
 # Exceptions
 GraphNotSimpleError = 'GraphNotSimpleError'
@@ -127,18 +127,18 @@ gGatoHelp = """
 
 
 gLGPLText = """
-		  GNU LIBRARY GENERAL PUBLIC LICENSE
-		       Version 2, June 1991
+                  GNU LIBRARY GENERAL PUBLIC LICENSE
+                       Version 2, June 1991
 
  Copyright (C) 1991 Free Software Foundation, Inc.
-    		    59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+                    59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  Everyone is permitted to copy and distribute verbatim copies
  of this license document, but changing it is not allowed.
 
 [This is the first released version of the library GPL.  It is
  numbered 2 because it goes with version 2 of the ordinary GPL.]
 
-			    Preamble
+                            Preamble
 
   The licenses for most software are designed to take away your
 freedom to share and change it.  By contrast, the GNU General Public
@@ -180,7 +180,7 @@ library.  If the library is modified by someone else and passed on, we
 want its recipients to know that what they have is not the original
 version, so that any problems introduced by others will not reflect on
 the original authors' reputations.
-
+
   Finally, any free program is threatened constantly by software
 patents.  We wish to avoid the danger that companies distributing free
 software will individually obtain patent licenses, thus in effect
@@ -227,8 +227,8 @@ works together with the library.
 
   Note that it is possible for a library to be covered by the ordinary
 General Public License rather than by this special one.
-
-		  GNU LIBRARY GENERAL PUBLIC LICENSE
+
+                  GNU LIBRARY GENERAL PUBLIC LICENSE
    TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
 
   0. This License Agreement applies to any software library which
@@ -262,7 +262,7 @@ such a program is covered only if its contents constitute a work based
 on the Library (independent of the use of the Library in a tool for
 writing it).  Whether that is true depends on what the Library does
 and what the program that uses the Library does.
-  
+
   1. You may copy and distribute verbatim copies of the Library's
 complete source code as you receive it, in any medium, provided that
 you conspicuously and appropriately publish on each copy an
@@ -274,7 +274,7 @@ Library.
   You may charge a fee for the physical act of transferring a copy,
 and you may at your option offer warranty protection in exchange for a
 fee.
-
+
   2. You may modify your copy or copies of the Library or any portion
 of it, thus forming a work based on the Library, and copy and
 distribute such modifications or work under the terms of Section 1
@@ -332,7 +332,7 @@ instead of to this License.  (If a newer version than version 2 of the
 ordinary GNU General Public License has appeared, then you can specify
 that version instead if you wish.)  Do not make any other change in
 these notices.
-
+
   Once this change is made in a given copy, it is irreversible for
 that copy, so the ordinary GNU General Public License applies to all
 subsequent copies and derivative works made from that copy.
@@ -383,7 +383,7 @@ Library will still fall under Section 6.)
 distribute the object code for the work under the terms of Section 6.
 Any executables containing that work also fall under Section 6,
 whether or not they are linked directly with the Library itself.
-
+
   6. As an exception to the Sections above, you may also compile or
 link a \"work that uses the Library\" with the Library to produce a
 work containing portions of the Library, and distribute that work
@@ -437,7 +437,7 @@ restrictions of other proprietary libraries that do not normally
 accompany the operating system.  Such a contradiction means you cannot
 use both them and the Library together in an executable that you
 distribute.
-
+
   7. You may place library facilities that are a work based on the
 Library side-by-side in a single library together with other library
 facilities not covered by this License, and distribute such a combined
@@ -478,7 +478,7 @@ subject to these terms and conditions.  You may not impose any further
 restrictions on the recipients' exercise of the rights granted herein.
 You are not responsible for enforcing compliance by third parties to
 this License.
-
+
   11. If, as a consequence of a court judgment or allegation of patent
 infringement or for any other reason (not limited to patent issues),
 conditions are imposed on you (whether by court order, agreement or
@@ -530,7 +530,7 @@ conditions either of that version or of any later version published by
 the Free Software Foundation.  If the Library does not specify a
 license version number, you may choose any version ever published by
 the Free Software Foundation.
-
+
   14. If you wish to incorporate parts of the Library into other free
 programs whose distribution conditions are incompatible with these,
 write to the author to ask for permission.  For software which is
@@ -540,7 +540,7 @@ decision will be guided by the two goals of preserving the free status
 of all derivatives of our free software and of promoting the sharing
 and reuse of software generally.
 
-			    NO WARRANTY
+                            NO WARRANTY
 
   15. BECAUSE THE LIBRARY IS LICENSED FREE OF CHARGE, THERE IS NO
 WARRANTY FOR THE LIBRARY, TO THE EXTENT PERMITTED BY APPLICABLE LAW.
@@ -563,8 +563,8 @@ FAILURE OF THE LIBRARY TO OPERATE WITH ANY OTHER SOFTWARE), EVEN IF
 SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH
 DAMAGES.
 
-		     END OF TERMS AND CONDITIONS
-
+                     END OF TERMS AND CONDITIONS
+
            How to Apply These Terms to Your New Libraries
 
   If you develop a new library, and you want it to be of the greatest

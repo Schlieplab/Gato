@@ -44,7 +44,7 @@ class Logger:
     """
     def __init__(self, module = None):
         self.module = module
-    
+        
     def log(self, message, prefix, exc_info = None):
         if verbose is not None:
             if self.module == None:
@@ -56,23 +56,23 @@ class Logger:
                 #print exc_info
                 import traceback
                 traceback.print_exc(file=sys.stdout) # Prettier output
-            
+                
     def info(self, message):
         self.log(message,"INFO")
-
+        
     def debug(self, message):
         self.log(message,"DEBUG")
-
+        
     def error(self, message):
         self.log(message,"ERROR")
-
+        
     def exception(self, message):
         self.log(message,"EXCEPTION", exc_info = 1)
-
+        
     def critical(self, message):
         self.log(message,"CRITICAL")
         
-
+        
 def info(message):
     log = getLogger(None)
     log.info(message)
@@ -92,9 +92,9 @@ def exception(message):
 def critical(message):
     log = getLogger(None)
     log.critical(message)
-
+    
 def getLogger(module = None):
     return Logger(module)
     
-
+    
 verbose = None

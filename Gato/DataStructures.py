@@ -50,186 +50,186 @@ class Point2D:
     """ Simple Wrapper class for a point in 2D-space. Used for Graph
         Embeddings.  Use: Point2D([x,y]) or Point2D(x,y) """
     def __init__(self, x = None, y = None):	
-	if y == None:
-	    if x == None:
-		self.x = 0
-		self.y = 0
-	    else:
-		self.x = x[0]
-		self.y = x[1]
-	
-	self.x = x
-	self.y = y
-
-			
-################################################################################
-#
-# Vertex Labeling
-#
-################################################################################
+        if y == None:
+            if x == None:
+                self.x = 0
+                self.y = 0
+            else:
+                self.x = x[0]
+                self.y = x[1]
+                
+        self.x = x
+        self.y = y
+        
+        
+        ################################################################################
+        #
+        # Vertex Labeling
+        #
+        ################################################################################
 class VertexLabeling:
     """ Simple Wrapper class for any mapping of vertices to values.
         E.g.,
-	
-	- strings (for labels)
+    
+        - strings (for labels)
         - Point2D (for embeddings) """
-
+    
     def __init__(self):
-	self.label = {}
-	
+        self.label = {}
+        
     def __setitem__(self, v, val):
-	self.label[v] = val
-	
+        self.label[v] = val
+        
     def __getitem__(self, v):
-	return self.label[v]
-
+        return self.label[v]
+        
     def keys(self):
-	return self.label.keys()
-
+        return self.label.keys()
+        
     def QDefined(self,v):
-	return v in self.label.keys()
-
+        return v in self.label.keys()
+        
 class VertexWeight(VertexLabeling):
 
     def __init__(self, theGraph, initialWeight = None):
-	VertexLabeling.__init__(self)
-	self.G = theGraph
-	self.integer = 0
-	if initialWeight is not None:
-	    self.SetAll(initialWeight)
-
+        VertexLabeling.__init__(self)
+        self.G = theGraph
+        self.integer = 0
+        if initialWeight is not None:
+            self.SetAll(initialWeight)
+            
     def QInteger(self):
-	""" Returns 1 if all weights are integers, 0 else """
-	return self.integer
-
+        """ Returns 1 if all weights are integers, 0 else """
+        return self.integer
+        
     def Integerize(self):
-	if not self.integer:
-	    for v in self.label.keys():
-		self.label[v] = int(round(self.label[v]))
-	    self.integer = 1	
-
+        if not self.integer:
+            for v in self.label.keys():
+                self.label[v] = int(round(self.label[v]))
+            self.integer = 1	
+            
     def SetAll(self, initialWeight):
-	for v in self.G.vertices:
-	    self.label[v] = initialWeight
-	   
-
-
-################################################################################
-#
-# Edge Labeling
-#
-################################################################################
+        for v in self.G.vertices:
+            self.label[v] = initialWeight
+            
+            
+            
+            ################################################################################
+            #
+            # Edge Labeling
+            #
+            ################################################################################
 class EdgeLabeling:
     """ Simple wrapper class for any mapping of edges to values.
         E.g.,
-	
-	- draw edges (for GraphDisplay)
+    
+        - draw edges (for GraphDisplay)
         - weights (for embeddings) 
-
-	Use EdgeLabeling[(u,v)] for access """
-
+    
+        Use EdgeLabeling[(u,v)] for access """
+    
     def __init__(self):
-	self.label = {}
-	
+        self.label = {}
+        
     def __setitem__(self, e, val): # Use with (tail,head)
-	self.label[e] = val
-	
+        self.label[e] = val
+        
     def __getitem__(self, e): 
-	return self.label[e]
-
+        return self.label[e]
+        
     def QDefined(self,e):
-	return e in self.label.keys()
-
-
+        return e in self.label.keys()
+        
+        
 class EdgeWeight(EdgeLabeling):
     """ Simple class for storing edge weights.
-          
-	Use EdgeWeight[(u,v)] for access, undirected graphs are
-	handled properly. """
-
+    
+        Use EdgeWeight[(u,v)] for access, undirected graphs are
+        handled properly. """
+    
     def __init__(self, theGraph, initialWeight = None):
-	EdgeLabeling.__init__(self)
-	self.G       = theGraph
-	self.integer = 0
-	if initialWeight is not None:
-	    self.SetAll(initialWeight)
-
+        EdgeLabeling.__init__(self)
+        self.G       = theGraph
+        self.integer = 0
+        if initialWeight is not None:
+            self.SetAll(initialWeight)
+            
     def __setitem__(self, e, val): # Use with (tail,head)
-	if self.G.QDirected():
-	    self.label[e] = val
-	else:
-	    try:
-		tmp = self.label[(e[1], e[0])]
-		self.label[(e[1], e[0])] = val
-	    except KeyError:
-		self.label[e] = val
-	
+        if self.G.QDirected():
+            self.label[e] = val
+        else:
+            try:
+                tmp = self.label[(e[1], e[0])]
+                self.label[(e[1], e[0])] = val
+            except KeyError:
+                self.label[e] = val
+                
     def __getitem__(self, e): 
-	if self.G.QDirected():
-	    return self.label[e]
-	else:
-	    try:
-		return self.label[(e[1], e[0])]
-	    except KeyError:
-		return self.label[e]
-
+        if self.G.QDirected():
+            return self.label[e]
+        else:
+            try:
+                return self.label[(e[1], e[0])]
+            except KeyError:
+                return self.label[e]
+                
     def QInteger(self):
-	""" Returns 1 if all weights are integers, 0 else """
-	return self.integer
-	   
+        """ Returns 1 if all weights are integers, 0 else """
+        return self.integer
+        
     def Integerize(self):
-	if not self.integer:
-	    for e in self.label.keys():
-		self.label[e] = int(round(self.label[e]))
-	    self.integer = 1	
-	    
+        if not self.integer:
+            for e in self.label.keys():
+                self.label[e] = int(round(self.label[e]))
+            self.integer = 1	
+            
     def SetAll(self, initialWeight):
-	for e in self.G.Edges():
-	    self.label[e] = initialWeight
-  
-
-
-################################################################################
-#
-# Queue
-#
-################################################################################
+        for e in self.G.Edges():
+            self.label[e] = initialWeight
+            
+            
+            
+            ################################################################################
+            #
+            # Queue
+            #
+            ################################################################################
 class Queue:
     """ Simple Queue class implemented as a Python list:
         XXX check whether replaceble by library queue"""
-
+    
     def __init__(self, elems=None):
-	if elems == None: 
-	    self.contents = []
-	else:
-	    self.contents = elems[:]
-
+        if elems == None: 
+            self.contents = []
+        else:
+            self.contents = elems[:]
+            
     def Append(self,v):
-	self.contents.append(v)
-
+        self.contents.append(v)
+        
     def Top(self):
-	v = self.contents[0]
-	self.contents = self.contents[1:]
-	return v
-
+        v = self.contents[0]
+        self.contents = self.contents[1:]
+        return v
+        
     def Clear(self):
-	self.contents = []
-
+        self.contents = []
+        
     def IsEmpty(self):
-	return (len(self.contents) == 0)
-
+        return (len(self.contents) == 0)
+        
     def IsNotEmpty(self):
-	return (len(self.contents) > 0)
-
+        return (len(self.contents) > 0)
+        
     def Contains(self,v):
-	return v in self.contents
-
-################################################################################
-#
-# PriorityQueue
-#
-################################################################################
-
+        return v in self.contents
+        
+        ################################################################################
+        #
+        # PriorityQueue
+        #
+        ################################################################################
+        
 class PQImplementation(dict):
     """ Heap based implementation """
     def __init__(self):
@@ -239,7 +239,7 @@ class PQImplementation(dict):
            found by smallest() or until the heap is rebuilt.'''
         self.__heap = []
         dict.__init__(self)
-
+        
     def smallest(self):
         '''Find smallest item after removing deleted items from heap.'''
         if len(self) == 0:
@@ -259,7 +259,7 @@ class PQImplementation(dict):
                 heap[insertionPoint] = heap[smallChild]
                 insertionPoint = smallChild
         return heap[0][1]
-	
+        
     def __iter__(self):
         '''Create destructive sorted iterator of priorityDictionary.'''
         def iterfn():
@@ -268,12 +268,12 @@ class PQImplementation(dict):
                 yield x
                 del self[x]
         return iterfn()
-
+        
     def deleteMin(self):
         x = self.smallest()
         del self[x]
         return x
-	
+        
     def __setitem__(self,key,val):
         '''Change value stored in dictionary and add corresponding
            pair to heap.  Rebuilds the heap if the number of deleted
@@ -292,32 +292,32 @@ class PQImplementation(dict):
                 heap[insertionPoint] = heap[(insertionPoint-1)//2]
                 insertionPoint = (insertionPoint-1)//2
             heap[insertionPoint] = newPair
-	
+            
     def setdefault(self,key,val):
         '''Reimplement setdefault to call our customized __setitem__.'''
         if key not in self:
             self[key] = val
         return self[key]
-
+        
     def update(self, other):
         for key in other.keys():
             self[key] = other[key]
-
-
+            
+            
 class PriorityQueue:
     """ A simple priority queue giving minimal valued items first.
         Interface only ... """
     
     def __init__(self):
         self.pq = PQImplementation()
-
+        
     def Insert(self,value,sortKey):
-	self.pq[value] = sortKey
-
+        self.pq[value] = sortKey
+        
     def DeleteMin(self):
         """ Return and delete minimal value with minimal sortKey from queue. """
-	return self.pq.deleteMin()
-
+        return self.pq.deleteMin()
+        
     def DecreaseKey(self,value,newSortKey):
         if self.pq.has_key(value):
             self.pq[value] = newSortKey
@@ -328,73 +328,73 @@ class PriorityQueue:
     def Clear(self):
         del self.pq
         self.pq = PQImplementation()
-
+        
     def IsEmpty(self):
-	return (len(self.pq) == 0)
-
+        return (len(self.pq) == 0)
+        
     def IsNotEmpty(self):
-	return (len(self.pq) > 0)
-
-
-
-
-################################################################################
-#
-# Stack
-#
-################################################################################
+        return (len(self.pq) > 0)
+        
+        
+        
+        
+        ################################################################################
+        #
+        # Stack
+        #
+        ################################################################################
 class Stack:
     """ Simple Stack class implemented as a Python list """
-
+    
     def __init__(self):
-	self.contents = []
-
+        self.contents = []
+        
     def Push(self,v):
-	self.contents.append(v)
-
+        self.contents.append(v)
+        
     def Pop(self):
-	v = self.contents[-1]
-	self.contents = self.contents[:-1]
-	return v
-
+        v = self.contents[-1]
+        self.contents = self.contents[:-1]
+        return v
+        
     def Clear(self):
-	self.contents = []
-
+        self.contents = []
+        
     def IsEmpty(self):
-	return (len(self.contents) == 0)
-
+        return (len(self.contents) == 0)
+        
     def IsNotEmpty(self):
-	return (len(self.contents) > 0)
-
+        return (len(self.contents) > 0)
+        
     def Contains(self,v):
-	return v in self.contents
-
-################################################################################
-#
-# Set
-#
-################################################################################
+        return v in self.contents
+        
+        ################################################################################
+        #
+        # Set
+        #
+        ################################################################################
 class Set:
     def __init__(self):
         self.members = []
         return
-
+        
     def __getitem__(self,key):
-	return self.members[key]
-
+        return self.members[key]
+        
     def Add(self, e):
-	self.members.append(e)
+        self.members.append(e)
         return
- 		
+        
     def Delete(self, e):
-	try:
+        try:
             self.members.remove(e)
         except:
             None
         return
-
+        
     def IsNotEmpty(self):
-	return len(self.members) > 0
-
+        return len(self.members) > 0
+        
     def Contains(self,e):
-	return e in self.members
+        return e in self.members

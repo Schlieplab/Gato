@@ -43,18 +43,18 @@ class scroll_canvas(Tkinter.Canvas):
     """
     should avoid resizing by adding or removing scrollbars in x or y-direction or both
     """
-
+    
     def __init__(self,master,cnf={},**kw):
                 #hidden frame
         self.hidden_frame=Tkinter.Frame(master)
         self.hidden_frame.rowconfigure(0,weight=1)
         self.hidden_frame.columnconfigure(0,weight=1)
-
+        
         cnf=Tkinter._cnfmerge((cnf,kw))
         if not cnf.has_key('highlightthickness'):
             cnf['highlightthickness']=0
         Tkinter.Canvas.__init__(self,self.hidden_frame,cnf)
-
+        
         Tkinter.Canvas.grid(self,row=0,column=0,sticky=Tkinter.NSEW)
         self.hidden_frame.bind('<Configure>',self.config_event)
         # prepare scrollbars
@@ -67,7 +67,7 @@ class scroll_canvas(Tkinter.Canvas):
         Tkinter.Canvas.configure(self,
                                  yscrollcommand=self.sb_y.set,
                                  xscrollcommand=self.sb_x.set)
-
+        
     def config_event(self,event):
         # returns empty list, if no scrollregion exists
         scrollr=Tkinter.Canvas.cget(self,'scrollregion')
@@ -78,70 +78,70 @@ class scroll_canvas(Tkinter.Canvas):
             # print "from bbox"
             scrollr=self.bbox(Tkinter.ALL)
             self.configure(scrollregion=scrollr)
-##        print "event: widht %d, height %d"%(event.width,event.height)
-##        print "scrollregion: ",scrollr
-##        print "winfo: widht %d, height %d"%(self.c.winfo_width(),
-##                                            self.c.winfo_height())
-##        print "winfo req: widht %d, height %d"%(self.c.winfo_reqwidth(),
-##                                                self.c.winfo_reqheight())
+            ##        print "event: widht %d, height %d"%(event.width,event.height)
+            ##        print "scrollregion: ",scrollr
+            ##        print "winfo: widht %d, height %d"%(self.c.winfo_width(),
+            ##                                            self.c.winfo_height())
+            ##        print "winfo req: widht %d, height %d"%(self.c.winfo_reqwidth(),
+            ##                                                self.c.winfo_reqheight())
         if event.width>=(scrollr[2]-scrollr[0]):
             # print "x_scrollbar away"
             self.sb_x.grid_remove()
         else:
             # print "x_scrollbar needed"
             self.sb_x.grid(row=1,column=0,sticky=Tkinter.EW)
-
+            
         if event.height>=(scrollr[3]-scrollr[1]):
             # print "y_scrollbar away"
             self.sb_y.grid_remove()
         else:
             # print "y_scrollbar needed"
             self.sb_y.grid(row=0,column=1,sticky=Tkinter.NS)
-
-        # hidden definitions for geometry methods
-        
+            
+            # hidden definitions for geometry methods
+            
     def pack_configure(self, cnf={}, **kw):
         cnf=Tkinter._cnfmerge((cnf,kw))
         return self.hidden_frame.pack(cnf)
     pack = pack_configure
-
+    
     def pack_forget(self):
         return self.hidden_frame.pack_forget()
     forget = pack_forget
-
+    
     def pack_info(self):
         return self.hidden_frame.pack_info()
-
+        
     def place_configure(self, cnf={}, **kw):
         cnf=Tkinter._cnfmerge((cnf,kw))
         return self.hidden_frame.place(cnf=cnf)
     place = place_configure
-
+    
     def place_forget(self):
         return self.hidden_frame.place_forget()
     forget = place_forget
-
+    
     def place_info(self):
         return self.hidden_frame.place_info()
-       
+        
     def grid_configure(self, cnf={}, **kw):
         cnf=Tkinter._cnfmerge((cnf,kw))
         print cnf
         return self.hidden_frame.grid(cnf=cnf)
     grid = grid_configure
-
+    
     def grid_forget(self):
         return self.hidden_frame.grid_forget()
     forget = grid_forget
-
+    
     def grid_info(self):
         return self.hidden_frame.grid_info()
-
+        
     def grid_location(self, x, y):
         return self.hidden_frame.grid_location(x,y)
-
+        
     location = grid_location
-
+    
 class tab_frame(Tkinter.Frame):
     """
     tabbed widgets
@@ -156,7 +156,7 @@ class tab_frame(Tkinter.Frame):
         key=ProbEditorBasics.tag_to_key(tab_name)
         if key!=self.actual_tab:
             self.change_tab(key)
-
+            
     def change_tab(self,key):
         """
         process of changing:
@@ -166,9 +166,9 @@ class tab_frame(Tkinter.Frame):
         - changes color of previous tab to background
         
         - actual tab is marked white
-
+        
         - releases (forget) previous widget
-
+        
         - pack actual widget
         """
         # change tabs
@@ -177,7 +177,7 @@ class tab_frame(Tkinter.Frame):
                 'tab_poly_'+ProbEditorBasics.key_to_tag(self.actual_tab))
             for item in poly_list:
                 self.tabs.itemconfigure(item,fill='')
-
+                
         tag=ProbEditorBasics.key_to_tag(key)
         poly_list=self.tabs.find_withtag('tab_poly_'+tag)
         for item in poly_list:
@@ -186,33 +186,33 @@ class tab_frame(Tkinter.Frame):
         text_list=self.tabs.find_withtag('tab_text_'+tag)
         for item in text_list:
             self.tabs.lift(item)
-        
-        # change body
+            
+            # change body
         if self.actual_tab!=None:
             self.widget_dict[self.actual_tab].pack_forget()
         self.widget_dict[key].pack(side=Tkinter.BOTTOM,
                                    in_=self.container,
                                    expand=1,fill=Tkinter.BOTH)
         self.actual_tab=key
-
+        
     def __init__(self,master,widget_dict,start=None,**config):
         """
         init frame, containing:
-
+        
         - tabbs
         
         - frame with fixed width, height for switched widgets
-
+        
         size from slaves is not propagated
         """
         Tkinter.Frame.__init__(self,master,config)
-
+        
         self.lower()
         self.tabs=Tkinter.Canvas(self,height=25,highlightthickness=0)
         # why are sizes here?
         self.container=Tkinter.Frame(self,width=400,height=300)
         self.container.pack_propagate(0)
-
+        
         self.widget_dict=widget_dict
         key_list=widget_dict.keys()
         key_list.sort()
@@ -231,7 +231,7 @@ class tab_frame(Tkinter.Frame):
                                        anchor=text_anchor,
                                        tags=('tab_text_'+tag))
             text_box=self.tabs.bbox(text)
-
+            
             #dann den Rand:
             far_right=2000
             far_left=-1
@@ -251,23 +251,23 @@ class tab_frame(Tkinter.Frame):
             # Text nach oben
             self.tabs.lift(text)
             pos_x=pos_x+text_box[2]-text_box[0]+2*margin_x
-
+            
             # Event-Handler
             self.tabs.tag_bind(text,'<Button-1>',self.tab_selected)
             self.tabs.tag_bind(tab,'<Button-1>',self.tab_selected)
-
-        # setze aktuellen Tab
+            
+            # setze aktuellen Tab
         self.actual_tab=None
         if start!=None:
             self.change_tab(start)
         else:
             self.change_tab(key_list[0])
-
+            
         self.tabs.pack(side=Tkinter.TOP,fill=Tkinter.X)
         self.container.pack(side=Tkinter.TOP,expand=1,fill=Tkinter.BOTH)
-
-#####################################################################################
-
+        
+        #####################################################################################
+        
 class flyout_decoration:
     """
     works only with canvas derivatives
@@ -279,7 +279,7 @@ class flyout_decoration:
         self.info_function=info_function
         # prepare bindings
         self.add_bindings(info_function)
-
+        
     def add_bindings(self,info_function):
         """
         add bindings to canvas-items with 'flyout_info' tag
@@ -295,7 +295,7 @@ class flyout_decoration:
             self.tag_bind(item,'<Enter>',self.flyout_enter,'+')
             self.tag_bind(item,'<Motion>',self.flyout_delay_start,'+')
             self.tag_bind(item,'<Leave>',self.flyout_leave,'+')
-
+            
     def flyout_enter(self,event):
         """
         a item is entered, initialise status
@@ -308,7 +308,7 @@ class flyout_decoration:
             return
         self.flyout_stat=0
         self.after_id=0
-
+        
     def flyout_leave(self,event):
         """
         the item is left:
@@ -324,17 +324,17 @@ class flyout_decoration:
         if self.flyout_stat==2:
             self.flyout_hide()
         self.flyout_stat=0
-
+        
     def flyout_delay_start(self,event):
         """
         mouse move over item:
-
+        
         - store item
-
+        
         - evtl. hide flyout and cancel previous timer
         
         - start new timer for move-timeout
-
+        
         """
         item=self.find_withtag(Tkinter.CURRENT)[0]
         if self.flyout_stat==1:
@@ -343,10 +343,10 @@ class flyout_decoration:
         elif self.flyout_stat==2:
             # flyout set
             self.flyout_hide()
-        # moved
+            # moved
         self.flyout_stat=1
         self.after_id=self.after(1000,self.flyout_delay_end,item,event.x,event.y)
-
+        
     def flyout_delay_end(self,item,x,y):
         """
         after-event handler:
@@ -355,7 +355,7 @@ class flyout_decoration:
         """
         self.flyout_stat==2
         self.flyout_show(item,x,y)
-
+        
     def flyout_show(self,item,x,y):
         """
         create the flyout, get info text from 'info_function'
@@ -368,7 +368,7 @@ class flyout_decoration:
                                    anchor=Tkinter.NW)
         self.create_rectangle(self.bbox(text_item),fill='khaki',tags=('flyout'))
         self.lift(text_item)
-
+        
     def flyout_hide(self):
         """
         destroy flyout, reset state
@@ -377,9 +377,9 @@ class flyout_decoration:
         flyout_elements=self.find_withtag('flyout')
         for element in flyout_elements:
             self.delete(element)
-
-######################################################################################
-
+            
+            ######################################################################################
+            
 class bar_chart_y(Tkinter.Canvas,flyout_decoration):
     """
     
@@ -394,7 +394,7 @@ class bar_chart_y(Tkinter.Canvas,flyout_decoration):
             if prob_dict[k]>self.max_value:
                 self.max_value=prob_dict[k]
                 self.max_key=k
-
+                
         self.bar_step=30
         self.bar_width=20
         self.text_length=30
@@ -419,7 +419,7 @@ class bar_chart_y(Tkinter.Canvas,flyout_decoration):
         self.config_bar_height(prob_dict)
         flyout_decoration.__init__(self,self.info_func)
         self.bind('<Configure>',self.bars_configure)
-
+        
     def info_func(self,item):
         tag=filter(lambda t:t[:4]=='tag_',self.gettags(item))[0]
         key=ProbEditorBasics.tag_to_key(tag[4:])
@@ -432,7 +432,7 @@ class bar_chart_y(Tkinter.Canvas,flyout_decoration):
             precision=1
         flyout_text=('%s: %s')%(key,str(round(value,precision)))
         return flyout_text
-
+        
     def create_description(self,prob_dict,keys):
         text_anchor=Tkinter.W
         i=0
@@ -449,7 +449,7 @@ class bar_chart_y(Tkinter.Canvas,flyout_decoration):
             if this_length>self.text_length:
                 self.text_length=this_length
             i=i+1
-
+            
     def create_bars(self,prob_dict,keys,colors):
         start_x=self.x_margin+self.text_length
         start_y=self.y_margin
@@ -466,7 +466,7 @@ class bar_chart_y(Tkinter.Canvas,flyout_decoration):
                                   fill=colors[i],
                                   tags=('bar','flyout_info',tag))
             i=i+1
-
+            
     def get_max_value(self):
         dict=self.get_bar_values()
         max_value=0.0
@@ -476,7 +476,7 @@ class bar_chart_y(Tkinter.Canvas,flyout_decoration):
                 max_value=dict[k]
                 max_key=k
         return (max_key,max_value)
-
+        
     def get_bar_values(self,key_list=None):
         dict={}
         if not key_list:
@@ -500,11 +500,11 @@ class bar_chart_y(Tkinter.Canvas,flyout_decoration):
                 value=float(coords[2]-coords[0])/self.bar_factor
                 dict.update({key:value})
         return dict
-
+        
     def bars_configure(self,event):
         actual_values=self.config_bar_parameters(width=event.width)
         self.update_bars(actual_values)
-
+        
     def config_bar_parameters(self,prob_dict=None,width=None):
         # merge new values (if exist)
         actual_values=self.get_bar_values()
@@ -520,12 +520,12 @@ class bar_chart_y(Tkinter.Canvas,flyout_decoration):
             if actual_values[key]>self.max_value:
                 self.max_value=actual_values[key]
                 self.max_key=key
-        # expand bars (if necessary, fix to 100)
+                # expand bars (if necessary, fix to 100)
         if width!=None:
             self.bar_length=width-self.text_length-2*self.x_margin
         if self.bar_length<100:
             self.bar_length=100
-        # decide to change scale
+            # decide to change scale
         if self.max_value*self.bar_factor>self.bar_length or \
            self.max_value*self.bar_factor<self.bar_length/2.0:
             # scale change, if it is rational
@@ -537,7 +537,7 @@ class bar_chart_y(Tkinter.Canvas,flyout_decoration):
             # no scale change
             actual_values=prob_dict
         return actual_values
-
+        
     def config_bar_height(self,prob_dict):
         # do real work
         if prob_dict==None: return
@@ -549,7 +549,7 @@ class bar_chart_y(Tkinter.Canvas,flyout_decoration):
             coords=self.coords(bar_item)
             self.coords(bar_item,coords[0],coords[1],
                         coords[0]+prob_dict[key]*self.bar_factor,coords[3])
-
+            
     def config_bar_color(self,keys,color_list):
         bar_items=self.find_withtag('bar')
         for item in bar_items:
@@ -557,7 +557,7 @@ class bar_chart_y(Tkinter.Canvas,flyout_decoration):
             key=ProbEditorBasics.tag_to_key(tag[4:])
             color=color_list[keys.index(key)]
             self.itemconfig(item,fill=color)
-
+            
     def config_bar_order(self,keys):
         text_x=self.bar_width/2
         start_y=self.y_margin
@@ -579,9 +579,9 @@ class bar_chart_y(Tkinter.Canvas,flyout_decoration):
             text_coords=self.coords(text_item)
             self.coords(text_item,text_coords[0],pos_y+text_y)
             i=i+1
-
-#######################################################################################
-
+            
+            #######################################################################################
+            
 class e_bar_chart_y(bar_chart_y):
 
     def __init__(self,master,prob_dict,keys,colors,report_func):
@@ -593,7 +593,7 @@ class e_bar_chart_y(bar_chart_y):
         self.create_handles()
         flyout_decoration.add_bindings(self,self.info_func)
         self.config_handle_pos(prob_dict)
-
+        
     def create_handles(self):
         for item in self.find_withtag('bar'):
             coords=self.coords(item)
@@ -605,7 +605,7 @@ class e_bar_chart_y(bar_chart_y):
             self.tag_bind(handle,'<Button-1>',self.handle_mouse_move_start)
             self.tag_bind(handle,'<Enter>',self.change_cursor)
             self.tag_bind(handle,'<Leave>',self.restore_cursor)
-
+            
     def info_func(self,item):
         tags=self.gettags(item)
         if 'bar_top' in tags:
@@ -621,19 +621,19 @@ class e_bar_chart_y(bar_chart_y):
         else:
             flyout_text=bar_chart_y.info_func(self,item)
         return flyout_text
-
+        
     def change_cursor(self,event):
         self.on_handle=1
         event.widget.configure(cursor='sb_h_double_arrow')
-
+        
     def restore_cursor(self,event):
         self.on_handle=0
         if self.current_item==None:
             event.widget.configure(cursor=self.normal_cursor)
-
+            
     def value_from_handle_coords(self,coords):
         return float((coords[2]+coords[0])/2.0-self.x_margin-self.text_length)/self.bar_factor
-
+        
     def handle_mouse_move_start(self,event):
         #count moves since region of maximum value
         self.move_above=1
@@ -644,11 +644,11 @@ class e_bar_chart_y(bar_chart_y):
         tags=self.gettags(self.current_item)
         self.current_tag=filter(lambda tag: tag[:4]=='tag_',tags)[0]
         self.current_key=ProbEditorBasics.tag_to_key(self.current_tag[4:])
-
+        
         values=self.get_bar_values()
         # for undo function
         self.report_func('old value',self.current_key,values[self.current_key])
-
+        
         #find maximum value, except own value
         keys=values.keys()
         keys.remove(self.current_key)
@@ -656,11 +656,11 @@ class e_bar_chart_y(bar_chart_y):
         for key in keys:
             if values[key]>self.other_max:
                 self.other_max=values[key]
-        
-        #bind necessary motion-functions
+                
+                #bind necessary motion-functions
         self.bind('<ButtonRelease-1>',self.handle_mouse_move_end)
         self.bind('<B1-Motion>',self.handle_mouse_move)
-
+        
     def handle_mouse_move(self,event):
         x=self.canvasx(event.x)
         new_value=float(x-self.x_margin-self.text_length)/self.bar_factor
@@ -669,7 +669,7 @@ class e_bar_chart_y(bar_chart_y):
             self.move_beneath+=1
         if new_value>self.other_max:
             self.move_above+=1
-
+            
         if new_value<=0:
             new_value=0
         elif new_value>upper_value:
@@ -692,7 +692,7 @@ class e_bar_chart_y(bar_chart_y):
             self.move_above=0
         self.config_handle_pos({self.current_key:new_value})
         self.report_func('move',self.current_key,new_value)
-
+        
     def handle_mouse_move_end(self,event):
         self.unbind('<ButtonRelease-1>')
         self.unbind('<B1-Motion>')
@@ -703,7 +703,7 @@ class e_bar_chart_y(bar_chart_y):
         self.current_item=None
         if self.on_handle==0:
             event.widget.configure(cursor=self.normal_cursor)
-
+            
     def config_handle_pos(self,prob_dict):
         if prob_dict==None: return
         for key in prob_dict.keys():
@@ -718,19 +718,19 @@ class e_bar_chart_y(bar_chart_y):
                         coords[1],
                         pos_x+1,
                         coords[3])
-
+            
     def config_bar_height(self,prob_dict):
         bar_chart_y.config_bar_height(self,prob_dict)
         self.config_handle_pos(prob_dict)
-
+        
     def update_bars(self,prob_dict):
         actual_values=self.config_bar_parameters(prob_dict)
         self.config_bar_height(actual_values)
-
-####################################################################################
-
-class scale(Tkinter.Canvas):
         
+        ####################################################################################
+        
+class scale(Tkinter.Canvas):
+
     def __init__(self,master,start_x,factor,max_value=None):
         Tkinter.Canvas.__init__(self,
                                 master,
@@ -739,7 +739,7 @@ class scale(Tkinter.Canvas):
                                 highlightthickness=0
                                 )
         self.draw_arrow(start_x,factor,max_value)
-
+        
     def draw_arrow(self,start_x,factor,max_value=None):
         self.create_line(start_x,
                          20,
@@ -749,7 +749,7 @@ class scale(Tkinter.Canvas):
                          tags=('arrow'))
         if max_value!=None:
             self.config_scale(start_x,factor,max_value)
-
+            
     def config_scale(self,start_x,factor,max_value):
         tic_tags=self.find_withtag('tic')
         for tag in tic_tags:
@@ -765,7 +765,7 @@ class scale(Tkinter.Canvas):
             scale_frac/=2
         if scale_frac*factor<50:
             scale_frac*=2
-        # an der Teilung muß noch gefeilt werden
+            # an der Teilung muß noch gefeilt werden
         round_pos=-math.floor(math.log10(scale_frac))
         x_pos=0.0
         while x_pos<=max_value:
@@ -776,10 +776,10 @@ class scale(Tkinter.Canvas):
                              anchor=Tkinter.S,
                              tags=('tic','text'))
             x_pos=x_pos+scale_frac
-
-
-####################################################################################
-
+            
+            
+            ####################################################################################
+            
 class bar_chart_with_scale(Tkinter.Frame):
 
     def __init__(self,master,prob_dict,keys,colors,report_func):
@@ -792,7 +792,7 @@ class bar_chart_with_scale(Tkinter.Frame):
         factor=self.bars.bar_factor
         scale_max=self.bars.max_value
         self.scale=scale(self,scale_start_x,factor,scale_max)
-
+        
         self.report_func=report_func
         self.scrollbar = Tkinter.Scrollbar(self,orient=Tkinter.VERTICAL,
                                            command=self.bars.yview)
@@ -800,7 +800,7 @@ class bar_chart_with_scale(Tkinter.Frame):
         sregion=(0,0,region[2],region[3])
         self.bars.config(scrollregion=sregion,
                          yscrollcommand=self.scrollbar.set)
-
+        
         empty=Tkinter.Frame(self,bg='white')
         self.scale.grid(column=0,row=0,sticky=Tkinter.E+Tkinter.W)
         self.bars.grid(column=0,row=1,sticky=Tkinter.E+Tkinter.W+Tkinter.N+Tkinter.S)
@@ -808,7 +808,7 @@ class bar_chart_with_scale(Tkinter.Frame):
         Tkinter.Frame.columnconfigure(self,0,weight=1)
         Tkinter.Frame.rowconfigure(self,1,weight=1)
         self.bind('<Configure>',self.config_event)
-
+        
     def config_event(self,event):
         """
         add or remove scrollbar
@@ -824,7 +824,7 @@ class bar_chart_with_scale(Tkinter.Frame):
         else:
             # print "y_scrollbar needed"
             self.scrollbar.grid(column=1,row=1,sticky=Tkinter.NS)
-
+            
     def bar_report(self,what,key,value):
         if what=='move':
             return
@@ -833,12 +833,12 @@ class bar_chart_with_scale(Tkinter.Frame):
                                     self.bars.bar_factor,
                                     self.bars.bar_length/self.bars.bar_factor)
             return
-
+            
         self.report_func(what,key,value)
-
-
-####################################################################################
-
+        
+        
+        ####################################################################################
+        
 class rod_chart(Tkinter.Canvas):
     def __init__(self,master,prob_dict,keys,colors):
         self.ProbDict=prob_dict
@@ -848,7 +848,7 @@ class rod_chart(Tkinter.Canvas):
                                 width=200,height=320
                                 )
         self.draw_rods(keys,colors)
-
+        
     def draw_rods(self,keys,colors):
         start_pos=self.rod_box[0]
         factor=(self.rod_box[2]-self.rod_box[0])/self.ProbDict.sum
@@ -862,7 +862,7 @@ class rod_chart(Tkinter.Canvas):
                                   fill=colors[i],
                                   tags=('rod','tag_'+key))
             i=i+1
-
+            
         for key in keys:
             rod_item=self.find_withtag('tag_'+key)[0]
             coords=self.coords(rod_item)
@@ -879,16 +879,16 @@ class rod_chart(Tkinter.Canvas):
             self.create_text(text_line_x,text_y,
                              text=key,
                              anchor=Tkinter.N)
-
+            
 class e_rod_chart(rod_chart):
     def __init__(self,master,prob_dict,keys,colors):
         rod_chart.__init__(self,master,prob_dict,keys,colors)
-
+        
         self.text_item=self.create_text(20,190,text='Los gehts',tag='info')
-
+        
         for item in self.find_withtag('bar'):
             self.tag_bind(item,'<Button-1>',self.handle_mouse_move_start)
-
+            
     def handle_mouse_move_start(self,event):
         self.current_item=self.find_withtag(Tkinter.CURRENT)[0]
         coords=self.coords(self.current_item)
@@ -897,7 +897,7 @@ class e_rod_chart(rod_chart):
         self.bind('<ButtonRelease-1>',self.handle_mouse_move_end)
         self.bind('<B1-Motion>',self.handle_mouse_move)
         self.itemconfigure(self.text_item, text='Enter')
-
+        
     def handle_mouse_move(self,event):
         coords=self.coords(self.current_item)
         y=self.eventy(event.y)
@@ -906,7 +906,7 @@ class e_rod_chart(rod_chart):
         coords[1]=y
         self.coords(self.current_item,tuple(coords))
         self.itemconfigure(self.text_item, text='Move')
-
+        
     def handle_mouse_move_end(self,event):
         self.unbind('<ButtonRelease-1>')
         self.unbind('<B1-Motion>')
@@ -916,13 +916,13 @@ class e_rod_chart(rod_chart):
         coords=self.coords(self.current_item)
         new_value=float(coords[1]-coords[3])/self.bar_height
         self.change_value(tag[4:],new_value)
-
+        
     def change_value(self,key,value):
         self.ProbDict[key]=value
         self.ProbDict.changed()
-
-####################################################################################
-
+        
+        ####################################################################################
+        
 class pie_chart(Tkinter.Canvas,flyout_decoration):
 
     def __init__(self,master,prob_dict,keys,colors):
@@ -932,7 +932,7 @@ class pie_chart(Tkinter.Canvas,flyout_decoration):
         Tkinter.Canvas.__init__(self,master,bg='white',highlightthickness=0)
         self.draw_arcs(self.arc_box,keys,colors)
         flyout_decoration.__init__(self,self.info_function)
-
+        
     def info_function(self,item):
         tag=filter(lambda t:t=='other' or t[:4]=='tag_',self.gettags(item))[0]
         sector=filter(lambda i,s=self:'sector' in s.gettags(i),self.find_withtag(tag))
@@ -944,7 +944,7 @@ class pie_chart(Tkinter.Canvas,flyout_decoration):
         l10_value=-math.floor(math.log10(value))
         info='%s: %s'%(key,str(round(value,l10_value+3)))
         return info
-
+        
     def anchor(self,angle,angle_base):
         """
         returns anchor-position for text
@@ -965,7 +965,7 @@ class pie_chart(Tkinter.Canvas,flyout_decoration):
         if my_angle<6:
             return Tkinter.NE
         return Tkinter.NW
-
+        
     def draw_arcs(self,circle_box,key_list,colors):
         """
         """
@@ -999,14 +999,14 @@ class pie_chart(Tkinter.Canvas,flyout_decoration):
             if abs(extent_angle)>=360:
                 # fast voller Kreis
                 extent_angle=359.9
-            # Volle Kreise zeichnen
+                # Volle Kreise zeichnen
             sector=self.create_arc(circle_box,
                                    start=this_angle,
                                    extent=extent_angle,
                                    tags=('sector','flyout_info',tag),
                                    fill=color)
             i=i+1
-
+            
         for item in self.find_withtag('sector'):
             coords=self.coords(item)
             start_angle=float(self.itemcget(item,'start'))
@@ -1036,7 +1036,7 @@ class pie_chart(Tkinter.Canvas,flyout_decoration):
                              anchor=self.anchor(line_angle,360.0),
                              text=text,
                              tags=('text',tags))
-
+            
     def configure_description(self,item):
         coords=self.coords(item)
         if len(coords)==0: return
@@ -1052,7 +1052,7 @@ class pie_chart(Tkinter.Canvas,flyout_decoration):
         tags=filter(lambda t: t[:4]=='tag_',self.gettags(item))
         if len(tags)==0:
             tags=('other',)
-        
+            
         tag_items=self.find_withtag(tags[0])
         line_item=text_item=0
         for tag_item in tag_items:
@@ -1073,7 +1073,7 @@ class pie_chart(Tkinter.Canvas,flyout_decoration):
                     circle_middle_y+m_y*circle_diam_y*1.1)
         self.itemconfig(text_item,
                         anchor=self.anchor(line_angle,360.0))
-
+        
     def update_colors(self,order_list,color_list):
         sectors=self.find_withtag('sector')
         for sector in sectors:
@@ -1082,7 +1082,7 @@ class pie_chart(Tkinter.Canvas,flyout_decoration):
             if len(keytag)!=1: continue
             color=color_list[order_list.index(key)]
             self.itemconfig(sector,color=color)
-
+            
     def update_position(self,dict,order_list):
         this_sum=0.0
         #Start bei 6 Uhr
@@ -1119,7 +1119,7 @@ class pie_chart(Tkinter.Canvas,flyout_decoration):
                             extent=extent_angle)
             self.configure_description(sector)
             i=i+1
-
+            
     def angle(self,x,y):
         if y==0:
             if x<0: return 180.0
@@ -1131,9 +1131,9 @@ class pie_chart(Tkinter.Canvas,flyout_decoration):
             return math.atan(x/y)/math.pi*180.0+90.0
         else:
             return math.atan(x/y)/math.pi*180.0+270.0
-
-######################################################################################
-
+            
+            ######################################################################################
+            
 class e_pie_chart(pie_chart):
 
     def __init__(self,master,prob_dict,keys,colors,report_func):
@@ -1142,7 +1142,7 @@ class e_pie_chart(pie_chart):
         self.oval_diam_x=self.oval_diam_y=4
         self.init_handles()
         flyout_decoration.add_bindings(self,self.info_function)
-
+        
     def info_function(self,item):
         tags=self.gettags(item)
         if 'handle' in tags:
@@ -1162,8 +1162,8 @@ class e_pie_chart(pie_chart):
         else:
             flyout_text=pie_chart.info_function(self,item)
         return flyout_text
-
-
+        
+        
     def find_neighbours(self,sector_item):
         # find neighbour sector
         angle_pos=float(self.itemcget(sector_item,'start'))
@@ -1176,7 +1176,7 @@ class e_pie_chart(pie_chart):
             if angle_diff<0.1 or angle_diff>359.9:
                 neighbours.append(sector)
         return neighbours
-
+        
     def move_start(self,event):
         # find sector belonging to handle
         self.current_item=self.find_withtag(Tkinter.CURRENT)[0]
@@ -1186,7 +1186,7 @@ class e_pie_chart(pie_chart):
                                  self.find_withtag(self.current_tag))
         # find neighbour sector
         self.current_arc2=self.find_neighbours(self.current_arc1)
-
+        
         # really found one?
         if len(self.current_arc2)==0:
             print 'no neighbour found'
@@ -1194,7 +1194,7 @@ class e_pie_chart(pie_chart):
         if len(self.current_arc2)>1:
             print 'too much neighbours found'
             return
-
+            
         self.current_arc2=self.current_arc2[0]
         # cache coordinates
         coords=self.coords(self.current_arc1)
@@ -1205,10 +1205,10 @@ class e_pie_chart(pie_chart):
         # save angle sum
         self.angle_start=float(self.itemcget(self.current_arc2,'start'))
         self.angle_extent=float(self.itemcget(self.current_arc1,'extent'))+float(self.itemcget(self.current_arc2,'extent'))
-
+        
         self.bind('<B1-Motion>',self.move)
         self.bind('<ButtonRelease-1>',self.move_end)
-
+        
     def move(self,event):
         # compute new angle
         canvas_x=self.canvasx(event.x)
@@ -1254,8 +1254,8 @@ class e_pie_chart(pie_chart):
                 else:
                     # invalid
                     pass
-
-        # set new arc angles
+                    
+                    # set new arc angles
         new_start2=self.angle_start
         new_extent1=self.angle_extent-new_extent2
         # pitfall! extent>=360°
@@ -1277,11 +1277,11 @@ class e_pie_chart(pie_chart):
         oval=self.coords(self.current_item,
                          oval_x-self.oval_diam_x,oval_y-self.oval_diam_y,
                          oval_x+self.oval_diam_x,oval_y+self.oval_diam_y)
-
+        
         # set description
         self.configure_description(self.current_arc1)
         self.configure_description(self.current_arc2)
-
+        
         # report move
         tags=self.gettags(self.current_arc1)
         tag1=filter(lambda tag: tag[:4]=='tag_' or tag=='other',tags)[0]
@@ -1303,8 +1303,8 @@ class e_pie_chart(pie_chart):
         report_dict[key1]=value1
         report_dict[key2]=value2
         self.report_func('move value',report_dict)
-
-
+        
+        
     def move_end(self,event):
         # no events!
         self.unbind('<B1-Motion>')
@@ -1332,8 +1332,8 @@ class e_pie_chart(pie_chart):
         self.report_func('new value',report_dict)
         self.current_tag=None
         self.current_key=None
-
-
+        
+        
     def init_handles(self):
         sectors=list(self.find_withtag('sector'))
         sectors.reverse()
@@ -1351,7 +1351,7 @@ class e_pie_chart(pie_chart):
                                   oval_x+self.oval_diam_x,oval_y+self.oval_diam_y,
                                   fill='black',tags=('handle','flyout_info',tag))
             self.tag_bind(oval,'<Button-1>',self.move_start)
-
+            
     def update_handles(self):
         sectors=list(self.find_withtag('sector'))
         sectors.reverse()
@@ -1367,10 +1367,10 @@ class e_pie_chart(pie_chart):
             oval_y=-math.sin(angle/180.0*math.pi)*diam_y+center_y
             oval=filter(lambda i,s=self:s.type(i)=='oval',
                         self.find_withtag(tag))
-
+            
             self.coords(oval,oval_x-self.oval_diam_x,oval_y-self.oval_diam_y,
                         oval_x+self.oval_diam_x,oval_y+self.oval_diam_y)
-
+            
     def update_position(self,dict,order_list):
         pie_chart.update_position(self,dict,order_list)
         self.update_handles()
