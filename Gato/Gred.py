@@ -45,7 +45,7 @@ class GredSplashScreen(GatoDialogs.SplashScreen):
 	self.label.pack(side=TOP)
 	self.label = Label(self, text=GatoDialogs.crnotice1)
 	self.label.pack(side=TOP)
-	label = Label(self, font="Helvetica 10", text=GatoDialogs.crnotice2, justify=LEFT)
+	label = Label(self, font="Helvetica 10", text=GatoDialogs.crnotice2, justify=CENTER)
 	label.pack(side=TOP)
 
 class GredAboutBox(GatoDialogs.AboutBox):
@@ -58,7 +58,7 @@ class GredAboutBox(GatoDialogs.AboutBox):
 	label = Label(master, text=GatoDialogs.crnotice1)
 	label.pack(side=TOP)
 	label = Label(master, font="Helvetica 10", 
-		      text=GatoDialogs.crnotice2, justify=LEFT)
+		      text=GatoDialogs.crnotice2, justify=CENTER)
 	label.pack(side=TOP)
  	color = self.config("bg")[4]
 	self.infoText = ScrolledText(master, relief=FLAT, 

@@ -11,15 +11,19 @@
 
 # Vars
 
-VERSION       = 0.93
-DATE          = 4/14/2000
+VERSION       = 0.95
+DATE          = 11/07/2000
 DISTNAME      = Gato
 DISTNAMEMAC   = $(DISTNAME)-Mac
 DISTNAMEDOC   = $(DISTNAME)-Doc
 
-# Directories
+# Source directories
 
 SRCDIR        = /homes/schliep/Src/Gato
+DOCSRCDIR     = /homes/schliep/Src/Gato/Doc
+
+# Distribution directories
+
 GATODIR       = /homes/gato/
 EXECDIR       = $(GATODIR)/Gato
 MACDIR        = $(GATODIR)/Gato-Mac
@@ -30,6 +34,9 @@ DOCDIR        = $(GATODIR)/pub/Documentation
 
 PERL          = /zpr/gnu/bin/perl
 RM            = /usr/bin/rm -rf 
+
+#DOCTOOL       = doc.py Gato
+DOCTOOL       = /homes/schliep/bin/HappyDoc/happydoc.py -t Gato -d $(DOCSRCDIR)
 
 VERSIONIZE    = $(PERL) -pi -e "s/_VERSION_/$(VERSION)/" 
 DATEIZE       = $(PERL) -pi -e "s|_BUILDDATE_|$(DATE)|" 
@@ -42,6 +49,7 @@ CRNOTICE     = `cat $(SRCDIR)/COPYRIGHT`
 
 SOURCES	      = AnimatedAlgorithms.py \
 		AnimatedDataStructures.py \
+		Embedder.py \
 		Gato.py \
                 GatoDialogs.py \
 		GatoGlobals.py \
@@ -109,10 +117,12 @@ PHONY:
 	chgrp -f catbox $(WWWDIR)/*
 
 	# 4) update and distribute documentation
-	cd $(SRCDIR)/Doc; doc.py Gato $(SRCDIR)
-	cp -f $(SRCDIR)/Doc/*.html $(DOCDIR)/
-	chmod -f g+r $(DOCDIR)/*
-	chmod -f a+r $(DOCDIR)/*
+	$(RM) $(DOCSRCDIR)/*.html
+	# doc.py cd $(DOCSRCDIR); $(DOCTOOL) $(SRCDIR)
+	cd $(SRCDIR); $(DOCTOOL) .
+	cp -f $(DOCSRCDIR)/*.html $(DOCDIR)/Internal/
+	chmod -f g+r $(DOCDIR)/Internal/*
+	chmod -f a+r $(DOCDIR)/Internal/*
 	chgrp -f catbox $(DOCDIR)/*
 	$(RM) $(DOCDIR)/$(DISTNAMEDOC)-$(VERSION).tar
 	cd $(SRCDIR); tar cf $(DOCDIR)/$(DISTNAMEDOC)-$(VERSION).tar Doc/*

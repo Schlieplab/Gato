@@ -27,7 +27,10 @@ import htmllib, formatter
 
 crnotice1 = "Copyright (C) 1998-2000, ZAIK/ZPR, Universität zu Köln\n"\
 	    "Gato version _VERSION_ from _BUILDDATE_"
-crnotice2 = "Written by Alexander Schliep (schliep@zpr.uni-koeln.de)\n" \
+crnotice2 = "Written by Alexander Schliep (schliep@zpr.uni-koeln.de).\n" \
+ 	    "Application Design: Alexander Schliep and \n" \
+	    "Winfried Hochstaettler. Additional developers: Torsten\n" \
+	    "Pattberg, Ramazan Buzdemir and Achim Gaedke.\n\n" \
             "For Information see http://www.zpr.uni-koeln.de/~gato\n" \
  	    "Gato comes with ABSOLUTELY NO WARRANTY.\n" \
             "This is free software, and you are welcome to redistribute\n" \
@@ -54,7 +57,7 @@ class AboutBox(tkSimpleDialog.Dialog):
 	self.catIcon.pack(side=TOP)
 	label = Label(master, text=crnotice1)
 	label.pack(side=TOP)
-	label = Label(master, font="Helvetica 10", text=crnotice2, justify=LEFT)
+	label = Label(master, font="Helvetica 10", text=crnotice2, justify=CENTER)
 	label.pack(side=TOP)
  	color = self.config("bg")[4]
 	self.infoText = ScrolledText(master, relief=FLAT, 
@@ -110,7 +113,7 @@ class SplashScreen(Toplevel):
 	self.label.pack(side=TOP)
 	self.label = Label(self, text=crnotice1)
 	self.label.pack(side=TOP)
-	label = Label(self, font="Helvetica 10", text=crnotice2, justify=LEFT)
+	label = Label(self, font="Helvetica 10", text=crnotice2, justify=CENTER)
 	label.pack(side=TOP)
 
 		
