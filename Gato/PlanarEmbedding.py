@@ -729,7 +729,7 @@ def FPP_PlanarEmbedding(theGraphEditor): # (2n-4)*(n-2) GRID
     n=len(graph.nodes)
     for i in range(0,n):
         xCoord=graph.nodes[i].xfpp*float(900/(2*n-4))+50
-        yCoord=900-(graph.nodes[i].yfpp*float(900/(n-2))+50)
+        yCoord=1000-(graph.nodes[i].yfpp*float(900/(n-2))+50)
         theGraphEditor.MoveVertex(theGraphEditor.G.vertices[i],xCoord,yCoord,1)
     #-------------------------------------------------------------------------
     
