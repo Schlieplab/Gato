@@ -314,15 +314,15 @@ class AnimatedPotential:
 
     def __setitem__(self,v,val):
         self.pot[v] = val
-	if val > max:
-            val = max
-        self.Animator1.SetVertexColor(v,self.colors[(val*(len(self.colors)))/self.max])
         if val == gInfinity:
             self.Animator2.SetVertexAnnotation(v,"Inf")
         elif val == -gInfinity:
             self.Animator2.SetVertexAnnotation(v,"-Inf")
         else:
             self.Animator2.SetVertexAnnotation(v,"%d"%val)
+	if val > self.max:
+            val = self.max
+        self.Animator1.SetVertexColor(v,self.colors[(val*(len(self.colors)-1))/self.max])
 
     def __getitem__(self,v):
         return self.pot[v]
