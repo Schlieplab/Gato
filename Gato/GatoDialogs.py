@@ -25,7 +25,7 @@ import sys
 import os
 import htmllib, formatter
 
-crnotice1 = "Copyright (C) 1998-1999, ZAIK/ZPR, Universität zu Köln\n"\
+crnotice1 = "Copyright (C) 1998-2000, ZAIK/ZPR, Universität zu Köln\n"\
 	    "Gato version _VERSION_ from _BUILDDATE_"
 crnotice2 = "Written by Alexander Schliep (schliep@zpr.uni-koeln.de)\n" \
             "For Information see http://www.zpr.uni-koeln.de/~gato\n" \
