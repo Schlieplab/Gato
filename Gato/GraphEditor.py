@@ -307,7 +307,7 @@ class GraphEditor(GraphDisplay):
 		    v = self.vertex[widget]
 		elif "labels" in tags:
 		    v = self.label[widget]
-		    self.DeleteVertex(v)
+                self.DeleteVertex(v)
 
 
     def SwapOrientationUp(self,event):

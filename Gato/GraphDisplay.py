@@ -255,6 +255,7 @@ class GraphDisplay:
 	    If none is registered, information will be produced by
 	    GraphDisplay. Infos are displayed in info field at the bottom
 	    of the graph window."""
+        print "RegisterGraphInformer", Informer
 	self.graphInformer = Informer
 
 

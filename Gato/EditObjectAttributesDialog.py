@@ -86,7 +86,7 @@ class TkDefaultMixin:
         self.entryWidget.grid(row=0, column=1, padx=4, pady=3, sticky=W)
         self.switchDefault(self.useDefault.get())   
         
-    def useDefault(self):
+    def UseDefault(self):
         return self.useDefault.get()
 
     def switchDefault(self, value):
@@ -123,6 +123,12 @@ class TkDefaultIntEntry(TkIntEntry, TkDefaultMixin):
     def tkWidget(self): # To avoid ambiguity
         return self.frame
 
+    def get(self):
+        if self.UseDefault():
+            return self.defaultValue
+        else:
+            return TkIntEntry.get(self)
+
 class TkDefaultFloatEntry(TkFloatEntry, TkDefaultMixin):
 
     def __init__(self, master, width, useDefault, defaultValue):
@@ -132,6 +138,12 @@ class TkDefaultFloatEntry(TkFloatEntry, TkDefaultMixin):
 
     def tkWidget(self): # To avoid ambiguity
         return self.frame
+
+    def get(self):
+        if self.UseDefault():
+            return self.defaultValue
+        else:
+            return TkFloatEntry.get(self)
 
 
 
@@ -250,19 +262,18 @@ class EditObjectAttributesDialog(tkSimpleDialog.Dialog):
                 self.edit[attr].tkWidget().grid(row=cur_row, column=1, padx=2, pady=1, sticky=W)
 
             cur_row = cur_row + 1
-            
-
 
     def validate(self):
-	
         for attr_name in self.edit.keys():
+            print attr_name, self.edit[attr_name].get(), type(self.edit[attr_name].get())
             try:
-                #print attr_name, self.edit[attr_name].get(), type(self.edit[attr_name].get())
                 
                 # In python 2.2 we can subclass attributes and add a validate method
                 # to attributes
 
-                if self.object.__dict__[attr_name].validate(self.edit[attr_name].get()) == 0:
+                value = self.edit[attr_name].get()
+
+                if self.object.__dict__[attr_name].validate(value) == 0:
                     raise ValueError
 
 	    except ValueError:
@@ -289,10 +300,11 @@ class WithDefault:
         self.defaultValue = defaultValue
 
     def validate(self, value):
-        if self.useDefault:
-            return 1
-        else:
-            return 1 # XXX How can I call a method of the class I am mixed too
+##        if self.useDefault:
+##            return 1
+##        else:
+##            return 1 # XXX How can I call a method of the class I am mixed too
+        return 1
 
 
 class Popupable:
@@ -321,8 +333,6 @@ class Popupable:
             self.pop2val = pop2val
             self.width = width
            
-            
-                      
     def validate(self, value):
         return 1
 
@@ -386,7 +396,9 @@ class TkTestFrame(Frame):
         self.x.setDefault(1, 122)
         self.y = ValidatingFloat(2.33)
         self.choose = PopupableInt(3)
-        self.choose.setPopup({1:"aaa", 2:"xxx", 3:"sss"})
+        self.pop2val = {"aaa":1, "xxx":2, "sss":3}
+        self.val2pop = {1:"aaa", 2:"xxx", 3:"sss"}
+        self.choose.setPopup(self.val2pop, self.pop2val, 5)
 
     def createWidgets(self):
         self.QUIT = Button(self, text='QUIT', foreground='red', 
@@ -398,6 +410,9 @@ class TkTestFrame(Frame):
 
 
     def About(self):
+	aboutBox = EditObjectAttributesDialog(self.master, self, ['desc', 'x', 'y', 'choose'])
+        del self.pop2val["aaa"]
+        del self.val2pop[1]
 	aboutBox = EditObjectAttributesDialog(self.master, self, ['desc', 'x', 'y', 'choose'])
 
 if __name__ == '__main__':

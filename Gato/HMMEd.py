@@ -19,7 +19,7 @@
 from DataStructures import Point2D
 from Graph import Graph
 from Gred import *
-from GraphUtil import WeightedGraphInformer, VertexWeight
+from GraphUtil import GraphInformer, VertexWeight
 from GraphDisplay import GraphDisplay
 from GatoUtil import stripPath, extension
 from GatoGlobals import *
@@ -44,7 +44,8 @@ from MapEditor import MapEditor
 
 def typed_assign(var, val):
     result = type(var)(val)
-    result.__dict__ = copy.copy(var.__dict__)
+    result.__dict__ = var.__dict__
+    #result.__dict__ = copy.copy(var.__dict__)
     return result
 
 def listFromCSV(s, type):
@@ -176,14 +177,18 @@ class HMMClass(DOM_Map):
                 code = int(code_str)
                 self.name[code] = name
                 self.desc[code] = desc
+                self.name2code[name] = code
                 new_keys.append(code)
             
             for key in self.name.keys():
                 if key not in new_keys:
+                    del self.name2code[self.name[key]]
                     del self.name[key] 
                     del self.desc[key]
-
-    
+                else:
+                    self.name2code[self.name[key]] = key
+            
+            
 class HMMState:
     def __init__(self, nodeIndex, itsHMM):
 
@@ -321,6 +326,9 @@ class HMM:
         state = HMMState(v, self)
         self.state[v] = state
         
+    def DeleteState(self, v):
+        del self.id2index[self.state[v].id]
+        del self.state[v]        
 
     def fromDOM(self, XMLNode):
         
@@ -367,8 +375,8 @@ class HMM:
 
         for e in self.G.Edges():
             edge_elem = XMLDoc.createElement("edge")
-            edge_elem.setAttribute('source', "%s" % e[0])
-            edge_elem.setAttribute('target', "%s" % e[1])
+            edge_elem.setAttribute('source', "%s" % self.state[e[0]].id)
+            edge_elem.setAttribute('target', "%s" % self.state[e[1]].id)
             writeData(XMLDoc, edge_elem, 'prob', self.G.edgeWeights[0][e])
             graph.appendChild(edge_elem)
             
@@ -607,7 +615,7 @@ class HMMEditor(SAGraphEditor):
 	self.HMM.G.simple = 0
 	self.graphName = "New"
 	self.ShowGraph(self.HMM.G,self.graphName)
-	self.RegisterGraphInformer(WeightedGraphInformer(self.HMM.G,"probability"))
+	self.RegisterGraphInformer(HMMInformer(self.HMM))
 	self.fileName = None
 	self.SetTitle("HMMEd _VERSION_ - New Graph")
 	self.SetGraphMenuOptions()
@@ -637,7 +645,7 @@ class HMMEditor(SAGraphEditor):
 		return
 
 	    self.ShowGraph(self.HMM.G, self.graphName)
-	    self.RegisterGraphInformer(WeightedGraphInformer(self.HMM.G, "probability"))
+	    self.RegisterGraphInformer(HMMInformer(self.HMM))
 	    self.SetTitle("HMMEd _VERSION_ - " + self.graphName)
 
 	    if not self.gridding:
@@ -697,8 +705,6 @@ class HMMEditor(SAGraphEditor):
 	    else: # We have a vertex
 		v = self.FindVertex(event)
 		if v != None:
-
-
                     state = self.HMM.state[v]
                     if state.order > 0:
                         print "Ooops. Cant edit higher order states"
@@ -711,9 +717,9 @@ class HMMEditor(SAGraphEditor):
                             return
                         else:
                             state = self.HMM.state[self.HMM.id2index[state.tiedto]]
-                        
-                    #print state.emissions
-                    
+
+                    if state.emissions == []:
+                        state.emissions = [1.0 / self.HMM.hmmAlphabet.size()] * self.HMM.hmmAlphabet.size()
                     emission_probabilities = ProbEditorBasics.ProbDict({})
 
                     for code in self.HMM.hmmAlphabet.name.keys():
@@ -722,7 +728,7 @@ class HMMEditor(SAGraphEditor):
                         emission_probabilities.update({label:weight})
                         
                     # Normalize ... should be member function
-                    if emission_probabilities.sum == 0:
+                    if emission_probabilities.sum != 1.0:
                         key_list = emission_probabilities.keys()
                         for key in key_list:
                             emission_probabilities[key] = 1.0 / len(key_list)
@@ -781,15 +787,43 @@ class HMMEditor(SAGraphEditor):
                     state.initial = typed_assign(state.initial,
                                                  emission_probabilities[key] / emission_probabilities.sum)
                 
-                
     def AddVertexCanvas(self,x,y):
 	v = GraphDisplay.AddVertexCanvas(self, x, y)
         print "AddVertex at ",x,y
         self.HMM.AddState(v)
 	
 	
+    def DeleteVertex(self,v):
+        self.HMM.DeleteState(v)
+        SAGraphEditor.DeleteVertex(self,v)
 
+    def ShowCoords(self,event):
+        pass
 
+    
+class HMMInformer(GraphInformer):
+    def __init__(self, itsHMM):
+        GraphInformer.__init__(self, itsHMM.G)
+        self.itsHMM = itsHMM
+
+    def VertexInfo(self,v):
+        state = self.itsHMM.state[v]
+        msg = "State '%s' class=%s (%s:%s) order=%d" % (state.id, state.state_class,
+                                                        self.itsHMM.hmmClass.name[state.state_class],
+                                                        self.itsHMM.hmmClass.desc[state.state_class],
+                                                        state.order)
+        if state.order == 0:
+            msg += " [A:%0.3f C:%0.3f G:%0.3f T:%0.3f N:%0.3f]" % tuple(state.emissions)
+        return msg
+
+    def EdgeInfo(self,tail,head):
+        tail_state = self.itsHMM.state[tail]
+        head_state = self.itsHMM.state[head]
+        p = self.itsHMM.G.edgeWeights[0][(tail, head)]
+        msg = "Transition: '%s' -> '%s' prob=%0.2f" % (tail_state.id, head_state.id, p)
+        return msg
+       
+        
 
 ################################################################################
 if __name__ == '__main__':
