@@ -65,6 +65,9 @@ class GraphDisplay:
 	self.label = {}  # XXX ditto for label
 
 	self.zoomFactor = 100.0 # percent
+	self.zVertexRadius = gVertexRadius
+	self.zArrowShape = (16, 20, 6)
+	self.zFontSize = 10
 
 	self.CreateWidgets()
 	self.SetTitle("Gato - Graph")
@@ -109,23 +112,26 @@ class GraphDisplay:
 	factor = zoomFactor[percent] / self.zoomFactor	    
 	self.zoomFactor = zoomFactor[percent]
 
-	zEdgeWidth = (gEdgeWidth * self.zoomFactor) / 100.0
-	arrowShape = ((16*self.zoomFactor) / 100.0,
-		      (20*self.zoomFactor) / 100.0,
-		      (6*self.zoomFactor)  / 100.0)
-	for e in self.G.Edges():
-	    if self.G.edgeWidth != None:
-		zEdgeWidth = (self.G.edgeWidth[e] * self.zoomFactor) / 100.0
-	    de = self.drawEdges[e]
-	    self.canvas.itemconfigure(de, width=zEdgeWidth, arrowshape=arrowShape)
-	
-	zVertexFrameWidth = (gVertexFrameWidth * self.zoomFactor) / 100.0
-	FontSize = max(7,int((10 * self.zoomFactor) / 100.0))
+	self.zVertexRadius = (gVertexRadius*self.zoomFactor) / 100.0
+	self.zArrowShape = ((16*self.zoomFactor) / 100.0,
+			    (20*self.zoomFactor) / 100.0,
+			    (6*self.zoomFactor)  / 100.0)
+	self.zFontSize = max(7,int((10*self.zoomFactor) / 100.0))
+
 	for v in self.G.vertices:
 	    dv = self.drawVertex[v]
+	    oldVertexFrameWidth = self.canvas.itemcget(dv, "width")
+	    newVertexFrameWidth = float(oldVertexFrameWidth) * factor
+	    self.canvas.itemconfig(dv, width=newVertexFrameWidth)
 	    dl = self.drawLabel[v]
-	    self.canvas.itemconfig(dv, width=zVertexFrameWidth)
-	    self.canvas.itemconfig(dl, font="Arial %d" %FontSize)
+	    self.canvas.itemconfig(dl, font="Arial %d" %self.zFontSize)
+
+	for e in self.G.Edges():
+	    de = self.drawEdges[e]
+	    oldEdgeWidth = self.canvas.itemcget(de, "width")
+	    newEdgeWidth = float(oldEdgeWidth) * factor
+	    self.canvas.itemconfig(de, width=newEdgeWidth,
+				   arrowshape=self.zArrowShape)
 
 	self.canvas.scale("all", 0, 0, factor, factor)	
 
@@ -228,15 +234,10 @@ class GraphDisplay:
 	self.Labeling   = G.labeling
 	self.directed   = G.QDirected()
 
-	oldZoom = "100 %"
 	if self.hasGraph == 1:
 	    self.DeleteDrawItems()
-	    # Honor whatever zoom the user has choosen
-	    oldZoom = "%3d %c" % (int(self.zoomFactor), '%')
-	    self.zoomFactor = 100.0
-	    
+	 
 	self.CreateDrawItems()
-	self.Zoom(oldZoom) # Dont Delay update
 	self.hasGraph = 1
 	self.SetTitle("Gato - " + graphName)
 	self.update()
@@ -321,8 +322,8 @@ class GraphDisplay:
             canvas coordinates """
 	if x == None and y == None:
 	    x,y = self.EmbeddingToCanvas(self.embedding[v].x, self.embedding[v].y)
-	d = (gVertexRadius * self.zoomFactor) / 100.0
-	w = (gVertexFrameWidth * self.zoomFactor) / 100.0
+	d = self.zVertexRadius
+	w = (gVertexFrameWidth*self.zoomFactor) / 100.0
  	dv = self.canvas.create_oval(x-d, y-d, x+d, y+d, 
 				     fill=cVertexDefault, 
 				     tag="vertices",
@@ -343,27 +344,26 @@ class GraphDisplay:
 	# To make label more readable on darker vertices we change colors
 	# depending on brightness
 	#
-	# XXX Note: we assume that the defaults are reasonable 
-	FontSize = max(7,int((10 * self.zoomFactor) / 100.0))
+	# XXX Note: we assume that the defaults are reasonable
 	dl = self.canvas.create_text(pos.x, pos.y, 
 				     anchor="center", 
 				     justify="center", 
+				     font="Arial %d" %self.zFontSize,
 				     text=self.Labeling[v], 
 				     fill=cLabelDefault,
-				     font="Arial %d" %FontSize,
 				     tag="labels")
 	self.canvas.tag_bind(dl, "<Any-Enter>", self.VertexInfo)
 	self.label[dl] = v # XXX
         return dl
 	# Label to the bottom, to the right
-	#d = gVertexRadius
-	#return self.canvas.create_text(x+d+1, y+d+1, anchor="w", justify="left", text=v)
+	#d = self.zVertexRadius
+	#return self.canvas.create_text(x+d+1, y+d+1, anchor="w", justify="left", font="Arial %d" %self.zFontSize,text=v)
 
 
 
     def CreateUndirectedLoopDrawEdge(self, v, w, orientation=None):
 	""" *Internal* Create an undirected loop draw edge. v is a Point2D """
-	loopRadius = 2*((gVertexRadius*self.zoomFactor)/100.0)
+	loopRadius = 2 * self.zVertexRadius
 	xMiddle = v.x
 	yMiddle = v.y-((25*self.zoomFactor)/100.0)	
 	Coords = []
@@ -380,19 +380,17 @@ class GraphDisplay:
 
     def CreateDirectedLoopDrawEdge(self,v,w, orientation=None):
 	""" *Internal* Create an directed loop draw edge. v is a Point2D """
-	loopRadius = 2*((gVertexRadius*self.zoomFactor)/100.0)
+	loopRadius = 2 * self.zVertexRadius
 	xMiddle = v.x
 	yMiddle = v.y-((25*self.zoomFactor)/100.0)
 	Coords = []
-	arrowShape = ((16*self.zoomFactor) / 100.0,
-		      (20*self.zoomFactor) / 100.0,
-		      (6*self.zoomFactor)  / 100.0)
-	for degree in range(100,450,40):
-	    Coords.append(loopRadius*cos(degree*(pi/180))+xMiddle)
-	    Coords.append(loopRadius*sin(degree*(pi/180))+yMiddle)
+	for degree in range(95,440,25):
+	    if degree != 395:
+		Coords.append(loopRadius*cos(degree*(pi/180))+xMiddle)
+		Coords.append(loopRadius*sin(degree*(pi/180))+yMiddle)
 	return self.canvas.create_line(Coords,
 				       arrow="last",
-				       arrowshape=arrowShape,
+				       arrowshape=self.zArrowShape,
 				       fill=cEdgeDefault, 
 				       width=w,
 				       smooth=TRUE,
@@ -411,33 +409,29 @@ class GraphDisplay:
 	l = sqrt((h.x - t.x)**2 + (h.y - t.y)**2)
 	if l < 0.001:
 	    l = 0.001
-	zVertexRadius = (gVertexRadius * self.zoomFactor) / 100.0
-	c = (l - zVertexRadius)/l - 0.001 # Dont let them quite touch 
+	c = (l - self.zVertexRadius)/l - 0.001 # Dont let them quite touch 
 	# (tmpX,tmpY) is a point on a straight line between t and h
 	# not quite touching the vertex disc
 	tmpX = t.x + c * (h.x - t.x) 
 	tmpY = t.y + c * (h.y - t.y)
-	arrowShape = ((16*self.zoomFactor) / 100.0,
-		      (20*self.zoomFactor) / 100.0,
-		      (6*self.zoomFactor)  / 100.0)
 	if curved == 0:
 	    return self.canvas.create_line(t.x,t.y,tmpX,tmpY,
 					   fill=cEdgeDefault,
 					   arrow="last",
-					   arrowshape=arrowShape, 
+					   arrowshape=self.zArrowShape, 
 					   width=w,
 					   tag="edges")
 	else:
 	    # (mX,mY) to difference vector h - t
 	    (mX,mY) = orthogonal((h.x - t.x, h.y - t.y))
-	    c = 1.5 * zVertexRadius + l / 25
+	    c = 1.5 * self.zVertexRadius + l / 25
 	    # Add c * (mX,mY) at midpoint between h and t
 	    mX = t.x + .5 * (h.x - t.x) + c * mX
 	    mY = t.y + .5 * (h.y - t.y) + c * mY
 	    return self.canvas.create_line(t.x,t.y,mX,mY,tmpX,tmpY,
 					   fill=cEdgeDefault,
 					   arrow="last",
-					   arrowshape=arrowShape, 
+					   arrowshape=self.zArrowShape, 
 					   width=w,
 					   smooth=TRUE,
 					   tag="edges")
@@ -506,15 +500,14 @@ class GraphDisplay:
             on the canvas. """
 	pos = self.VertexPosition(v)    
 	# Label to the bottom, to the right
-	zVertexRadius = (gVertexRadius * self.zoomFactor) / 100.0
-	FontSize = max(7,int((10 * self.zoomFactor) / 100.0))
-	da =  self.canvas.create_text(pos.x+zVertexRadius+1, pos.y+zVertexRadius+1, 
+	da =  self.canvas.create_text(pos.x + self.zVertexRadius+1,
+				      pos.y + self.zVertexRadius+1, 
 				      anchor="w", 
-				      justify="left", 
+				      justify="left",
+				      font="Arial %d" %self.zFontSize, 
 				      text=annotation,
 				      tag="vertexAnno",
-				      fill=color,
-				      font="Arial %d" %FontSize)
+				      fill=color)
         return da
 
 
@@ -525,18 +518,17 @@ class GraphDisplay:
 	h = self.VertexPosition(head)  
 
 	(mX,mY) = orthogonal((h.x - t.x, h.y - t.y))
-	c = (gVertexRadius * self.zoomFactor) / 100.0
+	c = self.zVertexRadius
 	x = t.x + .5 * (h.x - t.x) + c * mX
 	y = t.y + .5 * (h.y - t.y) + c * mY
 	# Label to the bottom, to the right
-	FontSize = max(7,int((10 * self.zoomFactor) / 100.0))
 	da =  self.canvas.create_text(x, y, 
 				      anchor="center", 
 				      justify="center", 
+				      font="Arial %d" %self.zFontSize,
 				      text=annotation,
 				      tag="edgeAnno",
-				      fill=color,
-				      font="Arial %d" %FontSize)
+				      fill=color)
         return da
 
 
@@ -679,7 +671,7 @@ class GraphDisplay:
     def SetVertexFrameWidth(self,v,val):
 	""" Set the width of the black frame of a vertex to val """	
 	dv = self.drawVertex[v]
-	self.canvas.itemconfig(dv, width=val)
+	self.canvas.itemconfig(dv, width=(val * self.zoomFactor) / 100.0)
         self.update()
 
     def SetVertexAnnotation(self,v,annotation,color="black"):
@@ -690,8 +682,10 @@ class GraphDisplay:
 	    self.vertexAnnotation[v] = self.CreateVertexAnnotation(v,annotation,color)
 	else:
 	    da = self.vertexAnnotation[v]
-	    self.canvas.itemconfig(da, text=annotation)
-	    self.canvas.itemconfig(da, fill=color)
+	    self.canvas.itemconfig(da, 
+				   font="Arial %d" %self.zFontSize,
+				   text=annotation,
+				   fill=color)
 	    self.update()
 
     def SetEdgeAnnotation(self,tail,head,annotation,color="black"):
@@ -704,8 +698,10 @@ class GraphDisplay:
 									 color)
 	else:
 	    da = self.edgeAnnotation[(tail,head)]
-	    self.canvas.itemconfig(da, text=annotation)
-	    self.canvas.itemconfig(da, fill=color)
+	    self.canvas.itemconfig(da,
+				   font="Arial %d" %self.zFontSize,
+				   text=annotation,
+				   fill=color)
 	    self.update()
 
 
@@ -723,9 +719,13 @@ class GraphDisplay:
 		self.canvas.after(gBlinkRate)
 		self.canvas.itemconfig( dl, fill=oldColor)
 		self.update()
-		self.canvas.itemconfig( dl, text=self.Labeling[v])
+		self.canvas.itemconfig( dl,
+					font="Arial %d" %self.zFontSize,
+					text=self.Labeling[v])
 	else:
-	    self.canvas.itemconfig( dl, text=self.Labeling[v])
+	    self.canvas.itemconfig( dl,
+				    font="Arial %d" %self.zFontSize,
+				    text=self.Labeling[v])
 	    self.update()
 
 	
