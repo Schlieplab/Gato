@@ -439,8 +439,14 @@ def BFSTreeCoords(G, root, direction):
     maxDistance=len(list)
     for d in list.values():
         if len(d)>maxBreadth: maxBreadth=len(d)
-    xDist=900/(maxDistance-1)
-    yDist=900/(maxBreadth-1)
+    if maxDistance > 1:
+        xDist=900/(maxDistance-1)
+    else:
+        xDist=0
+    if maxBreadth > 1:
+        yDist=900/(maxBreadth-1)
+    else:
+        yDist=0
     Coord1=950
 
     G.xCoord={}
@@ -553,7 +559,10 @@ def BFSRadialTreeCoords(G, root, direction):
     offset = (500,500)
     d = 450 / maxdist
     for v in G.vertices:
-        (G.xCoord[v], G.yCoord[v]) = RadialToXY(angle[v], BFSdistance[v] * d, offset)
+        try:
+            (G.xCoord[v], G.yCoord[v]) = RadialToXY(angle[v], BFSdistance[v] * d, offset)
+        except:
+          return 0
     return 1
 
 

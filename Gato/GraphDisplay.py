@@ -696,15 +696,19 @@ class GraphDisplay:
 
 
     def SetVertexFrameWidth(self,v,val):
-	""" Set the width of the black frame of a vertex to val """	
+	""" Set the width of the black frame of a vertex to val """
 	dv = self.drawVertex[v]
-	self.canvas.itemconfig(dv, width=(val * self.zoomFactor) / 100.0)
+	oldwidth = float(self.canvas.itemcget(dv, "width"))
+	self.canvas.itemconfig(dv, outline = "white", width=oldwidth * 2)
+	self.update()
+	self.canvas.itemconfig(dv, outline = "black", width=(val * self.zoomFactor) / 100.0)
         self.update()
 
     def SetVertexAnnotation(self,v,annotation,color="black"):
 	""" Add an annotation to v. Annotations are displayed to the left and
 	    the bottom of v and allow to display more info about a vertex. 
-            No error checking!  Does not handle vertex deletions/moves !"""	
+            No error checking!  Does not handle vertex deletions/moves !"""
+        if v == None: return	
 	if not self.vertexAnnotation.QDefined(v):
 	    self.vertexAnnotation[v] = self.CreateVertexAnnotation(v,annotation,color)
 	else:

@@ -48,6 +48,8 @@ import tokenize
 import tkFont
 import copy
 
+import Gred
+
 from Tkinter import *
 from tkFileDialog import askopenfilename, asksaveasfilename
 from tkMessageBox import askokcancel, showerror, askyesno
@@ -128,12 +130,14 @@ class AlgoWin(Frame):
 	self.makeMenuBar()
 	self.makeAlgoTextWidget()
 	self.makeToolBar()
-	self.master.title("Gato _VERSION_ - Algorithm")
-	self.master.iconname("Gato _VERSION_")
+	self.master.title("Gato 0.99A - Algorithm")
+	self.master.iconname("Gato 0.99A")
 
 	self.algorithm = Algorithm()
 	self.algorithm.SetGUI(self) # So that algorithm can call us
+	
 	self.graphDisplay = GraphDisplayToplevel()
+	
 	self.secondaryGraphDisplay = None
 	self.AboutAlgorithmDialog = None
 	self.AboutGraphDialog = None
@@ -147,6 +151,7 @@ class AlgoWin(Frame):
 
 	self.master.protocol('WM_DELETE_WINDOW',self.Quit) # Handle WM Kills
 	Splash.Destroy()
+	
 	# Fix focus and stacking
 	if os.name == 'nt' or os.name == 'dos':
 	    self.graphDisplay.tkraise()
@@ -186,10 +191,12 @@ class AlgoWin(Frame):
 				  command=self.OpenAlgorithm)
 	self.fileMenu.add_command(label='Open Graph...',	
 				  command=self.OpenGraph)
+	self.fileMenu.add_command(label='New Graph...',	
+				  command=self.NewGraph)
 	self.fileMenu.add_command(label='Open GatoFile...',
 				  command=self.OpenGatoFile)
-	self.fileMenu.add_command(label='Save GatoFile...',
-				  command=self.SaveGatoFile)
+	#self.fileMenu.add_command(label='Save GatoFile...',
+	#			  command=self.SaveGatoFile)
 	self.fileMenu.add_command(label='Reload Algorithm & Graph',	
 				  command=self.ReloadAlgorithmGraph)
 	self.fileMenu.add_command(label='Export Graph as EPS...',	
@@ -289,7 +296,7 @@ class AlgoWin(Frame):
 	self.algoText = ScrolledText(borderFrame, relief=FLAT, 
 				     padx=3, pady=3,
 				     background="white", wrap='none',
-				     width=15, height=30,
+				     width=43, height=30,
 				     )
 	self.SetAlgorithmFont(self.algoFont, self.algoFontSize)
 	self.algoText.pack(expand=1, fill=BOTH)
@@ -434,11 +441,11 @@ class AlgoWin(Frame):
 	if file == "": # caller did not specify file
 	    file = askopenfilename(title="Open Algorithm",
 				   defaultextension=".py",
-				   filetypes = ( ("Gato Algorithm", ".alg"),
-						 ("Python Code", ".py"))
-
+				   filetypes = [  ("Gato Algorithm", ".alg")
+						 ,("Python Code", ".py")
+					       ]
 				   )
-	if file is not "": 
+	if file is not "":
 	    try:
 		self.algorithm.Open(file)
 	    except (EOFError, IOError):
@@ -460,11 +467,13 @@ class AlgoWin(Frame):
 
 	    if self.algorithm.ReadyToStart():
 		self.buttonStart['state'] = NORMAL 
-	    self.master.title("Gato _VERSION_- " + stripPath(file))
+	    self.master.title("Gato 0.99A - " + stripPath(file))
 
 	    if self.AboutAlgorithmDialog:
 		self.AboutAlgorithmDialog.Update(self.algorithm.About(),"About Algorithm")
 
+    def NewGraph(self):
+        Gred.Start()
 
     def OpenGraph(self,file=""):
 	""" GUI to allow selection of graph to open 
@@ -477,12 +486,12 @@ class AlgoWin(Frame):
   	if file == "": # caller did not specify file 
 	    file = askopenfilename(title="Open Graph",
 				   defaultextension=".gato",
-				   filetypes = ( ("Gred", ".cat"),
-						 #("Gato Plus", ".cat"),
-						 #("LEDA", ".gph"),
-						 ("Graphlet", ".let"),
-                                                 ("Gato",".gato")
-						 )
+				   filetypes = [  ("Gred", ".cat")
+					         #,("Gato Plus", ".cat")
+					         #,("LEDA", ".gph")
+					         #,("Graphlet", ".let")
+                                                 #,("Gato",".gato")
+					       ]
 				   )
 	    
 	if file is not "":
@@ -517,7 +526,9 @@ class AlgoWin(Frame):
         if filename == "": # caller did not specify file 
 	    filename = asksaveasfilename(title="Save Graph and Algorithm",
                                          defaultextension=".gato",
-                                         filetypes = ( ("Gato",".gato"),("xml",".xml"))
+                                         filetypes = [  ("Gato",".gato")
+                                                       #,("xml",".xml")
+                                                     ]
                                          )
 
 
@@ -537,7 +548,9 @@ class AlgoWin(Frame):
         if filename == "": # caller did not specify file 
 	    filename = askopenfilename(title="Open Graph and Algorithm",
                                        defaultextension=".gato",
-                                       filetypes = ( ("Gato",".gato"),("xml",".xml"))
+                                         filetypes = [  ("Gato",".gato")
+                                                       #,("xml",".xml")
+                                                     ]
                                        )
 
         if filename is not "":
@@ -628,7 +641,7 @@ class AlgoWin(Frame):
                 # set the state
                 if self.algorithm.ReadyToStart():
                     self.buttonStart['state'] = NORMAL
-                self.master.title("Gato _VERSION_- " + stripPath(self.algoDisplayFileName))
+                self.master.title("Gato 0.99A - " + stripPath(self.algoDisplayFileName))
 
                 if self.AboutAlgorithmDialog:
                     # to do ... alright for xml about ?!
@@ -664,9 +677,10 @@ class AlgoWin(Frame):
 	""" GUI to control export of EPSF file  """
 	file = asksaveasfilename(title="Export EPSF",
 				 defaultextension=".eps",
-				 filetypes = ( ("Encapsulated PS", ".eps"),
-					       ("Postscript", ".ps")
-					       ))
+				 filetypes = [  ("Encapsulated PS", ".eps")
+					       ,("Postscript", ".ps")
+					     ]
+			         )
 	if file is not "": 
 	    self.graphDisplay.PrintToPSFile(file)
 
@@ -945,7 +959,7 @@ class AlgoWin(Frame):
 	self.clickResult = (type,t)
 	self.touchLock()
 	    		
-    def PickInteractive(self, type, filterChoice=None):
+    def PickInteractive(self, type, filterChoice=None, default=None):
 	""" Pick a vertex or an edge (specified by 'type') interactively 
 
             GUI blocks until
@@ -961,8 +975,16 @@ class AlgoWin(Frame):
                   subjected to filterChoice
             """
 	self.graphDisplay.RegisterClickhandler(self.ClickHandler)
-	self.graphDisplay.UpdateInfo("Select a " + type + 
-				     " or click 'Step' or 'Continue' for random selection")
+	if default == "None":
+            self.graphDisplay.UpdateInfo("Select a " + type + 
+		                         " or click 'Step' or 'Continue' for no selection")
+	elif default == None:
+            self.graphDisplay.UpdateInfo("Select a " + type + 
+		                         " or click 'Step' or 'Continue' for random selection")
+        else:
+	    self.graphDisplay.UpdateInfo("Select a " + type + 
+		                         " or click 'Step' or 'Continue' for default selection")
+	    
 	self.clickResult = (None,None)
 	goOn = 1
 	while goOn == 1:
@@ -1488,7 +1510,7 @@ class Algorithm:
 
 	    - default: specifies the vertex returned when user does not
               want to select one. If default==None, a random
-              vertex not subject to filter will be returned
+              vertex not subject to filter will be returned.
 
             - filter: a function which should return a non-None value
               if the passed vertex is acceptable
@@ -1499,7 +1521,7 @@ class Algorithm:
 
 	#log.debug("pickVertex %s" %s globals()['gInteractive'])
         if globals()['gInteractive'] == 1:
-	    v = self.GUI.PickInteractive('vertex', filter)
+	    v = self.GUI.PickInteractive('vertex', filter, default)
 
 	if v == None:
 	    if default == None:
@@ -1524,7 +1546,7 @@ class Algorithm:
         e = None
 
         if globals()['gInteractive'] == 1:
-	    e = self.GUI.PickInteractive('edge', filter)
+	    e = self.GUI.PickInteractive('edge', filter, default)
 
 	if e == None:
 	    if default == None:

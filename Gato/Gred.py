@@ -267,7 +267,6 @@ class SAGraphEditor(GraphEditor, Frame):
 	self.master.title(title)
 	
     def CreateWidgets(self):
-
 	toolbar = Frame(self, cursor='hand2', relief=FLAT)
 	toolbar.pack(side=LEFT, fill=Y) # Allows horizontal growth
 
@@ -336,7 +335,7 @@ class SAGraphEditor(GraphEditor, Frame):
 	GraphEditor.CreateWidgets(self)
 
 	
-    def makeMenuBar(self):
+    def makeMenuBar(self, toplevel=0):
 	self.menubar = Menu(self,tearoff=0)
 
 	# Add file menu
@@ -439,8 +438,10 @@ class SAGraphEditor(GraphEditor, Frame):
 # 	self.menubar.add_cascade(label="Tools", menu=self.toolsMenu, 
 # 				 underline=0)
 
-
- 	self.master.configure(menu=self.menubar)
+        if toplevel:
+            self.configure(menu=self.menubar)
+        else:
+ 	    self.master.configure(menu=self.menubar)
 
   	# Add extras menu
 	self.extrasMenu = Menu(self.menubar, tearoff=0)
@@ -513,15 +514,15 @@ class SAGraphEditor(GraphEditor, Frame):
 	self.ShowGraph(G,self.graphName)
 	self.RegisterGraphInformer(WeightedGraphInformer(G,"weight"))
 	self.fileName = None
-	self.SetTitle("Gred _VERSION_ - New Graph")
+	self.SetTitle("Gred 0.99A - New Graph")
 
     def OpenGraph(self):	
 	file = askopenfilename(title="Open Graph",
 			       defaultextension=".cat",
-			       filetypes = ( ("Gato", ".cat"),
-					     ("GML", ".gml"),
-					     ("Graphlet", ".let")
-					     )
+			       filetypes = [  ("Gato", ".cat")
+					     #,("GML", ".gml")
+					     #,("Graphlet", ".let")
+					   ]
 			       )
 	if file is "": 
 	    pass
@@ -576,7 +577,7 @@ class SAGraphEditor(GraphEditor, Frame):
 
 	    self.RegisterGraphInformer(WeightedGraphInformer(G,"weight"))
 	    self.ShowGraph(G,self.graphName)
-	    self.SetTitle("Gred _VERSION_ - " + self.graphName)
+	    self.SetTitle("Gred 0.99A - " + self.graphName)
 
 
 
@@ -590,23 +591,24 @@ class SAGraphEditor(GraphEditor, Frame):
     def SaveAsGraph(self):
 	file = asksaveasfilename(title="Save Graph",
 				 defaultextension=".cat",
-				 filetypes = ( ("Gato", ".cat"),
-					       ("Graphlet", ".let")
-					       )
+				 filetypes = [  ("Gato", ".cat")
+					       #,("Graphlet", ".let")
+					     ]
 				 )
 	if file is not "":
 	    self.fileName = file
 	    self.dirty = 0
 	    SaveCATBoxGraph(self.G,file)
 	    self.graphName = stripPath(file)
-	    self.SetTitle("Gred _VERSION_ - " + self.graphName)
+	    self.SetTitle("Gred 0.99A - " + self.graphName)
 
     def ExportEPSF(self):
 	file = asksaveasfilename(title="Export EPSF",
 				 defaultextension=".eps",
-				 filetypes = ( ("Encapsulated PS", ".eps"),
-					       ("Postscript", ".ps")
-					       ))
+				 filetypes = [  ("Encapsulated PS", ".eps")
+			                       ,("Postscript", ".ps")
+				             ]
+				 )
 	if file is not "": 
 	    self.PrintToPSFile(file)
 
@@ -731,6 +733,64 @@ class SAGraphEditor(GraphEditor, Frame):
 	d = GredAboutBox(self.master)
 
 
+class SAGraphEditorToplevel(SAGraphEditor, Toplevel):
+
+    def __init__(self, master=None):
+        Toplevel.__init__(self, master)
+	Splash = GredSplashScreen(self.master)
+	self.G = None
+	
+	self.mode = 'AddOrMoveVertex'
+	self.gridding = 0
+	self.graphInformer = None
+	
+	self.makeMenuBar(1)
+	GraphEditor.__init__(self)
+	self.fileName = None
+	self.dirty = 0
+	self.SetGraphMenuOptions()
+	Splash.Destroy()
+	
+	# Fix focus and stacking
+	self.tkraise()
+	self.focus_force()
+
+    def ExportEPSF(self):
+	file = asksaveasfilename(title="Export EPSF",
+				 defaultextension=".eps",
+				 filetypes = [  ("Encapsulated PS", ".eps")
+			                       ,("Postscript", ".ps")
+				             ]
+				 )
+	if file is not "": 
+	    self.PrintToPSFile(file)
+	self.tkraise()
+	self.focus_force()
+	
+    def AboutBox(self):
+	d = GredAboutBox(self)	
+	
+    def SetTitle(self,title):
+	self.title(title)
+	self.tkraise()
+	self.focus_force()
+	
+    def Quit(self):	
+	if askokcancel("Quit","Do you really want to quit?"):
+	    self.destroy()
+	else:
+	    self.tkraise()
+	    self.focus_force()
+	    
+			               
+class Start:
+
+    def __init__(self):
+        graphEditor = SAGraphEditorToplevel()
+        graphEditor.NewGraph()
+        import logging
+        log = logging.getLogger("Gred.py")
+    
 ################################################################################
 if __name__ == '__main__':
     graphEditor = SAGraphEditor(Tk())

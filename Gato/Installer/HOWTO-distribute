@@ -1,10 +1,11 @@
 Software:
 Python-2.2.1 (http://www.python.org)
-Installer-5b3.1 (http://www.mcmillan-inc.com)
+Installer-5b4 (http://www.mcmillan-inc.com) #tar xvf
 
 Versionen:
 tcl/tk Version 8.3
 
+#------------------------------------------------------------------------------
 Python vorbereiten:
 configure:
 Python mit dynamischem Loader bauen, dabei keine zusätzlichen linker-Abhängigkeiten einbauen.
@@ -25,22 +26,27 @@ strip python
 strip build/lib.linux-i586-2.2/*.so
 
 make install
+#------------------------------------------------------------------------------
 
+#------------------------------------------------------------------------------
 Installer vorbereiten:
 Patches:
-In carchive.py das Modul strop elemenieren.
-In Build.py::TOC die Methoden __iadd__ und __isub__ einfügen
-In Build.py::COLLECT die Aufrufe  shutil.copy2 durch eine entsprechende update Methode ersetzen
-In bindep.py::excludes um die Pfade /usr/X11R6/lib u.ä. erweitern.
+In Build.py::TOC die Methoden __iadd__ und __isub__ einfügen ???
+In Build.py::COLLECT die Aufrufe  shutil.copy2 durch eine entsprechende update Methode ersetzen ???
+In bindep.py::excludes um die Pfade /usr/X11R6/lib u.ä. erweitern. ???
 
-cd sources/linux
-~/my/python2.2 Make.py
+cd source/linux
+python2.2 Make.py -e
 make
-cd ../..
-~/my/python2.2 Configure.py
+cd ../../support
+strip run
+strip run_d
+cd ..
+python2.2 Configure.py
+#------------------------------------------------------------------------------
 
+#------------------------------------------------------------------------------
 Gato:
 cd Gato
-~/my/python2.2 ~/my/Installer/Build.py Installer/Gato.spec
-
-Fertig...
+python2.2 Installer/Installer/Build.py Installer/Gato.spec
+#------------------------------------------------------------------------------

@@ -294,10 +294,12 @@ class GraphEditor(GraphDisplay):
 
 
     def AddEdgeUp(self,event):
+        if self.rubberbandLine != None:
+            self.canvas.delete(self.rubberbandLine)
+            
 	if self.tail != None:	
 	    x = self.canvas.canvasx(event.x)
 	    y = self.canvas.canvasy(event.y)
-	    self.canvas.delete(self.rubberbandLine)
  
 	    widget = event.widget.find_closest(x,y,None,self.rubberbandLine)
 	    if widget:
@@ -326,6 +328,9 @@ class GraphEditor(GraphDisplay):
 		elif "labels" in tags:
 		    v = self.label[widget]
                 self.DeleteVertex(v)
+                self.tail = None
+                if self.rubberbandLine != None:
+                    self.canvas.delete(self.rubberbandLine)
 
 
     def SwapOrientationUp(self,event):

@@ -3,7 +3,8 @@
 scriptbase=os.path.split(os.path.abspath(SPECPATH))[0]
 
 exeext=""
-scripts=[os.path.join(HOMEPATH,'support','useUnicode.py'),
+scripts=[os.path.join(HOMEPATH,'support','_mountzlib.py'),
+         os.path.join(HOMEPATH,'support','useUnicode.py'),
          os.path.join(scriptbase,'Gred.py')]
 
 a = Analysis(scripts, pathex=[])
@@ -11,6 +12,7 @@ a = Analysis(scripts, pathex=[])
 tclSupportFile=[]
 tclSupportDir=[]
 if sys.platform[:3]=='win':
+    print "Win32"
     # microsoft world
     # exe extension needed for executables
     exeext=".exe"
@@ -23,7 +25,7 @@ if sys.platform[:3]=='win':
     tclSupportFile=TkPKG()
     tclSupportDir=TkTree()
 
-# Gato.py is also used as module
+# Gred.py is also used as module
 # Modules needed for Algorithm sandbox environment
 a.pure.extend([('AnimatedAlgorithms',
                 os.path.join(scriptbase,'AnimatedAlgorithms.pyc'),
@@ -31,8 +33,8 @@ a.pure.extend([('AnimatedAlgorithms',
                ('AnimatedDataStructures',
                 os.path.join(scriptbase,'AnimatedDataStructures.pyc'),
                 'PYMODULE'),
-               ('Gato',
-                os.path.join(scriptbase,'Gato.pyc'),
+               ('Gred',
+                os.path.join(scriptbase,'Gred.pyc'),
                 'PYMODULE'),
                ])
 #module strop excluded, this step needs modification in Installer/carchive.py
@@ -48,13 +50,15 @@ exe = EXE(pyz,
           a.binaries,
           name=specnm+exeext,
           debug=1,
+          strip=1,
           console=1)
-#and distribution in distGato
+#and distribution in distGred
 exe = EXE(pyz,
           a.scripts,
           exclude_binaries=1,
           name=os.path.join('build%s'%specnm,specnm+exeext),
           debug=1,
+          strip=1,
           console=1)
 coll = COLLECT(exe,
 	       tclSupportDir,

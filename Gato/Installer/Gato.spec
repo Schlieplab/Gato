@@ -3,7 +3,8 @@
 scriptbase=os.path.split(os.path.abspath(SPECPATH))[0]
 
 exeext=""
-scripts=[os.path.join(HOMEPATH,'support','useUnicode.py'),
+scripts=[os.path.join(HOMEPATH,'support','_mountzlib.py'),
+         os.path.join(HOMEPATH,'support','useUnicode.py'),
          os.path.join(scriptbase,'Gato.py')]
 
 a = Analysis(scripts, pathex=[])
@@ -11,6 +12,7 @@ a = Analysis(scripts, pathex=[])
 tclSupportFile=[]
 tclSupportDir=[]
 if sys.platform[:3]=='win':
+    print "Win32"
     # microsoft world
     # exe extension needed for executables
     exeext=".exe"
@@ -48,6 +50,7 @@ exe = EXE(pyz,
           a.binaries,
           name=specnm+exeext,
           debug=1,
+          strip=1,
           console=1)
 #and distribution in distGato
 exe = EXE(pyz,
@@ -55,6 +58,7 @@ exe = EXE(pyz,
           exclude_binaries=1,
           name=os.path.join('build%s'%specnm,specnm+exeext),
           debug=1,
+          strip=1,
           console=1)
 coll = COLLECT(exe,
 	       tclSupportDir,
