@@ -291,12 +291,18 @@ class HMMState:
         if not self.tiedto == '':
             writeData(XMLDoc, node, 'tiedto', self.tiedto)
         else:
-            if not self.order.useDefault and self.order > 0:
-                # XXX Produce uniform emission probs, if we dont have the correct number of
-                # parameters
-                size = self.itsHMM.hmmAlphabet.size()**(self.order+1)
-                if len(self.emissions) != size:
-                    self.emissions = [1.0/size] * size
+            if self.order.useDefault:
+                order = 0
+            else:
+                order = self.order
+
+            # XXX Produce uniform emission probs, if we dont have the correct number of
+            # parameters
+            size = self.itsHMM.hmmAlphabet.size()**(order+1)
+            if len(self.emissions) != size:
+                self.emissions = [1.0/size] * size
+                
+            if order > 0:
                 writeData(XMLDoc, node, 'emissions', csvFromList(self.emissions,
                                                                  self.itsHMM.hmmAlphabet.size()))
             else:
