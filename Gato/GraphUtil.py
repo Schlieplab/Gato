@@ -105,6 +105,22 @@ class GraphInformer:
         return "Edge (%d,%d)" % (tail, head) 
 
 
+
+class DefaultGraphInformer(GraphInformer):
+    """ Provides default information in the status line """
+
+    def __init__(self,G):
+        GraphInformer.__init__(self,G)
+        self.info = ""
+
+    def DefaultInfo(self):
+        return self.info
+
+    def SetDefaultInfo(self, info=""):
+        self.info = info
+
+ 
+
 class WeightedGraphInformer(GraphInformer):
     """ Provides information about weighted edges and vertices of a graph.
         Used as argument for GraphDisplay.RegisterGraphInformer() """
