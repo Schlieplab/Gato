@@ -34,12 +34,16 @@
 #             last change by $Author$.
 #
 ################################################################################
+import string
 import sys
 import math
 import pygsl.rng
 import Tkinter
 import ProbEditorBasics
 import ProbEditorWidgets
+from Tkconstants import *
+import tkMessageBox
+
 
 class plot_object:
     """
@@ -47,6 +51,9 @@ class plot_object:
     """
 
     def __init__(self,color=None):
+
+       
+
         """
         init color
         """
@@ -311,6 +318,9 @@ class sum_function(plot_object):
             last=min
 
         return new_list
+    
+    
+
 
 
 class line_function(plot_object):
@@ -343,7 +353,8 @@ class line_function(plot_object):
         """
         self.a=float(values[0])
         self.b=float(values[1])
-        
+
+
     def __repr__(self):
         return "line_function: x->%f*x+%f"%(self.a,self.b)
 
@@ -360,6 +371,11 @@ class box_function(plot_object):
         self.stop=ss[1]
         self.a=float(a)
 
+
+    def randwerte(self):
+        ss=(self.start,self.stop)
+        return ss
+
     def get_sample_values(self,x1,x2):
         """
         make different resolutions
@@ -369,7 +385,9 @@ class box_function(plot_object):
         box_points.sort()
         frame_points=[x1,x2]
         frame_points.sort()
-        res_max=(frame_points[1]-frame_points[0])/1000.0
+      
+            
+        res_max=(frame_points[1]-frame_points[0])/5000.0
 
         l.append(frame_points[0])
 
@@ -383,8 +401,9 @@ class box_function(plot_object):
 
         l.append(frame_points[1])
 
+       
         return l
-
+      
     def get_value(self,x):
         "box is constant between start and stop"
         ss=[self.start,self.stop]
@@ -439,7 +458,7 @@ class exponential_function(plot_object):
         alpha=(ss_points[1]-ss_points[0])/4.0
         res_map={5: 2, 4: 3, 3: 4,2: 5,1: 7, 0: 4}
         n_list=[]
-        epsilon=0.0001
+        epsilon=0.0001*(x_max-x_min)
         n=x_min
         n_step=(x_max-x_min)/10
         n_list.append(n)
@@ -452,10 +471,13 @@ class exponential_function(plot_object):
         if mu<x_max:
             n=mu-epsilon
             n_list.append(n)
-            n=mu 
+
+
+            n=mu
             while n<=mu+5.0 and n<x_max:
                 n_list.append(n)
-                n+=1.0/float(res_map[abs(int(n-mu))])*alpha
+                n+=1.0/float(res_map[abs(int(n-mu))])*alpha*x_big
+
             while n<x2:
                 n_list.append(n)
                 n+=n_step
@@ -463,7 +485,12 @@ class exponential_function(plot_object):
         n_list.append(x_max)
 
         return n_list
- 
+
+
+    def randwerte(self):
+
+        return(self.start,self.stop+1.0)
+
     def get_parameters(self):
        
         return (self.start,self.stop,self.a)
@@ -525,7 +552,7 @@ class exp_other_function(plot_object):
         alpha=(ss_points[1]-ss_points[0])/4.0
         res_map={5: 2, 4: 3, 3: 4,2: 5,1: 7, 0: 4}
         n_list=[]
-        epsilon=0.001
+        epsilon=0.0001*(x_max-x_min)
         n=x_max
         n_step=(x_max-x_min)/10
         n_list.append(n)
@@ -534,11 +561,14 @@ class exp_other_function(plot_object):
             n_list.append(n)
             n-=n_step
         n=(mu+epsilon)
+        
+
         n_list.append(n)
         n=mu
         while n>x_min and n>(mu-5.0):
              n_list.append(n)
-             n-=1.0/float(res_map[abs(int(n-mu))])*alpha 
+             n-=1.0/float(res_map[abs(int(n-mu))])*alpha*x_big
+
         while n>x_min:
             n_list.append(n)
             n-=n_step
@@ -546,6 +576,10 @@ class exp_other_function(plot_object):
         n_list.append(x_min)
         n_list.sort()
         return n_list
+
+    def randwerte(self):
+
+        return (self.start-1.0,self.stop)
  
     def get_parameters(self):
        
@@ -596,6 +630,7 @@ class gauss_function(plot_object):
         """
         make different resolutions
         """
+        
         if x1>x2:
             x_max=x1
             x_min=x2
@@ -620,10 +655,11 @@ class gauss_function(plot_object):
             n+=n_step
 
         # interesting range
+          
         n=max(-res_map_start,n_min)
         while n<n_max and n<res_map_start:
             n_list.append(n)
-            n+=1.0/float(res_map[abs(int(n))])
+            n+=1.0/float(res_map[abs(int(n))])*x_big
 
         # boring range >5
         while n<n_max:
@@ -640,6 +676,10 @@ class gauss_function(plot_object):
             i+=1
 
         return n_list
+
+    def randwerte(self):
+
+        return (self.mu-10.0*self.a*self.sigma,self.mu+10.0*self.a*self.sigma)
 
     def get_parameters(self):
         """
@@ -686,9 +726,9 @@ class gauss_tail_function_right(plot_object):
         l=[]
         x_max=max(x1,x2)
         x_min=min(x1,x2)
-        res_max=(x_max-x_min)/1000.0
+        res_max=(x_max-x_min)/5000.0
         x=x_min
-
+ 
         if x<self.tail:
             l.append(x)
             l.append(self.tail-res_max/2.0)
@@ -702,11 +742,15 @@ class gauss_tail_function_right(plot_object):
             
         while x<x_max:
             l.append(x)
-            x+=max(self.sigma/res_map[min(int(abs((x-self.tail)/self.sigma)),3)],res_max)
+            x+=max(self.sigma/res_map[min(int(abs((x-self.tail)/self.sigma)),3)],res_max)*x_big
 
         l.append(x_max)
 
         return l
+
+    def randwerte(self):
+
+        return (self.tail,self.mu+10.0*self.sigma*self.a)
 
     def get_parameters(self):
         """
@@ -744,7 +788,7 @@ class gauss_tail_function_left(gauss_tail_function_right):
         l=[]
         x_max=max(x1,x2)
         x_min=min(x1,x2)
-        res_max=(x_max-x_min)/1000.0
+        res_max=(x_max-x_min)/5000.0
         x=x_min
 
         res_map={}
@@ -752,17 +796,21 @@ class gauss_tail_function_left(gauss_tail_function_right):
             res_map={0:10.0,1:5.0,2:10.0,3:3.0}
         else:
             res_map={0:10.0,1:10.0,2:10.0,3:2.0}
-            
+   
         while x<self.tail and x<x_max:
             l.append(x)
-            x+=max(self.sigma/res_map[min(int(abs((x-self.tail)/self.sigma)),3)],res_max)
-
+            x+=max(self.sigma/res_map[min(int(abs((x-self.tail)/self.sigma)),3)],res_max)*x_big
+        
         if x<x_max:
             l.append(self.tail-res_max/2.0)
             l.append(self.tail+res_max/2.0)
         l.append(x_max)
 
         return l
+
+    def randwerte(self):
+
+        return (self.mu-10.0*self.a*self.sigma,self.tail)
         
     def get_value(self,x):
         "gauss function"
@@ -781,15 +829,16 @@ class plot_canvas(Tkinter.Canvas):
         cnf.update({'highlightthickness':0})
         Tkinter.Canvas.__init__(self,master,**cnf)
         self.configured=0
-
+    
         # defined elsewhere
         self.scale_x=1.0
         self.scale_y=1.0
-        self.orig_x=-5.0
+        self.orig_x=0.0
         self.orig_y=0.0
 
         # init list of pairs : (plotted objects,item_number)
         self.plot_objects=[]
+        self.plot_fkts=[]
 
         # get sizes
         self.bind('<Configure>',self.configure_event)
@@ -803,8 +852,11 @@ class plot_canvas(Tkinter.Canvas):
         self.scale_offset_y=self.plot_box[3]
         self.scale_end_x=self.plot_box[2]
         self.scale_end_y=self.plot_box[1]
-        self.origo=self.calculate_tic_distance(self.scale_x,self.scale_end_x-self.scale_offset_x)*-self.orig_x*self.scale_x
+        self.altsc_x=(50/self.scale_x)*50
+        self.origo_x=self.scale_offset_x+(-self.orig_x)*self.scale_x
+        self.origo_y=self.scale_offset_y+(+self.orig_y)*self.scale_y
         (self.end_x,self.end_y)=self.canvasxy_to_xy((self.scale_end_x,self.scale_end_y))
+        self.box=(0,0,event.width,event.height)
         if self.configured==0:
             self.create_scale()
         else:
@@ -812,7 +864,8 @@ class plot_canvas(Tkinter.Canvas):
 
         if self.plot_objects:
             self.replot()
-
+            self.replot_sum_fkt()
+            
     def xy_to_canvasxy(self,xy):
         """
         converts xy Pairs to pixle coordinates on the plot canvas
@@ -831,13 +884,14 @@ class plot_canvas(Tkinter.Canvas):
         """
         creates and configures scale-arrows and provides tics
         """
-       
-        self.scale_item_x=self.create_line(self.scale_offset_x,self.scale_offset_y,
-                                           self.scale_end_x,self.scale_offset_y,
+     
+        self.scale_item_x=self.create_line(self.scale_offset_x,self.origo_y,
+                                           self.scale_end_x,self.origo_y,
                                            arrow=Tkinter.LAST,
                                            tags=('x_arrow'))
-        self.scale_item_y=self.create_line(self.scale_offset_x+self.origo,self.scale_offset_y,
-                                           self.scale_offset_x+self.origo,self.scale_end_y,
+            
+        self.scale_item_y=self.create_line(self.origo_x,self.scale_offset_y,
+                                           self.origo_x,self.scale_end_y,
                                            arrow=Tkinter.LAST,
                                            tags=('y_arrow'))
         self.new_tics()
@@ -848,10 +902,10 @@ class plot_canvas(Tkinter.Canvas):
         when all coordinates are set, the graphic items were configured
         """
         #configure arrows
-        self.coords(self.scale_item_x,self.scale_offset_x,self.scale_offset_y,
-                    self.scale_end_x,self.scale_offset_y)
-        self.coords(self.scale_item_y,self.scale_offset_x+self.origo,self.scale_offset_y,
-                    self.scale_offset_x+self.origo,self.scale_end_y)
+        self.coords(self.scale_item_x,self.scale_offset_x,self.origo_y,
+                    self.scale_end_x,self.origo_y)
+        self.coords(self.scale_item_y,self.origo_x,self.scale_offset_y,
+                    self.origo_x,self.scale_end_y)
         self.del_tics()
         self.new_tics()
 
@@ -881,6 +935,13 @@ class plot_canvas(Tkinter.Canvas):
 
         return dist*10*sign
 
+    def del_scales(self):
+
+        itemx=self.scale_item_x
+        itemy=self.scale_item_y
+        self.delete(itemx)
+        self.delete(itemy)
+    
     def del_tics(self):
         """
         delete tics
@@ -896,47 +957,62 @@ class plot_canvas(Tkinter.Canvas):
         self.tic_list=[]
         # x tics
         dist=self.calculate_tic_distance(self.scale_x,
-                                         self.scale_end_x-self.scale_offset_x)
+                                         self.scale_end_x-self.scale_offset_x) 
         prec=1-math.floor(math.log10(dist))
-        pos_x=math.floor(self.orig_x/dist)*dist
+        pos_x=self.orig_x
         while pos_x<=self.end_x:
-            pixel_x=pos_x*self.scale_x+self.scale_offset_x
+            pixel_x=pos_x*self.scale_x+self.scale_offset_x-self.orig_x*self.scale_x
             tic=self.create_line(pixel_x,
                                  self.scale_offset_y-2,
                                  pixel_x,
                                  self.scale_offset_y+2)
             text=self.create_text(pixel_x,self.scale_offset_y+2,
                                   anchor=Tkinter.N,
-                                  text=str(round(pos_x+self.orig_x,prec)))
+                                  text=str(round(pos_x,prec)))
             self.tic_list.append(tic)
             self.tic_list.append(text)
             pos_x+=dist
-
-
+        
         # y tics
         dist=self.calculate_tic_distance(self.scale_y,
                                          self.scale_end_y-self.scale_offset_y)
         pos_y=math.floor(self.orig_y/dist)*dist
         while pos_y<=self.end_y:
-            pixel_y=-pos_y*self.scale_y+self.scale_offset_y
-            tic=self.create_line(self.scale_offset_x-2+self.origo,
-                                 pixel_y,
-                                 self.scale_offset_x+2+self.origo,
-                                 pixel_y)
-            text=self.create_text(self.scale_offset_x-2+self.origo,pixel_y,
-                                  anchor=Tkinter.E,
-                                  text=str(pos_y))
-            self.tic_list.append(tic)
-            self.tic_list.append(text)
-            pos_y-=dist
+            if self.origo_x>self.scale_offset_x  and self.origo_x<self.scale_end_x:
+                pixel_y=-pos_y*self.scale_y+self.scale_offset_y+self.orig_y*self.scale_y
+                tic=self.create_line(-2+self.origo_x,
+                                     pixel_y,
+                                     2+self.origo_x,
+                                     pixel_y)
+                text=self.create_text(-2+self.origo_x,pixel_y,
+                                      anchor=Tkinter.E,
+                                      text=str(pos_y))
+                self.tic_list.append(tic)
+                self.tic_list.append(text)
+                pos_y-=dist
+            else:
+                pixel_y=-pos_y*self.scale_y+self.scale_offset_y+self.orig_y*self.scale_y
+                tic=self.create_line(-2+self.scale_offset_x,
+                                     pixel_y,
+                                     2+self.scale_offset_x,
+                                     pixel_y)
+                text=self.create_text(-2+self.scale_offset_x,pixel_y,
+                                      anchor=Tkinter.E,
+                                      text=str(pos_y))
+                self.tic_list.append(tic)
+                self.tic_list.append(text)
+                pos_y-=dist
+                
 
+      
+    
     def replot(self):
         """
         redraws all plot-objects
         """
         for object in self.plot_objects:
             self.configure_plot_item(object[1],object[0])
-
+        
 
     def replot_object(self,object):
         """
@@ -950,6 +1026,7 @@ class plot_canvas(Tkinter.Canvas):
     def create_plot_item(self,plot_object):
         """
         """
+        
         return self.create_line(self.get_coords(plot_object),
                                 smooth=0,
                                 fill=plot_object.get_color())
@@ -957,6 +1034,7 @@ class plot_canvas(Tkinter.Canvas):
     def configure_plot_item(self,item,plot_object):
         """
         """
+        
         self.coords(item,tuple(self.get_coords(plot_object)))
         self.itemconfigure(item,fill=plot_object.get_color())
 
@@ -992,10 +1070,12 @@ class plot_canvas(Tkinter.Canvas):
         """
         if self.find_plot_object(plot_object)!=None:
             # exists!
+            print 'exists'
             return
         item=self.create_plot_item(plot_object)
-        self.plot_objects.append((plot_object,item))
-            
+        self.plot_objects.append((plot_object,item))    
+        self.plot_fkts.append(plot_object)
+        
     def remove_plot_object(self,plot_object):
         """
         removes a plot_object, if it existst in the list
@@ -1005,9 +1085,23 @@ class plot_canvas(Tkinter.Canvas):
         if object_index==None:
             #doesn't exist
             return
-        self.delete(self.plot_objects[object_index])
+        self.delete(self.plot_objects[object_index][1])
         del self.plot_objects[object_index]
+        del self.plot_fkts[object_index]
+        
+    
+    def create_sum_fkt(self):
+        plotfkts=self.plot_fkts
+        item=self.create_plot_item(sum_function(plotfkts,color='red'))
+        self.sum_item=item
+        
+    def replot_sum_fkt(self):
+        plotfkts=self.plot_fkts
+        self.configure_plot_item(self.sum_item,sum_function(plotfkts,color='red'))
 
+    def remove_sum_fkt(self):
+        self.delete(self.sum_item)
+        
 class handle_base:
     """
     base class with common handle methods
@@ -1082,7 +1176,7 @@ class handle_base:
         change cursor to predefined cursor
         """
         self.canvas.configure(cursor=cursor)
-
+        
     def mouse_leaves_handle(self,event):
         """
         change cursor to default cursor
@@ -1750,14 +1844,39 @@ class gauss_editor(Tkinter.Frame):
         self.plot_area=plot_canvas(self,bg='white')
         self.edit_area=Tkinter.Canvas(self,bg='white',highlightthickness=0)
         self.edit_area.bind('<Configure>',self.configure_handles)
-
+        self.root=root
+        
         self.plot_list=[]
         self.handle_list=[]
         
-        #some nonsence data
-        self.plot_area.scale_y=500.0
-        self.plot_area.scale_x=50.0
+        self.colors=['green','blue',
+                            'grey','pink','brown',
+                            'tan','purple','magenta','firebrick','deeppink',
+                            'lavender','NavajoWhite','seagreen','violet','LightGreen']
+        
+        self.plot_list=[box_function(start=-0.2,stop=1.0,a=0.1,color=self.colors[0]),
+                        gauss_function(mu=2,sigma=0.6,a=0.2,color=self.colors[1])#,                     
+        ##                gauss_tail_function_right(mu=6,sigma=1,tail=5,a=0.2,color=self.colors[2]),
+        ##                gauss_tail_function_left(mu=4,sigma=1,tail=4.7,a=0.2,color=self.colors[3]),
+        ##                exponential_function(start=2.0,stop=6.0,a=0.2,color=self.colors[4]),
+        ##                exp_other_function(start=1.0,stop=5.0,a=0.1,color=self.colors[5])
+                       ]
+        
+        global long
+        long=len(self.plot_list)
+        i=0
 
+        while i<long: 
+            del self.colors[0]
+            i+=1
+            
+        #Bereich vorgeben
+        self.suche_randwerte()
+        
+        global x_big
+        x_big=self.int_x
+
+               
 ##        d={}
 ##        color_list=['red','green','blue','orange','black']
 ##
@@ -1770,27 +1889,23 @@ class gauss_editor(Tkinter.Frame):
 ##            self.plot_area.add_plot_object(o)
 ##            d[str(i)]=i/2.0
         
-        self.plot_list=[box_function(start=0.2,stop=1.0,a=0.1,color='blue'),
-                        gauss_function(mu=2,sigma=0.6,a=0.2,color='green'),                     
-                        gauss_tail_function_right(mu=6,sigma=1,tail=5,a=0.2,color='orange'),
-                        gauss_tail_function_left(mu=4,sigma=1,tail=4.7,a=0.2,color='grey'),
-                        exponential_function(start=2.0,stop=6.0,a=0.2,color='magenta'),
-                        exp_other_function(start=1.0,stop=5.0,a=0.1,color='brown')]
 
-        
-        i=1
-        d={}
-        color_list=[]
+        self.sumindi=0
+        self.i=1
+        self.d={}
+        self.color_list=[]
         for o in self.plot_list:
             self.plot_area.add_plot_object(o)
-            color_list.append(o.color)
-            d[str(i)]=o.a
-            i+=1
+            self.color_list.append(o.color)
+            self.d[str(self.i)]=o.a
+            self.i+=1
 
-        self.dict=ProbEditorBasics.ProbDict(d)
-
-        self.plot_sum=sum_function(sum_list=self.plot_list,color='red')
-        self.plot_area.add_plot_object(self.plot_sum)
+        
+        
+        
+        
+        self.dict=ProbEditorBasics.ProbDict(self.d)
+        
         self.create_handles()
 
         keys=self.dict.keys()
@@ -1798,16 +1913,20 @@ class gauss_editor(Tkinter.Frame):
         self.pie=ProbEditorWidgets.e_pie_chart(self,
                                                self.dict,
                                                keys,
-                                               color_list,
+                                               self.color_list,
                                                self.pie_report)
         self.pie.configure(width=400,height=400)
-        self.plot_area.configure(width=550)
-
+        
+        self.plot_area.create_sum_fkt()
+        self.sumindi=1
         self.edit_area.grid(row=1,column=0,sticky=Tkinter.NSEW)
         self.plot_area.grid(row=0,column=0,sticky=Tkinter.NSEW)
         self.pie.grid(row=0,rowspan=2,column=1,sticky=Tkinter.NSEW)
         self.rowconfigure(0,minsize=50,weight=1)
         self.columnconfigure(0,minsize=50,weight=1)
+        self.plot_area.configure(width=550)
+        self.buildMenu()
+        
 
     def pie_report(self,what,dict):
         """
@@ -1818,8 +1937,8 @@ class gauss_editor(Tkinter.Frame):
                 i=int(k)-1
                 self.plot_list[i].a=dict[k]
                 self.plot_area.replot_object(self.plot_list[i])
-            self.plot_area.replot_object(self.plot_sum)
-
+            self.plot_area.replot_sum_fkt()
+            
     def handle_report(self,who,what,values):
         """
         sets new values to the plot object
@@ -1829,60 +1948,16 @@ class gauss_editor(Tkinter.Frame):
         l.append(plot_object.a)
         plot_object.set_parameters(l)
         self.plot_area.replot_object(plot_object)
-        self.plot_area.replot_object(self.plot_sum)
-
+        self.plot_area.replot_sum_fkt()
+        
     def create_handles(self):
         """
         creates handles for objects in list
         """
-        pos=0
+        self.pos=0
         self.edit_area.configure(height=10*len(self.plot_list))
         for o in self.plot_list:
-            if o.__class__.__name__=='gauss_function':
-                handle=gaussian_handle(self.edit_area,
-                                       self.handle_report,
-                                       (o.mu,o.sigma),
-                                       color=o.get_color(),
-                                       pos_y=pos+10)
-                self.handle_list.append(handle)
-            elif o.__class__.__name__=='gauss_tail_function_left':
-                handle=gaussian_tail_handle_left(self.edit_area,
-                                                 self.handle_report,
-                                                 (o.mu,o.sigma,o.tail),
-                                                 color=o.get_color(),
-                                                 pos_y=pos+10)
-                self.handle_list.append(handle)
-            elif o.__class__.__name__=='box_function':
-                handle=box_handle(self.edit_area,
-                                  self.handle_report,
-                                  (o.start,o.stop),
-                                  color=o.get_color(),
-                                  pos_y=pos+10)
-                self.handle_list.append(handle)
-            elif o.__class__.__name__=='gauss_tail_function_right':
-                handle=gaussian_tail_handle_right(self.edit_area,
-                                                  self.handle_report,
-                                                  (o.mu,o.sigma,o.tail),
-                                                  color=o.get_color(),
-                                                  pos_y=pos+10)
-                self.handle_list.append(handle)
-            elif o.__class__.__name__=='exponential_function':
-                handle=exp_handle(self.edit_area,
-                                       self.handle_report,
-                                       (o.start,o.stop),
-                                       color=o.get_color(),
-                                       pos_y=pos+10)
-                self.handle_list.append(handle)
-            elif o.__class__.__name__=='exp_other_function':
-                handle=exp_other_handle(self.edit_area,
-                                       self.handle_report,
-                                       (o.start,o.stop),
-                                       color=o.get_color(),
-                                       pos_y=pos+10)
-                self.handle_list.append(handle)
-            else:
-                print "no handle for %s"%(o.__class__.__name__)
-            pos+=10
+            self.create_handle(o)
 
     def configure_handles(self,event):
         """
@@ -1903,50 +1978,637 @@ class gauss_editor(Tkinter.Frame):
             h.set_values(values)
             i+=1
 
-def die():
-    sys.exit(0)
+    def buildMenu(self):
+        #Menuleiste
+        bar=Tkinter.Menu(self.root)
+        
+        filem=Tkinter.Menu(bar)
+        editm=Tkinter.Menu(bar)
+        zoomm=Tkinter.Menu(bar)
+        
+        addMenu=Tkinter.Menu(editm)
+        delMenu=Tkinter.Menu(editm)
+        if self.sumindi==0:
+            addMenu.add_radiobutton(label="Sum-Fkt", command=self.add_sum)
+        addMenu.add_radiobutton(label="Box-Fkt", command=self.boxadd)
+        addMenu.add_radiobutton(label="Exp-Fkt", command=self.expadd)
+        addMenu.add_radiobutton(label="NegExp-Fkt", command=self.oexpadd)
+        addMenu.add_radiobutton(label="Gaussian", command=self.gaussadd)
+        addMenu.add_radiobutton(label="GaussianL", command=self.gaussladd)
+        addMenu.add_radiobutton(label="GaussianR", command=self.gaussradd)
+        if len(self.plot_list)>0:
+            delMenu.add_radiobutton(label="1",background=self.plot_list[0].color, command=self.del0)
+        if len(self.plot_list)>1:
+            delMenu.add_radiobutton(label="2",background=self.plot_list[1].color, command=self.del1)
+        if len(self.plot_list)>2:
+            delMenu.add_radiobutton(label="3",background=self.plot_list[2].color, command=self.del2)
+        if len(self.plot_list)>3:
+            delMenu.add_radiobutton(label="4",background=self.plot_list[3].color, command=self.del3)
+        if len(self.plot_list)>4:
+            delMenu.add_radiobutton(label="5",background=self.plot_list[4].color, command=self.del4)
+        if len(self.plot_list)>5:
+            delMenu.add_radiobutton(label="6",background=self.plot_list[5].color, command=self.del5)
+        if len(self.plot_list)>6:
+            delMenu.add_radiobutton(label="7",background=self.plot_list[6].color, command=self.del6)
+        if len(self.plot_list)>7:
+            delMenu.add_radiobutton(label="8",background=self.plot_list[7].color, command=self.del7)
+        if len(self.plot_list)>8:
+            delMenu.add_radiobutton(label="9",background=self.plot_list[8].color, command=self.del8)
+        if len(self.plot_list)>9:
+            delMenu.add_radiobutton(label="10",background=self.plot_list[9].color, command=self.del9)
+        if len(self.plot_list)>10:
+            delMenu.add_radiobutton(label="11",background=self.plot_list[10].color, command=self.del10)
+        if len(self.plot_list)>11:
+            delMenu.add_radiobutton(label="12",background=self.plot_list[11].color, command=self.del11)
+        if len(self.plot_list)>12:
+            delMenu.add_radiobutton(label="13",background=self.plot_list[12].color, command=self.del12)
+        if len(self.plot_list)>13:
+            delMenu.add_radiobutton(label="14",background=self.plot_list[13].color, command=self.del13)
+        if len(self.plot_list)>14:
+            delMenu.add_radiobutton(label="15",background=self.plot_list[14].color, command=self.del14)
+        if self.sumindi==1:
+            delMenu.add_radiobutton(label="sum", background='red', command=self.del_sum)
+        filem.add_command(label="Exit", command=self.die)
+        
+        editm.add_cascade(label="Add", menu=addMenu)
+        editm.add_cascade(label="Del", menu=delMenu)
+        
+        zoomm.add_command(label="Zoom-in", command=self.zoom_in)
+        zoomm.add_command(label="Zoom-out", command=self.zoom_out)
+        zoomm.add_command(label="Normalise", command=self.norm)
+        
+        bar.add_cascade(label="File", menu=filem)
+        bar.add_cascade(label="Edit", menu=editm)
+        bar.add_cascade(label="Zoom", menu=zoomm)
+        
+        self.root.config(menu=bar)
+
+    def del_sum(self):
+        self.plot_area.remove_sum_fkt()
+        self.sumindi=0
+        
+        self.buildMenu()
+        
+    def add_sum(self):
+        self.plot_area.create_sum_fkt()
+        self.sumindi=1
+        
+        self.buildMenu()
+        
+    def boxadd(self):
+        
+        self.top=Tkinter.Toplevel(root)
+        label=Tkinter.Frame(self.top)
+
+        Tkinter.Label(label, justify=CENTER, text="Box function:\nf(x)=a*c for start<x<end\nelse f(x)=0").grid(row=0)  
+        Tkinter.Label(label, text="start=").grid(row=1, sticky=E)
+        Tkinter.Label(label, text="end=").grid(row=2, sticky=E)
+        Tkinter.Label(label, text="a=").grid(row=3, sticky=E)
+
+        self.e1=Tkinter.Entry(label)
+        self.e2=Tkinter.Entry(label)
+        self.e3=Tkinter.Entry(label)
+
+        self.e1.insert(0, -0.2)
+        self.e2.insert(0, 1.0)
+        self.e3.insert(0, 0.1)
+        self.e1.grid(row=1, column=1)
+        self.e2.grid(row=2, column=1)
+        self.e3.grid(row=3, column=1)
+
+        button1=Tkinter.Button(label, text="OK", command=self.box).grid(row=4)
+        
+        button2=Tkinter.Button(label,text="cancel",command=self.top.destroy).grid(row=4, column=1)
+
+        
+        label.pack()
+        
+    def box(self):
+        
+        s1=string.atof(self.e1.get())
+        s2=string.atof(self.e2.get())
+        s3=string.atof(self.e3.get())
+        self.create_new_fkt(box_function(start=s1,stop=s2,a=s3,color=self.colors[0]))
+        self.top.destroy()
+        
+    def expadd(self):
+        
+       self.top=Tkinter.Toplevel(root)
+       label=Tkinter.Frame(self.top) 
+
+      
+       Tkinter.Label(label, justify=CENTER, text="Exponential function:\nf(x)=a*alpha*exp(-x+mu) for x>=mu\n else  f(x)=0 ").grid(row=0)
+       Tkinter.Label(label, text="alpha=").grid(row=1, sticky=E)
+       Tkinter.Label(label, text="mu=").grid(row=2, sticky=E)
+       Tkinter.Label(label, text="a=").grid(row=3, sticky=E)
+       
+       self.e1=Tkinter.Entry(label)
+       self.e2=Tkinter.Entry(label)
+       self.e3=Tkinter.Entry(label)
+
+       self.e1.insert(0, 1.0)
+       self.e2.insert(0, 2.0)
+       self.e3.insert(0, 0.2)
+       self.e1.grid(row=1, column=1)
+       self.e2.grid(row=2, column=1)
+       self.e3.grid(row=3, column=1)
+
+       button1=Tkinter.Button(label, text="OK", command=self.exp).grid(row=4)
+        
+       button2=Tkinter.Button(label,text="cancel",command=self.top.destroy).grid(row=4, column=1)
+
+        
+       label.pack()
+       
+
+    def exp(self):
+
+       l=len(self.plot_list)
+       s2=string.atof(self.e1.get())
+       s1=string.atof(self.e2.get())
+       s3=string.atof(self.e3.get())
+       s2=4*s2+s1 #berechnet stop von alpha und mu her
+       
+       self.create_new_fkt(exponential_function(start=s1,stop=s2,a=s3,color=self.colors[0]))
+       self.top.destroy()
+          
     
-def box():
-    print "Soll Box_fkt darstellen"
-    ##editor.remove_plot_object(box_function)
-def gauss():
-    print "Soll Gauss-fkt darstellen"
+    def oexpadd(self):
 
-def expl():
-    print "Soll Exp-fkt darstellen"
+        self.top=Tkinter.Toplevel(root)
+        label=Tkinter.Frame(self.top) 
+        
+        Tkinter.Label(label, justify=CENTER, text="negative Exponential function:\nf(x)=-a*alpha*exp(-x+mu) for x<=mu\n else f(x)=0 ").grid(row=0)  
+        Tkinter.Label(label, text="alpha=").grid(row=1, sticky=E)
+        Tkinter.Label(label, text="mu=").grid(row=2, sticky=E)
+        Tkinter.Label(label, text="a=").grid(row=3, sticky=E)
+        
+        self.e1=Tkinter.Entry(label)
+        self.e2=Tkinter.Entry(label)
+        self.e3=Tkinter.Entry(label)
 
-def expr():
-    print "Soll Exp_Other-fkt darstellen"
+        self.e1.insert(0, 1.0)
+        self.e2.insert(0, 5.0)
+        self.e3.insert(0, 0.1)
+        self.e1.grid(row=1, column=1)
+        self.e2.grid(row=2, column=1)
+        self.e3.grid(row=3, column=1)
 
-def gaussl():
-    print "Soll GaussianTL-fkt darstellen"
+        button1=Tkinter.Button(label, text="OK", command=self.oexp).grid(row=4)
+        
+        button2=Tkinter.Button(label,text="cancel",command=self.top.destroy).grid(row=4, column=1)
 
-def gaussr():
-    print "Soll GaussianTR-fkt darstellen"
+        
+        label.pack()
+
+
+    def oexp(self):
+
+       l=len(self.plot_list)
+       s1=string.atof(self.e1.get())
+       s2=string.atof(self.e2.get())
+       s3=string.atof(self.e3.get())
+       s1=s2-4*s1 #berechnet start von alpha und mu her
+       self.create_new_fkt(exp_other_function(start=s1,stop=s2,a=s3,color=self.colors[0]))
+       self.top.destroy()
+          
+    
+        
+    def gaussadd(self):
+
+        self.top=Tkinter.Toplevel(root)
+        label=Tkinter.Frame(self.top) 
+
+        Tkinter.Label(label, justify=CENTER, text="Gaussian function:\n f(x)=\n a/(sigma*sqrt(2*pi))*exp(-(x-mu)**2/2*(sigma)**2)").grid(row=0)  
+        Tkinter.Label(label, text="sigma=").grid(row=1, sticky=E)
+        Tkinter.Label(label, text="mu=").grid(row=2, sticky=E)
+        Tkinter.Label(label, text="a=").grid(row=3, sticky=E)
+
+        self.e1=Tkinter.Entry(label)
+        self.e2=Tkinter.Entry(label)
+        self.e3=Tkinter.Entry(label)
+
+        self.e1.insert(0, 0.6)
+        self.e2.insert(0, 2.0)
+        self.e3.insert(0, 0.2)
+        self.e1.grid(row=1, column=1)
+        self.e2.grid(row=2, column=1)
+        self.e3.grid(row=3, column=1)
+
+        button1=Tkinter.Button(label, text="OK", command=self.gauss).grid(row=4)
+        
+        button2=Tkinter.Button(label,text="cancel",command=self.top.destroy).grid(row=4, column=1)
+
+        
+        
+        label.pack()
+
+    def gauss(self):
+
+       l=len(self.plot_list)
+       s1=string.atof(self.e1.get())
+       s2=string.atof(self.e2.get())
+       s3=string.atof(self.e3.get())
+       
+       self.create_new_fkt(gauss_function(mu=s2,sigma=s1,a=s3,color=self.colors[0]))
+       self.top.destroy()
+              
+        
+    def gaussladd(self):
+        
+        self.top=Tkinter.Toplevel(root)
+        label=Tkinter.Frame(self.top)
+        
+        Tkinter.Label(label, justify=CENTER, text="Gaussian tail function left :\n f(x)=\n a/(sigma*sqrt(2*pi))*exp(-(x-mu)**2/2*(sigma)**2) for x<=tail\n else f(x)=0").grid(row=0, sticky=E)  
+        Tkinter.Label(label, text="sigma=").grid(row=1, sticky=E)
+        Tkinter.Label(label, text="mu=").grid(row=2, sticky=E)
+        Tkinter.Label(label, text="a=").grid(row=3, sticky=E)
+        Tkinter.Label(label, text="tail=").grid(row=4, sticky=E)
+           
+        self.e1=Tkinter.Entry(label)
+        self.e2=Tkinter.Entry(label)
+        self.e3=Tkinter.Entry(label)
+        self.e4=Tkinter.Entry(label)
+
+        self.e1.insert(0, 1.0)
+        self.e2.insert(0, 4.0)
+        self.e3.insert(0, 0.2)
+        self.e4.insert(0, 4.7)
+           
+        self.e1.grid(row=1, column=1)
+        self.e2.grid(row=2, column=1)
+        self.e3.grid(row=3, column=1)
+        self.e4.grid(row=4, column=1)
+        
+        button1=Tkinter.Button(label, text="OK", command=self.gaussl).grid(row=5)
+        
+        button2=Tkinter.Button(label,text="cancel",command=self.top.destroy).grid(row=5, column=1)
+
+        
+        label.pack()
+
+    def gaussl(self):
+
+       l=len(self.plot_list)
+       s1=string.atof(self.e1.get())
+       s2=string.atof(self.e2.get())
+       s3=string.atof(self.e3.get())
+       s4=string.atof(self.e4.get())
+       self.create_new_fkt(gauss_tail_function_left(mu=s2,sigma=s1,tail=s4,a=s3,color=self.colors[0]))
+       self.top.destroy()
+
+        
+    def gaussradd(self):
+        
+       self.top=Tkinter.Toplevel(root)
+       label=Tkinter.Frame(self.top)
+       Tkinter.Label(label, justify=CENTER, text="Gaussian tail function left :\n f(x)=\n a/(sigma*sqrt(2*pi))*exp(-(x-mu)**2/2*(sigma)**2) for x>=tail\n else f(x)=0").grid(row=0, sticky=E)  
+       Tkinter.Label(label, text="sigma=").grid(row=1, sticky=E)
+       Tkinter.Label(label, text="mu=").grid(row=2, sticky=E)
+       Tkinter.Label(label, text="a=").grid(row=3, sticky=E)
+       Tkinter.Label(label, text="tail=").grid(row=4, sticky=E)
+           
+       self.e1=Tkinter.Entry(label)
+       self.e2=Tkinter.Entry(label)
+       self.e3=Tkinter.Entry(label)
+       self.e4=Tkinter.Entry(label)
+
+       self.e1.insert(0, 1.0)
+       self.e2.insert(0, 6.0)
+       self.e3.insert(0, 0.2)
+       self.e4.insert(0, 5.0)
+           
+           
+       self.e1.grid(row=1, column=1)
+       self.e2.grid(row=2, column=1)
+       self.e3.grid(row=3, column=1)
+       self.e4.grid(row=4, column=1)
+       button1=Tkinter.Button(label, text="OK", command=self.gaussr).grid(row=5)
+        
+       button2=Tkinter.Button(label,text="cancel",command=self.top.destroy).grid(row=5, column=1)  
+       
+       label.pack()
+
+    def gaussr(self):
+
+       l=len(self.plot_list)
+       s1=string.atof(self.e1.get())
+       s2=string.atof(self.e2.get())
+       s3=string.atof(self.e3.get())
+       s4=string.atof(self.e4.get())
+       self.create_new_fkt(gauss_tail_function_right(mu=s2,sigma=s1,tail=s4,a=s3,color=self.colors[0]))
+       self.top.destroy()
+
+    def norm(self):
+
+        self.suche_randwerte()
+        self.draw_new()
+
+    def remove_fkt(self,i):
+        #loscht fkt baut pie handles neu
+        o=self.plot_list[i]
+        self.colors.append(o.color)
+        
+        self.plot_area.remove_plot_object(o)
+        self.pie.destroy()
+        del self.pie
+        del self.plot_list[i]
+
+        self.i=1
+        self.d={}
+        self.color_list=[]
+        for o in self.plot_list:    
+            self.color_list.append(o.color)
+            self.d[str(self.i)]=o.a
+            self.i+=1
+        
+        self.dict=ProbEditorBasics.ProbDict(self.d)
+        keys=self.dict.keys()
+        keys.sort()
+        self.pie=ProbEditorWidgets.e_pie_chart(self,
+                                               self.dict,
+                                               keys,
+                                               self.color_list,
+                                               self.pie_report)
+        self.pie.configure(width=400,height=400)
+        
+        
+                
+        self.edit_area.destroy()
+        del self.edit_area
+        self.handle_list=[]
+        self.pos=0
+        self.edit_area=Tkinter.Canvas(self,bg='white',highlightthickness=0)
+        self.edit_area.bind('<Configure>',self.configure_handles)
+        self.edit_area.grid(row=1,column=0,sticky=Tkinter.NSEW)
+        self.pie.grid(row=0,rowspan=2,column=1,sticky=Tkinter.NSEW)
+        self.rowconfigure(0,minsize=50,weight=1)
+        self.columnconfigure(0,minsize=50,weight=1)
+        self.create_handles()
+        self.suche_randwerte()
+        self.plot_area.replot_sum_fkt()
+        self.buildMenu()
+        self.draw_new()
+        
+    def zoom_out(self):
+        #halbiert die plot_area randwerte
+        self.max_plot_x=math.floor(self.max_plot_x*2)
+        
+        self.max_plot_y=self.max_plot_y*2
+        self.min_plot_x=math.ceil(self.min_plot_x*2-0.1)
+        self.min_plot_y=self.min_plot_y*2
+        
+        self.int_x=(self.max_plot_x-self.min_plot_x)/10.0
+        self.int_y=(self.max_plot_y-self.min_plot_y)/0.6
+        global x_big
+        x_big=self.int_x
+        
+        self.plot_area.scale_y=500.0/self.int_y
+        self.plot_area.scale_x=50.0/self.int_x
+        self.plot_area.orig_x=self.min_plot_x
+        self.plot_area.orig_y=self.min_plot_y
+
+        self.draw_new()
+        
+        
+
+    def zoom_in(self):
+        
+        
+        
+        self.max_plot_x=math.ceil(self.max_plot_x/2)
+        
+        self.max_plot_y=self.max_plot_y/2
+        self.min_plot_x=min(-1.0, math.floor(self.min_plot_x/2))
+        
+        self.min_plot_y=self.min_plot_y/2
+        
+        self.int_x=(self.max_plot_x-self.min_plot_x)/10.0
+        self.int_y=(self.max_plot_y-self.min_plot_y)/0.6
+        global x_big
+        x_big=self.int_x
+        
+        self.plot_area.scale_y=500.0/self.int_y
+        self.plot_area.scale_x=50.0/self.int_x
+        self.plot_area.orig_x=self.min_plot_x
+        self.plot_area.orig_y=self.min_plot_y
+
+        self.draw_new()
+        
+        
+    
+    def create_new_fkt(self,plot_object):
+        # inserts in plot_area
+        o=plot_object
+        self.plot_list.append(o)
+        self.plot_area.add_plot_object(o)
+        
+        self.color_list.append(o.color)
+        del self.colors[0]
+        if self.colors==[]:   
+            tkMessageBox.showwarning("Warning","No more Place for Functions!")
+            
+        # insertst in Pie    
+        self.d[str(self.i)]=o.a
+        self.i+=1
+        self.dict=ProbEditorBasics.ProbDict(self.d)
+        
+        
+
+        # creats a handle 
+        self.edit_area.configure(height=10)
+        self.create_handle(o)
+        keys=self.dict.keys()
+        keys.sort()
+        self.pie=ProbEditorWidgets.e_pie_chart(self,
+                                               self.dict,
+                                               keys,
+                                               self.color_list,
+                                               self.pie_report)
+        self.pie.configure(width=400,height=400)
+        self.plot_area.configure(width=550)
+        self.pie.grid(row=0,rowspan=2,column=1,sticky=Tkinter.NSEW)
+        self.suche_randwerte()
+        self.draw_new()
+        self.buildMenu()
+
+    def del0(self):
+        self.remove_fkt(0)
+
+    def del1(self):
+        self.remove_fkt(1)
+
+    def del2(self):
+        self.remove_fkt(2)
+
+    def del3(self):
+        self.remove_fkt(3)
+        
+    def del4(self):
+        self.remove_fkt(4)
+        
+    def del5(self):
+        self.remove_fkt(5)
+
+    def del6(self):
+        self.remove_fkt(6)
+
+    def del7(self):
+        self.remove_fkt(7)
+        
+    def del8(self):
+        self.remove_fkt(8)
+
+    def del9(self):
+        self.remove_fkt(9)
+        
+    def del10(self):
+        self.remove_fkt(10)
+        
+    def del11(self):
+        self.remove_fkt(11)
+        
+    def del12(self):
+        self.remove_fkt(12)
+        
+    def del13(self):
+        self.remove_fkt(13)
+        
+    def del14(self):
+        self.remove_fkt(14)
+   
+    def die(self,event=0):
+        sys.exit(0)
+        
+    
+    def draw_new(self):
+        ##zeichnet alles neu
+        self.plot_area.replot()
+        self.plot_area.remove_sum_fkt()
+        self.plot_area.create_sum_fkt()
+        self.sumindi=1
+        self.buildMenu()
+        self.plot_area.del_tics()
+        self.plot_area.del_scales()
+        self.plot_area.create_scale()
+        
+
+    def create_handle(self,o):
+        #sucht den ensprechenden handle
+        if o.__class__.__name__=='gauss_function':
+                handle=gaussian_handle(self.edit_area,
+                                       self.handle_report,
+                                       (o.mu,o.sigma),
+                                       color=o.get_color(),
+                                       pos_y=self.pos+10)
+                self.handle_list.append(handle)
+                
+        elif o.__class__.__name__=='gauss_tail_function_left':
+                handle=gaussian_tail_handle_left(self.edit_area,
+                                                 self.handle_report,
+                                                 (o.mu,o.sigma,o.tail),
+                                                 color=o.get_color(),
+                                                 pos_y=self.pos+10)
+                self.handle_list.append(handle)
+                
+        elif o.__class__.__name__=='box_function':
+                handle=box_handle(self.edit_area,
+                                  self.handle_report,
+                                  (o.start,o.stop),
+                                  color=o.get_color(),
+                                  pos_y=self.pos+10)
+                self.handle_list.append(handle)
+                
+        elif o.__class__.__name__=='gauss_tail_function_right':
+                handle=gaussian_tail_handle_right(self.edit_area,
+                                                  self.handle_report,
+                                                  (o.mu,o.sigma,o.tail),
+                                                  color=o.get_color(),
+                                                  pos_y=self.pos+10)
+                self.handle_list.append(handle)
+                
+        elif o.__class__.__name__=='exponential_function':
+                handle=exp_handle(self.edit_area,
+                                       self.handle_report,
+                                       (o.start,o.stop),
+                                       color=o.get_color(),
+                                       pos_y=self.pos+10)
+                self.handle_list.append(handle)
+                
+        elif o.__class__.__name__=='exp_other_function':
+                handle=exp_other_handle(self.edit_area,
+                                       self.handle_report,
+                                       (o.start,o.stop),
+                                       color=o.get_color(),
+                                       pos_y=self.pos+10)
+                self.handle_list.append(handle)
+                
+        else:
+                print "no handle for %s"%(o.__class__.__name__)
+        self.pos+=10
+        
+
+
+
+    def suche_randwerte(self):
+        randwerte=[]
+
+        for o in self.plot_list:
+            randwerte.append(math.floor(o.randwerte()[0]-1.0))
+            randwerte.append(math.ceil(o.randwerte()[1]+1.0))
+        for i in randwerte:
+            randwerte[0]=min(randwerte[0],i)
+            randwerte[1]=max(randwerte[1],i)
+        ##sammelt die von den Fkts geg Randwerte     
+        if randwerte==[]:
+            randwerte=[0.0,1.0]
+
+        
+        
+        plot_x=[randwerte[0],randwerte[1]]
+       
+        plot_y=[0.0,0.6]
+
+        
+        #randwerte werden sortiert
+        if plot_x[1]>plot_x[0]:
+            self.max_plot_x=plot_x[1]
+            self.min_plot_x=plot_x[0]
+            
+        elif plot_x[0]>plot_x[1]:
+            self.max_plot_x=plot_x[0]
+            self.min_plot_x=plot_x[1]
+        else:
+            print "Error"
+
+        if plot_y[1]>plot_y[0]:
+            self.max_plot_y=plot_y[1]
+            self.min_plot_y=plot_y[0]
+            
+        elif plot_y[0]>plot_y[1]:
+            self.max_plot_y=plot_y[0]
+            self.min_plot_y=plot_y[1]
+        else:
+            print "Error"        
+        
+        #Intervall
+        self.int_x=(self.max_plot_x-self.min_plot_x)/10.0
+        self.int_y=(self.max_plot_y-self.min_plot_y)/0.6
+        #Grundwerte von plot_area
+        self.plot_area.scale_y=500.0/self.int_y
+        self.plot_area.scale_x=50.0/self.int_x
+        self.plot_area.orig_x=self.min_plot_x
+        self.plot_area.orig_y=self.min_plot_y
+
+
+
 
 if __name__=='__main__':
     root=Tkinter.Tk()
-    
-    bar = Tkinter.Menu(root)
-
-    filem =Tkinter.Menu(bar)
-    filem.add_command(label="End",command=die)
-    editm = Tkinter.Menu(bar)
-    editm.add_radiobutton(label="Box-fkt",command=box)
-    editm.add_radiobutton(label="Gaussian-fkt",command=gauss)
-    editm.add_radiobutton(label="Exp-Left-fkt",command=expl)
-    editm.add_radiobutton(label="Exp-Right-fkt",command=expr)
-    editm.add_radiobutton(label="Gaussian-left-fkt",command=gaussl)
-    editm.add_radiobutton(label="Gaussian-right-fkt",command=gaussr)
-    
-    bar.add_cascade(label="Files", menu=filem)
-    bar.add_cascade(label="Edit", menu=editm)
     
     editor=gauss_editor(root,width=300,height=300)
     # fast quit by <Escape>
     root.bind('<Escape>',lambda e:e.widget.quit())
     editor.pack(expand=1,fill=Tkinter.BOTH)
-    
-    root.config(menu=bar)
     
     root.mainloop()
