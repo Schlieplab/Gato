@@ -108,6 +108,11 @@ class GraphDisplay:
 
 	factor = zoomFactor[percent] / self.zoomFactor	    
 	self.zoomFactor = zoomFactor[percent]
+	if self.directed == 1:
+	    arrowShape = ((16*self.zoomFactor) / 100.0,
+			  (20*self.zoomFactor) / 100.0,
+			  (6*self.zoomFactor)  / 100.0)
+	    self.canvas.itemconfigure("edges",arrowshape=arrowShape)
 	self.canvas.scale("all", 0, 0, factor, factor)	
 
 	newWidth = (self.zoomFactor / 100.0) * float(gPaperWidth)
@@ -356,15 +361,21 @@ class GraphDisplay:
 	d = 32       # Diameter
 	offset = 10  # selected based on trial-and-error 
 	l = sqrt((v.x + d - v.x)**2 + (v.y - d - v.y - offset)**2)
-	c = (l - gVertexRadius)/l - 0.001 # Dont let them quite touch 
+	if l < 0.001:
+	    l = 0.001
+	zVertexRadius = (gVertexRadius * self.zoomFactor) / 100.0
+	c = (l - zVertexRadius)/l - 0.001 # Dont let them quite touch 
 	tmpX = v.x + c * (v.x + d - v.x) 
 	tmpY = v.y + offset + c * (v.y - d - v.y - offset)
+	arrowShape = ((16*self.zoomFactor) / 100.0,
+		      (20*self.zoomFactor) / 100.0,
+		      (6*self.zoomFactor)  / 100.0)
 	return self.canvas.create_line(v.x, v.y + offset, v.x - d, v.y - d, 
 				       v.x, v.y - 2*d + offset, v.x + d, v.y - d, 
 				       v.x + offset, v.y - offset,
 				       #tmpX, tmpY,
 				       arrow="last",
-				       arrowshape=(16,20,6), 
+				       arrowshape=arrowShape, 
 				       fill=cEdgeDefault,
 				       width=w,
 				       smooth=TRUE,
@@ -384,29 +395,33 @@ class GraphDisplay:
 	l = sqrt((h.x - t.x)**2 + (h.y - t.y)**2)
 	if l < 0.001:
 	    l = 0.001
-	c = (l - gVertexRadius)/l - 0.001 # Dont let them quite touch 
+	zVertexRadius = (gVertexRadius * self.zoomFactor) / 100.0
+	c = (l - zVertexRadius)/l - 0.001 # Dont let them quite touch 
 	# (tmpX,tmpY) is a point on a straight line between t and h
 	# not quite touching the vertex disc
 	tmpX = t.x + c * (h.x - t.x) 
 	tmpY = t.y + c * (h.y - t.y)
+	arrowShape = ((16*self.zoomFactor) / 100.0,
+		      (20*self.zoomFactor) / 100.0,
+		      (6*self.zoomFactor)  / 100.0)
 	if curved == 0:
 	    return self.canvas.create_line(t.x,t.y,tmpX,tmpY,
 					   fill=cEdgeDefault,
 					   arrow="last",
-					   arrowshape=(16,20,6), 
+					   arrowshape=arrowShape, 
 					   width=w,
 					   tag="edges")
 	else:
 	    # (mX,mY) to difference vector h - t
 	    (mX,mY) = orthogonal((h.x - t.x, h.y - t.y))
-	    c = 1.5 * gVertexRadius + l / 25
+	    c = 1.5 * zVertexRadius + l / 25
 	    # Add c * (mX,mY) at midpoint between h and t
 	    mX = t.x + .5 * (h.x - t.x) + c * mX
 	    mY = t.y + .5 * (h.y - t.y) + c * mY
 	    return self.canvas.create_line(t.x,t.y,mX,mY,tmpX,tmpY,
 					   fill=cEdgeDefault,
 					   arrow="last",
-					   arrowshape=(16,20,6), 
+					   arrowshape=arrowShape, 
 					   width=w,
 					   smooth=TRUE,
 					   tag="edges")
@@ -475,7 +490,8 @@ class GraphDisplay:
             on the canvas. """
 	pos = self.VertexPosition(v)    
 	# Label to the bottom, to the right
-	da =  self.canvas.create_text(pos.x+gVertexRadius+1, pos.y+gVertexRadius+1, 
+	zVertexRadius = (gVertexRadius * self.zoomFactor) / 100.0
+	da =  self.canvas.create_text(pos.x+zVertexRadius+1, pos.y+zVertexRadius+1, 
 				      anchor="w", 
 				      justify="left", 
 				      text=annotation,
@@ -491,7 +507,7 @@ class GraphDisplay:
 	h = self.VertexPosition(head)  
 
 	(mX,mY) = orthogonal((h.x - t.x, h.y - t.y))
-	c = gVertexRadius
+	c = (gVertexRadius * self.zoomFactor) / 100.0
 	x = t.x + .5 * (h.x - t.x) + c * mX
 	y = t.y + .5 * (h.y - t.y) + c * mY
 	# Label to the bottom, to the right
