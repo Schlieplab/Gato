@@ -288,7 +288,7 @@ class HMMState:
         if not self.order.useDefault:
             writeData(XMLDoc, node, 'order', self.order)
 
-        if not self.tiedto.useDefault:
+        if not self.tiedto == '':
             writeData(XMLDoc, node, 'tiedto', self.tiedto)
         else:
             if not self.order.useDefault and self.order > 0:
@@ -812,7 +812,7 @@ class HMMInformer(GraphInformer):
                                                         self.itsHMM.hmmClass.name[state.state_class],
                                                         self.itsHMM.hmmClass.desc[state.state_class],
                                                         state.order)
-        if state.order == 0:
+        if state.order == 0 and state.emissions != []:
             msg += " [A:%0.3f C:%0.3f G:%0.3f T:%0.3f N:%0.3f]" % tuple(state.emissions)
         return msg
 
