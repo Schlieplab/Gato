@@ -387,7 +387,8 @@ def planarity_test(Gin):
 
     n=Gin.Order() # number of nodes
     if n<3: return 1
-    if Gin.Size()>6*n-12: return 0 # number of edges
+    if not(Gin.QDirected()) and Gin.Size()>3*n-6: return 0 # number of edges
+    if Gin.QDirected() and Gin.Size()>6*n-12: return 0
 
     #--------------------------------------------------------------
     # make G a copy of Gin and make G bidirected
@@ -396,7 +397,7 @@ def planarity_test(Gin):
     G=pt_graph()
     
     for v in Gin.vertices:
-        G.new_node(v)
+	G.new_node(v)
     for e in Gin.Edges():
         G.new_edge(source(e),target(e))
 

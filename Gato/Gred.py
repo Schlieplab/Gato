@@ -427,7 +427,7 @@ class SAGraphEditor(GraphEditor, Frame):
 	self.extrasMenu = Menu(self.menubar, tearoff=0)
 
 	# --------------------------------------------------------------
-	# Add a menue item for all creators found in Creator.creator
+	# Add a menue item for all creators found in GraphCreator.creator
 	for create in GraphCreator.creator:
 
 	    self.extrasMenu.add_command(label=create.Name(),

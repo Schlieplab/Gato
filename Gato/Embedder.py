@@ -40,6 +40,7 @@ class RandomEmbedder(Embedder):
 	return "Randomize Layout"
     
     def Embed(self, theGraphEditor):
+	theGraphEditor.SetGraphMenuGrid(0)
 	for v in theGraphEditor.G.vertices:
 	    theGraphEditor.MoveVertex(v, 
 				      whrandom.randint(10,990),
@@ -55,6 +56,7 @@ class CircularEmbedder(Embedder):
 	return "Circular Layout"
     
     def Embed(self, theGraphEditor):
+	theGraphEditor.SetGraphMenuGrid(0)
         if theGraphEditor.G.Order()!=0: 
             distance = 2*pi/theGraphEditor.G.Order()
             degree = 0
@@ -121,6 +123,7 @@ class BFSTreeEmbedder(Embedder):
 	return "BFS-Tree Layout"
 
     def Embed(self, theGraphEditor):
+	theGraphEditor.SetGraphMenuGrid(0)
 	if theGraphEditor.G.Order()!=0:
 	    dial = BFSLayoutDialog(theGraphEditor, theGraphEditor.G)
             if dial.result is None:

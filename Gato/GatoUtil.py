@@ -38,6 +38,8 @@ def orthogonal(u):
     from math import sqrt
     (u1,u2) = u
     length = sqrt(u1**2 + u2**2)
+    if length < 0.001:
+	length = 0.001
     u1 = u1 / length
     u2 = u2 / length
     return (-u2,u1)

@@ -726,7 +726,7 @@ class pe_Graph:
 		    while (not(found) and j<len(vNext.adjacentEdges)):
 			curEdge=self.edges[vNext.adjacentEdges[j]]
 			curLabel=curEdge.label
-
+			# HIER IST IRGENDWO EIN FEHLER !!!!!!
 			if ( ((curLabel==path123) and 
 			      (curEdge.p1==self.nodes.index(vNext))) or 
 			     ((curLabel==-path123) and
@@ -975,6 +975,7 @@ def FPP_PlanarEmbedding(theGraphEditor): # (2n-4)*(n-2) GRID
 
     #-------------------------------------------------------------------------
     # MOVE VERTICES
+    theGraphEditor.SetGraphMenuGrid(0)
     n=len(graph.nodes)
     for i in range(0,n):
         xCoord=graph.nodes[i].xfpp*float(900/(2*n-4))+50
@@ -1040,6 +1041,7 @@ def Schnyder_PlanarEmbedding(theGraphEditor): # (n-1)*(n-1) GRID
 
     #-------------------------------------------------------------------------
     # MOVE VERTICES
+    theGraphEditor.SetGraphMenuGrid(0)
     n=len(graph.nodes)
     for i in range(0,n):
         xCoord=graph.nodes[i].xsch*float(900/(n-1))+50

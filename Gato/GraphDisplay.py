@@ -345,6 +345,8 @@ class GraphDisplay:
     def CreateDirectedDrawEdge(self,t,h,curved,w):
 	""" *Internal* Create an directed draw edge. t, h are Point2Ds """
 	l = sqrt((h.x - t.x)**2 + (h.y - t.y)**2)
+	if l < 0.001:
+	    l = 0.001
 	c = (l - gVertexRadius)/l - 0.001 # Dont let them quite touch 
 	# (tmpX,tmpY) is a point on a straight line between t and h
 	# not quite touching the vertex disc
