@@ -640,10 +640,11 @@ class AnimatedPredecessor(VertexLabeling):
         - coloring edges (pred[v],v) 'grey' if the value of
 	  pred[v] is changed """
 
-    def __init__(self, theAnimator, leaveColors = None):
+    def __init__(self, theAnimator, leaveColors = None, predColor='red'):
 	VertexLabeling.__init__(self)
 	self.Animator = theAnimator
 	self.leaveColors = leaveColors
+        self.predColor = predColor
 	
     def __setitem__(self, v, val):
 	try:
@@ -656,11 +657,21 @@ class AnimatedPredecessor(VertexLabeling):
 	if val != None:
 	    try:
 	        if self.leaveColors == None or not (self.Animator.GetEdgeColor(val,v) in self.leaveColors):
-	            self.Animator.SetEdgeColor(val,v,"red")
+	            self.Animator.SetEdgeColor(val,v,self.predColor)
             except:
                 pass
         VertexLabeling.__setitem__(self, v, val)
-     
+
+
+    def SetPredColor(self, color):
+        """ NOTE: This does not recolor assigned (pred[v],v) edges """
+        self.predColor = color
+
+    def AppendLeaveColor(self,color):
+        if self.leaveColors == None:
+            self.leaveColors = [color]
+        else:
+            self.leaveColors.append(color)
 
 class ComponentMaker:
     """ Subsequent calls of method NewComponent() will return differently
@@ -681,7 +692,11 @@ class ComponentMaker:
 	if self.lastColor == len(self.colors):
 	    self.lastColor = 0
 	return comp
-	
+
+    def LastComponentColor(self):
+        if self.lastColor > 0:
+            return self.colors[self.lastColor -1]
+	return None
 
 ################################################################################
 #
