@@ -34,7 +34,8 @@ class tab_frame(Tkinter.Frame):
     def change_tab(self,key):
         # change tabs
         if self.actual_tab!=None:
-            poly_list=self.tabs.find_withtag('tab_poly_'+ProbEditorBasics.key_to_tag(self.actual_tab))
+            poly_list=self.tabs.find_withtag(\
+                'tab_poly_'+ProbEditorBasics.key_to_tag(self.actual_tab))
             for item in poly_list:
                 self.tabs.itemconfigure(item,fill='')
 
@@ -220,12 +221,14 @@ class bar_chart_y(Tkinter.Canvas,flyout_decoration):
                                 bg='white',
                                 highlightthickness=0,
                                 )
+        self.create_description(prob_dict,keys)
         self.create_bars(prob_dict,keys,colors)
-        self.config_bar_height(prob_dict)
-        flyout_decoration.__init__(self,self.info_func)
         self.report_func=None
         if report_func!=None:
             self.report_func=report_func
+        self.config_bar_parameters(prob_dict)
+        self.config_bar_height(prob_dict)
+        flyout_decoration.__init__(self,self.info_func)
         self.bind('<Configure>',self.bars_configure)
 
     def info_func(self,item):
@@ -240,6 +243,23 @@ class bar_chart_y(Tkinter.Canvas,flyout_decoration):
             precision=1
         flyout_text=('%s: %s')%(key,str(round(value,precision)))
         return flyout_text
+
+    def create_description(self,prob_dict,keys):
+        text_anchor=Tkinter.W
+        i=0
+        self.text_length=0.0
+        for k in keys:
+            tag='tag_'+ProbEditorBasics.key_to_tag(k)
+            pos_y=self.y_margin+i*self.bar_step
+            text=self.create_text(self.x_margin,pos_y+self.bar_width/2,
+                                  anchor=text_anchor,
+                                  text=k,
+                                  tags=('text',tag))
+            text_box=self.bbox(text)
+            this_length=abs(text_box[0]-text_box[2])
+            if this_length>self.text_length:
+                self.text_length=this_length
+            i=i+1
 
     def create_bars(self,prob_dict,keys,colors):
         start_x=self.x_margin+self.text_length
@@ -256,12 +276,7 @@ class bar_chart_y(Tkinter.Canvas,flyout_decoration):
                                   pos_y+self.bar_width,
                                   fill=colors[i],
                                   tags=('bar','flyout_info',tag))
-            self.create_text(self.x_margin,pos_y+self.bar_width/2,
-                             anchor=text_anchor,
-                             text=k,
-                             tags=('text',tag))
             i=i+1
-
 
     def get_max_value(self):
         dict=self.get_bar_values()
@@ -298,17 +313,44 @@ class bar_chart_y(Tkinter.Canvas,flyout_decoration):
         return dict
 
     def bars_configure(self,event):
+        actual_values=self.config_bar_parameters(width=event.width)
+        self.update_bars(actual_values)
+
+    def config_bar_parameters(self,prob_dict=None,width=None):
+        # merge new values (if exist)
         actual_values=self.get_bar_values()
+        if prob_dict!=None:
+            for key in prob_dict.keys():
+                if actual_values.has_key(key):
+                    actual_values[key]=prob_dict[key]
+        old_max=self.max_value
+        # find new max value
         self.max_value=0.0
+        self.max_key=''
         for key in actual_values.keys():
-            if actual_values[key]>self.max_value: self.max_value=actual_values[key]
-        self.bar_length=event.width-self.text_length-2*self.x_margin
-        self.bar_factor=self.bar_length/self.max_value
-        self.config_bar_height(actual_values)
-        if self.report_func!=None:
-            self.report_func('scale change',None,None)
+            if actual_values[key]>self.max_value:
+                self.max_value=actual_values[key]
+                self.max_key=key
+        # set bar length (if necessary)
+        if width!=None:
+            self.bar_length=width-self.text_length-2*self.x_margin
+        if self.bar_length<100:
+            self.bar_length=100
+        # decide to change scale
+        if self.max_value>self.bar_length/self.bar_factor or \
+           self.max_value<self.bar_length/self.bar_factor/2.0:
+            # scale change
+            self.bar_factor=self.bar_length/self.max_value
+            if self.report_func!=None:
+                self.report_func('scale change',None,None)
+        else:
+            # no scale change
+            actual_values=prob_dict
+        return actual_values
 
     def config_bar_height(self,prob_dict):
+        # do real work
+        if prob_dict==None: return
         for key in prob_dict.keys():
             tag='tag_'+ProbEditorBasics.key_to_tag(key)
             items=self.find_withtag(tag)
@@ -347,6 +389,8 @@ class bar_chart_y(Tkinter.Canvas,flyout_decoration):
             text_coords=self.coords(text_item)
             self.coords(text_item,text_coords[0],pos_y+text_y)
             i=i+1
+
+#######################################################################################
 
 class e_bar_chart_y(bar_chart_y):
 
@@ -401,27 +445,63 @@ class e_bar_chart_y(bar_chart_y):
         return float((coords[2]+coords[0])/2.0-self.x_margin-self.text_length)/self.bar_factor
 
     def handle_mouse_move_start(self,event):
+        #count moves since region of maximum value
+        self.move_above=1
+        #count moves since maximum position
+        self.move_beneath=1
+        #cache information
         self.current_item=self.find_withtag(Tkinter.CURRENT)[0]
         tags=self.gettags(self.current_item)
         self.current_tag=filter(lambda tag: tag[:4]=='tag_',tags)[0]
         self.current_key=ProbEditorBasics.tag_to_key(self.current_tag[4:])
+
+        values=self.get_bar_values()
+        # for undo function
+        self.report_func('old value',self.current_key,values[self.current_key])
+
+        #find maximum value, except own value
+        keys=values.keys()
+        keys.remove(self.current_key)
+        self.other_max=0.0
+        for key in keys:
+            if values[key]>self.other_max:
+                self.other_max=values[key]
+        
+        #bind necessary motion-functions
         self.bind('<ButtonRelease-1>',self.handle_mouse_move_end)
         self.bind('<B1-Motion>',self.handle_mouse_move)
-        coords=self.coords(self.current_item)
-        old_value=self.value_from_handle_coords(coords)
-        self.report_func('old value',self.current_key,old_value)
 
     def handle_mouse_move(self,event):
         x=self.canvasx(event.x)
-        what='move'
-        if x<self.x_margin+self.text_length:
-            x=self.x_margin+self.text_length
-        elif x>self.x_margin+self.text_length+self.bar_length:
-            x=self.x_margin+self.text_length+self.bar_length
-            what='max reached'
         new_value=float(x-self.x_margin-self.text_length)/self.bar_factor
+        upper_value=float(self.bar_length)/self.bar_factor
+        if new_value<upper_value:
+            self.move_beneath+=1
+        if new_value>self.other_max:
+            self.move_above+=1
+
+        if new_value<=0:
+            new_value=0
+        elif new_value>upper_value:
+            new_value=upper_value
+            if self.move_beneath>0:
+                actual_values=self.get_bar_values()
+                self.bar_factor/=1.4142135623730951
+                self.config_bar_height(actual_values)
+                self.report_func('scale change',None,None) 
+            self.move_beneath=0
+        elif new_value<self.other_max*0.9 and \
+             self.bar_factor!=self.bar_length/self.other_max:
+            if self.move_above>0:
+                actual_values=self.get_bar_values()
+                self.bar_factor*=1.4142135623730951
+                if self.bar_factor>self.bar_length/self.other_max:
+                    self.bar_factor=self.bar_length/self.other_max
+                self.config_bar_height(actual_values)
+                self.report_func('scale change',None,None) 
+            self.move_above=0
         self.config_handle_pos({self.current_key:new_value})
-        self.report_func(what,self.current_key,new_value)
+        self.report_func('move',self.current_key,new_value)
 
     def handle_mouse_move_end(self,event):
         self.unbind('<ButtonRelease-1>')
@@ -435,6 +515,7 @@ class e_bar_chart_y(bar_chart_y):
             event.widget.configure(cursor=self.normal_cursor)
 
     def config_handle_pos(self,prob_dict):
+        if prob_dict==None: return
         for key in prob_dict.keys():
             tag='tag_'+ProbEditorBasics.key_to_tag(key)
             items=self.find_withtag(tag)
@@ -451,6 +532,10 @@ class e_bar_chart_y(bar_chart_y):
     def config_bar_height(self,prob_dict):
         bar_chart_y.config_bar_height(self,prob_dict)
         self.config_handle_pos(prob_dict)
+
+    def update_bars(self,prob_dict):
+        actual_values=self.config_bar_parameters(prob_dict)
+        self.config_bar_height(actual_values)
 
 ####################################################################################
 
@@ -530,20 +615,9 @@ class bar_chart_with_scale(Tkinter.Frame):
         empty.grid(column=1,row=0,sticky=Tkinter.E+Tkinter.W+Tkinter.N+Tkinter.S)
         Tkinter.Frame.columnconfigure(self,0,weight=1)
         Tkinter.Frame.rowconfigure(self,1,weight=1)
-        self.move_count=1
 
     def bar_report(self,what,key,value):
         if what=='move':
-            self.move_count+=1
-            return
-        if what=='max reached' and self.move_count>0:
-            actual_values=self.bars.get_bar_values()
-            self.bars.bar_factor/=2
-            self.bars.config_bar_height(actual_values)
-            self.scale.config_scale(self.bars.x_margin+self.bars.text_length,
-                                    self.bars.bar_factor,
-                                    self.bars.bar_length/self.bars.bar_factor)
-            self.move_count=0
             return
         if what=='scale change':
             self.scale.config_scale(self.bars.x_margin+self.bars.text_length,

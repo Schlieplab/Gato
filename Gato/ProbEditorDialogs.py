@@ -73,7 +73,7 @@ class combined_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
                     sum=sum+self.data.emissions[key]
                 for key in self.key_list2[1:]:
                     dict[key]=self.data.emissions[key]/sum*other_val
-            self.bars.config_bar_height(dict)
+            self.bars.update_bars(dict)
 
         self.data.emissions.update(dict)
         change=ProbEditorBasics.emission_change_data(self,self.data,dict)
@@ -156,7 +156,7 @@ class combined_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
         if change.__class__==ProbEditorBasics.emission_change_data:
             self.pie.update_position(self.data.emissions,self.key_list1)
             if len(self.key_list2)>0:
-                self.bars.config_bar_height(self.data.emissions)
+                self.bars.update_bars(self.data.emissions)
         elif change.__class__==ProbEditorBasics.emission_change_color:
             self.pie.update_colors(self.data.color_list,self.data.order_list)
             if len(self.key_list2)>0:
@@ -191,8 +191,7 @@ class bar_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
         scrollbar = Tkinter.Scrollbar(self,orient=Tkinter.VERTICAL,
                                       command=self.bars.yview)
         region=self.bars.bbox(Tkinter.ALL)
-        self.bars.config(height=300,
-                         scrollregion=region,
+        self.bars.config(scrollregion=region,
                          yscrollcommand=scrollbar.set)
 
         self.bars.pack(side=Tkinter.LEFT,expand=1,fill=Tkinter.BOTH)
@@ -200,7 +199,7 @@ class bar_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
 
     def recieve_change(self,change):
         if change.__class__==ProbEditorBasics.emission_change_data:
-            self.bars.config_bar_height(change.dict)
+            self.bars.update_bars(change.dict)
         elif change.__class__==ProbEditorBasics.emission_change_color:
             self.bars.config_bar_color(change.data.color,
                                             change.data.order_list)
@@ -229,7 +228,7 @@ class scaled_bar_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
 
     def recieve_change(self,change):
         if change.__class__==ProbEditorBasics.emission_change_data:
-            self.bars.bars.config_bar_height(change.dict)
+            self.bars.bars.update_bars(change.dict)
         elif change.__class__==ProbEditorBasics.emission_change_color:
             self.bars.bars.config_bar_color(change.data.color,
                                        change.data.order_list)
