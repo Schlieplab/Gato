@@ -62,18 +62,16 @@ class AnimatedNeighborhood:
     def __getitem__(self, i):
 	try:
 	    if (self.Animator.GetEdgeColor(self.lastEdge[0],self.lastEdge[1]) == self.travColor):
-                self.Animator.SetEdgeColor(self.lastEdge[0],self.lastEdge[1],cTraversedEdge)
+                if (self.lastColor not in self.leaveColors):
+                    self.Animator.SetEdgeColor(self.lastEdge[0],self.lastEdge[1],cTraversedEdge)
+                else:
+                    self.Animator.SetEdgeColor(self.lastEdge[0],self.lastEdge[1],self.lastColor)
         except:
             None
 	if i < len(self.nbh):
-	    c = self.Animator.GetEdgeColor(self.v,self.nbh[i])
-	    if c not in self.leaveColors:
-                self.lastEdge  = (self.v,self.nbh[i])
-   	        self.lastColor = self.Animator.GetEdgeColor(self.v,self.nbh[i])
-  	        self.Animator.SetEdgeColor(self.v,self.nbh[i],self.travColor)
-            else:
-                self.lastEdge  = None
-                self.lastColor = None
+            self.lastEdge  = (self.v,self.nbh[i])
+            self.lastColor = self.Animator.GetEdgeColor(self.v,self.nbh[i])
+  	    self.Animator.SetEdgeColor(self.v,self.nbh[i],self.travColor)
 	    if self.blinkColor != None:
 		self.Animator.BlinkEdge(self.v,self.nbh[i],self.blinkColor)
 	    return self.nbh[i]
