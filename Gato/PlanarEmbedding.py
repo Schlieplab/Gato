@@ -116,14 +116,6 @@ class pe_Edge: # directed from p1->p2
 	self.label=None # normal labelling: 1,-1,2,-2,3,-3
 	self.original=tf
 	self.outface=None
-	self.vert=None # slope=infinity
-	self.slope=None
-
-	if ep1.x==ep2.x:
-	    self.vert=1
-	else:
-	    self.slope=float(ep1.y-ep2.y)/float(ep1.x-ep2.x)
-	    self.vert=0
 #=============================================================================#
 
 
@@ -131,36 +123,6 @@ class pe_Edge: # directed from p1->p2
 #=============================================================================#
 class pe_Graph:
 
-    #-------------------------------------------------------------------------
-    def __init__(self):
-	self.nodes=[]
-	self.edges=[]
-
-	self.orderK,self.orderIndexVk=None,None
-	self.FPPk=None
-	self.labelK=None
-	self.indexV1,self.indexV2,self.indexV3=-1,-1,-1
-    #-------------------------------------------------------------------------
-
-
-    #-------------------------------------------------------------------------
-    def checkIndex(self,index, p1):
-        if index<0:
-            tempNode1=pe_Node(p1.x,p1.y)
-            self.nodes.append(tempNode1)
-            return (len(self.nodes)-1)
-        return index
-    #-------------------------------------------------------------------------
-
-
-    #-------------------------------------------------------------------------
-    def storeEdge(self,indexP1,indexP2,p1,p2,tf):
-        ep1=pe_Point(self.nodes[indexP1].xpos,self.nodes[indexP1].ypos)
-        ep2=pe_Point(self.nodes[indexP2].xpos,self.nodes[indexP2].ypos)
-        self.edges.append(pe_Edge(indexP1,indexP2,ep1,ep2,tf))
-    #-------------------------------------------------------------------------
-
-    
     #-------------------------------------------------------------------------
     def printGraph(self):
 
@@ -183,8 +145,6 @@ class pe_Graph:
 	    print "p1=",e.p1,"p2=",e.p2
 	    print "label=",e.label
 	    print "original=",e.original,"outface=",e.outface
-	    print "vert=",e.vert
-	    print "slope=",e.slope
 
 	print
 	for i in range(0,len(self.nodes)):
@@ -230,96 +190,35 @@ class pe_Graph:
     #-------------------------------------------------------------------------
 
 
-    #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    # COUNTERCLOCKWISE ODERING
-    #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
     #-------------------------------------------------------------------------
-    def getArea(self,x,y):
-	if x==0 and y>0: return 0
-	if x>0 and y>=0: return 1
-	if x>0 and y<0: return 2
-	if x==0 and y<0: return 3
-	if x<0 and y>=0: return 5
-	if x<0 and y<0: return 4
-	return -1
+    def __init__(self):
+	self.nodes=[]
+	self.edges=[]
+
+	self.orderK,self.orderIndexVk=None,None
+	self.FPPk=None
+	self.labelK=None
+	self.indexV1,self.indexV2,self.indexV3=-1,-1,-1
     #-------------------------------------------------------------------------
 
 
     #-------------------------------------------------------------------------
-    def edgeOrder(self,v,oldNode,newNode,slopeOld,slopeNew):
-	t1=oldNode.xpos-v.xpos
-	t2=newNode.xpos-v.xpos
-	t3=oldNode.ypos-v.ypos
-	t4=newNode.ypos-v.ypos
-
-	oldArea=self.getArea(t1, t3)
-	newArea=self.getArea(t2, t4)
-
-	if oldArea>newArea:
-	    return 1
-	elif oldArea<newArea:
-	    return 0
-	else: # oldArea==newArea
-	    if slopeOld<slopeNew:
-		return 1	
-	    return 0
+    def checkIndex(self,index, p1):
+        if index<0:
+            tempNode1=pe_Node(p1.x,p1.y)
+            self.nodes.append(tempNode1)
+            return (len(self.nodes)-1)
+        return index
     #-------------------------------------------------------------------------
 
 
     #-------------------------------------------------------------------------
-    def addToList(self,endPoint1,endPoint2,e,i):
-	insertPlace=-1
-	if len(endPoint1.adjacentNodes)>0:
-	    j = 0
-	    while j<len(endPoint1.adjacentNodes) and insertPlace<0:
-		# check if it should be inserted before j
-		adjEdgeIndex=endPoint1.adjacentEdges[j]
-		adjEdge=self.edges[adjEdgeIndex]
-
-		adjNodeIndex=endPoint1.adjacentNodes[j]
-		adjNode=self.nodes[adjNodeIndex]
-
-		if self.edgeOrder(endPoint1,adjNode,endPoint2,
-				  adjEdge.slope, e.slope):
-		    insertPlace=j
-		else:			
-		    j=j+1
-		
-	if insertPlace<0:
-	    endPoint1.adjacentNodes.append(self.nodes.index(endPoint2))
-	    endPoint1.adjacentEdges.append(i)
-	else:
-	    endPoint1.adjacentNodes.insert(insertPlace,
-					   self.nodes.index(endPoint2))
-	    endPoint1.adjacentEdges.insert(insertPlace,i)
+    def storeEdge(self,indexP1,indexP2,p1,p2,tf):
+        ep1=pe_Point(self.nodes[indexP1].xpos,self.nodes[indexP1].ypos)
+        ep2=pe_Point(self.nodes[indexP2].xpos,self.nodes[indexP2].ypos)
+        self.edges.append(pe_Edge(indexP1,indexP2,ep1,ep2,tf))
     #-------------------------------------------------------------------------
-
-
-    #-------------------------------------------------------------------------
-    def arrangeGraph(self):
-
-	for j in range(0,len(self.nodes)):
-	    v=self.nodes[j]
-	    v.adjacentEdges=[]
-	    v.adjacentNodes=[]
-	    
-	for i in range(0,len(self.edges)):
-	    e=self.edges[i]
-	    e.original=1
-	    endPoint1=self.nodes[e.p1]
-	    endPoint2=self.nodes[e.p2]
-
-	    # We should arrange the adjacent list in counterclockwise order
-	    # FIRST, add endPoint2 to the adjacent lists of endPoint1
-	    self.addToList(endPoint1,endPoint2,e,i)
-
-	    # Second, add endPoint1 to the adjacent lists of endPoint2
-	    self.addToList(endPoint2,endPoint1,e,i)
-    #-------------------------------------------------------------------------
-
-    #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
+    
 
 
     #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -352,7 +251,6 @@ class pe_Graph:
     def consider(self):
         for indexV in range(0,len(self.nodes)):
             v=self.nodes[indexV]
-            print "____",indexV,v.adjacentNodes
             
             if len(v.adjacentEdges)<2: continue
 
@@ -364,30 +262,28 @@ class pe_Graph:
                 if k==len(v.adjacentEdges): k=0
                 indexW=self.adjacentVertex(v,k)
                 w=self.nodes[indexW]
-                print indexU,indexW
 
                 # check if (u, w) is an edge
                 if not(self.isEdge(u,indexW)):
-                    print "kein Edge"
                     pointu=pe_Point(u.xpos,u.ypos)
 		    pointw=pe_Point(w.xpos,w.ypos)
 		    self.storeEdge(indexU,indexW,pointu, pointw,0)
-		    self.arrangeGraph()
-##		    tempi1=indexV
-##		    tempe1=len(self.edges)-1
-##
-##	   	    # add u to w's adjacentEdges (with ordering)
-##		    # add u after v in w's adjacentEdges
-##                    indexVinW=w.adjacentNodes.index(tempi1)+1
-##		    w.adjacentEdges.insert(indexVinW,tempe1)
-##		    w.adjacentNodes.insert(indexVinW,indexU)
-##
-##	   	    # add w to u's incitentList (with ordering)
-##		    # add w before v in u's adjacentEdges
-##		    indexVinU=u.adjacentNodes.index(tempi1)
-##		    u.adjacentEdges.insert(indexVinU,tempe1)
-##		    u.adjacentNodes.insert(indexVinU,indexW)
-##			
+	
+		    tempi1=indexV
+		    tempe1=len(self.edges)-1
+
+	   	    # add u to w's adjacentEdges (with ordering)
+		    # add u after v in w's adjacentEdges
+                    indexVinW=w.adjacentNodes.index(tempi1)+1
+		    w.adjacentEdges.insert(indexVinW,tempe1)
+		    w.adjacentNodes.insert(indexVinW,indexU)
+
+	   	    # add w to u's incitentList (with ordering)
+		    # add w before v in u's adjacentEdges
+		    indexVinU=u.adjacentNodes.index(tempi1)
+		    u.adjacentEdges.insert(indexVinU,tempe1)
+		    u.adjacentNodes.insert(indexVinU,indexW)
+			
 		    # Don't forget to set original=0
                     self.edges[-1].original=0
 			
@@ -754,80 +650,56 @@ class pe_Graph:
 
     
 #=============================================================================#
+# LOAD GRAPH
 
-
-
-#=============================================================================#
-def loadGraph(self):
-# Preconditions:
-# 1. graph is planar
-# 2. graph is connected
-# 3. the adjacentEdges is ordered counterclockwise(ccw)
-
-    #-------------------------------------------------------------------------
-    # 1. PLANARITY TEST
-    if self.G.Order()<3:
+def load_graph(InGraph):
+    
+    if InGraph.Order()<3:
         return 0
-    if not(planarity_test(self)):
+    
+    ccwOrderedEdges=planarity_test(InGraph)
+    if not(ccwOrderedEdges):
         showinfo("Planarity Test", "Graph is NOT PLANAR!")
         return 0
-    #-------------------------------------------------------------------------
 
+    graph1=pe_Graph()
 
-    #-------------------------------------------------------------------------
-    # 2. MAKING THE GRAPH CONNECTED
-    H=deepcopy(self.G)
-    H.Undirect()
-    reached={}
-    for v in H.vertices:
-    	reached[v]=0
-    u=H.vertices[0]
+    i=0
+    NodeIndex={}
+    for v in InGraph.vertices:
+        NodeIndex[v]=i
+        i=i+1
+    
+    for i in range(0,InGraph.Order()):
+        graph1.nodes.append(pe_Node(i,i))
 
-    for v in H.vertices:
-	if  not(reached[v]):
-	    # explore the connected component with root v
-	    S=Stack()
-	    if reached[v]==0:
-		reached[v]=1
-		S.Push(v)
-	    while S.IsNotEmpty():
-		t=S.Pop()
-		for w in H.Neighborhood(t):
-		    if reached[w]==0:
-			reached[w]=1
-			S.Push(w)
-	    if u!=v:
-		# link v's component to the first component
-		H.AddEdge(u,v)
+    EdgeIndex={}
+    for i in range(0,len(ccwOrderedEdges)):
+        n1=NodeIndex[ccwOrderedEdges[i][0]]
+        n2=NodeIndex[ccwOrderedEdges[i][1]]
+        ccwOrderedEdges[i]=(n1,n2)
+        EdgeIndex[(n1,n2)]=None
 
-    graph=pe_Graph()
-    for v in H.vertices:
-        tempn1=pe_Node(self.VertexPosition(v)[0],self.VertexPosition(v)[1])
-        graph.nodes.append(tempn1)
+    i=0
+    for e in ccwOrderedEdges:
+        if EdgeIndex[e]==None:
+            EdgeIndex[e]=i
+            EdgeIndex[(e[1],e[0])]=i
+            i=i+1
+            p1=pe_Point(e[0],e[0])
+            p2=pe_Point(e[1],e[1])
+            tempe1=pe_Edge(e[0],e[1],p1,p2,1)
+            graph1.edges.append(tempe1)
 
-    for e in H.Edges():
-        p1=pe_Point(self.VertexPosition(e[0])[0],self.VertexPosition(e[0])[1])
-        p2=pe_Point(self.VertexPosition(e[1])[0],self.VertexPosition(e[1])[1])
-	n1=H.vertices.index(e[0])
-	n2=H.vertices.index(e[1])
-        tempe1=pe_Edge(n1,n2,p1,p2,1)
-	graph.edges.append(tempe1)
-    #-------------------------------------------------------------------------
+        graph1.nodes[e[0]].addEdge(EdgeIndex[e],e[1])
 
-
-    #-------------------------------------------------------------------------
-    # 3. COUNTERCLOCKWISE ORDERING
-    graph.arrangeGraph()
-    #-------------------------------------------------------------------------
-
-    return graph
-
+    return graph1
 #=============================================================================#
 
 
 
 #=============================================================================#
-def FPP_PlanarEmbedding(self): # (2n-4)*(n-2) GRID
+def FPP_PlanarEmbedding(theGraphEditor): # (2n-4)*(n-2) GRID
 # Algorithm: 
 # 1. Triangulate orginal graph
 # 2. Canonical order all vertices
@@ -845,7 +717,8 @@ def FPP_PlanarEmbedding(self): # (2n-4)*(n-2) GRID
 #                               wj.M=wj.M  for j>=q
 
     #-------------------------------------------------------------------------
-    graph=loadGraph(self)
+    # LOAD GRAPH
+    graph=load_graph(theGraphEditor.G)
     if graph==0: return
     #-------------------------------------------------------------------------
 
@@ -874,8 +747,8 @@ def FPP_PlanarEmbedding(self): # (2n-4)*(n-2) GRID
     n=len(graph.nodes)
     for i in range(0,n):
         xCoord=graph.nodes[i].xfpp*float(900/(2*n-4))+50
-        yCoord=graph.nodes[i].yfpp*float(900/(n-2))+50
-        self.MoveVertex(self.G.vertices[i],xCoord,yCoord,1)
+        yCoord=900-(graph.nodes[i].yfpp*float(900/(n-2))+50)
+        theGraphEditor.MoveVertex(theGraphEditor.G.vertices[i],xCoord,yCoord,1)
     #-------------------------------------------------------------------------
     
 #=============================================================================#

@@ -232,7 +232,7 @@ class pt_graph:
 
     def sort_edges(self, cost):
         def up(x,y):
-            if x[1]<=y[1]: return -1
+            if x[1]<y[1]: return -1
             if x[1]==y[1]: return 0
             return 1
         sorted_list=cost.items()
@@ -388,37 +388,71 @@ lowpt1={}
 lowpt2={}
 alpha={}
 Att=[]
+cur_nr=0
+sort_num={}
+tree_edge_into={}
 #=============================================================================#
 
 
 
 #=============================================================================#
-def planarity_test(self):
+def planarity_test(Gin):
 # planarity_test decides whether the InputGraph is planar.
-        
-    Gin=deepcopy(self.G)
-    Gin.Undirect()
+# it also order the adjecentLists in counterclockwise.
+
     n=Gin.Order() # number of nodes
-    if n<=3: return 1
+    if n<3: return 1
     if Gin.Size()>6*n-12: return 0
 
     #--------------------------------------------------------------
     # make G a copy of Gin and make G bidirected
     
-    global G
+    global G,cur_nr
     G=pt_graph()
     
     for v in Gin.vertices:
         G.new_node(v)
     for e in Gin.Edges():
         G.new_edge(source(e),target(e))
-        G.new_edge(target(e),source(e))
+
+    cur_nr=0
+    nr={}
+    cost={}
+    n=G.number_of_nodes()
+    for v in G.all_nodes():
+        nr[v]=cur_nr
+        cur_nr=cur_nr+1
+    for e in G.all_edges():
+        if nr[source(e)] < nr[target(e)]:
+            cost[e]=n*nr[source(e)] + nr[target(e)]
+        else:
+            cost[e]=n*nr[target(e)] + nr[source(e)]
+    G.sort_edges(cost)
+
+    L=List(G.all_edges())
+    while not(L.empty()):
+        e=L.pop()
+        if (not(L.empty()) and source(e)==target(L.head())
+            and source(L.head())==target(e)):
+            L.pop()
+        else:
+            G.new_edge(target(e),source(e))
     #--------------------------------------------------------------
 
 
     #--------------------------------------------------------------    
     # make G biconnected
     Make_biconnected_graph()
+    #--------------------------------------------------------------
+
+
+    #--------------------------------------------------------------
+    # make H a copy of G
+    #
+    # We need the biconnected version of G (G will be further modified
+    # during the planarity test) in order to construct the planar embedding.
+    # So we store it as a graph H.
+    H=deepcopy(G)
     #--------------------------------------------------------------
 
 
@@ -442,10 +476,36 @@ def planarity_test(self):
 
     if not(strongly_planar(G.first_adj_edge(G.first_node()),Att)):
 	return 0
-    else:
-	return 1
+    #--------------------------------------------------------------
+
+
+    #--------------------------------------------------------------
+    # construct embedding
+
+    global sort_num,tree_edge_into
+
+    T=List()
+    A=List()
+
+    cur_nr=0
+    sort_num={}
+    tree_edge_into={}
+    
+    embedding(G.first_adj_edge(G.first_node()),left,T,A)
+
+    # |T| contains all edges incident to the first node except the
+    # cycle edge into it. 
+    # That edge comprises |A|.
+    T.conc(A)
+    
+    for e in T.elements:
+        sort_num[e]=cur_nr 
+        cur_nr=cur_nr+1 
+
+    H.sort_edges(sort_num)  
     #--------------------------------------------------------------
     
+    return H.all_edges() # ccwOrderedEges
     
 #=============================================================================#
 
@@ -615,7 +675,7 @@ def reorder():
 #=============================================================================#
 def dfs_in_reorder(v):
 
-    global dfsnum,parent,reached,dfs_count,Del,lowpt1,lowpt2
+    global G,dfsnum,parent,reached,dfs_count,Del,lowpt1,lowpt2
     
     #--------------------------------------------------------------    
     dfsnum[v]=dfs_count
@@ -669,14 +729,14 @@ def strongly_planar(e0,Att):
 #
 # strongly_planar operates in three phases.
 # It first constructs the cycle C(e0) underlying the segment S(e0). 
-# It then constructs the interlacing graph for the segments emanating >from the
+# It then constructs the interlacing graph for the segments emanating from the
 # spine of the cycle.
 # If this graph is non-bipartite then the segment S(e0) is non-planar.
 # If it is bipartite then the segment is planar.
 # In this case the third phase checks whether the segment is strongly planar 
 # and, if so, computes its list of attachments.
 
-    global alpha,dfsnum,parent
+    global G,alpha,dfsnum,parent
     
     #--------------------------------------------------------------
     # DETERMINE THE CYCLE C(e0)
@@ -688,7 +748,7 @@ def strongly_planar(e0,Att):
     y=target(e0)
     e=G.first_adj_edge(y)
     wk=y
-
+    
     while dfsnum[target(e)]>dfsnum[wk]:  # e is a tree edge
         wk=target(e)
         e=G.first_adj_edge(wk)
@@ -824,8 +884,101 @@ def strongly_planar(e0,Att):
 
 
 
+#=============================================================================#
+def embedding(e0,t,T,A):
+# embed: determine the cycle "C(e0)" 
+#
+# We start by determining the spine cycle.
+# This is precisley as in |strongly_planar|. 
+# We also record for the vertices w_r+1, ...,w_k, and w_0 the 
+# incoming cycle edge either in |tree_edge_into| or in the local
+# variable |back_edge_into_w0|.
+
+    global G,dfsnum,cur_nr,sort_num,tree_edge_into,parent
+    
+    x=source(e0)
+    y=target(e0)
+    tree_edge_into[y]=e0
+    e=G.first_adj_edge(y)
+    wk=y
+
+    while (dfsnum[target(e)]>dfsnum[wk]):  # e is a tree edge
+        wk=target(e)
+        tree_edge_into[wk]=e
+        e=G.first_adj_edge(wk)
+
+    w0=target(e)
+    back_edge_into_w0=e
 
 
+    # process the subsegments
+    w=wk
+    Al=List()
+    Ar=List()
+    Tprime=List()
+    Aprime=List()
+
+    T.clear()  
+    T.append(e)    # |e=(wk,w0)| at this point
+
+    while w!=x:
+        count=0
+        for e in G.adj_edges(w):
+            count=count+1
+            if count!=1: # no action for first edge
+                # embed recursively
+                if dfsnum[w]<dfsnum[target(e)]:
+                    # tree edge
+                    if t==alpha[e]:
+                        tprime=left
+                    else:
+                        tprime=right
+                    embedding(e,tprime,Tprime,Aprime)
+                else: 	
+                    # back edge
+                    Tprime.append(e)
+                    Aprime.append(reversal(e))
+
+                # update lists |T|, |Al|, and |Ar|
+                if t==alpha[e]:
+                    Tprime.conc(T)
+                    T.conc(Tprime) # T = Tprime conc T
+                    Al.conc(Aprime) # Al = Al conc Aprime
+                else:	
+                    T.conc(Tprime) # T = T conc Tprime
+                    Aprime.conc(Ar)
+                    Ar.conc(Aprime) # Ar = Aprime conc Ar
+    
+        # compute |w|'s adjacency list and prepare for next iteration
+        T.append(reversal(tree_edge_into[w])) # (w_j-1,w_j)
+        for e in T.elements:
+            sort_num[e]=cur_nr
+            cur_nr=cur_nr+1
+
+        # |w|'s adjacency list is now computed; we clear |T| and 
+        # prepare for the next iteration by moving all darts incident
+        # to |parent[w]| from |Al| and |Ar| to |T|.
+        # These darts are at the rear end of |Al| and at the front end
+        # of |Ar|.
+        T.clear()
+    
+        while not(Al.empty()) and source(Al.tail())==parent[w]: 
+        # |parent[w]| is in |G|, |Al.tail| in |H|
+            T.push(Al.Pop()) # Pop removes from the rear
+
+        T.append(tree_edge_into[w]) # push would be equivalent
+
+        while not(Ar.empty()) and source(Ar.head())==parent[w]: 
+            T.append(Ar.pop()); # pop removes from the front
+
+        w=parent[w]
+    
+    # prepare the output
+    A.clear()
+    A.conc(Ar)
+    A.append(reversal(back_edge_into_w0))
+    A.conc(Al)
+#=============================================================================#
 
 
 
@@ -859,12 +1012,6 @@ def PrintGraph(G):
         print "[%i] : " %(v-1)
         for e in G.adj_edges(v):
             print "    [%i]---->[%i]" %((source(e)-1),(target(e)-1))
-    print
-    
-    for v in G.all_nodes():
-        print "[%i] : " %(v-1)
-        for e in G.in_edges(v):
-            print "    [%i]---->[%i]" %((target(e)-1),(source(e)-1))
     print
 #=============================================================================#
 
