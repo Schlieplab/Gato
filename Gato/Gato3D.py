@@ -59,6 +59,16 @@ from GraphDisplay3D import GraphDisplay3DToplevel
 from GraphDisplay import GraphDisplayToplevel
 from GatoUtil import *
 from GatoGlobals import *
+
+
+cVertexDefault    = "red"
+cVertexBlink      = "black"
+cEdgeDefault      = "black"
+cLabelDefault     = "black"
+cLabelDefaultInverted = "white"
+cLabelBlink       = "green"
+
+
 from GatoDialogs import AboutBox, SplashScreen, HTMLViewer
 import GatoIcons
 

@@ -828,14 +828,14 @@ class ReducedCostsWrapper:
 
     def __setitem__(self, e, val):
         self.cost[e] = val
-        rc = self.cost[e] - self.pot[e[0]] + self.pot[e[1]]
+        rc = self.cost[e] + self.pot[e[0]] - self.pot[e[1]]
 	try:
             if rc > 0:
-                self.A.SetEdgeColor(e[0],e[1],"green")
+                self.A.SetEdgeColor(e[0],e[1],"red")
             elif rc == 0:
                 self.A.SetEdgeColor(e[0],e[1],"grey")
             else:
-                self.A.SetEdgeColor(e[0],e[1],"red")
+                self.A.SetEdgeColor(e[0],e[1],"green")
         except:
             None
 
