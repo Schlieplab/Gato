@@ -206,7 +206,20 @@ class ContainerWrapper(BlinkingContainerWrapper):
 	    return item
 	else:
 	    raise IndexError
-                         
+
+class VisibleVertexLabeling(VertexLabeling):
+    def __init__(self, theAnimator):
+        VertexLabeling.__init__(self)
+        self.A = theAnimator
+
+    def __setitem__(self, v, val):
+	VertexLabeling.__setitem__(self, v, val)
+	if val == gInfinity:
+            val = "Infinity"
+        elif val == -gInfinity:
+            val = "-Infinity"
+        self.A.SetVertexAnnotation(v,val)
+
 
 class AnimatedVertexLabeling(VertexLabeling):
     """ Visualizes changes of values of the VertexLabeling
@@ -234,6 +247,7 @@ class AnimatedVertexLabeling(VertexLabeling):
 	    self.Animator.SetVertexColor(v,cInitial)
 	else:
 	    self.Animator.SetVertexColor(v,"blue") #cVisited)
+
 
 class AnimatedSignIndicator:
     """ Visualizes sign of vertex or edge:
@@ -621,7 +635,6 @@ class FlowWrapper:
         or
 
         flow = FlowWrapper(G,A,R,RA,G.edgeWeights[0],R.edgeWeights[0],G.vertexWeights[0])
-
     """
     def __init__(self,  G, GA, R, RA, flow, res, excess=None, cost=None):
         self.G      = G
@@ -694,3 +707,30 @@ class FlowWrapper:
     def __getitem__(self, e):
         return self.flow[e]
 
+
+class ReducedCostsWrapper:
+    """ Visualizes the reduced costs of the edge
+        >0 green
+        =0 grey
+        <0 red 
+    """
+    def __init__(self, A, cost, pot):
+        self.cost = cost
+        self.pot = pot
+        self.A = A
+
+    def __setitem__(self, e, val):
+        self.cost[e] = val
+        rc = cost[e] - pot[e[0]] + pot[e[1]]
+	try:
+            if rc > 0:
+                self.A.SetEdgeColor(e[0],e[1],"green")
+            elif rc == 0:
+                self.A.SetEdgeColor(e[0],e[1],"grey")
+            else:
+                self.A.SetEdgeColor(e[0],e[1],"red")
+        except:
+            None
+
+    def __getitem__(self, e):
+        return self.cost[e]
