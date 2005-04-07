@@ -598,6 +598,12 @@ class AnimatedSubGraph(SubGraph):
             self.Animator.DefaultInfo()
         except NoSuchVertexError, NoSuchEdgeError:
             return
+
+    def RaiseEdges(self):
+        for (t,h) in self.Edges():
+            tt, hh = self.superGraph.Edge(t,h)
+            self.Animator.RaiseEdge(tt,hh)
+            
             
     def DeleteEdge(self,edge,head=None):
         if head == None and len(edge) == 2:
