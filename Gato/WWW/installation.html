@@ -1,0 +1,104 @@
+<html>
+<head>
+<title>Gato: Graph Animation Toolbox</title>
+</head>
+<style type="text/css" media="all">
+@import "layout1.css" screen;
+@import "print.css" print;
+</style>
+<div id="Content">
+
+<H1>Gato: Installation</H1>
+
+
+<h3>Requirements</H3>
+<ul>
+<li> <a href="http://www.python.org">Python</a> version 2.3 or above
+<li> <a href="http://www.scriptics.org">Tk</A> version 8.1 or above
+<li> Tkinter module enabled in Python
+</ul>
+
+
+<h3>Linux</h3>
+
+<p>Most distributions come with Python installed. You can check that you are all set up
+<pre>
+  /home/schliep> python2.3 
+  Python 2.3.3 (#1, Apr  6 2004, 01:47:39) 
+  [GCC 3.3.3 (SuSE Linux)] on linux2
+  Type "help", "copyright", "credits" or "license" for more information.
+  >>> import Tkinter
+  >>> t = Tkinter.Tk()
+  >>> 
+</pre>
+Ctrl-D exists the Python shell. If there are problems, or you only have an outdated Python version available install Python and Tkinter packages with the package manager for your distribution.</p>
+
+<p>If your Python is set-up download Gato, unpack it and execute either Gato.py or Gred.py by evoking
+<pre>
+  you@yourbox> python2.3 Gato.py
+</pre>
+You can also manually create symlinks as follows. Make Gato and Gred
+executable for everybopd by changing the protections. Make sure that
+the directory where they reside has the right execute and read
+permissions and that the read permissions for all files in the
+directory are correct (A umask 022 before unpacking helps)
+<pre>
+  > chmod 755 Gato.py Gred.py
+</pre>
+Create symbolic links to the executables in a directory contained in
+your path with
+<pre>
+  > cd dir_on_path
+  > ln -s /whereever_you_put_gato/Gato.py gato 
+  > ln -s /whereever_you_put_gato/Gred.py gred
+</pre>
+so all users on the system can use gato and gred without worrying
+about paths or gato's files cluttered in all kinds of directories.
+</p>
+
+
+<H3>MacOS X</H3>
+
+<p>Version 10.3 and above come with Python 2.3 installed. The missing
+Tkinter and Tk package can be easily installed using the Package
+Manager included in
+<a href="http://ftp.cwi.nl/jack/python/mac/MacPython-Panther-2.3-2.dmg">
+MacPython 2.3 for Panther addons</A> from <A
+href="http://homepages.cwi.nl/~jack/macpython/">MacPython</A>.</p>
+
+<p>We also make a download available of Gato.app which runs directly on MacOS X 10.3 and above. Check the <a href="downloads.html">Download</A> page.</P>
+
+<p>If you want to use X11 on MacOS X and a Python installed using Fink
+or Darwinports, you can check whether you are all set up using example
+under the Linux instructions.</P>
+
+
+<h3>Windows</h3>
+
+<p>On <a
+href="http://www.python.org/download/">http://www.python.org/download/</A>
+you can find a one (well, multiple) click installer which installs
+everything you need. After you have downloaded Gato and unpacked
+everything double-clicking Gato.py should start the software.</p>
+
+
+
+
+
+</div>
+
+<div id="Menu">
+        <a href="index.html" title="">Gato Home</a><br />
+        <a href="screenshots.html" title="">Screenshots</a><br />
+        <a href="download.html" title="">Download</a><br />
+        <a href="installation.html" title="">Installation</a><br />
+        <a href="documentation.html" title="">Documentation</a><br />
+        <a href="support.html" title="">Support</a><br/>
+        <a href="contributors.html" title="">Contributors</a><br />
+<p>&nbsp;</p>
+<p>Algorithms</p>
+        <a href="shortest_path.html" title="">Shortest Path</a><br />
+</div>
+
+</body>
+</html>

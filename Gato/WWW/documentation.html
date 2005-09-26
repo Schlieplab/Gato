@@ -1,0 +1,89 @@
+<html>
+<head>
+<title>Gato: Graph Animation Toolbox</title>
+</head>
+<style type="text/css" media="all">
+@import "layout1.css" screen;
+@import "print.css" print;
+</style>
+<div id="Content">
+<h1>Gato: Documentation</h1>
+
+<h3>For Developers</h3>
+
+<p>We have quite a lot of comments in the source and
+HTML-documentation generated with HappyDoc. See our <A
+href="http://gato.sourceforge.net/Documentation/Internal/index.html">internal
+documentation</a>.</p>
+
+
+<h3>Visualisation How-To</h3>
+
+<p><b>Concept:</b> All visualisation in Gato happens automatically based
+upon edges or vertices of the graph changing their status with respect
+to data structures used in an algorithm.</p>
+
+<p><b>Files</b>: Algorithms are supplied in two files: The prolog
+(*.pro) and the actual algorithm implementation visible to the user
+(*.alg).  The prolog contains declaration which allow for 'nicer' code
+in the algorithm, subroutines specific to the algorithm which should
+not be visible to the user, variables, and a proper setup of the
+animation engine.</p>
+
+<p><b>Before running</b>: Making sure we have the right graph If you
+have a statement like self.NeededProperties({propName1:value1,
+propName2:value2,...]})  Gato will check that the graph the user
+selected has the specified values for all the properties in the
+dictionary.  Note, this is currently not supported by Gato's file
+format.</p>
+
+<p><b>Setting breakpoints</b>: With
+<pre>
+  self.SetBreakpoints([7,9,2])
+</pre>
+you can switch on breakpoints at educationally sensible points of the
+algorithm.</p>
+
+<p><b>Using Animated Data Structures</b>: Typical data structures like
+stacks and queues etc. have animated counter parts. If you say
+<pre>
+  Q = AnimatedVertexQueue()
+</pre>
+putting a vertex v on the queue
+<pre>
+  Q.Append(v)
+</pre>
+will color it in the color cColorOnQueue (defined in GatoGlobals.py)
+and removing it with the command
+<pre>
+  v = Q.Top()
+</pre>
+will color it in the color cRemovedFromQueue.  So an ordinary
+breadth-first-search will give you a reasonable visualisation just by
+replacing the Queue by an AnimatedVertexQueue.</p>
+
+<p><b>Interacting with the user</b>: You can the user allow to select a vertex or an edge by calling
+<pre>
+  v = self.PickVertex()
+  e = self.PickEdge()
+</pre>
+These functions take an optional argument for a callback function.</p>
+
+
+</div>
+
+<div id="Menu">
+        <a href="index.html" title="">Gato Home</a><br />
+        <a href="screenshots.html" title="">Screenshots</a><br />
+        <a href="download.html" title="">Download</a><br />
+        <a href="installation.html" title="">Installation</a><br />
+        <a href="documentation.html" title="">Documentation</a><br />
+        <a href="support.html" title="">Support</a><br/>
+        <a href="contributors.html" title="">Contributors</a><br />
+<p>&nbsp;</p>
+<p>Algorithms</p>
+        <a href="shortest_path.html" title="">Shortest Path</a><br />
+</div>
+
+</body>
+</html>
