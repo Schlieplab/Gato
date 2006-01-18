@@ -170,7 +170,16 @@ class Graph:
             return head in self.adjLists[tail]
         else: 
             return (head in self.adjLists[tail]) or (tail in self.adjLists[head])
-            
+
+
+    def QEdgeWidth(self):
+        """ Returns 1 if individual edge widths are defined, 0 else """
+        return self.edgeWidth != None
+        
+
+    def EdgeWidth(self, tail, head):
+        return self.edgeWidth[(tail,head)]
+    
             
     def Neighborhood(self,v):
         """ Returns the vertices which are connected to v. Does handle
@@ -299,10 +308,34 @@ class Graph:
             
     def NrOfEdgeWeights(self):
         return len(self.edgeWeights.keys())
-        
+
+    def SetEdgeWeight(self,i,v,w,value):
+        self.edgeWeights[i][(v,w)] = value
+
+    def GetEdgeWeight(self,i,v,w):
+        return self.edgeWeights[i][(v,w)]
+
     def NrOfVertexWeights(self):
         return len(self.vertexWeights.keys())
-        
+
+    def SetVertexWeight(self,i,v,value):
+        self.vertexWeights[i][v] = value
+
+    def GetVertexWeight(self,i,v):
+        return self.vertexWeights[i][v]
+
+    def GetLabeling(self,v):
+        return self.labeling[v]
+    
+    def SetLabeling(self,v, value):
+        self.labeling[v] = value
+
+    def GetEmbedding(self,v):
+        return self.embedding[v]
+    
+    def SetEmbedding(self,v, x, y):
+        self.embedding[v] = Point2D(x,y)
+                  
     def Euclidify(self):
         """ Replace edge weights with weightID = 0 with Euclidean distance 
             between incident vertices """

@@ -193,10 +193,8 @@ class GraphEditor(GraphDisplay):
         if e!=None:
             infoString = "Edge (%d,%d)" % (e[0], e[1]) 
         elif v!=None:
-        
-            infoString = "Vertex %d at position (%d,%d)" % (v, 
-                                                            self.embedding[v].x, 
-                                                            self.embedding[v].y)
+            t = self.G.GetEmbedding(v)
+            infoString = "Vertex %d at position (%d,%d)" % (v, t.x, t.y)
         elif x>=0 and y>=0:
             x,y = self.CanvasToEmbedding(x,y)
             infoString = "(%d,%d)" % (x,y)

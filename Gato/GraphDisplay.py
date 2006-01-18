@@ -168,7 +168,7 @@ class GraphDisplay:
                             (6*self.zoomFactor)  / 100.0)
         self.zFontSize = max(7,int((self.gFontSize*self.zoomFactor) / 100.0))
         
-        for v in self.G.vertices:
+        for v in self.G.Vertices():
             dv = self.drawVertex[v]
             oldVertexFrameWidth = self.canvas.itemcget(dv, "width")
             newVertexFrameWidth = float(oldVertexFrameWidth) * factor
@@ -282,10 +282,7 @@ class GraphDisplay:
         
             NOTE: We need both a proper embedding and a labelling
             XXX: Fix (Randomize embedding, identity labeling if none given """
-        self.G          = G
-        self.embedding  = G.embedding # Assuming 0 < x < 1000 and 0 < y < 1000
-        self.Labeling   = G.labeling
-        self.directed   = G.QDirected()
+        self.G = G
         
         if self.hasGraph == 1:
             self.DeleteDrawItems()
@@ -313,16 +310,18 @@ class GraphDisplay:
         
     def CreateDrawItems(self):
         """ *Internal* Create items on the canvas """
-        for v in self.G.vertices:
+        for v in self.G.Vertices():
             for w in self.G.OutNeighbors(v):
                 self.drawEdges[(v,w)] = self.CreateDrawEdge(v,w)
-                
-        for v in self.G.vertices:
-            x = self.embedding[v].x * self.zoomFactor / 100.0
-            y = self.embedding[v].y * self.zoomFactor / 100.0
+
+        # We want the vertices in front of the edges, so we paint
+        # all edges first
+        for v in self.G.Vertices():
+            t = self.G.GetEmbedding(v)
+            x = t.x * self.zoomFactor / 100.0
+            y = t.y * self.zoomFactor / 100.0
             self.drawVertex[v] = self.CreateDrawVertex(v,x,y)
-            
-        for v in self.G.vertices:
+
             self.drawLabel[v] = self.CreateDrawLabel(v)
             
             
@@ -374,7 +373,8 @@ class GraphDisplay:
             determined by the embedding unless explictely passed as x,y in
             canvas coordinates """
         if x == None and y == None:
-            x,y = self.EmbeddingToCanvas(self.embedding[v].x, self.embedding[v].y)
+            t = self.G.GetEmbedding(v)
+            x,y = self.EmbeddingToCanvas(t.x, t.y)
         d = self.zVertexRadius
         w = (self.gVertexFrameWidth*self.zoomFactor) / 100.0
         dv = self.canvas.create_oval(x-d, y-d, x+d, y+d, 
@@ -402,7 +402,7 @@ class GraphDisplay:
                                      anchor="center", 
                                      justify="center", 
                                      font=self.font(self.zFontSize),
-                                     text=self.Labeling[v], 
+                                     text=self.G.GetLabeling(v), 
                                      fill=self.cLabelDefault,
                                      tag="labels")
         self.canvas.tag_bind(dl, "<Any-Enter>", self.VertexInfo)
@@ -497,26 +497,26 @@ class GraphDisplay:
         t = self.VertexPosition(tail)
         h = self.VertexPosition(head)
         
-        if self.G.edgeWidth == None:
+        if not self.G.QEdgeWidth():
             w = (self.gEdgeWidth * self.zoomFactor) / 100.0
         else:
-            w = (self.G.edgeWidth[(tail,head)] * self.zoomFactor) / 100.0
+            w = (self.G.EdgeWidth(tail,head) * self.zoomFactor) / 100.0
             
-        if self.directed == 1:
+        if self.G.QDirected() == 1:
             if tail == head:
                 de = self.CreateDirectedLoopDrawEdge(t,w)		
             else:
-                if tail in self.G.adjLists[head]:
+                if tail in self.G.OutNeighbors(head):
                     # Remove old straight de for other direction ... 
                     try:
                         oldColor = self.canvas.itemconfig(self.drawEdges[(head,tail)],
                                                           "fill")[4] # Should call GetEdgeColor
                         self.canvas.delete(self.drawEdges[(head,tail)])
                         # ... and create a new curved one
-                        if self.G.edgeWidth == None:
+                        if not self.G.QEdgeWidth():
                             wOld = (self.gEdgeWidth * self.zoomFactor) / 100.0
                         else:
-                            wOld = (self.G.edgeWidth[(head,tail)] * self.zoomFactor) / 100.0
+                            wOld = (self.G.EdgeWidth(head,tail) * self.zoomFactor) / 100.0
                         de = self.CreateDirectedDrawEdge(h,t,1,wOld)
                         self.canvas.itemconfig(de, fill=oldColor) # Should call SetEdgeColor
                         self.drawEdges[(head,tail)] = de
@@ -649,7 +649,7 @@ class GraphDisplay:
     def SetEdgeColor(self, tail, head, color):
         """ Change color of (tail,head) to color. No error checking! 
             Handles undirected graphs. """
-        if self.directed == 1:
+        if self.G.QDirected() == 1:
             de = self.drawEdges[(tail,head)]
         else:
             try:
@@ -690,7 +690,7 @@ class GraphDisplay:
             undirected graphs. """	
         if color is None: # No self in default arg
             color=self.cVertexBlink
-        if self.directed == 1:
+        if self.G.QDirected() == 1:
             de = self.drawEdges[(tail,head)]
         else:
             try:
@@ -812,11 +812,11 @@ class GraphDisplay:
                 self.update()
                 self.canvas.itemconfig( dl,
                                         font=self.font(self.zFontSize),
-                                        text=self.Labeling[v])
+                                        text=self.G.GetLabeling(v))
         else:
             self.canvas.itemconfig( dl,
                                     font=self.font(self.zFontSize),
-                                    text=self.Labeling[v])
+                                    text=self.G.GetLabeling(v))
             self.update()
             
             
@@ -848,9 +848,8 @@ class GraphDisplay:
             return
             
         if self.graphInformer == None:
-            infoString = "Vertex %d at position (%d,%d)" % (v, 
-                                                            self.embedding[v].x, 
-                                                            self.embedding[v].y)
+            t = self.G.GetEmbedding(v)             
+            infoString = "Vertex %d at position (%d,%d)" % (v, t.x, t.y)
         else:
             infoString = self.graphInformer.VertexInfo(v)
         self.UpdateInfo(infoString)
@@ -926,11 +925,13 @@ class GraphDisplay:
         pathID = tuple(path)
         coords = ()
         for v in path:
-            coords += (self.embedding[v].x * self.zoomFactor / 100.0,
-                       self.embedding[v].y * self.zoomFactor / 100.0)
+            t = self.G.GetEmbedding(v)           
+            coords += (t.x * self.zoomFactor / 100.0,
+                       t.y * self.zoomFactor / 100.0)
         if closed:
-            coords += (self.embedding[path[0]].x * self.zoomFactor / 100.0,
-                       self.embedding[path[0]].y * self.zoomFactor / 100.0)
+            t = self.G.GetEmbedding(path[0])
+            coords += (t.x * self.zoomFactor / 100.0,
+                       t.y * self.zoomFactor / 100.0)
         c = self.canvas.create_line(coords, tag="highlight", fill=color,
                                     width = 16)
         
@@ -957,12 +958,12 @@ class GraphDisplay:
             v = self.G.AddVertex()
         else:
             self.G.AddVertex(v)
-        self.embedding[v]  = Point2D(x,y)
-        self.Labeling[v]   = v
+        self.G.SetEmbedding(v,x,y)
+        self.G.SetLabeling(v, v)
         self.drawVertex[v] = self.CreateDrawVertex(v)
         self.drawLabel[v]  = self.CreateDrawLabel(v)
         for i in xrange(0,self.G.NrOfVertexWeights()):
-            self.G.vertexWeights[i][v] = 0
+            self.G.SetVertexWeight(i,v,0)
         return v
         
     def AddVertexCanvas(self, x, y):
@@ -970,12 +971,12 @@ class GraphDisplay:
             NOTE: Assumes x,y to be in canvas coordinates""" 
         v = self.G.AddVertex()
         embed_x, embed_y = self.CanvasToEmbedding(x,y)
-        self.embedding[v]  = Point2D(embed_x,embed_y)
-        self.Labeling[v]   = v
+        self.G.SetEmbedding(v,embed_x,embed_y)
+        self.G.SetLabeling(v, v)
         self.drawVertex[v] = self.CreateDrawVertex(v,x,y)
         self.drawLabel[v]  = self.CreateDrawLabel(v)
         for i in xrange(0,self.G.NrOfVertexWeights()):
-            self.G.vertexWeights[i][v] = 0
+            self.G.SetVertexWeight(i,v,0)
         return v
         
     def MoveVertex(self,v,x,y,doUpdate=None):
@@ -985,7 +986,7 @@ class GraphDisplay:
         """ 	    
         if doUpdate == None: # User has moved drawvertex
             newX, newY = self.CanvasToEmbedding(x,y)
-            self.embedding[v] = Point2D(newX, newY)
+            self.G.SetEmbedding(v,newX, newY)
             
         else:
             # Here translation of canvas does not matter, since we
@@ -998,7 +999,7 @@ class GraphDisplay:
             dv = self.drawVertex[v]
             self.canvas.move(dv, dx, dy)
             self.canvas.move(self.drawLabel[v], dx, dy)
-            self.embedding[v] = Point2D(x,y)
+            self.G.SetEmbedding(v,x,y)
             
             
             # move incident edges
@@ -1007,7 +1008,7 @@ class GraphDisplay:
         euclidian = self.G.QEuclidian()
         
         # Handle outgoing edges
-        t = self.embedding[v]
+        t = self.G.GetEmbedding(v)
         for w in outVertices:
             de = self.drawEdges[(v,w)]
             self.canvas.delete(de)
@@ -1015,11 +1016,11 @@ class GraphDisplay:
             self.drawEdges[(v,w)] = de
             self.canvas.lower(de,"vertices")
             if euclidian:
-                h = self.embedding[w]
-                self.G.edgeWeights[0][(v,w)] = sqrt((h.x - t.x)**2 + (h.y - t.y)**2)
+                h = self.G.GetEmbedding(w)
+                self.G.SetEdgeWeight(0,v,w,sqrt((h.x - t.x)**2 + (h.y - t.y)**2))
                 
                 # Handle incoming edges
-        h = self.embedding[v]
+        h = self.G.GetEmbedding(v)
         for w in inVertices:
             de = self.drawEdges[(w,v)]
             self.canvas.delete(de)
@@ -1027,8 +1028,8 @@ class GraphDisplay:
             self.drawEdges[(w,v)] = de
             self.canvas.lower(de,"vertices")
             if euclidian:
-                t = self.embedding[w]
-                self.G.edgeWeights[0][(w,v)] = sqrt((h.x - t.x)**2 + (h.y - t.y)**2)
+                t = self.G.GetEmbedding(w)
+                self.G.SetEdgeWeight(0,w,v,sqrt((h.x - t.x)**2 + (h.y - t.y)**2))
                 
         if self.vertexAnnotation.QDefined(v):
             self.UpdateVertexAnnotationPosition(v)
@@ -1065,13 +1066,13 @@ class GraphDisplay:
             self.drawEdges[(tail, head)] = de
             self.canvas.lower(de,"vertices")
             if self.G.QEuclidian():
-                t = self.embedding[tail]
-                h = self.embedding[head]
-                self.G.edgeWeights[0][(tail,head)] = sqrt((h.x - t.x)**2 + (h.y - t.y)**2)
+                t = self.G.GetEmbedding(tail)
+                h = self.G.GetEmbedding(head)
+                self.G.SetEdgeWeight(0,tail,head,sqrt((h.x - t.x)**2 + (h.y - t.y)**2))
             else:
-                self.G.edgeWeights[0][(tail,head)] = 0
+                self.G.SetEdgeWeight(0,tail,head,0)
             for i in xrange(1,self.G.NrOfEdgeWeights()):
-                self.G.edgeWeights[i][(tail,head)] = 0
+                self.G.SetEdgeWeight(i,tail,head,0)
                 
         except GraphNotSimpleError:
             log.error("Inserting edge (%d,%d) would result in non-simple graph" % (tail,head))
@@ -1087,7 +1088,7 @@ class GraphDisplay:
             del(self.edgeAnnotation.label[(tail,head)])
         del(self.drawEdges.label[(tail,head)]) # XXX
         self.G.DeleteEdge(tail,head)
-        if repaint and self.directed == 1 and tail in self.G.adjLists[head]:
+        if repaint and self.G.QDirected() == 1 and tail in self.G.OutNeighbors(head):
             # i.e. parallel edge
             oldColor = self.canvas.itemconfig(self.drawEdges[(head,tail)],
                                               "fill")[4] # Should call GetEdgeColor
@@ -1107,7 +1108,7 @@ class GraphDisplay:
         """ *Internal* If graph is directed and we do not have edges in both
             directions, change the orientation of the edge (tail,head) """ 
         
-        if self.directed == 0 or self.G.QEdge(head,tail): # Assuming (tail,head) is an edge
+        if self.G.QDirected() == 0 or self.G.QEdge(head,tail): # Assuming (tail,head) is an edge
             return
             
         self.DeleteEdge(tail,head)
@@ -1120,7 +1121,8 @@ class GraphDisplay:
             x = 0.5 * (coords[2] - coords[0]) + coords[0]
             y = 0.5 * (coords[3] - coords[1]) + coords[1]
         except: # Vertex is not on the canvas yet
-            x,y = self.EmbeddingToCanvas(self.embedding[v].x,self.embedding[v].y)
+            t = self.G.GetEmbedding(v)            
+            x,y = self.EmbeddingToCanvas(t.x,t.y)
             
         return Point2D(x,y)
         
