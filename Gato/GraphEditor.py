@@ -194,7 +194,7 @@ class GraphEditor(GraphDisplay):
             infoString = "Edge (%d,%d)" % (e[0], e[1]) 
         elif v!=None:
             t = self.G.GetEmbedding(v)
-            infoString = "Vertex %d at position (%d,%d)" % (v, t.x, t.y)
+            infoString = "Vertex %d at position (%d,%d)" % (v, int(t.x), int(t.y))
         elif x>=0 and y>=0:
             x,y = self.CanvasToEmbedding(x,y)
             infoString = "(%d,%d)" % (x,y)

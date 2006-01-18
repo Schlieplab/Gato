@@ -158,10 +158,9 @@ class GraphInformer:
         return self.info
         
     def VertexInfo(self,v):
-        """ Provide an info text for vertex v """  
-        return "Vertex %d at position (%d,%d)" % (v, 
-                                                  self.G.embedding[v].x, 
-                                                  self.G.embedding[v].y)
+        """ Provide an info text for vertex v """
+        t = self.G.GetEmbedding(v)
+        return "Vertex %d at position (%d,%d)" % (v, int(t.x), int(t.y))
         
     def EdgeInfo(self,tail,head):
         """ Provide an info text for edge (tail,head)  """        
@@ -186,11 +185,11 @@ class WeightedGraphInformer(GraphInformer):
         # How to handle undirected graph
         if self.G.QDirected() == 0:
             try:
-                w = self.G.edgeWeights[0][(tail, head)]
+                w = self.G.GetEdgeWeight(0,tail, head)
             except KeyError:
-                w = self.G.edgeWeights[0][(head, tail)]
+                w = self.G.GetEdgeWeight(0, head, tail)
         else:
-            w = self.G.edgeWeights[0][(tail, head)]
+            w = self.G.GetEdgeWeight(0, tail, head)
         if self.G.edgeWeights[0].QInteger():
             return "Edge (%d,%d) %s: %d" % (tail, head, self.weightDesc, w) 
         else:
