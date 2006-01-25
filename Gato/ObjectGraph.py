@@ -345,6 +345,11 @@ class ObjectGraph:
     def GetEdgeWeight(self,i,v,w):
         return self.edges[(v,w)].GetEdgeWeight(i)
 
+    def QIntegerWeight(self,i):
+        # Edge class should take care of that ...class method
+        return 0 # XXX UNSUPPORTED: FLOAT WEIGHTS ONLY. Barf
+    
+
     def NrOfVertexWeights(self):
         return self.vertexClass.NrOfVertexWeights()
 

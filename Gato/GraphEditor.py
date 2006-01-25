@@ -351,14 +351,14 @@ class GraphEditor(GraphDisplay):
                 intFlag = ()
                 count = len(self.G.edgeWeights.keys())
                 for i in xrange(count):
-                    weights = weights + (self.G.edgeWeights[i][(tail,head)],)
-                    intFlag = intFlag + (self.G.edgeWeights[i].QInteger(),)
+                    weights = weights + (self.G.GetEdgeWeight(i,tail,head),)
+                    intFlag = intFlag + (self.G.QIntegerWeight(i),)
                     
                 d = EditWeightsDialog(self, "Edit edge weights (%d,%d)" % (tail,head), 
                                       count, weights, intFlag) 
                 if d.result is not None:
                     for i in xrange(count):
-                        self.G.edgeWeights[i][(tail,head)] = d.result[i]
+                        self.G.SetEdgeWeight(i,tail,head, d.result[i])
             else: # We have a vertex
                 v = self.FindVertex(event)
                 if v != None and self.G.NrOfVertexWeights() > 0:
