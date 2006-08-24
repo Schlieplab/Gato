@@ -2,7 +2,9 @@
 # MacOS X 10.3 has a MacPython (sans Tk) on board. So we can deploy
 # semi-standalones
 #
-#/usr/bin/pythonw buildMacGato.py -v --python=/usr/bin/pythonw -a --semi-standalone build
+#/usr/bin/pythonw buildMacGato.py -v --python=/usr/bin/python -a --semi-standalone build
+#
+# NOTE: --python=/usr/bin/pythonw produces pesky Python name
 #
 # The -a is needed to keep whomever from passing dorky args.
 #
@@ -39,8 +41,8 @@ buildapp(
     'logging'
     ],
     includePackages=[], # list of additional Packages to force in
-    libs=['/Library/Frameworks/Tk.Framework',
-          '/Library/Frameworks/Tcl.Framework'
+    libs=['/System/Library/Frameworks/Tk.Framework',
+          '/System/Library/Frameworks/Tcl.Framework'
     ]
 )
 

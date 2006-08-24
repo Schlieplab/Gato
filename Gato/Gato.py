@@ -125,7 +125,8 @@ class AlgoWin(Frame):
         #tkoptions.tkoptions(self)
         
         Splash = SplashScreen(self.master)
-        
+        self.usingMacosxAquaTk = self.macosxAquaTk()
+
         self.algoFont = "Courier"
         self.algoFontSize = 10
         
@@ -211,8 +212,9 @@ class AlgoWin(Frame):
                                   command=self.OpenAlgorithm)
         self.fileMenu.add_command(label='Open Graph...',	
                                   command=self.OpenGraph)
-        self.fileMenu.add_command(label='New Graph...',	
-                                  command=self.NewGraph)
+        if not self.usingMacosxAquaTk:
+            self.fileMenu.add_command(label='New Graph...',	
+                                      command=self.NewGraph)
         #self.fileMenu.add_command(label='Open GatoFile...',
         #			  command=self.OpenGatoFile)
         #self.fileMenu.add_command(label='Save GatoFile...',
@@ -221,54 +223,66 @@ class AlgoWin(Frame):
                                   command=self.ReloadAlgorithmGraph)
         self.fileMenu.add_command(label='Export Graph as EPS...',	
                                   command=self.ExportEPSF)
-        self.fileMenu.add_separator()
-        self.fileMenu.add_command(label='Preferences...',
-                                  command=self.Preferences)
-        #self.gatoInstaller.addMenuEntry(self.fileMenu)
-        self.fileMenu.add_separator()
-        self.fileMenu.add_command(label='Quit',		
-                                  command=self.Quit)
+        if not self.usingMacosxAquaTk:
+            self.fileMenu.add_separator()
+            self.fileMenu.add_command(label='Preferences...',
+                                      command=self.Preferences)
+            #self.gatoInstaller.addMenuEntry(self.fileMenu)
+            self.fileMenu.add_separator()
+            self.fileMenu.add_command(label='Quit',		
+                                      command=self.Quit)
         self.menubar.add_cascade(label="File", menu=self.fileMenu, 
                                  underline=0)	
         # Add window menu
         self.windowMenu=Menu(self.menubar, tearoff=0)
-        self.windowMenu.add_command(label='One graph window',	
-                                    command=self.OneGraphWindow)
-        self.windowMenu.add_command(label='Two graph windows',	
-                                    command=self.TwoGraphWindow)
+        if self.usingMacosxAquaTk:
+            self.windowMenu.add_command(label='One graph window',	
+                                        accelerator='command-1',
+                                        command=self.OneGraphWindow)
+            self.windowMenu.add_command(label='Two graph windows',	
+                                        accelerator='command-2',
+                                        command=self.TwoGraphWindow)
+        else:
+            self.windowMenu.add_command(label='One graph window',	
+                                        command=self.OneGraphWindow)
+            self.windowMenu.add_command(label='Two graph windows',	
+                                        command=self.TwoGraphWindow)
         self.menubar.add_cascade(label="Window Layout", menu=self.windowMenu, 
                                  underline=0)
         
+        self.helpMenu=Menu(self.menubar, tearoff=0, name='help')
+
         # On a Mac we put our about box under the Apple menu ... 
-        if os.name == 'mac':
+        if self.usingMacosxAquaTk:
             self.apple=Menu(self.menubar, tearoff=0, name='apple')
             self.apple.add_command(label='About Gato',	
                                    command=self.AboutBox)
-            self.apple.add_command(label='Help',	
-                                   command=self.HelpBox)
             self.apple.add_separator()
-            self.apple.add_command(label='About Algorithm',	
-                                   command=self.AboutAlgorithm)
-            self.apple.add_command(label='About Graph',	
-                                   command=self.AboutGraph)
+            self.apple.add_command(label='Preferences...',
+                                   accelerator='command-,',
+                                   command=self.Preferences)
             self.menubar.add_cascade(menu=self.apple)
-        else: # ... on other systems we add a help menu 
-            self.helpMenu=Menu(self.menubar, tearoff=0, name='help')
+        else:
             self.helpMenu.add_command(label='About Gato',	
                                       command=self.AboutBox)
+        if self.usingMacosxAquaTk:
+            self.helpMenu.add_command(label='Help',
+                                      accelerator="command-?",
+                                      command=self.HelpBox)
+        else:
             self.helpMenu.add_command(label='Help',	
-                                   command=self.HelpBox)
-            self.helpMenu.add_separator()
-            self.helpMenu.add_command(label='About Algorithm',	
-                                      command=self.AboutAlgorithm)
-            self.helpMenu.add_command(label='About Graph',	
-                                      command=self.AboutGraph)
-            self.menubar.add_cascade(label="Help", menu=self.helpMenu, 
-                                     underline=0)
+                                      command=self.HelpBox)
+        self.helpMenu.add_separator()
+        self.helpMenu.add_command(label='About Algorithm',	
+                                  command=self.AboutAlgorithm)
+        self.helpMenu.add_command(label='About Graph',	
+                                  command=self.AboutGraph)
+        self.menubar.add_cascade(label="Help", menu=self.helpMenu, 
+                                 underline=0)
             
         self.master.configure(menu=self.menubar)
-        
-        
+
+         
     def makeToolBar(self):
         """ *Internal* Creates Start/Stop/COntinue ... toolbar """
         toolbar = Frame(self, cursor='hand2', relief=FLAT)
@@ -281,16 +295,21 @@ class AlgoWin(Frame):
         else:  # Unix
             px = 0 
             py = 3 
+
+        if self.usingMacosxAquaTk:
+            bWidth = 10
+        else:
+            bWidth = 8
             
-        self.buttonStart    = Button(toolbar, width=8, padx=px, pady=py, 
+        self.buttonStart    = Button(toolbar, width=bWidth, padx=px, pady=py, 
                                      text='Start', command=self.CmdStart)
-        self.buttonStep     = Button(toolbar, width=8, padx=px, pady=py, 
+        self.buttonStep     = Button(toolbar, width=bWidth, padx=px, pady=py, 
                                      text='Step', command=self.CmdStep)
-        self.buttonTrace    = Button(toolbar, width=8, padx=px, pady=py, 
+        self.buttonTrace    = Button(toolbar, width=bWidth, padx=px, pady=py, 
                                      text='Trace', command=self.CmdTrace)
-        self.buttonContinue = Button(toolbar, width=8, padx=px, pady=py, 
+        self.buttonContinue = Button(toolbar, width=bWidth, padx=px, pady=py, 
                                      text='Continue', command=self.CmdContinue)
-        self.buttonStop     = Button(toolbar, width=8, padx=px, pady=py, 
+        self.buttonStop     = Button(toolbar, width=bWidth, padx=px, pady=py, 
                                      text='Stop', command=self.CmdStop)
         
         self.buttonStart.grid(row=0, column=0, padx=2, pady=2)
@@ -420,7 +439,7 @@ class AlgoWin(Frame):
     def unTagLine(self, lineNo, tag):
         """ Remove tag 'tag' from line lineNo """
         self.algoText.tag_remove(tag,'%d.0' % lineNo,'%d.0' % (lineNo + 1))
-        
+         
         
     def tagLines(self, lines, tag):
         """ Tag every line in list lines with specified tag """
@@ -441,7 +460,21 @@ class AlgoWin(Frame):
         elif type == 39: # Comment
             self.algoText.tag_add('comment','%d.%d' % (srow, scol),
                                   '%d.%d' % (erow, ecol))
-            
+
+    def macosxAquaTk(self):
+        """ Return true when running on MacOS X using the Aqua Tk system.
+            Code lifted from a Pythonmac-SIG posting
+            http://mail.python.org/pipermail/pythonmac-sig/2004-September/011615.html
+        """
+        server = self.winfo_server()
+        if server[0:2] == 'QD':
+            return 1
+        elif server[0:3] == 'X11':
+            return 0
+        else:
+            log.warning("Unknown tk.winfo_server(): %s. Assuming X11 compatability" % server)
+            return 0
+
             
             ############################################################
             #
@@ -688,7 +721,7 @@ class AlgoWin(Frame):
             self.OpenGraph(self.algorithm.graphFileName)
             
             
-    def Preferences(self):
+    def Preferences(self,event=None):
         """ Handle editing preferences """
         self.config.edit()
         
@@ -705,7 +738,7 @@ class AlgoWin(Frame):
             self.graphDisplay.PrintToPSFile(file)
             
             
-    def Quit(self):
+    def Quit(self,event=None):
         if self.algorithmIsRunning:
             self.commandAfterStop = self.Quit
             self.CmdStop()
@@ -715,17 +748,17 @@ class AlgoWin(Frame):
             Frame.quit(self)
             self.CleanUp()
             
-    def OneGraphWindow(self):
+    def OneGraphWindow(self,event=None):
         """ Align windows nicely for one graph window """
         self.WithdrawSecondaryGraphDisplay()
         self.master.update()
         
-        if os.name == 'mac':
-            screenTop = 19 # Take care of menubar
+        if self.usingMacosxAquaTk:
+            screenTop = 22 # Take care of menubar
         else:
-            screenTop = 0
+            screenTop = 0 
             
-            # Keep the AlgoWin fixed in size but move it to 0,0  
+        # Keep the AlgoWin fixed in size but move it to 0,0  
         (topWMExtra,WMExtra) = WMExtrasGeometry(self.graphDisplay)
         pad = 1 # Some optional extra space
         trueWidth  = self.master.winfo_width() + 2 * WMExtra + pad
@@ -757,17 +790,17 @@ class AlgoWin(Frame):
         self.master.update()
         
         
-    def TwoGraphWindow(self):
+    def TwoGraphWindow(self,event=None):
         """ Align windows nicely for two graph windows """
         self.OpenSecondaryGraphDisplay()
         self.master.update()
         
-        if os.name == 'mac':
-            screenTop = 19 # Take care of menubar
+        if self.usingMacosxAquaTk:
+            screenTop = 22 # Take care of menubar
         else:
-            screenTop = 0
-            
-            # Keep the AlgoWin fixed in size but move it to 0,0  
+            screenTop = 0 
+
+        # Keep the AlgoWin fixed in size but move it to 0,0  
         (topWMExtra,WMExtra) = WMExtrasGeometry(self.graphDisplay)
         pad = 1 # Some optional extra space
         trueWidth  = self.master.winfo_width() + 2 * WMExtra + pad
@@ -802,7 +835,7 @@ class AlgoWin(Frame):
     def AboutBox(self):
         d = AboutBox(self.master)
         
-    def HelpBox(self):
+    def HelpBox(self,event=None):
         d = HTMLViewer(gGatoHelp, "Help", self.master)
         
     def AboutAlgorithm(self):
@@ -897,8 +930,15 @@ class AlgoWin(Frame):
         widget.bind('r', self.KeyReplay)
         widget.bind('u', self.KeyUndo)
         widget.bind('d', self.KeyDo)
-        
-        
+       
+        if self.usingMacosxAquaTk:
+            widget.bind('<Command-Key-q>',  self.Quit)
+            widget.bind('<Command-Key-,>',  self.Preferences)
+            widget.bind('<Command-Key-1>',  self.OneGraphWindow)
+            widget.bind('<Command-Key-2>',  self.TwoGraphWindow)
+            widget.bind('<Command-Key-?>',  self.HelpBox)
+
+              
     def KeyStart(self, event):
         """ Command linked to toolbar 'Start' """
         if self.buttonStart['state'] != DISABLED:
@@ -1647,7 +1687,6 @@ if __name__ == '__main__':
             if o in ("-v", "--verbose"):
                 logging.verbose = 1
                 
-        log.info("Welcome! Gato logging facilities activated")
         
         app = AlgoWin()
         
