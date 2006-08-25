@@ -15,7 +15,7 @@ buildapp(
     name='Gato.app', # what to build
     mainprogram='Gato.py', # your app's main()
     argv_emulation=0, # drag&dropped filenames show up in sys.argv
-    #iconfile='myapp.icns', # file containing your app's icons
+    iconfile='Gato.icns', # file containing your app's icons
     #standalone=0, # make this app self contained.
     includeModules=[
     'AnimatedAlgorithms',
