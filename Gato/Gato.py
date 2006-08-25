@@ -123,6 +123,13 @@ class AlgoWin(Frame):
         Frame.__init__(self,parent)
         #XXX import tkoptions
         #tkoptions.tkoptions(self)
+
+        # Prevent the Tcl console from popping up in standalone apps
+        # Checking for hasattr(sys,'frozen') does not work for bundelbuilder
+        try:
+            self.tk.call('console','hide')
+        except tkinter.TclError:
+            pass
         
         Splash = SplashScreen(self.master)
         self.usingMacosxAquaTk = self.macosxAquaTk()
