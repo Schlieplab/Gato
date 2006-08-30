@@ -37,6 +37,7 @@
 from Graph import *
 from Embedder import *
 import whrandom
+from tkMessageBox import askokcancel
 
 class Creator:
     """ This class provides an abstract Creator as
@@ -50,10 +51,20 @@ class Creator:
     def Create(self, theGraphEditor):
         """ Create a new graph. """
         return none
+
+    def CheckDirtyAndCreate(self, theGraphEditor):
+        """ Create a new graph. """
+
+        if theGraphEditor.dirty == 1:
+            if not askokcancel("Open Graph",
+                               "Graph changed since last saved. Do you want to overwrite it?"):
+                return            
+        self.Create(theGraphEditor)
         
         
 def DrawNewGraph(theGraphEditor,G,direction):
 
+    theGraphEditor.dirty = 0
     theGraphEditor.NewGraph(direction,1,0,'None',0,'One',0)
     
     for v in G.vertices:
@@ -61,8 +72,10 @@ def DrawNewGraph(theGraphEditor,G,direction):
         
     for e in G.Edges():
         theGraphEditor.AddEdge(e[0],e[1])
+    theGraphEditor.dirty = 1
+    
         
-        #----------------------------------------------------------------------
+#----------------------------------------------------------------------
 from Tkinter import *
 import tkSimpleDialog 
 import string
@@ -244,7 +257,6 @@ class completeGraphCreator(Creator):
         if dial.result is None:
             theGraphEditor.config(cursor="")	    
             return
-        theGraphEditor.dirty = 1
         
         n=dial.result[0]
         direction=dial.result[2]
@@ -283,7 +295,6 @@ class randomGraphCreator(Creator):
         if dial.result is None:
             theGraphEditor.config(cursor="")
             return
-        theGraphEditor.dirty = 1
             
         n=dial.result[0]
         m=dial.result[1]
@@ -325,7 +336,6 @@ class maximalPlanarGraphCreator(Creator):
         if dial.result is None:
             theGraphEditor.config(cursor="")
             return
-        theGraphEditor.dirty = 1
             
         n=dial.result[0]
         if n<=1: return
@@ -373,7 +383,6 @@ class randomPlanarGraphCreator(Creator):
         if dial.result is None:
             theGraphEditor.config(cursor="")
             return
-        theGraphEditor.dirty = 1
             
         n=dial.result[0]
         if n<=1: return
@@ -561,7 +570,6 @@ class completeTreeCreator(Creator):
         if dial.result is None:
             theGraphEditor.config(cursor="")
             return
-        theGraphEditor.dirty = 1
             
         degree=dial.result[0]
         height=dial.result[1]
@@ -619,7 +627,6 @@ class randomTreeCreator(Creator):
         if dial.result is None:
             theGraphEditor.config(cursor="")
             return
-        theGraphEditor.dirty = 1
             
         degree=dial.result[0]
         height=dial.result[1]
@@ -696,7 +703,6 @@ class rectangularGridGraph(Creator):
         ##         if dial.result is None:
         ## 	    theGraphEditor.config(cursor="")
         ##             return
-        theGraphEditor.dirty = 1
         
         G=Graph()
         G.directed=0

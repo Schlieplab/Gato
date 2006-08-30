@@ -467,7 +467,7 @@ class SAGraphEditor(GraphEditor, Frame):
         
         for create in GraphCreator.creator: 
             self.extrasMenu.add_command(label=create.Name(),
-                                        command=lambda e=create,s=self:e.Create(s))
+                                        command=lambda e=create,s=self:e.CheckDirtyAndCreate(s))
             
         # Add a menue item for all embedders found in Embedder.embedder
         self.extrasMenu.add_separator()
@@ -573,7 +573,6 @@ class SAGraphEditor(GraphEditor, Frame):
                                )
         if file != "" and file != (): 
             self.fileName = file
-            self.dirty = 0
             self.graphName = stripPath(file)
             e = extension(file)
             if e == 'cat':
@@ -633,6 +632,7 @@ class SAGraphEditor(GraphEditor, Frame):
                     
                     
             self.SetTitle("Gred _VERSION_ - " + self.graphName)
+            self.dirty = 0
             
             
             
@@ -641,7 +641,8 @@ class SAGraphEditor(GraphEditor, Frame):
             SaveCATBoxGraph(self.G,self.fileName)
         else:
             self.SaveAsGraph()
-            
+        self.dirty = 0
+        
     def SaveAsGraph(self):
         file = asksaveasfilename(title="Save Graph",
                                  defaultextension=".cat",
@@ -655,6 +656,7 @@ class SAGraphEditor(GraphEditor, Frame):
             SaveCATBoxGraph(self.G,file)
             self.graphName = stripPath(file)
             self.SetTitle("Gred _VERSION_ - " + self.graphName)
+        self.dirty = 0
             
     def ExportEPSF(self):
         file = asksaveasfilename(title="Export EPSF",
