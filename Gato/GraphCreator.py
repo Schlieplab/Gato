@@ -235,16 +235,17 @@ def MaximalPlanarEdges(G,n,direction):
 class completeGraphCreator(Creator):
 
     def Name(self):
-        return "create complete graph" 
+        return "Create Complete Graph" 
         
     def Create(self, theGraphEditor):
         theGraphEditor.config(cursor="watch")
         
-        dial = Dialog(theGraphEditor, 0, 0, "create complete graph")
+        dial = Dialog(theGraphEditor, 0, 0, "Create Complete Graph")
         if dial.result is None:
             theGraphEditor.config(cursor="")	    
             return
-            
+        theGraphEditor.dirty = 1
+        
         n=dial.result[0]
         direction=dial.result[2]
         layout=dial.result[3]
@@ -273,15 +274,16 @@ class completeGraphCreator(Creator):
 class randomGraphCreator(Creator):
 
     def Name(self):
-        return "create random graph" 
+        return "Create Random Graph" 
         
     def Create(self, theGraphEditor):
         theGraphEditor.config(cursor="watch")
         
-        dial = Dialog(theGraphEditor, 0, 1, "create random graph")
+        dial = Dialog(theGraphEditor, 0, 1, "Create Random Graph")
         if dial.result is None:
             theGraphEditor.config(cursor="")
             return
+        theGraphEditor.dirty = 1
             
         n=dial.result[0]
         m=dial.result[1]
@@ -314,15 +316,16 @@ class randomGraphCreator(Creator):
 class maximalPlanarGraphCreator(Creator):
 
     def Name(self):
-        return "create maximal planar graph" 
+        return "Create Maximal Planar Graph" 
         
     def Create(self, theGraphEditor):
         theGraphEditor.config(cursor="watch")
         
-        dial = Dialog(theGraphEditor, 1, 0, "create maximal planar graph")
+        dial = Dialog(theGraphEditor, 1, 0, "Create Maximal Planar Graph")
         if dial.result is None:
             theGraphEditor.config(cursor="")
             return
+        theGraphEditor.dirty = 1
             
         n=dial.result[0]
         if n<=1: return
@@ -361,15 +364,16 @@ from math import log10
 class randomPlanarGraphCreator(Creator):
 
     def Name(self):
-        return "create random planar graph" 
+        return "Create Random Planar Graph" 
         
     def Create(self, theGraphEditor):
         theGraphEditor.config(cursor="watch")
         
-        dial = Dialog(theGraphEditor, 1, 1, "create random planar graph")
+        dial = Dialog(theGraphEditor, 1, 1, "Create Random Planar Graph")
         if dial.result is None:
             theGraphEditor.config(cursor="")
             return
+        theGraphEditor.dirty = 1
             
         n=dial.result[0]
         if n<=1: return
@@ -548,15 +552,16 @@ class TreeDialog(tkSimpleDialog.Dialog):
 class completeTreeCreator(Creator):
 
     def Name(self):
-        return "create complete tree"
+        return "Create Complete Tree"
         
     def Create(self, theGraphEditor):
         theGraphEditor.config(cursor="watch")
         
-        dial = TreeDialog(theGraphEditor, 0, "create complete tree")
+        dial = TreeDialog(theGraphEditor, 0, "Create Complete Tree")
         if dial.result is None:
             theGraphEditor.config(cursor="")
             return
+        theGraphEditor.dirty = 1
             
         degree=dial.result[0]
         height=dial.result[1]
@@ -605,15 +610,16 @@ from math import ceil
 class randomTreeCreator(Creator):
 
     def Name(self):
-        return "create random tree"
+        return "Create Random Tree"
         
     def Create(self, theGraphEditor):
         theGraphEditor.config(cursor="watch")
         
-        dial = TreeDialog(theGraphEditor, 1, "create random tree")
+        dial = TreeDialog(theGraphEditor, 1, "Create Random Tree")
         if dial.result is None:
             theGraphEditor.config(cursor="")
             return
+        theGraphEditor.dirty = 1
             
         degree=dial.result[0]
         height=dial.result[1]
@@ -679,7 +685,7 @@ from math import ceil
 class rectangularGridGraph(Creator):
 
     def Name(self):
-        return "Create rectangular grid graph"
+        return "Create Rectangular Grid Graph"
         
     def Create(self, theGraphEditor):
         theGraphEditor.config(cursor="watch")
@@ -690,6 +696,7 @@ class rectangularGridGraph(Creator):
         ##         if dial.result is None:
         ## 	    theGraphEditor.config(cursor="")
         ##             return
+        theGraphEditor.dirty = 1
         
         G=Graph()
         G.directed=0
@@ -723,7 +730,11 @@ class rectangularGridGraph(Creator):
         #----------------------------------------------------------------------
         
 """ Here instantiate all the creators you want to make available to
-    a client. """
-creator = [completeGraphCreator(), randomGraphCreator(),
-           maximalPlanarGraphCreator(), randomPlanarGraphCreator(),
-           completeTreeCreator(), randomTreeCreator(), rectangularGridGraph()]
+    a client."""
+creator = [completeGraphCreator(),
+           randomGraphCreator(),
+           maximalPlanarGraphCreator(),
+           randomPlanarGraphCreator(),
+           completeTreeCreator(),
+           randomTreeCreator(),
+           rectangularGridGraph()]

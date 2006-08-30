@@ -46,14 +46,14 @@
 
 # Vars
 
-VERSION       = 0.98N
-DATE          = 01/13/2005
+VERSION       = 0.98Q
+DATE          = 01/20/2006
 DISTNAME      = Gato
 DISTNAMEDOC   = $(DISTNAME)-Doc
 
 # Source directories
 
-SRCDIR        = /home/schliep/Src/Gato
+SRCDIR        = /home/schliep/Projects/Gato
 DOCSRCDIR     = ./Doc
 
 # Distribution directories
@@ -141,7 +141,7 @@ PHONY:
 	chgrp -f algogrp $(WWWDIR)/*
 
 	# 4) update and distribute documentation
-	cd $(SRCDIR); rm -rf $(DOCSRCDIR); mkdir $(DOCSRCDIR); $(DOCTOOL) .
+	cd $(SRCDIR); rm -rf $(DOCSRCDIR); mkdir $(DOCSRCDIR); $(DOCTOOL) *.py
 	cp -rf $(DOCSRCDIR)/*.html $(DOCDIR)/Internal/
 	chmod -Rf g+r $(DOCDIR)/Internal/*
 	chmod -Rf a+r $(DOCDIR)/Internal/*

@@ -83,7 +83,8 @@ class RandomEmbedder(Embedder):
         
         if RandomCoords(theGraphEditor.G):
             RedrawGraph(theGraphEditor)
-            
+            theGraphEditor.dirty = 1
+
         theGraphEditor.config(cursor="")
         
         #----------------------------------------------------------------------
@@ -115,7 +116,8 @@ class CircularEmbedder(Embedder):
         
         if CircularCoords(theGraphEditor.G):
             RedrawGraph(theGraphEditor)
-            
+            theGraphEditor.dirty = 1
+
         theGraphEditor.config(cursor="")
         
         #----------------------------------------------------------------------
@@ -135,7 +137,8 @@ class FPP_PlanarEmbedder(Embedder):
             return
         if FPP_PlanarCoords(theGraphEditor.G):
             RedrawGraph(theGraphEditor)
-            
+            theGraphEditor.dirty = 1
+
         theGraphEditor.config(cursor="")
         
 class Schnyder_PlanarEmbedder(Embedder):
@@ -152,7 +155,8 @@ class Schnyder_PlanarEmbedder(Embedder):
         
         if Schnyder_PlanarCoords(theGraphEditor.G):
             RedrawGraph(theGraphEditor)
-            
+            theGraphEditor.dirty = 1
+
         theGraphEditor.config(cursor="")
         
         #----------------------------------------------------------------------
@@ -376,7 +380,8 @@ class TreeEmbedder(Embedder):
             
         if TreeCoords(theGraphEditor.G, dial.result[0], dial.result[1]):
             RedrawGraph(theGraphEditor)
-            
+            theGraphEditor.dirty = 1
+
         theGraphEditor.config(cursor="")
         
         #----------------------------------------------------------------------
@@ -479,7 +484,8 @@ class BFSTreeEmbedder(Embedder):
             
         if BFSTreeCoords(theGraphEditor.G, dial.result[0], dial.result[1]):
             RedrawGraph(theGraphEditor)
-            
+            theGraphEditor.dirty = 1
+                                        
         theGraphEditor.config(cursor="")
         
         
@@ -585,7 +591,8 @@ class BFSRadialTreeEmbedder(Embedder):
             
         if BFSRadialTreeCoords(theGraphEditor.G, dial.result[0], dial.result[1]):
             RedrawGraph(theGraphEditor)
-            
+            theGraphEditor.dirty = 1
+
         theGraphEditor.config(cursor="")
         
         
@@ -598,6 +605,10 @@ class BFSRadialTreeEmbedder(Embedder):
         
 """ Here instantiate all the embedders you want to make available to
     a client. """
-embedder = [RandomEmbedder(), CircularEmbedder(),
-            FPP_PlanarEmbedder(), Schnyder_PlanarEmbedder(),
-            TreeEmbedder(), BFSTreeEmbedder(), BFSRadialTreeEmbedder()]
+embedder = [RandomEmbedder(),
+            CircularEmbedder(),
+            FPP_PlanarEmbedder(),
+            Schnyder_PlanarEmbedder(),
+            TreeEmbedder(),
+            BFSTreeEmbedder(),
+            BFSRadialTreeEmbedder()]

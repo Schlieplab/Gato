@@ -178,6 +178,7 @@ class SAGraphEditor(GraphEditor, Frame):
     def __init__(self, master=None):
         Frame.__init__(self, master)
         Splash = GredSplashScreen(self.master)
+        self.usingMacosxAquaTk = self.macosxAquaTk()
         self.G = None
         self.pack() 
         self.pack(expand=1,fill=BOTH) # Makes whole window resizeable
@@ -194,6 +195,7 @@ class SAGraphEditor(GraphEditor, Frame):
             self.master.focus_force()
         else:
             self.tkraise()
+        self.BindKeys(self.master)
             
     def ReadConfiguration(self):
         self.gVertexRadius = 13
@@ -366,21 +368,37 @@ class SAGraphEditor(GraphEditor, Frame):
             
     def makeMenuBar(self, toplevel=0):
         self.menubar = Menu(self,tearoff=0)
+
+        # Cross-plattform accelerators
+        if self.usingMacosxAquaTk:
+            accMod = "command"
+        else:
+            accMod = "Ctrl"
         
-        # Add file menu
+        # --- FILE menu ----------------------------------------
         self.fileMenu = Menu(self.menubar, tearoff=0)
-        self.fileMenu.add_command(label='New',            command=self.NewGraph)
-        self.fileMenu.add_command(label='Open ...',       command=self.OpenGraph)
-        self.fileMenu.add_command(label='Save',	     command=self.SaveGraph)
-        self.fileMenu.add_command(label='Save as ...',    command=self.SaveAsGraph)
+        self.fileMenu.add_command(label='New',
+                                  command=self.NewGraph)
+        self.fileMenu.add_command(label='Open ...',
+                                  command=self.OpenGraph,
+                                  accelerator='%s-O' % accMod)
+        self.fileMenu.add_command(label='Save',
+                                  command=self.SaveGraph,
+                                  accelerator='%s-S' % accMod)
+        self.fileMenu.add_command(label='Save as ...',
+                                  command=self.SaveAsGraph)
         self.fileMenu.add_separator()
-        self.fileMenu.add_command(label='Export EPSF...', command=self.ExportEPSF)
-        self.fileMenu.add_separator()
-        self.fileMenu.add_command(label='Quit',	     command=self.Quit)
+        self.fileMenu.add_command(label='Export EPSF...',
+                                  command=self.ExportEPSF)
+        if not self.usingMacosxAquaTk:
+            self.fileMenu.add_separator()
+            self.fileMenu.add_command(label='Quit',		
+                                      command=self.Quit,
+                                      accelerator='%s-Q' % accMod)
         self.menubar.add_cascade(label="File", menu=self.fileMenu, 
                                  underline=0)
         
-        # Add graph menu
+        # --- GRAPH menu ----------------------------------------
         self.graphMenu = Menu(self.menubar, tearoff=0)
         self.directedVar = IntVar()
         self.graphMenu.add_checkbutton(label='Directed',  
@@ -392,7 +410,6 @@ class SAGraphEditor(GraphEditor, Frame):
                                        var = self.euclideanVar)
         self.graphMenu.add_separator()
         
-        # vertex weigths
         self.vertexIntegerWeightsVar = IntVar()
         self.graphMenu.add_checkbutton(label='Integer Vertex Weights', 
                                        command=self.vertexIntegerWeights,
@@ -414,10 +431,8 @@ class SAGraphEditor(GraphEditor, Frame):
                                             var = self.vertexWeightVar, value=3)
         self.graphMenu.add_cascade(label='Vertex Weights', 
                                    menu=self.vertexWeightsSubmenu)
-        
-        
-        
-        # edge weigths
+
+
         self.edgeIntegerWeightsVar = IntVar()
         self.graphMenu.add_checkbutton(label='Integer Edge Weights', 
                                        command=self.edgeIntegerWeights,
@@ -445,87 +460,86 @@ class SAGraphEditor(GraphEditor, Frame):
         self.menubar.add_cascade(label="Graph", menu=self.graphMenu, 
                                  underline=0)
         
-        
-        # Add Tools menu
-        # 	self.toolsMenu = Menu(self.menubar,tearoff=1)
-        # 	self.toolVar = StringVar()
-        # 	self.toolsMenu.add_radiobutton(label='Add or move vertex',  
-        # 				       command=self.ChangeTool,
-        # 				       var = self.toolVar, value='AddOrMoveVertex')
-        # 	self.toolsMenu.add_radiobutton(label='Add edge', 
-        # 				       command=self.ChangeTool,
-        # 				       var = self.toolVar, value='AddEdge')
-        # 	self.toolsMenu.add_radiobutton(label='Delete edge or vertex', 
-        # 				       command=self.ChangeTool,
-        # 				       var = self.toolVar, value='DeleteEdgeOrVertex')
-        # 	self.toolsMenu.add_radiobutton(label='Swap orientation', 
-        # 				       command=self.ChangeTool,
-        # 				       var = self.toolVar, value='SwapOrientation')
-        # 	self.toolsMenu.add_radiobutton(label='Edit Weight', 
-        # 					command=self.ChangeTool,
-        # 				       var = self.toolVar, value='EditWeight')
-        # 	self.menubar.add_cascade(label="Tools", menu=self.toolsMenu, 
-        # 				 underline=0)
-        
-        if toplevel:
-            self.configure(menu=self.menubar)
-        else:
-            self.master.configure(menu=self.menubar)
-            
-            # Add extras menu
+
+        # --- EXTRAS menu ----------------------------------------
+        # Add a menue item for all creators found in GraphCreator.creator
         self.extrasMenu = Menu(self.menubar, tearoff=0)
         
-        # --------------------------------------------------------------
-        # Add a menue item for all creators found in GraphCreator.creator
-        for create in GraphCreator.creator:
-        
+        for create in GraphCreator.creator: 
             self.extrasMenu.add_command(label=create.Name(),
                                         command=lambda e=create,s=self:e.Create(s))
-            # --------------------------------------------------------------
             
-            # --------------------------------------------------------------
-            # Add a menue item for all embedders found in Embedder.embedder
+        # Add a menue item for all embedders found in Embedder.embedder
         self.extrasMenu.add_separator()
         for embed in Embedder.embedder:
-        
             self.extrasMenu.add_command(label=embed.Name(),
                                         command=lambda e=embed,s=self:e.Embed(s))
-            # --------------------------------------------------------------
-            
-            # --------------------------------------------------------------
-        self.extrasMenu.add_separator()
-        
+
+        self.extrasMenu.add_separator()        
         self.extrasMenu.add_command(label='Randomize Edge Weights',
                                   command=self.RandomizeEdgeWeights)
         self.menubar.add_cascade(label="Extras", menu=self.extrasMenu, 
                                  underline=0)
-        # --------------------------------------------------------------
-        
+
+        # --- HELP menu ----------------------------------------        
+        if not self.usingMacosxAquaTk:
+            self.helpMenu=Menu(self.menubar, tearoff=0, name='help')
+            self.helpMenu.add_command(label='About Gred',
+                                      command=self.AboutBox)
+            self.menubar.add_cascade(label="Help", menu=self.helpMenu, 
+                                     underline=0)
+
+        # --- MacOS X application menu --------------------------
         # On a Mac we put our about box under the Apple menu ... 
-        if os.name == 'mac':
+        if self.usingMacosxAquaTk:
             self.apple=Menu(self.menubar, tearoff=0, name='apple')
             self.apple.add_command(label='About Gred',	
                                    command=self.AboutBox)
             self.menubar.add_cascade(menu=self.apple)
-        else: # ... on other systems we add a help menu 
-            self.helpMenu=Menu(self.menubar, tearoff=0, name='help')
-            self.helpMenu.add_command(label='About Gred',	
-                                      command=self.AboutBox)
-            self.menubar.add_cascade(label="Help", menu=self.helpMenu, 
-                                     underline=0)
             
+        if toplevel:
+            self.configure(menu=self.menubar)
+        else:
+            self.master.configure(menu=self.menubar)
+
+    def macosxAquaTk(self):
+        """ Return true when running on MacOS X using the Aqua Tk system.
+            Code lifted from a Pythonmac-SIG posting
+            http://mail.python.org/pipermail/pythonmac-sig/2004-September/011615.html
+        """
+        server = self.winfo_server()
+        if server[0:2] == 'QD':
+            return 1
+        elif server[0:3] == 'X11':
+            return 0
+        else:
+            log.warning("Unknown tk.winfo_server(): %s. Assuming X11 compatability" % server)
+            return 0
             
-            
-            ############################################################
-            #
-            # Menu Commands
-            #
-            # The menu commands are passed as call back parameters to 
-            # the menu items.
-            #
-            
+    def BindKeys(self, widget):
+        # Cross-plattform accelerators
+        if self.usingMacosxAquaTk:
+            accMod = "Command"
+        else:
+            accMod = "Control"
+       
+        widget.bind('<%s-o>' % accMod,  self.OpenGraph)
+        widget.bind('<%s-s>' % accMod,  self.SaveGraph)
+        widget.bind('<%s-q>' % accMod,  self.Quit)
+
+
+    ############################################################
+    #
+    # Menu Commands
+    #
+    # The menu commands are passed as call back parameters to 
+    # the menu items.
+    #          
     def NewGraph(self, Directed=1, Euclidean=1, IntegerVertexWeights=0, VertexWeights='None',
                  IntegerEdgeWeights=0, EdgeWeights='One', Grid=1):
+        if self.dirty == 1:
+            if not askokcancel("New Graph","Graph changed since last saved. Do you want to overwrite it?"):
+                return
         G=None
         self.SetGraphMenuDirected(Directed)
         self.SetGraphMenuEuclidean(Euclidean)
@@ -544,8 +558,12 @@ class SAGraphEditor(GraphEditor, Frame):
         self.RegisterGraphInformer(WeightedGraphInformer(G,"weight"))
         self.fileName = None
         self.SetTitle("Gred _VERSION_ - New Graph")
-        
-    def OpenGraph(self):	
+
+    def OpenGraph(self,dummy=None):
+        if self.dirty == 1:
+            if not askokcancel("Open Graph","Graph changed since last saved. Do you want to overwrite it?"):
+                return
+	
         file = askopenfilename(title="Open Graph",
                                defaultextension=".cat",
                                filetypes = [("Gato", ".cat"),
@@ -553,9 +571,7 @@ class SAGraphEditor(GraphEditor, Frame):
                                              #,("Graphlet", ".let")
                                            ]
                                )
-        if file is "": 
-            pass
-        else:
+        if file != "" and file != (): 
             self.fileName = file
             self.dirty = 0
             self.graphName = stripPath(file)
@@ -620,8 +636,7 @@ class SAGraphEditor(GraphEditor, Frame):
             
             
             
-    def SaveGraph(self):
-        #self.dirty = 0
+    def SaveGraph(self,dummy=None):
         if self.fileName != None:
             SaveCATBoxGraph(self.G,self.fileName)
         else:
@@ -634,7 +649,7 @@ class SAGraphEditor(GraphEditor, Frame):
                                                #,("Graphlet", ".let")
                                              ]
                                  )
-        if file is not "":
+        if file != "" and file != ():
             self.fileName = file
             self.dirty = 0
             SaveCATBoxGraph(self.G,file)
@@ -648,17 +663,18 @@ class SAGraphEditor(GraphEditor, Frame):
                                                ,("Postscript", ".ps")
                                              ]
                                  )
-        if file is not "": 
+        if file != "" and file != (): 
             self.PrintToPSFile(file)
             
             
-    def Quit(self):
+    def Quit(self,dummy=None):
         if askokcancel("Quit","Do you really want to quit?"):
             Frame.quit(self)
             
             
-            #----- Graph Menu callbacks
+    #----- Graph Menu callbacks
     def graphDirected(self):
+        self.dirty = 1
         if self.G != None:
             if self.G.QDirected():
                 self.G.Undirect()
@@ -668,6 +684,7 @@ class SAGraphEditor(GraphEditor, Frame):
             self.ShowGraph(self.G,self.graphName)
             
     def graphEuclidean(self):
+        self.dirty = 1
         if self.G != None:
             if self.G.QEuclidian():
                 self.G.euclidian = 0
@@ -675,11 +692,13 @@ class SAGraphEditor(GraphEditor, Frame):
                 self.G.Euclidify()
                 
     def edgeIntegerWeights(self):
+        self.dirty = 1
         if self.G != None:
             if not self.G.edgeWeights[0].QInteger():
                 self.G.Integerize('all')
                 
     def vertexIntegerWeights(self):
+        self.dirty = 1
         if self.G != None:
             for i in xrange(0,self.G.NrOfVertexWeights()):
                 if not self.G.vertexWeights[i].QInteger(): 
@@ -720,6 +739,7 @@ class SAGraphEditor(GraphEditor, Frame):
     def ChangeVertexWeights(self):
         if self.G == None:
             return
+        self.dirty = 1
         n = self.vertexWeightVar.get()
         old = self.G.NrOfVertexWeights()
         k = self.G.vertexWeights.keys()
@@ -737,7 +757,7 @@ class SAGraphEditor(GraphEditor, Frame):
             for i in xrange(n,old):
                 del(self.G.vertexWeights[i])
                 
-                # Integerize remaining weigths if necessary
+        # Integerize remaining weigths if necessary
         if self.vertexIntegerWeightsVar.get() == 1:
             for i in xrange(0,min(n,old)): 
                 self.G.vertexWeights[i].Integerize()
@@ -745,7 +765,7 @@ class SAGraphEditor(GraphEditor, Frame):
                 
                 
                 
-                #----- Tools Menu callbacks
+    #----- Tools Menu callbacks
     def ChangeTool(self):
         tool = self.toolVar.get()
         if self.lastTool is not None:
@@ -755,11 +775,10 @@ class SAGraphEditor(GraphEditor, Frame):
         self.buttons[tool].configure(image=self.icons[tool][2])
         
         
-        #----- Extras Menu callbacks
-        
-        # NOTE: Embedder handled by lambda passed as command
-        
+    #----- Extras Menu callbacks        
+    # NOTE: Embedder handled by lambda passed as command        
     def RandomizeEdgeWeights(self):
+        self.dirty = 1
         count = len(self.G.edgeWeights.keys())
         d = RandomizeEdgeWeightsDialog(self, count, self.G.QEuclidian()) 
         if d.result is None:
@@ -777,6 +796,40 @@ class SAGraphEditor(GraphEditor, Frame):
     def AboutBox(self):
         d = GredAboutBox(self.master)
         
+
+    
+    ############################################################################
+    #				       
+    # Make sure we mark the graph dirty, when we edit
+    #
+    def AddVertex(self, x, y, v = None):
+        self.dirty = 1
+        GraphEditor.AddVertex(self,x,y,v)
+
+    def AddVertexCanvas(self, x, y):
+        self.dirty = 1
+        GraphEditor.AddVertexCanvas(self, x, y)
+
+    def MoveVertex(self,v,x,y,doUpdate=None):
+        self.dirty = 1
+        GraphEditor.MoveVertex(self,v,x,y,doUpdate)
+
+    def DeleteVertex(self,v):
+        self.dirty = 1
+        GraphEditor.DeleteVertex(self,v)
+
+    def AddEdge(self,tail,head):
+        self.dirty = 1
+        GraphEditor.AddEdge(self,tail,head)
+
+    def DeleteEdge(self,tail,head,repaint=1):
+        self.dirty = 1
+        GraphEditor.DeleteEdge(self,tail,head,repaint)
+
+    def SwapEdgeOrientation(self,tail,head):
+        self.dirty = 1
+        GraphEditor.SwapEdgeOrientation(self,tail,head)
+      
         
 class SAGraphEditorToplevel(SAGraphEditor, Toplevel):
 
@@ -832,6 +885,7 @@ class Start:
 
     def __init__(self):
         graphEditor = SAGraphEditorToplevel()
+        graphEditor.dirty = 0
         graphEditor.NewGraph()
         import logging
         log = logging.getLogger("Gred.py")
@@ -853,6 +907,7 @@ if __name__ == '__main__':
     tk.option_add('*background','#DDDDDD')
     tk.option_add('Tk*Scrollbar.troughColor','#CACACA')
     graphEditor = SAGraphEditor(tk)
+    graphEditor.dirty = 0    
     graphEditor.NewGraph()
     import logging
     log = logging.getLogger("Gred.py")

@@ -184,15 +184,16 @@ class AlgoWin(Frame):
             self.master.focus_force()
         else:
             self.tkraise()
-            
-            # Make AlgoWins requested size its minimal size to keep
-            # toolbar from vanishing when changing window size
-            # Packer has been running due to splash screen
+
+        # Make AlgoWins requested size its minimal size to keep
+        # toolbar from vanishing when changing window size
+        # Packer has been running due to splash screen
         wmExtras = WMExtrasGeometry(self.graphDisplay)
         width = self.master.winfo_reqwidth()
         height = self.master.winfo_reqheight()
         
         # XXX Some WM + packer combinatios ocassionally produce absurd requested sizes
+        log.debug(os.name + str(wmExtras) + " width = %f height = %f " % (width, height))
         width = min(600, self.master.winfo_reqwidth())
         height = min(750, self.master.winfo_reqheight())
         if os.name == 'nt' or os.name == 'dos':
@@ -210,10 +211,17 @@ class AlgoWin(Frame):
         # Create GUI
         #   	
     def makeMenuBar(self):
-        """ *Internal* Now using Tk 8.0 style menues """
+        """ *Internal* """
         self.menubar = Menu(self, tearoff=0)
+
+        # Cross-plattform accelerators
+        if self.usingMacosxAquaTk:
+            accMod = "command"
+        else:
+            accMod = "Ctrl"
+
         
-        # Add file menu
+        # --- FILE menu ----------------------------------------
         self.fileMenu = Menu(self.menubar, tearoff=0)
         self.fileMenu.add_command(label='Open Algorithm...',	
                                   command=self.OpenAlgorithm)
@@ -222,6 +230,7 @@ class AlgoWin(Frame):
         if not self.usingMacosxAquaTk:
             self.fileMenu.add_command(label='New Graph...',	
                                       command=self.NewGraph)
+        # Only used for TRIAL-SOLUTION Gato version
         #self.fileMenu.add_command(label='Open GatoFile...',
         #			  command=self.OpenGatoFile)
         #self.fileMenu.add_command(label='Save GatoFile...',
@@ -233,32 +242,47 @@ class AlgoWin(Frame):
         if not self.usingMacosxAquaTk:
             self.fileMenu.add_separator()
             self.fileMenu.add_command(label='Preferences...',
-                                      command=self.Preferences)
+                                      command=self.Preferences,
+                                      accelerator='%s-,' % accMod)
             #self.gatoInstaller.addMenuEntry(self.fileMenu)
             self.fileMenu.add_separator()
             self.fileMenu.add_command(label='Quit',		
-                                      command=self.Quit)
+                                      command=self.Quit,
+                                      accelerator='%s-Q' % accMod)
         self.menubar.add_cascade(label="File", menu=self.fileMenu, 
                                  underline=0)	
-        # Add window menu
+        # --- WINDOW menu ----------------------------------------
         self.windowMenu=Menu(self.menubar, tearoff=0)
-        if self.usingMacosxAquaTk:
-            self.windowMenu.add_command(label='One graph window',	
-                                        accelerator='command-1',
-                                        command=self.OneGraphWindow)
-            self.windowMenu.add_command(label='Two graph windows',	
-                                        accelerator='command-2',
-                                        command=self.TwoGraphWindow)
-        else:
-            self.windowMenu.add_command(label='One graph window',	
-                                        command=self.OneGraphWindow)
-            self.windowMenu.add_command(label='Two graph windows',	
-                                        command=self.TwoGraphWindow)
+        self.windowMenu.add_command(label='One graph window',	
+                                    accelerator='%s-1' % accMod,
+                                    command=self.OneGraphWindow)
+        self.windowMenu.add_command(label='Two graph windows',	
+                                    accelerator='%s-2' % accMod,
+                                    command=self.TwoGraphWindow)
         self.menubar.add_cascade(label="Window Layout", menu=self.windowMenu, 
                                  underline=0)
         
+        
+        # --- HELP menu ----------------------------------------
         self.helpMenu=Menu(self.menubar, tearoff=0, name='help')
+        
+        if not self.usingMacosxAquaTk:
+            self.helpMenu.add_command(label='About Gato',
+                                      command=self.AboutBox)
+                                      
+        self.helpMenu.add_command(label='Help',
+                                  accelerator='%s-?' % accMod,
+                                  command=self.HelpBox)        
+        self.helpMenu.add_separator()
+        self.helpMenu.add_command(label='About Algorithm',	
+                                  command=self.AboutAlgorithm)
+        self.helpMenu.add_command(label='About Graph',	
+                                  command=self.AboutGraph)
+        self.menubar.add_cascade(label="Help", menu=self.helpMenu, 
+                                 underline=0)
 
+
+        # --- MacOS X application menu --------------------------
         # On a Mac we put our about box under the Apple menu ... 
         if self.usingMacosxAquaTk:
             self.apple=Menu(self.menubar, tearoff=0, name='apple')
@@ -269,23 +293,7 @@ class AlgoWin(Frame):
                                    accelerator='command-,',
                                    command=self.Preferences)
             self.menubar.add_cascade(menu=self.apple)
-        else:
-            self.helpMenu.add_command(label='About Gato',	
-                                      command=self.AboutBox)
-        if self.usingMacosxAquaTk:
-            self.helpMenu.add_command(label='Help',
-                                      accelerator="command-?",
-                                      command=self.HelpBox)
-        else:
-            self.helpMenu.add_command(label='Help',	
-                                      command=self.HelpBox)
-        self.helpMenu.add_separator()
-        self.helpMenu.add_command(label='About Algorithm',	
-                                  command=self.AboutAlgorithm)
-        self.helpMenu.add_command(label='About Graph',	
-                                  command=self.AboutGraph)
-        self.menubar.add_cascade(label="Help", menu=self.helpMenu, 
-                                 underline=0)
+
             
         self.master.configure(menu=self.menubar)
 
@@ -483,13 +491,13 @@ class AlgoWin(Frame):
             return 0
 
             
-            ############################################################
-            #
-            # Menu Commands
-            #
-            # The menu commands are passed as call back parameters to 
-            # the menu items.
-            #
+    ############################################################
+    #
+    # Menu Commands
+    #
+    # The menu commands are passed as call back parameters to 
+    # the menu items.
+    #
     def OpenAlgorithm(self,file=""):
         """ GUI to allow selection of algorithm to open 
             file parameter for testing purposes """
@@ -937,13 +945,18 @@ class AlgoWin(Frame):
         widget.bind('r', self.KeyReplay)
         widget.bind('u', self.KeyUndo)
         widget.bind('d', self.KeyDo)
-       
+        
+        # Cross-plattform accelerators
         if self.usingMacosxAquaTk:
-            widget.bind('<Command-Key-q>',  self.Quit)
-            widget.bind('<Command-Key-,>',  self.Preferences)
-            widget.bind('<Command-Key-1>',  self.OneGraphWindow)
-            widget.bind('<Command-Key-2>',  self.TwoGraphWindow)
-            widget.bind('<Command-Key-?>',  self.HelpBox)
+            accMod = "Command"
+        else:
+            accMod = "Control"
+       
+        widget.bind('<%s-q>' % accMod,  self.Quit)
+        widget.bind('<%s-comma>' % accMod,  self.Preferences)
+        widget.bind('<%s-KeyPress-1>' % accMod,  self.OneGraphWindow)
+        widget.bind('<%s-KeyPress-2>' % accMod,  self.TwoGraphWindow)
+        widget.bind('<%s-question>' % accMod,  self.HelpBox)
 
               
     def KeyStart(self, event):
