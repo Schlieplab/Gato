@@ -98,22 +98,21 @@ def WMExtrasGeometry(window):
     WMExtra = min(32, WMExtra)
     return (topWMExtra,WMExtra)
     
-    ################################################################################
-    #
-    #
-    # Public Methods of class AlgoWin
-    #
-    # ShowActive(lineNo)           Display line lineNo as activated 
-    #
-    # ShowBreakpoint(lineNo)       Show breakpoint at line lineNo
-    #
-    # HideBreakpoint(lineNo)       Hide breakpoint at line lineNo
-    #
-    # WaitNextEvent()              Wait for some GUI event
-    #
-    # WaitTime(delay)              Wait for delay (in ms)
-    #
-    
+################################################################################
+#
+#
+# Public Methods of class AlgoWin
+#
+# ShowActive(lineNo)           Display line lineNo as activated 
+#
+# ShowBreakpoint(lineNo)       Show breakpoint at line lineNo
+#
+# HideBreakpoint(lineNo)       Hide breakpoint at line lineNo
+#
+# WaitNextEvent()              Wait for some GUI event
+#
+# WaitTime(delay)              Wait for delay (in ms)
+#
     
 class AlgoWin(Frame):
     """ Provide GUI with main menubar for displaying and controlling
@@ -206,10 +205,10 @@ class AlgoWin(Frame):
         
         self.SetFromConfig() # Set values read in config
         
-        ############################################################
-        #
-        # Create GUI
-        #   	
+    ############################################################
+    #
+    # Create GUI
+    #   	
     def makeMenuBar(self):
         """ *Internal* """
         self.menubar = Menu(self, tearoff=0)
@@ -412,12 +411,12 @@ class AlgoWin(Frame):
             self.secondaryGraphDisplay.Withdraw()
             
             
-            ############################################################
-            #
-            # GUI Helpers
-            #   	
-            
-            # Lock  
+    ############################################################
+    #
+    # GUI Helpers
+    #   	
+
+    # Lock  
     def touchLock(self):
         """ *Internal* The lock (self.goOn) is a variable which
             is used to control the flow of the programm and to 
@@ -861,12 +860,12 @@ class AlgoWin(Frame):
         d = HTMLViewer(self.graphDisplay.About(), "About Graph", self.master)
         self.AboutGraphDialog = d
         
-        ############################################################
-        #    # Tool bar Commands
-        #
-        # The tool bar commands are passed as call back parameters to 
-        # the tool bar buttons.
-        #
+    ############################################################
+    #    # Tool bar Commands
+    #
+    # The tool bar commands are passed as call back parameters to 
+    # the tool bar buttons.
+    #
     def CmdStart(self):
         """ Command linked to toolbar 'Start' """
         # self.deactivateMenu()
@@ -928,11 +927,11 @@ class AlgoWin(Frame):
         self.algorithm.Trace()
         self.touchLock()
         
-        
-        ############################################################
-        #
-        # Key commands for Tool bar Commands
-        #
+
+    ############################################################
+    #
+    # Key commands for Tool bar Commands
+    #
         
     def BindKeys(self, widget):
         # self.master.bind_all screws up EPSF save dialog
@@ -1003,23 +1002,23 @@ class AlgoWin(Frame):
         
         
         
-        ############################################################
-        #
-        # Mouse Commands
-        #		
-        
-        #
-        # handleMouse 
+    ############################################################
+    #
+    # Mouse Commands
+    #		
+
+    #
+    # handleMouse 
     def handleMouse(self, event):
         """ Callback for canvas to allow toggeling of breakpoints """
         currLine  = string.splitfields(self.algoText.index(CURRENT),'.')[0]
         self.algorithm.ToggleBreakpoint(string.atoi(currLine))
         
-        
-        ############################################################
-        #
-        # Public methods (for callbacks from algorithm)
-        #
+
+    ############################################################
+    #
+    # Public methods (for callbacks from algorithm)
+    #
     def ShowActive(self, lineNo):
         """ Show  lineNo as active line """
         if self.lastActiveLine != 0:
@@ -1051,6 +1050,7 @@ class AlgoWin(Frame):
             busy idling. See touchLock() """
         self.after(delay,self.touchLock)
         self.wait_variable(self.goOn)
+        
         
     def ClickHandler(self,type,t):
         """ *Internal* Callback for GraphDisplay """ 
@@ -1109,7 +1109,7 @@ class AlgoWin(Frame):
         log.error("%s file named %s produced an error" % (fileDescription, fileName))
         
         
-        # Endof: AlgoWin ---------------------------------------------------------------
+# Endof: AlgoWin ---------------------------------------------------------------
         
         
 class AlgorithmDebugger(bdb.Bdb):
@@ -1231,7 +1231,6 @@ class AlgorithmDebugger(bdb.Bdb):
         self.GUI.GUI.ShowActive(line)
         self.interaction(frame, None)
         
-        
     def user_return(self, frame, return_value):
         """ *Internal* This function is called when a return trap is set here """
         frame.f_locals['__return__'] = return_value
@@ -1291,7 +1290,7 @@ class AlgorithmDebugger(bdb.Bdb):
         """ *Internal* returns the current line number  """ 
         return frame.f_lineno 
         
-        # Endof: AlgorithmDebugger  ----------------------------------------------------
+# Endof: AlgorithmDebugger  ----------------------------------------------------
         
 class Algorithm:
     """ Provides all services necessary to load an algorithm, run it
@@ -1682,13 +1681,13 @@ class Algorithm:
         return e
         
         
-        ################################################################################
+################################################################################
 def usage():
     print "Usage: Gato.py"
     print "       Gato.py -v algorithm.alg graph.cat | gato-file"
     print "               -v or --verbose switches on the debugging/logging information"
-    
-    
+
+
 if __name__ == '__main__':
     import getopt
     
