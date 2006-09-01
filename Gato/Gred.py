@@ -905,6 +905,12 @@ if __name__ == '__main__':
     
     # Overide default colors for widgets ... maybe shouldnt be doing that for Windows?
     tk = Tk()
+    # Prevent the Tcl console from popping up in standalone apps on MacOS X
+    # Checking for hasattr(sys,'frozen') does not work for bundelbuilder
+    try:
+        tk.tk.call('console','hide')
+    except tkinter.TclError or AttributeError:
+        pass
     tk.option_add('*ActiveBackground','#EEEEEE')
     tk.option_add('*background','#DDDDDD')
     tk.option_add('Tk*Scrollbar.troughColor','#CACACA')

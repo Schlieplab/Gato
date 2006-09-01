@@ -123,12 +123,12 @@ class AlgoWin(Frame):
         #XXX import tkoptions
         #tkoptions.tkoptions(self)
 
-        # Prevent the Tcl console from popping up in standalone apps
-        # Checking for hasattr(sys,'frozen') does not work for bundelbuilder
-        try:
-            self.tk.call('console','hide')
-        except tkinter.TclError:
-            pass
+##        # Prevent the Tcl console from popping up in standalone apps on MacOS X
+##        # Checking for hasattr(sys,'frozen') does not work for bundelbuilder
+##        try:
+##            self.tk.call('console','hide')
+##        except tkinter.TclError:
+##            pass
         
         Splash = SplashScreen(self.master)
         self.usingMacosxAquaTk = self.macosxAquaTk()
@@ -481,6 +481,7 @@ class AlgoWin(Frame):
             http://mail.python.org/pipermail/pythonmac-sig/2004-September/011615.html
         """
         server = self.winfo_server()
+        log.debug("macosxAquaTk" + server) 
         if server[0:2] == 'QD':
             return 1
         elif server[0:3] == 'X11':
@@ -1706,8 +1707,21 @@ if __name__ == '__main__':
             if o in ("-v", "--verbose"):
                 logging.verbose = 1
                 
-        
-        app = AlgoWin()
+
+        tk = Tk()
+        # Prevent the Tcl console from popping up in standalone apps on MacOS X
+        # Checking for hasattr(sys,'frozen') does not work for bundelbuilder
+        try:
+            tk.tk.call('console','hide')
+        except tkinter.TclError:
+            pass
+        #XXX Buttons look ugly with white backgrouns. 
+        #tk.option_add('*ActiveBackground','#EEEEEE')
+        #tk.option_add('*background','#DDDDDD')
+        #tk.option_add('*Button.background','#DDDDDD')
+        #tk.option_add('Tk*Scrollbar.troughColor','#CACACA')
+         
+        app = AlgoWin(tk)
         
         
         #======================================================================
