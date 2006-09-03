@@ -88,7 +88,8 @@ class GraphDisplay:
         self.label = {}  # XXX ditto for label
         
         self.zoomFactor = 100.0 # percent
-        
+
+        self.windowingsystem = self.tk.call("tk", "windowingsystem")
         self.CreateWidgets()
         self.SetTitle("Gato - Graph")
         self.update()
@@ -221,27 +222,39 @@ class GraphDisplay:
                                   ' 50 %',' 75 %', '100 %','125 %','150 %')
         self.zoomMenu.config(height=1)
         self.zoomMenu.config(width=5)
-        if os.name == 'mac':
-            self.zoomMenu.config(font="Geneva 10")
-            self.zoomMenu["menu"].config(font="Geneva 10")
+        if self.windowingsystem == 'aqua':
+            self.zoomMenu.config(font="Geneva 9")
+            self.zoomMenu["menu"].config(font="Geneva 9")
         self.zoomMenu.grid(row=0,column=0,sticky="nwse") 
         self.infoframe.columnconfigure(0,weight=0)
         
         # To make things more windows like, we put the info-label
         # in a separate frame
-        borderFrame = Frame(self.infoframe, relief=SUNKEN, bd=1)
+        if self.windowingsystem == 'aqua':
+            borderFrame = Frame(self.infoframe, relief=RIDGE, bd=1)
+        else:
+            borderFrame = Frame(self.infoframe, relief=SUNKEN, bd=1)
+
         self.info = Label(borderFrame, text="No information available", anchor=W)
         self.info.config(width=50)
-        if os.name == 'mac':
-            self.info.config(font="Geneva 10")
+        #if self.windowingsystem == 'aqua':
+        #    self.info.config(font="Geneva 10")
         self.info.pack(side=LEFT, expand=1, fill=X)
         borderFrame.grid(row=0,column=1,sticky="nwse",padx=4,pady=3)
         self.infoframe.columnconfigure(1,weight=1)
+
+        if self.windowingsystem == 'aqua':
+            dummy = Frame(self.infoframe, relief=FLAT, bd=2)
+            dummy.grid(row=0, column=2, padx=6, pady=3)   
+            self.infoframe.columnconfigure(2,weight=0)
         
         # Scrolling Canvas
         # To make things more windows like, we put the canvas
         # in a separate frame	
-        borderFrame = Frame(self, relief=SUNKEN, bd=2)
+        if self.windowingsystem == 'aqua':
+            borderFrame = Frame(self, relief=FLAT, bd=1, background='#666666')
+        else:
+            borderFrame = Frame(self, relief=SUNKEN, bd=2)
         self.canvas = Canvas(borderFrame, width=gPaperWidth, height=gPaperHeight, 
                              background="white",
                              scrollregion=(0, 0, gPaperWidth, gPaperHeight))
@@ -1198,8 +1211,7 @@ class GraphDisplay:
                 e = self.FindEdge(event)
                 if e != None:
                     self.clickhandler('edge',e)
-                    
-                    
+
 class GraphDisplayFrame(GraphDisplay, Frame):
     """ Provides graph display in a frame """
     

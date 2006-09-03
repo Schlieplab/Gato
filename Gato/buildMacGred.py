@@ -41,9 +41,10 @@ buildapp(
     'logging'
     ],
     includePackages=[], # list of additional Packages to force in
-    libs=['/System/Library/Frameworks/Tk.Framework',
-          '/System/Library/Frameworks/Tcl.Framework'
-    ]
+    # Works on 10.4.7 without it
+    #libs=['/System/Library/Frameworks/Tk.Framework',
+    #      '/System/Library/Frameworks/Tcl.Framework'
+    #]
 )
 
 ### end of makeapplication.p

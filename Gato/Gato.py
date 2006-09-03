@@ -123,15 +123,10 @@ class AlgoWin(Frame):
         #XXX import tkoptions
         #tkoptions.tkoptions(self)
 
-##        # Prevent the Tcl console from popping up in standalone apps on MacOS X
-##        # Checking for hasattr(sys,'frozen') does not work for bundelbuilder
-##        try:
-##            self.tk.call('console','hide')
-##        except tkinter.TclError:
-##            pass
-        
         Splash = SplashScreen(self.master)
-        self.usingMacosxAquaTk = self.macosxAquaTk()
+        # Need to change things a bit for Tk running on MacOS X
+        # using the native drawing environment (TkAqua)
+        self.windowingsystem = self.tk.call("tk", "windowingsystem")
 
         self.algoFont = "Courier"
         self.algoFontSize = 10
@@ -214,11 +209,10 @@ class AlgoWin(Frame):
         self.menubar = Menu(self, tearoff=0)
 
         # Cross-plattform accelerators
-        if self.usingMacosxAquaTk:
+        if self.windowingsystem == "aqua":
             accMod = "command"
         else:
             accMod = "Ctrl"
-
         
         # --- FILE menu ----------------------------------------
         self.fileMenu = Menu(self.menubar, tearoff=0)
@@ -226,10 +220,10 @@ class AlgoWin(Frame):
                                   command=self.OpenAlgorithm)
         self.fileMenu.add_command(label='Open Graph...',	
                                   command=self.OpenGraph)
-        if not self.usingMacosxAquaTk:
+        if self.windowingsystem != 'aqua':
             self.fileMenu.add_command(label='New Graph...',	
                                       command=self.NewGraph)
-        # Only used for TRIAL-SOLUTION Gato version
+        # Obsolete. Only used for TRIAL-SOLUTION Gato version
         #self.fileMenu.add_command(label='Open GatoFile...',
         #			  command=self.OpenGatoFile)
         #self.fileMenu.add_command(label='Save GatoFile...',
@@ -238,7 +232,7 @@ class AlgoWin(Frame):
                                   command=self.ReloadAlgorithmGraph)
         self.fileMenu.add_command(label='Export Graph as EPS...',	
                                   command=self.ExportEPSF)
-        if not self.usingMacosxAquaTk:
+        if self.windowingsystem != 'aqua':
             self.fileMenu.add_separator()
             self.fileMenu.add_command(label='Preferences...',
                                       command=self.Preferences,
@@ -265,7 +259,7 @@ class AlgoWin(Frame):
         # --- HELP menu ----------------------------------------
         self.helpMenu=Menu(self.menubar, tearoff=0, name='help')
         
-        if not self.usingMacosxAquaTk:
+        if self.windowingsystem != 'aqua':
             self.helpMenu.add_command(label='About Gato',
                                       command=self.AboutBox)
                                       
@@ -283,7 +277,7 @@ class AlgoWin(Frame):
 
         # --- MacOS X application menu --------------------------
         # On a Mac we put our about box under the Apple menu ... 
-        if self.usingMacosxAquaTk:
+        if self.windowingsystem == 'aqua':
             self.apple=Menu(self.menubar, tearoff=0, name='apple')
             self.apple.add_command(label='About Gato',	
                                    command=self.AboutBox)
@@ -310,21 +304,26 @@ class AlgoWin(Frame):
             px = 0 
             py = 3 
 
-        if self.usingMacosxAquaTk:
+        if self.windowingsystem == 'aqua':
             bWidth = 10
         else:
             bWidth = 8
             
         self.buttonStart    = Button(toolbar, width=bWidth, padx=px, pady=py, 
-                                     text='Start', command=self.CmdStart)
+                                     text='Start', command=self.CmdStart,
+                                     highlightbackground='#DDDDDD')
         self.buttonStep     = Button(toolbar, width=bWidth, padx=px, pady=py, 
-                                     text='Step', command=self.CmdStep)
+                                     text='Step', command=self.CmdStep,
+                                     highlightbackground='#DDDDDD')
         self.buttonTrace    = Button(toolbar, width=bWidth, padx=px, pady=py, 
-                                     text='Trace', command=self.CmdTrace)
+                                     text='Trace', command=self.CmdTrace,
+                                     highlightbackground='#DDDDDD')
         self.buttonContinue = Button(toolbar, width=bWidth, padx=px, pady=py, 
-                                     text='Continue', command=self.CmdContinue)
+                                     text='Continue', command=self.CmdContinue,
+                                     highlightbackground='#DDDDDD')
         self.buttonStop     = Button(toolbar, width=bWidth, padx=px, pady=py, 
-                                     text='Stop', command=self.CmdStop)
+                                     text='Stop', command=self.CmdStop,
+                                     highlightbackground='#DDDDDD')
         
         self.buttonStart.grid(row=0, column=0, padx=2, pady=2)
         self.buttonStep.grid(row=0, column=1, padx=2, pady=2)
@@ -337,15 +336,21 @@ class AlgoWin(Frame):
         self.buttonTrace['state']    = DISABLED
         self.buttonContinue['state'] = DISABLED
         self.buttonStop['state']     = DISABLED	
-        
+
+        if self.windowingsystem == 'aqua':
+            dummy = Frame(toolbar, relief=FLAT, bd=2)
+            dummy.grid(row=0, column=5, padx=6, pady=2)
         
     def makeAlgoTextWidget(self):
         """ *Internal* Here we also define appearance of 
             - interactive lines 
             - breakpoints 
             - the active line """
-        borderFrame = Frame(self, relief=SUNKEN, bd=2) # Extra Frame
-        # around widget needed for more Windows-like appearance
+        if self.windowingsystem == 'aqua':
+            borderFrame = Frame(self, relief=FLAT, bd=1, background='#666666') # Extra Frame
+        else:
+            borderFrame = Frame(self, relief=SUNKEN, bd=2) # Extra Frame            
+            # around widget needed for more Windows-like appearance
         self.algoText = ScrolledText(borderFrame, relief=FLAT, 
                                      padx=3, pady=3,
                                      background="white", wrap='none',
@@ -474,22 +479,6 @@ class AlgoWin(Frame):
         elif type == 39: # Comment
             self.algoText.tag_add('comment','%d.%d' % (srow, scol),
                                   '%d.%d' % (erow, ecol))
-
-    def macosxAquaTk(self):
-        """ Return true when running on MacOS X using the Aqua Tk system.
-            Code lifted from a Pythonmac-SIG posting
-            http://mail.python.org/pipermail/pythonmac-sig/2004-September/011615.html
-        """
-        server = self.winfo_server()
-        log.debug("macosxAquaTk" + server) 
-        if server[0:2] == 'QD':
-            return 1
-        elif server[0:3] == 'X11':
-            return 0
-        else:
-            log.warning("Unknown tk.winfo_server(): %s. Assuming X11 compatability" % server)
-            return 0
-
             
     ############################################################
     #
@@ -768,7 +757,7 @@ class AlgoWin(Frame):
         self.WithdrawSecondaryGraphDisplay()
         self.master.update()
         
-        if self.usingMacosxAquaTk:
+        if self.windowingsystem == 'aqua':
             screenTop = 22 # Take care of menubar
         else:
             screenTop = 0 
@@ -810,7 +799,7 @@ class AlgoWin(Frame):
         self.OpenSecondaryGraphDisplay()
         self.master.update()
         
-        if self.usingMacosxAquaTk:
+        if self.windowingsystem == 'aqua':
             screenTop = 22 # Take care of menubar
         else:
             screenTop = 0 
@@ -932,9 +921,9 @@ class AlgoWin(Frame):
     ############################################################
     #
     # Key commands for Tool bar Commands
-    #
-        
+    #        
     def BindKeys(self, widget):
+        #widget.bind('<DESTROY>',self.OnQuitMenu)
         # self.master.bind_all screws up EPSF save dialog
         widget.bind('s', self.KeyStart)
         widget.bind('x', self.KeyStop)
@@ -947,7 +936,7 @@ class AlgoWin(Frame):
         widget.bind('d', self.KeyDo)
         
         # Cross-plattform accelerators
-        if self.usingMacosxAquaTk:
+        if self.windowingsystem == 'aqua':
             accMod = "Command"
         else:
             accMod = "Control"
@@ -1707,7 +1696,6 @@ if __name__ == '__main__':
             if o in ("-v", "--verbose"):
                 logging.verbose = 1
                 
-
         tk = Tk()
         # Prevent the Tcl console from popping up in standalone apps on MacOS X
         # Checking for hasattr(sys,'frozen') does not work for bundelbuilder
@@ -1715,15 +1703,26 @@ if __name__ == '__main__':
             tk.tk.call('console','hide')
         except tkinter.TclError:
             pass
-        #XXX Buttons look ugly with white backgrouns. 
+
         #tk.option_add('*ActiveBackground','#EEEEEE')
-        #tk.option_add('*background','#DDDDDD')
-        #tk.option_add('*Button.background','#DDDDDD')
-        #tk.option_add('Tk*Scrollbar.troughColor','#CACACA')
+        tk.option_add('*background','#DDDDDD')
+        #XXX Buttons look ugly with white backgrounds on MacOS X, added directly to Button(...)        
+        # The option not working is might be a known bug 
+        # http://aspn.activestate.com/ASPN/Mail/Message/Tcl-bugs/2131881
+        # Still present in the 8.4.7 that comes with 10.4  
+        tk.option_add('*Highlightbackground','#DDDDDD')
+        tk.option_add('*Button.highlightbackground','#DDDDDD')
+        tk.option_add('*Button.background','#DDDDDD')
+        tk.option_add('Tk*Scrollbar.troughColor','#CACACA')
          
         app = AlgoWin(tk)
-        
-        
+        # On MacOS X the Quit menu entry otherwise bypasses our Quit Handler
+        # According to
+        # http://mail.python.org/pipermail/pythonmac-sig/2006-May/017432.html
+        # this should work, Maybr
+        if app.windowingsystem == 'aqua':
+            tk.tk.createcommand("::tk::mac::Quit",app.Quit)
+            
         #======================================================================
         
         # Gato.py <algorithm> <graph>

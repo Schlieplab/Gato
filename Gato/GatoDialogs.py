@@ -200,12 +200,15 @@ class HTMLViewer(Toplevel):
         self.text['state'] = DISABLED 
         borderFrame.pack(side=TOP,expand=1,fill=BOTH)
         box = Frame(self)
-        w = Button(box, text="Dismiss", width=10, command=self.withdraw, default=ACTIVE)
+        w = Button(box, text="Dismiss", width=10, command=self.doWithdraw, default=ACTIVE)
         w.pack(side=RIGHT, padx=5, pady=5)
-        self.bind("<Return>", self.withdraw)
+        self.bind("<Return>", self.doWithdraw)
         box.pack(side=BOTTOM,fill=BOTH)
         self.insert(htmlcode)
-        
+
+    def doWithdraw(self, event=None):
+        # Need to eat optional event so that we can use is in both button and bind callback
+        self.withdraw()
         
     def Update(self,htmlcode, title):
         self.titleprefix = title

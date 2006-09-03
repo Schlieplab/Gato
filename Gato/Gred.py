@@ -178,7 +178,9 @@ class SAGraphEditor(GraphEditor, Frame):
     def __init__(self, master=None):
         Frame.__init__(self, master)
         Splash = GredSplashScreen(self.master)
-        self.usingMacosxAquaTk = self.macosxAquaTk()
+        # Need to change things a bit for Tk running on MacOS X
+        # using the native drawing environment (TkAqua)
+        self.windowingsystem = self.tk.call("tk", "windowingsystem")
         self.G = None
         self.pack() 
         self.pack(expand=1,fill=BOTH) # Makes whole window resizeable
@@ -294,8 +296,11 @@ class SAGraphEditor(GraphEditor, Frame):
     def CreateWidgets(self):
         toolbar = Frame(self, cursor='hand2', relief=FLAT)
         toolbar.pack(side=LEFT, fill=Y) # Allows horizontal growth
-        
-        extra = Frame(toolbar, cursor='hand2', relief=SUNKEN, borderwidth=2)
+
+        if self.windowingsystem == 'aqua':
+            extra = Frame(toolbar, cursor='hand2', relief=FLAT, borderwidth=2)
+        else:
+            extra = Frame(toolbar, cursor='hand2', relief=SUNKEN, borderwidth=2)
         extra.pack(side=TOP) # Allows horizontal growth
         extra.rowconfigure(5,weight=1)
         extra.bind("<Enter>", lambda e, gd=self:gd.DefaultInfo())
@@ -370,7 +375,7 @@ class SAGraphEditor(GraphEditor, Frame):
         self.menubar = Menu(self,tearoff=0)
 
         # Cross-plattform accelerators
-        if self.usingMacosxAquaTk:
+        if self.windowingsystem == 'aqua':
             accMod = "command"
         else:
             accMod = "Ctrl"
@@ -390,7 +395,7 @@ class SAGraphEditor(GraphEditor, Frame):
         self.fileMenu.add_separator()
         self.fileMenu.add_command(label='Export EPSF...',
                                   command=self.ExportEPSF)
-        if not self.usingMacosxAquaTk:
+        if self.windowingsystem != 'aqua':
             self.fileMenu.add_separator()
             self.fileMenu.add_command(label='Quit',		
                                       command=self.Quit,
@@ -482,7 +487,7 @@ class SAGraphEditor(GraphEditor, Frame):
                                  underline=0)
 
         # --- HELP menu ----------------------------------------        
-        if not self.usingMacosxAquaTk:
+        if self.windowingsystem != 'aqua':
             self.helpMenu=Menu(self.menubar, tearoff=0, name='help')
             self.helpMenu.add_command(label='About Gred',
                                       command=self.AboutBox)
@@ -491,7 +496,7 @@ class SAGraphEditor(GraphEditor, Frame):
 
         # --- MacOS X application menu --------------------------
         # On a Mac we put our about box under the Apple menu ... 
-        if self.usingMacosxAquaTk:
+        if self.windowingsystem == 'aqua':
             self.apple=Menu(self.menubar, tearoff=0, name='apple')
             self.apple.add_command(label='About Gred',	
                                    command=self.AboutBox)
@@ -501,24 +506,10 @@ class SAGraphEditor(GraphEditor, Frame):
             self.configure(menu=self.menubar)
         else:
             self.master.configure(menu=self.menubar)
-
-    def macosxAquaTk(self):
-        """ Return true when running on MacOS X using the Aqua Tk system.
-            Code lifted from a Pythonmac-SIG posting
-            http://mail.python.org/pipermail/pythonmac-sig/2004-September/011615.html
-        """
-        server = self.winfo_server()
-        if server[0:2] == 'QD':
-            return 1
-        elif server[0:3] == 'X11':
-            return 0
-        else:
-            log.warning("Unknown tk.winfo_server(): %s. Assuming X11 compatability" % server)
-            return 0
             
     def BindKeys(self, widget):
         # Cross-plattform accelerators
-        if self.usingMacosxAquaTk:
+        if self.windowingsystem == 'aqua':
             accMod = "Command"
         else:
             accMod = "Control"
