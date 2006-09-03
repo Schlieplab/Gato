@@ -49,7 +49,7 @@ from ScrolledText import *
 from tkFileDialog import askopenfilename, asksaveasfilename
 from tkMessageBox import askokcancel
 import tkSimpleDialog 
-import whrandom
+import random
 import string
 import sys
 import os
@@ -767,7 +767,7 @@ class SAGraphEditor(GraphEditor, Frame):
         for e in self.G.Edges():
             for i in xrange(count):
                 if d.result[i][0] == 1:
-                    val = whrandom.uniform(d.result[i][1],d.result[i][2])
+                    val = random.uniform(d.result[i][1],d.result[i][2])
                     if self.G.edgeWeights[i].QInteger():
                         self.G.edgeWeights[i][e] = round(int(val))
                     else:

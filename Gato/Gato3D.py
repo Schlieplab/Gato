@@ -41,7 +41,7 @@ import sys
 import traceback
 import os
 import bdb
-import whrandom
+import random
 import re 
 import string
 import StringIO
@@ -1357,7 +1357,7 @@ class Algorithm:
             
         if v == None:
             if default == None:
-                v = whrandom.choice(self.graph.vertices)
+                v = random.choice(self.graph.vertices)
             else:
                 v = default
         if visual is not None:
@@ -1382,7 +1382,7 @@ class Algorithm:
             
         if e == None:
             if default == None:
-                e = whrandom.choice(self.graph.Edges())
+                e = random.choice(self.graph.Edges())
             else:
                 e = default
                 

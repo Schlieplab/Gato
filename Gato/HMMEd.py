@@ -46,7 +46,7 @@ from tkFileDialog import askopenfilename, asksaveasfilename
 import tkMessageBox
 from tkMessageBox import askokcancel
 import tkSimpleDialog 
-import whrandom
+import random
 import string
 import types
 import copy

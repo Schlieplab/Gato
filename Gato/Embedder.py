@@ -59,14 +59,14 @@ def RedrawGraph(theGraphEditor):
                                   theGraphEditor.G.yCoord[v], 1)
         
         #----------------------------------------------------------------------
-import whrandom
+import random
 
 def RandomCoords(G):
     G.xCoord={}
     G.yCoord={}
     for v in G.vertices:
-        G.xCoord[v]=whrandom.randint(10,990)
-        G.yCoord[v]=whrandom.randint(10,990)
+        G.xCoord[v]=random.randint(10,990)
+        G.yCoord[v]=random.randint(10,990)
     return 1
     
 class RandomEmbedder(Embedder):
@@ -459,7 +459,7 @@ def BFSTreeCoords(G, root, direction):
     for d in list.values():
         Coord2=500-(len(d)-1)*yDist/2
         for v in d:
-            G.xCoord[v]=Coord1+whrandom.randint(-20,20)
+            G.xCoord[v]=Coord1+random.randint(-20,20)
             G.yCoord[v]=Coord2
             Coord2=Coord2+yDist 
         Coord1=Coord1-xDist

@@ -36,7 +36,7 @@
 
 from Graph import *
 from Embedder import *
-import whrandom
+import random
 from tkMessageBox import askokcancel
 
 class Creator:
@@ -215,7 +215,7 @@ def MaximalPlanarEdges(G,n,direction):
     
     m=2
     while index < n:
-        e=Edges[whrandom.randint(0,m-1)]
+        e=Edges[random.randint(0,m-1)]
         v=G.vertices[index]
         index=index+1
         
@@ -310,7 +310,7 @@ class randomGraphCreator(Creator):
         Edges=CompleteEdges(G,n,direction)
         
         for i in range(0,m):
-            pos=whrandom.randint(0,len(Edges)-1)
+            pos=random.randint(0,len(Edges)-1)
             G.AddEdge(Edges[pos][0],Edges[pos][1])
             del Edges[pos]
             
@@ -399,7 +399,7 @@ class randomPlanarGraphCreator(Creator):
         Edges=MaximalPlanarEdges(G,n,direction)
         
         for i in range(0,m):
-            pos=whrandom.randint(0,len(Edges)-1)
+            pos=random.randint(0,len(Edges)-1)
             G.AddEdge(Edges[pos][0],Edges[pos][1])
             del Edges[pos]
             
@@ -591,7 +591,7 @@ class completeTreeCreator(Creator):
                     if direction==0: 
                         G.AddEdge(v,new_v)
                     else:
-                        if whrandom.randint(0,1):
+                        if random.randint(0,1):
                             G.AddEdge(v,new_v)
                         else:
                             G.AddEdge(new_v,v)
@@ -653,9 +653,9 @@ class randomTreeCreator(Creator):
                                      float((float(degree)**(height-h)-1)/
                                            (degree-1))))
                 max_nodes=min(n-G.Order()-height+h+1,len(nodes[h])*degree)     
-            nodes_nr=whrandom.randint(min_nodes,max_nodes)
+            nodes_nr=random.randint(min_nodes,max_nodes)
             for i in range(0,nodes_nr):
-                pos=whrandom.randint(0,len(nodes[h])-1)
+                pos=random.randint(0,len(nodes[h])-1)
                 v=nodes[h][pos]
                 children_nr[v]=children_nr[v]+1
                 if children_nr[v]==degree:
@@ -665,7 +665,7 @@ class randomTreeCreator(Creator):
                 if direction==0:
                     G.AddEdge(v,new_v)
                 else:
-                    if whrandom.randint(0,1):
+                    if random.randint(0,1):
                         G.AddEdge(v,new_v)
                     else:
                         G.AddEdge(new_v,v)
