@@ -170,10 +170,87 @@ class MyHTMLParser(htmllib.HTMLParser):
     def __init__(self, formatter, output):
         htmllib.HTMLParser.__init__(self, formatter)
         self.output = output
+        self.tag_start = {}
         
     def handle_image(self, source, alt, ismap, align, width, height):
         imageCache = GatoUtil.ImageCache() # ImageCache is a singleton
         self.output.image_create('insert', image=imageCache[source], align='baseline') 
+
+        
+    def start_h1(self,attrs):
+        self.output.insert(INSERT,'\n')
+        self.tag_start['h1'] = self.output.index(INSERT)
+
+    def end_h1(self):
+        self.output.tag_add('h1',self.tag_start['h1'],self.output.index(INSERT))
+        self.output.insert(INSERT,'\n\n')
+
+    def start_h2(self,attrs):
+        self.output.insert(INSERT,'\n')
+        self.tag_start['h2'] = self.output.index(INSERT)
+
+    def end_h2(self):
+        self.output.tag_add('h2',self.tag_start['h2'],self.output.index(INSERT))
+        self.output.insert(INSERT,'\n\n')
+
+    def start_h3(self,attrs):
+        self.output.insert(INSERT,'\n')
+        self.tag_start['h3'] = self.output.index(INSERT)
+
+    def end_h3(self):
+        self.output.tag_add('h3',self.tag_start['h3'],self.output.index(INSERT))
+        self.output.insert(INSERT,'\n')
+
+    def start_h4(self,attrs):
+        self.output.insert(INSERT,'\n')
+        self.tag_start['h4'] = self.output.index(INSERT)
+
+    def end_h4(self):
+        self.output.tag_add('h4',self.tag_start['h4'],self.output.index(INSERT))
+        self.output.insert(INSERT,'\n')
+
+    def start_h5(self,attrs):
+        self.output.insert(INSERT,'\n')
+        self.tag_start['h5'] = self.output.index(INSERT)
+
+    def end_h5(self):
+        self.output.tag_add('h5',self.tag_start['h5'],self.output.index(INSERT))
+        self.output.insert(INSERT,'\n')
+
+    def start_b(self,attr):
+        self.tag_start['b'] = self.output.index(INSERT)
+
+    def end_b(self):
+        self.output.tag_add('b',self.tag_start['b'],self.output.index(INSERT))
+            
+    def start_em(self,attr):
+        self.tag_start['em'] = self.output.index(INSERT)
+
+    def end_em(self):
+        self.output.tag_add('em',self.tag_start['em'],self.output.index(INSERT))
+    
+    def start_p(self,attr):
+        self.output.insert(INSERT,'\n')
+
+    def end_p(self):
+        self.output.insert(INSERT,'\n\n')
+        
+    def start_pre(self,attr):
+        self.tag_start['pre'] = self.output.index(INSERT)
+
+    def end_pre(self):
+        self.output.tag_add('pre',self.tag_start['pre'],self.output.index(INSERT))
+        self.output.insert(INSERT,'\n\n')
+
+    def start_tt(self,attr):
+        self.tag_start['tt'] = self.output.index(INSERT)
+
+    def end_tt(self):
+        self.output.tag_add('tt',self.tag_start['tt'],self.output.index(INSERT))
+
+    
+
+
         
         
 class HTMLViewer(Toplevel):
@@ -204,7 +281,21 @@ class HTMLViewer(Toplevel):
         w.pack(side=RIGHT, padx=5, pady=5)
         self.bind("<Return>", self.doWithdraw)
         box.pack(side=BOTTOM,fill=BOTH)
+        self.setStyle()
         self.insert(htmlcode)
+
+    def setStyle(self):
+        self.text.tag_config('h1', font="Times 18 bold")
+        self.text.tag_config('h2', font="Times 16 bold")
+        self.text.tag_config('h3', font="Times 14 bold")
+        self.text.tag_config('h4', font="Times 12 bold")
+        self.text.tag_config('h5', font="Times 10 bold")
+        self.text.tag_config('b', font="Times 10 bold")
+        self.text.tag_config('em', font="Times 10 italic")
+        self.text.tag_config('pre', font="Courier 10")
+        self.text.tag_config('tt', font="Courier 10")
+       
+
 
     def doWithdraw(self, event=None):
         # Need to eat optional event so that we can use is in both button and bind callback
@@ -212,6 +303,11 @@ class HTMLViewer(Toplevel):
         
     def Update(self,htmlcode, title):
         self.titleprefix = title
+        # XXX Looks nice but no pics. Steal the formatting
+        #print "UPDATE"
+        #import HTML2Text
+        #HTML2Text.HTML2Text(htmlcode,self.text)        
+        # XXX 
         self.insert(htmlcode)
         
     def insert(self, htmlcode):
@@ -239,11 +335,18 @@ about = """<HTML>
 </HEAD>
 <BODY>
 
-<H2>Description</H2>
+<H1>Description 1</H1>
 
-This algorithm traverses a graph in breadth-first
-order.
-<P>
+<H2>Description 2</H2>
+
+<H3>Description 3</H3>
+
+<H4>Description 4</H4>
+
+<H5>Description 5</H5>
+
+<P>This algorithm traverses a graph in breadth-first
+order.</P>
 
 <H2>Visualisation</H2>
 
@@ -286,7 +389,7 @@ The following is a summary of the interface defined by
 <img src="Icons/edge.gif">
 <img src="Icons/delete.gif">
 <dl>
-<dt>x</dt> <dd>does wild things</dd>
+<dt>x</dt> <dd>does <b>wild</b> things</dd>
 <dt>y</dt> <dd>is even wilder</dd>
 </dl>
 
@@ -295,4 +398,5 @@ The following is a summary of the interface defined by
 """
 if __name__ == '__main__':
     win = HTMLViewer(about, "Dummy")
+    win.Update(about, "Dummy")
     Tk().mainloop()
