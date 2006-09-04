@@ -1,81 +1,18 @@
 ----------------------------------------------------------------
-
-- MacOS X Version: 
-  - Capture Quit menu entry
-  - Fonts ugly
-
-
-
-
-
-
-
-
-
-
-
-CATBox/Gato To-Do Stand: 6/21/00
-
-
-----------------------------------------------------------------
-Additional features:
+CATBox/Gato To-Do Stand 2006
 ----------------------------------------------------------------
 
-* Make Animated Data Structures switchable on and off
-  (checkbox: ???)
-
-
-----------------------------------------------------------------
-Einordnen:
-----------------------------------------------------------------
-
-* GraphDisplay: Moving vertices done delete/new
-
-
-* GraphDisplay: Move Annotations with vertices/edges
-
-
-* TESTEN
  
-* gato2eps command-line
 
-* Im MST Graph Informer steht immer "weight of mst", obwohl es doch
-  (meistens) noch garkein MST ist.
- 
-*  Koennte man in einer AnimatedNeighborhood(v) nicht den Knoten v mit einer
-   FrameWidth 6 versehen?
-
+----------------------------------------------------------------
+Internal:
+----------------------------------------------------------------
 * In dem AnimatedEdgeSet gibt es AddEdge und Remove, besser waere doch
   AddEdge und DeleteEdge wie im normalen Graphen auch, oder?
 
+- Implement error (try/catch) all-over the place
 
-----------------------------------------------------------------
-Algorithms:
-----------------------------------------------------------------
-
-- Bug or Feature: PickVertex & PickEdge: double 'step' required. First 
-  executes PickVertex and second steps ahead (i.e. break on line
-  before execution.)
-
-----------------------------------------------------------------
-Specific Algorithms:
-----------------------------------------------------------------
-
-- Welchen Algo als Demo
-
-- Färbungsheuristiken (Diplomarbeit Roland Dzallas)
-
-- Tests: Planarität, Zusammenhang, Bipartit
-
-- Layout
-
-- Markovketten, HMMs animiert
-
-- MSTKruskal/Greedy Tree info # components #vertices in largest, 
-  sum of weights largest.
-
-- Implement short-cycle-finder
-
+- Implement error handling in algorithms
 
 ----------------------------------------------------------------
 Editor:
@@ -89,17 +26,6 @@ Editor:
 
 * Gred: Loops, Löschen, Directed vs. undirected.
 
-* GraphDisplay: Moving vertices done delete/new
-
-* GraphDisplay: Move Annotations with vertices/edges
-
-- Adjazenzmatrix/Adjazenzlisten/Inzidenzmatrix/ Darstellung
-
-- Listbox fürs Gewichte editieren (alle Kante, alle Gewichte)
-
-- in-place Editierung (wenn Gewichte im Editor an der Kante gezeigt
-  werden)
-
 - directed toggle status bei Speichern undirected, und dann New
 
 - start mit window in groesse wie Gato 2-window layout
@@ -108,25 +34,12 @@ Editor:
 
 - How to prevent user from editing first weight in Euclidean graphs
 
-- Problems with gridding and zooming. Should align vertices to grid
-  Change grid size s.t. divisible by zoom factors: Use the supplied
-  conversion to obtain grid point 
-
-- Add vertex label, vertex annotation, edge annotation 
-  support (editing in Dialog, Display File I/O)
-
-- Toggle visibility of: vertex number, vertex label, vertex annotation, 
-  edge annotation (also for CATBox)
-
-- Check: Contemplate real editor (Mac like, vector oriented drawing program
-  like, cut, copy, paste, selections, ... the works)
 
 ---------------------------------------------------------------
 GUI:
 ----------------------------------------------------------------
 
-- Windows: Verzeichniswahl in den Dialogboxen. Kann man die sich
-  die Pfade merken ?
+- 2 mal Quit bei laufendem Algorithmus
 
 - Am Anfang 2*mal Start
 
@@ -136,26 +49,14 @@ GUI:
 
 - Enable tracing button only on traceable lines (+color of lines) 
 
-- Add Options Dialogs (Speed!!!)
- 
-- Printing: Make nice Dialog ? 
-	    Print to Printer on Unix ?
-
-- Eventually add Zoom to fit 
-
-- Windows: Ersetzung des Tk-Icons geht unter Tcl/Tk mit der Winico-DLL.
-  Python: unclear 
-
-- Windows: Doppelclick in open-file erzeugt extra Mouseclick in widget
-  drunter. Fixed in Tk 8.3.0
 
 ----------------------------------------------------------------
 I/O:
 ----------------------------------------------------------------
 
-- MS/DOS (und Mac) Zeilenende-Kennung(en) richtig behandeln
+- MS/DOS (und Mac) Zeilenende-Kennung(en) richtig behandeln.
+  Check whether Textedit can be used for editing algorithms
 
-- XML/GraphML einbauen
 
 ----------------------------------------------------------------
 Documentation:
@@ -167,24 +68,16 @@ Documentation:
 Deployment:
 ----------------------------------------------------------------
 
-- pyw (um console zu verstecken)
+* MacOS X Version (see buildMacGato.py)
+  - Capture Quit menu entry
+  - Fonts ugly
 
-- Icons: Anstatt als externe Dateien Python-Modul mit base64-encodierten
-  Strings (Automatisieren):
-  base64 -base64 -e -in gato.gif -out gato-gif.txt 
-
-  import GatoIcons
-  self.catIconImage = PhotoImage(data=GatoIcons.gato_gif) # statt file=
-
-- Installer:
-
-  Mac:  1.5.2b1 version has cool BuildApplication. Probably needs
-        shared lib (could be in same folder?)
- 
-  Windows: TP untersuchts
-
-  Unix: Patches exist to turn tcl/tk into libtk.a libtcl.a without
-        *any* external scripts. Together with freeze should suffice. 
+* Windows: One click how to?
+  - pyw (um console zu verstecken)
+  - Windows: Ersetzung des Tk-Icons geht unter Tcl/Tk mit der Winico-DLL.
+  Python: unclear 
+ - Windows: Verzeichniswahl in den Dialogboxen. Kann man die sich
+  die Pfade merken ?
 
 
 ----------------------------------------------------------------
@@ -202,12 +95,47 @@ Design:
 ----------------------------------------------------------------
 - Implement error (try/catch) all-over the place
 
-- make LGPL internal (global var)
-
 - Implement error handling in algorithms
 
 ----------------------------------------------------------------
-Flaws:
+BUGS:
 ----------------------------------------------------------------
-- Some parse errors with CATBox files
+
+- The following infinite loop cannot be aborted from GUI
+  while 1:
+      pass
+
+- Reproducible???: Some parse errors with CATBox files
   So far error in files only (larger ones, key errors)
+
+----------------------------------------------------------------
+Feature requests:
+----------------------------------------------------------------
+
+* CATBox: Make Animated Data Structures able to toggle animation
+
+* gato2eps command-line tool
+
+- Gred: Add vertex label, vertex annotation, edge annotation 
+  support (editing in Dialog, Display File I/O)
+
+- Gred: Toggle visibility of: vertex number, vertex label, vertex annotation, 
+  edge annotation (also for CATBox)
+
+- Gred: Contemplate real editor (Mac like, vector oriented drawing program
+  like, cut, copy, paste, selections, ... the works)
+
+- Gred: Adjazenzmatrix/Adjazenzlisten/Inzidenzmatrix/ Darstellung
+
+- Gred: Listbox fürs Gewichte editieren (alle Kante, alle Gewichte)
+
+- Gred: in-place Editierung (wenn Gewichte im Editor an der Kante gezeigt
+  werden)
+
+- GraphDisplay: Printing: Make nice Dialog ? Print to Printer on Unix ?
+
+- GraphDisplay: Eventually add Zoom to fit 
+
+- GraphDisplay: Export of complete animations to SVG
+
+- Remove old CATBox-format: add XML/GraphML

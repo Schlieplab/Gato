@@ -47,6 +47,7 @@ import StringIO
 import tokenize
 import tkFont
 import copy
+import webbrowser
 
 import Gred
 
@@ -266,6 +267,11 @@ class AlgoWin(Frame):
         self.helpMenu.add_command(label='Help',
                                   accelerator='%s-?' % accMod,
                                   command=self.HelpBox)        
+        self.helpMenu.add_separator()
+        self.helpMenu.add_command(label='Go to Gato website',
+                                  command=self.GoToGatoWebsite)
+        self.helpMenu.add_command(label='Go to CATBox website',
+                                  command=self.GoToCATBoxWebsite)       
         self.helpMenu.add_separator()
         self.helpMenu.add_command(label='About Algorithm',	
                                   command=self.AboutAlgorithm)
@@ -841,7 +847,13 @@ class AlgoWin(Frame):
         
     def HelpBox(self,event=None):
         d = HTMLViewer(gGatoHelp, "Help", self.master)
-        
+
+    def GoToGatoWebsite(self):
+        webbrowser.open('http://gato.sf.net', new=1, autoraise=1)
+
+    def GoToCATBoxWebsite(self):
+        webbrowser.open('http://algorithmics.molgen.mpg.de/CATBox', new=1, autoraise=1)
+
     def AboutAlgorithm(self):
         d = HTMLViewer(self.algorithm.About(), "About Algorithm", self.master)
         self.AboutAlgorithmDialog = d
