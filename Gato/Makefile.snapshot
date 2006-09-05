@@ -46,8 +46,8 @@
 
 # Vars
 
-VERSION       = 0.98Q
-DATE          = 01/20/2006
+VERSION       = 0.99
+DATE          = 09/05/2006
 DISTNAME      = Gato
 DISTNAMEDOC   = $(DISTNAME)-Doc
 
@@ -161,4 +161,16 @@ PHONY:
 	chmod 664 $(WWWDIR)/md5.info
 	chgrp -f algogrp $(WWWDIR)/md5.info	
 
-	scp $(WWWDIR)/$(DISTNAME)-$(VERSION).tar.gz $(WWWDIR)/$(DISTNAMEDOC)-$(VERSION).tar.gz $(WWWDIR)/md5.info $(WWWDIR)/build.info gato.sf.net:pub-gato/Download/
+	# 6) Build MacOS X 10.4 binaries in DiskImage
+	ssh xserve.molgen.mpg.de "rm -rf Gato*"
+	scp $(WWWDIR)/$(DISTNAME)-$(VERSION).tar.gz xserve.molgen.mpg.de:
+	ssh xserve.molgen.mpg.de gunzip $(DISTNAME)-$(VERSION).tar.gz
+	ssh xserve.molgen.mpg.de tar xf $(DISTNAME)-$(VERSION).tar
+	scp ./buildMacGato.py ./buildMacGred.py ./Gato.icns xserve.molgen.mpg.de:Gato/
+	ssh xserve.molgen.mpg.de "cd Gato;/usr/bin/python buildMacGato.py -v --python=/usr/bin/python -a --semi-standalone build"
+	ssh xserve.molgen.mpg.de "cd Gato;/usr/bin/python buildMacGred.py -v --python=/usr/bin/python -a --semi-standalone build"
+	ssh xserve.molgen.mpg.de cp Gato/*.cat Gato/*.alg Gato/*.pro Gato/build/
+	ssh xserve.molgen.mpg.de hdiutil create -volname Gato-$(VERSION) -srcfolder Gato/build Gato-$(VERSION).dmg
+	scp xserve.molgen.mpg.de:Gato-$(VERSION).dmg $(WWWDIR)/
+
+	scp $(WWWDIR)/$(DISTNAME)-$(VERSION).dmg $(WWWDIR)/$(DISTNAME)-$(VERSION).tar.gz $(WWWDIR)/$(DISTNAMEDOC)-$(VERSION).tar.gz $(WWWDIR)/md5.info $(WWWDIR)/build.info gato.sf.net:pub-gato/Download/
