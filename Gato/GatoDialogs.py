@@ -148,7 +148,8 @@ class SplashScreen(Toplevel):
 class HTMLWriter(formatter.DumbWriter):
 
     def __init__(self, textWidget, viewer):
-        formatter.DumbWriter.__init__(self, self)
+        # XXX Stupid hack. Now DumbWriter wordwraps at 9999999 columns  
+        formatter.DumbWriter.__init__(self, self, 9999999)
         self.textWidget = textWidget
         self.viewer = viewer
         self.indent = ""
@@ -161,7 +162,16 @@ class HTMLWriter(formatter.DumbWriter):
         
     def send_label_data(self, data):
         self.write(self.indent + data + ' ')
+
+    #def send_line_break(self):
+    #    print "send_line_break"
+    #    #pass
+
+    #def send_paragraph(self,blankline):
+    #    print "send_paragraph", blankline
+
         
+
         
 class MyHTMLParser(htmllib.HTMLParser):
     """ Basic parser with image support added. output is supposed to be
@@ -176,7 +186,11 @@ class MyHTMLParser(htmllib.HTMLParser):
         imageCache = GatoUtil.ImageCache() # ImageCache is a singleton
         self.output.image_create('insert', image=imageCache[source], align='baseline') 
 
-        
+    def do_colordef(self,attrs):
+        colordef = Frame(self.output,width=40,height=18,background=attrs[0][1])
+        self.output.window_create(INSERT, window=colordef)
+        self.output.insert(INSERT, ' ')
+
     def start_h1(self,attrs):
         self.output.insert(INSERT,'\n')
         self.tag_start['h1'] = self.output.index(INSERT)
@@ -285,15 +299,18 @@ class HTMLViewer(Toplevel):
         self.insert(htmlcode)
 
     def setStyle(self):
-        self.text.tag_config('h1', font="Times 18 bold")
-        self.text.tag_config('h2', font="Times 16 bold")
-        self.text.tag_config('h3', font="Times 14 bold")
-        self.text.tag_config('h4', font="Times 12 bold")
-        self.text.tag_config('h5', font="Times 10 bold")
-        self.text.tag_config('b', font="Times 10 bold")
-        self.text.tag_config('em', font="Times 10 italic")
-        self.text.tag_config('pre', font="Courier 10")
-        self.text.tag_config('tt', font="Courier 10")
+        baseSize = 14
+        self.text.config(font="Times %d" % baseSize)
+        
+        self.text.tag_config('h1', font="Times %d bold" % (baseSize + 8))
+        self.text.tag_config('h2', font="Times %d bold" % (baseSize + 6))
+        self.text.tag_config('h3', font="Times %d bold" % (baseSize + 4))
+        self.text.tag_config('h4', font="Times %d bold" % (baseSize + 2))
+        self.text.tag_config('h5', font="Times %d bold" % (baseSize + 1))
+        self.text.tag_config('b', font="Times %d bold" % baseSize)
+        self.text.tag_config('em', font="Times %d italic" % baseSize)
+        self.text.tag_config('pre', font="Courier %d" % baseSize)
+        self.text.tag_config('tt', font="Courier %d" % baseSize)
        
 
 
@@ -313,12 +330,11 @@ class HTMLViewer(Toplevel):
     def insert(self, htmlcode):
         self.text['state'] = NORMAL
         self.text.delete('0.0', END)
-        
         writer = HTMLWriter(self.text, self)
         format = formatter.AbstractFormatter(writer)
         #parser = htmllib.HTMLParser(format)
         parser = MyHTMLParser(format, self.text)
-        
+        parser.nofill=False
         parser.feed(htmlcode)
         parser.close()
         
@@ -346,11 +362,26 @@ about = """<HTML>
 <H5>Description 5</H5>
 
 <P>This algorithm traverses a graph in breadth-first
-order.</P>
+order. </P>
 
-<H2>Visualisation</H2>
+<p>Visu We provide archive files which contain the CATBox algorithms and
+graphs and one binary executable each for Gato and Gred. Since we
+cannot rely on Python being available on Linux and Windows XP the
+executables are rather large, since they contain their own Python
+interpreter.  However, the installation is pretty much just one copy
+and a double-click.
+alisation</p>
 
-You see
+<p>We provide archive files which contain the CATBox algorithms and
+graphs and one binary executable each for Gato and Gred. Since we
+cannot rely on Python being available on Linux and Windows XP the
+executables are rather large, since they contain their own Python
+interpreter.  However, the installation is pretty much just one copy
+and a double-click.
+alisation</p>
+
+
+<colordef color="#ACDEFA">This color you will see</colordef>
 
 
 <H4>Implementation</h4>
@@ -369,13 +400,20 @@ The following is a summary of the interface defined by
 <P>
 
 <ol>
-<LI>The interface
+<LI> <colordef color="red"> Processed Vertices
 
-<LI>Its <b>implementation</b>
+<LI> <colordef color="#ACDEFA"> Visited Vertices
 
-<LI>WHat not
+<LI> <colordef color="grey"> Ignored Edges
 </OL>
 
+<Ul>
+<LI> <colordef color="red"> Processed Vertices
+
+<LI> <colordef color="#ACDEFA"> Visited Vertices
+
+<LI> <colordef color="grey"> Ignored Edges
+</UL>
 
 
 <UL>
@@ -385,6 +423,8 @@ The following is a summary of the interface defined by
 
 <LI>WHat not
 </UL>
+
+
 <img src="Icons/vertex.gif">
 <img src="Icons/edge.gif">
 <img src="Icons/delete.gif">
@@ -398,5 +438,5 @@ The following is a summary of the interface defined by
 """
 if __name__ == '__main__':
     win = HTMLViewer(about, "Dummy")
-    win.Update(about, "Dummy")
+    #win.Update(about, "Dummy")
     Tk().mainloop()
