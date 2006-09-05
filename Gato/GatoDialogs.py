@@ -192,7 +192,7 @@ class MyHTMLParser(htmllib.HTMLParser):
         self.output.insert(INSERT, ' ')
 
     def start_h1(self,attrs):
-        self.output.insert(INSERT,'\n')
+        self.output.insert(INSERT,'\n\n')
         self.tag_start['h1'] = self.output.index(INSERT)
 
     def end_h1(self):
@@ -200,7 +200,7 @@ class MyHTMLParser(htmllib.HTMLParser):
         self.output.insert(INSERT,'\n\n')
 
     def start_h2(self,attrs):
-        self.output.insert(INSERT,'\n')
+        self.output.insert(INSERT,'\n\n')
         self.tag_start['h2'] = self.output.index(INSERT)
 
     def end_h2(self):
@@ -208,7 +208,7 @@ class MyHTMLParser(htmllib.HTMLParser):
         self.output.insert(INSERT,'\n\n')
 
     def start_h3(self,attrs):
-        self.output.insert(INSERT,'\n')
+        self.output.insert(INSERT,'\n\n')
         self.tag_start['h3'] = self.output.index(INSERT)
 
     def end_h3(self):
@@ -216,7 +216,7 @@ class MyHTMLParser(htmllib.HTMLParser):
         self.output.insert(INSERT,'\n')
 
     def start_h4(self,attrs):
-        self.output.insert(INSERT,'\n')
+        self.output.insert(INSERT,'\n\n')
         self.tag_start['h4'] = self.output.index(INSERT)
 
     def end_h4(self):
@@ -224,7 +224,7 @@ class MyHTMLParser(htmllib.HTMLParser):
         self.output.insert(INSERT,'\n')
 
     def start_h5(self,attrs):
-        self.output.insert(INSERT,'\n')
+        self.output.insert(INSERT,' ')
         self.tag_start['h5'] = self.output.index(INSERT)
 
     def end_h5(self):
@@ -280,12 +280,14 @@ class HTMLViewer(Toplevel):
         borderFrame = Frame(self, relief=SUNKEN, bd=2) # Extra Frame
         self.text = ScrolledText(borderFrame, relief=FLAT, 
                                  padx=3, pady=3,
-                                 #background='white', 
-                                 background=color, 
+                                 background='white', 
+                                 #background=color, 
                                  #foreground="black",
                                  wrap='word',
-                                 width=60, height=12,
-                                 font="Times 10")
+                                 width=60, height=20,
+                                 spacing1=3,
+                                 spacing2=2,
+                                 spacing3=3)
         self.text.pack(expand=1, fill=BOTH)
         #self.text.insert('0.0', text)
         self.text['state'] = DISABLED 
@@ -320,11 +322,6 @@ class HTMLViewer(Toplevel):
         
     def Update(self,htmlcode, title):
         self.titleprefix = title
-        # XXX Looks nice but no pics. Steal the formatting
-        #print "UPDATE"
-        #import HTML2Text
-        #HTML2Text.HTML2Text(htmlcode,self.text)        
-        # XXX 
         self.insert(htmlcode)
         
     def insert(self, htmlcode):
@@ -438,5 +435,4 @@ The following is a summary of the interface defined by
 """
 if __name__ == '__main__':
     win = HTMLViewer(about, "Dummy")
-    #win.Update(about, "Dummy")
     Tk().mainloop()
