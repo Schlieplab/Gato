@@ -224,7 +224,6 @@ class MyHTMLParser(htmllib.HTMLParser):
         self.output.insert(INSERT,'\n')
 
     def start_h5(self,attrs):
-        self.output.insert(INSERT,' ')
         self.tag_start['h5'] = self.output.index(INSERT)
 
     def end_h5(self):
@@ -261,9 +260,6 @@ class MyHTMLParser(htmllib.HTMLParser):
 
     def end_tt(self):
         self.output.tag_add('tt',self.tag_start['tt'],self.output.index(INSERT))
-
-    
-
 
         
         
