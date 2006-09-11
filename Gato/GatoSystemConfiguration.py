@@ -181,8 +181,11 @@ class configureUNIX(configureOS):
                 # skip comments
             if line[0]=="#":
                 continue
-                
+               
             line=line.strip()
+            # skip whitespace
+            if len(line) == 0:
+                continue                                      
             while line[-1]=="\\":
                 line=line[:-1]+mailcap.readline().rstrip()
             entries=line.split(";")

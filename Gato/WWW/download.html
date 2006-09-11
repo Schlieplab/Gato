@@ -23,24 +23,17 @@ before proceeding. If you have installed Gato before, and just want to
 upgrade to a newer version, download the compressed archive
 file. Remember to download it as a binary.</P>
 
-<h3>CVS Access</h3>
+<h3>SVN Access</h3>
 
 <p>If you want to check out the very latest version you can use
-anonymous CVS access. First login
+anonymous SVN access. 
 <pre>
-  > cvs -d:pserver:anonymous@gato.cvs.sourceforge.net:/cvsroot/gato login 
+  > svn co https://svn.sourceforge.net/svnroot/gato/trunk/Gato Gato
 </pre>
-using an empty password (just hit enter) and then check out Gato
+
+If you are registered developer you should download Gato using
 <pre>
-  > cvs -z3 -d:pserver:anonymous@gato.cvs.sourceforge.net:/cvsroot/gato co Gato
-</pre>
-If you are registered developer you can download Gato using
-<pre>
-  > cvs -z3 -d:ext:username@gato.cvs.sourceforge.net:/cvsroot/gato co Gato
-</pre>
-Dont forget to
-<pre>
-  > export CVS_RSH=ssh
+  > svn --username your_sf_name co https://svn.sourceforge.net/svnroot/gato/trunk/Gato Gato
 </pre>
 </P>
 

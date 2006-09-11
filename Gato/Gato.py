@@ -63,7 +63,8 @@ from GatoUtil import *
 from GatoGlobals import *
 from GatoDialogs import AboutBox, SplashScreen, HTMLViewer
 import GatoIcons
-import GatoSystemConfiguration
+# Only needed for Trial-Solution version. 
+#import GatoSystemConfiguration
 from AnimationHistory import AnimationHistory
 
 # put someplace else
@@ -142,7 +143,8 @@ class AlgoWin(Frame):
         
         GatoIcons.Init()
         self.config = GatoConfiguration(self)
-        self.gatoInstaller=GatoSystemConfiguration.GatoInstaller()
+        # Only needed for Trial-Solution version. 
+        #self.gatoInstaller=GatoSystemConfiguration.GatoInstaller()
         
         # Create widgets
         self.pack()
