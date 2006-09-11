@@ -4,11 +4,11 @@
 #       This file is based on of Gato (Graph Animation Toolbox) 
 #
 #	file:   ViewClusterGraph.py
-#	author: Alexander Schliep (schliep@molgen.mpg.de)
+#	author: Alexander Schliep (alexander@schliep.org)
 #
 #       Copyright (C) 2003 Alexander Schliep
 #                                   
-#       Contact: schliep@molgen.mpg.de             
+#       Contact: alexander@schliep.org             
 #
 #       Information on Gato: http://gato.sf.net
 #

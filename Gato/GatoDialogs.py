@@ -4,11 +4,11 @@
 #       You can find more information at http://gato.sf.net
 #
 #	file:   GatoDialogs.py
-#	author: Alexander Schliep (schliep@molgen.mpg.de)
-#       Copyright (C) 1998-2005, Alexander Schliep, Winfried Hochstaettler and 
+#	author: Alexander Schliep (alexander@schliep.org)
+#       Copyright (C) 1998-2006, Alexander Schliep, Winfried Hochstaettler and 
 #       Copyright 1998-2001 ZAIK/ZPR, Universitaet zu Koeln
 #                                   
-#       Contact: schliep@molgen.mpg.de, wh@zpr.uni-koeln.de             
+#       Contact: alexander@schliep.org, winfried.hochstaettler@fernuni-hagen.de             
 #
 #       Information: http://gato.sf.net
 #
@@ -48,7 +48,7 @@ crnotice1 = "Copyright (C) 1998-2006, Alexander Schliep\n"\
             "and Winfried Hochstaettler. Copyright (C)\n"\
             "1998-2001 ZPR, University of Cologne\n"\
             "Gato version _VERSION_ from _BUILDDATE_"
-crnotice2 = "Written by Alexander Schliep (schliep@molgen.mpg.de).\n" \
+crnotice2 = "Written by Alexander Schliep (alexander@schliep.org).\n" \
             "Application Design: Alexander Schliep and \n" \
             "Winfried Hochstaettler. Additional developers: Torsten\n" \
             "Pattberg, Ramazan Buzdemir, Achim Gaedke and\nWasinee Rungsarityotin." \

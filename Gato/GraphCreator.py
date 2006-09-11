@@ -5,10 +5,10 @@
 #	file:   GraphCreator.py
 #	author: Ramazan Buzdemir (buzdemir@zpr.uni-koeln.de)
 #
-#       Copyright (C) 1998-2005, Alexander Schliep, Winfried Hochstaettler and 
+#       Copyright (C) 1998-2006, Alexander Schliep, Winfried Hochstaettler and 
 #       Copyright 1998-2001 ZAIK/ZPR, Universitaet zu Koeln
 #                                   
-#       Contact: schliep@molgen.mpg.de, wh@zpr.uni-koeln.de             
+#       Contact: alexander@schliep.org, winfried.hochstaettler@fernuni-hagen.de             
 #
 #       Information: http://gato.sf.net
 #

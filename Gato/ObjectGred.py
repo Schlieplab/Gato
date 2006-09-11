@@ -4,11 +4,11 @@
 #       This file is part of Gato (Graph Animation Toolbox) 
 #
 #	file:   ObjectGred.py
-#	author: Alexander Schliep (schliep@molgen.mpg.de)
+#	author: Alexander Schliep (alexander@schliep.org)
 #
 #       Copyright (C) 2006 Alexander Schliep
 #                                   
-#       Contact: schliep@molgen.mpg.de
+#       Contact: alexander@schliep.org
 #
 #       Information: http://gato.sf.net
 #
