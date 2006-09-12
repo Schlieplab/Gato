@@ -742,23 +742,31 @@ class AlgoWin(Frame):
         """ GUI to control export of EPSF file  """
         file = asksaveasfilename(title="Export EPSF",
                                  defaultextension=".eps",
-                                 filetypes = [  ("Encapsulated PS", ".eps")
-                                               ,("Postscript", ".ps")
-                                             ]
+                                 filetypes = [  ("Encapsulated PS", ".eps"),
+                                                ("Postscript", ".ps")
+                                                ]
                                  )
         if file is not "": 
             self.graphDisplay.PrintToPSFile(file)
             
             
     def Quit(self,event=None):
-        if self.algorithmIsRunning:
+        if self.algorithmIsRunning == 1:
             self.commandAfterStop = self.Quit
             self.CmdStop()
             return
             
         if askokcancel("Quit","Do you really want to quit?"):
-            Frame.quit(self)
             self.CleanUp()
+            #self.quit() ## WORKS, except when the algorithm is
+            ## started from the command line. So we do it by hand
+            if self.graphDisplay != None:
+                self.graphDisplay.destroy()
+            if self.secondaryGraphDisplay != None:
+                self.secondaryGraphDisplay.destroy()
+            self.destroy()
+            os._exit(0)
+
             
     def OneGraphWindow(self,event=None):
         """ Align windows nicely for one graph window """
@@ -892,6 +900,7 @@ class AlgoWin(Frame):
         
     def CommitStop(self):
         """ Commit a stop for the GUI """
+        self.algorithmIsRunning = 0
         self.buttonStart['state']    = NORMAL
         self.buttonStep['state']     = DISABLED
         self.buttonTrace['state']    = DISABLED
@@ -902,7 +911,6 @@ class AlgoWin(Frame):
         if self.lastActiveLine != 0:
             self.unTagLine(self.lastActiveLine,'Active')
         self.update() # Forcing redraw
-        self.algorithmIsRunning = 0
         if self.commandAfterStop != None:
             self.commandAfterStop()
             self.commandAfterStop = None
@@ -1618,18 +1626,31 @@ class Algorithm:
         
             If check fails algorithm is stopped 
         
-            Proper names for properties are defined in gProperty """
-        for property in propertyValueDict.keys():
+            Proper names for properties are defined in gProperty
+        """
+        for property,requiredValue in propertyValueDict.iteritems():
+            failed = 0
             value = self.graph.Property(property)
-            if value != propertyValueDict[property]:
-                r = askokcancel("Gato - Error", 
-                                "The algorithm you started requires that the graph " +
-                                "it works on has certain properties. The graph does " + 
-                                "not have the correct value " +
-                                "for the property '" + property + "'.\n" +
-                                "Do you still want to proceed ?")
-                if not r:
+            try:
+                if cmp(value,requiredValue) != gProperty[property][0]:
+                    fail = 1
+            except ValueError:
+                fail = 1
+            
+            if fail:
+                errMsg = "The algorithm %s requires that the graph %s has %s" % \
+                         (stripPath(self.algoFileName),
+                          stripPath(self.graphFileName),
+                          gProperty[property][1])
+                if gProperty[property][0] < 0:
+                    errMsg += " of %s or less" % str(requiredValue)
+                elif gProperty[property][0] > 0:
+                    errMsg += " of %s or more" % str(requiredValue)
+                errMsg += ".\nDo you still want to proceed ?"                          
+                r = askokcancel("Gato - Error", errMsg)
+                if r == False:
                     self.GUI.CmdStop()
+                    return
                     
     def PickVertex(self, default=None, filter=None, visual=None):
         """ Pick a vertex interactively. 

@@ -383,11 +383,25 @@ class Graph:
         
     def Property(self,name):
         """ Return the value of property 'name'. If the property
-           'name' has not been set 'Unknown' is returned """
-        try:
-            return self.properties[name]
-        except:
-            return 'Unknown'
+           'name' has not been set 'Unknown' is returned
+           
+            XXX the catbox format does not support storing properties
+        """
+        if name == "Directed":
+            return self.directed
+        elif name == "EdgeWeights":
+            return self.NrOfEdgeWeights()
+        elif name == "Euclidean":
+            return self.euclidian       
+        elif name == "Simple":
+            return self.simple
+        elif name == "VertexWeights":
+            return self.NrOfVertexWeights()
+        else:
+            try:
+                return self.properties[name]
+            except KeyError:
+                return 'Unknown'
             
     def About(self):
         """ Return string containing HTML code providing information

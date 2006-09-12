@@ -93,15 +93,15 @@ GraphNotSimpleError = 'GraphNotSimpleError'
 NoSuchVertexError   = 'NoSuchVertexError'
 NoSuchEdgeError     = 'NoSuchEdgeError'
 
-gProperty = {}
 
-#             property       explanation
-#gProperty = {'Connected':     'has more than one connected component'} #,
-#              'Directed':      'edges are not directed',
-#             'EdgeWeights':   'not enough weights on the edges',
-#              'VertexWeights': 'not enough weights on the vertices' 
-#	     }
-
+#   property name    cmp explanation
+gProperty = {
+    'Connected':     (0, 'one connected component'),
+    'Directed':      (0, 'edges which are directed'),
+    'EdgeWeights':   (1, 'a number of edge weights.'),
+    'Simple':        (0, 'neither loops nor multiple edges'),
+    'VertexWeights': (1, 'a number of vertex weights') 
+    }
 
 gGatoHelp = """
 <HTML>
