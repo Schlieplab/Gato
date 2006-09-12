@@ -1644,12 +1644,8 @@ class Algorithm:
         for property,requiredValue in propertyValueDict.iteritems():
             failed = 0
             value = self.graph.Property(property)
-            print property,requiredValue,value,cmp(value,requiredValue),gProperty[property][0]
             try:
                 c = cmp(value,requiredValue)
-
-                print gProperty[property][0],c
-                
                 if gProperty[property][0] < 0 and c > 0:
                     failed = 1
                 elif gProperty[property][0] == 0 and c != 0:
