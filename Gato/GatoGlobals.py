@@ -98,7 +98,7 @@ NoSuchEdgeError     = 'NoSuchEdgeError'
 gProperty = {
     'Connected':     (0, 'one connected component'),
     'Directed':      (0, 'edges which are directed'),
-    'EdgeWeights':   (1, 'a number of edge weights.'),
+    'EdgeWeights':   (1, 'a number of edge weights'),
     'Simple':        (0, 'neither loops nor multiple edges'),
     'VertexWeights': (1, 'a number of vertex weights') 
     }
