@@ -99,6 +99,8 @@ gProperty = {
     'Connected':     (0, 'one connected component'),
     'Directed':      (0, 'edges which are directed'),
     'EdgeWeights':   (1, 'a number of edge weights'),
+    'Euclidean':     (0, 'edges with weights which are proportional' + \
+                      'to Euclidean distance between incident vertices'),
     'Simple':        (0, 'neither loops nor multiple edges'),
     'VertexWeights': (1, 'a number of vertex weights') 
     }
