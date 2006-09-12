@@ -39,10 +39,6 @@ Editor:
 GUI:
 ----------------------------------------------------------------
 
-- 2 mal Quit bei laufendem Algorithmus
-
-- Am Anfang 2*mal Start
-
 - Windowlayout nach Algorithmen laden (optional)
 
 - HTML-Viewer mehr HTML beibringen
