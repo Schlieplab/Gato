@@ -67,6 +67,15 @@ import GatoIcons
 #import GatoSystemConfiguration
 from AnimationHistory import AnimationHistory
 
+class AbortProlog(Exception):
+    """Phony exception to about execution of prolog."""
+    def __init__(self, message):
+        self.message = message
+    def __str__(self):
+        return repr(self.message)
+
+
+
 # put someplace else
 def WMExtrasGeometry(window):
     """ Returns (top,else) where
@@ -1503,8 +1512,12 @@ class Algorithm:
         self.algoGlobals['gInteractive'] = globals()['gInteractive']
         # Read in prolog and execute it
         try:
-            execfile(os.path.splitext(self.algoFileName)[0] + ".pro", 
-                     self.algoGlobals, self.algoGlobals)
+            try:
+                execfile(os.path.splitext(self.algoFileName)[0] + ".pro", 
+                         self.algoGlobals, self.algoGlobals)
+            except AbortProlog:
+                # Only get here because NeededProperties was canceled
+                self.GUI.CmdStop()
         except:
             log.exception("Bug in %s.pro" % os.path.splitext(self.algoFileName)[0])
             #traceback.print_exc()
@@ -1658,8 +1671,7 @@ class Algorithm:
                 errMsg += ".\nDo you still want to proceed ?"                          
                 r = askokcancel("Gato - Error", errMsg)
                 if r == False:
-                    self.GUI.CmdStop()
-                    return
+                    raise AbortProlog, "User aborted at check for property %s" % property
                     
     def PickVertex(self, default=None, filter=None, visual=None):
         """ Pick a vertex interactively. 
