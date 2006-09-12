@@ -1631,13 +1631,22 @@ class Algorithm:
         for property,requiredValue in propertyValueDict.iteritems():
             failed = 0
             value = self.graph.Property(property)
+            print property,requiredValue,value,cmp(value,requiredValue),gProperty[property][0]
             try:
-                if cmp(value,requiredValue) != gProperty[property][0]:
-                    fail = 1
+                c = cmp(value,requiredValue)
+
+                print gProperty[property][0],c
+                
+                if gProperty[property][0] < 0 and c > 0:
+                    failed = 1
+                elif gProperty[property][0] == 0 and c != 0:
+                    failed = 1
+                if gProperty[property][0] > 0 and c < 0:
+                    failed = 1                            
             except ValueError:
-                fail = 1
+                faiedl = 1
             
-            if fail:
+            if failed:
                 errMsg = "The algorithm %s requires that the graph %s has %s" % \
                          (stripPath(self.algoFileName),
                           stripPath(self.graphFileName),
