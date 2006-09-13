@@ -878,7 +878,8 @@ class AlgoWin(Frame):
         self.AboutAlgorithmDialog = d
         
     def AboutGraph(self):
-        d = HTMLViewer(self.graphDisplay.About(), "About Graph", self.master)
+        d = HTMLViewer(self.graphDisplay.About(stripPath(self.algorithm.graphFileName)),
+                       "About Graph", self.master)
         self.AboutGraphDialog = d
         
     ############################################################

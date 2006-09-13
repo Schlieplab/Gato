@@ -39,6 +39,7 @@ from DataStructures import Point2D, VertexLabeling, EdgeLabeling, EdgeWeight
 #from math import log
 
 import logging
+import string
 log = logging.getLogger("Graph.py")
 
 ################################################################################
@@ -403,11 +404,44 @@ class Graph:
             except KeyError:
                 return 'Unknown'
             
-    def About(self):
+    def About(self, graphName=""):
         """ Return string containing HTML code providing information
-            about the graph """
-        return "<HTML><BODY> <H3>No information available</H3></BODY></HTML>"
-        
+            about the graph
+
+        """
+        unknownProps = []
+        knownProps = ""
+        for name in  gProperty.keys():
+            value = self.Property(name)
+            if value == 'Unknown':
+                unknownProps.append(gProperty[name][2])
+            else:
+                if gProperty[name][0] == 0:
+                    if value == 1:
+                        knownProps += "<li> The graph is %s.\n" % gProperty[name][2]
+                    else:
+                        knownProps += "<li> The graph is not %s.\n" % gProperty[name][2]
+                else:
+                        knownProps += "<li> The graph has %s %s.\n" % (str(value), gProperty[name][2])
+                    
+        result = """<HTML><BODY>
+        <H3>Graph information</H3>
+
+        <p>The graph <tt>%s</tt> has order %d and size %d and has the following
+        properties:
+        <ul>
+        %s
+        </ul>
+        </p>
+
+        <p>The properties %s are unknown or undetermined.</p>
+        </BODY></HTML>
+        """ % (graphName, self.Order(), self.Size(), knownProps, string.join(unknownProps,', '))
+        return result
+
+
+
+
         
         ################################################################################
         #

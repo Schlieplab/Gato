@@ -54,6 +54,7 @@ import random
 import string
 import sys
 import os
+import webbrowser
 
 import GraphCreator, Embedder
 
@@ -487,12 +488,17 @@ class SAGraphEditor(GraphEditor, Frame):
                                  underline=0)
 
         # --- HELP menu ----------------------------------------        
+        self.helpMenu=Menu(self.menubar, tearoff=0, name='help')
         if self.windowingsystem != 'aqua':
-            self.helpMenu=Menu(self.menubar, tearoff=0, name='help')
             self.helpMenu.add_command(label='About Gred',
                                       command=self.AboutBox)
-            self.menubar.add_cascade(label="Help", menu=self.helpMenu, 
-                                     underline=0)
+            self.helpMenu.add_separator()
+        self.helpMenu.add_command(label='Go to Gato website',
+                                  command=self.GoToGatoWebsite)
+        self.helpMenu.add_command(label='Go to CATBox website',
+                                  command=self.GoToCATBoxWebsite)       
+        self.menubar.add_cascade(label="Help", menu=self.helpMenu, 
+                                 underline=0)
 
         # --- MacOS X application menu --------------------------
         # On a Mac we put our about box under the Apple menu ... 

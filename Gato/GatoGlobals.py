@@ -94,15 +94,17 @@ NoSuchVertexError   = 'NoSuchVertexError'
 NoSuchEdgeError     = 'NoSuchEdgeError'
 
 
-#   property name    cmp explanation
+# XXX  property name    cmp, explanation if no such prop,  human readable prop name
+# XXX MOVE all strings somewhere, can we consolidate?
 gProperty = {
-    'Connected':     (0, 'one connected component'),
-    'Directed':      (0, 'edges which are directed'),
-    'EdgeWeights':   (1, 'a number of edge weights'),
+    'Connected':     (0, 'one connected component', 'connected'),
+    'Directed':      (0, 'edges which are directed', 'directed'),
+    'EdgeWeights':   (1, 'a number of edge weights', 'edge weight(s)'),
     'Euclidean':     (0, 'edges with weights which are proportional' + \
-                      'to Euclidean distance between incident vertices'),
-    'Simple':        (0, 'neither loops nor multiple edges'),
-    'VertexWeights': (1, 'a number of vertex weights') 
+                      'to Euclidean distance between incident vertices',
+                      'Euclidean'),
+    'Simple':        (0, 'neither loops nor multiple edges', 'simple'),
+    'VertexWeights': (1, 'a number of vertex weights', 'vertex weight(s)') 
     }
 
 gGatoHelp = """
