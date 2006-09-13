@@ -179,6 +179,7 @@ class SAGraphEditor(GraphEditor, Frame):
     def __init__(self, master=None):
         Frame.__init__(self, master)
         Splash = GredSplashScreen(self.master)
+        self.AboutGraphDialog = None
         # Need to change things a bit for Tk running on MacOS X
         # using the native drawing environment (TkAqua)
         self.windowingsystem = self.tk.call("tk", "windowingsystem")
@@ -492,7 +493,10 @@ class SAGraphEditor(GraphEditor, Frame):
         if self.windowingsystem != 'aqua':
             self.helpMenu.add_command(label='About Gred',
                                       command=self.AboutBox)
-            self.helpMenu.add_separator()
+        
+        self.helpMenu.add_command(label='About Graph',	
+                                  command=self.AboutGraph)
+        self.helpMenu.add_separator()
         self.helpMenu.add_command(label='Go to Gato website',
                                   command=self.GoToGatoWebsite)
         self.helpMenu.add_command(label='Go to CATBox website',
@@ -554,6 +558,8 @@ class SAGraphEditor(GraphEditor, Frame):
         self.ShowGraph(G,self.graphName)
         self.RegisterGraphInformer(WeightedGraphInformer(G,"weight"))
         self.fileName = None
+        self.makeDirty()
+        self.dirty = 0
         self.SetTitle("Gred _VERSION_ - New Graph")
 
     def OpenGraph(self,dummy=None):
@@ -629,6 +635,7 @@ class SAGraphEditor(GraphEditor, Frame):
                     
                     
             self.SetTitle("Gred _VERSION_ - " + self.graphName)
+            self.makeDirty()
             self.dirty = 0
             
             
@@ -653,6 +660,7 @@ class SAGraphEditor(GraphEditor, Frame):
             SaveCATBoxGraph(self.G,file)
             self.graphName = stripPath(file)
             self.SetTitle("Gred _VERSION_ - " + self.graphName)
+        self.makeDirty()
         self.dirty = 0
             
     def ExportEPSF(self):
@@ -673,7 +681,6 @@ class SAGraphEditor(GraphEditor, Frame):
             
     #----- Graph Menu callbacks
     def graphDirected(self):
-        self.dirty = 1
         if self.G != None:
             if self.G.QDirected():
                 self.G.Undirect()
@@ -681,29 +688,31 @@ class SAGraphEditor(GraphEditor, Frame):
                 self.G.directed = 1
                 
             self.ShowGraph(self.G,self.graphName)
+        self.makeDirty()
+
             
     def graphEuclidean(self):
-        self.dirty = 1
         if self.G != None:
             if self.G.QEuclidian():
                 self.G.euclidian = 0
             else:
                 self.G.Euclidify()
+        self.makeDirty()
                 
     def edgeIntegerWeights(self):
-        self.dirty = 1
         if self.G != None:
             if not self.G.edgeWeights[0].QInteger():
                 self.G.Integerize('all')
+        self.makeDirty()
                 
     def vertexIntegerWeights(self):
-        self.dirty = 1
         if self.G != None:
             for i in xrange(0,self.G.NrOfVertexWeights()):
                 if not self.G.vertexWeights[i].QInteger(): 
                     self.G.vertexWeights[i].Integerize()
                 else:
                     self.G.vertexWeights[i] = 0
+        self.makeDirty()
                     
                     
     def ChangeEdgeWeights(self):
@@ -733,12 +742,12 @@ class SAGraphEditor(GraphEditor, Frame):
                 self.G.edgeWeights[1] = EdgeWeight(self.G, initialWeight)  
                 if self.G.edgeWeights[0].QInteger():
                     self.G.edgeWeights[1].Integerize()
+        self.makeDirty()
                     
                     
     def ChangeVertexWeights(self):
         if self.G == None:
             return
-        self.dirty = 1
         n = self.vertexWeightVar.get()
         old = self.G.NrOfVertexWeights()
         k = self.G.vertexWeights.keys()
@@ -760,6 +769,7 @@ class SAGraphEditor(GraphEditor, Frame):
         if self.vertexIntegerWeightsVar.get() == 1:
             for i in xrange(0,min(n,old)): 
                 self.G.vertexWeights[i].Integerize()
+        self.makeDirty()
                 
                 
                 
@@ -777,7 +787,6 @@ class SAGraphEditor(GraphEditor, Frame):
     #----- Extras Menu callbacks        
     # NOTE: Embedder handled by lambda passed as command        
     def RandomizeEdgeWeights(self):
-        self.dirty = 1
         count = len(self.G.edgeWeights.keys())
         d = RandomizeEdgeWeightsDialog(self, count, self.G.QEuclidian()) 
         if d.result is None:
@@ -791,10 +800,20 @@ class SAGraphEditor(GraphEditor, Frame):
                         self.G.edgeWeights[i][e] = round(int(val))
                     else:
                         self.G.edgeWeights[i][e] = val
+        self.makeDirty()
                         
     def AboutBox(self):
         d = GredAboutBox(self.master)
+
+    def AboutGraph(self):
+        d = GatoDialogs.HTMLViewer(self.About(self.graphName), "About Graph", self.master)
+        self.AboutGraphDialog = d
         
+    def GoToGatoWebsite(self):
+        webbrowser.open(gGatoURL, new=1, autoraise=1)
+
+    def GoToCATBoxWebsite(self):
+        webbrowser.open(gCATBoxURL, new=1, autoraise=1)
 
     
     ############################################################################
@@ -802,32 +821,38 @@ class SAGraphEditor(GraphEditor, Frame):
     # Make sure we mark the graph dirty, when we edit
     #
     def AddVertex(self, x, y, v = None):
-        self.dirty = 1
         GraphEditor.AddVertex(self,x,y,v)
+        self.makeDirty()
 
     def AddVertexCanvas(self, x, y):
-        self.dirty = 1
         GraphEditor.AddVertexCanvas(self, x, y)
+        self.makeDirty()
 
     def MoveVertex(self,v,x,y,doUpdate=None):
-        self.dirty = 1
         GraphEditor.MoveVertex(self,v,x,y,doUpdate)
+        self.makeDirty()
 
     def DeleteVertex(self,v):
-        self.dirty = 1
         GraphEditor.DeleteVertex(self,v)
+        self.makeDirty()
 
     def AddEdge(self,tail,head):
-        self.dirty = 1
         GraphEditor.AddEdge(self,tail,head)
+        self.makeDirty()
 
     def DeleteEdge(self,tail,head,repaint=1):
-        self.dirty = 1
         GraphEditor.DeleteEdge(self,tail,head,repaint)
+        self.makeDirty()
 
     def SwapEdgeOrientation(self,tail,head):
-        self.dirty = 1
         GraphEditor.SwapEdgeOrientation(self,tail,head)
+        self.makeDirty()
+
+    def makeDirty(self):
+        self.dirty = 1
+        if self.AboutGraphDialog != None:
+            self.AboutGraphDialog.Update(self.About(self.graphName), "About Graph")
+            
       
         
 class SAGraphEditorToplevel(SAGraphEditor, Toplevel):

@@ -578,7 +578,9 @@ class AlgoWin(Frame):
             if self.algorithm.ReadyToStart():
                 self.buttonStart['state'] = NORMAL 
             if self.AboutGraphDialog:
-                self.AboutGraphDialog.Update(self.graphDisplay.About(), "About Graph")
+                self.AboutGraphDialog.Update(
+                    self.graphDisplay.About(stripPath(self.algorithm.graphFileName)),
+                    "About Graph")
                 
     def SaveGatoFile(self,filename=""):
         """
@@ -661,9 +663,10 @@ class AlgoWin(Frame):
                 if self.algorithm.ReadyToStart():
                     self.buttonStart['state'] = NORMAL 
                 if self.AboutGraphDialog:
-                    self.AboutGraphDialog.Update(self.graphDisplay.About(), "About Graph")
-                    
-                    # great shit! create files to get old gato running
+                    self.AboutGraphDialog.Update(
+                        self.graphDisplay.About(stripPath(self.algorithm.graphFileName)),
+                        "About Graph")
+            # great shit! create files to get old gato running
             if select.get("algorithm"):
                 xmlAlgorithm=select.get("algorithm")
                 # save last algorithm tmp_name
@@ -868,10 +871,10 @@ class AlgoWin(Frame):
         d = HTMLViewer(gGatoHelp, "Help", self.master)
 
     def GoToGatoWebsite(self):
-        webbrowser.open('http://gato.sf.net', new=1, autoraise=1)
+        webbrowser.open(gGatoURL, new=1, autoraise=1)
 
     def GoToCATBoxWebsite(self):
-        webbrowser.open('http://algorithmics.molgen.mpg.de/CATBox', new=1, autoraise=1)
+        webbrowser.open(gCATBoxURL, new=1, autoraise=1)
 
     def AboutAlgorithm(self):
         d = HTMLViewer(self.algorithm.About(), "About Algorithm", self.master)

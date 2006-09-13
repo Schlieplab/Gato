@@ -107,6 +107,10 @@ gProperty = {
     'VertexWeights': (1, 'a number of vertex weights', 'vertex weight(s)') 
     }
 
+gGatoURL = 'http://gato.sf.net'
+gCATBoxURL = 'http://algorithmics.molgen.mpg.de/CATBox'
+
+
 gGatoHelp = """
 <HTML>
 <HEAD><TITLE>Gato _VERSION_ </TITLE></HEAD>
