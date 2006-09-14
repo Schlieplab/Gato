@@ -562,28 +562,29 @@ class SAGraphEditor(GraphEditor, Frame):
         self.dirty = 0
         self.SetTitle("Gred _VERSION_ - New Graph")
 
-    def OpenGraph(self,dummy=None):
+    def OpenGraph(self,dummy=None,fileName=None):
         if self.dirty == 1:
-            if not askokcancel("Open Graph","Graph changed since last saved. Do you want to overwrite it?"):
+            if not askokcancel("Open Graph","Graph changed since last saved."\
+                               "Do you want to overwrite it?"):
                 return
-	
-        file = askopenfilename(title="Open Graph",
-                               defaultextension=".cat",
-                               filetypes = [("Gato", ".cat"),
-                                            ("Dot", ".dotted")
-                                             #,("Graphlet", ".let")
-                                           ]
-                               )
-        if file != "" and file != (): 
-            self.fileName = file
-            self.graphName = stripPath(file)
-            e = extension(file)
+	if fileName == None:
+            fileName = askopenfilename(title="Open Graph",
+                                       defaultextension=".cat",
+                                       filetypes = [("Gato", ".cat"),
+                                                    ("Dot", ".dotted")
+                                                    #,("Graphlet", ".let")
+                                                    ]
+                                       )
+        if fileName != "" and fileName != (): 
+            self.fileName = fileName
+            self.graphName = stripPath(fileName)
+            e = extension(fileName)
             if e == 'cat':
-                G = OpenCATBoxGraph(file)
+                G = OpenCATBoxGraph(fileName)
             elif e == 'gml':
-                G = OpenGMLGraph(file)
+                G = OpenGMLGraph(fileName)
             elif e == 'dotted':
-                G = OpenDotGraph(file)
+                G = OpenDotGraph(fileName)
             else:
                 log.error("Unknown extension %s" % e)
                 
@@ -917,7 +918,6 @@ class Start:
         ################################################################################
 if __name__ == '__main__':
 
-
 ##    globals()['gVertexRadius'] = 12
 ##    globals()['gVertexFrameWidth'] = 0
 ##    globals()['gEdgeWidth'] = 2
@@ -937,8 +937,13 @@ if __name__ == '__main__':
     tk.option_add('*background','#DDDDDD')
     tk.option_add('Tk*Scrollbar.troughColor','#CACACA')
     graphEditor = SAGraphEditor(tk)
-    graphEditor.dirty = 0    
-    graphEditor.NewGraph()
+    graphEditor.dirty = 0
+
+    print sys.argv
+    if len(sys.argv) == 2:
+        graphEditor.OpenGraph(fileName=sys.argv[1])        
+    else:
+        graphEditor.NewGraph()
     import logging
     log = logging.getLogger("Gred.py")
     graphEditor.mainloop()
