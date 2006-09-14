@@ -938,8 +938,6 @@ if __name__ == '__main__':
     tk.option_add('Tk*Scrollbar.troughColor','#CACACA')
     graphEditor = SAGraphEditor(tk)
     graphEditor.dirty = 0
-
-    print sys.argv
     if len(sys.argv) == 2:
         graphEditor.OpenGraph(fileName=sys.argv[1])        
     else:
