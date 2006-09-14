@@ -1,5 +1,5 @@
 graph:
-dir:0; simp:0; eucl:1; int:0; ew:1; vw:0;
+dir:0; simp:1; eucl:1; int:0; ew:1; vw:0;
 scroller:
 vdim:1000; hdim:1000; vlinc:10; hlinc:10; vpinc:50; hpinc:50;
 vertices:31;
