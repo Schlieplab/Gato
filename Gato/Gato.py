@@ -244,6 +244,8 @@ class AlgoWin(Frame):
                                   command=self.ReloadAlgorithmGraph)
         self.fileMenu.add_command(label='Export Graph as EPS...',	
                                   command=self.ExportEPSF)
+        self.fileMenu.add_command(label='Export Graph as SVG...',	
+                                  command=self.ExportSVG)
         if self.windowingsystem != 'aqua':
             self.fileMenu.add_separator()
             self.fileMenu.add_command(label='Preferences...',
@@ -760,6 +762,15 @@ class AlgoWin(Frame):
                                  )
         if file is not "": 
             self.graphDisplay.PrintToPSFile(file)
+
+    def ExportSVG(self):
+        """ GUI to control export of SVG file  """
+        file = asksaveasfilename(title="Export SVG",
+                                 defaultextension=".svg",
+                                 filetypes = [("SVG", ".svg")]
+                                 )
+        if file is not "": 
+            self.graphDisplay.ExportSVG(file)
             
             
     def Quit(self,event=None):

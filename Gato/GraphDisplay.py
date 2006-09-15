@@ -8,7 +8,7 @@
 #       Copyright (C) 1998-2006, Alexander Schliep, Winfried Hochstaettler and 
 #       Copyright 1998-2001 ZAIK/ZPR, Universitaet zu Koeln
 #                                   
-#       Contact: alexander@schliep.org, winfried.hochstaettler@fernuni-hagen.de             
+#       Contact: alexander@schliep.org, winfried.hochstaettler@fernuni-hagen.de
 #
 #       Information: http://gato.sf.net
 #
@@ -751,7 +751,11 @@ class GraphDisplay:
                 self.canvas.itemconfig(drawItems[j], fill=oldColor[j])
             self.update()
             
-            
+    def GetVertexFrameColor(self,v):
+        """ Get the color of the outline of a vertex """
+        dv = self.drawVertex[v]
+        return self.canvas.itemcget(dv, "outline")
+        
     def GetVertexFrameWidth(self,v):
         """ Get the width of the black frame of a vertex"""
         dv = self.drawVertex[v]
@@ -831,7 +835,11 @@ class GraphDisplay:
                                     font=self.font(self.zFontSize),
                                     text=self.G.GetLabeling(v))
             self.update()
-            
+
+    def GetEdgeWidth(self,tail,head):
+        """ Get the edge width in canvas coordinates """
+        de = self.drawEdges[(tail,head)]
+        return self.canvas.itemcget(de, "width")
             
     def UpdateInfo(self, neuText):
         """ *Internal* Update text in info box """	
@@ -1139,11 +1147,27 @@ class GraphDisplay:
             
         return Point2D(x,y)
         
+    def VertexPositionAndRadius(self,v):
+        """ Return the position and radius of vertex v in embedding
+            coordinates
+        """
+        try:
+            coords = self.canvas.coords(self.drawVertex[v])
+            x = 0.5 * (coords[2] - coords[0]) + coords[0]
+            y = 0.5 * (coords[3] - coords[1]) + coords[1]
+            r = 0.5 (coords[2] - coords[0])
+            xe,ye = self.CanvasToEmbedding(x,y)
+            re,dummy = self.CanvasToEmbedding(r,0)
+            return xe,ye,re
+        except: # Vertex is not on the canvas yet
+            t = self.G.GetEmbedding(v)            
+            return t.x, t.y, self.gVertexRadius
+
         
-        ############################################################################
-        #				       
-        # various stuff 
-        #
+    ############################################################################
+    #				       
+    # various stuff 
+    #
         
     def PrintToPSFile(self,fileName):
         """ Produce an EPSF of canvas in fileName. Note: Graph gets scaled
@@ -1169,6 +1193,68 @@ class GraphDisplay:
             self.canvas.postscript(file=fileName, pagewidth="%dm" % printablePageWidth,
                                    x=x,y=y,height=height,width=width)	
             
+
+    def ExportSVG(self,fileName):
+        """ Export Canvas to a SVG file.
+        """
+        bb = self.canvas.bbox("all") # Bounding box of all elements on canvas
+        # Give 10 pixels room to breathe
+        x = max(bb[0] - 20,0)
+        y = max(bb[1] - 20,0)
+        width=bb[2] - bb[0] + 20
+        height=bb[3] - bb[1] + 20
+
+        head = """<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+xmlns:xlink="http://www.w3.org/1999/xlink"
+xmlns:ev="http://www.w3.org/2001/xml-events" version="1.1" baseProfile="full"
+viewbox="%(x)d %(y)d %(width)d %(height)d" width="30cm" height="30cm">
+        """
+        footer = """
+</svg>
+        """
+
+        file = open(fileName,'w')
+        file.write(head % {'x':x,'y':y,'width':width,'height':height})
+
+        for v,w in self.G.Edges():
+            vx,vy,dummy = self.VertexPositionAndRadius(v)
+            wx,wy,dummy = self.VertexPositionAndRadius(w)
+            col = self.GetEdgeColor(v,w)
+            width = self.GetEdgeWidth(v,w)
+
+            if self.G.directed == 0:
+                file.write('<line x1="%s" y1="%s" x2="%s" y2="%s" stroke="%s"'\
+                           ' stroke-width="%s"/>\n' % (vx,vy,wx,wy,col,width))
+            else:
+                file.write('<line x1="%s" y1="%s" x2="%s" y2="%s" stroke="%s"'\
+                           ' stroke-width="%s"/>\n' % (vx,vy,wx,wy,col,width))
+                
+
+        for v in self.G.Vertices():
+            x,y,r = self.VertexPositionAndRadius(v)
+            col = self.GetVertexColor(v)
+            fw = self.GetVertexFrameWidth(v)
+            fwe,dummy = self.CanvasToEmbedding(fw,0)
+            stroke = self.GetVertexFrameColor(v)
+
+            print x,y,r,col,fwe,stroke
+            file.write('<circle cx="%s" cy="%s" r="%s" fill="%s" stroke="%s"'\
+                       ' stroke-width="%s"/>\n' % (x,y,r,col,fwe,stroke))
+            
+
+
+            
+        file.write(footer)
+        file.close()
+
+        
+
+
+
+
+
+
             
     def About(self, graphName=""):
         """ Return a HTML-page giving information about the graph """
