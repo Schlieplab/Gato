@@ -235,7 +235,8 @@ class AlgoWin(Frame):
         if self.windowingsystem != 'aqua':
             self.fileMenu.add_command(label='New Graph...',	
                                       command=self.NewGraph)
-        # Obsolete. Only used for TRIAL-SOLUTION Gato version
+        # Only used for TRIAL-SOLUTION Gato version. Might be reused for easy
+        # web-deployment
         #self.fileMenu.add_command(label='Open GatoFile...',
         #			  command=self.OpenGatoFile)
         #self.fileMenu.add_command(label='Save GatoFile...',
@@ -524,8 +525,8 @@ class AlgoWin(Frame):
         if file is not "" and file is not ():
             try:
                 self.algorithm.Open(file)
-            except (EOFError, IOError):
-                self.HandleFileIOError("Algorithm",file)
+            except (EOFError, IOError), (errno, strerror):
+                self.HandleFileIOError("Algorithm",file,errno,strerror)
                 return 
                 
             self.algoText['state'] = NORMAL 
@@ -573,8 +574,8 @@ class AlgoWin(Frame):
         if file is not "" and file is not ():
             try:
                 self.algorithm.OpenGraph(file)
-            except (EOFError, IOError):
-                self.HandleFileIOError("Graph",file)
+            except (EOFError, IOError),(errno, strerror):
+                self.HandleFileIOError("Graph",file,errno, strerror)
                 return 
                 
             if self.algorithm.ReadyToStart():
@@ -658,8 +659,8 @@ class AlgoWin(Frame):
                     self.algorithm.OpenGraph(graphStream,
                                              fileName="%s::%s"%(filename,
                                                                 select["graph"].getName()))
-                except (EOFError, IOError):
-                    self.HandleFileIOError("Gato",filename)
+                except (EOFError, IOError),(errno, strerror):
+                    self.HandleFileIOError("Gato",filename,errno,strerror)
                     return
                     
                 if self.algorithm.ReadyToStart():
@@ -693,10 +694,10 @@ class AlgoWin(Frame):
                 # text copied from AlgoWin.OpenAlgorithm
                 try:
                     self.algorithm.Open(self.tmpAlgoFileName)
-                except (EOFError, IOError):
+                except (EOFError, IOError),(errno, strerror):
                     os.remove(self.tmpAlgoFileName)
                     os.remove(proFileName)
-                    self.HandleFileIOError("Algorithm",self.tmpAlgoFileName)
+                    self.HandleFileIOError("Algorithm",self.tmpAlgoFileName,errno, strerror)
                     self.algoDisplayFileName=lastAlgoDispalyName
                     self.tmpAlgoFileName=lastAlgoFileName
                     return
@@ -1141,8 +1142,14 @@ class AlgoWin(Frame):
             return self.clickResult[1]
             
             
-    def HandleFileIOError(self, fileDescription, fileName):
-        log.error("%s file named %s produced an error" % (fileDescription, fileName))
+    def HandleFileIOError(self,fileDesc,fileName,errNo="",strError=""):
+        if errNo == "":
+            msg = "I/O error occured for file %s: %s" % (fileName, fileDesc)
+        else:
+            msg = "I/O error(%s) occured for %s file %s: %s" % (errNo, fileDesc,
+                                                                fileName, strError)
+        log.error(msg)
+        showerror("Gato - File Error",msg)
         
         
 # Endof: AlgoWin ---------------------------------------------------------------
@@ -1373,8 +1380,9 @@ class Algorithm:
             input = open(os.path.splitext(self.algoFileName)[0] + ".pro", 'r')
             options = self.ReadPrologOptions(input)
             input.close()
-        except EOFError, IOError:
-            self.GUI.HandleFileIOError("Prolog",file)
+        except (EOFError, IOError),(errno, strerror):
+            self.GUI.HandleFileIOError("prolog",os.path.splitext(self.algoFileName)[0] + ".pro",
+                                       errno, strerror)
             return
             
         try:
@@ -1507,9 +1515,11 @@ class Algorithm:
         
         self.animation_history = None
         
-        if self.logAnimator:
+        if self.logAnimator == 1:
             self.animation_history = AnimationHistory(self.GUI.graphDisplay)
             self.algoGlobals['A'] = self.animation_history
+        elif self.logAnimator == 2:
+            self.algoGlobals['A'] = MethodLogger(self.GUI.graphDisplay)
         else:
             self.algoGlobals['A'] = self.GUI.graphDisplay
             # XXX
@@ -1527,12 +1537,14 @@ class Algorithm:
         self.algoGlobals['gInteractive'] = globals()['gInteractive']
         # Read in prolog and execute it
         try:
-            try:
-                execfile(os.path.splitext(self.algoFileName)[0] + ".pro", 
-                         self.algoGlobals, self.algoGlobals)
-            except AbortProlog:
-                # Only get here because NeededProperties was canceled
-                self.GUI.CmdStop()
+            execfile(os.path.splitext(self.algoFileName)[0] + ".pro", 
+                     self.algoGlobals, self.algoGlobals)
+        except AbortProlog:
+            # Only get here because NeededProperties was canceled by user
+            self.GUI.CmdStop()
+        except (EOFError, IOError), (errno, strerror):
+            self.GUI.HandleFileIOError("prolog",os.path.splitext(self.algoFileName)[0] + ".pro",
+                                       errno,strerror)
         except:
             log.exception("Bug in %s.pro" % os.path.splitext(self.algoFileName)[0])
             #traceback.print_exc()
@@ -1757,12 +1769,17 @@ if __name__ == '__main__':
     if (len(args) < 3):
     
         import logging
-        log = logging.getLogger("Gato.py")
+        log = logging.getLogger("Gato")
         
         for o, a in opts:
             if o in ("-v", "--verbose"):
-                logging.verbose = 1
-                
+                if sys.version_info[0:2] < (2,4):
+                    log.addHandler(logging.StreamHandler(sys.stdout))
+                    log.setLevel(logging.DEBUG)
+                else:
+                    logging.basicConfig(level=logging.DEBUG,
+                                        stream=sys.stdout,
+                                        format='%(name)s %(levelname)s %(message)s')                
         tk = Tk()
         # Prevent the Tcl console from popping up in standalone apps on MacOS X
         # Checking for hasattr(sys,'frozen') does not work for bundelbuilder

@@ -14,6 +14,33 @@ Internal:
 
 - Implement error handling in algorithms
 
+- Finish AnimationHistory: 
+  + Add remaining animation and edit commands
+  + Add time-stamps
+  + document
+
+- Add ExportToSVG:
+  Firefox does not support SMIL Animation. There is a javascript
+  package adding some of the functionality, but it is very slow
+  supposedly. 
+
+  Best bet would be to implement the Animator in Javascript using
+  the dom interface. From the time-stamps in AnimationHistory
+  we could then create a list of animation commands to execute.
+  JavaScript allows functions to be called after sleeping a
+  determined amount. 
+
+  Q: Does Javascript have the equivalent of Python's apply?
+  Q: Could one use a remote SVG Canvas in a browser as the animator
+     frontend for Gato running on a server?
+
+- Prepare for Internatialization:
+  Add GatoStrings with kMenuString IDs and a look-up table for
+  strings used in dialogs and menu items.
+
+  Q: Do we have to worry about encodings?  
+
+
 ----------------------------------------------------------------
 Editor:
 ----------------------------------------------------------------

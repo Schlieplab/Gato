@@ -942,7 +942,9 @@ class GraphDisplay:
                 
                 
     def HighlightPath(self, path, color, closed = 0):
-        """ Draw a wide poly line underneath the path in the graph """
+        """ Draw a wide poly line underneath the path in the graph
+            Path is given as a list of vertices
+        """
         pathID = tuple(path)
         coords = ()
         for v in path:
@@ -1233,6 +1235,8 @@ viewbox="%(x)d %(y)d %(width)d %(height)d" width="30cm" height="30cm">
 
         for v in self.G.Vertices():
             x,y,r = self.VertexPositionAndRadius(v)
+
+            # Write Vertex
             col = self.GetVertexColor(v)
             fw = self.GetVertexFrameWidth(v)
             fwe,dummy = self.CanvasToEmbedding(fw,0)
@@ -1240,7 +1244,23 @@ viewbox="%(x)d %(y)d %(width)d %(height)d" width="30cm" height="30cm">
 
             print x,y,r,col,fwe,stroke
             file.write('<circle cx="%s" cy="%s" r="%s" fill="%s" stroke="%s"'\
-                       ' stroke-width="%s"/>\n' % (x,y,r,col,fwe,stroke))
+                       ' stroke-width="%s" />\n' % (x,y,r,col,stroke,fwe))
+            
+            # Write Vertex Label
+            col = self.canvas.itemcget(self.drawLabel[v], "fill")
+            size = r*1.0
+            offset = 0.33 * size
+            
+            file.write('<text x="%s" y="%s" text-anchor="middle" fill="%s" font-family="Helvetica" '\
+                       'font-size="%s" fonst-style="normal">%s</text>\n' % (x,y+offset,col,size,self.G.GetLabeling(v)))
+            
+            # Write vertex annotation
+            size = r*0.9
+            text = self.GetVertexAnnotation(v)
+            col = 'black'
+            if text != "":
+                file.write('<text x="%s" y="%s" text-anchor="left" fill="%s" font-family="Helvetica" '\
+                           'font-size="%s" fonst-style="normal">%s</text>\n' % (x+r+1,y+r+1,col,size,text))
             
 
 
