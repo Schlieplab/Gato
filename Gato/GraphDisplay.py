@@ -963,6 +963,7 @@ class GraphDisplay:
         return pathID
         
     def HidePath(self, pathID):
+        #XXX Do we want to hide or delete?
         self.canvas.delete(self.highlightedPath[pathID])
         
         
@@ -1157,7 +1158,7 @@ class GraphDisplay:
             coords = self.canvas.coords(self.drawVertex[v])
             x = 0.5 * (coords[2] - coords[0]) + coords[0]
             y = 0.5 * (coords[3] - coords[1]) + coords[1]
-            r = 0.5 (coords[2] - coords[0])
+            r = 0.5 * (coords[2] - coords[0])
             xe,ye = self.CanvasToEmbedding(x,y)
             re,dummy = self.CanvasToEmbedding(r,0)
             return xe,ye,re
@@ -1219,9 +1220,37 @@ viewbox="%(x)d %(y)d %(width)d %(height)d" width="30cm" height="30cm">
         file = open(fileName,'w')
         file.write(head % {'x':x,'y':y,'width':width,'height':height})
 
+        # Write Bubbles from weighted matching
+        # XXX We make use of the fact that they have a bubble tag
+        bubbles = self.canvas.find_withtag("bubbles")
+        for b in bubbles:
+            col = self.canvas.itemcget(b,"fill")
+            # Find center and convert to Embedding coordinates
+            coords = self.canvas.coords(b)
+            x = 0.5 * (coords[2] - coords[0]) + coords[0]
+            y = 0.5 * (coords[3] - coords[1]) + coords[1]
+            r = 0.5 * (coords[2] - coords[0])
+            xe,ye = self.CanvasToEmbedding(x,y)
+            re,dummy = self.CanvasToEmbedding(r,0)
+            file.write('<circle cx="%s" cy="%s" r="%s" fill="%s" '\
+                       ' stroke-width="0" />\n' % (xe,ye,re,col))           
+            
+
+        # Write Highlighted paths
+        for pathID, draw_path in self.highlightedPath.items():
+            # XXX Need to check visibility? See HidePath
+            col = self.canvas.itemcget(draw_path,"fill")
+            width = self.canvas.itemcget(draw_path,"width")
+            points = ["%s,%s" % self.VertexPositionAndRadius(v)[0:2] for v in pathID]
+            file.write('<polyline points="%s" stroke="%s" stroke-width="%s" '\
+                       'fill="None" />\n' % (" ".join(points),col,width))
+        
+        
+
+        # Write Edges
         for v,w in self.G.Edges():
-            vx,vy,dummy = self.VertexPositionAndRadius(v)
-            wx,wy,dummy = self.VertexPositionAndRadius(w)
+            vx,vy,r = self.VertexPositionAndRadius(v)
+            wx,wy,r = self.VertexPositionAndRadius(w)
             col = self.GetEdgeColor(v,w)
             width = self.GetEdgeWidth(v,w)
 
@@ -1231,7 +1260,20 @@ viewbox="%(x)d %(y)d %(width)d %(height)d" width="30cm" height="30cm">
             else:
                 file.write('<line x1="%s" y1="%s" x2="%s" y2="%s" stroke="%s"'\
                            ' stroke-width="%s"/>\n' % (vx,vy,wx,wy,col,width))
-                
+
+            # Write Edge Annotations
+            if self.edgeAnnotation.QDefined((v,w)):
+                da = self.edgeAnnotation[(v,w)]
+                x,y = self.canvas.coords(self.edgeAnnotation[(v,w)])
+                xe,ye = self.CanvasToEmbedding(x,y)
+                text = self.canvas.itemcget(self.edgeAnnotation[(v,w)],"text") 
+                size = r * 0.9
+                offset = 0.33 * size
+                col = 'black'
+                if text != "":
+                    file.write('<text x="%s" y="%s" text-anchor="center" fill="%s" font-family="Helvetica" '\
+                               'font-size="%s" fonst-style="normal">%s</text>\n' % (xe,ye+offset,col,size,text))
+               
 
         for v in self.G.Vertices():
             x,y,r = self.VertexPositionAndRadius(v)
