@@ -62,17 +62,21 @@ class Point2D:
         self.y = y
         
         
-        ################################################################################
-        #
-        # Vertex Labeling
-        #
-        ################################################################################
+################################################################################
+#
+# Vertex Labeling
+#
+################################################################################
 class VertexLabeling:
     """ Simple Wrapper class for any mapping of vertices to values.
         E.g.,
     
         - strings (for labels)
-        - Point2D (for embeddings) """
+        - Point2D (for embeddings)
+
+
+        XXX Historical artefact: should be removed (or be a synonim of UserDict)
+    """
     
     def __init__(self):
         self.label = {}
@@ -85,6 +89,9 @@ class VertexLabeling:
         
     def keys(self):
         return self.label.keys()
+
+    def items(self):
+        return self.label.items()
         
     def QDefined(self,v):
         return v in self.label.keys()
@@ -114,11 +121,11 @@ class VertexWeight(VertexLabeling):
             
             
             
-            ################################################################################
-            #
-            # Edge Labeling
-            #
-            ################################################################################
+################################################################################
+#
+# Edge Labeling
+#
+################################################################################
 class EdgeLabeling:
     """ Simple wrapper class for any mapping of edges to values.
         E.g.,
@@ -126,7 +133,11 @@ class EdgeLabeling:
         - draw edges (for GraphDisplay)
         - weights (for embeddings) 
     
-        Use EdgeLabeling[(u,v)] for access """
+        Use EdgeLabeling[(u,v)] for access
+
+        XXX Historical artefact: should be removed (or be a synonim of UserDict)
+
+    """
     
     def __init__(self):
         self.label = {}
@@ -137,6 +148,12 @@ class EdgeLabeling:
     def __getitem__(self, e): 
         return self.label[e]
         
+    def items(self):
+        return self.label.items()
+
+    def keys(self):
+        return self.label.keys()
+
     def QDefined(self,e):
         return e in self.label.keys()
         
@@ -188,12 +205,12 @@ class EdgeWeight(EdgeLabeling):
             self.label[e] = initialWeight
             
             
-            
-            ################################################################################
-            #
-            # Queue
-            #
-            ################################################################################
+
+################################################################################
+#
+# Queue
+#
+################################################################################
 class Queue:
     """ Simple Queue class implemented as a Python list:
         XXX check whether replaceble by library queue"""
@@ -224,11 +241,11 @@ class Queue:
     def Contains(self,v):
         return v in self.contents
         
-        ################################################################################
-        #
-        # PriorityQueue
-        #
-        ################################################################################
+################################################################################
+#
+# PriorityQueue
+#
+################################################################################
         
 class PQImplementation(dict):
     """ Heap based implementation """
@@ -338,11 +355,11 @@ class PriorityQueue:
         
         
         
-        ################################################################################
-        #
-        # Stack
-        #
-        ################################################################################
+################################################################################
+#
+# Stack
+#
+################################################################################
 class Stack:
     """ Simple Stack class implemented as a Python list """
     
@@ -369,12 +386,13 @@ class Stack:
     def Contains(self,v):
         return v in self.contents
         
-        ################################################################################
-        #
-        # Set
-        #
-        ################################################################################
+################################################################################
+#
+# Set
+#
+################################################################################
 class Set:
+    """ XXX Obsolete. Replace by Python's set """
     def __init__(self):
         self.members = []
         return

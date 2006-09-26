@@ -792,7 +792,13 @@ class GraphDisplay:
                                    text=annotation,
                                    fill=color)
             self.update()
-            
+
+
+    def ClearVertexAnnotations(self):
+        """ Set all vertex annotations to the empty string """
+        for v, da in self.vertexAnnotation.items():
+            self.canvas.itemconfig(da,text='')     
+        
             
     def SetEdgeAnnotation(self,tail,head,annotation,color="black"):
         """ Add an annotation to (tail,head). Annotations are displayed to the left and
