@@ -861,6 +861,7 @@ class SAGraphEditorToplevel(SAGraphEditor, Toplevel):
     def __init__(self, master=None):
         Toplevel.__init__(self, master)
         Splash = GredSplashScreen(self.master)
+        self.windowingsystem = self.tk.call("tk", "windowingsystem")
         self.G = None
         
         self.mode = 'AddOrMoveVertex'
@@ -914,6 +915,7 @@ class Start:
         graphEditor.NewGraph()
         import logging
         log = logging.getLogger("Gred.py")
+
         
         ################################################################################
 if __name__ == '__main__':
