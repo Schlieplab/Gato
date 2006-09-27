@@ -949,7 +949,7 @@ def load_graph(InGraph):
     
     
     #=============================================================================#
-def FPP_PlanarCoords(G): # (2n-4)*(n-2) GRID
+def FPP_PlanarCoords(G, rect=None): # (2n-4)*(n-2) GRID
 # Algorithm: 
 # 1. Triangulate orginal graph
 # 2. Canonical order all vertices
@@ -993,13 +993,18 @@ def FPP_PlanarCoords(G): # (2n-4)*(n-2) GRID
     
     
     #-------------------------------------------------------------------------
+    if rect is None:
+        from Embedder import Rect
+        rect = Rect()
     # COORDINATES
     G.xCoord={}
     G.yCoord={}
     n=len(graph.nodes)
     for i in range(0,n):
-        G.xCoord[G.vertices[i]]=graph.nodes[i].xfpp*float(900/(2*n-4))+50
-        G.yCoord[G.vertices[i]]=1000-(graph.nodes[i].yfpp*float(900/(n-2))+50)
+        G.xCoord[G.vertices[i]]=graph.nodes[i].xfpp*float(
+            (rect.height()-100)/(2*n-4))+50
+        G.yCoord[G.vertices[i]]=rect.width()-(graph.nodes[i].yfpp*float(
+            (rect.width()-100)/(n-2))+50)
     return 1
     #-------------------------------------------------------------------------
     
@@ -1008,7 +1013,7 @@ def FPP_PlanarCoords(G): # (2n-4)*(n-2) GRID
     
     
     #=============================================================================#
-def Schnyder_PlanarCoords(G): # (n-1)*(n-1) GRID
+def Schnyder_PlanarCoords(G, rect=None): # (n-1)*(n-1) GRID
 # Algorithm: 
 # 1. Triangulate orginal graph
 # 2. Canonical order all vertices
@@ -1060,13 +1065,18 @@ def Schnyder_PlanarCoords(G): # (n-1)*(n-1) GRID
     
     
     #-------------------------------------------------------------------------
+    if rect is None:
+        from Embedder import Rect
+        rect = Rect()
     # COORDINATES
     G.xCoord={}
     G.yCoord={}
     n=len(graph.nodes)
     for i in range(0,n):
-        G.xCoord[G.vertices[i]]=graph.nodes[i].xsch*float(900/(n-1))+50
-        G.yCoord[G.vertices[i]]=1000-(graph.nodes[i].ysch*float(900/(n-1))+50)
+        G.xCoord[G.vertices[i]]=graph.nodes[i].xsch*float(
+            (rect.height()-100)/(n-1))+50
+        G.yCoord[G.vertices[i]]=rect.width()-(graph.nodes[i].ysch*float(
+            (rect.width()-100)/(n-1))+50)
     return 1
     #-------------------------------------------------------------------------
     

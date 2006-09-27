@@ -38,6 +38,23 @@
 
 from GatoGlobals import *
 
+class Rect:
+    def __init__(self):
+        self.x1 = 30
+        self.y1 = 30
+        self.x2 = 600
+        self.y2 = 400
+
+    def midpoint(self):
+        return ((self.x2 - self.x1)/2.0, (self.y2 - self.y1)/2.0)  
+
+    def height(self):
+        return self.x2 - self.x1
+
+    def width(self):
+        return self.y2 - self.y1
+            
+
 class Embedder:
     """ This class provides an abstract Embedder as
         a base for actual Embedder implementations """
@@ -58,44 +75,52 @@ def RedrawGraph(theGraphEditor):
         theGraphEditor.MoveVertex(v, theGraphEditor.G.xCoord[v],
                                   theGraphEditor.G.yCoord[v], 1)
         
-        #----------------------------------------------------------------------
+#----------------------------------------------------------------------
 import random
 
-def RandomCoords(G):
+def RandomCoords(G,rect=None):
+    if rect is None:
+        rect = Rect()
     G.xCoord={}
     G.yCoord={}
     for v in G.vertices:
-        G.xCoord[v]=random.randint(10,990)
-        G.yCoord[v]=random.randint(10,990)
+        G.xCoord[v]=random.randint(rect.x1,rect.x2)
+        G.yCoord[v]=random.randint(rect.y1,rect.y2)
     return 1
+
     
 class RandomEmbedder(Embedder):
 
     def Name(self):
         return "Randomize Layout"
         
-    def Embed(self, theGraphEditor):
+    def Embed(self, theGraphEditor,rect=None):
         if theGraphEditor.G.Order()==0:
             return
             
         theGraphEditor.config(cursor="watch")
         theGraphEditor.update()
-        
-        if RandomCoords(theGraphEditor.G):
+
+        if rect is None:
+            rect = Rect()
+        if RandomCoords(theGraphEditor.G,rect):
             RedrawGraph(theGraphEditor)
             theGraphEditor.dirty = 1
 
         theGraphEditor.config(cursor="")
         
-        #----------------------------------------------------------------------
+#----------------------------------------------------------------------
 from math import pi, sin, cos
 
-def CircularCoords(G):
+def CircularCoords(G,rect=None):
+    if rect is None:
+        rect = Rect()    
     G.xCoord={}
     G.yCoord={}
     distance = 2*pi/G.Order()
     degree = 0
-    xMiddle=500; yMiddle=500; radius=450
+    xMiddle, yMiddle = rect.midpoint()
+    radius = min(rect.height(), rect.width()) / 2.0 - 50
     for v in G.vertices:
         G.xCoord[v]=radius*cos(degree)+xMiddle
         G.yCoord[v]=radius*sin(degree)+yMiddle
@@ -107,14 +132,14 @@ class CircularEmbedder(Embedder):
     def Name(self):
         return "Circular Layout"
         
-    def Embed(self, theGraphEditor):
+    def Embed(self, theGraphEditor,rect=None):
         if theGraphEditor.G.Order()==0:
             return
             
         theGraphEditor.config(cursor="watch")
         theGraphEditor.update()
-        
-        if CircularCoords(theGraphEditor.G):
+
+        if CircularCoords(theGraphEditor.G,rect):
             RedrawGraph(theGraphEditor)
             theGraphEditor.dirty = 1
 
@@ -432,10 +457,12 @@ class BFSLayoutDialog(tkSimpleDialog.Dialog):
                         "Please try again !")
             return 0
             
-def BFSTreeCoords(G, root, direction):
+def BFSTreeCoords(G, root, direction, rect=None):
     BFSdistance = BFS(G,root,direction)[0]
     maxDistance=0
     maxBreadth=0
+    if rect is None:
+        rect = Rect()    
     list = {}
     for v in G.vertices:
         list[BFSdistance[v]] = []
@@ -445,19 +472,20 @@ def BFSTreeCoords(G, root, direction):
     for d in list.values():
         if len(d)>maxBreadth: maxBreadth=len(d)
     if maxDistance > 1:
-        xDist=900/(maxDistance-1)
+        xDist=rect.height()/(maxDistance-1)
     else:
         xDist=0
     if maxBreadth > 1:
-        yDist=900/(maxBreadth-1)
+        yDist=rect.width()/(maxBreadth-1)
     else:
         yDist=0
-    Coord1=950
+    Coord1=rect.x2
+    mid_y, dummy = rect.midpoint()
     
     G.xCoord={}
     G.yCoord={}
     for d in list.values():
-        Coord2=500-(len(d)-1)*yDist/2
+        Coord2=mid_y-(len(d)-1)*yDist/2
         for v in d:
             G.xCoord[v]=Coord1+random.randint(-20,20)
             G.yCoord[v]=Coord2
@@ -556,14 +584,16 @@ def RadialToXY(degree, r, offset):
     return (r*sin(degree) + offset[0], r*cos(degree) + offset[1])
     
     
-def BFSRadialTreeCoords(G, root, direction):
+def BFSRadialTreeCoords(G, root, direction, rect=None):
     (BFSdistance,pred,angle) = RadialTreeBFS(G,root,direction)
     maxdist = max(max(BFSdistance.values()),1)
     
     G.xCoord={}
     G.yCoord={}
-    offset = (500,500)
-    d = 450 / maxdist
+    if rect is None:
+        rect = Rect()
+    offset = rect.midpoint()    
+    d = (min(rect.width(), rect.height())/2 - 50) / maxdist
     for v in G.vertices:
         try:
             (G.xCoord[v], G.yCoord[v]) = RadialToXY(angle[v], BFSdistance[v] * d, offset)
