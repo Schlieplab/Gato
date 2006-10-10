@@ -686,15 +686,21 @@ class AnimatedPredecessor(VertexLabeling):
 class ComponentMaker:
     """ Subsequent calls of method NewComponent() will return differently
         colored subgraphs of G """
-    def __init__(self,g,a):
-        self.G = g
-        self.A = a
-        self.colors = ['#FF0000','#00FF00','#0000FF',
-                       '#009999','#990099','#999900',
-                       '#996666','#669966','#666699',
-                       '#0066CC','#6600CC','#66CC00',
-                       '#00CC66','#CC0066','#CC6600']
+    colors = ['#FF0000','#00FF00','#0000FF',
+              '#009999','#990099','#999900',
+              '#996666','#669966','#666699',
+              '#0066CC','#6600CC','#66CC00',
+              '#00CC66','#CC0066','#CC6600']
+
+    def __init__(self, graph, animator, forbidden_colors=None):
+        self.G = graph
+        self.A = animator
         self.lastColor = 0
+        self.colors = copy.copy(self.colors)
+        if forbidden_colors:
+            for color in forbidden_colors:
+                if color in self.colors:
+                    self.colors.remove(color)
         
     def NewComponent(self):
         comp = AnimatedSubGraph(self.G, self.A, self.colors[self.lastColor])
@@ -708,11 +714,11 @@ class ComponentMaker:
             return self.colors[self.lastColor -1]
         return None
         
-        ################################################################################
-        #
-        # Functions
-        #
-        ################################################################################
+################################################################################
+#
+# Functions
+#
+################################################################################
         
 def showPathByPredecessorArray(source,sink,pred,A,color="red"):
     """ Visualizes a path from source to sink in a graph G

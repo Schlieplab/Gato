@@ -66,7 +66,7 @@ False             = 0
 ##cLabelDefaultInverted = "white"
 ##cLabelBlink       = "green"
 
-cInitial          = "green"
+cInitial          = "#EEEEEE"
 cVisited          = "grey"
 #cOnQueue          = "red"
 #cRemovedFromQueue = "blue"
