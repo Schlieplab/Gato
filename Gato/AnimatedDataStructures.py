@@ -56,7 +56,7 @@ class AnimatedNeighborhood:
     """ Visualizes visiting of neighbors by calling the Neighborhood
         method of graph for v and allowing to iterate over it, while 
         coloring (v,w) cTraversedEdge unless (v,w) is colored with
-        one of the colors in leaveColors.
+        one of the colors in ignoreColors.
     
         #Neighborhood = lambda v,a=A,g=G: AnimatedNeighborhood(a,g,v,['red'])
         #
@@ -68,31 +68,35 @@ class AnimatedNeighborhood:
         if a blinkColor is specified the edge will blink
         """
     
-    def __init__(self,theAnimator,G,v,leaveColors = [],blinkColor=None):	
+    def __init__(self, theAnimator, G, v, ignoreColors = [],
+                 blinkColor = None, activeColor = 'yellow',
+                 traversedColor = cTraversedEdge):	
         """ theAnimator will usually be the GraphDisplay(Frame/Toplevel) """
-        self.Animator    = theAnimator
-        self.nbh         = G.Neighborhood(v)
-        self.v           = v
-        self.leaveColors = leaveColors
-        self.blinkColor  = blinkColor
-        self.lastEdge    = None
-        self.lastColor   = None
-        self.travColor   = "yellow"
+        self.Animator = theAnimator
+        self.nbh = G.Neighborhood(v)
+        self.v = v
+        self.ignoreColors = ignoreColors
+        self.blinkColor = blinkColor
+        self.activeColor = activeColor
+        self.traversedColor = traversedColor        
+        self.lastEdge = None
+        self.lastColor = None
         self.Animator.SetVertexFrameWidth(self.v,8)
+
         
     def __getitem__(self, i):
-        try:
-            if (self.Animator.GetEdgeColor(self.lastEdge[0],self.lastEdge[1]) == self.travColor):
-                if (self.lastColor not in self.leaveColors):
-                    self.Animator.SetEdgeColor(self.lastEdge[0],self.lastEdge[1],cTraversedEdge)
+        if self.lastEdge:
+            if self.Animator.GetEdgeColor(self.lastEdge[0],
+                                          self.lastEdge[1]) == self.activeColor:
+                if self.lastColor not in self.ignoreColors:
+                    col = self.traversedColor
                 else:
-                    self.Animator.SetEdgeColor(self.lastEdge[0],self.lastEdge[1],self.lastColor)
-        except:
-            None
+                    col = self.lastColor                    
+                self.Animator.SetEdgeColor(self.lastEdge[0],self.lastEdge[1],col)
         if i < len(self.nbh):
-            self.lastEdge  = (self.v,self.nbh[i])
+            self.lastEdge = (self.v,self.nbh[i])
             self.lastColor = self.Animator.GetEdgeColor(self.v,self.nbh[i])
-            self.Animator.SetEdgeColor(self.v,self.nbh[i],self.travColor)
+            self.Animator.SetEdgeColor(self.v,self.nbh[i],self.activeColor)
             if self.blinkColor != None:
                 self.Animator.BlinkEdge(self.v,self.nbh[i],self.blinkColor)
             return self.nbh[i]
@@ -650,24 +654,24 @@ class AnimatedPredecessor(VertexLabeling):
         - coloring edges (pred[v],v) 'grey' if the value of
           pred[v] is changed """
     
-    def __init__(self, theAnimator, leaveColors = None, predColor='red'):
+    def __init__(self, theAnimator, ignoreColors = [], predColor='red'):
         VertexLabeling.__init__(self)
         self.Animator = theAnimator
-        self.leaveColors = leaveColors
+        self.ignoreColors = ignoreColors
         self.predColor = predColor
         
     def __setitem__(self, v, val):
         try:
             oldVal = VertexLabeling.__getitem__(self, v)
             if oldVal != None:
-                if self.leaveColors == None or not (self.Animator.GetEdgeColor(oldVal,v) in self.leaveColors):
-                    self.Animator.SetEdgeColor(oldVal,v,"grey")
+                if not self.Animator.GetEdgeColor(oldVal, v) in self.ignoreColors:
+                    self.Animator.SetEdgeColor(oldVal, v, 'grey')
         except:
             pass 
         if val != None:
             try:
-                if self.leaveColors == None or not (self.Animator.GetEdgeColor(val,v) in self.leaveColors):
-                    self.Animator.SetEdgeColor(val,v,self.predColor)
+                if not self.Animator.GetEdgeColor(val, v) in self.ignoreColors:
+                    self.Animator.SetEdgeColor(val, v, self.predColor)
             except:
                 pass
         VertexLabeling.__setitem__(self, v, val)
@@ -678,10 +682,10 @@ class AnimatedPredecessor(VertexLabeling):
         self.predColor = color
         
     def AppendLeaveColor(self,color):
-        if self.leaveColors == None:
-            self.leaveColors = [color]
+        if self.ignoreColors == None:
+            self.ignoreColors = [color]
         else:
-            self.leaveColors.append(color)
+            self.ignoreColors.append(color)
             
 class ComponentMaker:
     """ Subsequent calls of method NewComponent() will return differently
