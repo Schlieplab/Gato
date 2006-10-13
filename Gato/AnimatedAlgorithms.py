@@ -40,13 +40,14 @@ from AnimatedDataStructures import *
 #from GraphDisplay import GraphDisplay
 #from Graph import SubGraph
 
-def shortestPath(G,A,s,t):
+def shortestPath(G, A, s, t):
     """ Find a shortest path and return it as a set of edges. If no
         path exists, it returns None """
     pred = AnimatedVertexLabeling(A)    
-    Q    = AnimatedVertexQueue(A)    
-    
-    A.SetAllEdgesColor("black")
+    Q = AnimatedVertexQueue(A)    
+    A.SetAllEdgesColor(A.cEdgeDefault)
+    A.SetAllVerticesColor(A.cVertexDefault)
+        
     for v in G.vertices:
         pred[v] = None	
     Q.Append(s)
