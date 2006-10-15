@@ -72,9 +72,11 @@ class GraphDisplay:
         - GraphDisplayFrame 
     
         GraphDisplay also provides UI-Interface independent edit operations
-        and basic animation methods """
-    
-    
+        and basic animation methods
+
+        XXX: FUTURE: Maybe this should be a DisplayedGraph which is a sub-class of
+             ObjectGraph        
+    """
     def __init__(self):
         self.hasGraph = 0
         self.drawVertex       = VertexLabeling()
@@ -286,7 +288,10 @@ class GraphDisplay:
         try:
             self.geometry("500x483")
         except:
-            self.master.geometry("500x483")
+            try:
+                self.master.geometry("500x483")
+            except AttributeError:
+                pass
             
     def ShowGraph(self, G, graphName):	
         """ Display graph G name graphName. Currently we assume that for 
@@ -469,32 +474,48 @@ class GraphDisplay:
                                        fill=self.cEdgeDefault,
                                        width=w,
                                        tag="edges") 
-        
-    def CreateDirectedDrawEdge(self,t,h,curved,w):
-        """ *Internal* Create an directed draw edge. t, h are Point2Ds """
-        l = sqrt((h.x - t.x)**2 + (h.y - t.y)**2)
+
+    def directedDrawEdgePoints(self,tail,head,curved):
+        """ Factored out from CreateDirectedDrawEdge. Compute points
+            in Canvas coordiantes for a directed draw edge, such that
+            the arrowhead is visible.
+            
+            All the parameters are heuristics. Note, we ignore vertex
+            framewidth.
+        """
+        l = sqrt((head.x - tail.x)**2 + (head.y - tail.y)**2)
         if l < 0.001:
             l = 0.001
         c = (l - self.zVertexRadius)/l - 0.001 # Dont let them quite touch 
         # (tmpX,tmpY) is a point on a straight line between t and h
         # not quite touching the vertex disc
-        tmpX = t.x + c * (h.x - t.x) 
-        tmpY = t.y + c * (h.y - t.y)
+        tmpX = tail.x + c * (head.x - tail.x) 
+        tmpY = tail.y + c * (head.y - tail.y)
         if curved == 0:
-            return self.canvas.create_line(t.x,t.y,tmpX,tmpY,
+            return tail.x, tail.y, tmpX, tmpY
+        else: # Compute middle point for curves
+            # (mX,mY) to difference vector h - t
+            (mX,mY) = orthogonal((head.x - tail.x, head.y - tail.y))
+            c = 1.5 * self.zVertexRadius + l / 25
+            # Add c * (mX,mY) at midpoint between h and t
+            mX = tail.x + .5 * (head.x - tail.x) + c * mX
+            mY = tail.y + .5 * (head.y - tail.y) + c * mY            
+            return tail.x, tail.y, mX, mY, tmpX, tmpY
+            
+        
+    def CreateDirectedDrawEdge(self,tail,head,curved,w):
+        """ *Internal* Create an directed draw edge. t, h are Point2Ds """
+        if curved == 0:
+            x1,y1,x2,y2 = self.directedDrawEdgePoints(tail,head,0)
+            return self.canvas.create_line(x1,y1,x2,y2,
                                            fill=self.cEdgeDefault,
                                            arrow="last",
                                            arrowshape=self.zArrowShape, 
                                            width=w,
                                            tag="edges")
         else:
-            # (mX,mY) to difference vector h - t
-            (mX,mY) = orthogonal((h.x - t.x, h.y - t.y))
-            c = 1.5 * self.zVertexRadius + l / 25
-            # Add c * (mX,mY) at midpoint between h and t
-            mX = t.x + .5 * (h.x - t.x) + c * mX
-            mY = t.y + .5 * (h.y - t.y) + c * mY
-            return self.canvas.create_line(t.x,t.y,mX,mY,tmpX,tmpY,
+            x1,y1,x2,y2,x3,y3 = self.directedDrawEdgePoints(tail,head,1)
+            return self.canvas.create_line(x1,y1,x2,y2,x3,y3,
                                            fill=self.cEdgeDefault,
                                            arrow="last",
                                            arrowshape=self.zArrowShape, 
@@ -1205,6 +1226,14 @@ class GraphDisplay:
 
     def ExportSVG(self,fileName):
         """ Export Canvas to a SVG file.
+
+            XXX Experimental version; spike solution. This will be refactored.
+            - Gato/Gred will move over to ObjectGraph model. If the GraphDisplay
+              DrawEdges and DrawVertexes becomes objects too, they should know how
+              to export them.
+            - For static export we could just dump everything on the Canvas. AFAIK
+              SVG is richer than Tk, so that should be straightforward.
+
         """
         bb = self.canvas.bbox("all") # Bounding box of all elements on canvas
         # Give 10 pixels room to breathe
@@ -1218,6 +1247,15 @@ class GraphDisplay:
 xmlns:xlink="http://www.w3.org/1999/xlink"
 xmlns:ev="http://www.w3.org/2001/xml-events" version="1.1" baseProfile="full"
 viewbox="%(x)d %(y)d %(width)d %(height)d" width="30cm" height="30cm">
+<defs> 
+    <marker id="Arrowhead" 
+      viewBox="0 0 10 10" refX="0" refY="5" 
+      markerUnits="strokeWidth" 
+      markerWidth="4" markerHeight="3" 
+      orient="auto"> 
+      <path d="M 0 0 L 10 5 L 0 10 z" /> 
+    </marker> 
+</defs> 
         """
         footer = """
 </svg>
@@ -1228,6 +1266,7 @@ viewbox="%(x)d %(y)d %(width)d %(height)d" width="30cm" height="30cm">
 
         # Write Bubbles from weighted matching
         # XXX We make use of the fact that they have a bubble tag
+        # XXX What to use as the bubble ID?
         bubbles = self.canvas.find_withtag("bubbles")
         for b in bubbles:
             col = self.canvas.itemcget(b,"fill")
@@ -1243,6 +1282,7 @@ viewbox="%(x)d %(y)d %(width)d %(height)d" width="30cm" height="30cm">
             
 
         # Write Highlighted paths
+        # XXX What to use as the bubble ID?
         for pathID, draw_path in self.highlightedPath.items():
             # XXX Need to check visibility? See HidePath
             col = self.canvas.itemcget(draw_path,"fill")
@@ -1261,11 +1301,34 @@ viewbox="%(x)d %(y)d %(width)d %(height)d" width="30cm" height="30cm">
             width = self.GetEdgeWidth(v,w)
 
             if self.G.directed == 0:
-                file.write('<line x1="%s" y1="%s" x2="%s" y2="%s" stroke="%s"'\
-                           ' stroke-width="%s"/>\n' % (vx,vy,wx,wy,col,width))
+                file.write('<line id="%s" x1="%s" y1="%s" x2="%s" y2="%s" stroke="%s"'\
+                           ' stroke-width="%s"/>\n' % ((v,w),vx,vy,wx,wy,col,width))
             else:
-                file.write('<line x1="%s" y1="%s" x2="%s" y2="%s" stroke="%s"'\
-                           ' stroke-width="%s"/>\n' % (vx,vy,wx,wy,col,width))
+                # AAARGH. SVG has a retarded way of dealing with arrowheads 
+                # It is a known bug in SVG 1.1 that the color of the arrowhead is not inherited
+                # Will be fixed in SVG 1.2
+                # See bug 995815 in inkscape bug tracker on SF
+                # However, even 1.2 will keep the totally braindead way of sticking on the arrowhead
+                # to the end! of the arrow. WTF
+                # Workarounds:
+                # Implement arrows as closed polylines including the arrow (7 vs. 2 coordinates)
+                # Q> How to do curved edges with arrows? Loops? 
+                x1,y1,x2,y2 = self.directedDrawEdgePoints(self.VertexPosition(v),self.VertexPosition(w),0)
+                x1e,y1e = self.CanvasToEmbedding(x1,y1)
+                x2e,y2e = self.CanvasToEmbedding(x2,y2)
+
+
+                if self.G.QEdge(w,v): # Directed edges both ways
+                    file.write('<line id="%s" x1="%s" y1="%s" x2="%s" y2="%s" stroke="%s"'\
+                               ' stroke-width="%s"/>\n' % ((v,w),x1e,y1e,x2e,y2e,col,width))
+                else: # Just one directed edge
+                    # XXX How to color arrowhead?
+                    
+                    
+                    file.write('<line id="%s" x1="%s" y1="%s" x2="%s" y2="%s" stroke="%s"'\
+                               ' stroke-width="%s" marker-end="url(#Arrowhead)"/>\n' % ((v,w),vx,vy,wx,wy,col,width))
+                    
+                    
 
             # Write Edge Annotations
             if self.edgeAnnotation.QDefined((v,w)):
@@ -1277,7 +1340,8 @@ viewbox="%(x)d %(y)d %(width)d %(height)d" width="30cm" height="30cm">
                 offset = 0.33 * size
                 col = 'black'
                 if text != "":
-                    file.write('<text x="%s" y="%s" text-anchor="center" fill="%s" font-family="Helvetica" '\
+                    file.write('<text id="ea%s" x="%s" y="%s" text-anchor="center" '\
+                               'fill="%s" font-family="Helvetica" '\
                                'font-size="%s" fonst-style="normal">%s</text>\n' % (xe,ye+offset,col,size,text))
                
 
@@ -1291,24 +1355,24 @@ viewbox="%(x)d %(y)d %(width)d %(height)d" width="30cm" height="30cm">
             stroke = self.GetVertexFrameColor(v)
 
             print x,y,r,col,fwe,stroke
-            file.write('<circle cx="%s" cy="%s" r="%s" fill="%s" stroke="%s"'\
-                       ' stroke-width="%s" />\n' % (x,y,r,col,stroke,fwe))
+            file.write('<circle id="%s" cx="%s" cy="%s" r="%s" fill="%s" stroke="%s"'\
+                       ' stroke-width="%s" />\n' % (v,x,y,r,col,stroke,fwe))
             
             # Write Vertex Label
             col = self.canvas.itemcget(self.drawLabel[v], "fill")
             size = r*1.0
             offset = 0.33 * size
             
-            file.write('<text x="%s" y="%s" text-anchor="middle" fill="%s" font-family="Helvetica" '\
-                       'font-size="%s" fonst-style="normal">%s</text>\n' % (x,y+offset,col,size,self.G.GetLabeling(v)))
+            file.write('<text id="vl%s" x="%s" y="%s" text-anchor="middle" fill="%s" font-family="Helvetica" '\
+                       'font-size="%s" fonst-style="normal">%s</text>\n' % (v,x,y+offset,col,size,self.G.GetLabeling(v)))
             
             # Write vertex annotation
             size = r*0.9
             text = self.GetVertexAnnotation(v)
             col = 'black'
             if text != "":
-                file.write('<text x="%s" y="%s" text-anchor="left" fill="%s" font-family="Helvetica" '\
-                           'font-size="%s" fonst-style="normal">%s</text>\n' % (x+r+1,y+r+1,col,size,text))
+                file.write('<text id="va%s" x="%s" y="%s" text-anchor="left" fill="%s" font-family="Helvetica" '\
+                           'font-size="%s" fonst-style="normal">%s</text>\n' % (v,x+r+1,y+r+1,col,size,text))
             
 
 
@@ -1377,6 +1441,9 @@ class GraphDisplayFrame(GraphDisplay, Frame):
         
     def SetTitle(self,title):
         log.info("change window title to %s" % title)
+
+    def Show(self):
+        pass
         
 class GraphDisplayToplevel(GraphDisplay, Toplevel):
     """ Provides graph display in a top-level window """
