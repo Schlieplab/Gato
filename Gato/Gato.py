@@ -58,7 +58,7 @@ from ScrolledText import ScrolledText
 from GatoConfiguration import GatoConfiguration
 from Graph import Graph
 from GraphUtil import *
-from GraphDisplay import GraphDisplayToplevel
+from GraphDisplay import GraphDisplayToplevel, GraphDisplayFrame
 from GatoUtil import *
 from GatoGlobals import *
 from GatoDialogs import AboutBox, SplashScreen, HTMLViewer
@@ -74,9 +74,13 @@ class AbortProlog(Exception):
     def __str__(self):
         return repr(self.message)
 
-
-
 # put someplace else
+def parsegeometry(geometry):
+    m = re.match("(\d+)x(\d+)([-+]\d+)([-+]\d+)", geometry)
+    if not m:
+        raise ValueError("failed to parse geometry string")
+    return map(int, m.groups())
+
 def WMExtrasGeometry(window):
     """ Returns (top,else) where
         - top is the amount of extra pixels the WM puts on top
@@ -129,8 +133,10 @@ class AlgoWin(Frame):
     """ Provide GUI with main menubar for displaying and controlling
         algorithms and the algorithm text widget """
     
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, graph_panes=None):
+        self.graph_panes = graph_panes
         Frame.__init__(self,parent)
+        
         #XXX import tkoptions
         #tkoptions.tkoptions(self)
 
@@ -166,8 +172,11 @@ class AlgoWin(Frame):
         
         self.algorithm = Algorithm()
         self.algorithm.SetGUI(self) # So that algorithm can call us
-        
-        self.graphDisplay = GraphDisplayToplevel()
+
+        if self.graph_panes:
+            self.graphDisplay = GraphDisplayFrame(self.graph_panes)
+        else:
+            self.graphDisplay = GraphDisplayToplevel()
         
         self.secondaryGraphDisplay = None
         self.AboutAlgorithmDialog = None
@@ -191,21 +200,22 @@ class AlgoWin(Frame):
         else:
             self.tkraise()
 
-        # Make AlgoWins requested size its minimal size to keep
-        # toolbar from vanishing when changing window size
-        # Packer has been running due to splash screen
-        wmExtras = WMExtrasGeometry(self.graphDisplay)
-        width = self.master.winfo_reqwidth()
-        height = self.master.winfo_reqheight()
-        
-        # XXX Some WM + packer combinatios ocassionally produce absurd requested sizes
-        log.debug(os.name + str(wmExtras) + " width = %f height = %f " % (width, height))
-        width = min(600, self.master.winfo_reqwidth())
-        height = min(750, self.master.winfo_reqheight())
-        if os.name == 'nt' or os.name == 'dos':
-            self.master.minsize(width, height + wmExtras[1])
-        else: # Unix & Mac 
-            self.master.minsize(width, height + wmExtras[0] + wmExtras[1])
+        if not paned:
+            # Make AlgoWins requested size its minimal size to keep
+            # toolbar from vanishing when changing window size
+            # Packer has been running due to splash screen
+            wmExtras = WMExtrasGeometry(self.graphDisplay)
+            width = self.master.winfo_reqwidth()
+            height = self.master.winfo_reqheight()
+
+            # XXX Some WM + packer combinatios ocassionally produce absurd requested sizes
+            log.debug(os.name + str(wmExtras) + " width = %f height = %f " % (width, height))
+            width = min(600, self.master.winfo_reqwidth())
+            height = min(750, self.master.winfo_reqheight())
+            if os.name == 'nt' or os.name == 'dos':
+                self.master.minsize(width, height + wmExtras[1])
+            else: # Unix & Mac 
+                self.master.minsize(width, height + wmExtras[0] + wmExtras[1])
             
         self.BindKeys(self.master)
         self.BindKeys(self.graphDisplay)
@@ -371,10 +381,16 @@ class AlgoWin(Frame):
         else:
             borderFrame = Frame(self, relief=SUNKEN, bd=2) # Extra Frame            
             # around widget needed for more Windows-like appearance
+
+        if self.graph_panes:
+            w, h = 1,1
+        else:
+            w, h = 43, 30
+            
         self.algoText = ScrolledText(borderFrame, relief=FLAT, 
                                      padx=3, pady=3,
                                      background="white", wrap='none',
-                                     width=43, height=30,
+                                     width=w, height=h
                                      )
         self.SetAlgorithmFont(self.algoFont, self.algoFontSize)
         self.algoText.pack(expand=1, fill=BOTH)
@@ -423,17 +439,32 @@ class AlgoWin(Frame):
         
     def OpenSecondaryGraphDisplay(self):
         """ Pops up a second graph window """
-        if self.secondaryGraphDisplay == None:
-            self.secondaryGraphDisplay = GraphDisplayToplevel()
+        if self.secondaryGraphDisplay is None:
+            if self.graph_panes:
+                # We only get here during startup as show/hide is handled by
+                # moving the sash
+                self.secondaryGraphDisplay = GraphDisplayFrame(self.graph_panes)
+            else:
+                self.secondaryGraphDisplay = GraphDisplayToplevel()
             self.BindKeys(self.secondaryGraphDisplay)
         else:
-            self.secondaryGraphDisplay.Show()
-            
+            if self.graph_panes:
+                self.setSash(0.5)
+            else:
+                self.secondaryGraphDisplay.Show()
+
+    def setSash(self, proportion):
+        x,dummy = self.graph_panes.sash_coord(0)
+        win_height = parsegeometry(self.master.geometry())[1]
+        self.graph_panes.sash_place(0, x, int(win_height * proportion))        
             
     def WithdrawSecondaryGraphDisplay(self):
         """ Hide window containing second graph """
-        if self.secondaryGraphDisplay != None:
-            self.secondaryGraphDisplay.Withdraw()
+        if self.secondaryGraphDisplay is not None:
+            if self.graph_panes:
+                self.setSash(1.0)
+            else:
+                self.secondaryGraphDisplay.Withdraw()
             
             
     ############################################################
@@ -786,7 +817,7 @@ class AlgoWin(Frame):
             ## started from the command line. So we do it by hand
             if self.graphDisplay != None:
                 self.graphDisplay.destroy()
-            if self.secondaryGraphDisplay != None:
+            if self.secondaryGraphDisplay is not None:
                 self.secondaryGraphDisplay.destroy()
             self.destroy()
             os._exit(0)
@@ -796,7 +827,8 @@ class AlgoWin(Frame):
         """ Align windows nicely for one graph window """
         self.WithdrawSecondaryGraphDisplay()
         self.master.update()
-        
+        if self.graph_panes: # Pane is already moved by Withdraw ...
+            return        
         if self.windowingsystem == 'aqua':
             screenTop = 22 # Take care of menubar
         else:
@@ -831,6 +863,7 @@ class AlgoWin(Frame):
             trueWidth + 1 + pad, 	    
             screenTop + pad))
         self.graphDisplay.update()
+        self.graphDisplay.tkraise()
         self.master.update()
         
         
@@ -838,6 +871,8 @@ class AlgoWin(Frame):
         """ Align windows nicely for two graph windows """
         self.OpenSecondaryGraphDisplay()
         self.master.update()
+        if self.graph_panes: # Pane is already moved by Open ...
+            return        
         
         if self.windowingsystem == 'aqua':
             screenTop = 22 # Take care of menubar
@@ -874,6 +909,8 @@ class AlgoWin(Frame):
             trueWidth + 1 + pad, 	    
             screenTop + reqGDHeight + WMExtra + topWMExtra + 2 * pad))
         
+        self.graphDisplay.tkraise()
+        self.secondaryGraphDisplay.tkraise()
         self.master.update()
         
     def AboutBox(self):
@@ -1480,7 +1517,7 @@ class Algorithm:
         """ Read in graph from file and open the the second display """
         self.GUI.OpenSecondaryGraphDisplay()
         self.GUI.secondaryGraphDisplay.ShowGraph(G, title)
-        if informer != None:
+        if informer is not None:
             self.GUI.secondaryGraphDisplay.RegisterGraphInformer(informer)
             
             
@@ -1640,7 +1677,8 @@ class Algorithm:
             # check for not breaking in comments nor on empty lines. 
             import linecache
             codeline = linecache.getline(self.algoFileName,line)
-            if codeline != '' and self.commentPattern.match(codeline) == None and self.blankLinePattern.match(codeline) == None:
+            if codeline != '' and self.commentPattern.match(codeline) == None and \
+                   self.blankLinePattern.match(codeline) == None:
                 self.GUI.ShowBreakpoint(line)
                 self.breakpoints.append(line)
                 self.DB.set_break(self.algoFileName,line)
@@ -1761,7 +1799,7 @@ if __name__ == '__main__':
     import getopt
     
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "v", ["verbose"])
+        opts, args = getopt.getopt(sys.argv[1:], "pv", ["verbose","paned"])
     except getopt.GetoptError:
         usage()
         sys.exit(2)
@@ -1770,7 +1808,8 @@ if __name__ == '__main__':
     
         import logging
         log = logging.getLogger("Gato")
-        
+
+        paned = False
         for o, a in opts:
             if o in ("-v", "--verbose"):
                 if sys.version_info[0:2] < (2,4):
@@ -1780,6 +1819,9 @@ if __name__ == '__main__':
                     logging.basicConfig(level=logging.DEBUG,
                                         stream=sys.stdout,
                                         format='%(name)s %(levelname)s %(message)s')                
+            if o in ("-p", "--paned"):
+                paned = True
+
         tk = Tk()
         # Prevent the Tcl console from popping up in standalone apps on MacOS X
         # Checking for hasattr(sys,'frozen') does not work for bundelbuilder
@@ -1798,13 +1840,27 @@ if __name__ == '__main__':
         tk.option_add('*Button.highlightbackground','#DDDDDD')
         tk.option_add('*Button.background','#DDDDDD')
         tk.option_add('Tk*Scrollbar.troughColor','#CACACA')
-         
-        app = AlgoWin(tk)
+
+        if paned:
+            # We want a three paned left | right top / right bottom layout
+            pw = PanedWindow(tk)
+            pw.pack(fill=BOTH, expand=1)
+            graph_panes = PanedWindow(pw, orient=VERTICAL)
+            app = AlgoWin(tk, graph_panes)
+            app.OpenSecondaryGraphDisplay()
+            graph_panes.add(app.graphDisplay)
+            graph_panes.add(app.secondaryGraphDisplay)                        
+            pw.add(app)
+            pw.add(graph_panes)
+        else:
+            app = AlgoWin(tk)
+            algo = app
+
         # On MacOS X the Quit menu entry otherwise bypasses our Quit Handler
         # According to
         # http://mail.python.org/pipermail/pythonmac-sig/2006-May/017432.html
         # this should work, Maybr
-        if app.windowingsystem == 'aqua':
+        if not paned and algo.windowingsystem == 'aqua':
             tk.tk.createcommand("::tk::mac::Quit",app.Quit)
             
         #======================================================================
