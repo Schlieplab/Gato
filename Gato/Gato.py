@@ -9,7 +9,7 @@
 #       Copyright (C) 1998-2006, Alexander Schliep, Winfried Hochstaettler and 
 #       Copyright 1998-2001 ZAIK/ZPR, Universitaet zu Koeln
 #                                   
-#       Contact: alexander@schliep.org, winfried.hochstaettler@fernuni-hagen.de             
+#       Contact: alexander@schliep.org, winfried.hochstaettler@fernuni-hagen.de
 #
 #       Information: http://gato.sf.net
 #
@@ -1244,7 +1244,8 @@ class AlgorithmDebugger(bdb.Bdb):
             self.doTrace = 0
             return self.trace_dispatch
         if self.break_anywhere(frame):
-            self.doTrace = 0
+            self.doTrace = 1 # We will break if there is a breakpoint set in
+            # function called (set to self.doTrace = 1 if you don't want that)
             return self.trace_nofeedback_dispatch	    
         return None
         
@@ -1582,7 +1583,8 @@ class Algorithm:
             # Only get here because NeededProperties was canceled by user
             self.GUI.CmdStop()
         except (EOFError, IOError), (errno, strerror):
-            self.GUI.HandleFileIOError("prolog",os.path.splitext(self.algoFileName)[0] + ".pro",
+            self.GUI.HandleFileIOError("prolog",
+                                       os.path.splitext(self.algoFileName)[0] + ".pro",
                                        errno,strerror)
         except:
             log.exception("Bug in %s.pro" % os.path.splitext(self.algoFileName)[0])

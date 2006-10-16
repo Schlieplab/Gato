@@ -40,8 +40,6 @@ Internal:
 
   Q: Do we have to worry about encodings?  
 
-- Breakpoint in functions are ignored
-
 
 ----------------------------------------------------------------
 Editor:
