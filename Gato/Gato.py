@@ -54,14 +54,14 @@ import Gred
 from Tkinter import *
 from tkFileDialog import askopenfilename, asksaveasfilename
 from tkMessageBox import askokcancel, showerror, askyesno
-from ScrolledText import ScrolledText
+#from ScrolledText import ScrolledText
 from GatoConfiguration import GatoConfiguration
 from Graph import Graph
 from GraphUtil import *
 from GraphDisplay import GraphDisplayToplevel, GraphDisplayFrame
 from GatoUtil import *
 from GatoGlobals import *
-from GatoDialogs import AboutBox, SplashScreen, HTMLViewer
+from GatoDialogs import AboutBox, SplashScreen, HTMLViewer, AutoScrolledText
 import GatoIcons
 # Only needed for Trial-Solution version. 
 #import GatoSystemConfiguration
@@ -387,11 +387,11 @@ class AlgoWin(Frame):
         else:
             w, h = 43, 30
             
-        self.algoText = ScrolledText(borderFrame, relief=FLAT, 
-                                     padx=3, pady=3,
-                                     background="white", wrap='none',
-                                     width=w, height=h
-                                     )
+        self.algoText = AutoScrolledText(borderFrame, relief=FLAT, 
+                                         padx=3, pady=3,
+                                         background="white", wrap='none',
+                                         width=w, height=h
+                                         )
         self.SetAlgorithmFont(self.algoFont, self.algoFontSize)
         self.algoText.pack(expand=1, fill=BOTH)
         borderFrame.pack(side=TOP, expand=1, fill=BOTH)
@@ -1508,6 +1508,7 @@ class Algorithm:
         self.GUI.graphDisplay.Show() # In case we are hidden
         self.GUI.graphDisplay.ShowGraph(self.graph, stripPath(self.graphFileName))
         self.GUI.graphDisplay.RegisterGraphInformer(WeightedGraphInformer(self.graph))
+        self.GUI.graphDisplay.UpdateScrollRegion(auto=1)
         
     def restoreGraph(self):
         self.graph=copy.deepcopy(self.cleanGraphCopy)
@@ -1517,6 +1518,7 @@ class Algorithm:
         """ Read in graph from file and open the the second display """
         self.GUI.OpenSecondaryGraphDisplay()
         self.GUI.secondaryGraphDisplay.ShowGraph(G, title)
+        self.GUI.secondaryGraphDisplay.UpdateScrollRegion(auto=1)
         if informer is not None:
             self.GUI.secondaryGraphDisplay.RegisterGraphInformer(informer)
             
@@ -1818,7 +1820,7 @@ if __name__ == '__main__':
                 else:
                     logging.basicConfig(level=logging.DEBUG,
                                         stream=sys.stdout,
-                                        format='%(name)s %(levelname)s %(message)s')                
+                                        format='%(name)s %(levelname)s %(message)s')
             if o in ("-p", "--paned"):
                 paned = True
 
@@ -1832,7 +1834,7 @@ if __name__ == '__main__':
 
         #tk.option_add('*ActiveBackground','#EEEEEE')
         tk.option_add('*background','#DDDDDD')
-        #XXX Buttons look ugly with white backgrounds on MacOS X, added directly to Button(...)        
+        #XXX Buttons look ugly with white backgrounds on MacOS X, added directly to Button(...)
         # The option not working is might be a known bug 
         # http://aspn.activestate.com/ASPN/Mail/Message/Tcl-bugs/2131881
         # Still present in the 8.4.7 that comes with 10.4  
@@ -1852,6 +1854,7 @@ if __name__ == '__main__':
             graph_panes.add(app.secondaryGraphDisplay)                        
             pw.add(app)
             pw.add(graph_panes)
+            app.OneGraphWindow()
         else:
             app = AlgoWin(tk)
             algo = app

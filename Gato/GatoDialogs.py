@@ -33,6 +33,7 @@
 #
 ################################################################################
 from Tkinter import *
+from Tkinter import _cnfmerge
 from ScrolledText import *
 import GatoUtil
 import GatoGlobals
@@ -57,6 +58,66 @@ crnotice2 = "Written by Alexander Schliep (alexander@schliep.org).\n" \
             "Gato comes with ABSOLUTELY NO WARRANTY.\n" \
             "This is free software, and you are welcome to redistribute\n" \
             "it under certain conditions. For details see 'LGPL.txt'.\n"
+
+class AutoScrollbar(Scrollbar):
+    """ Code taken from a comp.lang.python posting by
+        Fredrik Lundh.
+        
+        A scrollbar that hides itself if it's not needed.  Only
+        works if you use the grid geometry manager.
+    """
+    def set(self, lo, hi):
+        if float(lo) <= 0.0 and float(hi) >= 1.0:
+            # grid_remove is currently missing from Tkinter!
+            self.tk.call("grid", "remove", self)
+        else:
+            self.grid()
+        Scrollbar.set(self, lo, hi)
+    def pack(self, **kw):
+        raise TclError, "cannot use pack with this widget"
+    def place(self, **kw):
+        raise TclError, "cannot use place with this widget"
+
+
+class AutoScrolledText(Text):
+    """ Code taken from Tkinter's ScrolledText.py. 
+
+        Modified to use a grid layout and AutoScrollbars
+    """
+    def __init__(self, master=None, cnf=None, **kw):
+        if cnf is None:
+            cnf = {}
+        if kw:
+            cnf = _cnfmerge((cnf, kw))
+        fcnf = {}
+        for k in cnf.keys():
+            if type(k) == ClassType or k == 'name':
+                fcnf[k] = cnf[k]
+                del cnf[k]
+        self.frame = Frame(master, **fcnf)
+        self.vbar = AutoScrollbar(self.frame, name='vbar')
+        self.vbar.grid(row=0, column=1, sticky=N+S)
+        #self.vbar.pack(side=RIGHT, fill=Y)
+        cnf['name'] = 'text'
+        Text.__init__(self, self.frame, **cnf)        
+        self.grid(row=0, column=0, sticky=N+S+E+W)
+        #self.pack(side=LEFT, fill=BOTH, expand=1)
+        self['yscrollcommand'] = self.vbar.set
+        self.vbar['command'] = self.yview
+
+        self.master.grid_rowconfigure(0, weight=1)
+        self.master.grid_columnconfigure(0, weight=1)
+
+
+        # Copy geometry methods of self.frame -- hack!
+        methods = Pack.__dict__.keys()
+        methods = methods + Grid.__dict__.keys()
+        methods = methods + Place.__dict__.keys()
+
+        for m in methods:
+            if m[0] != '_' and m != 'config' and m != 'configure':
+                setattr(self, m, getattr(self.frame, m))
+
 
 
 class AboutBox(tkSimpleDialog.Dialog):

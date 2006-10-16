@@ -40,6 +40,7 @@ from Graph import Graph
 from math import sqrt, pi, sin, cos
 from GatoGlobals import *
 from GatoUtil import orthogonal
+from GatoDialogs import AutoScrollbar
 from DataStructures import Point2D, VertexLabeling, EdgeLabeling
 import os
 import colorsys
@@ -90,7 +91,8 @@ class GraphDisplay:
         self.label = {}  # XXX ditto for label
         
         self.zoomFactor = 100.0 # percent
-
+        self.autoUpdateScrollRegion = 0
+        
         self.windowingsystem = self.tk.call("tk", "windowingsystem")
         self.CreateWidgets()
         self.SetTitle("Gato - Graph")
@@ -198,6 +200,10 @@ class GraphDisplay:
         
         self.oldXview = self.canvas.xview()
         self.oldYview = self.canvas.yview()
+
+        if self.autoUpdateScrollRegion:
+            self.UpdateScrollRegion()
+
         
     def CanvasToEmbedding(self,x,y):
         """ *Internal* Convert canvas coordinates to embedding """
@@ -260,31 +266,21 @@ class GraphDisplay:
         self.canvas = Canvas(borderFrame, width=gPaperWidth, height=gPaperHeight, 
                              background="white",
                              scrollregion=(0, 0, gPaperWidth, gPaperHeight))
+        self.canvas.grid(row=0, column=0, sticky=N+S+E+W) 
         
-        # Vertical scroll bar in a frame and with corner 
-        vbarFrame = Frame(borderFrame,borderwidth=0)
-        vbarFrame.pack(fill=Y, side=RIGHT)
-        
-        self.canvas.vbar = Scrollbar(borderFrame, orient=VERTICAL)
+        self.canvas.vbar = AutoScrollbar(borderFrame, orient=VERTICAL)
         self.canvas['yscrollcommand']  = self.canvas.vbar.set
         self.canvas.vbar['command'] = self.canvas.yview
-        
-        self.canvas.vbar.pack(in_=vbarFrame, expand=1, side=TOP, fill=Y)
-        
-        sbwidth = self.canvas.vbar.winfo_reqwidth()
-        corner = Frame(vbarFrame, width=sbwidth, height=sbwidth)
-        corner.propagate(0)
-        corner.pack(side=BOTTOM)
-        
-        # Horizontal scroll bar 
-        self.canvas.hbar = Scrollbar(borderFrame, orient=HORIZONTAL)
+        self.canvas.vbar.grid(row=0, column=1, sticky=N+S)
+ 
+        self.canvas.hbar = AutoScrollbar(borderFrame, orient=HORIZONTAL)
         self.canvas['xscrollcommand']  = self.canvas.hbar.set
         self.canvas.hbar['command'] = self.canvas.xview
-        self.canvas.hbar.pack(side=BOTTOM, fill=X)
-        
-        self.canvas.pack(anchor=W, side=TOP)
+        self.canvas.hbar.grid(row=1, column=0, sticky=E+W)
+
+        borderFrame.grid_rowconfigure(0, weight=1)
+        borderFrame.grid_columnconfigure(0, weight=1)
         borderFrame.pack(anchor=W, side=TOP, expand=1, fill=BOTH)
-        
         try:
             self.geometry("500x483")
         except:
@@ -311,6 +307,21 @@ class GraphDisplay:
         self.update()
         self.DefaultInfo()
         
+
+    def UpdateScrollRegion(self, auto=0):
+        """ Set the sroll region to the bounding box of the elements on
+            the canvas. This will hide the scrollbars, if the whole scroll
+            region is displayed.
+
+            Note: This might make things difficult for algorithms adding
+            vertices.
+
+            If auto is 1, then this will be done automatically after
+            zooming etc.
+        """
+        self.canvas.config(scrollregion=self.canvas.bbox("all"))
+        if auto:
+            self.autoUpdateScrollRegion = 1
         
     def RegisterGraphInformer(self, Informer):
         """ A graph informer is an object which supplies information
@@ -1015,6 +1026,8 @@ class GraphDisplay:
         self.drawLabel[v]  = self.CreateDrawLabel(v)
         for i in xrange(0,self.G.NrOfVertexWeights()):
             self.G.SetVertexWeight(i,v,0)
+        if self.autoUpdateScrollRegion:
+            self.UpdateScrollRegion()
         return v
         
     def AddVertexCanvas(self, x, y):
@@ -1028,6 +1041,8 @@ class GraphDisplay:
         self.drawLabel[v]  = self.CreateDrawLabel(v)
         for i in xrange(0,self.G.NrOfVertexWeights()):
             self.G.SetVertexWeight(i,v,0)
+        if self.autoUpdateScrollRegion:
+            self.UpdateScrollRegion()
         return v
         
     def MoveVertex(self,v,x,y,doUpdate=None):
@@ -1080,10 +1095,11 @@ class GraphDisplay:
             self.canvas.lower(de,"vertices")
             if euclidian:
                 t = self.G.GetEmbedding(w)
-                self.G.SetEdgeWeight(0,w,v,sqrt((h.x - t.x)**2 + (h.y - t.y)**2))
-                
+                self.G.SetEdgeWeight(0,w,v,sqrt((h.x - t.x)**2 + (h.y - t.y)**2))                
         if self.vertexAnnotation.QDefined(v):
             self.UpdateVertexAnnotationPosition(v)
+        if self.autoUpdateScrollRegion:
+            self.UpdateScrollRegion()
             
             
     def DeleteVertex(self,v):
