@@ -1208,6 +1208,8 @@ class AlgorithmDebugger(bdb.Bdb):
     def dispatch_line(self, frame):
         """ *Internal* Only dispatch if we are in the algorithm file """
         fn = frame.f_code.co_filename
+        #XXX print frame.f_locals. Could extract values here.
+        # What do do about vars going out of scope?
         if fn != self.GUI.algoFileName:
             return None
         line = self.currentLine(frame)

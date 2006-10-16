@@ -145,6 +145,13 @@ class GraphDisplay:
                       '125 %':125.0,
                       '150 %':150.0,
                       '':100.0}
+
+        fontSize = {' 50 %':9, 
+                    ' 75 %':10, 
+                    '100 %':12,
+                    '125 %':18,
+                    '150 %':24,
+                    '':12}
         
         self.newXview = self.canvas.xview()
         self.newYview = self.canvas.yview()
@@ -171,7 +178,11 @@ class GraphDisplay:
         self.zArrowShape = ((16*self.zoomFactor) / 100.0,
                             (20*self.zoomFactor) / 100.0,
                             (6*self.zoomFactor)  / 100.0)
-        self.zFontSize = max(7,int((self.gFontSize*self.zoomFactor) / 100.0))
+
+
+        self.zFontSize = fontSize[percent]
+        #max(8,int((1.5*self.gFontSize*self.zoomFactor) / 100.0))
+        print self.zFontSize
         
         for v in self.G.Vertices():
             dv = self.drawVertex[v]
