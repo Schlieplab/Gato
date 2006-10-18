@@ -1592,7 +1592,7 @@ class Algorithm:
             log.exception("Bug in %s.pro" % os.path.splitext(self.algoFileName)[0])
             #traceback.print_exc()
             
-            # Read in algo and execute it in the debugger
+        # Read in algo and execute it in the debugger
         file = self.algoFileName
         # Filename must be handed over in a very safe way
         # because of \ and ~1 under windows
@@ -1871,6 +1871,7 @@ if __name__ == '__main__':
             tk.tk.createcommand("::tk::mac::Quit",app.Quit)
             
         #======================================================================
+        import profile
         
         # Gato.py <algorithm> <graph>
         if len(args) == 2:
@@ -1883,6 +1884,7 @@ if __name__ == '__main__':
             app.update_idletasks()
             app.update()
             app.after_idle(app.CmdContinue) # after idle needed since CmdStart
+            #profile.run("app.CmdStart()","spiral-small-nohist-2.out")
             app.CmdStart()
             app.update_idletasks()
             
@@ -1892,6 +1894,8 @@ if __name__ == '__main__':
             app.OpenGatoFile(fileName)
             app.update_idletasks()
             app.update()
+
+        #profile.run("app.mainloop()","spiral-small.out")
         app.mainloop()
         
     else:

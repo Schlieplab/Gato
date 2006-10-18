@@ -670,8 +670,7 @@ class GraphDisplay:
         dv = self.drawVertex[v]
         return self.canvas.itemconfig(dv, "fill")[4]
         
-        
-    def SetAllVerticesColor(self,color,graph=None,vertices=None):
+    def SetAllVerticesColor(self, color, graph=None, vertices=None):
         """ Change the color of all vertices to 'color' at once 
             You can also pass an induced subgraph  or a list of vertices
         """
@@ -685,7 +684,7 @@ class GraphDisplay:
         self.update()        
         
         
-    def SetAllEdgesColor(self,color,graph=None, leaveColors = None):
+    def SetAllEdgesColor(self, color, graph=None, leaveColors=None):
         """ Change the color of all edges to 'color' at once
             You can also pass an induced subgraph  """
         if graph == None:
@@ -714,6 +713,22 @@ class GraphDisplay:
                 de = self.drawEdges[(head,tail)]	    
         self.canvas.itemconfig( de, fill=color)
         self.update()
+
+
+    def SetEdgesColor(self, edges, color):
+        """ Change color of [(tail1,head1),...] to color. No error checking! 
+            Handles undirected graphs. """
+        for tail, head in edges:
+            if self.G.QDirected() == 1:
+                de = self.drawEdges[(tail,head)]
+            else:
+                try:
+                    de = self.drawEdges[(tail,head)]
+                except KeyError:
+                    de = self.drawEdges[(head,tail)]	    
+            self.canvas.itemconfig( de, fill=color)
+        self.update()
+        
         
         
     def GetEdgeColor(self, tail, head):

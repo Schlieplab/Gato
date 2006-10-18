@@ -39,7 +39,7 @@ from GatoGlobals import *
 from DataStructures import VertexLabeling, Queue, Stack, PriorityQueue
 from Graph import SubGraph
 import copy
-
+import sets
 
 class Animator:
     """ *Debugging* Text only Animator providing animation functions which
@@ -586,7 +586,7 @@ class AnimatedSubGraph(SubGraph):
             return
             
     def AddEdge(self,edge,head=None):
-         # Poor mans function overload
+        # Poor mans function overload
         if head == None and len(edge) == 2:
             t = edge[0]
             h = edge[1]
@@ -602,6 +602,26 @@ class AnimatedSubGraph(SubGraph):
             self.Animator.DefaultInfo()
         except NoSuchVertexError, NoSuchEdgeError:
             return
+
+    def AddSubGraph(self, G):
+        """ Add subgraph G to self. Will do nothing if self and G 
+            have distinct supergraphs """
+        if self.superGraph != G.superGraph:
+            log.error("AddSubGraph: distinct superGraphs")
+            return
+        
+        for v in G.Vertices():
+            if G.QIsolated(v):
+                print "adding isolated", v
+                SubGraph.AddVertex(self,v)
+                
+        for t,h in G.Edges():
+            SubGraph.AddEdge(self, t, h)
+        self.Animator.SetEdgesColor(G.Edges(),self.Color) 
+        self.Animator.SetAllVerticesColor(self.Color, G)
+        self.RaiseEdges()
+        self.Animator.DefaultInfo()
+
 
     def RaiseEdges(self):
         for (t,h) in self.Edges():

@@ -292,6 +292,11 @@ class Graph:
     def QDirected(self):
         """ Returns 1 if the graph is directed, 0 else """
         return self.directed
+
+
+    def QIsolated(self, v):
+        """ Returns 1 if the vertex v is isolated"""
+        return (len(self.adjLists[v]) == 0) and (len(self.invAdjLists[v]) == 0)
         
         
     def CalculateWidthFromWeight(self, scale, weightID = 0):
@@ -518,7 +523,8 @@ class SubGraph(Graph):
             log.error("AddSubGraph: distinct superGraphs")
             return
         for v in G.vertices:
-            self.AddVertex(v)
+            if G.QIsolated(v):
+                self.AddVertex(v)
         for e in G.Edges():
             self.AddEdge(e[0],e[1])
             
