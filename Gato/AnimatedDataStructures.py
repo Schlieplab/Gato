@@ -612,7 +612,6 @@ class AnimatedSubGraph(SubGraph):
         
         for v in G.Vertices():
             if G.QIsolated(v):
-                print "adding isolated", v
                 SubGraph.AddVertex(self,v)
                 
         for t,h in G.Edges():
