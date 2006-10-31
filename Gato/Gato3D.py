@@ -1392,22 +1392,21 @@ class Algorithm:
         
         
         ################################################################################
-if __name__ == '__main__':
-    #root = Tk()
-    #print sys.path
-    #import sys
-    #print sys.path
 
-    if (len(sys.argv) == 1 or  len(sys.argv) == 3):
+def main(argv=None):
+    if argv is None:
+        argv = sys.argv
+
+    if (len(argv) == 1 or len(argv) == 3):
     
         app = AlgoWin()    
         #======================================================================
         #
         # Gato.py <algorithm> <graph>
         #
-        if (len(sys.argv) == 3):
-            algorithm = sys.argv[1]
-            graph = sys.argv[2]
+        if (len(argv) == 3):
+            algorithm = argv[1]
+            graph = argv[2]
             
             app.OpenAlgorithm(algorithm)
             app.update_idletasks()
@@ -1421,5 +1420,9 @@ if __name__ == '__main__':
             
         app.mainloop()
     else:
-        print "Usage: gato algorithm.alg graph.cat"
+        print "Usage: Gato3D algorithm.alg graph.cat"
+        return 2
         
+
+if __name__ == '__main__':
+    sys.exit(main())

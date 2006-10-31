@@ -918,7 +918,10 @@ class Start:
 
         
         ################################################################################
-if __name__ == '__main__':
+
+def main(argv=None):
+    if argv is None:
+        argv = sys.argv
 
 ##    globals()['gVertexRadius'] = 12
 ##    globals()['gVertexFrameWidth'] = 0
@@ -940,11 +943,14 @@ if __name__ == '__main__':
     tk.option_add('Tk*Scrollbar.troughColor','#CACACA')
     graphEditor = SAGraphEditor(tk)
     graphEditor.dirty = 0
-    if len(sys.argv) == 2:
-        graphEditor.OpenGraph(fileName=sys.argv[1])        
+    if len(argv) == 2:
+        graphEditor.OpenGraph(fileName=argv[1])        
     else:
         graphEditor.NewGraph()
     import logging
     log = logging.getLogger("Gred.py")
     graphEditor.mainloop()
-    
+
+
+if __name__ == '__main__':
+    sys.exit(main())

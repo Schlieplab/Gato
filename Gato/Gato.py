@@ -48,6 +48,7 @@ import tokenize
 import tkFont
 import copy
 import webbrowser
+import getopt
 
 import Gred
 
@@ -133,7 +134,7 @@ class AlgoWin(Frame):
     """ Provide GUI with main menubar for displaying and controlling
         algorithms and the algorithm text widget """
     
-    def __init__(self, parent=None, graph_panes=None):
+    def __init__(self, parent=None, graph_panes=None, paned=False):
         self.graph_panes = graph_panes
         Frame.__init__(self,parent)
         
@@ -200,7 +201,7 @@ class AlgoWin(Frame):
         else:
             self.tkraise()
 
-        if not paned:
+        if self.graph_panes is None:
             # Make AlgoWins requested size its minimal size to keep
             # toolbar from vanishing when changing window size
             # Packer has been running due to splash screen
@@ -1801,14 +1802,15 @@ def usage():
     print "               -v or --verbose switches on the debugging/logging information"
 
 
-if __name__ == '__main__':
-    import getopt
-    
+def main(argv=None):
+    if argv is None:
+        argv = sys.argv
+
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "pv", ["verbose","paned"])
+        opts, args = getopt.getopt(argv[1:], "pv", ["verbose","paned"])
     except getopt.GetoptError:
         usage()
-        sys.exit(2)
+        return 2
         
     if (len(args) < 3):
     
@@ -1900,5 +1902,8 @@ if __name__ == '__main__':
         
     else:
         usage()
-        sys.exit(2)
-        
+        return 2
+
+
+if __name__ == '__main__':
+    sys.exit(main())
