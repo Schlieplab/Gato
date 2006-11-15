@@ -55,6 +55,30 @@ def typed_assign(var, val):
     
     
     #-------------------------------------------------------------------------------
+class TkBoolEntry:
+    """Tk entry field for selecting one Bool"""
+
+    def __init__(self, master, default=False):
+        
+        self.frame = Frame(master, relief=FLAT)
+        self.status = IntVar()
+        self.status.set(default)
+        useDefaultButton = Checkbutton(self.frame, variable=self.status, command=self.toggle)
+        useDefaultButton.grid(row=0, column=0, padx=4, pady=3, sticky=W)
+        
+    def tkWidget(self):
+        return self.frame
+        
+    def get(self):
+        return bool(self.status)
+        
+    def set(self, value):
+        self.status = value
+
+    def toggle(self):
+        self.status = not self.status
+
+
 class TkStringEntry:
     """Tk entry field for editing strings"""
     
@@ -95,12 +119,14 @@ class TkDefaultMixin:
        values which have an externally defined default value. Combination
        of 'use default' checkbox and corresponding entry field """
     
-    def __init__(self, master, useDefault, defaultValue):
+    def __init__(self, master, useDefault, defaultValue, defaultText=None):
+        if defaultText is None:
+            defaultText="Use default ("+str(defaultValue)+")"
         self.frame = Frame(master, relief=FLAT)
         self.useDefault = IntVar()
         self.useDefault.set(useDefault)
         self.defaultValue = defaultValue
-        useDefaultButton = Checkbutton(self.frame, text="Use default",
+        useDefaultButton = Checkbutton(self.frame, text=defaultText,
                                        variable=self.useDefault,
                                        command=self.toggleDefault)
         useDefaultButton.grid(row=0, column=0, padx=4, pady=3, sticky=W)
@@ -268,7 +294,7 @@ class EditObjectAttributesDialog(tkSimpleDialog.Dialog):
     
          - master : tk master widget
          - object : the object, whose attributes we want to edit
-         - attr_names : a list of attr_names
+         - attr_names : a list of attr_names or a dictionary of attr_names and displayed Text
     
         By making use of Python 2.2's capability of subclassing built-in
         types such as ints, information about editing etc. is conveyed.
@@ -298,6 +324,9 @@ class EditObjectAttributesDialog(tkSimpleDialog.Dialog):
         if isinstance(attr, Popupable):            
             widget = TkPopupSelector(master, attr.val2pop, attr.pop2val, attr.width)
             
+        elif isinstance(attr, ValidatingBool):
+            widget = TkBoolEntry(master)
+
         elif isinstance(attr, str):
         
             if default:
@@ -333,17 +362,28 @@ class EditObjectAttributesDialog(tkSimpleDialog.Dialog):
         label.grid(row=0, column=1, padx=4, pady=3, sticky=W)
         
         cur_row = 1
-        
-        for attr in self.attr_names:
-            label = Label(master, text="%s" % attr, anchor=E)
-            label.grid(row=cur_row, column=0, padx=4, pady=3, sticky=E)
-            
-            self.edit[attr] = self.editWidget(master, self.object, attr)
-            if self.edit[attr] != None:
-                self.edit[attr].tkWidget().grid(row=cur_row, column=1, padx=2, pady=1, sticky=W)
-                
-            cur_row = cur_row + 1
-            
+
+        if isinstance(self.attr_names, list):
+            for attr in self.attr_names:
+                label = Label(master, text="%s" % attr, anchor=E)
+                label.grid(row=cur_row, column=0, padx=4, pady=3, sticky=E)
+
+                self.edit[attr] = self.editWidget(master, self.object, attr)
+                if self.edit[attr] != None:
+                    self.edit[attr].tkWidget().grid(row=cur_row, column=1, padx=2, pady=1, sticky=W)
+
+                cur_row = cur_row + 1
+        else:
+            for attr in self.attr_names.keys():
+                label = Label(master, text="%s" % self.attr_names[attr], anchor=E)
+                label.grid(row=cur_row, column=0, padx=4, pady=3, sticky=E)
+
+                self.edit[attr] = self.editWidget(master, self.object, attr)
+                if self.edit[attr] != None:
+                    self.edit[attr].tkWidget().grid(row=cur_row, column=1, padx=2, pady=1, sticky=W)
+
+                cur_row = cur_row + 1
+
     def validate(self):
         for attr_name in self.edit.keys():
             try:
@@ -441,6 +481,12 @@ class AlwaysValidate:
         return 1
         
         #-------------------------------------------------------------------------------
+class ValidatingBool(int):
+    """Editable replacement for bool"""
+    def validate(self, value):
+        if value is True or value is False:
+            return 1
+
 class ValidatingInt(int, AlwaysValidate):
     """Editable replacement for ints"""
     pass

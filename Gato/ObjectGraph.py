@@ -273,7 +273,8 @@ class ObjectGraph:
     def GetNextVertexID(self):
         """ *Internal* returns next free vertex id """
         self.highVertexID += 1
-        return self.highVertexID
+        #XXX return self.highVertexID
+        return self.highVertexID-1
         
         
     def Order(self):
@@ -346,7 +347,7 @@ class ObjectGraph:
         return self.edges[(v,w)].GetEdgeWeight(i)
 
     def QIntegerWeight(self,i):
-        # Edge class should take care of that ...class method
+        # Edge and Vertex class should take care of that ...class method
         return 0 # XXX UNSUPPORTED: FLOAT WEIGHTS ONLY. Barf
     
 

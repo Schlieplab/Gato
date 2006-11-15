@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.3
+#!/usr/bin/env python
 ################################################################################
 #
 #       This file is part of Gato (Graph Algorithm Toolbox) 
@@ -1844,15 +1844,15 @@ class gauss_editor(Tkinter.Frame):
         self.plot_area=plot_canvas(self,bg='white')
         self.edit_area=Tkinter.Canvas(self,bg='white',highlightthickness=0)
         self.edit_area.bind('<Configure>',self.configure_handles)
-        self.root=root
+        self.root=master
         
         self.plot_list=[]
         self.handle_list=[]
         
         self.colors=['green','blue',
-                            'grey','pink','brown',
-                            'tan','purple','magenta','firebrick','deeppink',
-                            'lavender','NavajoWhite','seagreen','violet','LightGreen']
+                     'grey','pink','brown',
+                     'tan','purple','magenta','firebrick','deeppink',
+                     'lavender','NavajoWhite','seagreen','violet','LightGreen']
         
         self.plot_list=[box_function(start=-0.2,stop=1.0,a=0.1,color=self.colors[0]),
                         gauss_function(mu=2,sigma=0.6,a=0.2,color=self.colors[1])#,                     
@@ -1861,50 +1861,24 @@ class gauss_editor(Tkinter.Frame):
         ##                exponential_function(start=2.0,stop=6.0,a=0.2,color=self.colors[4]),
         ##                exp_other_function(start=1.0,stop=5.0,a=0.1,color=self.colors[5])
                        ]
-        
-        global long
-        long=len(self.plot_list)
-        i=0
-        
-        while i<long: 
-            del self.colors[0]
-            i+=1
-            
-            #Bereich vorgeben
+
+        # remove all currently used colors
+        del self.colors[0:len(self.plot_list)]
+
+        #Bereich vorgeben
         self.suche_randwerte()
         
-        global x_big
-        x_big=self.int_x
-        
-        
-        ##        d={}
-        ##        color_list=['red','green','blue','orange','black']
-        ##
-        ##        for i in range(1,5):
-        ##            o=box_function(start=i*2.0-1.0,
-        ##                           stop=i*2.0+1.0,
-        ##                           a=i/2.0,
-        ##                           color=color_list[i-1])
-        ##            self.plot_list.append(o)
-        ##            self.plot_area.add_plot_object(o)
-        ##            d[str(i)]=i/2.0
-        
-        
         self.sumindi=0
-        self.i=1
-        self.d={}
+        self.nextIndex=1
+        d={}
         self.color_list=[]
         for o in self.plot_list:
             self.plot_area.add_plot_object(o)
             self.color_list.append(o.color)
-            self.d[str(self.i)]=o.a
-            self.i+=1
+            d[str(self.nextIndex)]=o.a
+            self.nextIndex+=1
             
-            
-            
-            
-            
-        self.dict=ProbEditorBasics.ProbDict(self.d)
+        self.dict=ProbEditorBasics.ProbDict(d)
         
         self.create_handles()
         
@@ -2057,7 +2031,7 @@ class gauss_editor(Tkinter.Frame):
         
     def boxadd(self):
     
-        self.top=Tkinter.Toplevel(root)
+        self.top=Tkinter.Toplevel(self.root)
         label=Tkinter.Frame(self.top)
         
         Tkinter.Label(label, justify=CENTER, text="Box function:\nf(x)=a*c for start<x<end\nelse f(x)=0").grid(row=0)  
@@ -2093,7 +2067,7 @@ class gauss_editor(Tkinter.Frame):
         
     def expadd(self):
     
-        self.top=Tkinter.Toplevel(root)
+        self.top=Tkinter.Toplevel(self.root)
         label=Tkinter.Frame(self.top) 
         
         
@@ -2135,7 +2109,7 @@ class gauss_editor(Tkinter.Frame):
         
     def oexpadd(self):
     
-        self.top=Tkinter.Toplevel(root)
+        self.top=Tkinter.Toplevel(self.root)
         label=Tkinter.Frame(self.top) 
         
         Tkinter.Label(label, justify=CENTER, text="negative Exponential function:\nf(x)=-a*alpha*exp(-x+mu) for x<=mu\n else f(x)=0 ").grid(row=0)  
@@ -2176,7 +2150,7 @@ class gauss_editor(Tkinter.Frame):
         
     def gaussadd(self):
     
-        self.top=Tkinter.Toplevel(root)
+        self.top=Tkinter.Toplevel(self.root)
         label=Tkinter.Frame(self.top) 
         
         Tkinter.Label(label, justify=CENTER, text="Gaussian function:\n f(x)=\n a/(sigma*sqrt(2*pi))*exp(-(x-mu)**2/2*(sigma)**2)").grid(row=0)  
@@ -2216,7 +2190,7 @@ class gauss_editor(Tkinter.Frame):
         
     def gaussladd(self):
     
-        self.top=Tkinter.Toplevel(root)
+        self.top=Tkinter.Toplevel(self.root)
         label=Tkinter.Frame(self.top)
         
         Tkinter.Label(label, justify=CENTER, text="Gaussian tail function left :\n f(x)=\n a/(sigma*sqrt(2*pi))*exp(-(x-mu)**2/2*(sigma)**2) for x<=tail\n else f(x)=0").grid(row=0, sticky=E)  
@@ -2260,7 +2234,7 @@ class gauss_editor(Tkinter.Frame):
         
     def gaussradd(self):
     
-        self.top=Tkinter.Toplevel(root)
+        self.top=Tkinter.Toplevel(self.root)
         label=Tkinter.Frame(self.top)
         Tkinter.Label(label, justify=CENTER, text="Gaussian tail function left :\n f(x)=\n a/(sigma*sqrt(2*pi))*exp(-(x-mu)**2/2*(sigma)**2) for x>=tail\n else f(x)=0").grid(row=0, sticky=E)  
         Tkinter.Label(label, text="sigma=").grid(row=1, sticky=E)
@@ -2313,16 +2287,8 @@ class gauss_editor(Tkinter.Frame):
         self.pie.destroy()
         del self.pie
         del self.plot_list[i]
-        
-        self.i=1
-        self.d={}
-        self.color_list=[]
-        for o in self.plot_list:    
-            self.color_list.append(o.color)
-            self.d[str(self.i)]=o.a
-            self.i+=1
-            
-        self.dict=ProbEditorBasics.ProbDict(self.d)
+
+        self.dict.remove(str(i))
         keys=self.dict.keys()
         keys.sort()
         self.pie=ProbEditorWidgets.e_pie_chart(self,
@@ -2408,12 +2374,10 @@ class gauss_editor(Tkinter.Frame):
         if self.colors==[]:   
             tkMessageBox.showwarning("Warning","No more Place for Functions!")
             
-            # insertst in Pie    
-        self.d[str(self.i)]=o.a
-        self.i+=1
-        self.dict=ProbEditorBasics.ProbDict(self.d)
-        
-        
+        # insert in Pie
+        self.dict.update({str(self.nextIndex):o.a})
+        self.dict.renorm_to(1.0)
+        self.nextIndex += 1
         
         # creats a handle 
         self.edit_area.configure(height=10)
@@ -2495,7 +2459,7 @@ class gauss_editor(Tkinter.Frame):
         
     def create_handle(self,o):
         #sucht den ensprechenden handle
-        if o.__class__.__name__=='gauss_function':
+        if 'gauss_function' in (o.__class__.__name__, o.__class__.__bases__[0].__name__):
             handle=gaussian_handle(self.edit_area,
                                    self.handle_report,
                                    (o.mu,o.sigma),
@@ -2503,7 +2467,7 @@ class gauss_editor(Tkinter.Frame):
                                    pos_y=self.pos+10)
             self.handle_list.append(handle)
             
-        elif o.__class__.__name__=='gauss_tail_function_left':
+        elif 'gauss_tail_function_left' in (o.__class__.__name__, o.__class__.__bases__[0].__name__):
             handle=gaussian_tail_handle_left(self.edit_area,
                                              self.handle_report,
                                              (o.mu,o.sigma,o.tail),
@@ -2511,7 +2475,7 @@ class gauss_editor(Tkinter.Frame):
                                              pos_y=self.pos+10)
             self.handle_list.append(handle)
             
-        elif o.__class__.__name__=='box_function':
+        elif 'box_function' in (o.__class__.__name__, o.__class__.__bases__[0].__name__):
             handle=box_handle(self.edit_area,
                               self.handle_report,
                               (o.start,o.stop),
@@ -2519,7 +2483,7 @@ class gauss_editor(Tkinter.Frame):
                               pos_y=self.pos+10)
             self.handle_list.append(handle)
             
-        elif o.__class__.__name__=='gauss_tail_function_right':
+        elif 'gauss_tail_function_right' in (o.__class__.__name__, o.__class__.__bases__[0].__name__):
             handle=gaussian_tail_handle_right(self.edit_area,
                                               self.handle_report,
                                               (o.mu,o.sigma,o.tail),
@@ -2527,7 +2491,7 @@ class gauss_editor(Tkinter.Frame):
                                               pos_y=self.pos+10)
             self.handle_list.append(handle)
             
-        elif o.__class__.__name__=='exponential_function':
+        elif 'exponential_function' in (o.__class__.__name__, o.__class__.__bases__[0].__name__):
             handle=exp_handle(self.edit_area,
                                    self.handle_report,
                                    (o.start,o.stop),
@@ -2535,7 +2499,7 @@ class gauss_editor(Tkinter.Frame):
                                    pos_y=self.pos+10)
             self.handle_list.append(handle)
             
-        elif o.__class__.__name__=='exp_other_function':
+        elif 'exp_other_function' in (o.__class__.__name__, o.__class__.__bases__[0].__name__):
             handle=exp_other_handle(self.edit_area,
                                    self.handle_report,
                                    (o.start,o.stop),
@@ -2548,9 +2512,11 @@ class gauss_editor(Tkinter.Frame):
         self.pos+=10
         
         
-        
-        
     def suche_randwerte(self):
+
+        #stupid initialisation off a global variable
+        global x_big
+        
         randwerte=[]
         
         for o in self.plot_list:
@@ -2600,7 +2566,8 @@ class gauss_editor(Tkinter.Frame):
         self.plot_area.orig_x=self.min_plot_x
         self.plot_area.orig_y=self.min_plot_y
         
-        
+        # set global variable big_x
+        x_big=self.int_x
         
         
 if __name__=='__main__':

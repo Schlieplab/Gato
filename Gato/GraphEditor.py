@@ -366,14 +366,14 @@ class GraphEditor(GraphDisplay):
                     intFlag = ()
                     count = len(self.G.vertexWeights.keys())
                     for i in xrange(count):
-                        weights = weights + (self.G.vertexWeights[i][v],)
-                        intFlag = intFlag + (self.G.vertexWeights[i].QInteger(),)
+                        weights = weights + (self.G.GetVertexWeight(i, v),)
+                        intFlag = intFlag + (self.G.QIntegerWeight(i),)
                         
                     d = EditWeightsDialog(self, "Edit vertex weights %d" % v, 
                                               count, weights, intFlag) 
                     if d.result is not None:
                         for i in xrange(count):
-                            self.G.vertexWeights[i][v] = d.result[i]
+                            self.G.SetVertexWeights(i, v, d.result[i])
                             
                             
                             #===== GUI-Bindings FOR ACTIONS ================================================
