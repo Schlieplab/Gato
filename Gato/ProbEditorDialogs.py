@@ -537,7 +537,7 @@ class emission_dialog(Tkinter.Toplevel,ProbEditorBasics.emission_editor):
         self.status='ok'
         
     def cancel(self,event=None):
-        # to do: hier fehlt noch die Zurücksetzung auf alte Werte
+        # XXX: ToDo: reset the old values
         self.destroy()
         self.status='cancel'
         
