@@ -112,9 +112,15 @@ class ProbDict(UserDict.UserDict):
     def renorm_to(self,sum):
         "renorm all items to given argument"
         self.__calc_sum__()
-        factor=sum/self.sum
-        for key in self.data.keys():
-            self.data[key]*=factor
+        if self.sum == 0.0:
+            even = sum/float(len(self.data))
+            for key in self.data.keys():
+                self.data[key] = even
+        else:
+            factor=sum/self.sum
+            for key in self.data.keys():
+                self.data[key]*=factor
+
         self.__calc_sum__()
         
         
