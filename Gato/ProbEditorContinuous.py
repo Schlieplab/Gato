@@ -1913,6 +1913,7 @@ class gauss_editor(Tkinter.Frame):
                 self.plot_area.replot_object(self.plot_list[i])
             self.plot_area.replot_sum_fkt()
 
+
     def handle_report(self,who,what,values):
         """
         sets new values to the plot object
@@ -1924,6 +1925,7 @@ class gauss_editor(Tkinter.Frame):
         self.plot_area.replot_object(plot_object)
         self.plot_area.replot_sum_fkt()
 
+
     def create_handles(self):
         """
         creates handles for objects in list
@@ -1932,6 +1934,7 @@ class gauss_editor(Tkinter.Frame):
         self.edit_area.configure(height=10*len(self.plot_list))
         for o in self.plot_list:
             self.create_handle(o)
+
 
     def configure_handles(self,event):
         """
@@ -1951,6 +1954,7 @@ class gauss_editor(Tkinter.Frame):
             h.d_y=0.0
             h.set_values(values)
             i+=1
+
 
     def buildMenu(self):
         #Menuleiste
@@ -1989,11 +1993,13 @@ class gauss_editor(Tkinter.Frame):
 
         self.root.config(menu=bar)
 
+
     def del_sum(self):
         self.plot_area.remove_sum_fkt()
         self.sumindi=0
 
         self.buildMenu()
+
 
     def add_sum(self):
         self.plot_area.create_sum_fkt()
@@ -2001,8 +2007,8 @@ class gauss_editor(Tkinter.Frame):
 
         self.buildMenu()
 
-    def boxadd(self):
 
+    def boxadd(self):
         self.top=Tkinter.Toplevel(self.root)
         label=Tkinter.Frame(self.top)
 
@@ -2023,14 +2029,11 @@ class gauss_editor(Tkinter.Frame):
         self.e3.grid(row=3, column=1)
 
         button1=Tkinter.Button(label, text="OK", command=self.box).grid(row=4)
-
         button2=Tkinter.Button(label,text="cancel",command=self.top.destroy).grid(row=4, column=1)
-
-
         label.pack()
 
-    def box(self):
 
+    def box(self):
         s1=string.atof(self.e1.get())
         s2=string.atof(self.e2.get())
         s3=string.atof(self.e3.get())
@@ -2038,10 +2041,8 @@ class gauss_editor(Tkinter.Frame):
         self.top.destroy()
 
     def expadd(self):
-
         self.top=Tkinter.Toplevel(self.root)
         label=Tkinter.Frame(self.top)
-
 
         Tkinter.Label(label, justify=CENTER, text="Exponential function:\nf(x)=a*alpha*exp(-x+mu) for x>=mu\n else  f(x)=0 ").grid(row=0)
         Tkinter.Label(label, text="alpha=").grid(row=1, sticky=E)
@@ -2060,15 +2061,11 @@ class gauss_editor(Tkinter.Frame):
         self.e3.grid(row=3, column=1)
 
         button1=Tkinter.Button(label, text="OK", command=self.exp).grid(row=4)
-
         button2=Tkinter.Button(label,text="cancel",command=self.top.destroy).grid(row=4, column=1)
-
-
         label.pack()
 
 
     def exp(self):
-
         l=len(self.plot_list)
         s2=string.atof(self.e1.get())
         s1=string.atof(self.e2.get())
@@ -2080,7 +2077,6 @@ class gauss_editor(Tkinter.Frame):
 
 
     def oexpadd(self):
-
         self.top=Tkinter.Toplevel(self.root)
         label=Tkinter.Frame(self.top)
 
@@ -2101,15 +2097,11 @@ class gauss_editor(Tkinter.Frame):
         self.e3.grid(row=3, column=1)
 
         button1=Tkinter.Button(label, text="OK", command=self.oexp).grid(row=4)
-
         button2=Tkinter.Button(label,text="cancel",command=self.top.destroy).grid(row=4, column=1)
-
-
         label.pack()
 
 
     def oexp(self):
-
         l=len(self.plot_list)
         s1=string.atof(self.e1.get())
         s2=string.atof(self.e2.get())
@@ -2119,9 +2111,7 @@ class gauss_editor(Tkinter.Frame):
         self.top.destroy()
 
 
-
     def gaussadd(self):
-
         self.top=Tkinter.Toplevel(self.root)
         label=Tkinter.Frame(self.top)
 
@@ -2142,15 +2132,11 @@ class gauss_editor(Tkinter.Frame):
         self.e3.grid(row=3, column=1)
 
         button1=Tkinter.Button(label, text="OK", command=self.gauss).grid(row=4)
-
         button2=Tkinter.Button(label,text="cancel",command=self.top.destroy).grid(row=4, column=1)
-
-
-
         label.pack()
 
-    def gauss(self):
 
+    def gauss(self):
         l=len(self.plot_list)
         s1=string.atof(self.e1.get())
         s2=string.atof(self.e2.get())
@@ -2161,7 +2147,6 @@ class gauss_editor(Tkinter.Frame):
 
 
     def gaussladd(self):
-
         self.top=Tkinter.Toplevel(self.root)
         label=Tkinter.Frame(self.top)
 
@@ -2187,14 +2172,11 @@ class gauss_editor(Tkinter.Frame):
         self.e4.grid(row=4, column=1)
 
         button1=Tkinter.Button(label, text="OK", command=self.gaussl).grid(row=5)
-
         button2=Tkinter.Button(label,text="cancel",command=self.top.destroy).grid(row=5, column=1)
-
-
         label.pack()
 
-    def gaussl(self):
 
+    def gaussl(self):
         l=len(self.plot_list)
         s1=string.atof(self.e1.get())
         s2=string.atof(self.e2.get())
@@ -2205,7 +2187,6 @@ class gauss_editor(Tkinter.Frame):
 
 
     def gaussradd(self):
-
         self.top=Tkinter.Toplevel(self.root)
         label=Tkinter.Frame(self.top)
         Tkinter.Label(label, justify=CENTER, text="Gaussian tail function left :\n f(x)=\n a/(sigma*sqrt(2*pi))*exp(-(x-mu)**2/2*(sigma)**2) for x>=tail\n else f(x)=0").grid(row=0, sticky=E)
@@ -2224,19 +2205,17 @@ class gauss_editor(Tkinter.Frame):
         self.e3.insert(0, 0.2)
         self.e4.insert(0, 5.0)
 
-
         self.e1.grid(row=1, column=1)
         self.e2.grid(row=2, column=1)
         self.e3.grid(row=3, column=1)
         self.e4.grid(row=4, column=1)
+
         button1=Tkinter.Button(label, text="OK", command=self.gaussr).grid(row=5)
-
         button2=Tkinter.Button(label,text="cancel",command=self.top.destroy).grid(row=5, column=1)
-
         label.pack()
 
-    def gaussr(self):
 
+    def gaussr(self):
         l=len(self.plot_list)
         s1=string.atof(self.e1.get())
         s2=string.atof(self.e2.get())
@@ -2245,8 +2224,8 @@ class gauss_editor(Tkinter.Frame):
         self.create_new_fkt(gauss_tail_function_right(mu=s2,sigma=s1,tail=s4,a=s3,color=self.colors[0]))
         self.top.destroy()
 
-    def norm(self):
 
+    def norm(self):
         self.suche_randwerte()
         self.draw_new()
 
@@ -2270,8 +2249,6 @@ class gauss_editor(Tkinter.Frame):
                                                self.pie_report)
         self.pie.configure(width=400,height=400)
 
-
-
         self.edit_area.destroy()
         del self.edit_area
         self.handle_list=[]
@@ -2287,6 +2264,7 @@ class gauss_editor(Tkinter.Frame):
         self.plot_area.replot_sum_fkt()
         self.buildMenu()
         self.draw_new()
+
 
     def zoom_out(self):
         #halbiert die plot_area randwerte
@@ -2309,11 +2287,7 @@ class gauss_editor(Tkinter.Frame):
         self.draw_new()
 
 
-
     def zoom_in(self):
-
-
-
         self.max_plot_x=math.ceil(self.max_plot_x/2)
 
         self.max_plot_y=self.max_plot_y/2
@@ -2332,7 +2306,6 @@ class gauss_editor(Tkinter.Frame):
         self.plot_area.orig_y=self.min_plot_y
 
         self.draw_new()
-
 
 
     def create_new_fkt(self,plot_object):
@@ -2437,7 +2410,6 @@ class gauss_editor(Tkinter.Frame):
 
 
     def suche_randwerte(self):
-
         #stupid initialisation off a global variable
         global x_big
 
@@ -2453,12 +2425,8 @@ class gauss_editor(Tkinter.Frame):
         if randwerte==[]:
             randwerte=[0.0,1.0]
 
-
-
         plot_x=[randwerte[0],randwerte[1]]
-
         plot_y=[0.0,0.6]
-
 
         #randwerte werden sortiert
         if plot_x[1]>plot_x[0]:
@@ -2481,7 +2449,7 @@ class gauss_editor(Tkinter.Frame):
         else:
             print "Error"
 
-            #Intervall
+        #Intervall
         self.int_x=(self.max_plot_x-self.min_plot_x)/10.0
         self.int_y=(self.max_plot_y-self.min_plot_y)/0.6
         #Grundwerte von plot_area
@@ -2492,6 +2460,7 @@ class gauss_editor(Tkinter.Frame):
 
         # set global variable big_x
         x_big=self.int_x
+
 
 
 if __name__=='__main__':
