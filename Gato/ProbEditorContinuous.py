@@ -1970,36 +1970,8 @@ class gauss_editor(Tkinter.Frame):
         addMenu.add_radiobutton(label="Gaussian", command=self.gaussadd)
         addMenu.add_radiobutton(label="GaussianL", command=self.gaussladd)
         addMenu.add_radiobutton(label="GaussianR", command=self.gaussradd)
-        if len(self.plot_list)>0:
-            delMenu.add_radiobutton(label="1",background=self.plot_list[0].color, command=self.del0)
-        if len(self.plot_list)>1:
-            delMenu.add_radiobutton(label="2",background=self.plot_list[1].color, command=self.del1)
-        if len(self.plot_list)>2:
-            delMenu.add_radiobutton(label="3",background=self.plot_list[2].color, command=self.del2)
-        if len(self.plot_list)>3:
-            delMenu.add_radiobutton(label="4",background=self.plot_list[3].color, command=self.del3)
-        if len(self.plot_list)>4:
-            delMenu.add_radiobutton(label="5",background=self.plot_list[4].color, command=self.del4)
-        if len(self.plot_list)>5:
-            delMenu.add_radiobutton(label="6",background=self.plot_list[5].color, command=self.del5)
-        if len(self.plot_list)>6:
-            delMenu.add_radiobutton(label="7",background=self.plot_list[6].color, command=self.del6)
-        if len(self.plot_list)>7:
-            delMenu.add_radiobutton(label="8",background=self.plot_list[7].color, command=self.del7)
-        if len(self.plot_list)>8:
-            delMenu.add_radiobutton(label="9",background=self.plot_list[8].color, command=self.del8)
-        if len(self.plot_list)>9:
-            delMenu.add_radiobutton(label="10",background=self.plot_list[9].color, command=self.del9)
-        if len(self.plot_list)>10:
-            delMenu.add_radiobutton(label="11",background=self.plot_list[10].color, command=self.del10)
-        if len(self.plot_list)>11:
-            delMenu.add_radiobutton(label="12",background=self.plot_list[11].color, command=self.del11)
-        if len(self.plot_list)>12:
-            delMenu.add_radiobutton(label="13",background=self.plot_list[12].color, command=self.del12)
-        if len(self.plot_list)>13:
-            delMenu.add_radiobutton(label="14",background=self.plot_list[13].color, command=self.del13)
-        if len(self.plot_list)>14:
-            delMenu.add_radiobutton(label="15",background=self.plot_list[14].color, command=self.del14)
+        for i in xrange(len(self.plot_list)):
+            delMenu.add_radiobutton(label=str(i),background=self.plot_list[i].color, command=(lambda:self.remove_fkt(i)))
         if self.sumindi==1:
             delMenu.add_radiobutton(label="sum", background='red', command=self.del_sum)
         filem.add_command(label="Exit", command=self.die)
@@ -2395,54 +2367,6 @@ class gauss_editor(Tkinter.Frame):
         self.suche_randwerte()
         self.draw_new()
         self.buildMenu()
-        
-    def del0(self):
-        self.remove_fkt(0)
-        
-    def del1(self):
-        self.remove_fkt(1)
-        
-    def del2(self):
-        self.remove_fkt(2)
-        
-    def del3(self):
-        self.remove_fkt(3)
-        
-    def del4(self):
-        self.remove_fkt(4)
-        
-    def del5(self):
-        self.remove_fkt(5)
-        
-    def del6(self):
-        self.remove_fkt(6)
-        
-    def del7(self):
-        self.remove_fkt(7)
-        
-    def del8(self):
-        self.remove_fkt(8)
-        
-    def del9(self):
-        self.remove_fkt(9)
-        
-    def del10(self):
-        self.remove_fkt(10)
-        
-    def del11(self):
-        self.remove_fkt(11)
-        
-    def del12(self):
-        self.remove_fkt(12)
-        
-    def del13(self):
-        self.remove_fkt(13)
-        
-    def del14(self):
-        self.remove_fkt(14)
-        
-    def die(self,event=0):
-        sys.exit(0)
         
         
     def draw_new(self):
