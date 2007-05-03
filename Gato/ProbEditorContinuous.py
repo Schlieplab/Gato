@@ -1848,54 +1848,40 @@ class gauss_editor(Tkinter.Frame):
 
         self.plot_list=[]
         self.handle_list=[]
-
+        self.color_idx = 0
         self.colors=['green','blue',
                      'grey','pink','brown',
                      'tan','purple','magenta','firebrick','deeppink',
                      'lavender','NavajoWhite','seagreen','violet','LightGreen']
 
-        self.plot_list=[box_function(start=-0.2,stop=1.0,a=0.1,color=self.colors[0]),
-                        gauss_function(mu=2,sigma=0.6,a=0.2,color=self.colors[1])#,
-        ##                gauss_tail_function_right(mu=6,sigma=1,tail=5,a=0.2,color=self.colors[2]),
-        ##                gauss_tail_function_left(mu=4,sigma=1,tail=4.7,a=0.2,color=self.colors[3]),
-        ##                exponential_function(start=2.0,stop=6.0,a=0.2,color=self.colors[4]),
-        ##                exp_other_function(start=1.0,stop=5.0,a=0.1,color=self.colors[5])
+        self.plot_list=[box_function(start=-0.2,stop=1.0,a=0.1,color=self.nextColor()),
+                        gauss_function(mu=2,sigma=0.6,a=0.2,color=self.nextColor())#,
+        ##                gauss_tail_function_right(mu=6,sigma=1,tail=5,a=0.2,color=self.nextColor()),
+        ##                gauss_tail_function_left(mu=4,sigma=1,tail=4.7,a=0.2,color=self.nextColor()),
+        ##                exponential_function(start=2.0,stop=6.0,a=0.2,color=self.nextColor()),
+        ##                exp_other_function(start=1.0,stop=5.0,a=0.1,color=self.nextColor())
                        ]
-
-        # remove all currently used colors
-        del self.colors[0:len(self.plot_list)]
 
         #Bereich vorgeben
         self.suche_randwerte()
 
         self.sumindi=0
-        self.nextIndex=1
-        d={}
-        self.color_list=[]
-        for o in self.plot_list:
+        d = {}
+        for i,o in enumerate(self.plot_list):
             self.plot_area.add_plot_object(o)
-            self.color_list.append(o.color)
-            d[str(self.nextIndex)]=o.a
-            self.nextIndex+=1
+            d[str(i+1)] = o.a
 
         self.dict=ProbEditorBasics.ProbDict(d)
 
         self.create_handles()
 
-        keys=self.dict.keys()
-        keys.sort()
-        self.pie=ProbEditorWidgets.e_pie_chart(self,
-                                               self.dict,
-                                               keys,
-                                               self.color_list,
-                                               self.pie_report)
-        self.pie.configure(width=400,height=400)
+        self.makePie()
 
         self.plot_area.create_sum_fkt()
         self.sumindi=1
         self.edit_area.grid(row=1,column=0,sticky=Tkinter.NSEW)
         self.plot_area.grid(row=0,column=0,sticky=Tkinter.NSEW)
-        self.pie.grid(row=0,rowspan=2,column=1,sticky=Tkinter.NSEW)
+        #self.pie.grid(row=0,rowspan=2,column=1,sticky=Tkinter.NSEW)
         self.rowconfigure(0,minsize=50,weight=1)
         self.columnconfigure(0,minsize=50,weight=1)
         self.plot_area.configure(width=550)
@@ -1956,6 +1942,16 @@ class gauss_editor(Tkinter.Frame):
             i+=1
 
 
+    def nextColor(self):
+        color = self.colors[self.color_idx]
+        self.color_idx += 1
+        return color
+
+
+    def make_del_function(self,i):
+        return lambda : self.remove_fkt(i)
+
+
     def buildMenu(self):
         #Menuleiste
         bar=Tkinter.Menu(self.root)
@@ -1966,18 +1962,22 @@ class gauss_editor(Tkinter.Frame):
 
         addMenu=Tkinter.Menu(editm)
         delMenu=Tkinter.Menu(editm)
+
         if self.sumindi==0:
             addMenu.add_radiobutton(label="Sum-Fkt", command=self.add_sum)
-        addMenu.add_radiobutton(label="Box-Fkt", command=self.boxadd)
-        addMenu.add_radiobutton(label="Exp-Fkt", command=self.expadd)
+
+        addMenu.add_radiobutton(label="Box-Fkt",    command=self.boxadd)
+        addMenu.add_radiobutton(label="Exp-Fkt",    command=self.expadd)
         addMenu.add_radiobutton(label="NegExp-Fkt", command=self.oexpadd)
-        addMenu.add_radiobutton(label="Gaussian", command=self.gaussadd)
-        addMenu.add_radiobutton(label="GaussianL", command=self.gaussladd)
-        addMenu.add_radiobutton(label="GaussianR", command=self.gaussradd)
+        addMenu.add_radiobutton(label="Gaussian",   command=self.gaussadd)
+        addMenu.add_radiobutton(label="GaussianL",  command=self.gaussladd)
+        addMenu.add_radiobutton(label="GaussianR",  command=self.gaussradd)
+        
         for i in xrange(len(self.plot_list)):
-            delMenu.add_radiobutton(label=str(i),background=self.plot_list[i].color, command=(lambda:self.remove_fkt(i)))
-        if self.sumindi==1:
+            delMenu.add_radiobutton(label=str(i+1), background = self.plot_list[i].color, command = self.make_del_function(i))
+        if self.sumindi == 1:
             delMenu.add_radiobutton(label="sum", background='red', command=self.del_sum)
+
         filem.add_command(label="Exit", command=self.die)
 
         editm.add_cascade(label="Add", menu=addMenu)
@@ -1994,17 +1994,29 @@ class gauss_editor(Tkinter.Frame):
         self.root.config(menu=bar)
 
 
+    def die(self):
+        sys.exit()
+
+
+    def makePie(self):
+        keys = self.dict.keys()
+        keys.sort()
+        print keys
+        self.pie=ProbEditorWidgets.e_pie_chart(self, self.dict, keys,
+                                               [po.color for po in self.plot_list],
+                                               self.pie_report)
+        self.pie.configure(width=400,height=400)
+        self.pie.grid(row=0,rowspan=2,column=1,sticky=Tkinter.NSEW)
+
+
     def del_sum(self):
         self.plot_area.remove_sum_fkt()
-        self.sumindi=0
-
+        self.sumindi = 0
         self.buildMenu()
-
 
     def add_sum(self):
         self.plot_area.create_sum_fkt()
-        self.sumindi=1
-
+        self.sumindi = 1
         self.buildMenu()
 
 
@@ -2032,13 +2044,13 @@ class gauss_editor(Tkinter.Frame):
         button2=Tkinter.Button(label,text="cancel",command=self.top.destroy).grid(row=4, column=1)
         label.pack()
 
-
     def box(self):
         s1=string.atof(self.e1.get())
         s2=string.atof(self.e2.get())
         s3=string.atof(self.e3.get())
-        self.create_new_fkt(box_function(start=s1,stop=s2,a=s3,color=self.colors[0]))
+        self.create_new_fkt(box_function(start=s1,stop=s2,a=s3,color=self.nextColor()))
         self.top.destroy()
+
 
     def expadd(self):
         self.top=Tkinter.Toplevel(self.root)
@@ -2064,7 +2076,6 @@ class gauss_editor(Tkinter.Frame):
         button2=Tkinter.Button(label,text="cancel",command=self.top.destroy).grid(row=4, column=1)
         label.pack()
 
-
     def exp(self):
         l=len(self.plot_list)
         s2=string.atof(self.e1.get())
@@ -2072,7 +2083,7 @@ class gauss_editor(Tkinter.Frame):
         s3=string.atof(self.e3.get())
         s2=4*s2+s1 #berechnet stop von alpha und mu her
 
-        self.create_new_fkt(exponential_function(start=s1,stop=s2,a=s3,color=self.colors[0]))
+        self.create_new_fkt(exponential_function(start=s1,stop=s2,a=s3,color=self.nextColor()))
         self.top.destroy()
 
 
@@ -2100,14 +2111,13 @@ class gauss_editor(Tkinter.Frame):
         button2=Tkinter.Button(label,text="cancel",command=self.top.destroy).grid(row=4, column=1)
         label.pack()
 
-
     def oexp(self):
         l=len(self.plot_list)
         s1=string.atof(self.e1.get())
         s2=string.atof(self.e2.get())
         s3=string.atof(self.e3.get())
         s1=s2-4*s1 #berechnet start von alpha und mu her
-        self.create_new_fkt(exp_other_function(start=s1,stop=s2,a=s3,color=self.colors[0]))
+        self.create_new_fkt(exp_other_function(start=s1,stop=s2,a=s3,color=self.nextColor()))
         self.top.destroy()
 
 
@@ -2135,14 +2145,13 @@ class gauss_editor(Tkinter.Frame):
         button2=Tkinter.Button(label,text="cancel",command=self.top.destroy).grid(row=4, column=1)
         label.pack()
 
-
     def gauss(self):
         l=len(self.plot_list)
         s1=string.atof(self.e1.get())
         s2=string.atof(self.e2.get())
         s3=string.atof(self.e3.get())
 
-        self.create_new_fkt(gauss_function(mu=s2,sigma=s1,a=s3,color=self.colors[0]))
+        self.create_new_fkt(gauss_function(mu=s2,sigma=s1,a=s3,color=self.nextColor()))
         self.top.destroy()
 
 
@@ -2175,14 +2184,13 @@ class gauss_editor(Tkinter.Frame):
         button2=Tkinter.Button(label,text="cancel",command=self.top.destroy).grid(row=5, column=1)
         label.pack()
 
-
     def gaussl(self):
         l=len(self.plot_list)
         s1=string.atof(self.e1.get())
         s2=string.atof(self.e2.get())
         s3=string.atof(self.e3.get())
         s4=string.atof(self.e4.get())
-        self.create_new_fkt(gauss_tail_function_left(mu=s2,sigma=s1,tail=s4,a=s3,color=self.colors[0]))
+        self.create_new_fkt(gauss_tail_function_left(mu=s2,sigma=s1,tail=s4,a=s3,color=self.nextColor()))
         self.top.destroy()
 
 
@@ -2214,14 +2222,13 @@ class gauss_editor(Tkinter.Frame):
         button2=Tkinter.Button(label,text="cancel",command=self.top.destroy).grid(row=5, column=1)
         label.pack()
 
-
     def gaussr(self):
         l=len(self.plot_list)
         s1=string.atof(self.e1.get())
         s2=string.atof(self.e2.get())
         s3=string.atof(self.e3.get())
         s4=string.atof(self.e4.get())
-        self.create_new_fkt(gauss_tail_function_right(mu=s2,sigma=s1,tail=s4,a=s3,color=self.colors[0]))
+        self.create_new_fkt(gauss_tail_function_right(mu=s2,sigma=s1,tail=s4,a=s3,color=self.nextColor()))
         self.top.destroy()
 
 
@@ -2229,9 +2236,11 @@ class gauss_editor(Tkinter.Frame):
         self.suche_randwerte()
         self.draw_new()
 
+
     def remove_fkt(self,i):
+        print "remove_fkt", i
         #loscht fkt baut pie handles neu
-        o=self.plot_list[i]
+        o = self.plot_list[i]
         self.colors.append(o.color)
 
         self.plot_area.remove_plot_object(o)
@@ -2239,16 +2248,14 @@ class gauss_editor(Tkinter.Frame):
         del self.pie
         del self.plot_list[i]
 
-        self.dict.remove(str(i))
-        keys=self.dict.keys()
-        keys.sort()
-        self.pie=ProbEditorWidgets.e_pie_chart(self,
-                                               self.dict,
-                                               keys,
-                                               self.color_list,
-                                               self.pie_report)
-        self.pie.configure(width=400,height=400)
+        del self.dict[str(i+1)]
+        d = {}
+        for i,k in enumerate(self.dict.keys()):
+            d[str(i+1)] = self.dict[k]
+        self.dict = ProbEditorBasics.ProbDict(d)
 
+        self.makePie()
+        
         self.edit_area.destroy()
         del self.edit_area
         self.handle_list=[]
@@ -2256,7 +2263,7 @@ class gauss_editor(Tkinter.Frame):
         self.edit_area=Tkinter.Canvas(self,bg='white',highlightthickness=0)
         self.edit_area.bind('<Configure>',self.configure_handles)
         self.edit_area.grid(row=1,column=0,sticky=Tkinter.NSEW)
-        self.pie.grid(row=0,rowspan=2,column=1,sticky=Tkinter.NSEW)
+        #self.pie.grid(row=0,rowspan=2,column=1,sticky=Tkinter.NSEW)
         self.rowconfigure(0,minsize=50,weight=1)
         self.columnconfigure(0,minsize=50,weight=1)
         self.create_handles()
@@ -2314,29 +2321,18 @@ class gauss_editor(Tkinter.Frame):
         self.plot_list.append(o)
         self.plot_area.add_plot_object(o)
 
-        self.color_list.append(o.color)
-        del self.colors[0]
-        if self.colors==[]:
-            tkMessageBox.showwarning("Warning","No more Place for Functions!")
-
         # insert in Pie
-        self.dict.update({str(self.nextIndex):o.a})
+        self.dict.update({str(len(self.plot_list)) : o.a})
         self.dict.renorm_to(1.0)
-        self.nextIndex += 1
 
         # creats a handle
         self.edit_area.configure(height=10)
         self.create_handle(o)
-        keys=self.dict.keys()
-        keys.sort()
-        self.pie=ProbEditorWidgets.e_pie_chart(self,
-                                               self.dict,
-                                               keys,
-                                               self.color_list,
-                                               self.pie_report)
-        self.pie.configure(width=400,height=400)
+
+        self.makePie()
+        
         self.plot_area.configure(width=550)
-        self.pie.grid(row=0,rowspan=2,column=1,sticky=Tkinter.NSEW)
+        #self.pie.grid(row=0,rowspan=2,column=1,sticky=Tkinter.NSEW)
         self.suche_randwerte()
         self.draw_new()
         self.buildMenu()
