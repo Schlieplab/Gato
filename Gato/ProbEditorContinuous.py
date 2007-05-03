@@ -1836,7 +1836,7 @@ class gauss_editor(Tkinter.Frame):
     first demonstration of continous prob editor
     """
 
-    def __init__(self,master,**cnf):
+    def __init__(self,master,plotlist,**cnf):
         """
         glues a plot area, a handle area and a pie together
         """
@@ -1846,39 +1846,40 @@ class gauss_editor(Tkinter.Frame):
         self.edit_area.bind('<Configure>',self.configure_handles)
         self.root=master
 
-        self.plot_list=[]
+        self.plot_list = plotlist
         self.handle_list=[]
-        self.color_idx = 0
+        self.color_idx = len(self.plot_list)
         self.colors=['green','blue',
                      'grey','pink','brown',
                      'tan','purple','magenta','firebrick','deeppink',
                      'lavender','NavajoWhite','seagreen','violet','LightGreen']
 
-        self.plot_list=[box_function(start=-0.2,stop=1.0,a=0.1,color=self.nextColor()),
-                        gauss_function(mu=2,sigma=0.6,a=0.2,color=self.nextColor())#,
-        ##                gauss_tail_function_right(mu=6,sigma=1,tail=5,a=0.2,color=self.nextColor()),
-        ##                gauss_tail_function_left(mu=4,sigma=1,tail=4.7,a=0.2,color=self.nextColor()),
-        ##                exponential_function(start=2.0,stop=6.0,a=0.2,color=self.nextColor()),
-        ##                exp_other_function(start=1.0,stop=5.0,a=0.1,color=self.nextColor())
-                       ]
+        self.normalize = Tkinter.IntVar(0)
+        self.sumindi   = False
 
         #Bereich vorgeben
         self.suche_randwerte()
 
-        self.sumindi=0
         d = {}
         for i,o in enumerate(self.plot_list):
-            self.plot_area.add_plot_object(o)
             d[str(i+1)] = o.a
-
         self.dict=ProbEditorBasics.ProbDict(d)
+
+        # normalize mixture component weights to 1.0
+        if self.normalize.get() == 1:
+            self.dict.renorm_to(1.0)
+            for i,o in enumerate(self.plot_list):
+                o.a = self.dict[str(i+1)]
+
+        for o in self.plot_list:
+            self.plot_area.add_plot_object(o)
 
         self.create_handles()
 
         self.makePie()
 
         self.plot_area.create_sum_fkt()
-        self.sumindi=1
+        self.sumindi = True
         self.edit_area.grid(row=1,column=0,sticky=Tkinter.NSEW)
         self.plot_area.grid(row=0,column=0,sticky=Tkinter.NSEW)
         #self.pie.grid(row=0,rowspan=2,column=1,sticky=Tkinter.NSEW)
@@ -1963,7 +1964,7 @@ class gauss_editor(Tkinter.Frame):
         addMenu=Tkinter.Menu(editm)
         delMenu=Tkinter.Menu(editm)
 
-        if self.sumindi==0:
+        if not self.sumindi:
             addMenu.add_radiobutton(label="Sum-Fkt", command=self.add_sum)
 
         addMenu.add_radiobutton(label="Box-Fkt",    command=self.boxadd)
@@ -1975,13 +1976,14 @@ class gauss_editor(Tkinter.Frame):
         
         for i in xrange(len(self.plot_list)):
             delMenu.add_radiobutton(label=str(i+1), background = self.plot_list[i].color, command = self.make_del_function(i))
-        if self.sumindi == 1:
+        if self.sumindi:
             delMenu.add_radiobutton(label="sum", background='red', command=self.del_sum)
 
         filem.add_command(label="Exit", command=self.die)
 
         editm.add_cascade(label="Add", menu=addMenu)
         editm.add_cascade(label="Del", menu=delMenu)
+        editm.add_checkbutton(label="Normalise", variable=self.normalize)
 
         zoomm.add_command(label="Zoom-in", command=self.zoom_in)
         zoomm.add_command(label="Zoom-out", command=self.zoom_out)
@@ -2001,7 +2003,6 @@ class gauss_editor(Tkinter.Frame):
     def makePie(self):
         keys = self.dict.keys()
         keys.sort()
-        print keys
         self.pie=ProbEditorWidgets.e_pie_chart(self, self.dict, keys,
                                                [po.color for po in self.plot_list],
                                                self.pie_report)
@@ -2011,12 +2012,12 @@ class gauss_editor(Tkinter.Frame):
 
     def del_sum(self):
         self.plot_area.remove_sum_fkt()
-        self.sumindi = 0
+        self.sumindi = False
         self.buildMenu()
 
     def add_sum(self):
         self.plot_area.create_sum_fkt()
-        self.sumindi = 1
+        self.sumindi = True
         self.buildMenu()
 
 
@@ -2238,10 +2239,8 @@ class gauss_editor(Tkinter.Frame):
 
 
     def remove_fkt(self,i):
-        print "remove_fkt", i
         #loscht fkt baut pie handles neu
         o = self.plot_list[i]
-        self.colors.append(o.color)
 
         self.plot_area.remove_plot_object(o)
         self.pie.destroy()
@@ -2253,6 +2252,12 @@ class gauss_editor(Tkinter.Frame):
         for i,k in enumerate(self.dict.keys()):
             d[str(i+1)] = self.dict[k]
         self.dict = ProbEditorBasics.ProbDict(d)
+        
+        # normalize mixture component weights to 1.0
+        if self.normalize.get() == 1:
+            self.dict.renorm_to(1.0)
+            for i,o in enumerate(self.plot_list):
+                o.a = self.dict[str(i+1)]
 
         self.makePie()
         
@@ -2322,8 +2327,13 @@ class gauss_editor(Tkinter.Frame):
         self.plot_area.add_plot_object(o)
 
         # insert in Pie
-        self.dict.update({str(len(self.plot_list)) : o.a})
-        self.dict.renorm_to(1.0)
+        self.dict[str(len(self.plot_list))] = o.a
+
+        # normalize mixture component weights to 1.0
+        if self.normalize.get() == 1:
+            self.dict.renorm_to(1.0)
+            for i,pob in enumerate(self.plot_list):
+                pob.a = self.dict[str(i+1)]
 
         # creats a handle
         self.edit_area.configure(height=10)
@@ -2343,7 +2353,7 @@ class gauss_editor(Tkinter.Frame):
         self.plot_area.replot()
         self.plot_area.remove_sum_fkt()
         self.plot_area.create_sum_fkt()
-        self.sumindi=1
+        self.sumindi = True
         self.buildMenu()
         self.plot_area.del_tics()
         self.plot_area.del_scales()
@@ -2461,8 +2471,16 @@ class gauss_editor(Tkinter.Frame):
 
 if __name__=='__main__':
     root=Tkinter.Tk()
+    
+    plot_list=[box_function(start=-0.2,stop=1.0,a=0.1,color='green'),
+                    gauss_function(mu=2,sigma=0.6,a=0.2,color='blue')#,
+    ##                gauss_tail_function_right(mu=6,sigma=1,tail=5,a=0.2,color='grey'),
+    ##                gauss_tail_function_left(mu=4,sigma=1,tail=4.7,a=0.2,color='pink'),
+    ##                exponential_function(start=2.0,stop=6.0,a=0.2,color='brown'),
+    ##                exp_other_function(start=1.0,stop=5.0,a=0.1,color='tan')
+               ]
 
-    editor=gauss_editor(root,width=300,height=300)
+    editor=gauss_editor(root,plot_list,width=300,height=300)
     # fast quit by <Escape>
     root.bind('<Escape>',lambda e:e.widget.quit())
     editor.pack(expand=1,fill=Tkinter.BOTH)
