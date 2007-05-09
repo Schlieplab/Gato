@@ -1004,10 +1004,44 @@ class GraphDisplay:
             except:
                 return None
                 
+    # XXX: Needs reorganisation. We could highlight paths, circuits
+    # and vertex sets. Pretty (but not obvious) would be a convex
+    # hull around a vertex set.
+    #
+    # method names are inconsistent, there should be default color
+    # and highlights should be handled without special casing.
+    
+    def HighlightVertices(self, vertices, color):
+        """ Highlight the given vertices with wide circle underneath
+
+            Returns a highlightID for hiding the highlight at a later time
+        """
+        highlightID = tuple(vertices)
+        highlights = []
+        d = self.zVertexRadius * 1.5
+        for v in vertices:
+            t = self.G.GetEmbedding(v)
+            x = t.x * self.zoomFactor / 100.0
+            y = t.y * self.zoomFactor / 100.0
+            h = self.canvas.create_oval(x-d, y-d, x+d, y+d, 
+                                        fill=color, 
+                                        tag="highlight",
+                                        width=0)
+            self.canvas.lower(h,"edges")
+            highlights.append(h)
+        self.highlightedPath[highlightID] = highlights #XXX
+        return highlightID
+
+    def HideHighlight(self, highlightID):
+        for h in self.highlightedPath[highlightID]:
+            self.canvas.delete(h)
+
                 
     def HighlightPath(self, path, color, closed = 0):
         """ Draw a wide poly line underneath the path in the graph
             Path is given as a list of vertices
+
+            Returns a pathID for hiding the path at a later time
         """
         pathID = tuple(path)
         coords = ()
@@ -1030,7 +1064,7 @@ class GraphDisplay:
         #XXX Do we want to hide or delete?
         self.canvas.delete(self.highlightedPath[pathID])
         
-        
+
         ############################################################################
         #				       
         # edit commands
