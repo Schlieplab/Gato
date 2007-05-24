@@ -1846,6 +1846,13 @@ class gauss_editor(Tkinter.Frame):
         self.edit_area.bind('<Configure>',self.configure_handles)
         self.root=master
 
+        self.box = Tkinter.Frame() 
+        button_ok = Tkinter.Button(self.box, text="Save", width=10, command=self.save)
+        button_ok.pack(side=LEFT, padx=5, pady=5)
+        button_cancel = Tkinter.Button(self.box, text="Cancel", width=10, command=self.cancel)
+        button_cancel.pack(side=LEFT, padx=5, pady=5)
+        self.box.pack(side=BOTTOM, fill=X)
+        
         self.plot_list = plotlist
         self.handle_list=[]
         self.color_idx = len(self.plot_list)
@@ -1980,7 +1987,7 @@ class gauss_editor(Tkinter.Frame):
         if self.sumindi:
             delMenu.add_radiobutton(label="sum", background='red', command=self.del_sum)
 
-        filem.add_command(label="Exit", command=self.die)
+        filem.add_command(label="Exit", command=self.cancel)
 
         editm.add_cascade(label="Add", menu=addMenu)
         editm.add_cascade(label="Del", menu=delMenu)
@@ -1996,10 +2003,15 @@ class gauss_editor(Tkinter.Frame):
 
         self.root.config(menu=bar)
 
+    def save(self):
+        self.status = True
+        self.destroy()
+        self.root.destroy()
 
-    def die(self):
-        sys.exit()
-
+    def cancel(self):
+        self.status = False
+        self.destroy()
+        self.root.destroy()
 
     def makePie(self):
         keys = self.dict.keys()
