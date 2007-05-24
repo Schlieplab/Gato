@@ -1854,7 +1854,8 @@ class gauss_editor(Tkinter.Frame):
                      'tan','purple','magenta','firebrick','deeppink',
                      'lavender','NavajoWhite','seagreen','violet','LightGreen']
 
-        self.normalize = Tkinter.IntVar(0)
+        self.normalize = Tkinter.IntVar()
+        self.normalize.set(0)
         self.sumindi   = False
 
         #Bereich vorgeben
@@ -2127,8 +2128,8 @@ class gauss_editor(Tkinter.Frame):
         label=Tkinter.Frame(self.top)
 
         Tkinter.Label(label, justify=CENTER, text="Gaussian function:\n f(x)=\n a/(sigma*sqrt(2*pi))*exp(-(x-mu)**2/2*(sigma)**2)").grid(row=0)
-        Tkinter.Label(label, text="sigma=").grid(row=1, sticky=E)
-        Tkinter.Label(label, text="mu=").grid(row=2, sticky=E)
+        Tkinter.Label(label, text="mu=").grid(row=1, sticky=E)
+        Tkinter.Label(label, text="sigma=").grid(row=2, sticky=E)
         Tkinter.Label(label, text="a=").grid(row=3, sticky=E)
 
         self.e1=Tkinter.Entry(label)
@@ -2152,7 +2153,7 @@ class gauss_editor(Tkinter.Frame):
         s2=string.atof(self.e2.get())
         s3=string.atof(self.e3.get())
 
-        self.create_new_fkt(gauss_function(mu=s2,sigma=s1,a=s3,color=self.nextColor()))
+        self.create_new_fkt(gauss_function(mu=s1,sigma=s2,a=s3,color=self.nextColor()))
         self.top.destroy()
 
 
@@ -2161,8 +2162,8 @@ class gauss_editor(Tkinter.Frame):
         label=Tkinter.Frame(self.top)
 
         Tkinter.Label(label, justify=CENTER, text="Gaussian tail function left :\n f(x)=\n a/(sigma*sqrt(2*pi))*exp(-(x-mu)**2/2*(sigma)**2) for x<=tail\n else f(x)=0").grid(row=0, sticky=E)
-        Tkinter.Label(label, text="sigma=").grid(row=1, sticky=E)
-        Tkinter.Label(label, text="mu=").grid(row=2, sticky=E)
+        Tkinter.Label(label, text="mu=").grid(row=1, sticky=E)
+        Tkinter.Label(label, text="sigma=").grid(row=2, sticky=E)
         Tkinter.Label(label, text="a=").grid(row=3, sticky=E)
         Tkinter.Label(label, text="tail=").grid(row=4, sticky=E)
 
@@ -2191,7 +2192,7 @@ class gauss_editor(Tkinter.Frame):
         s2=string.atof(self.e2.get())
         s3=string.atof(self.e3.get())
         s4=string.atof(self.e4.get())
-        self.create_new_fkt(gauss_tail_function_left(mu=s2,sigma=s1,tail=s4,a=s3,color=self.nextColor()))
+        self.create_new_fkt(gauss_tail_function_left(mu=s1,sigma=s2,tail=s4,a=s3,color=self.nextColor()))
         self.top.destroy()
 
 
@@ -2199,8 +2200,8 @@ class gauss_editor(Tkinter.Frame):
         self.top=Tkinter.Toplevel(self.root)
         label=Tkinter.Frame(self.top)
         Tkinter.Label(label, justify=CENTER, text="Gaussian tail function left :\n f(x)=\n a/(sigma*sqrt(2*pi))*exp(-(x-mu)**2/2*(sigma)**2) for x>=tail\n else f(x)=0").grid(row=0, sticky=E)
-        Tkinter.Label(label, text="sigma=").grid(row=1, sticky=E)
-        Tkinter.Label(label, text="mu=").grid(row=2, sticky=E)
+        Tkinter.Label(label, text="mu=").grid(row=1, sticky=E)
+        Tkinter.Label(label, text="sigma=").grid(row=2, sticky=E)
         Tkinter.Label(label, text="a=").grid(row=3, sticky=E)
         Tkinter.Label(label, text="tail=").grid(row=4, sticky=E)
 
@@ -2229,7 +2230,7 @@ class gauss_editor(Tkinter.Frame):
         s2=string.atof(self.e2.get())
         s3=string.atof(self.e3.get())
         s4=string.atof(self.e4.get())
-        self.create_new_fkt(gauss_tail_function_right(mu=s2,sigma=s1,tail=s4,a=s3,color=self.nextColor()))
+        self.create_new_fkt(gauss_tail_function_right(mu=s1,sigma=s2,tail=s4,a=s3,color=self.nextColor()))
         self.top.destroy()
 
 
@@ -2327,6 +2328,8 @@ class gauss_editor(Tkinter.Frame):
         self.plot_area.add_plot_object(o)
 
         # insert in Pie
+        if self.plot_list > 1:
+            o.a = float(o.a) / (len(self.plot_list)-1)
         self.dict[str(len(self.plot_list))] = o.a
 
         # normalize mixture component weights to 1.0
