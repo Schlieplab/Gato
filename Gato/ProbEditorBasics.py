@@ -200,7 +200,8 @@ class emission_data:
             self.color_list=['red','green','yellow','blue','black',
                              'grey','orange','pink','gold','brown',
                              'tan','purple','magenta','firebrick','deeppink',
-                             'lavender','NavajoWhite','seagreen','violet','LightGreen']
+                             'lavender','NavajoWhite','seagreen','violet','LightGreen',
+                             'chocolate', 'burlywood', 'turquoise', 'wheat', 'cyan']
         else:
             self.color_list=color_list
         self.order_list=emissions.keys()
