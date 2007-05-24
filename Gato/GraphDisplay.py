@@ -1192,14 +1192,6 @@ class GraphDisplay:
             de = self.CreateDrawEdge(tail,head)
             self.drawEdges[(tail, head)] = de
             self.canvas.lower(de,"vertices")
-            if self.G.QEuclidian():
-                t = self.G.GetEmbedding(tail)
-                h = self.G.GetEmbedding(head)
-                self.G.SetEdgeWeight(0,tail,head,sqrt((h.x - t.x)**2 + (h.y - t.y)**2))
-            else:
-                self.G.SetEdgeWeight(0,tail,head,0)
-            for i in xrange(1,self.G.NrOfEdgeWeights()):
-                self.G.SetEdgeWeight(i,tail,head,0)
                 
         except GraphNotSimpleError:
             log.error("Inserting edge (%d,%d) would result in non-simple graph" % (tail,head))

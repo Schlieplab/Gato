@@ -165,6 +165,15 @@ class ObjectGraph:
         self.vertices[tail].outEdges.append(e)
         self.vertices[head].inEdges.append(e)
 
+        if self.QEuclidian():
+            t = self.GetEmbedding(tail)
+            h = self.GetEmbedding(head)
+            self.SetEdgeWeight(0,tail,head,sqrt((h.x - t.x)**2 + (h.y - t.y)**2))
+        else:
+            self.SetEdgeWeight(0,tail,head,0)
+        for i in xrange(1,self.NrOfEdgeWeights()):
+            self.SetEdgeWeight(i,tail,head,0)
+
         
     def DeleteEdge(self,tail,head):
         """ Deletes edge (tail,head). Does *not* handle undirected graphs
