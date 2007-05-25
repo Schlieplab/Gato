@@ -950,7 +950,7 @@ class pie_chart(Tkinter.Canvas,flyout_decoration):
         returns anchor-position for text
         angle is counted anti-clockwise from 3o'clock
         """
-        #Winkel auf jeden Fall positiv zählen
+        # Winkel auf jeden Fall positiv zaehlen
         if angle<0:
             my_angle=angle_base/2-angle
         my_angle=(angle/angle_base-math.floor(angle/angle_base))*8.0
@@ -1258,7 +1258,7 @@ class e_pie_chart(pie_chart):
                     # set new arc angles
         new_start2=self.angle_start
         new_extent1=self.angle_extent-new_extent2
-        # pitfall! extent>=360°
+        # pitfall! extent>=360
         if new_extent1>359.9:
             new_extent1=359.9
         elif new_extent1<-359.9:

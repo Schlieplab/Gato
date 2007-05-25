@@ -511,7 +511,7 @@ class exponential_function(plot_object):
         elif comp:
             ##n=-(float(x)-mu)
             ##y=math.exp(n)*self.a*alpha
-            y=self.a*pygsl.rng.exponential_pdf(x-mu,alpha)
+            y = self.a * pygsl.rng.exponential_pdf(x-mu,alpha)
             if y>0.001:
                 return y
             else:
@@ -596,13 +596,12 @@ class exp_other_function(plot_object):
         mu=ss_points[1]
         alpha=(ss_points[1]-ss_points[0])/4.0
 
-
         if x>mu:
             return 0.0
         else:
             ##n=-(float(x)-mu)
             ##y=math.exp(n)*self.a*alpha
-            y=self.a*pygsl.rng.exponential_pdf(-x+mu,alpha)
+            y = self.a * pygsl.rng.exponential_pdf(-x+mu,alpha)
             if y>0.001:
                 return y
             else:
@@ -697,9 +696,9 @@ class gauss_function(plot_object):
 
     def get_value(self,x):
         "gauss function"
-        return self.a*pygsl.rng.gaussian_pdf(x-self.mu,self.sigma)
         ##        n=(float(x)-self.mu)/self.sigma
         ##        return math.exp(n*n/-2.0)*self.a/self.sigma*self.norm
+        return self.a * pygsl.rng.gaussian_pdf(x-self.mu, self.sigma)
 
     def __repr__(self):
         return "gauss_function: x->%f/(%f*sqrt(2*pi))*exp(-(x-%f)**2/2*%f**2)"%(self.a,self.sigma,self.mu,self.sigma)
@@ -707,7 +706,7 @@ class gauss_function(plot_object):
 
 class gauss_tail_function_right(plot_object):
     """
-    gauss tail function
+    gauss tail function right
     """
 
     def __init__(self,mu=0,sigma=1,tail=0,a=1,color=None):
@@ -768,23 +767,21 @@ class gauss_tail_function_right(plot_object):
         self.a=float(values[3])
 
     def get_value(self,x):
-        "gauss function"
         return self.a*pygsl.rng.gaussian_tail_pdf(x-self.mu,self.tail-self.mu,self.sigma)
 
     def __repr__(self):
-        return "gauss_function: x->%f/(%f*sqrt(2*pi))*exp(-(x-%f)**2/2*%f**2)"%(self.a,self.sigma,self.mu,self.sigma)
+        return "gauss_tail_function_right: x->%f/(%f*sqrt(2*pi))*exp(-(x-%f)**2/2*%f**2)"%(self.a,self.sigma,self.mu,self.sigma)
 
 
 class gauss_tail_function_left(gauss_tail_function_right):
     """
-    gauss tail function
+    gauss tail function left
     """
 
     def __init__(self,mu=0,sigma=1,tail=0,a=1,color=None):
         gauss_tail_function_right.__init__(self,mu,sigma,tail,a,color)
 
     def get_sample_values(self,x1,x2):
-
         l=[]
         x_max=max(x1,x2)
         x_min=min(x1,x2)
@@ -809,15 +806,13 @@ class gauss_tail_function_left(gauss_tail_function_right):
         return l
 
     def randwerte(self):
-
         return (self.mu-10.0*self.a*self.sigma,self.tail)
 
     def get_value(self,x):
-        "gauss function"
-        return self.a*pygsl.rng.gaussian_tail_pdf(self.mu-x,self.mu-self.tail,self.sigma)
+        return self.a * pygsl.rng.gaussian_tail_pdf(self.mu-x,self.mu-self.tail,self.sigma)
 
     def __repr__(self):
-        return "gauss_function: x->%f/(%f*sqrt(2*pi))*exp(-(x-%f)**2/2*%f**2)"%(self.a,self.sigma,self.mu,self.sigma)
+        return "gauss_tail_function_left: x->%f/(%f*sqrt(2*pi))*exp(-(x-%f)**2/2*%f**2)"%(self.a,self.sigma,self.mu,self.sigma)
 
 class plot_canvas(Tkinter.Canvas):
     """
