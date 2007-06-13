@@ -37,7 +37,8 @@
 import string
 import sys
 import math
-import pygsl.rng
+#import pygsl.rng
+from ghmmwrapper import ighmm_rand_normal_density_trunc
 import Tkinter
 import ProbEditorBasics
 import ProbEditorWidgets
@@ -599,9 +600,9 @@ class exp_other_function(plot_object):
         if x>mu:
             return 0.0
         else:
-            ##n=-(float(x)-mu)
-            ##y=math.exp(n)*self.a*alpha
-            y = self.a * pygsl.rng.exponential_pdf(-x+mu,alpha)
+            n=-(float(x)-mu)
+            y=math.exp(n)*self.a*alpha
+            #y = self.a * pygsl.rng.exponential_pdf(-x+mu,alpha)
             if y>0.001:
                 return y
             else:
@@ -696,9 +697,9 @@ class gauss_function(plot_object):
 
     def get_value(self,x):
         "gauss function"
-        ##        n=(float(x)-self.mu)/self.sigma
-        ##        return math.exp(n*n/-2.0)*self.a/self.sigma*self.norm
-        return self.a * pygsl.rng.gaussian_pdf(x-self.mu, self.sigma)
+        n=(float(x)-self.mu)/self.sigma
+        return math.exp(n*n/-2.0)*self.a/self.sigma*self.norm
+        #return self.a * pygsl.rng.gaussian_pdf(x-self.mu, self.sigma)
 
     def __repr__(self):
         return "gauss_function: x->%f/(%f*sqrt(2*pi))*exp(-(x-%f)**2/2*%f**2)"%(self.a,self.sigma,self.mu,self.sigma)
@@ -767,7 +768,8 @@ class gauss_tail_function_right(plot_object):
         self.a=float(values[3])
 
     def get_value(self,x):
-        return self.a*pygsl.rng.gaussian_tail_pdf(x-self.mu,self.tail-self.mu,self.sigma)
+        #return self.a*pygsl.rng.gaussian_tail_pdf(x-self.mu,self.tail-self.mu,self.sigma)
+        return self.a * ghmmwrapper.ighmm_rand_normal_density_trunc(x, self.mu, self.sigma**2, self.tail)
 
     def __repr__(self):
         return "gauss_tail_function_right: x->%f/(%f*sqrt(2*pi))*exp(-(x-%f)**2/2*%f**2)"%(self.a,self.sigma,self.mu,self.sigma)
@@ -809,8 +811,9 @@ class gauss_tail_function_left(gauss_tail_function_right):
         return (self.mu-10.0*self.a*self.sigma,self.tail)
 
     def get_value(self,x):
-        return self.a * pygsl.rng.gaussian_tail_pdf(self.mu-x,self.mu-self.tail,self.sigma)
-
+        #return self.a * pygsl.rng.gaussian_tail_pdf(self.mu-x, self.mu-self.tail, self.sigma)
+        return self.a * ghmmwrapper.ighmm_rand_normal_density_trunc(-x, -self.mu, self.sigma**2, -self.tail)
+    
     def __repr__(self):
         return "gauss_tail_function_left: x->%f/(%f*sqrt(2*pi))*exp(-(x-%f)**2/2*%f**2)"%(self.a,self.sigma,self.mu,self.sigma)
 
