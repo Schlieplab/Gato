@@ -36,8 +36,8 @@
 
 from GatoGlobals import *
 from DataStructures import Point2D, VertexLabeling, EdgeLabeling, EdgeWeight
-#from math import log
 
+from math import sqrt
 import logging
 import string
 log = logging.getLogger("Graph.py")
