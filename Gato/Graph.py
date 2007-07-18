@@ -116,7 +116,7 @@ class Graph:
         """ Check whether v is a vertex """
         return v in self.vertices
         
-    def AddEdge(self,tail,head):
+    def AddEdge(self, tail, head, initialize_weight=True):
         """ Add an edge (tail,head). Returns nothing
             Raises GraphNotSimpleError if
             - trying to add a loop
@@ -135,6 +135,9 @@ class Graph:
         self.adjLists[tail].append(head)
         self.invAdjLists[head].append(tail)
         self.size = self.size + 1
+
+        if not initialize_weight:
+            return
 
         if self.QEuclidian():
             t = self.GetEmbedding(tail)

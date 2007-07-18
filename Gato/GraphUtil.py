@@ -311,7 +311,7 @@ def OpenCATBoxGraph(_file):
             splitLine = split(line[:-1],';')
             h = eval(split(splitLine[0],':')[1])
             t = eval(split(splitLine[1],':')[1])
-            G.AddEdge(t,h)
+            G.AddEdge(t,h,False)
             for i in xrange(nrOfEdgeWeights):
                 G.edgeWeights[i][(t,h)] = eval(split(splitLine[3+i],':')[1])
                 
