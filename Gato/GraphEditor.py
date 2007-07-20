@@ -373,7 +373,7 @@ class GraphEditor(GraphDisplay):
                                               count, weights, intFlag) 
                     if d.result is not None:
                         for i in xrange(count):
-                            self.G.SetVertexWeights(i, v, d.result[i])
+                            self.G.SetVertexWeight(i, v, d.result[i])
                             
                             
                             #===== GUI-Bindings FOR ACTIONS ================================================
