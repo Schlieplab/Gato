@@ -367,7 +367,7 @@ class GraphEditor(GraphDisplay):
                     count = len(self.G.vertexWeights.keys())
                     for i in xrange(count):
                         weights = weights + (self.G.GetVertexWeight(i, v),)
-                        intFlag = intFlag + (self.G.QIntegerWeight(i),)
+                        intFlag = intFlag + (self.G.vertexWeights[i].QInteger(),)
                         
                     d = EditWeightsDialog(self, "Edit vertex weights %d" % v, 
                                               count, weights, intFlag) 
