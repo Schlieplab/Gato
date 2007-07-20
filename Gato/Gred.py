@@ -708,11 +708,9 @@ class SAGraphEditor(GraphEditor, Frame):
                 
     def vertexIntegerWeights(self):
         if self.G != None:
-            for i in xrange(0,self.G.NrOfVertexWeights()):
+            for i in xrange(self.G.NrOfVertexWeights()):
                 if not self.G.vertexWeights[i].QInteger(): 
                     self.G.vertexWeights[i].Integerize()
-                else:
-                    self.G.vertexWeights[i] = 0
         self.makeDirty()
                     
                     
