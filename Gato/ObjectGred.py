@@ -683,10 +683,8 @@ class SAGraphEditor(GraphEditor, Frame):
             for i in xrange(0,self.G.NrOfVertexWeights()):
                 if not self.G.vertexWeights[i].QInteger(): 
                     self.G.vertexWeights[i].Integerize()
-                else:
-                    self.G.vertexWeights[i] = 0
-                    
-                    
+
+
     def ChangeEdgeWeights(self):
         if self.G == None:
             return
