@@ -104,6 +104,7 @@ class GraphDisplay:
         
         
     def ReadConfiguration(self):
+        # XXX BROKEN XXX
         self.gVertexRadius = 14 # XXX
         
         self.gFontFamily = "Helvetica"
@@ -113,6 +114,7 @@ class GraphDisplay:
         self.gEdgeWidth = 4
         
         self.gVertexFrameWidth = 0
+        self.gActiveVertexFrameWidth = 6
         self.cVertexDefault = "#000099" # 'red'
         self.cVertexBlink = "black"
         self.cEdgeDefault = "#EEEEEE"

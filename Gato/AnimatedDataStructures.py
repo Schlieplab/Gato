@@ -81,7 +81,7 @@ class AnimatedNeighborhood:
         self.traversedColor = traversedColor        
         self.lastEdge = None
         self.lastColor = None
-        self.Animator.SetVertexFrameWidth(self.v,8)
+        self.Animator.SetVertexFrameWidth(self.v,self.Animator.gActiveVertexFrameWidth)
 
         
     def __getitem__(self, i):
@@ -381,7 +381,7 @@ class AnimatedVertexQueue(Queue):
         self.Animator.SetVertexColor(v, self.ColorOff)
         if self.lastRemoved is not None:
             self.Animator.SetVertexFrameWidth(self.lastRemoved,self.Animator.gVertexFrameWidth)
-        self.Animator.SetVertexFrameWidth(v,6)
+        self.Animator.SetVertexFrameWidth(v,self.Animator.gActiveVertexFrameWidth)
         self.lastRemoved = v 
         return v
         
@@ -422,7 +422,7 @@ class AnimatedVertexPriorityQueue(PriorityQueue):
         self.Animator.SetVertexColor(v, self.ColorOff)
         if self.lastRemoved is not None:
             self.Animator.SetVertexFrameWidth(self.lastRemoved,self.Animator.gVertexFrameWidth)
-        self.Animator.SetVertexFrameWidth(v,6)
+        self.Animator.SetVertexFrameWidth(v,self.Animator.gActiveVertexFrameWidth)
         self.lastRemoved = v 
         return v
         
@@ -452,7 +452,7 @@ class AnimatedVertexStack(Stack):
         self.Animator.SetVertexColor(v, self.ColorOff)
         if self.lastRemoved is not None:
             self.Animator.SetVertexFrameWidth(self.lastRemoved,self.Animator.gVertexFrameWidth)
-        self.Animator.SetVertexFrameWidth(v,6)
+        self.Animator.SetVertexFrameWidth(v,self.Animator.gActiveVertexFrameWidth)
         self.lastRemoved = v 
         return v
         
