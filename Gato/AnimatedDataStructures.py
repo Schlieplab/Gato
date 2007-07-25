@@ -217,19 +217,29 @@ class ContainerWrapper(BlinkingContainerWrapper):
             item = self.list[i]
             if type(item) == type(2): # vertex
                 dummy = self.Animator.GetVertexColor(item)
-                if (self.lastitem != None) and (self.Animator.GetVertexColor(self.lastitem) == self.color):
+                if (self.lastitem != None) and \
+                       (self.Animator.GetVertexColor(self.lastitem) == self.color):
                     self.Animator.SetVertexColor(self.lastitem,self.lastcolor)
                 self.Animator.SetVertexColor(item,self.color)
                 self.lastcolor = dummy
             else:
                 dummy = self.Animator.GetEdgeColor(item[0],item[1])
-                if (self.lastitem != None) and (self.Animator.GetEdgeColor(self.lastitem[0],self.lastitem[1]) == self.color):
+                if (self.lastitem != None) and \
+                       (self.Animator.GetEdgeColor(self.lastitem[0],self.lastitem[1]) == self.color):
                     self.Animator.SetEdgeColor(self.lastitem[0],self.lastitem[1],self.lastcolor)
                 self.Animator.SetEdgeColor(item[0],item[1],self.color)
                 self.lastcolor = dummy
             self.lastitem = item
             return item
         else:
+            if type(self.lastitem) == type(2): # vertex
+                if (self.lastitem != None) and \
+                       (self.Animator.GetVertexColor(self.lastitem) == self.color):
+                    self.Animator.SetVertexColor(self.lastitem,self.lastcolor)
+            else:
+                if (self.lastitem != None) and \
+                       (self.Animator.GetEdgeColor(self.lastitem[0],self.lastitem[1]) == self.color):
+                    self.Animator.SetEdgeColor(self.lastitem[0],self.lastitem[1],self.lastcolor)                
             raise IndexError
             
 class VisibleVertexLabeling(VertexLabeling):
