@@ -1163,7 +1163,7 @@ class AlgoWin(Frame):
         while goOn == 1:
             self.wait_variable(self.goOn)
             if self.clickResult[0] == type:
-                if filterChoice != None:
+                if filterChoice:
                     if filterChoice(self.clickResult[1]):
                         goOn = 0
                 else:
@@ -1716,18 +1716,19 @@ class Algorithm:
         for property,requiredValue in propertyValueDict.iteritems():
             failed = 0
             value = self.graph.Property(property)
-            try:
-                c = cmp(value,requiredValue)
-                if gProperty[property][0] < 0 and c > 0:
+            if value != 'Unknown':   
+                try:
+                    c = cmp(value,requiredValue)
+                    if gProperty[property][0] < 0 and c > 0:
+                        failed = 1
+                    elif gProperty[property][0] == 0 and c != 0:
+                        failed = 1
+                    if gProperty[property][0] > 0 and c < 0:
+                        failed = 1                            
+                except ValueError:
                     failed = 1
-                elif gProperty[property][0] == 0 and c != 0:
-                    failed = 1
-                if gProperty[property][0] > 0 and c < 0:
-                    failed = 1                            
-            except ValueError:
-                faiedl = 1
             
-            if failed:
+            if failed or value == 'Unknown':
                 errMsg = "The algorithm %s requires that the graph %s has %s" % \
                          (stripPath(self.algoFileName),
                           stripPath(self.graphFileName),
@@ -1736,6 +1737,7 @@ class Algorithm:
                     errMsg += " of %s or less" % str(requiredValue)
                 elif gProperty[property][0] > 0:
                     errMsg += " of %s or more" % str(requiredValue)
+                errMsg += ". This is not known"
                 errMsg += ".\nDo you still want to proceed ?"                          
                 r = askokcancel("Gato - Error", errMsg)
                 if r == False:
