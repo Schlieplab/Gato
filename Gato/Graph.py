@@ -496,12 +496,13 @@ class SubGraph(Graph):
             Returns NoSuchVertexError if v does not exist in
             supergraph """
         try:
-            self.vertices.append(v)
-            #f = lambda x, vertexList=self.vertices: x in vertexList
-            #self.adjLists[v]    = filter(f, self.superGraph.adjLists[v])
-            #self.invAdjLists[v] = filter(f, self.superGraph.invAdjLists[v])
-            self.adjLists[v]    = []
-            self.invAdjLists[v] = []
+            if not v in self.vertices:
+                self.vertices.append(v)
+                #f = lambda x, vertexList=self.vertices: x in vertexList
+                #self.adjLists[v]    = filter(f, self.superGraph.adjLists[v])
+                #self.invAdjLists[v] = filter(f, self.superGraph.invAdjLists[v])
+                self.adjLists[v] = []
+                self.invAdjLists[v] = []
         except:
             raise NoSuchVertexError, "%d is not a vertex in the supergraph" % v
             
@@ -534,11 +535,10 @@ class SubGraph(Graph):
         if self.superGraph != G.superGraph:
             log.error("AddSubGraph: distinct superGraphs")
             return
-        for v in G.vertices:
-            if G.QIsolated(v):
-                self.AddVertex(v)
         for e in G.Edges():
             self.AddEdge(e[0],e[1])
+        for v in G.vertices:
+            self.AddVertex(v)
             
             
     def DeleteEdge(self,tail,head):
