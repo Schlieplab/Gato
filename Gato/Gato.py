@@ -1223,6 +1223,7 @@ class AlgorithmDebugger(bdb.Bdb):
         return self.trace_dispatch
         
     def dispatch_call(self, frame, arg):
+        import inspect
         fn = frame.f_code.co_filename
         line = self.currentLine(frame)
         doTrace = self.doTrace # value of self.doTrace might change
@@ -1250,6 +1251,7 @@ class AlgorithmDebugger(bdb.Bdb):
             self.doTrace = 1 # We will break if there is a breakpoint set in
             # function called (set to self.doTrace = 1 if you don't want that)
             return self.trace_nofeedback_dispatch	    
+        log.debug("%s" % inspect.getframeinfo(frame))
         return None
         
     def trace_nofeedback_dispatch(self, frame, event, arg):
@@ -1304,6 +1306,8 @@ class AlgorithmDebugger(bdb.Bdb):
             self.doTrace = 0
         else:
             pass
+        import inspect
+        log.debug("%s" % inspect.getframeinfo(frame))
             
     def user_line(self, frame):
         """ *Internal* This function is called when we stop or break at this line  """
@@ -1317,6 +1321,7 @@ class AlgorithmDebugger(bdb.Bdb):
         
     def user_return(self, frame, return_value):
         """ *Internal* This function is called when a return trap is set here """
+        import inspect
         frame.f_locals['__return__'] = return_value
         #log.debug('--Return--')
         #self.doTrace = 0 #YYY

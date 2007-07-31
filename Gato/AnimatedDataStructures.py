@@ -498,11 +498,16 @@ class AnimatedVertexStack(Stack):
 class AnimatedVertexSet:
     """ Visualizes status of vertices in relation to the Set by
         coloring them
+
+        - addcolor when they are added to the set
+        - color if they have been in the set and were
+          removed
+
+        
+    """
     
-        - cVisited  if they have been in the set and were
-          removed """
-    
-    def __init__(self, theAnimator, vertexSet=None, color=cVisited):
+    def __init__(self, theAnimator, vertexSet=None, color=cVisited, addcolor='red',
+                 trackLast=None):
         """ theAnimator will usually be the GraphDisplay(Frame/Toplevel) """
         if vertexSet == None:
             self.vertices = []
@@ -510,6 +515,9 @@ class AnimatedVertexSet:
             self.vertices = vertexSet
         self.Animator = theAnimator
         self.color = color
+        self.addcolor = addcolor
+        self.trackLast = trackLast
+        self.last = None
         
     def Set(self, vertexSet):
         """ Sets the set equal to a copy of vertexSet """
@@ -518,9 +526,17 @@ class AnimatedVertexSet:
     def Remove(self, v):
         self.Animator.SetVertexColor(v,self.color)
         self.vertices.remove(v)
-        
+        if self.trackLast:
+            if self.last:
+                self.Animator.SetVertexFrameWidth(self.last,
+                                                  self.Animator.gVertexFrameWidth)
+            self.Animator.SetVertexFrameWidth(v,
+                                              self.Animator.gActiveVertexFrameWidth)
+            self.last = v
+            
     def Add(self,v):
         """ Add a single vertex v """
+        self.Animator.SetVertexColor(v,self.addcolor)
         self.vertices.append(v)
         
     def IsNotEmpty(self):

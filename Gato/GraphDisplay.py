@@ -184,7 +184,6 @@ class GraphDisplay:
 
         self.zFontSize = fontSize[percent]
         #max(8,int((1.5*self.gFontSize*self.zoomFactor) / 100.0))
-        print self.zFontSize
         
         for v in self.G.Vertices():
             dv = self.drawVertex[v]
@@ -1038,7 +1037,6 @@ class GraphDisplay:
         for h in self.highlightedPath[highlightID]:
             self.canvas.delete(h)
 
-                
     def HighlightPath(self, path, color, closed = 0):
         """ Draw a wide poly line underneath the path in the graph
             Path is given as a list of vertices
