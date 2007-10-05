@@ -711,7 +711,7 @@ class SAGraphEditor(GraphEditor, Frame):
             for i in xrange(self.G.NrOfVertexWeights()):
                 if not self.G.vertexWeights[i].QInteger(): 
                     self.G.vertexWeights[i].Integerize()
-        self.makeDirty()
+            self.makeDirty()
                     
                     
     def ChangeEdgeWeights(self):
