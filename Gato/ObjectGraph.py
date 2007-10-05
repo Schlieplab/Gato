@@ -133,11 +133,10 @@ class ObjectGraph:
             (v,w) = e.key()
             self.DeleteEdge(v,w)
         for e in inEdges:
-            (v,w) = e.key()            
+            (w,v) = e.key()            
             if w != v: # We have already deleted loops
                 self.DeleteEdge(w,v)
         del(self.vertices[v])
-        
         
     def QVertex(self, v):
         """ Check whether v is a vertex """
@@ -179,12 +178,11 @@ class ObjectGraph:
         """ Deletes edge (tail,head). Does *not* handle undirected graphs
             implicitely. Raises NoSuchEdgeError upon error. """
 
-        #print "DeleteEdge", tail, head
         try:
             e = self.edges[(tail,head)]
         except KeyError:
             raise NoSuchEdgeError, "(%d,%d) is not an edge." % (tail,head)
-            
+
         self.vertices[tail].outEdges.remove(e)
         self.vertices[head].inEdges.remove(e)
         del(self.edges[(tail,head)])
@@ -282,8 +280,7 @@ class ObjectGraph:
     def GetNextVertexID(self):
         """ *Internal* returns next free vertex id """
         self.highVertexID += 1
-        #XXX return self.highVertexID
-        return self.highVertexID-1
+        return self.highVertexID
         
         
     def Order(self):
