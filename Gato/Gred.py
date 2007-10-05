@@ -177,6 +177,7 @@ class RandomizeEdgeWeightsDialog(tkSimpleDialog.Dialog):
 class SAGraphEditor(GraphEditor, Frame):
 
     def __init__(self, master=None):
+        # NOTE: Make sure to add instance variables also to SAGraphEditorToplevel 
         Frame.__init__(self, master)
         Splash = GredSplashScreen(self.master)
         self.AboutGraphDialog = None
@@ -858,7 +859,8 @@ class SAGraphEditorToplevel(SAGraphEditor, Toplevel):
 
     def __init__(self, master=None):
         Toplevel.__init__(self, master)
-        Splash = GredSplashScreen(self.master)
+        #Splash = GredSplashScreen(self.master)
+        self.AboutGraphDialog = None
         self.windowingsystem = self.tk.call("tk", "windowingsystem")
         self.G = None
         
@@ -871,7 +873,7 @@ class SAGraphEditorToplevel(SAGraphEditor, Toplevel):
         self.fileName = None
         self.dirty = 0
         self.SetGraphMenuOptions()
-        Splash.Destroy()
+        #Splash.Destroy()
         
         # Fix focus and stacking
         self.tkraise()
