@@ -43,6 +43,7 @@ class AnimationCommand:
         self.target = target
         self.method = method
         self.args = args
+        self.time = time.time()
         
         self.undo_method = undo_method
         self.undo_args = undo_args
@@ -56,8 +57,24 @@ class AnimationCommand:
             apply(self.method, self.target + self.undo_args)
         else:
             apply(self.undo_method, self.target + self.undo_args)
-            
-            
+
+    def print_svg(self, currentTime = 0):
+        def quote(s):
+            return "\"%s\"" % str(s)
+        if len(self.target) == 1:
+            target = quote(self.target[0])
+        else:
+            target = quote(self.target)
+
+        duration = max(1,int(round((self.time - currentTime) * 1000, 0)))
+                                 
+        result = [str(duration), self.method.__name__, target]
+        for arg in self.args:
+            result.append(quote(arg))
+        return "Array(" + ", ".join(result) + ")"
+        
+
+
 class AnimationHistory:
     """AnimationHistory provides a history of animation commands, and a undo and
        redo facility. It is to be used as a wrapper around a GraphDisplay and it
@@ -71,7 +88,7 @@ class AnimationHistory:
         self.history = []
         self.history_index = None
         
-        #========== Provide Undo/Redo for animation commands from GraphDisplay ======
+    #========== Provide Undo/Redo for animation commands from GraphDisplay ======
     def SetVertexColor(self, v, color):
         # print 'SetVertexColor', v, color
         animation = AnimationCommand(self.animator.SetVertexColor, (v,), (color,), 
@@ -82,8 +99,9 @@ class AnimationHistory:
         #SetAllVerticesColor
         #SetAllEdgesColor
         
-    def SetEdgeColor(self,tail, head, color):
+    def SetEdgeColor(self, tail, head, color):
         # print 'SetEdgeColor', tail, head, color
+        tail, head = self.animator.G.Edge(tail, head)
         animation = AnimationCommand(self.animator.SetEdgeColor, (tail,head), (color,),
                                      undo_args=(self.animator.GetEdgeColor(tail,head),))
         animation.Do()
@@ -97,19 +115,20 @@ class AnimationHistory:
         
     def BlinkEdge(self, tail, head, color=None):
         # print 'BlinkEdge', tail, head, color 
+        tail, head = self.animator.G.Edge(tail, head)
         animation = AnimationCommand(self.animator.BlinkEdge, (tail,head), (color,))
         animation.Do()
         self.append(animation)
         
         
-    def SetVertexFrameWidth(self,v,val):
+    def SetVertexFrameWidth(self, v, val):
         # print 'SetVertexFrameWidth', v, val
         animation = AnimationCommand(self.animator.SetVertexFrameWidth, (v,), (val,),
                                      undo_args=(self.animator.GetVertexFrameWidth(v),))        
         animation.Do()
         self.append(animation)
         
-    def SetVertexAnnotation(self,v,annotation,color="black"):
+    def SetVertexAnnotation(self, v, annotation,color="black"):
         # print 'SetVertexAnnotation',v,annotation,color
         animation = AnimationCommand(self.animator.SetVertexAnnotation, (v,), (annotation,),
                                      undo_args=(self.animator.GetVertexAnnotation(v),))                      
@@ -117,7 +136,7 @@ class AnimationHistory:
         self.append(animation)
         
         
-        #========== Handle all other methods from GraphDisplay =====================
+    #========== Handle all other methods from GraphDisplay =====================
     def __getattr__(self,arg):
         # This is broken. Calls to self.animator methods as args in self.animator method
         # calls should fail.
@@ -133,7 +152,7 @@ class AnimationHistory:
         # print self.methodName,"(",args,")"
         return apply(self.method,args)
         
-        #========== AnimationHistory methods =======================================
+    #========== AnimationHistory methods =======================================
     def Undo(self):
         if self.history_index == None: # Have never undone anything
             self.history_index = len(self.history) - 1

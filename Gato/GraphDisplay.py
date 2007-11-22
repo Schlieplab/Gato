@@ -1292,7 +1292,7 @@ class GraphDisplay:
                                    x=x,y=y,height=height,width=width)	
             
 
-    def ExportSVG(self,fileName):
+    def ExportSVG(self, fileName, animation = None):
         """ Export Canvas to a SVG file.
 
             XXX Experimental version; spike solution. This will be refactored.
@@ -1310,6 +1310,89 @@ class GraphDisplay:
         width=bb[2] - bb[0] + 20
         height=bb[3] - bb[1] + 20
 
+        animationhead = """<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+xmlns:xlink="http://www.w3.org/1999/xlink"
+xmlns:ev="http://www.w3.org/2001/xml-events" version="1.1" baseProfile="full"
+viewbox="%(x)d %(y)d %(width)d %(height)d" width="30cm" height="30cm"
+onload="StartAnimation(evt)">
+<defs> 
+    <marker id="Arrowhead" 
+      viewBox="0 0 10 10" refX="0" refY="5" 
+      markerUnits="strokeWidth" 
+      markerWidth="4" markerHeight="3" 
+      orient="auto"> 
+      <path d="M 0 0 L 10 5 L 0 10 z" /> 
+    </marker> 
+</defs>
+<script type="text/ecmascript"><![CDATA[
+var step = 0;
+var the_evt;
+var element;
+var blinkcolor;
+var blinkcount;
+function StartAnimation(evt) {
+	the_evt = evt;	
+	ShowAnimation();
+}
+function SetVertexColor(v, color) {
+    element = the_evt.target.ownerDocument.getElementById(v);
+    element.setAttribute("fill", color);
+}
+// Cannot map: SetAllVerticesColor(self, color, graph=None, vertices=None):
+function SetEdgeColor(e, color) {
+    // NOTE: Gato signature SetEdgeColor(v, w, color)
+    element = the_evt.target.ownerDocument.getElementById(e);
+    element.setAttribute("stroke", color);
+}
+//function SetEdgesColor(edge_array, color) {
+// Cannot map: SetAllEdgesColor(self, color, graph=None, leaveColors=None)
+function BlinkVertex(v, color) {
+    element = the_evt.target.ownerDocument.getElementById(v);
+    blinkcolor = element.getAttribute("fill")
+    blinkcount = 3;
+    element.setAttribute("fill", "black");
+    setTimeout(VertexBlinker, 3);
+}
+function VertexBlinker() {
+    if (blinkcount %% 2 == 1) {
+       element.setAttribute("fill", blinkcolor); 
+    } else {
+       element.setAttribute("fill", "black"); 
+    }
+    blinkcount = blinkcount - 1;
+    if (blickcount >= 0)
+       setTimeout(VertexBlinker, 3);
+}
+
+
+
+
+//
+//BlinkEdge(self, tail, head, color=None):
+//
+//Blink(self, list, color=None):
+function SetVertexFrameWidth(v, val) {
+    var element = the_evt.target.ownerDocument.getElementById(v);
+    element.setAttribute("stroke-width", val);
+}
+function SetVertexAnnotation(self, v, annotation, color)
+{
+        1;
+}
+//function SetEdgeAnnotation(self,tail,head,annotation,color="black"):
+//def UpdateVertexLabel(self, v, blink=1, color=None):
+var animation = Array(%(animation)s
+);
+function ShowAnimation() {
+	var duration = animation[step][0] * 4;
+	animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
+	step = step + 1; 
+	if(step < animation.length) 
+		setTimeout(ShowAnimation, duration);
+}
+]]></script>
+        """
         head = """<?xml version="1.0" encoding="utf-8"?>
 <svg xmlns="http://www.w3.org/2000/svg"
 xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -1323,14 +1406,19 @@ viewbox="%(x)d %(y)d %(width)d %(height)d" width="30cm" height="30cm">
       orient="auto"> 
       <path d="M 0 0 L 10 5 L 0 10 z" /> 
     </marker> 
-</defs> 
-        """
+</defs>
+"""
         footer = """
 </svg>
-        """
+"""
 
         file = open(fileName,'w')
-        file.write(head % {'x':x,'y':y,'width':width,'height':height})
+        if animation is not None:
+            anivar = ",\n".join(animation)
+            vars = {'x':x, 'y':y, 'width':width, 'height':height, 'animation':anivar}
+            file.write(animationhead % vars)
+        else:
+            file.write(head % {'x':x,'y':y,'width':width,'height':height})
 
         # Write Bubbles from weighted matching
         # XXX We make use of the fact that they have a bubble tag
@@ -1410,7 +1498,7 @@ viewbox="%(x)d %(y)d %(width)d %(height)d" width="30cm" height="30cm">
                 if text != "":
                     file.write('<text id="ea%s" x="%s" y="%s" text-anchor="center" '\
                                'fill="%s" font-family="Helvetica" '\
-                               'font-size="%s" fonst-style="normal">%s</text>\n' % (xe,ye+offset,col,size,text))
+                               'font-size="%s" font-style="normal">%s</text>\n' % (xe,ye+offset,col,size,text))
                
 
         for v in self.G.Vertices():
@@ -1432,7 +1520,7 @@ viewbox="%(x)d %(y)d %(width)d %(height)d" width="30cm" height="30cm">
             offset = 0.33 * size
             
             file.write('<text id="vl%s" x="%s" y="%s" text-anchor="middle" fill="%s" font-family="Helvetica" '\
-                       'font-size="%s" fonst-style="normal">%s</text>\n' % (v,x,y+offset,col,size,self.G.GetLabeling(v)))
+                       'font-size="%s" fonst-style="normal" font-weight="bold" >%s</text>\n' % (v,x,y+offset,col,size,self.G.GetLabeling(v)))
             
             # Write vertex annotation
             size = r*0.9

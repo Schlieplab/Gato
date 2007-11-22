@@ -55,9 +55,16 @@ tests = [ ("BFS.alg", "sample.cat") ]
 if __name__ == '__main__':
     app = AlgoWin()    
     app.algorithm.logAnimator=2
-    globals()['gInteractive'] = 0
-    print "GatoTest",globals()['gInteractive']
-    
+    #globals()['gInteractive'] = 0
+    #print "GatoTest",globals()['gInteractive']
+    if sys.version_info[0:2] < (2,4):
+        log.addHandler(logging.StreamHandler(sys.stdout))
+        log.setLevel(logging.DEBUG)
+    else:
+        logging.basicConfig(level=logging.DEBUG,
+                            stream=sys.stdout,
+                            format='%(name)s %(levelname)s %(message)s')
+        
     for case in tests:
         print "=== TEST ===",case[0],"===",case[1],"==="
         app.OpenAlgorithm(testPath + case[0])

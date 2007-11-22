@@ -42,7 +42,7 @@ from GatoGlobals import *
 from Graph import Graph
 from DataStructures import Point2D, VertexLabeling, EdgeLabeling, EdgeWeight, VertexWeight, Queue
 import logging
-log = logging.getLogger("GraphUtil.py")
+log = logging.getLogger("Gato")
 
 
 ################################################################################
