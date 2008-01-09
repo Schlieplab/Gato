@@ -1323,8 +1323,9 @@ class AlgorithmDebugger(bdb.Bdb):
             self.doTrace = 0
         else:
             pass
-        import inspect
-        log.debug("%s" % inspect.getframeinfo(frame))
+        # XXX No idea why this is here
+        #import inspect
+        #log.debug("%s" % inspect.getframeinfo(frame))
             
     def user_line(self, frame):
         """ *Internal* This function is called when we stop or break at this line  """
