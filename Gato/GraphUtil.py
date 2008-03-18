@@ -540,3 +540,18 @@ def OpenDotGraph(fileName):
     G.vertexAnnotation = VLabel
     G.edgeAnnotation = ELabel
     return G
+
+
+def WeightMatrix(G=None, fromFileName=None, noEdgeWeight=999999.9):
+    import numpy
+    if fromFileName:
+        G = OpenCATBoxGraph(fromFileName)
+    directed = G.QDirected()
+    A = numpy.ones((G.Order(),G.Order())) * noEdgeWeight
+    for i in range(G.Order()):
+        A[i,i] = 0
+    for i,j in G.Edges():
+        A[i-1,j-1] = G.GetEdgeWeight(0,i,j)
+        if not directed:
+            A[i-1,j-1] = G.GetEdgeWeight(0,i,j)
+    return A
