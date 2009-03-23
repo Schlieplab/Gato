@@ -89,9 +89,27 @@ gColors = ['#333333','#663333','#993333','#CC3333',
 
 
 # Exceptions
-GraphNotSimpleError = 'GraphNotSimpleError'
-NoSuchVertexError   = 'NoSuchVertexError'
-NoSuchEdgeError     = 'NoSuchEdgeError'
+class Error(Exception):
+    """Base class for exceptions in Gato."""
+    pass
+
+class GraphNotSimpleError(Error):
+    def __init__(self, message):
+        self.message = message
+    def __str__(self):
+        return repr(self.message)
+
+class NoSuchVertexError(Error):
+    def __init__(self, message):
+        self.message = message
+    def __str__(self):
+        return repr(self.message)
+
+class NoSuchEdgeError(Error):
+    def __init__(self, message):
+        self.message = message
+    def __str__(self):
+        return repr(self.message)
 
 
 # XXX  property name    cmp, explanation if no such prop,  human readable prop name
