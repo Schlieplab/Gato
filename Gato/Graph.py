@@ -126,11 +126,11 @@ class Graph:
             are distinct edges """
         
         if self.simple == 1 and tail == head: # Loop
-            raise GraphNotSimpleError, '(%d,%d) is a loop' % (tail,head)
+            raise GraphNotSimpleError('(%d,%d) is a loop' % (tail,head))
         if self.directed == 0 and tail in self.adjLists[head]: 
-            raise GraphNotSimpleError, '(%d,%d) is already an undirected edge' % (head,tail)
+            raise GraphNotSimpleError('(%d,%d) is already an undirected edge' % (head,tail))
         if head in self.adjLists[tail]: # Multiple edge
-            raise GraphNotSimpleError, '(%d,%d) is already an directed edge' % (tail,head)
+            raise GraphNotSimpleError('(%d,%d) is already an directed edge' % (tail,head))
             
         self.adjLists[tail].append(head)
         self.invAdjLists[head].append(tail)
@@ -158,7 +158,7 @@ class Graph:
             self.invAdjLists[head].remove(tail)
             self.size = self.size - 1
         except KeyError:
-            raise NoSuchEdgeError, "(%d,%d) is not an edge." % (tail,head)
+            raise NoSuchEdgeError("(%d,%d) is not an edge." % (tail,head))
             
             
     def Edge(self,tail,head):
@@ -166,14 +166,14 @@ class Graph:
              vertices as (tail,head). Raises NoSuchEdgeError upon error. """
         
         if tail not in self.vertices or head not in self.vertices:
-            raise NoSuchEdgeError, "(%d,%d) is not an edge." % (tail,head)
+            raise NoSuchEdgeError("(%d,%d) is not an edge." % (tail,head))
             
         if head in self.adjLists[tail]:
             return (tail,head)
         elif self.directed == 0 and tail in self.adjLists[head]:
             return (head,tail)
         else:
-            raise NoSuchEdgeError, "(%d,%d) is not an edge." % (tail,head)
+            raise NoSuchEdgeError("(%d,%d) is not an edge." % (tail,head))
             
             
     def QEdge(self,tail,head):
@@ -504,7 +504,7 @@ class SubGraph(Graph):
                 self.adjLists[v] = []
                 self.invAdjLists[v] = []
         except:
-            raise NoSuchVertexError, "%d is not a vertex in the supergraph" % v
+            raise NoSuchVertexError("%d is not a vertex in the supergraph" % v)
             
     def AddEdge(self,tail,head):
         """ Add an edge from the supergraph to the subgraph.
@@ -527,7 +527,7 @@ class SubGraph(Graph):
             self.totalWeight += w
             
         except (KeyError, NoSuchVertexError, NoSuchEdgeError):
-            raise NoSuchEdgeError, "(%d,%d) is not an edge in the supergraph." % (tail,head)
+            raise NoSuchEdgeError("(%d,%d) is not an edge in the supergraph." % (tail,head))
             
     def AddSubGraph(self,G):
         """ Add subgraph G to self. Will do nothing if self and G 
@@ -551,7 +551,7 @@ class SubGraph(Graph):
             self.invAdjLists[head].remove(tail)
             self.size = self.size - 1
         else:
-            raise NoSuchEdgeError, "(%d,%d) is not an edge." % (tail,head)
+            raise NoSuchEdgeError("(%d,%d) is not an edge." % (tail,head))
             
     def Clear(self):
         """ Delete all vertices and edges from the subgraph. """
