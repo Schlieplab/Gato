@@ -41,7 +41,7 @@ from GraphUtil import OpenCATBoxGraph, OpenGMLGraph, SaveCATBoxGraph, WeightedGr
 from GraphEditor import GraphEditor
 from Tkinter import *
 import tkFont
-from GatoUtil import stripPath, extension, gatoPath
+from GatoUtil import stripPath, extension
 import GatoDialogs
 import GatoIcons
 from ScrolledText import *

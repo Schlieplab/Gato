@@ -42,7 +42,7 @@ from GraphUtil import OpenCATBoxGraph, OpenGMLGraph, OpenDotGraph, SaveCATBoxGra
 from GraphEditor import GraphEditor
 from Tkinter import *
 import tkFont
-from GatoUtil import stripPath, extension, gatoPath
+from GatoUtil import stripPath, extension
 import GatoDialogs
 import GatoIcons
 from ScrolledText import *

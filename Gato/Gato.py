@@ -1581,11 +1581,9 @@ class Algorithm:
         
         self.animation_history = None
         
-        if self.logAnimator == 1:
+        if self.logAnimator >= 1:
             self.animation_history = AnimationHistory(self.GUI.graphDisplay)
             self.algoGlobals['A'] = self.animation_history
-        elif self.logAnimator == 2:
-            self.algoGlobals['A'] = MethodLogger(self.GUI.graphDisplay)
         else:
             self.algoGlobals['A'] = self.GUI.graphDisplay
             # XXX

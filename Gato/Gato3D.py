@@ -1206,7 +1206,8 @@ class Algorithm:
         self.algoGlobals['G'] = self.graph
         
         if self.logAnimator:
-            self.algoGlobals['A'] = MethodLogger(self.GUI.graphDisplay)
+            print "XXX Fix me! Use AnimationHistory
+            #self.algoGlobals['A'] = MethodLogger(self.GUI.graphDisplay)
         else:
             self.algoGlobals['A'] = self.GUI.graphDisplay
             # XXX
