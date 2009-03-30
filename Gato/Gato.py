@@ -61,12 +61,16 @@ from Graph import Graph
 from GraphUtil import *
 from GraphDisplay import GraphDisplayToplevel, GraphDisplayFrame
 from GatoUtil import *
-from GatoGlobals import *
+import GatoGlobals
 from GatoDialogs import AboutBox, SplashScreen, HTMLViewer, AutoScrolledText
 import GatoIcons
 # Only needed for Trial-Solution version. 
 #import GatoSystemConfiguration
 from AnimationHistory import AnimationHistory
+
+
+g = GatoGlobals.AnimationParameters
+
 
 class AbortProlog(Exception):
     """Phony exception to about execution of prolog."""
@@ -434,8 +438,11 @@ class AlgoWin(Frame):
         self.algoText.tag_config('Active', 
                                  foreground=c('activefg'),
                                  background=c('activebg'))
-        globals()['gBlinkRate'] = int(c('blinkrate'))
-        globals()['gBlinkRepeat'] = int(c('blinkrepeat'))
+        print "BlinkRate and BlinkRepeat are",g.BlinkRate,g.BlinkRepeat
+        g.BlinkRate = int(c('blinkrate'))
+        g.BlinkRepeat = int(c('blinkrepeat'))
+        print "Setting BlinkRate and BlinkRepeat to",g.BlinkRate,g.BlinkRepeat
+
         
         
     def OpenSecondaryGraphDisplay(self):
@@ -1517,7 +1524,7 @@ class Algorithm:
         
     def About(self):
         """ Return a HTML-page giving information about the algorithm """
-        if self.about != None:
+        if self.about:
             return self.about
         else:
             return "<HTML><BODY> <H3>No information available</H3></BODY></HTML>"
@@ -1597,8 +1604,8 @@ class Algorithm:
         for m in modules:
             exec("from %s import *" % m, self.algoGlobals, self.algoGlobals)
             
-            # transfer required globals
-        self.algoGlobals['gInteractive'] = globals()['gInteractive']
+        # transfer required globals
+        self.algoGlobals['gInteractive'] = g.Interactive
         # Read in prolog and execute it
         try:
             execfile(os.path.splitext(self.algoFileName)[0] + ".pro", 
@@ -1779,7 +1786,7 @@ class Algorithm:
         v = None
         
         #log.debug("pickVertex %s" %s globals()['gInteractive'])
-        if globals()['gInteractive'] == 1:
+        if g.Interactive:
             v = self.GUI.PickInteractive('vertex', filter, default)
             
         if v == None:
@@ -1804,7 +1811,7 @@ class Algorithm:
               only argument and cause e.g. some visual feedback """ 
         e = None
         
-        if globals()['gInteractive'] == 1:
+        if g.Interactive:
             e = self.GUI.PickInteractive('edge', filter, default)
             
         if e == None:

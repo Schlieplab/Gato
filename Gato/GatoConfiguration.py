@@ -45,8 +45,8 @@ import StringIO
 
 default_cfg = """
 [animation]
-BlinkRate = 50
-BlinkRepeat = 4
+BlinkRate = 10
+BlinkRepeat = 3
 
 [algorithm]
 AlgoFont = Courier

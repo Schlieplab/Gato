@@ -34,19 +34,21 @@
 #             last change by $Author$.
 #
 ################################################################################
-from GatoGlobals import *
+import GatoGlobals
 from DataStructures import VertexLabeling, Queue
 from AnimatedDataStructures import *
 #from GraphDisplay import GraphDisplay
 #from Graph import SubGraph
+
+g = GatoGlobals.AnimationParameters
 
 def shortestPath(G, A, s, t):
     """ Find a shortest path and return it as a set of edges. If no
         path exists, it returns None """
     pred = AnimatedVertexLabeling(A)    
     Q = AnimatedVertexQueue(A)    
-    A.SetAllEdgesColor(A.cEdgeDefault)
-    A.SetAllVerticesColor(A.cVertexDefault)
+    A.SetAllEdgesColor(g.cEdgeDefault)
+    A.SetAllVerticesColor(g.cVertexDefault)
         
     for v in G.vertices:
         pred[v] = None	

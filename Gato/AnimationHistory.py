@@ -35,7 +35,8 @@
 ################################################################################
 
 import time
-from GatoGlobals import gBlinkRate
+import GatoGlobals
+g = GatoGlobals.AnimationParameters
 
 class AnimationCommand:
 
@@ -181,13 +182,13 @@ class AnimationHistory:
         if len(self.history) > 1:
             self.history[-1][1].Undo()
             self.animator.update()
-            self.animator.canvas.after(10*gBlinkRate)
+            self.animator.canvas.after(10 * g.BlinkRate)
             self.history[-1][1].Do()
             self.animator.update()
-            self.animator.canvas.after(10*gBlinkRate)
+            self.animator.canvas.after(10 * g.BlinkRate)
             self.history[-1][1].Undo()
             self.animator.update()
-            self.animator.canvas.after(10*gBlinkRate)
+            self.animator.canvas.after(10 * g.BlinkRate)
             self.history[-1][1].Do()
             self.animator.update()
             

@@ -36,7 +36,7 @@
 #
 ################################################################################
 
-from GatoGlobals import *
+from GatoGlobals import gInfinity
 
 class Rect:
     def __init__(self):

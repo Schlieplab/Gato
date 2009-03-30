@@ -35,11 +35,13 @@
 #             last change by $Author$.
 #
 ################################################################################
-from GatoGlobals import *
+from GatoGlobals import AnimationParameters, gInfinity
 from DataStructures import VertexLabeling, Queue, Stack, PriorityQueue
 from Graph import SubGraph
 import copy
 import sets
+
+g = AnimationParameters
 
 class Animator:
     """ *Debugging* Text only Animator providing animation functions which
@@ -70,7 +72,7 @@ class AnimatedNeighborhood:
     
     def __init__(self, theAnimator, G, v, ignoreColors = [],
                  blinkColor = None, activeColor = 'yellow',
-                 traversedColor = cTraversedEdge):	
+                 traversedColor = g.cTraversedEdge):	
         """ theAnimator will usually be the GraphDisplay(Frame/Toplevel) """
         self.Animator = theAnimator
         self.nbh = G.Neighborhood(v)
@@ -81,7 +83,7 @@ class AnimatedNeighborhood:
         self.traversedColor = traversedColor        
         self.lastEdge = None
         self.lastColor = None
-        self.Animator.SetVertexFrameWidth(self.v,self.Animator.gActiveVertexFrameWidth)
+        self.Animator.SetVertexFrameWidth(self.v, g.ActiveVertexFrameWidth)
 
         
     def __getitem__(self, i):
@@ -101,7 +103,7 @@ class AnimatedNeighborhood:
                 self.Animator.BlinkEdge(self.v,self.nbh[i],self.blinkColor)
             return self.nbh[i]
         else:
-            self.Animator.SetVertexFrameWidth(self.v,self.Animator.gVertexFrameWidth)
+            self.Animator.SetVertexFrameWidth(self.v, g.VertexFrameWidth)
             raise IndexError
             
     def __len__(self):
@@ -127,7 +129,7 @@ class BlinkingNeighborhood:
         
     def __getitem__(self, i):
         if i < len(self.nbh):
-            self.Animator.BlinkEdge(self.v,self.nbh[i],self.color)
+            self.Animator.BlinkEdge(self.v, self.nbh[i], self.color)
             return self.nbh[i]
         else:
             raise IndexError
@@ -176,7 +178,7 @@ class BlinkingContainerWrapper:
         #    doSomething
         """
     
-    def __init__(self, theAnimator, l,  color=cOnQueue):	
+    def __init__(self, theAnimator, l, color=g.cOnQueue):	
         self.Animator = theAnimator
         self.list = copy.copy(l)
         self.color = color
@@ -207,7 +209,7 @@ class ContainerWrapper(BlinkingContainerWrapper):
         #    doSomething
         """
     
-    def __init__(self, theAnimator, l, color=cOnQueue):
+    def __init__(self, theAnimator, l, color=g.cOnQueue):
         BlinkingContainerWrapper.__init__(self,theAnimator,l,color)	
         self.lastitem  = None
         self.lastcolor = None
@@ -280,7 +282,7 @@ class AnimatedVertexLabeling(VertexLabeling):
     def __setitem__(self, v, val):
         VertexLabeling.__setitem__(self, v, val)
         if val == self.initial or val == None or val == gInfinity:
-            self.Animator.SetVertexColor(v,cInitial)
+            self.Animator.SetVertexColor(v,g.cInitial)
         else:
             self.Animator.SetVertexColor(v,self.color)
             
@@ -374,7 +376,7 @@ class AnimatedVertexQueue(Queue):
         - cRemovedFromQueue if they have been on the queue and were
           removed """
     
-    def __init__(self, theAnimator, colorOn=cOnQueue, colorOff=cRemovedFromQueue):
+    def __init__(self, theAnimator, colorOn=g.cOnQueue, colorOff=g.cRemovedFromQueue):
         """ theAnimator will usually be the GraphDisplay(Frame/Toplevel) """
         Queue.__init__(self)
         self.Animator = theAnimator
@@ -390,8 +392,8 @@ class AnimatedVertexQueue(Queue):
         v = Queue.Top(self)
         self.Animator.SetVertexColor(v, self.ColorOff)
         if self.lastRemoved is not None:
-            self.Animator.SetVertexFrameWidth(self.lastRemoved,self.Animator.gVertexFrameWidth)
-        self.Animator.SetVertexFrameWidth(v,self.Animator.gActiveVertexFrameWidth)
+            self.Animator.SetVertexFrameWidth(self.lastRemoved, g.VertexFrameWidth)
+        self.Animator.SetVertexFrameWidth(v, g.ActiveVertexFrameWidth)
         self.lastRemoved = v 
         return v
         
@@ -411,7 +413,7 @@ class AnimatedVertexPriorityQueue(PriorityQueue):
         - cRemovedFromQueue if they have been on the queue and were
           removed """
     
-    def __init__(self, theAnimator, colorOn=cOnQueue, colorOff=cRemovedFromQueue):
+    def __init__(self, theAnimator, colorOn=g.cOnQueue, colorOff=g.cRemovedFromQueue):
         """ theAnimator will usually be the GraphDisplay(Frame/Toplevel) """
         PriorityQueue.__init__(self)
         self.Animator = theAnimator
@@ -431,8 +433,8 @@ class AnimatedVertexPriorityQueue(PriorityQueue):
         v = PriorityQueue.DeleteMin(self)
         self.Animator.SetVertexColor(v, self.ColorOff)
         if self.lastRemoved is not None:
-            self.Animator.SetVertexFrameWidth(self.lastRemoved,self.Animator.gVertexFrameWidth)
-        self.Animator.SetVertexFrameWidth(v,self.Animator.gActiveVertexFrameWidth)
+            self.Animator.SetVertexFrameWidth(self.lastRemoved, g.VertexFrameWidth)
+        self.Animator.SetVertexFrameWidth(v, g.ActiveVertexFrameWidth)
         self.lastRemoved = v 
         return v
         
@@ -445,7 +447,7 @@ class AnimatedVertexStack(Stack):
         - cRemovedFromQueue if they have been on the queue and were
           removed """
     
-    def __init__(self, theAnimator, colorOn=cOnQueue, colorOff=cRemovedFromQueue):
+    def __init__(self, theAnimator, colorOn=g.cOnQueue, colorOff=g.cRemovedFromQueue):
         """ theAnimator will usually be the GraphDisplay(Frame/Toplevel) """
         Stack.__init__(self)
         self.Animator = theAnimator
@@ -461,8 +463,8 @@ class AnimatedVertexStack(Stack):
         v = Stack.Pop(self)
         self.Animator.SetVertexColor(v, self.ColorOff)
         if self.lastRemoved is not None:
-            self.Animator.SetVertexFrameWidth(self.lastRemoved,self.Animator.gVertexFrameWidth)
-        self.Animator.SetVertexFrameWidth(v,self.Animator.gActiveVertexFrameWidth)
+            self.Animator.SetVertexFrameWidth(self.lastRemoved, g.VertexFrameWidth)
+        self.Animator.SetVertexFrameWidth(v, g.ActiveVertexFrameWidth)
         self.lastRemoved = v 
         return v
         
@@ -471,7 +473,7 @@ class AnimatedVertexStack(Stack):
             self.Animator.SetVertexColor(v, self.ColorOff)
         Stack.Clear(self)
         if self.lastRemoved is not None:
-            self.Animator.SetVertexFrameWidth(self.lastRemoved,self.Animator.gVertexFrameWidth)
+            self.Animator.SetVertexFrameWidth(self.lastRemoved, g.VertexFrameWidth)
             self.lastRemoved = None
             
             
@@ -506,7 +508,7 @@ class AnimatedVertexSet:
         
     """
     
-    def __init__(self, theAnimator, vertexSet=None, color=cVisited, addcolor='red',
+    def __init__(self, theAnimator, vertexSet=None, color=g.cVisited, addcolor='red',
                  trackLast=None):
         """ theAnimator will usually be the GraphDisplay(Frame/Toplevel) """
         if vertexSet == None:
@@ -529,9 +531,9 @@ class AnimatedVertexSet:
         if self.trackLast:
             if self.last:
                 self.Animator.SetVertexFrameWidth(self.last,
-                                                  self.Animator.gVertexFrameWidth)
+                                                  g.VertexFrameWidth)
             self.Animator.SetVertexFrameWidth(v,
-                                              self.Animator.gActiveVertexFrameWidth)
+                                              g.ActiveVertexFrameWidth)
             self.last = v
             
     def Add(self,v):
@@ -580,8 +582,8 @@ class AnimatedEdgeSet:
         self.edges.append(e)
         
     def Remove(self, e):
-        self.Animator.BlinkEdge(e[0],e[1],cVisited)
-        self.Animator.SetEdgeColor(e[0],e[1],cVisited)
+        self.Animator.BlinkEdge(e[0], e[1], g.cVisited)
+        self.Animator.SetEdgeColor(e[0], e[1], g.cVisited)
         self.edges.remove(e) 
         
     def IsNotEmpty(self):
@@ -672,8 +674,8 @@ class AnimatedSubGraph(SubGraph):
             and color them with 'color' (grey is default) """
         
         # GraphDisplay functions save several update()'s
-        self.Animator.SetAllVerticesColor(color,self)
-        self.Animator.SetAllEdgesColor(color,self)
+        self.Animator.SetAllVerticesColor(color, self)
+        self.Animator.SetAllEdgesColor(color, self)
         
         self.vertices         = [] 
         self.adjLists         = {}

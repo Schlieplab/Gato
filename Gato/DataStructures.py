@@ -38,7 +38,7 @@
 
 
 from __future__ import generators #Needed for PQImplementation and Python2.2
-from GatoGlobals import *
+#from GatoGlobals import *
 
 
 ################################################################################

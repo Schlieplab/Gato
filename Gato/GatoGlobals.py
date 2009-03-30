@@ -35,60 +35,70 @@
 #
 ################################################################################
 
-# Globals
-### This will be set in GraphDisplay.ReadConfiguration()
-##gVertexRadius = 12  
-##gVertexFrameWidth =  2     
-##gEdgeWidth =  3     
+import tkFont
 
-# Animation
-gBlinkRate        = 10      # ms 100
-gBlinkRepeat      =  3      # One more than you want 4
+class AnimationParameters:
+    """ Convenience class to collect all globals. 
 
-# Printing
-gPaperHeight      = 1500 # "20i" XXX Should be real paper size
-gPaperWidth       = 1500 # "20i"
+        The values below are the initial default values, which can be
+        overriden from the user with the GUI.
+    """
+    # Display style. Info in pixel
+    VertexRadius = 14
+    VertexFrameWidth = 0
+    ActiveVertexFrameWidth = 6
+    EdgeWidth = 4
 
-gInteractive      = 1
-gGridSize         = 50 # Grid size for editor
+    FontFamily = "Helvetica"
+    FontSize = 10
+    FontStyle = tkFont.BOLD
 
-gInfinity         = 9999999
+    # Animation
+    BlinkRate = 10 # ms
+    BlinkRepeat = 3 # One more than you want
+    Interactive = 1
 
-True              = 1
-False             = 0
+    # Printing
+    PaperHeight = 1500 # "20i" XXX Should be real paper size
+    PaperWidth = 1500 # "20i"
 
-### Internal Color Names for GraphDisplay and such
-### This will be set in GraphDisplay.ReadConfiguration()
-##cVertexDefault    = "red"
-##cVertexBlink      = "black"
-##cEdgeDefault      = "black"
-##cLabelDefault     = "black"
-##cLabelDefaultInverted = "white"
-##cLabelBlink       = "green"
+    # Editing
+    GridSize = 50 # Grid size for editor
 
-cInitial          = "#EEEEEE"
-cVisited          = "grey"
-#cOnQueue          = "red"
-#cRemovedFromQueue = "blue"
-cOnQueue          = "blue"
-cRemovedFromQueue = "grey"
-cTraversedEdge    = "grey"
-
-gColors = ['#333333','#663333','#993333','#CC3333',
-          '#336633','#666633','#996633','#CC6633',
-          '#339933','#669933','#999933','#CC9933',
-          '#33CC33','#66CC33','#99CC33','#CCCC33',
-          '#333366','#663366','#993366','#CC3366',
-          '#336666','#666666','#996666','#CC6666',
-          '#339966','#669966','#999966','#CC9966',
-          '#33CC66','#66CC66','#99CC66','#CCCC66',
-          '#3333CC','#6633CC','#9933CC','#CC33CC',
-          '#3366CC','#6666CC','#9966CC','#CC66CC',
-          '#3399CC','#6699CC','#9999CC','#CC99CC',
-          '#33CCCC','#66CCCC','#99CCCC','#CCCCCC']
+    # Colors
+    cVertexDefault = "#000099" # 'red'
+    cVertexBlink = "black"
+    cEdgeDefault = "#EEEEEE"
+    cLabelDefault = "white"
+    cLabelDefaultInverted = "black"
+    cLabelBlink = "green"
 
 
-# Exceptions
+    cInitial = "#EEEEEE"
+    cVisited = "grey"
+    cOnQueue = "red"
+    cRemovedFromQueue = "blue"
+    cOnQueue = "blue"
+    cRemovedFromQueue = "grey"
+    cTraversedEdge = "grey"
+
+    Colors = ['#333333','#663333','#993333','#CC3333',
+              '#336633','#666633','#996633','#CC6633',
+              '#339933','#669933','#999933','#CC9933',
+              '#33CC33','#66CC33','#99CC33','#CCCC33',
+              '#333366','#663366','#993366','#CC3366',
+              '#336666','#666666','#996666','#CC6666',
+              '#339966','#669966','#999966','#CC9966',
+              '#33CC66','#66CC66','#99CC66','#CCCC66',
+              '#3333CC','#6633CC','#9933CC','#CC33CC',
+              '#3366CC','#6666CC','#9966CC','#CC66CC',
+              '#3399CC','#6699CC','#9999CC','#CC99CC',
+              '#33CCCC','#66CCCC','#99CCCC','#CCCCCC']
+
+
+gInfinity = 9999999
+
+
 class GatoError(Exception):
     """Base class for exceptions in Gato.
 
