@@ -89,27 +89,35 @@ gColors = ['#333333','#663333','#993333','#CC3333',
 
 
 # Exceptions
-class Error(Exception):
-    """Base class for exceptions in Gato."""
+class GatoError(Exception):
+    """Base class for exceptions in Gato.
+
+       Following the info in
+       http://mail.python.org/pipermail/python-dev/2007-April/072542.html
+    """
+    def __init__(self, *args):
+        """Set the 'args' attribute."""
+        self.args = args
+        
+    def __str__(self):
+        """Return the str of args[0] or args, depending on length."""
+        return str(self.args[0]
+                   if len(self.args) <= 1
+                   else self.args)
+
+    def __repr__(self):
+        func_args = repr(self.args) if self.args else "()"
+        return self.__class__.__name__ + func_args
+
+
+class GraphNotSimpleError(GatoError):
     pass
 
-class GraphNotSimpleError(Error):
-    def __init__(self, message):
-        self.message = message
-    def __str__(self):
-        return repr(self.message)
+class NoSuchVertexError(GatoError):
+    pass
 
-class NoSuchVertexError(Error):
-    def __init__(self, message):
-        self.message = message
-    def __str__(self):
-        return repr(self.message)
-
-class NoSuchEdgeError(Error):
-    def __init__(self, message):
-        self.message = message
-    def __str__(self):
-        return repr(self.message)
+class NoSuchEdgeError(GatoError):
+    pass
 
 
 # XXX  property name    cmp, explanation if no such prop,  human readable prop name
