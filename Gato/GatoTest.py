@@ -35,28 +35,119 @@
 #
 ################################################################################
 from Gato import *
+import GatoGlobals
+g = GatoGlobals.AnimationParameters
+# To speed up running of tests
+g.BlinkRepeat = 1
+g.BlinkRate = 2
 
-##testPath = "../CATBox/"
+testPath = "../CATBox/"
 
-##tests = [ ("04-MinimalSpanningTrees/Prim.alg",
-##           "04-MinimalSpanningTrees/MinimalSpanningTrees08.cat"),
-##          ("04-MinimalSpanningTrees/Kruskal.alg",
-##           "04-MinimalSpanningTrees/MinimalSpanningTrees08.cat"),
-##          ("06-MaximalFlows/FordFulkerson.alg",
-##           "06-MaximalFlows/FordFulkerson3.cat"),
-##          ("06-MaximalFlows/PreflowPush.alg",
-##           "06-MaximalFlows/PreflowPush2.cat")
+instance = {
+    '02-GraphsNetworks/BFS-components.alg':[
+    '02-GraphsNetworks/BFS.cat'
+    ],
+    '02-GraphsNetworks/BFS.alg':[
+    '02-GraphsNetworks/BFS.cat'
+    ],
+    '02-GraphsNetworks/BFStoDFS.alg':[
+    '02-GraphsNetworks/BFS.cat'
+    ],
+    '02-GraphsNetworks/DFS-Recursive.alg':[
+    '02-GraphsNetworks/BFS.cat'
+    ],
+    '02-GraphsNetworks/DFS.alg':[
+    '02-GraphsNetworks/BFS.cat'
+    ],
+    '03-MinimalSpanningTrees/Kruskal.alg':[
+    '03-MinimalSpanningTrees/Kruskal4.cat'
+    ],
+    '03-MinimalSpanningTrees/KruskalFindCircuit.alg':[
+    '03-MinimalSpanningTrees/Kruskal4.cat'
+    ],
+    '03-MinimalSpanningTrees/KruskalInefficient.alg':[
+    '03-MinimalSpanningTrees/Kruskal4.cat'
+    ],
+    '03-MinimalSpanningTrees/KruskalTrace.alg':[
+    '03-MinimalSpanningTrees/Kruskal4.cat'
+    ],
+    # XXX Not sure whether it terminatas
+    #'03-MinimalSpanningTrees/MSTInteractive.alg':[
+    #],
+    '03-MinimalSpanningTrees/MatroidDualKruskal.alg':[
+    '03-MinimalSpanningTrees/Kruskal4.cat'    
+    ],
+    '03-MinimalSpanningTrees/Prim.alg':[
+    '03-MinimalSpanningTrees/Prim4.cat'
+    ],
+    '04-LPDuality/PrimalDualKruskal.alg':[
+    '03-MinimalSpanningTrees/Kruskal4.cat'
+    ],
+    '05-ShortestPaths/BellmanFord.alg':[
+    '05-ShortestPaths/BellmanFordWC.cat'
+    ],
+    '05-ShortestPaths/Dijkstra.alg':[
+    '05-ShortestPaths/DijkstraRelabel.cat'
+    ],
+    '05-ShortestPaths/DijkstraPQ.alg':[
+    '05-ShortestPaths/DijkstraRelabel.cat'
+    ],
+    '05-ShortestPaths/FindPath.alg':[
+    '05-ShortestPaths/11x11grid.cat'
+    ],
+    '05-ShortestPaths/FindPathEuclid.alg':[
+    '05-ShortestPaths/11x11grid.cat'
+    ],
+    '05-ShortestPaths/NegativeCircuits.alg':[
+    '05-ShortestPaths/NegCircuit.cat'
+    ],
+    '05-ShortestPaths/TwoSources.alg':[
+    '05-ShortestPaths/11x11grid.cat'    
+    ],
+    '06-MaximalFlows/FordFulkerson.alg':[
+    '06-MaximalFlows/FordFulkerson4.cat'
+    ],
+    '06-MaximalFlows/PreflowPush.alg':[
+    '06-MaximalFlows/FordFulkerson4.cat'
+    ],
+    '07-MinimumCostFlows/CostScaling.alg':[
+    '07-MinimumCostFlows/MCF4to1B.cat'
+    ],
+    '07-MinimumCostFlows/NegativeCircuit.alg':[
+    '07-MinimumCostFlows/MCFCycle.cat'
+    ],
+    '07-MinimumCostFlows/SuccessiveShortestPath.alg':[
+    '07-MinimumCostFlows/MCF4to1B.cat'    
+    ],
+    '08-Matching/Bipartite.alg':[
+    '08-Matching/Bi006.cat'
+    ],
+    '08-Matching/CardinalityMatching.alg':[
+    '08-Matching/Edmonds5.cat'
+    ],
+    '09-WeightedMatching/WeightedMatching.alg':[
+    '09-WeightedMatching/rote4.cat'
+    ]
+    }
+
+
+##tests = [('02-GraphsNetworks/BFS.alg',
+##          '02-GraphsNetworks/BFS.cat'),
+##         ('02-GraphsNetworks/DFS.alg',
+##          '02-GraphsNetworks/BFS.cat'),
+##         ('06-MaximalFlows/FordFulkerson.alg',
+##          '06-MaximalFlows/FordFulkerson4.cat')
 ##        ]
-testPath = "./"
+##testPath = "./"
 
-tests = [ ("BFS.alg", "sample.cat") ]
+##tests = [ ("BFS.alg", "sample.cat") ]
 
+tests = [(algo, graph) for algo in instance.keys() for graph in instance[algo]]
 
 if __name__ == '__main__':
     app = AlgoWin()    
-    app.algorithm.logAnimator=2
-    #globals()['gInteractive'] = 0
-    #print "GatoTest",globals()['gInteractive']
+    app.algorithm.logAnimator = 2
+    g.Interactive = 0
     if sys.version_info[0:2] < (2,4):
         log.addHandler(logging.StreamHandler(sys.stdout))
         log.setLevel(logging.DEBUG)
@@ -68,7 +159,7 @@ if __name__ == '__main__':
     for case in tests:
         print "=== TEST ===",case[0],"===",case[1],"==="
         app.OpenAlgorithm(testPath + case[0])
-        globals()['gInteractive'] = 0
+        g.Interactive = 0
         app.algorithm.ClearBreakpoints()
         app.update_idletasks()
         app.update()

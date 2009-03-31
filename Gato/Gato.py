@@ -446,7 +446,7 @@ class AlgoWin(Frame):
         
         
     def OpenSecondaryGraphDisplay(self):
-        """ Pops up a second graph window """
+        """ Pops up a second graph window or pane"""
         if self.secondaryGraphDisplay is None:
             if self.graph_panes:
                 # We only get here during startup as show/hide is handled by
@@ -455,6 +455,13 @@ class AlgoWin(Frame):
             else:
                 self.secondaryGraphDisplay = GraphDisplayToplevel()
             self.BindKeys(self.secondaryGraphDisplay)
+            # Provide undo and logging of animations if required
+            if self.algorithm.logAnimator == 1:
+                self.secondaryGraphDisplay = AnimationHistory(self.secondaryGraphDisplay)
+            elif self.algorithm.logAnimator == 2:
+                self.secondaryGraphDisplay = AnimationHistory(self.secondaryGraphDisplay,
+                                                          'disp2\t')
+                self.secondaryGraphDisplay.auto_print = 1
         else:
             if self.graph_panes:
                 self.setSash(0.5)
@@ -1588,8 +1595,13 @@ class Algorithm:
         
         self.animation_history = None
         
-        if self.logAnimator >= 1:
+        if self.logAnimator == 1:
             self.animation_history = AnimationHistory(self.GUI.graphDisplay)
+            self.algoGlobals['A'] = self.animation_history
+        elif self.logAnimator == 2:
+            self.animation_history = AnimationHistory(self.GUI.graphDisplay,
+                                                      'disp1\t')
+            self.animation_history.auto_print = 1
             self.algoGlobals['A'] = self.animation_history
         else:
             self.algoGlobals['A'] = self.GUI.graphDisplay
@@ -1741,6 +1753,8 @@ class Algorithm:
         
             Proper names for properties are defined in gProperty
         """
+        if not g.Interactive: # Needed for GatoTest
+            return 
         for property,requiredValue in propertyValueDict.iteritems():
             failed = 0
             value = self.graph.Property(property)
@@ -1837,17 +1851,18 @@ def main(argv=None):
         argv = sys.argv
 
     try:
-        opts, args = getopt.getopt(argv[1:], "pv", ["verbose","paned"])
+        opts, args = getopt.getopt(argv[1:], "pvd", ["verbose","paned","debug"])
     except getopt.GetoptError:
         usage()
         return 2
         
-    if (len(args) < 3):
+    if (len(args) < 4):
     
         import logging
         log = logging.getLogger("Gato")
 
         paned = False
+        debug = False
         for o, a in opts:
             if o in ("-v", "--verbose"):
                 if sys.version_info[0:2] < (2,4):
@@ -1859,6 +1874,9 @@ def main(argv=None):
                                         format='%(name)s %(levelname)s %(message)s')
             if o in ("-p", "--paned"):
                 paned = True
+            if o in ("-d", "--debug"):
+                debug = True
+        print "Debug is",debug
 
         tk = Tk()
         # Prevent the Tcl console from popping up in standalone apps on MacOS X
@@ -1885,6 +1903,8 @@ def main(argv=None):
             pw.pack(fill=BOTH, expand=1)
             graph_panes = PanedWindow(pw, orient=VERTICAL)
             app = AlgoWin(tk, graph_panes)
+            if debug:
+                app.algorithm.logAnimator = 2
             app.OpenSecondaryGraphDisplay()
             graph_panes.add(app.graphDisplay)
             graph_panes.add(app.secondaryGraphDisplay)                        
@@ -1894,6 +1914,8 @@ def main(argv=None):
         else:
             app = AlgoWin(tk)
             algo = app
+            if debug:
+                app.algorithm.logAnimator = 2
 
         # On MacOS X the Quit menu entry otherwise bypasses our Quit Handler
         # According to

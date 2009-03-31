@@ -38,7 +38,7 @@ from Tkinter import * # Frame, Canvas, Toplevel, StringVar and lots of handy con
 import tkFont
 from Graph import Graph
 from math import sqrt, pi, sin, cos
-from GatoGlobals import AnimationParameters
+import GatoGlobals
 from GatoUtil import orthogonal
 from GatoDialogs import AutoScrollbar
 from DataStructures import Point2D, VertexLabeling, EdgeLabeling
@@ -47,6 +47,8 @@ import colorsys
 
 import logging
 log = logging.getLogger("GraphDisplay.py")
+
+g = GatoGlobals.AnimationParameters
 
 class ZoomVar(StringVar):
     """ *Internal* helper class to have TK update variable correspoding
@@ -80,7 +82,6 @@ class GraphDisplay:
     """
     def __init__(self):
         self.hasGraph = 0
-        self.ReadConfiguration()
 
         # Canvas items for vertices and edges 
         self.drawVertex = VertexLabeling()
@@ -107,21 +108,18 @@ class GraphDisplay:
         
         # Used by ramazan's scaling code. Gives sizes in pixels at
         # current zoom level
-        self.zVertexRadius = self.g.VertexRadius
+        self.zVertexRadius = g.VertexRadius
         self.zArrowShape = (16, 20, 6)
-        self.zFontSize = self.g.FontSize
+        self.zFontSize = g.FontSize
         
-        
-    def ReadConfiguration(self):
-        self.g = AnimationParameters # using AP's class vars as singleton
         
     def font(self, size):
-        return tkFont.Font(self, (self.g.FontFamily, size, self.g.FontStyle))
+        return tkFont.Font(self, (g.FontFamily, size, g.FontStyle))
                 
     def GetCanvasCenter(self): 
         """ *Internal* Return the center of the canvas in pixel """
         # XXX How to this for non-pixel
-        return (self.g.PaperWidth/2, self.g.PaperHeight/2)
+        return (g.PaperWidth/2, g.PaperHeight/2)
         
         
     def Zoom(self,percent):
@@ -162,7 +160,7 @@ class GraphDisplay:
         factor = zoomFactor[percent] / self.zoomFactor	    
         self.zoomFactor = zoomFactor[percent]
         
-        self.zVertexRadius = (self.g.VertexRadius*self.zoomFactor) / 100.0
+        self.zVertexRadius = (g.VertexRadius*self.zoomFactor) / 100.0
         self.zArrowShape = ((16*self.zoomFactor) / 100.0,
                             (20*self.zoomFactor) / 100.0,
                             (6*self.zoomFactor)  / 100.0)
@@ -187,8 +185,8 @@ class GraphDisplay:
             
         self.canvas.scale("all", 0, 0, factor, factor)	
         
-        newWidth = (self.zoomFactor / 100.0) * float(self.g.PaperWidth)
-        newHeight = (self.zoomFactor/ 100.0) * float(self.g.PaperHeight)
+        newWidth = (self.zoomFactor / 100.0) * float(g.PaperWidth)
+        newHeight = (self.zoomFactor/ 100.0) * float(g.PaperHeight)
         
         self.canvas.config(width=newWidth,height=newHeight,
                            scrollregion=(0,0,newWidth,newHeight))
@@ -260,10 +258,10 @@ class GraphDisplay:
         else:
             borderFrame = Frame(self, relief=SUNKEN, bd=2)
         self.canvas = Canvas(borderFrame,
-                             width=self.g.PaperWidth,
-                             height=self.g.PaperHeight, 
+                             width=g.PaperWidth,
+                             height=g.PaperHeight, 
                              background="white",
-                             scrollregion=(0, 0, self.g.PaperWidth, self.g.PaperHeight))
+                             scrollregion=(0, 0, g.PaperWidth, g.PaperHeight))
         self.canvas.grid(row=0, column=0, sticky=N+S+E+W) 
         
         self.canvas.vbar = AutoScrollbar(borderFrame, orient=VERTICAL)
@@ -404,9 +402,9 @@ class GraphDisplay:
             t = self.G.GetEmbedding(v)
             x,y = self.EmbeddingToCanvas(t.x, t.y)
         d = self.zVertexRadius
-        w = (self.g.VertexFrameWidth*self.zoomFactor) / 100.0
+        w = (g.VertexFrameWidth*self.zoomFactor) / 100.0
         dv = self.canvas.create_oval(x-d, y-d, x+d, y+d, 
-                                     fill=self.g.cVertexDefault, 
+                                     fill=g.cVertexDefault, 
                                      tag="vertices",
                                      width=w) 
         self.canvas.tag_bind(dv, "<Any-Leave>", self.DefaultInfo)
@@ -431,7 +429,7 @@ class GraphDisplay:
                                      justify="center", 
                                      font=self.font(self.zFontSize),
                                      text=self.G.GetLabeling(v), 
-                                     fill=self.g.cLabelDefault,
+                                     fill=g.cLabelDefault,
                                      tag="labels")
         self.canvas.tag_bind(dl, "<Any-Enter>", self.VertexInfo)
         self.label[dl] = v
@@ -452,7 +450,7 @@ class GraphDisplay:
             Coords.append(loopRadius*cos(degree*(pi/180))+xMiddle)
             Coords.append(loopRadius*sin(degree*(pi/180))+yMiddle)
         return self.canvas.create_line(Coords,
-                                       fill=self.g.cEdgeDefault, 
+                                       fill=g.cEdgeDefault, 
                                        width=w,
                                        smooth=TRUE,
                                        splinesteps=24,
@@ -472,7 +470,7 @@ class GraphDisplay:
         return self.canvas.create_line(Coords,
                                        arrow="last",
                                        arrowshape=self.zArrowShape,
-                                       fill=self.g.cEdgeDefault, 
+                                       fill=g.cEdgeDefault, 
                                        width=w,
                                        smooth=TRUE,
                                        splinesteps=24,
@@ -481,7 +479,7 @@ class GraphDisplay:
     def CreateUndirectedDrawEdge(self,t,h,w):
         """ *Internal* Create an undirected draw edge. t, h are Point2Ds """
         return self.canvas.create_line(t.x,t.y,h.x,h.y,
-                                       fill=self.g.cEdgeDefault,
+                                       fill=g.cEdgeDefault,
                                        width=w,
                                        tag="edges") 
 
@@ -518,7 +516,7 @@ class GraphDisplay:
         if curved == 0:
             x1,y1,x2,y2 = self.directedDrawEdgePoints(tail,head,0)
             return self.canvas.create_line(x1,y1,x2,y2,
-                                           fill=self.g.cEdgeDefault,
+                                           fill=g.cEdgeDefault,
                                            arrow="last",
                                            arrowshape=self.zArrowShape, 
                                            width=w,
@@ -526,7 +524,7 @@ class GraphDisplay:
         else:
             x1,y1,x2,y2,x3,y3 = self.directedDrawEdgePoints(tail,head,1)
             return self.canvas.create_line(x1,y1,x2,y2,x3,y3,
-                                           fill=self.g.cEdgeDefault,
+                                           fill=g.cEdgeDefault,
                                            arrow="last",
                                            arrowshape=self.zArrowShape, 
                                            width=w,
@@ -542,7 +540,7 @@ class GraphDisplay:
         h = self.VertexPosition(head)
         
         if not self.G.QEdgeWidth():
-            w = (self.g.EdgeWidth * self.zoomFactor) / 100.0
+            w = (g.EdgeWidth * self.zoomFactor) / 100.0
         else:
             w = (self.G.EdgeWidth(tail,head) * self.zoomFactor) / 100.0
             
@@ -558,7 +556,7 @@ class GraphDisplay:
                         self.canvas.delete(self.drawEdges[(head,tail)])
                         # ... and create a new curved one
                         if not self.G.QEdgeWidth():
-                            wOld = (self.g.EdgeWidth * self.zoomFactor) / 100.0
+                            wOld = (g.EdgeWidth * self.zoomFactor) / 100.0
                         else:
                             wOld = (self.G.EdgeWidth(head,tail) * self.zoomFactor) / 100.0
                         de = self.CreateDirectedDrawEdge(h,t,1,wOld)
@@ -572,7 +570,7 @@ class GraphDisplay:
                         except TclError:
                             None # can get here when opening graph
                     except KeyError:
-                        oldColor = self.g.cEdgeDefault # When opening a graph we can get here
+                        oldColor = g.cEdgeDefault # When opening a graph we can get here
                         
                         # Finally create the one we wanted to ...
                     de = self.CreateDirectedDrawEdge(t,h,1,w)		
@@ -648,9 +646,9 @@ class GraphDisplay:
                                         rgb_color[2] / 65536.0)
         lightness =  hls_color[1]
         if lightness < 0.2: 
-            self.canvas.itemconfig( self.drawLabel[v], fill=self.g.cLabelDefaultInverted)
+            self.canvas.itemconfig( self.drawLabel[v], fill=g.cLabelDefaultInverted)
         else:
-            self.canvas.itemconfig( self.drawLabel[v], fill=self.g.cLabelDefault)
+            self.canvas.itemconfig( self.drawLabel[v], fill=g.cLabelDefault)
         self.canvas.itemconfig( self.drawVertex[v], fill=color)
         self.update()
         
@@ -734,14 +732,14 @@ class GraphDisplay:
         """ Blink vertex v with color. Number of times, speed, default color is
             specified in GatoGlobals.py. No error checking! """
         if color is None: # No self in default arg
-            color=self.g.cVertexBlink
+            color=g.cVertexBlink
         dv = self.drawVertex[v]
         oldColor = self.canvas.itemconfig(dv, "fill")[4]
-        for i in xrange(1,self.g.BlinkRepeat):
-            self.canvas.after(self.g.BlinkRate)
+        for i in xrange(1,g.BlinkRepeat):
+            self.canvas.after(g.BlinkRate)
             self.canvas.itemconfig( dv, fill=color)
             self.update()
-            self.canvas.after(self.g.BlinkRate)
+            self.canvas.after(g.BlinkRate)
             self.canvas.itemconfig( dv, fill=oldColor)
             self.update()
             
@@ -751,7 +749,7 @@ class GraphDisplay:
             color is specified in GatoGlobals.py. No error checking!	Handles
             undirected graphs. """	
         if color is None: # No self in default arg
-            color=self.g.cVertexBlink
+            color=g.cVertexBlink
         if self.G.QDirected() == 1:
             de = self.drawEdges[(tail,head)]
         else:
@@ -760,11 +758,11 @@ class GraphDisplay:
             except KeyError:
                 de = self.drawEdges[(head,tail)]	    
         oldColor = self.canvas.itemconfig(de, "fill")[4]
-        for i in xrange(1,self.g.BlinkRepeat):
-            self.canvas.after(self.g.BlinkRate)
+        for i in xrange(1,g.BlinkRepeat):
+            self.canvas.after(g.BlinkRate)
             self.canvas.itemconfig( de, fill=color)
             self.update()
-            self.canvas.after(self.g.BlinkRate)
+            self.canvas.after(g.BlinkRate)
             self.canvas.itemconfig( de, fill=oldColor)
             self.update()
 
@@ -776,7 +774,7 @@ class GraphDisplay:
             Number of times, speed, default color is specified in GatoGlobals.py. 
             No error checking!	Handles undirected graphs. """	
         if color is None: # No self in default arg
-            color=self.g.cVertexBlink
+            color=g.cVertexBlink
         oldColor = [None] * len(list)
         drawItems = [None] * len(list)
         
@@ -791,12 +789,12 @@ class GraphDisplay:
                 drawItems[i] = self.drawVertex[v]
                 oldColor[i] = self.canvas.itemconfig(drawItems[i], "fill")[4]
                 
-        for i in xrange(1,self.g.BlinkRepeat):
-            self.canvas.after(self.g.BlinkRate)
+        for i in xrange(1,g.BlinkRepeat):
+            self.canvas.after(g.BlinkRate)
             for j in xrange(len(drawItems)):	
                 self.canvas.itemconfig(drawItems[j], fill=color)
             self.update()
-            self.canvas.after(self.g.BlinkRate)
+            self.canvas.after(g.BlinkRate)
             for j in xrange(len(drawItems)):	
                 self.canvas.itemconfig(drawItems[j], fill=oldColor[j])
             self.update()
@@ -875,15 +873,15 @@ class GraphDisplay:
             call UpdateVertexLabel to update the label in the graph window,
             blinking blink times with color. No error checking!  """
         if color is None:
-            color=self.g.cLabelBlink
+            color=g.cLabelBlink
         dl = self.drawLabel[v]
         if blink == 1:
             oldColor = self.canvas.itemconfig(dl, "fill")[4]
-            for i in xrange(1,self.g.BlinkRepeat):
-                self.canvas.after(self.g.BlinkRate)
+            for i in xrange(1,g.BlinkRepeat):
+                self.canvas.after(g.BlinkRate)
                 self.canvas.itemconfig( dl, fill=color)
                 self.update()
-                self.canvas.after(self.g.BlinkRate)
+                self.canvas.after(g.BlinkRate)
                 self.canvas.itemconfig( dl, fill=oldColor)
                 self.update()
                 self.canvas.itemconfig( dl,
@@ -1258,7 +1256,7 @@ class GraphDisplay:
             return xe,ye,re
         except: # Vertex is not on the canvas yet
             t = self.G.GetEmbedding(v)            
-            return t.x, t.y, self.g.VertexRadius
+            return t.x, t.y, g.VertexRadius
 
         
     ############################################################################
@@ -1534,14 +1532,7 @@ viewbox="%(x)d %(y)d %(width)d %(height)d" width="30cm" height="30cm">
         file.write(footer)
         file.close()
 
-        
-
-
-
-
-
-
-            
+             
     def About(self, graphName=""):
         """ Return a HTML-page giving information about the graph """
         if self.hasGraph == 1:

@@ -36,7 +36,9 @@
 
 import time
 import GatoGlobals
+
 g = GatoGlobals.AnimationParameters
+
 
 class AnimationCommand:
 
@@ -49,9 +51,9 @@ class AnimationCommand:
         self.undo_method = undo_method
         self.undo_args = undo_args
         
-        
     def Do(self):
         apply(self.method, self.target + self.args)
+        
         
     def Undo(self):
         if self.undo_method == None:
@@ -73,7 +75,20 @@ class AnimationCommand:
         for arg in self.args:
             result.append(quote(arg))
         return "Array(" + ", ".join(result) + ")"
-        
+
+    def log_str(self):
+        if len(self.target) == 1:
+            t = self.target[0]
+        else:
+            t = self.target
+            
+        if len(self.args) == 0:
+            return "%s(%s)" % (self.method.__name__, t)
+        elif len(self.args) == 1:
+            argstr = str(self.args[0])
+        else:
+            argstr = ",".join(self.args)
+        return "%s(%s,%s)" % (self.method.__name__, t, argstr)      
 
 
 class AnimationHistory:
@@ -82,16 +97,31 @@ class AnimationHistory:
        will happily dispatch all calls to GraphDisplay.
     
        Animation commands for which undo/redo is provided, have to be methods of
-       AnimationHistory
+       AnimationHistory.
+
+       If AnimationHistory.auto_print is true, textual representations of animation
+       commands are written to stdout to allow regression testing of animations.
+
+       This might also be helpful in debugging.
+
+       The AnimationHistory is also used for providing SVG output of animations.
+
+       
+       XXX Maybe decorators for graph display would be a better way to implement
+       it. Here we incurr overhead for every method call
     """
-    def __init__(self, animator):
+    def __init__(self, animator, logPrefix = ''):
+        """ We wrap animator. If self.auto_print is true, then we prepend the
+            logPrefix to the output
+        """
         self.animator = animator
         self.history = []
         self.history_index = None
+        self.auto_print = 0
+        self.logPrefix = logPrefix
         
     #========== Provide Undo/Redo for animation commands from GraphDisplay ======
     def SetVertexColor(self, v, color):
-        # print 'SetVertexColor', v, color
         animation = AnimationCommand(self.animator.SetVertexColor, (v,), (color,), 
                                      undo_args=(self.animator.GetVertexColor(v),))
         animation.Do()
@@ -101,7 +131,6 @@ class AnimationHistory:
         #SetAllEdgesColor
         
     def SetEdgeColor(self, tail, head, color):
-        # print 'SetEdgeColor', tail, head, color
         tail, head = self.animator.G.Edge(tail, head)
         animation = AnimationCommand(self.animator.SetEdgeColor, (tail,head), (color,),
                                      undo_args=(self.animator.GetEdgeColor(tail,head),))
@@ -109,13 +138,11 @@ class AnimationHistory:
         self.append(animation)
         
     def BlinkVertex(self, v, color=None):
-        # print 'BlinkVertex', v, color
         animation = AnimationCommand(self.animator.BlinkVertex, (v,), (color,))
         animation.Do()
         self.append(animation)
         
     def BlinkEdge(self, tail, head, color=None):
-        # print 'BlinkEdge', tail, head, color 
         tail, head = self.animator.G.Edge(tail, head)
         animation = AnimationCommand(self.animator.BlinkEdge, (tail,head), (color,))
         animation.Do()
@@ -123,24 +150,23 @@ class AnimationHistory:
         
         
     def SetVertexFrameWidth(self, v, val):
-        # print 'SetVertexFrameWidth', v, val
         animation = AnimationCommand(self.animator.SetVertexFrameWidth, (v,), (val,),
-                                     undo_args=(self.animator.GetVertexFrameWidth(v),))        
+                                     undo_args=(self.animator.GetVertexFrameWidth(v),))
         animation.Do()
         self.append(animation)
         
     def SetVertexAnnotation(self, v, annotation,color="black"):
-        # print 'SetVertexAnnotation',v,annotation,color
         animation = AnimationCommand(self.animator.SetVertexAnnotation, (v,), (annotation,),
-                                     undo_args=(self.animator.GetVertexAnnotation(v),))                      
+                                     undo_args=(self.animator.GetVertexAnnotation(v),))
         animation.Do()
         self.append(animation)
         
         
     #========== Handle all other methods from GraphDisplay =====================
     def __getattr__(self,arg):
-        # This is broken. Calls to self.animator methods as args in self.animator method
-        # calls should fail.
+        # XXX This is broken. Calls to self.animator methods as args
+        # in self.animator method calls should fail. NOT sure about
+        # this
         tmp = getattr(self.animator,arg)
         if callable(tmp):
             self.methodName = arg
@@ -149,9 +175,10 @@ class AnimationHistory:
         else:
             return self.animator.__dict__[arg]
             
-    def caller(self,*args):
-        # print self.methodName,"(",args,")"
-        return apply(self.method,args)
+    def caller(self, *args, **keywords):
+        # XXX This is broken with kw arguments
+        #return apply(self.method,args)
+        return self.method(*args, **keywords)
         
     #========== AnimationHistory methods =======================================
     def Undo(self):
@@ -194,5 +221,7 @@ class AnimationHistory:
             
     def append(self, animation):
         #print "AnimationHistory: appending animation", animation.method
+        if self.auto_print:
+            print self.logPrefix + animation.log_str() 
         self.history.append((time.time(), animation))
         

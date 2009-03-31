@@ -38,12 +38,14 @@
 from Tkinter import *
 from Graph import Graph, Point2D
 from math import sqrt
-from GatoGlobals import *
+import GatoGlobals
 from GraphDisplay import GraphDisplay
 from tkSimpleDialog import askinteger, askfloat
 import tkSimpleDialog 
 import string
 import tkMessageBox
+
+g = GatoGlobals.AnimationParameters
 
 class EditWeightsDialog(tkSimpleDialog.Dialog):
     """ Provide a dialog for editing vertex and edge weigths
@@ -132,7 +134,7 @@ class GraphEditor(GraphDisplay):
         self.movedVertex = None
         self.startx = None # position where MouseDown first occurred
         self.starty = None
-        self.gridSize = gGridSize
+        self.gridSize = g.GridSize
         self.gridding = 0
         self.mode = 'AddOrMoveVertex'
         # 'AddEdge' 'DeleteEdgeOrVertex' 'SwapOrientation' 'EditWeight'
@@ -161,7 +163,7 @@ class GraphEditor(GraphDisplay):
     def Zoom(self,percent):
         try:
             GraphDisplay.Zoom(self,percent)
-            self.gridSize = (gGridSize * self.zoomFactor) / 100.0
+            self.gridSize = (g.GridSize * self.zoomFactor) / 100.0
         except:
             return None
             
