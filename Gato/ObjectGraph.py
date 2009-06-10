@@ -46,7 +46,7 @@ log = logging.getLogger("ObjectGraph.py")
 #
 ################################################################################
 
-class VertexObject:
+class VertexObject(object):
      # Python 2.3 kludge
     def nrOfVertexWeights():
         return 0
@@ -61,7 +61,7 @@ class VertexObject:
            
 
 
-class EdgeObject:
+class EdgeObject(object):
     # Python 2.3 kludge
     def nrOfEdgeWeights():
         return 2
@@ -92,7 +92,7 @@ class EdgeObject:
 # ObjectGraph
 #
 ################################################################################
-class ObjectGraph:
+class ObjectGraph(object):
     """ 
 
     
