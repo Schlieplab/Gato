@@ -111,9 +111,11 @@ class GatoError(Exception):
         
     def __str__(self):
         """Return the str of args[0] or args, depending on length."""
-        return str(self.args[0]
-                   if len(self.args) <= 1
-                   else self.args)
+        if len(self.args) <= 1:
+            return str(self.args[0])
+        else:
+            return self.args
+            
 
     def __repr__(self):
         func_args = repr(self.args) if self.args else "()"
