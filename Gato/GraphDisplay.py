@@ -1186,7 +1186,7 @@ class GraphDisplay(object):
             self.drawEdges[(tail, head)] = de
             self.canvas.lower(de,"vertices")
                 
-        except GraphNotSimpleError:
+        except GatoGlobals.GraphNotSimpleError:
             log.error("Inserting edge (%d,%d) would result in non-simple graph" % (tail,head))
             return
             
