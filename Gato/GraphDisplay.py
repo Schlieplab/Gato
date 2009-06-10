@@ -67,7 +67,7 @@ class ZoomVar(StringVar):
         return StringVar.set(self,value)
         
         
-class GraphDisplay:
+class GraphDisplay(object):
     """ Provide functionality to display a graph. Not for direct consumption.
         Use
     
