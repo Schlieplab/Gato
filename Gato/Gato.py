@@ -1432,7 +1432,7 @@ class Algorithm:
         self.cleanGraphCopy = None  # this is the backup of the graph
         self.graphIsDirty = 0       # If graph was changed by running
         self.algoGlobals = {}       # Sandbox for Algorithm
-        self.logAnimator = 1
+        self.logAnimator = 0
         self.about = None
         
         self.commentPattern = re.compile('[ \t]*#')
@@ -1605,8 +1605,9 @@ class Algorithm:
             self.algoGlobals['A'] = self.animation_history
         else:
             self.algoGlobals['A'] = self.GUI.graphDisplay
-            # XXX
-            # explictely loading packages we want to make available to the algorithm
+
+        # XXX
+        # explictely loading packages we want to make available to the algorithm
         modules = ['DataStructures', 
                    'AnimatedDataStructures', 
                    'AnimatedAlgorithms',
@@ -1895,7 +1896,7 @@ def main(argv=None):
         tk.option_add('*Highlightbackground','#DDDDDD')
         tk.option_add('*Button.highlightbackground','#DDDDDD')
         tk.option_add('*Button.background','#DDDDDD')
-        tk.option_add('Tk*Scrollbar.troughColor','#CACACA')
+        tk.option_add('Tk*Scrollbar.troughColor','#CACACA')        
 
         if paned:
             # We want a three paned left | right top / right bottom layout

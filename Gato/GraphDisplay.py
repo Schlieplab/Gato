@@ -111,7 +111,8 @@ class GraphDisplay(object):
         self.zVertexRadius = g.VertexRadius
         self.zArrowShape = (16, 20, 6)
         self.zFontSize = g.FontSize
-        
+
+        self.g = g # So algorithms can get to the globals (XXX)
         
     def font(self, size):
         return tkFont.Font(self, (g.FontFamily, size, g.FontStyle))

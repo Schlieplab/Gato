@@ -62,12 +62,12 @@ def ArgMin(list,val):
     """ Returns the element e of list for which val[e] is minimal.
     """
     values = [val[e] for e in list]
-    return values.index(min(values))
+    return list[values.index(min(values))]
     
 def ArgMax(list,val):
     """ Returns the element e of list for which val[e] is maximal """
     values = [val[e] for e in list]
-    return values.index(max(values))
+    return list[values.index(max(values))]
 
             
 class ImageCache:

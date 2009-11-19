@@ -402,7 +402,7 @@ class AnimatedVertexQueue(Queue):
             self.Animator.SetVertexColor(v, self.ColorOff)
         Queue.Clear(self) 
         if self.lastRemoved is not None:
-            self.Animator.SetVertexFrameWidth(self.lastRemoved,self.Animator.gVertexFrameWidth)
+            self.Animator.SetVertexFrameWidth(self.lastRemoved,g.VertexFrameWidth)
             self.lastRemoved = None
             
 class AnimatedVertexPriorityQueue(PriorityQueue):    
