@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.3
+#!/usr/bin/env python2.6
 ################################################################################
 #
 #       This file is part of Gato (Graph Animation Toolbox) 

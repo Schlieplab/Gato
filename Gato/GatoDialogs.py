@@ -5,7 +5,7 @@
 #
 #	file:   GatoDialogs.py
 #	author: Alexander Schliep (alexander@schliep.org)
-#       Copyright (C) 1998-2006, Alexander Schliep, Winfried Hochstaettler and 
+#       Copyright (C) 1998-2009, Alexander Schliep, Winfried Hochstaettler and 
 #       Copyright 1998-2001 ZAIK/ZPR, Universitaet zu Koeln
 #                                   
 #       Contact: alexander@schliep.org, winfried.hochstaettler@fernuni-hagen.de             
@@ -45,14 +45,14 @@ import htmllib, formatter
 
 
 # Should be in GatoGlobals 
-crnotice1 = "Copyright (C) 1998-2006, Alexander Schliep\n"\
+crnotice1 = "Copyright (C) 1998-2009, Alexander Schliep\n"\
             "and Winfried Hochstaettler. Copyright (C)\n"\
             "1998-2001 ZPR, University of Cologne\n"\
             "Gato version _VERSION_ from _BUILDDATE_"
 crnotice2 = "Written by Alexander Schliep (alexander@schliep.org).\n" \
             "Application Design: Alexander Schliep and \n" \
             "Winfried Hochstaettler. Additional developers: Torsten\n" \
-            "Pattberg, Ramazan Buzdemir, Achim Gaedke and\nWasinee Rungsarityotin." \
+            "Pattberg, Ramazan Buzdemir, Achim Gaedke,\n Janne Grunau and Wasinee Rungsarityotin.\n" \
             "Screen Design: Heidrun Krimmel.\n\n" \
             "For Information see http://gato.sf.net\n" \
             "Gato comes with ABSOLUTELY NO WARRANTY.\n" \

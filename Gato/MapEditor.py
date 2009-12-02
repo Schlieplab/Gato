@@ -5,7 +5,7 @@
 #	file:   MapEditor.py
 #	author: Alexander Schliep (alexander@schliep.org)
 #
-#       Copyright (C) 1998-2006, Alexander Schliep, Winfried Hochstaettler and 
+#       Copyright (C) 1998-2009, Alexander Schliep, Winfried Hochstaettler and 
 #       Copyright 1998-2001 ZAIK/ZPR, Universitaet zu Koeln
 #                                   
 #       Contact: alexander@schliep.org, winfried.hochstaettler@fernuni-hagen.de             
