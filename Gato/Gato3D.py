@@ -1205,13 +1205,13 @@ class Algorithm:
         self.algoGlobals['self'] = self
         self.algoGlobals['G'] = self.graph
         
-        if self.logAnimator:
-            print "XXX Fix me! Use AnimationHistory
-            #self.algoGlobals['A'] = MethodLogger(self.GUI.graphDisplay)
-        else:
-            self.algoGlobals['A'] = self.GUI.graphDisplay
-            # XXX
-            # explictely loading packages we want to make available to the algorithm
+        #if self.logAnimator:
+        #    print "XXX Fix me! Use AnimationHistory"
+        #    #self.algoGlobals['A'] = MethodLogger(self.GUI.graphDisplay)
+        #else:
+        #    self.algoGlobals['A'] = self.GUI.graphDisplay
+        #    # XXX
+        #    # explictely loading packages we want to make available to the algorithm
         modules = ['DataStructures', 
                    'AnimatedDataStructures', 
                    'AnimatedAlgorithms',

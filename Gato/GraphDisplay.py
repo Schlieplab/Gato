@@ -67,7 +67,7 @@ class ZoomVar(StringVar):
         return StringVar.set(self,value)
         
         
-class GraphDisplay(object):
+class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
     """ Provide functionality to display a graph. Not for direct consumption.
         Use
     

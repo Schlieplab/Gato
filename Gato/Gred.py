@@ -36,6 +36,7 @@
 ################################################################################
 from GatoGlobals import *
 import GatoGlobals # Needed for help viewer.XXX
+#GatoGlobals.AnimationParameters.cEdgeDefault = GatoGlobals.AnimationParameters.cEditorEdgeDefault
 from Graph import Graph
 from DataStructures import EdgeWeight, VertexWeight
 from GraphUtil import OpenCATBoxGraph, OpenGMLGraph, OpenDotGraph, SaveCATBoxGraph, WeightedGraphInformer

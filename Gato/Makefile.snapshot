@@ -46,19 +46,19 @@
 
 # Vars
 
-VERSION       = 0.99C
-DATE          = 10/10/2007
+VERSION       = 1.0
+DATE          = 11/24/2009
 DISTNAME      = Gato
 DISTNAMEDOC   = $(DISTNAME)-Doc
 
 # Source directoriesx
 
-SRCDIR        = /home/schliep/Projects/Gato
+SRCDIR        = /Users/schliep/Projects/Gato
 DOCSRCDIR     = ./Doc
 
 # Distribution directories
 
-GATODIR       = /home/schliep/tmp/
+GATODIR       = /Users/schliep/Tmp/
 EXECDIR       = $(GATODIR)/Gato
 WWWDIR        = $(GATODIR)/Download
 DOCDIR        = $(GATODIR)/Documentation
@@ -120,7 +120,7 @@ PHONY:
 	$(VERSIONIZE) $(EXECDIR)/*.*
 	$(DATEIZE) $(EXECDIR)/*.*
 	#$(COPYRIGHTIZE) $(EXECDIR)/*.*
-	chgrp -f algogrp $(EXECDIR)/*.*
+	#chgrp -f algogrp $(EXECDIR)/*.*
 	chmod 664 $(EXECDIR)/*.*
 	chmod 775 $(EXECUTABLES)
 
@@ -137,39 +137,47 @@ PHONY:
 	$(PERL) -pi -e 's/_DISTNAMEDOC_/$(DISTNAMEDOC)-$(VERSION).tar.gz/' $(WWWDIR)/build.info
 	# update lizenz.txt
 	chmod 664 $(WWWDIR)/build.info
-	chgrp -f algogrp $(WWWDIR)/*
+	#chgrp -f algogrp $(WWWDIR)/*
 
-	# 4) update and distribute documentation
-	cd $(SRCDIR); rm -rf $(DOCSRCDIR); mkdir $(DOCSRCDIR); $(DOCTOOL) *.py
-	cp -rf $(DOCSRCDIR)/*.html $(DOCDIR)/Internal/
-	chmod -Rf g+r $(DOCDIR)/Internal/*
-	chmod -Rf a+r $(DOCDIR)/Internal/*
-	chgrp -Rf algogrp $(DOCDIR)/*
-	$(RM) $(DOCDIR)/$(DISTNAMEDOC)-$(VERSION).tar
-	cd $(SRCDIR); tar cf $(WWWDIR)/$(DISTNAMEDOC)-$(VERSION).tar Doc/*
-	chmod 664 $(WWWDIR)/$(DISTNAMEDOC)-$(VERSION).tar
-	chgrp -f algogrp $(WWWDIR)/$(DISTNAMEDOC)-$(VERSION).tar
+	## 4) update and distribute documentation
+	#cd $(SRCDIR); rm -rf $(DOCSRCDIR); mkdir $(DOCSRCDIR); $(DOCTOOL) *.py
+	#cp -rf $(DOCSRCDIR)/*.html $(DOCDIR)/Internal/
+	#chmod -Rf g+r $(DOCDIR)/Internal/*
+	#chmod -Rf a+r $(DOCDIR)/Internal/*
+	##chgrp -Rf algogrp $(DOCDIR)/*
+	#$(RM) $(DOCDIR)/$(DISTNAMEDOC)-$(VERSION).tar
+	#cd $(SRCDIR); tar cf $(WWWDIR)/$(DISTNAMEDOC)-$(VERSION).tar Doc/*
+	#chmod 664 $(WWWDIR)/$(DISTNAMEDOC)-$(VERSION).tar
+	##chgrp -f algogrp $(WWWDIR)/$(DISTNAMEDOC)-$(VERSION).tar
 
-	gzip $(WWWDIR)/$(DISTNAMEDOC)-$(VERSION).tar
+	#gzip $(WWWDIR)/$(DISTNAMEDOC)-$(VERSION).tar
 	gzip $(WWWDIR)/$(DISTNAME)-$(VERSION).tar
 
 	# 5) Update md5 info
 	$(RM)  $(WWWDIR)/md5.info
 	$(MD5SUM) $(WWWDIR)/$(DISTNAME)-$(VERSION).tar.gz > $(WWWDIR)/md5.info
-	$(MD5SUM) $(WWWDIR)/$(DISTNAMEDOC)-$(VERSION).tar.gz >> $(WWWDIR)/md5.info
+	#$(MD5SUM) $(WWWDIR)/$(DISTNAMEDOC)-$(VERSION).tar.gz >> $(WWWDIR)/md5.info
 	chmod 664 $(WWWDIR)/md5.info
-	chgrp -f algogrp $(WWWDIR)/md5.info	
+	#chgrp -f algogrp $(WWWDIR)/md5.info	
 
 	# 6) Build MacOS X 10.4 binaries in DiskImage
-	ssh xserve.molgen.mpg.de "rm -rf Gato*"
-	scp $(WWWDIR)/$(DISTNAME)-$(VERSION).tar.gz xserve.molgen.mpg.de:
-	ssh xserve.molgen.mpg.de tar xzf $(DISTNAME)-$(VERSION).tar.gz
-	scp ./buildMacGato.py ./buildMacGred.py ./Gato.icns xserve.molgen.mpg.de:Gato/
-	ssh xserve.molgen.mpg.de "cd Gato;/usr/bin/python buildMacGato.py -v --python=/usr/bin/python -a --semi-standalone build"
-	ssh xserve.molgen.mpg.de "cd Gato;/usr/bin/python buildMacGred.py -v --python=/usr/bin/python -a --semi-standalone build"
-	ssh xserve.molgen.mpg.de cp Gato/*.cat Gato/*.alg Gato/*.pro Gato/build/
-	ssh xserve.molgen.mpg.de hdiutil create -volname Gato-$(VERSION) -srcfolder Gato/build Gato-$(VERSION).dmg
-	scp xserve.molgen.mpg.de:Gato-$(VERSION).dmg $(WWWDIR)/
+	cd $(WWWDIR);tar xzf $(DISTNAME)-$(VERSION).tar.gz
+	cp buildMacGato.py buildMacGred.py Gato.icns $(WWWDIR)/Gato/
+	cd $(WWWDIR)/Gato;/usr/bin/python buildMacGato.py -v --python=/usr/bin/python -a --semi-standalone build
+	cd $(WWWDIR)/Gato;/usr/bin/python buildMacGred.py -v --python=/usr/bin/python -a --semi-standalone build
+	cp $(WWWDIR)/Gato/*.alg $(WWWDIR)/Gato/*.pro $(WWWDIR)/Gato/*.cat $(WWWDIR)/Gato/build
+	rm -f $(WWWDIR)/Gato-$(VERSION).dmg
+	cd $(WWWDIR);hdiutil create -volname Gato-$(VERSION) -srcfolder $(WWWDIR)/Gato/build Gato-$(VERSION).dmg
+	#ssh xserve.molgen.mpg.de "rm -rf Gato*"
+	#scp $(WWWDIR)/$(DISTNAME)-$(VERSION).tar.gz xserve.molgen.mpg.de:
+	#ssh xserve.molgen.mpg.de tar xzf $(DISTNAME)-$(VERSION).tar.gz
+	#scp ./buildMacGato.py ./buildMacGred.py ./Gato.icns xserve.molgen.mpg.de:Gato/
+	#ssh xserve.molgen.mpg.de "cd Gato;/usr/bin/python buildMacGato.py -v --python=/usr/bin/python -a --semi-standalone build"
+	#ssh xserve.molgen.mpg.de "cd Gato;/usr/bin/python buildMacGred.py -v --python=/usr/bin/python -a --semi-standalone build"
+	#ssh xserve.molgen.mpg.de cp Gato/*.cat Gato/*.alg Gato/*.pro Gato/build/
+	#ssh xserve.molgen.mpg.de hdiutil create -volname Gato-$(VERSION) -srcfolder Gato/build Gato-$(VERSION).dmg
+	#scp xserve.molgen.mpg.de:Gato-$(VERSION).dmg $(WWWDIR)/
 
-	scp $(WWWDIR)/$(DISTNAME)-$(VERSION).dmg $(WWWDIR)/$(DISTNAME)-$(VERSION).tar.gz $(WWWDIR)/$(DISTNAMEDOC)-$(VERSION).tar.gz $(WWWDIR)/md5.info $(WWWDIR)/build.info gato.sf.net:pub-gato/Download/
+	scp $(WWWDIR)/$(DISTNAME)-$(VERSION).dmg $(WWWDIR)/$(DISTNAME)-$(VERSION).tar.gz $(WWWDIR)/md5.info $(WWWDIR)/build.info gato.sf.net:pub-gato/Download/
+	#scp $(WWWDIR)/$(DISTNAME)-$(VERSION).dmg $(WWWDIR)/$(DISTNAME)-$(VERSION).tar.gz $(WWWDIR)/$(DISTNAMEDOC)-$(VERSION).tar.gz $(WWWDIR)/md5.info $(WWWDIR)/build.info gato.sf.net:pub-gato/Download/
 	#cd $(SRCDIR)/Doc/;scp -r *.html

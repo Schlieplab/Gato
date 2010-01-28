@@ -69,6 +69,7 @@ class AnimationParameters:
     cVertexDefault = "#000099" # 'red'
     cVertexBlink = "black"
     cEdgeDefault = "#EEEEEE"
+    cEditorEdgeDefault = "#444444"
     cLabelDefault = "white"
     cLabelDefaultInverted = "black"
     cLabelBlink = "green"

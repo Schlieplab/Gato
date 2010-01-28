@@ -5,7 +5,7 @@
 #	file:   buildMacGato.py
 #	author: Alexander Schliep (alexander@schliep.org)
 #
-#       Copyright (C) 2005-2006, Alexander Schliep, Winfried Hochstaettler
+#       Copyright (C) 2005-2009, Alexander Schliep, Winfried Hochstaettler
 #                                   
 #       Contact: alexander@schliep.org, winfried.hochstaettler@fernuni-hagen.de             
 #

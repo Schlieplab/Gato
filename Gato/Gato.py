@@ -860,6 +860,8 @@ class AlgoWin(Frame):
         self.WithdrawSecondaryGraphDisplay()
         self.master.update()
         if self.graph_panes: # Pane is already moved by Withdraw ...
+            # XXX Restrain window size: Bigger Problem on MacOS X/Aqua
+            # there the green resize button does not work.
             return        
         if self.windowingsystem == 'aqua':
             screenTop = 22 # Take care of menubar
@@ -1912,6 +1914,15 @@ def main(argv=None):
             pw.add(app)
             pw.add(graph_panes)
             app.OneGraphWindow()
+            #XXX HACK See comment in OneGraphWindow
+            if app.windowingsystem == 'aqua':
+                app.master.geometry("%dx%d+%d+%d" % (
+                    50,# see 1 below  
+                    50, 
+                    800, 	    
+                    600))
+                app.tkraise()
+                app.master.update()            
         else:
             app = AlgoWin(tk)
             algo = app
