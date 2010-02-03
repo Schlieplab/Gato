@@ -49,7 +49,7 @@ import GatoIcons
 from ScrolledText import *
 
 from tkFileDialog import askopenfilename, asksaveasfilename
-from tkMessageBox import askokcancel
+from tkMessageBox import askokcancel, showinfo
 import tkSimpleDialog 
 import random
 import string
@@ -789,6 +789,12 @@ class SAGraphEditor(GraphEditor, Frame):
     # NOTE: Embedder handled by lambda passed as command        
     def RandomizeEdgeWeights(self):
         count = len(self.G.edgeWeights.keys())
+
+        if count == 1 and self.G.QEuclidian():
+            showinfo("Randomize Edge Weights", "Cannot randomize an Euclidean edge weight."\
+                     "Increase number of weights or switch off Euclidean")
+            return
+        
         d = RandomizeEdgeWeightsDialog(self, count, self.G.QEuclidian()) 
         if d.result is None:
             return
