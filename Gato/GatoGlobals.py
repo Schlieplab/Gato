@@ -138,6 +138,7 @@ class NoSuchEdgeError(GatoError):
 gProperty = {
     'Connected':     (0, 'one connected component', 'connected'),
     'Directed':      (0, 'edges which are directed', 'directed'),
+    'Undirected':    (0, 'edges which are undirected', 'undirected'),
     'EdgeWeights':   (1, 'a number of edge weights', 'edge weight(s)'),
     'Euclidean':     (0, 'edges with weights which are proportional' + \
                       'to Euclidean distance between incident vertices',

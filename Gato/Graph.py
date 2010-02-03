@@ -407,6 +407,8 @@ class Graph:
         """
         if name == "Directed":
             return self.directed
+        elif name == "Undirected":
+            return not self.directed
         elif name == "EdgeWeights":
             return self.NrOfEdgeWeights()
         elif name == "Euclidean":
