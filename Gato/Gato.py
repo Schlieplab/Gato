@@ -438,11 +438,8 @@ class AlgoWin(Frame):
         self.algoText.tag_config('Active', 
                                  foreground=c('activefg'),
                                  background=c('activebg'))
-        print "BlinkRate and BlinkRepeat are",g.BlinkRate,g.BlinkRepeat
         g.BlinkRate = int(c('blinkrate'))
         g.BlinkRepeat = int(c('blinkrepeat'))
-        print "Setting BlinkRate and BlinkRepeat to",g.BlinkRate,g.BlinkRepeat
-
         
         
     def OpenSecondaryGraphDisplay(self):
@@ -1397,7 +1394,7 @@ class AlgorithmDebugger(bdb.Bdb):
             return # Changed
             
         if self.GUI.mode == 1:
-            self.GUI.GUI.WaitTime(10)   # timer event was 100
+            self.GUI.GUI.WaitTime(4 * g.BlinkRate)   # timer event was 10
             #self.do_next()
             
         self.forget()
@@ -1434,7 +1431,7 @@ class Algorithm:
         self.cleanGraphCopy = None  # this is the backup of the graph
         self.graphIsDirty = 0       # If graph was changed by running
         self.algoGlobals = {}       # Sandbox for Algorithm
-        self.logAnimator = 0
+        self.logAnimator = 1
         self.about = None
         
         self.commentPattern = re.compile('[ \t]*#')
@@ -1782,7 +1779,8 @@ class Algorithm:
                     errMsg += " of %s or less" % str(requiredValue)
                 elif gProperty[property][0] > 0:
                     errMsg += " of %s or more" % str(requiredValue)
-                errMsg += ". This is not known"
+                if value == "Unknown":
+                    errMsg += ". This is not known"
                 errMsg += ".\nDo you still want to proceed ?"                          
                 r = askokcancel("Gato - Error", errMsg)
                 if r == False:
@@ -1879,7 +1877,7 @@ def main(argv=None):
                 paned = True
             if o in ("-d", "--debug"):
                 debug = True
-        print "Debug is",debug
+        #print "Debug is",debug
 
         tk = Tk()
         # Prevent the Tcl console from popping up in standalone apps on MacOS X
@@ -1908,6 +1906,7 @@ def main(argv=None):
             app = AlgoWin(tk, graph_panes)
             if debug:
                 app.algorithm.logAnimator = 2
+
             app.OpenSecondaryGraphDisplay()
             graph_panes.add(app.graphDisplay)
             graph_panes.add(app.secondaryGraphDisplay)                        
