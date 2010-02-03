@@ -261,6 +261,8 @@ class completeGraphCreator(Creator):
         n=dial.result[0]
         direction=dial.result[2]
         layout=dial.result[3]
+
+        print n, direction, layout
         
         G=Graph()
         G.directed=direction
@@ -271,7 +273,7 @@ class completeGraphCreator(Creator):
         Edges=CompleteEdges(G,n,direction)
         
         for e in Edges:
-            G.AddEdge(e[0],e[1])
+            G.AddEdge(e[0],e[1], initialize_weight=False)
             
         if layout==0:
             if RandomCoords(G):
@@ -311,7 +313,7 @@ class randomGraphCreator(Creator):
         
         for i in range(0,m):
             pos=random.randint(0,len(Edges)-1)
-            G.AddEdge(Edges[pos][0],Edges[pos][1])
+            G.AddEdge(Edges[pos][0],Edges[pos][1], initialize_weight=False)
             del Edges[pos]
             
         if layout==0:
@@ -351,7 +353,7 @@ class maximalPlanarGraphCreator(Creator):
         Edges=MaximalPlanarEdges(G,n,direction)
         
         for e in Edges:
-            G.AddEdge(e[0],e[1])
+            G.AddEdge(e[0],e[1], initialize_weight=False)
             
         if layout==0:
             if RandomCoords(G):
@@ -400,7 +402,7 @@ class randomPlanarGraphCreator(Creator):
         
         for i in range(0,m):
             pos=random.randint(0,len(Edges)-1)
-            G.AddEdge(Edges[pos][0],Edges[pos][1])
+            G.AddEdge(Edges[pos][0],Edges[pos][1], initialize_weight=False)
             del Edges[pos]
             
         if layout==0:
@@ -589,12 +591,12 @@ class completeTreeCreator(Creator):
                 for d in range(0,degree):
                     new_v=G.AddVertex()
                     if direction==0: 
-                        G.AddEdge(v,new_v)
+                        G.AddEdge(v,new_v, initialize_weight=False)
                     else:
                         if random.randint(0,1):
-                            G.AddEdge(v,new_v)
+                            G.AddEdge(v,new_v, initialize_weight=False)
                         else:
-                            G.AddEdge(new_v,v)
+                            G.AddEdge(new_v,v, initialize_weight=False)
                     nodes[h+1].append(new_v)
                     
         if layout==0:
@@ -663,12 +665,12 @@ class randomTreeCreator(Creator):
                 new_v=G.AddVertex()
                 children_nr[new_v]=0
                 if direction==0:
-                    G.AddEdge(v,new_v)
+                    G.AddEdge(v,new_v, initialize_weight=False)
                 else:
                     if random.randint(0,1):
-                        G.AddEdge(v,new_v)
+                        G.AddEdge(v,new_v, initialize_weight=False)
                     else:
-                        G.AddEdge(new_v,v)
+                        G.AddEdge(new_v,v, initialize_weight=False)
                 nodes[h+1].append(new_v)
                 
         if layout==0:
@@ -689,28 +691,114 @@ class randomTreeCreator(Creator):
         #----------------------------------------------------------------------
 from math import ceil
 
+class GridDialog(tkSimpleDialog.Dialog):
+
+    def __init__(self, master, visible, Text):
+        self.visible=visible
+        tkSimpleDialog.Dialog.__init__(self, master, Text)
+        
+        
+    def body(self, master):
+        self.resizable(0,0)
+        
+        self.xsize=StringVar()
+        self.xsize.set("4")
+        label = Label(master, text="rows  :", anchor=W)
+        label.grid(row=0, column=0, padx=0, pady=2, sticky="w")
+        entry=Entry(master, width=6, exportselection=FALSE,
+                    textvariable=self.xsize)
+        entry.selection_range(0,1)
+        entry.focus_set()
+        entry.grid(row=0,column=1, padx=2, pady=2, sticky="w")
+
+
+        self.ysize=StringVar()
+        self.ysize.set("6")
+        label = Label(master, text="columns:", anchor=W)
+        label.grid(row=1, column=0, padx=0, pady=2, sticky="w")
+        entry=Entry(master, width=6, exportselection=FALSE,
+                    textvariable=self.ysize)
+        entry.grid(row=1,column=1, padx=2, pady=2, sticky="w")
+
+        self.deltax=StringVar()
+        self.deltax.set("50")
+        label = Label(master, text="delta x:", anchor=W)
+        label.grid(row=2, column=0, padx=0, pady=2, sticky="w")
+        entry=Entry(master, width=6, exportselection=FALSE,
+                    textvariable=self.deltax)
+        entry.grid(row=2,column=1, padx=2, pady=2, sticky="w")
+
+        self.deltay=StringVar()
+        self.deltay.set("50")
+        label = Label(master, text="delta y:", anchor=W)
+        label.grid(row=3, column=0, padx=0, pady=2, sticky="w")
+        entry=Entry(master, width=6, exportselection=FALSE,
+                    textvariable=self.deltay)
+        entry.grid(row=3,column=1, padx=2, pady=2, sticky="w")
+
+        
+    def validate(self):
+        try:
+            xs=string.atoi(self.xsize.get())
+            if xs<1:
+                raise degreeError   
+        except:
+            showwarning("Please try again !",
+                        "xsize > 0\n")
+            return 0
+
+        try:
+            ys=string.atoi(self.ysize.get())
+            if ys<1:
+                raise degreeError   
+        except:
+            showwarning("Please try again !",
+                        "ysize > 0\n")
+            return 0
+
+        try:
+            xd=string.atoi(self.deltax.get())
+            if xd<1:
+                raise degreeError   
+        except:
+            showwarning("Please try again !",
+                        "xdelta > 0\n")
+            return 0
+
+        try:
+            yd=string.atoi(self.deltay.get())
+            if yd<1:
+                raise degreeError   
+        except:
+            showwarning("Please try again !",
+                        "ydelta > 0\n")
+            return 0
+
+        self.result=[xs,ys,xd,yd]
+        return self.result
+
 class rectangularGridGraph(Creator):
 
     def Name(self):
         return "Create Rectangular Grid Graph"
         
     def Create(self, theGraphEditor):
+
         theGraphEditor.config(cursor="watch")
-        
-        
-        print " FIXME XXX Dialog for #x, #y, delta_x, delta_y is missing"
-        ##         dial = TreeDialog(theGraphEditor, 1, "create random tree")
-        ##         if dial.result is None:
-        ## 	    theGraphEditor.config(cursor="")
-        ##             return
+        dial = GridDialog(theGraphEditor, 1, "Create Grid Graph")
+        if dial.result is None:
+            theGraphEditor.config(cursor="")
+            return
+
+        maxI = dial.result[0]
+        maxJ = dial.result[1]
+        deltax = dial.result[2]
+        deltay = dial.result[2]
         
         G=Graph()
         G.directed=0
         G.xCoord={}
         G.yCoord={}
-        
-        maxI = 10
-        maxJ = 8
         
         nodes = {}
         count = 1
@@ -718,17 +806,17 @@ class rectangularGridGraph(Creator):
             for j in xrange(maxJ):
                 v = G.AddVertex()
                 nodes[(i,j)] = v
-                G.xCoord[v] = j * 40 + 40
-                G.yCoord[v] = i * 40 + 40
+                G.xCoord[v] = j * deltax + deltax
+                G.yCoord[v] = i * deltay + deltay
                 count += 1
                 
         for i in xrange(maxI-1):
             for j in xrange(maxJ-1):
-                G.AddEdge(nodes[(i,j)], nodes[(i+1,j)])
-                G.AddEdge(nodes[(i,j)], nodes[(i,j+1)])
-            G.AddEdge(nodes[(i,maxJ-1)], nodes[(i+1,maxJ-1)])
+                G.AddEdge(nodes[(i,j)], nodes[(i+1,j)], initialize_weight=False)
+                G.AddEdge(nodes[(i,j)], nodes[(i,j+1)], initialize_weight=False)
+            G.AddEdge(nodes[(i,maxJ-1)], nodes[(i+1,maxJ-1)], initialize_weight=False)
         for  j in xrange(maxJ-1):
-            G.AddEdge(nodes[(maxI-1,j)], nodes[(maxI-1,j+1)])
+            G.AddEdge(nodes[(maxI-1,j)], nodes[(maxI-1,j+1)], initialize_weight=False)
             
         DrawNewGraph(theGraphEditor,G,G.directed) 
         theGraphEditor.config(cursor="")

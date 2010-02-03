@@ -148,7 +148,7 @@ gProperty = {
     }
 
 gGatoURL = 'http://gato.sf.net'
-gCATBoxURL = 'http://algorithmics.molgen.mpg.de/CATBox'
+gCATBoxURL = 'http://schliep.org/CATBox'
 
 
 gGatoHelp = """
