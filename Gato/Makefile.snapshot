@@ -5,7 +5,7 @@
 #	file:   Makefile.snapshot
 #	author: Alexander Schliep (alexander@schliep.org)
 #
-#       Copyright (C) 1998-2006, Alexander Schliep, Winfried Hochstaettler and 
+#       Copyright (C) 1998-2010, Alexander Schliep, Winfried Hochstaettler and 
 #       Copyright 1998-2001 ZAIK/ZPR, Universitaet zu Koeln
 #                                   
 #       Contact: alexander@schliep.org, winfried.hochstaettler@fernuni-hagen.de             
@@ -46,8 +46,8 @@
 
 # Vars
 
-VERSION       = 1.0
-DATE          = 11/24/2009
+VERSION       = 1.01
+DATE          = 1/28/2010
 DISTNAME      = Gato
 DISTNAMEDOC   = $(DISTNAME)-Doc
 
@@ -86,7 +86,6 @@ SOURCES	      = AnimatedAlgorithms.py \
 		GatoFile.py \
 		GatoGlobals.py \
 		GatoIcons.py \
-		GatoSystemConfiguration.py \
 		GatoTest.py \
 		GatoUtil.py \
 		Graph.py \
@@ -96,9 +95,7 @@ SOURCES	      = AnimatedAlgorithms.py \
 		GraphUtil.py \
 		Gred.py \
 		PlanarEmbedding.py \
-		PlanarityTest.py \
-		TextTreeWidget.py \
-		TreeWidget.py
+		PlanarityTest.py
 
 LICENCE       = LGPL.txt
 
@@ -168,16 +165,7 @@ PHONY:
 	cp $(WWWDIR)/Gato/*.alg $(WWWDIR)/Gato/*.pro $(WWWDIR)/Gato/*.cat $(WWWDIR)/Gato/build
 	rm -f $(WWWDIR)/Gato-$(VERSION).dmg
 	cd $(WWWDIR);hdiutil create -volname Gato-$(VERSION) -srcfolder $(WWWDIR)/Gato/build Gato-$(VERSION).dmg
-	#ssh xserve.molgen.mpg.de "rm -rf Gato*"
-	#scp $(WWWDIR)/$(DISTNAME)-$(VERSION).tar.gz xserve.molgen.mpg.de:
-	#ssh xserve.molgen.mpg.de tar xzf $(DISTNAME)-$(VERSION).tar.gz
-	#scp ./buildMacGato.py ./buildMacGred.py ./Gato.icns xserve.molgen.mpg.de:Gato/
-	#ssh xserve.molgen.mpg.de "cd Gato;/usr/bin/python buildMacGato.py -v --python=/usr/bin/python -a --semi-standalone build"
-	#ssh xserve.molgen.mpg.de "cd Gato;/usr/bin/python buildMacGred.py -v --python=/usr/bin/python -a --semi-standalone build"
-	#ssh xserve.molgen.mpg.de cp Gato/*.cat Gato/*.alg Gato/*.pro Gato/build/
-	#ssh xserve.molgen.mpg.de hdiutil create -volname Gato-$(VERSION) -srcfolder Gato/build Gato-$(VERSION).dmg
-	#scp xserve.molgen.mpg.de:Gato-$(VERSION).dmg $(WWWDIR)/
 
-	scp $(WWWDIR)/$(DISTNAME)-$(VERSION).dmg $(WWWDIR)/$(DISTNAME)-$(VERSION).tar.gz $(WWWDIR)/md5.info $(WWWDIR)/build.info gato.sf.net:pub-gato/Download/
+	scp $(WWWDIR)/$(DISTNAME)-$(VERSION).dmg $(WWWDIR)/$(DISTNAME)-$(VERSION).tar.gz $(WWWDIR)/md5.info $(WWWDIR)/build.info web.sourceforge.net:pub-gato/Download/
 	#scp $(WWWDIR)/$(DISTNAME)-$(VERSION).dmg $(WWWDIR)/$(DISTNAME)-$(VERSION).tar.gz $(WWWDIR)/$(DISTNAMEDOC)-$(VERSION).tar.gz $(WWWDIR)/md5.info $(WWWDIR)/build.info gato.sf.net:pub-gato/Download/
 	#cd $(SRCDIR)/Doc/;scp -r *.html

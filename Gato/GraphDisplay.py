@@ -11,7 +11,7 @@
 #       Contact: alexander@schliep.org, winfried.hochstaettler@fernuni-hagen.de
 #
 #       Information: http://gato.sf.net
-#
+#n
 #       This library is free software; you can redistribute it and/or
 #       modify it under the terms of the GNU Library General Public
 #       License as published by the Free Software Foundation; either
@@ -1507,7 +1507,7 @@ viewbox="%(x)d %(y)d %(width)d %(height)d" width="30cm" height="30cm">
             fwe,dummy = self.CanvasToEmbedding(fw,0)
             stroke = self.GetVertexFrameColor(v)
 
-            print x,y,r,col,fwe,stroke
+            #print x,y,r,col,fwe,stroke
             file.write('<circle id="%s" cx="%s" cy="%s" r="%s" fill="%s" stroke="%s"'\
                        ' stroke-width="%s" />\n' % (v,x,y,r,col,stroke,fwe))
             

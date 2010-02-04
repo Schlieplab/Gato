@@ -339,7 +339,6 @@ class PriorityQueue:
         if self.pq.has_key(value):
             self.pq[value] = newSortKey
         else:
-            print "PriorityQueue: DecreaseKey of non-existing key"
             raise KeyError, "PriorityQueue: DecreaseKey of non-existing key"
             
     def Clear(self):

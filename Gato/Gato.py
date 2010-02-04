@@ -260,8 +260,8 @@ class AlgoWin(Frame):
                                   command=self.ReloadAlgorithmGraph)
         self.fileMenu.add_command(label='Export Graph as EPS...',	
                                   command=self.ExportEPSF)
-        self.fileMenu.add_command(label='Export Graph as SVG...',	
-                                  command=self.ExportSVG)
+        #self.fileMenu.add_command(label='Export Graph as SVG...',	
+        #                          command=self.ExportSVG)
         if self.windowingsystem != 'aqua':
             self.fileMenu.add_separator()
             self.fileMenu.add_command(label='Preferences...',
@@ -1431,7 +1431,7 @@ class Algorithm:
         self.cleanGraphCopy = None  # this is the backup of the graph
         self.graphIsDirty = 0       # If graph was changed by running
         self.algoGlobals = {}       # Sandbox for Algorithm
-        self.logAnimator = 1
+        self.logAnimator = 0
         self.about = None
         
         self.commentPattern = re.compile('[ \t]*#')

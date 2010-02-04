@@ -261,8 +261,6 @@ class completeGraphCreator(Creator):
         n=dial.result[0]
         direction=dial.result[2]
         layout=dial.result[3]
-
-        print n, direction, layout
         
         G=Graph()
         G.directed=direction

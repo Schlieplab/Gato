@@ -42,6 +42,8 @@ g = GatoGlobals.AnimationParameters
 
 class AnimationCommand:
 
+    g = g
+
     def __init__(self, method, target, args, undo_method=None, undo_args=None):
         self.target = target
         self.method = method
