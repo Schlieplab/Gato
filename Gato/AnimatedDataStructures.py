@@ -35,7 +35,7 @@
 #             last change by $Author$.
 #
 ################################################################################
-from GatoGlobals import AnimationParameters, gInfinity
+from GatoGlobals import AnimationParameters, gInfinity, NoSuchVertexError, NoSuchEdgeError  
 from DataStructures import VertexLabeling, Queue, Stack, PriorityQueue
 from Graph import SubGraph
 import copy
