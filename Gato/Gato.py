@@ -74,10 +74,10 @@ g = GatoGlobals.AnimationParameters
 
 class AbortProlog(Exception):
     """Phony exception to about execution of prolog."""
-    def __init__(self, message):
-        self.message = message
+    def __init__(self, value):
+        self.value = value
     def __str__(self):
-        return repr(self.message)
+        return repr(self.value)
 
 # put someplace else
 def parsegeometry(geometry):
@@ -1864,8 +1864,10 @@ def main(argv=None):
 
         paned = False
         debug = False
+        verbose = False
         for o, a in opts:
             if o in ("-v", "--verbose"):
+                verbose = True
                 if sys.version_info[0:2] < (2,4):
                     log.addHandler(logging.StreamHandler(sys.stdout))
                     log.setLevel(logging.DEBUG)
@@ -1877,6 +1879,14 @@ def main(argv=None):
                 paned = True
             if o in ("-d", "--debug"):
                 debug = True
+
+        # XXX Here we should actually provide our own buffer and a Tk Textbox to write too
+        if not verbose:
+            logging.basicConfig(level=logging.WARNING,
+                                filename='Gato.log',
+                                filemode='w',
+                                format='%(name)s %(levelname)s %(message)s')
+            
         #print "Debug is",debug
 
         tk = Tk()

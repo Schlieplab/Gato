@@ -39,7 +39,7 @@ from GatoGlobals import AnimationParameters, gInfinity, NoSuchVertexError, NoSuc
 from DataStructures import VertexLabeling, Queue, Stack, PriorityQueue
 from Graph import SubGraph
 import copy
-import sets
+#import sets
 
 g = AnimationParameters
 
