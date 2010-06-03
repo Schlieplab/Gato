@@ -260,8 +260,8 @@ class AlgoWin(Frame):
                                   command=self.ReloadAlgorithmGraph)
         self.fileMenu.add_command(label='Export Graph as EPS...',	
                                   command=self.ExportEPSF)
-        #self.fileMenu.add_command(label='Export Graph as SVG...',	
-        #                          command=self.ExportSVG)
+        self.fileMenu.add_command(label='Export Graph as SVG...',	
+                                  command=self.ExportSVG)
         if self.windowingsystem != 'aqua':
             self.fileMenu.add_separator()
             self.fileMenu.add_command(label='Preferences...',
@@ -1431,7 +1431,7 @@ class Algorithm:
         self.cleanGraphCopy = None  # this is the backup of the graph
         self.graphIsDirty = 0       # If graph was changed by running
         self.algoGlobals = {}       # Sandbox for Algorithm
-        self.logAnimator = 0
+        self.logAnimator = 1
         self.about = None
         
         self.commentPattern = re.compile('[ \t]*#')
@@ -1850,21 +1850,26 @@ def usage():
 def main(argv=None):
     if argv is None:
         argv = sys.argv
-
+    
     try:
         opts, args = getopt.getopt(argv[1:], "pvd", ["verbose","paned","debug"])
     except getopt.GetoptError:
         usage()
         return 2
-        
+
+    # HACK for Windows
+    #args = []
+    #opts = []
+
+    paned = False
+    debug = False
+    verbose = False        
+
     if (len(args) < 4):
     
         import logging
         log = logging.getLogger("Gato")
 
-        paned = False
-        debug = False
-        verbose = False
         for o, a in opts:
             if o in ("-v", "--verbose"):
                 verbose = True
@@ -1883,7 +1888,7 @@ def main(argv=None):
         # XXX Here we should actually provide our own buffer and a Tk Textbox to write too
         if not verbose:
             logging.basicConfig(level=logging.WARNING,
-                                filename='Gato.log',
+                                filename='/tmp/Gato.log',
                                 filemode='w',
                                 format='%(name)s %(levelname)s %(message)s')
             

@@ -42,7 +42,6 @@ g = GatoGlobals.AnimationParameters
 
 class AnimationCommand:
 
-    g = g
 
     def __init__(self, method, target, args, undo_method=None, undo_args=None):
         self.target = target
@@ -121,6 +120,8 @@ class AnimationHistory:
         self.history_index = None
         self.auto_print = 0
         self.logPrefix = logPrefix
+        self.g = g
+
         
     #========== Provide Undo/Redo for animation commands from GraphDisplay ======
     def SetVertexColor(self, v, color):
