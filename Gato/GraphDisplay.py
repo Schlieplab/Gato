@@ -37,7 +37,7 @@
 from Tkinter import * # Frame, Canvas, Toplevel, StringVar and lots of handy constants
 import tkFont
 from Graph import Graph
-from math import sqrt, pi, sin, cos
+from math import sqrt, pi, sin, cos, atan2, degrees
 import GatoGlobals
 from GatoUtil import orthogonal
 from GatoDialogs import AutoScrollbar
@@ -1324,6 +1324,9 @@ onload="StartAnimation(evt)">
 </defs>
 <script type="text/ecmascript"><![CDATA[
 var step = 0;
+var v_ano_id = "va"; //ID prefix for vertex annotation
+var e_arrow_id = "ea"; //ID prefix for edge arrow
+var svgNS="http://www.w3.org/2000/svg";
 var the_evt;
 var element;
 var blinkcolor;
@@ -1341,6 +1344,11 @@ function SetEdgeColor(e, color) {
     // NOTE: Gato signature SetEdgeColor(v, w, color)
     element = the_evt.target.ownerDocument.getElementById(e);
     element.setAttribute("stroke", color);
+    //added changes to color of arrowheads
+    element = the_evt.target.ownerDocument.getElementById(e_arrow_id + e);
+    if(element != null){
+        element.setAttribute("fill", color);
+    }
 }
 //function SetEdgesColor(edge_array, color) {
 // Cannot map: SetAllEdgesColor(self, color, graph=None, leaveColors=None)
@@ -1373,10 +1381,34 @@ function SetVertexFrameWidth(v, val) {
     var element = the_evt.target.ownerDocument.getElementById(v);
     element.setAttribute("stroke-width", val);
 }
-function SetVertexAnnotation(self, v, annotation, color)
+function SetVertexAnnotation(v, annotation, color) //removed 'self' parameter to because 'self' parameter was assigned value of v, v of annotation, and so on.
 {
-        1;
+    element = the_evt.target.ownerDocument.getElementById(v);
+    if(element != null){
+	if(the_evt.target.ownerDocument.getElementById(v_ano_id + v) !=null){
+		ano = the_evt.target.ownerDocument.getElementById(v_ano_id + v);
+		ano.parentNode.removeChild(ano);
+	
+	}
+	
+	var newano = the_evt.target.ownerDocument.createElementNS(svgNS,"text");
+	x_pos = parseFloat(element.getAttribute("cx")) + parseFloat(element.getAttribute("r")) + 1;
+	y_pos = parseFloat(element.getAttribute("cy")) + parseFloat(element.getAttribute("r")) + 1;
+	newano.setAttribute("x", x_pos);
+	newano.setAttribute("y", y_pos);
+	newano.setAttribute("fill",color);
+	newano.setAttribute("id", v_ano_id+v);
+	newano.setAttribute("text-anchor","center");
+	newano.setAttribute("font-size","14.0");
+	newano.setAttribute("font-family","Helvetica");
+	newano.setAttribute("font-style","normal");
+	newano.setAttribute("font-weight","bold");
+	newano.appendChild(the_evt.target.ownerDocument.createTextNode(annotation));
+	the_evt.target.ownerDocument.documentElement.appendChild(newano);
+	
+    }
 }
+
 //function SetEdgeAnnotation(self,tail,head,annotation,color="black"):
 //def UpdateVertexLabel(self, v, blink=1, color=None):
 var animation = Array(%(animation)s
@@ -1477,10 +1509,16 @@ viewbox="%(x)d %(y)d %(width)d %(height)d" width="30cm" height="30cm">
                 else: # Just one directed edge
                     # XXX How to color arrowhead?
                     
-                    
+                    #Took out marker-end="url(#Arrowhead)" and added polyline
                     file.write('<line id="%s" x1="%s" y1="%s" x2="%s" y2="%s" stroke="%s"'\
-                               ' stroke-width="%s" marker-end="url(#Arrowhead)"/>\n' % ((v,w),vx,vy,wx,wy,col,width))
-                    
+                               ' stroke-width="%s" />\n' % ((v,w),vx,vy,wx,wy,col,width))
+                    #Temporary settings for size of polyline arrowhead
+                    p1 = (0,0)
+                    p2 = (0, 0 + int(round(1.5*int(float(width)))))
+                    p3 = (10, (p1[1] + p2[1])/2)
+                    angle = degrees(atan2(int(wy)-int(vy), int(wx)-int(vx)))
+                    file.write('<polyline id="ea%s" points="%d %d %d %d %d %d" fill="%s" transform="translate(%s,%f)'\
+                               ' rotate(%f %d %d)" />\n' % ((v,w), p1[0], p1[1], p2[0], p2[1], p3[0], p3[1], col, wx, float(wy) - (p2[1]+p1[1])/2, angle, p1[0], (p1[1] + p2[1])/2))
                     
 
             # Write Edge Annotations
@@ -1517,7 +1555,7 @@ viewbox="%(x)d %(y)d %(width)d %(height)d" width="30cm" height="30cm">
             offset = 0.33 * size
             
             file.write('<text id="vl%s" x="%s" y="%s" text-anchor="middle" fill="%s" font-family="Helvetica" '\
-                       'font-size="%s" fonst-style="normal" font-weight="bold" >%s</text>\n' % (v,x,y+offset,col,size,self.G.GetLabeling(v)))
+                       'font-size="%s" font-style="normal" font-weight="bold" >%s</text>\n' % (v,x,y+offset,col,size,self.G.GetLabeling(v)))
             
             # Write vertex annotation
             size = r*0.9
@@ -1525,7 +1563,7 @@ viewbox="%(x)d %(y)d %(width)d %(height)d" width="30cm" height="30cm">
             col = 'black'
             if text != "":
                 file.write('<text id="va%s" x="%s" y="%s" text-anchor="left" fill="%s" font-family="Helvetica" '\
-                           'font-size="%s" fonst-style="normal">%s</text>\n' % (v,x+r+1,y+r+1,col,size,text))
+                           'font-size="%s" font-style="normal">%s</text>\n' % (v,x+r+1,y+r+1,col,size,text))
             
 
 
