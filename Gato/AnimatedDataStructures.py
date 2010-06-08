@@ -75,7 +75,7 @@ class AnimatedNeighborhood:
                  traversedColor = g.cTraversedEdge):	
         """ theAnimator will usually be the GraphDisplay(Frame/Toplevel) """
         self.Animator = theAnimator
-        self.nbh = G.Neighborhood(v)
+        self.nbh = G.Neighborhood(v)[:] # Create a copy so we can delete edges (v,w)
         self.v = v
         self.ignoreColors = ignoreColors
         self.blinkColor = blinkColor
@@ -88,13 +88,16 @@ class AnimatedNeighborhood:
         
     def __getitem__(self, i):
         if self.lastEdge:
-            if self.Animator.GetEdgeColor(self.lastEdge[0],
-                                          self.lastEdge[1]) == self.activeColor:
-                if self.lastColor not in self.ignoreColors:
-                    col = self.traversedColor
-                else:
-                    col = self.lastColor                    
-                self.Animator.SetEdgeColor(self.lastEdge[0],self.lastEdge[1],col)
+            try:
+                if self.Animator.GetEdgeColor(self.lastEdge[0],
+                                              self.lastEdge[1]) == self.activeColor:
+                    if self.lastColor not in self.ignoreColors:
+                        col = self.traversedColor
+                    else:
+                        col = self.lastColor                    
+                    self.Animator.SetEdgeColor(self.lastEdge[0],self.lastEdge[1],col)
+            except NoSuchEdgeError: # lastEdge was deleted
+                pass
         if i < len(self.nbh):
             self.lastEdge = (self.v,self.nbh[i])
             self.lastColor = self.Animator.GetEdgeColor(self.v,self.nbh[i])
