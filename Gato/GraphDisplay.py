@@ -37,7 +37,7 @@
 from Tkinter import * # Frame, Canvas, Toplevel, StringVar and lots of handy constants
 import tkFont
 from Graph import Graph
-from math import sqrt, pi, sin, cos, atan2, degrees
+from math import sqrt, pi, sin, cos, atan2, degrees, log10
 import GatoGlobals
 from GatoUtil import orthogonal
 from GatoDialogs import AutoScrollbar
@@ -1508,17 +1508,33 @@ viewbox="%(x)d %(y)d %(width)d %(height)d" width="30cm" height="30cm">
                                ' stroke-width="%s"/>\n' % ((v,w),x1e,y1e,x2e,y2e,col,width))
                 else: # Just one directed edge
                     # XXX How to color arrowhead?
-                    
+                    dx = 0 #offset of wx to make room for arrow
+                    dy = 0 #offset of wy
+                    cr = 0
                     #Took out marker-end="url(#Arrowhead)" and added polyline
-                    file.write('<line id="%s" x1="%s" y1="%s" x2="%s" y2="%s" stroke="%s"'\
-                               ' stroke-width="%s" />\n' % ((v,w),vx,vy,wx,wy,col,width))
+                    #Shrink line to make room for arrow
+                    for z in self.G.Vertices():
+                        cx,cy,r = self.VertexPositionAndRadius(z)
+                        if(cx == wx and cy == wy):
+                            angle = atan2(int(wy)-int(vy), int(wx)-int(vx))
+                            dx = r*cos(angle)
+                            dy = r*sin(angle)
+                            cr = int(r)
+                            file.write('<line id="%s" x1="%s" y1="%s" x2="%f" y2="%f" stroke="%s"'\
+                                   ' stroke-width="%s" />\n' % ((v,w),vx,vy,float(wx) - 2*dx,float(wy) - 2*dy,col,width))
+                            break
+                        
                     #Temporary settings for size of polyline arrowhead
+                    a_width = (1 + 1.5/(1*pow(log10(float(width)), 6)))
+                    if(a_width > 5.0):
+                        a_width = 5.0
+                    a_width *= float(width) 
                     p1 = (0,0)
-                    p2 = (0, 0 + int(round(1.5*int(float(width)))))
-                    p3 = (10, (p1[1] + p2[1])/2)
+                    p2 = (0, a_width) #0 + int(round(1.5*int(float(width)))))       float(wy) - (p2[1]+p1[1])/2
+                    p3 = (cr, a_width/2)
                     angle = degrees(atan2(int(wy)-int(vy), int(wx)-int(vx)))
-                    file.write('<polyline id="ea%s" points="%d %d %d %d %d %d" fill="%s" transform="translate(%s,%f)'\
-                               ' rotate(%f %d %d)" />\n' % ((v,w), p1[0], p1[1], p2[0], p2[1], p3[0], p3[1], col, wx, float(wy) - (p2[1]+p1[1])/2, angle, p1[0], (p1[1] + p2[1])/2))
+                    file.write('<polyline id="ea%s" points="%f %f %f %f %f %f" fill="%s" transform="translate(%f,%f)'\
+                               ' rotate(%f %f %f)" />\n' % ((v,w), p1[0], p1[1], p2[0], p2[1], p3[0], p3[1], col, float(wx) - 2*dx, float(wy) - 2*dy - a_width/2, angle, p1[0], a_width/2))
                     
 
             # Write Edge Annotations
