@@ -1508,8 +1508,17 @@ viewbox="%(x)d %(y)d %(width)d %(height)d" width="30cm" height="30cm">
                                ' stroke-width="%s"/>\n' % ((v,w),x1e,y1e,x2e,y2e,col,width))
                 else: # Just one directed edge
                     # XXX How to color arrowhead?
-                    dx = 0 #offset of wx to make room for arrow
-                    dy = 0 #offset of wy
+                    l = sqrt((float(wx)-float(vx))**2 + (float(wy)-float(vy))**2)
+                    if (l < .001):
+                        l = .001
+
+                    c = (l-2*self.zVertexRadius)/l + .01
+                    tmpX = float(vx) + c*(float(wx) - float(vx))
+                    tmpY = float(vy) + c*(float(wy) - float(vy))
+                    
+
+                    #dx = 0 #offset of wx to make room for arrow
+                    #dy = 0 #offset of wy
                     cr = 0
                     #Took out marker-end="url(#Arrowhead)" and added polyline
                     #Shrink line to make room for arrow
@@ -1517,10 +1526,8 @@ viewbox="%(x)d %(y)d %(width)d %(height)d" width="30cm" height="30cm">
                         cx,cy,cr = self.VertexPositionAndRadius(z)
                         if(cx == wx and cy == wy):
                             angle = atan2(int(float(wy))-int(float(vy)), int(float(wx))-int(float(vx)))
-                            dx = r*cos(angle)
-                            dy = r*sin(angle)
                             file.write('<line id="%s" x1="%s" y1="%s" x2="%f" y2="%f" stroke="%s"'\
-                                   ' stroke-width="%s" />\n' % ((v,w),vx,vy,float(wx) - 2*dx,float(wy) - 2*dy,col,width))
+                                   ' stroke-width="%s" />\n' % ((v,w),vx,vy,tmpX,tmpY,col,width))
                             break
                         
                     #Temporary settings for size of polyline arrowhead
@@ -1532,8 +1539,11 @@ viewbox="%(x)d %(y)d %(width)d %(height)d" width="30cm" height="30cm">
                     p2 = (0, a_width) #0 + int(round(1.5*int(float(width)))))       float(wy) - (p2[1]+p1[1])/2
                     p3 = (cr, a_width/2)
                     angle = degrees(atan2(int(wy)-int(vy), int(wx)-int(vx)))
+                    c = (l-2*self.zVertexRadius)/l
+                    tmpX = float(vx) + c*(float(wx) - float(vx))
+                    tmpY = float(vy) + c*(float(wy) - float(vy))
                     file.write('<polyline id="ea%s" points="%f %f %f %f %s %f" fill="%s" transform="translate(%f,%f)'\
-                               ' rotate(%f %f %f)" />\n' % ((v,w), p1[0], p1[1], p2[0], p2[1], p3[0], p3[1], col, float(wx) - 2*dx, float(wy) - 2*dy - a_width/2, angle, p1[0], a_width/2))
+                               ' rotate(%f %f %f)" />\n' % ((v,w), p1[0], p1[1], p2[0], p2[1], p3[0], p3[1], col, tmpX, tmpY - a_width/2, angle, p1[0], a_width/2))
                     
 
             # Write Edge Annotations
