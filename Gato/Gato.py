@@ -262,6 +262,8 @@ class AlgoWin(Frame):
                                   command=self.ExportEPSF)
         self.fileMenu.add_command(label='Export Graph as SVG...',	
                                   command=self.ExportSVG)
+        self.fileMenu.add_command(label='Export Animation as SVG...',	
+                                  command=self.ExportSVGAnimation)
         if self.windowingsystem != 'aqua':
             self.fileMenu.add_separator()
             self.fileMenu.add_command(label='Preferences...',
@@ -809,29 +811,48 @@ class AlgoWin(Frame):
 
     def ExportSVG(self):
         """ GUI to control export of SVG file  """
-        file = asksaveasfilename(title="Export SVG",
+        fileName = asksaveasfilename(title="Export SVG",
                                  defaultextension=".svg",
                                  filetypes = [("SVG", ".svg")]
                                  )
-        if file is not "":
+        if fileName is not "":
+            import GatoExport
+            GatoExport.ExportSVG(fileName, self, self.algorithm,
+                                 self.graphDisplay,
+                                 self.secondaryGraphDisplay,
+                                 showAnimation=False)
 
-            if 1:
-                # Collect animation commands
-                lastTime = self.algorithm.animation_history.history[0][0]
-                animation = []
-                for time, command in self.algorithm.animation_history.history:
-                    animation.append(command.print_svg(lastTime))
-                    lastTime = time
-                self.graphDisplay
-                if self.algorithm.graphFileName is not "":
-                    self.OpenGraph(self.algorithm.graphFileName)
-                    execfile(os.path.splitext(self.algorithm.algoFileName)[0] + ".pro", 
-                             self.algorithm.algoGlobals,
-                             self.algorithm.algoGlobals)
+    def ExportSVGAnimation(self):
+        """ GUI to control export of SVG file  """
+        fileName = asksaveasfilename(title="Export SVG",
+                                 defaultextension=".svg",
+                                 filetypes = [("SVG", ".svg")]
+                                 )
+        if fileName is not "":
+            import GatoExport
+            GatoExport.ExportSVG(fileName, self, self.algorithm,
+                                 self.graphDisplay,
+                                 self.secondaryGraphDisplay,
+                                 showAnimation=True)
 
-                self.graphDisplay.ExportSVG(file, animation)
-            else:
-                self.graphDisplay.ExportSVG(file)
+
+##            if 1:
+##                # Collect animation commands
+##                lastTime = self.algorithm.animation_history.history[0][0]
+##                animation = []
+##                for time, command in self.algorithm.animation_history.history:
+##                    animation.append(command.print_svg(lastTime))
+##                    lastTime = time
+##                self.graphDisplay
+##                if self.algorithm.graphFileName is not "":
+##                    self.OpenGraph(self.algorithm.graphFileName)
+##                    execfile(os.path.splitext(self.algorithm.algoFileName)[0] + ".pro", 
+##                             self.algorithm.algoGlobals,
+##                             self.algorithm.algoGlobals)
+
+##                self.graphDisplay.ExportSVG(file, animation)
+##            else:
+##                self.graphDisplay.ExportSVG(file)
                 
             
     def Quit(self,event=None):

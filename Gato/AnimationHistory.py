@@ -62,20 +62,20 @@ class AnimationCommand:
         else:
             apply(self.undo_method, self.target + self.undo_args)
 
-    def print_svg(self, currentTime = 0):
-        def quote(s):
-            return "\"%s\"" % str(s)
-        if len(self.target) == 1:
-            target = quote(self.target[0])
-        else:
-            target = quote(self.target)
+##    def print_svg(self, currentTime = 0):
+##        def quote(s):
+##            return "\"%s\"" % str(s)
+##        if len(self.target) == 1:
+##            target = quote(self.target[0])
+##        else:
+##            target = quote(self.target)
 
-        duration = max(1,int(round((self.time - currentTime) * 1000, 0)))
+##        duration = max(1,int(round((self.time - currentTime) * 1000, 0)))
                                  
-        result = [str(duration), self.method.__name__, target]
-        for arg in self.args:
-            result.append(quote(arg))
-        return "Array(" + ", ".join(result) + ")"
+##        result = [str(duration), self.method.__name__, target]
+##        for arg in self.args:
+##            result.append(quote(arg))
+##        return "Array(" + ", ".join(result) + ")"
 
     def log_str(self):
         if len(self.target) == 1:
