@@ -53,7 +53,31 @@ onload="StartAnimation(evt)">
       markerWidth="4" markerHeight="3" 
       orient="auto"> 
       <path d="M 0 0 L 10 5 L 0 10 z" /> 
-    </marker> 
+    </marker>
+
+    <linearGradient id="button_bg1" x1="0" y1="0" x2="0" y2="1">
+	<stop offset="0" stop-color="turquoise">
+	</stop>						
+	<stop offset="1" stop-color="navy">	
+	</stop>	
+    </linearGradient>
+    <linearGradient id="button_light1" x1="0" y1="0" x2="0" y2="1">
+		<stop offset="0" stop-color="white">
+		</stop>					
+		<stop offset="1" stop-color="white" stop-opacity="0">	
+		</stop>								
+	
+    </linearGradient>
+    <linearGradient id="button_light2" x1="0" y1="0" x2="0" y2="1">
+		<stop offset="0" stop-color="black" stop-opacity="0">
+		</stop>
+		<stop offset="1" stop-color="black">
+		</stop>
+    </linearGradient>
+    <filter id="button_gb">
+		<feGaussianBlur stdDeviation="3">
+		</feGaussianBlur>	
+    </filter>
 </defs>
 <script type="text/ecmascript"><![CDATA[
 var step = 0;
@@ -64,6 +88,638 @@ var the_evt;
 var element;
 var blinkcolor;
 var blinkcount;
+var code;    //tracks HTB of code
+var init_graph;  //initial graph, for restarting
+var action_panel;   //tracks buttons
+var state;	//tracks state of animation
+var timer;	//variable for timer for AnimateLoop
+var timeout = 4;  //timeout
+var horiz_layout;
+var verti_layout;
+
+
+function getTranslate(str){
+	var x;
+	var y;
+	
+	if(str == null){
+		return new Array(0, 0);
+	}
+	
+	var to_parse = str.slice(str.indexOf("translate") + "translate".length);
+	
+	if(to_parse == null){
+		return new Array(0, 0);
+	}
+	
+	
+	var r = to_parse.match(/\d+/g);
+	
+	if(r[0] != null){
+		x = parseFloat(r[0]);
+	}
+	
+	if(r[1] != null){
+		y = parseFloat(r[1]);
+	}
+	
+	if(r[1] == null || (to_parse.indexOf(")") < to_parse.indexOf(r[1]))){
+		return new Array(x, 0);
+	}
+	
+	return new Array(x, y);
+
+}
+
+
+function setTranslate(component, x, y){
+	var transformation = component.getAttribute("transform");
+	
+	if(transformation != null){
+		var header = transformation.substring(0, transformation.indexOf("translate") + "translate".length);
+		if(transformation.indexOf("translate") == -1){
+			component.setAttribute("transform", transformation + " translate(" + x + " " + y + ")");
+		}else{
+
+			var trailer = transformation.slice(transformation.indexOf("translate") + "translate".length);
+			trailer = trailer.slice(trailer.indexOf(")"));
+		
+			var newattr = header + "(" + x + " " + y + trailer;
+
+			component.setAttribute("transform", newattr);
+		}
+
+	}else{
+		component.setAttribute("transform", "translate(" + x + " " + y + ")");
+	}
+}
+
+
+
+function HighlightableTextBlock(hp, vp, i, font_size, layout){
+	this.line_llc = new LinearLayoutComponent(hp, vp, i, layout);
+	this.line_llc.group.setAttribute("font-size", font_size);
+	this.highlight_group = the_evt.target.ownerDocument.createElementNS(svgNS,"g");
+	this.highlight_group.setAttribute("id", i + "_hg");
+	the_evt.target.ownerDocument.documentElement.insertBefore(this.highlight_group, this.line_llc.group);	
+}
+
+function HTB_prototypeInit(){
+	var htb = new HighlightableTextBlock(2,2,"foo",14, "vertical");
+	HighlightableTextBlock.prototype.insertLine = HTB_insertLine;
+	HighlightableTextBlock.prototype.deleteLine = HTB_deleteLine;
+	HighlightableTextBlock.prototype.highlightLine = HTB_highlightLine;
+	HighlightableTextBlock.prototype.removeHighlight = HTB_removeHighlight;
+
+	htb = the_evt.target.ownerDocument.getElementById("foo");
+	htb.parentNode.removeChild(htb);
+	htb = the_evt.target.ownerDocument.getElementById("foo_hg");
+	htb.parentNode.removeChild(htb);
+}
+
+
+
+//insert line into nth slot.  0-based indexing.  May also be used to rearrange lines
+function HTB_insertLine(id, n){
+
+	this.line_llc.insertComponent(id, n);
+}
+
+
+//delete nth line
+function HTB_deleteLine(n){
+	this.line_llc.deleteComponent(n);
+	this.removeHighlight(this.line_llc.group.childNodes.length);
+}
+
+
+
+//highlight nth line
+function HTB_highlightLine(n){
+
+	if(n < this.line_llc.group.childNodes.length && n >= 0){
+
+		if(the_evt.target.ownerDocument.getElementById(this.line_llc.group.getAttribute("id") + "_hl" + n) == null){
+
+			var line = this.line_llc.group.childNodes.item(n);
+			var htb_bbox = this.line_llc.group.getBBox();
+			var line_bbox = line.getBBox();
+			var line_translation = getTranslate(this.line_llc.group.childNodes.item(n).getAttribute("transform"));
+			var m = 1;
+
+			var background = the_evt.target.ownerDocument.createElementNS(svgNS, "rect");
+			
+			var dx = line.getAttribute("dx");
+			var dy = line.getAttribute("dy");
+			if(dx == null){
+				dx = 0;
+			}else{
+				dx = parseFloat(dx);
+			}
+			if(dy == null){
+				dy = 0;
+			}else{
+				dy = parseFloat(dy);
+			}
+			
+			//setTranslate(background, line_translation[0] , line_translation[1]-this.line_llc.v_padding);
+			background.setAttribute("x", line_bbox.x + line_translation[0] - this.line_llc.h_padding - dx);
+			background.setAttribute("y", line_bbox.y + line_translation[1] - this.line_llc.v_padding - dy);
+			background.setAttribute("width", htb_bbox.width + 2*this.line_llc.h_padding);
+			background.setAttribute("height", line_bbox.height + 2*this.line_llc.v_padding);
+
+			background.setAttribute("stroke", "blue");
+			background.setAttribute("fill", "yellow");
+			background.setAttribute("id", this.line_llc.group.getAttribute("id") + "_hl" + n);
+			
+			this.highlight_group.appendChild(background);
+		}
+	}
+}
+
+function HTB_removeHighlight(n){
+	var hl = the_evt.target.ownerDocument.getElementById(this.line_llc.group.getAttribute("id") + "_hl" + n);
+	if(hl != null){
+		this.highlight_group.removeChild(hl);
+	}
+}
+
+
+
+function LinearLayoutComponent(hp, vp, i, layout){
+	this.h_padding = hp;  //Number of pixels padding the top and bottom of each line
+	this.v_padding = vp;  //Number of pixels padding the left and right of each line
+	this.id = i;           //ID of group that is abstracted by this HTB instance
+	
+	//Create new group element to place all lines of code
+	this.group = the_evt.target.ownerDocument.createElementNS(svgNS,"g");
+	this.group.setAttribute("id", i);
+	the_evt.target.ownerDocument.documentElement.appendChild(this.group);
+	this.layout = layout;  //'horizontal' or 'vertical'
+}
+
+function LLC_prototypeInit(){
+	var llc = new LinearLayoutComponent(0,0,"foo","horizontal");
+	LinearLayoutComponent.prototype.insertComponent = LLC_insertComponent;
+	LinearLayoutComponent.prototype.deleteComponent = LLC_deleteComponent;
+	LinearLayoutComponent.prototype.resnapComponent = LLC_resnapComponent;
+	llc.group.parentNode.removeChild(llc.group);
+}
+
+
+
+//insert line into nth slot.  0-based indexing.  May also be used to rearrange lines
+function LLC_insertComponent(id, n){
+
+	var new_c = the_evt.target.ownerDocument.getElementById(id);
+	var padding = 0;
+	if(this.layout == "horizontal"){
+		padding = this.h_padding;
+	}else{
+		padding = this.v_padding;
+	}
+	var bbox = null;
+	var translation = null;
+	var shift = 0;
+	
+	if(new_c != null){   //Component exists
+		if((new_c.parentNode != this.group) && (n <= this.group.childNodes.length) && (n >=0)){ //Component is not in group.  Insert and shift if necessary
+		
+			if(n == 0){
+				setTranslate(new_c, 0, 0);
+			}else{
+				bbox = this.group.childNodes.item(n-1).getBBox();
+				translation = getTranslate(this.group.childNodes.item(n-1).getAttribute("transform"));
+				
+				if(this.layout == "horizontal"){
+					shift = translation[0] + bbox.width + 2*padding;
+					setTranslate(new_c, shift, 0);
+
+				}else{		
+					shift = translation[1] + bbox.height + 2*padding;
+					setTranslate(new_c, 0, shift);
+				}
+			}
+			
+			if(n == this.group.childNodes.length){
+				this.group.appendChild(new_c);
+			}else{	
+				var children = this.group.childNodes;
+				this.group.insertBefore(new_c, children.item(n));
+				for(i = n+1; i < children.length; i++){
+					bbox = children.item(i-1).getBBox();
+					translation = getTranslate(children.item(i-1).getAttribute("transform"));
+					if(this.layout == "horizontal"){
+						shift = translation[0] + bbox.width + 2*padding;
+						setTranslate(children.item(i), shift, 0);
+					}else{		
+						shift = translation[1] + bbox.height + 2*padding;
+						setTranslate(children.item(i), 0, shift);
+					}
+					
+				}
+			}
+			
+			
+
+
+			
+		}else if(n <= this.group.childNodes.length && (n >= 0)){ //Component is in group.  Move it and shift necessary lines
+			var children = this.group.childNodes;
+			var old_index = 0;
+			for(; old_index < children.length; old_index++){
+				if(children.item(old_index) === new_c){
+					break;
+				}
+			}
+			
+
+			if(old_index > n){
+				this.group.insertBefore(new_c, children.item(n));
+				
+				for(i = n; i <= old_index; i++){
+					if(i == 0){
+						setTranslate(children.item(i), 0, 0);
+					}else{
+						bbox = children.item(i-1).getBBox();	
+						translation = getTranslate(children.item(i-1).getAttribute("transform"));
+						if(this.layout == "horizontal"){
+							shift = translation[0] + bbox.width + 2*padding;
+							setTranslate(children.item(i), shift, 0);
+						}else{		
+							shift = translation[1] + bbox.height + 2*padding;
+							setTranslate(children.item(i), 0, shift);
+						}
+					}
+				}
+			}else if(old_index < n){
+				if(n == children.length){
+					this.group.appendChild(new_c);
+
+				}else{	
+					this.group.insertBefore(new_c, children.item(n+1));
+				}
+				for(i = old_index; i <= n; i++){			
+					if(i == 0){
+						setTranslate(children.item(i), 0, 0);
+
+					}else{
+						bbox = children.item(i-1).getBBox();
+						translation = getTranslate(children.item(i-1).getAttribute("transform"));
+						if(this.layout == "horizontal"){
+							shift = translation[0] + bbox.width + 2*padding;
+							setTranslate(children.item(i), shift, 0);
+						}else{		
+							shift = translation[1] + bbox.height + 2*padding;
+							setTranslate(children.item(i), 0, shift);
+						}
+					}
+				}
+			}
+			
+		}
+
+	}
+}
+
+
+//delete nth line
+function LLC_resnapComponent(n){
+	var children = this.group.childNodes;
+	var child = children.item(n);
+	
+	child.parentNode.removeChild(n);
+	the_evt.target.ownerDocument.documentElement.appendChild(child);
+	this.insertComponent(child.getAttribute("id"), n);
+}
+
+
+function LLC_deleteComponent(n){
+	var padding = 0;
+	var children = this.group.childNodes;
+	var bbox = null;
+	var translation = null;
+	var shift = 0;
+	
+	if(this.layout == "horizontal"){
+		padding = this.h_padding;
+	}else{
+		padding = this.v_padding;
+	}
+	
+	if(this.group.childNodes.length == 0){
+		return;
+	}	
+	
+
+	var removed_element = this.group.removeChild(this.group.childNodes.item(n));
+	
+
+	
+	for(i = n; i < children.length; i++){
+
+		if(i == 0){
+
+			setTranslate(children.item(i), 0, 0);
+
+
+		}else{
+			bbox = children.item(i-1).getBBox();
+
+
+			translation = getTranslate(children.item(i-1).getAttribute("transform"));
+
+			if(this.layout == "horizontal"){
+				shift = translation[0] + bbox.width + 2*padding;
+				setTranslate(children.item(i), shift, 0);
+			}else{		
+				shift = translation[1] + bbox.height + 2*padding;
+
+				setTranslate(children.item(i), 0, shift);
+			}
+		}
+
+	}
+
+}
+
+
+
+
+
+
+function ButtonPanel(hp, vp, i, layout){
+	this.llc = new LinearLayoutComponent(hp, vp, i, layout);
+}
+
+
+
+function BP_prototypeInit(){
+	var bp = new ButtonPanel(0,0,"baz","horizontal");
+	ButtonPanel.prototype.createButton = BP_createButton;
+	ButtonPanel.prototype.deleteButton = BP_deleteButton;
+	ButtonPanel.prototype.deleteButtonById = BP_deleteButtonById;
+	ButtonPanel.prototype.activateButton = BP_activateButton;
+	ButtonPanel.prototype.deactivateButton = BP_deactivateButton;
+	bp.llc.group.parentNode.removeChild(bp.llc.group);
+}
+
+function BP_createButton(id, text, index, action){  //Create button with corresponding id, text, and action into slot #index
+	if(the_evt.target.ownerDocument.getElementById(id) == null){
+		var button_group = the_evt.target.ownerDocument.createElementNS(svgNS, "g");
+		button_group.setAttribute("id", id);
+		
+		
+		var element1 = the_evt.target.ownerDocument.createElementNS(svgNS, "rect");
+		element1.setAttribute("x", 5);
+		element1.setAttribute("y", 5);
+		element1.setAttribute("width", 150);
+		element1.setAttribute("height", 30);
+		element1.setAttribute("rx", 10);
+		element1.setAttribute("ry", 10);
+		element1.setAttribute("fill", "grey");
+		element1.setAttribute("filter", "url(#button_gb)");
+		button_group.appendChild(element1);
+	
+		element1 = the_evt.target.ownerDocument.createElementNS(svgNS, "rect");
+		element1.setAttribute("x", 0);
+		element1.setAttribute("y", 0);
+		element1.setAttribute("width", 150);
+		element1.setAttribute("height", 30);
+		element1.setAttribute("rx", 10);
+		element1.setAttribute("ry", 10);
+		element1.setAttribute("fill", "url(#button_bg1)");
+		button_group.appendChild(element1);
+	
+		
+		element1 = the_evt.target.ownerDocument.createElementNS(svgNS, "rect");
+		element1.setAttribute("x", 2);
+		element1.setAttribute("y", 2);
+		element1.setAttribute("width", 146);
+		element1.setAttribute("height", 17);
+		element1.setAttribute("rx", 8);
+		element1.setAttribute("ry", 8);
+		element1.setAttribute("fill", "url(#button_light1)");
+		button_group.appendChild(element1);
+		
+		element1 = the_evt.target.ownerDocument.createElementNS(svgNS, "rect");
+		element1.setAttribute("x", 4);
+		element1.setAttribute("y", 21);
+		element1.setAttribute("width", 142);
+		element1.setAttribute("height", 7);
+		element1.setAttribute("rx", 8);
+		element1.setAttribute("ry", 8);
+		element1.setAttribute("fill", "url(#button_light2)");
+		button_group.appendChild(element1);
+		
+		element1 = the_evt.target.ownerDocument.createElementNS(svgNS, "text");
+		element1.setAttribute("x", 75);
+		element1.setAttribute("y", 19);
+		element1.setAttribute("text-anchor", "middle");
+		element1.setAttribute("fill", "yellow");
+		element1.setAttribute("font-weight", 900);
+		element1.setAttribute("id", id + "_text");
+		element1.appendChild(the_evt.target.ownerDocument.createTextNode(text));
+		button_group.appendChild(element1);
+		
+		
+		button_group.setAttribute("onclick", action);
+		button_group.setAttribute("cursor", "pointer");
+		the_evt.target.ownerDocument.documentElement.appendChild(button_group);
+		this.llc.insertComponent(button_group.getAttribute("id"), index);
+
+	}else{
+		this.llc.insertComponent(id, index);
+
+	}
+	
+
+	
+
+}
+
+function BP_deleteButton(n){
+	this.llc.deleteComponent(n);
+}
+
+function BP_deleteButtonById(id){
+	var children = this.llc.group.childNodes;
+	
+	for(i = 0; i < children.length; i++){
+		if(children.item(i).getAttribute("id") == id){
+			this.deleteButton(i);
+			break;
+		}
+	}
+}
+
+function BP_activateButton(id, action){
+	var children = this.llc.group.childNodes;
+
+
+	for(i = 0; i < children.length; i++){
+		if(children.item(i).getAttribute("id") == id){
+			children.item(i).setAttribute("onclick", action);
+			children.item(i).setAttribute("cursor", "pointer");
+			var grandchildren = children.item(i).childNodes;
+			for(j = 0; j < grandchildren.length; j++){
+				if(grandchildren.item(j).getAttribute("id") == (id + "_text")){
+					grandchildren.item(j).setAttribute("fill", "yellow");
+					break;
+				}
+			}
+			break;
+		}
+	}
+}
+
+function BP_deactivateButton(id){
+	var children = this.llc.group.childNodes;
+
+	for(i = 0; i < children.length; i++){
+		if(children.item(i).getAttribute("id") == id){
+			children.item(i).setAttribute("onclick", "");
+			children.item(i).setAttribute("cursor", "default");
+			var grandchildren = children.item(i).childNodes;
+			for(j = 0; j < grandchildren.length; j++){
+				if(grandchildren.item(j).getAttribute("id") == id + "_text"){
+					grandchildren.item(j).setAttribute("fill", "grey");
+					break;
+				}
+			}			
+			break;
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+function Initialize(evt) {
+	the_evt = evt;
+	HTB_prototypeInit();
+	LLC_prototypeInit();
+	BP_prototypeInit();
+
+
+        /*
+        I commented out this part for now, so nothing will display.  I wanted to wait until I saw
+        what the final product looked like (i.e. how the elements are actually listed at the bottom of the document)
+        */
+	/*code = new HighlightableTextBlock(2, 2, "code", 14, "vertical");
+
+	for(i = 0; i < 5; i++){
+		code.insertLine("cl" + i, i);
+	}
+	for(i = 0; i < 5; i++){
+		code.insertLine("foocl" + i, i+5);
+	}	
+	
+	
+	init_graph = the_evt.target.ownerDocument.getElementById("graph1").cloneNode(true);
+	
+	action_panel = new ButtonPanel(2, 2, "actions", "horizontal");
+	action_panel.createButton("start_button", "Start", 0, "StartAnimation(evt)");
+	action_panel.createButton("step_button", "Step", 1, "StepAnimation(evt)");
+	action_panel.createButton("continue_button", "Continue", 2, "ContinueAnimation(evt)");
+	action_panel.createButton("stop_button", "Stop", 3, "StopAnimation(evt)");
+
+	horiz_layout = new LinearLayoutComponent(2, 2, "horizontal_layout", "horizontal");	
+	vert_layout = new Array(new LinearLayoutComponent(2, 2, "vert_layout_0", "vertical"), new LinearLayoutComponent(2, 2, "vert_layout_1", "vertical"));
+
+	vert_layout[0].insertComponent(code.line_llc.group.getAttribute("id"), 0);
+	vert_layout[0].insertComponent(action_panel.llc.group.getAttribute("id"), 1);
+	vert_layout[1].insertComponent(the_evt.target.ownerDocument.getElementById("graph1").getAttribute("id"), 0);
+	horiz_layout.insertComponent(vert_layout[0].group.getAttribute("id"), 0);
+	horiz_layout.insertComponent(vert_layout[1].group.getAttribute("id"), 1);
+	var bbox1 = vert_layout[0].group.getBBox();
+	var bbox2 = vert_layout[1].group.getBBox();*/
+
+}
+
+
+
+
+function StartAnimation(evt){
+
+	if(evt.target.getAttribute("id") == "start_button" || evt.target.parentNode.getAttribute("id") == "start_button"){
+	
+		if(state != null){
+			horiz_layout.deleteComponent(1);
+			vert_layout[1] = new LinearLayoutComponent(2, 2, "vert_layout_1", "vertical");
+			
+			var new_graph = init_graph.cloneNode(true);
+			the_evt.target.ownerDocument.documentElement.appendChild(new_graph);
+			
+			vert_layout[1].insertComponent(the_evt.target.ownerDocument.getElementById("graph1").getAttribute("id"), 0);
+			horiz_layout.insertComponent(vert_layout[1].group.getAttribute("id"), 1);
+
+		}
+	
+	
+	
+		state = "running";
+		action_panel.activateButton("stop_button", "StopAnimation(evt)");
+		action_panel.activateButton("continue_button", "ContinueAnimation(evt)");
+		action_panel.activateButton("step_button", "StepAnimation(evt)");
+		action_panel.deactivateButton("start_button");
+
+		AnimateLoop();
+	}
+}
+
+
+
+function AnimateLoop(){
+	var duration = animation[step][0] * timeout;
+	animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
+	step = step + 1; 
+	if(step < animation.length) 
+		timer = setTimeout(AnimateLoop, duration);
+
+}
+
+function ContinueAnimation(evt){
+	if(evt.target.getAttribute("id") == "continue_button" || evt.target.parentNode.getAttribute("id") == "continue_button" ){
+		if(state != "running"){
+			state = "running";
+			AnimateLoop();
+		}
+	}
+}
+
+function StepAnimation(evt){
+	if(evt.target.getAttribute("id") == "step_button" || evt.target.parentNode.getAttribute("id") == "step_button"){
+		animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
+		step = step + 1;
+
+	}
+	
+}
+
+function StopAnimation(evt){
+	if(evt.target.getAttribute("id") == "stop_button" || evt.target.parentNode.getAttribute("id") == "stop_button"){
+		clearTimeout(timer);
+		
+		
+		state = "stopped";
+		action_panel.activateButton("start_button", "StartAnimation(evt)");
+		action_panel.deactivateButton("continue_button");
+		action_panel.deactivateButton("stop_button");
+		action_panel.deactivateButton("step_button");
+		step = 0;
+	}
+}
+
+
+
 function StartAnimation(evt) {
 	the_evt = evt;	
 	ShowAnimation();
@@ -137,7 +793,7 @@ function SetVertexAnnotation(v, annotation, color) //removed 'self' parameter to
 	newano.setAttribute("font-style","normal");
 	newano.setAttribute("font-weight","bold");
 	newano.appendChild(the_evt.target.ownerDocument.createTextNode(annotation));
-	the_evt.target.ownerDocument.documentElement.appendChild(newano);
+	element.parentNode.appendChild(newano);
 	
     }
 }
@@ -146,13 +802,7 @@ function SetVertexAnnotation(v, annotation, color) //removed 'self' parameter to
 //def UpdateVertexLabel(self, v, blink=1, color=None):
 var animation = Array(%(animation)s
 );
-function ShowAnimation() {
-	var duration = animation[step][0] * 4;
-	animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
-	step = step + 1; 
-	if(step < animation.length) 
-		setTimeout(ShowAnimation, duration);
-}
+
 ]]></script>
 """
 head = """<?xml version="1.0" encoding="utf-8"?>
@@ -167,7 +817,31 @@ viewbox="%(x)d %(y)d %(width)d %(height)d" width="30cm" height="30cm">
       markerWidth="4" markerHeight="3" 
       orient="auto"> 
       <path d="M 0 0 L 10 5 L 0 10 z" /> 
-    </marker> 
+    </marker>
+    
+    <linearGradient id="button_bg1" x1="0" y1="0" x2="0" y2="1">
+	<stop offset="0" stop-color="turquoise">
+	</stop>						
+	<stop offset="1" stop-color="navy">	
+	</stop>	
+    </linearGradient>
+    <linearGradient id="button_light1" x1="0" y1="0" x2="0" y2="1">
+		<stop offset="0" stop-color="white">
+		</stop>					
+		<stop offset="1" stop-color="white" stop-opacity="0">	
+		</stop>								
+	
+    </linearGradient>
+    <linearGradient id="button_light2" x1="0" y1="0" x2="0" y2="1">
+		<stop offset="0" stop-color="black" stop-opacity="0">
+		</stop>
+		<stop offset="1" stop-color="black">
+		</stop>
+    </linearGradient>
+    <filter id="button_gb">
+		<feGaussianBlur stdDeviation="3">
+		</feGaussianBlur>	
+    </filter>
 </defs>
 """
 
@@ -382,7 +1056,9 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay,
         vars['animation'] = ",\n".join(animation)
         file.write(animationhead % vars)
         # <g id="graph1"> </g>
-        WriteGraphAsSVG(graphDisplay, file)    
+        WriteGraphAsSVG(graphDisplay, file)
+        # mmitsui:  Each line of the graph should be written as a regular <text> element.  When tabs are needed, just make
+        # dx=15*t, where t stands for the number of tabs.
         source = algorithm.GetSource()
         print source
         file.write(footer)
