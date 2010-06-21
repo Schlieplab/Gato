@@ -589,6 +589,8 @@ class AlgoWin(Frame):
             
             if self.algorithm.ReadyToStart():
                 self.buttonStart['state'] = NORMAL 
+            else:
+                self.buttonStart['state'] = DISABLED                
             self.master.title("Gato _VERSION_ - " + stripPath(file))
             
             if self.AboutAlgorithmDialog:
@@ -819,7 +821,8 @@ class AlgoWin(Frame):
             import GatoExport
             GatoExport.ExportSVG(fileName, self, self.algorithm,
                                  self.graphDisplay,
-                                 self.secondaryGraphDisplay,
+                                 self.secondaryGraphDisplay.animator, #XXX potential bug
+                                 # self.secondaryGraphDisplay is AnimationHistory(sec...)
                                  showAnimation=False)
 
     def ExportSVGAnimation(self):
@@ -832,6 +835,8 @@ class AlgoWin(Frame):
             import GatoExport
             GatoExport.ExportSVG(fileName, self, self.algorithm,
                                  self.graphDisplay,
+                                 self.secondaryGraphDisplay.animator, #XXX potential bug
+                                 # self.secondaryGraphDisplay is AnimationHistory(sec...),
                                  self.secondaryGraphDisplay,
                                  showAnimation=True)
 
@@ -843,7 +848,7 @@ class AlgoWin(Frame):
 ##                for time, command in self.algorithm.animation_history.history:
 ##                    animation.append(command.print_svg(lastTime))
 ##                    lastTime = time
-##                self.graphDisplay
+
 ##                if self.algorithm.graphFileName is not "":
 ##                    self.OpenGraph(self.algorithm.graphFileName)
 ##                    execfile(os.path.splitext(self.algorithm.algoFileName)[0] + ".pro", 
@@ -1499,6 +1504,10 @@ class Algorithm:
             self.about         = options['about']
         except:
             self.about         = None
+        try:
+            self.noGraphNeeded = options['noGraphNeeded']
+        except:
+            self.noGraphNeeded = 0
             
             
         if self.graphDisplays != None:
@@ -1524,7 +1533,8 @@ class Algorithm:
         options = {}
         optionPattern = {'breakpoints':'breakpoints[ \t]*=[ \t]*(\[[^\]]+\])',
                          'interactive':'interactive[ \t]*=[ \t]*(\[[^\]]+\])',
-                         'graphDisplays':'graphDisplays[ \t]*=[ \t]*([1-2])'}
+                         'graphDisplays':'graphDisplays[ \t]*=[ \t]*([1-2])',
+                         'noGraphNeeded':'noGraphNeeded[ \t]*=[ \t]*([0-1])'}
         # about is more complicated
         
         for patternName in optionPattern.keys():
@@ -1587,12 +1597,21 @@ class Algorithm:
     def ReadyToStart(self):
         """ Return 1 if we are ready to run. That is when we user
             has opened both an algorithm and a graph.  """
-        if self.graphFileName != "" and self.algoFileName != "":
-            return 1
+        if self.algoFileName != "": # Algorithm openend
+            if self.graphFileName != "":
+                return 1
+            elif self.noGraphNeeded == 1:
+                # If no graph is loaded then we still have to show an empty
+                # graph. Otherwise the GraphDisplay is unhappy.
+                self.graphIsDirty = 1
+                self.cleanGraphCopy = Graph()
+                return 1
+            else:
+                return 0
         else:
             return 0
             
-    def Start(self):
+    def Start(self, prologOnly=False):
         """ Start an loaded algorithm. It firsts execs the prolog and
             then starts the algorithm in the debugger. The algorithms
             globals (i.e., the top-level locals are in a dict we supply
@@ -1603,6 +1622,7 @@ class Algorithm:
             self.GUI.graphDisplay.Show() # In case we are hidden
             self.GUI.graphDisplay.ShowGraph(self.graph, stripPath(self.graphFileName))
             self.GUI.graphDisplay.RegisterGraphInformer(WeightedGraphInformer(self.graph))
+            self.GUI.graphDisplay.UpdateScrollRegion(auto=1)
         else:
             self.GUI.graphDisplay.Show() # In case we are hidden
         self.graphIsDirty = 1
@@ -1653,7 +1673,9 @@ class Algorithm:
         except:
             log.exception("Bug in %s.pro" % os.path.splitext(self.algoFileName)[0])
             #traceback.print_exc()
-            
+
+        if prologOnly:
+            return
         # Read in algo and execute it in the debugger
         file = self.algoFileName
         # Filename must be handed over in a very safe way
