@@ -854,67 +854,77 @@ footer = """
 
 
 
-def cmd_as_javascript(cmd, currentTime = 0):
-    """ Return an JavaScript array of methodname, target and args """
-    def quote(s):
-        return "\"%s\"" % str(s)
+def cmd_as_javascript(cmd, idPrefix=''):
+    """ Return a list of methodname, target and args """
+    def quote(s, prefix=''):
+        return "\"%s\"" % (prefix+str(s))
+    
     if len(cmd.target) == 1:
-        target = quote(cmd.target[0])
+        target = quote(cmd.target[0], idPrefix)
     else:
-        target = quote(cmd.target)
+        target = quote(cmd.target, idPrefix)
         
-    duration = max(1,int(round((cmd.time - currentTime) * 1000, 0)))
-                                 
-    result = [str(duration), cmd.method.__name__, target]
+    result = [cmd.time, cmd.method.__name__, target]
     for arg in cmd.args:
         result.append(quote(arg))
-    return "Array(" + ", ".join(result) + ")"
-    
-def collectAnimation(algorithm):
-    lastTime = algorithm.animation_history.history[0][0]
-    result = []
-    for time, command in algorithm.animation_history.history:
-        result.append(cmd_as_javascript(command,lastTime))
-        lastTime = time
     return result
+    
+
+def collectAnimations(histories, prefixes):
+    """ Given a list of animation histories (aka list of AnimationCommands)
+        combine them, giving all targets of animation commands their history-
+        specific prefix, sort them and return a list of JavaScripts arrays.
+    """
+    mergedCmds = [cmd_as_javascript(cmd, prefixes[0]) for cmd in histories[0]]
+    for i, h in enumerate(histories[1:]):
+        mergedCmds += [cmd_as_javascript(cmd, prefixes[i+1]) for cmd in h]
+    mergedCmds = sorted(mergedCmds, key=lambda cmd: cmd[0])
+
+    # Replace absolute times by duration
+    currentTime = mergedCmds[0][0]
+    for i, cmd in enumerate(mergedCmds):
+        duration = max(1,int(round((cmd[0] - currentTime) * 1000, 0)))
+        currentTime = cmd[0]
+        mergedCmds[i][0] = str(duration)
+    return ["Array(" + ", ".join(cmd) + ")" for cmd in mergedCmds]
 
 def boundingBox(graphDisplay):
     bb = graphDisplay.canvas.bbox("all") # Bounding box of all elements on canvas
-    # Give 20 pixels room to breathe
-    x = max(bb[0] - 20,0)
-    y = max(bb[1] - 20,0)
-    width=bb[2] - bb[0] + 20
-    height=bb[3] - bb[1] + 20
+    # Give 10 pixels room to breathe
+    x = max(bb[0] - 10,0)
+    y = max(bb[1] - 10,0)
+    width=bb[2] - bb[0] + 10
+    height=bb[3] - bb[1] + 10
     return {'x':x,'y':y,'width':width,'height':height}
 
 
-def WriteGraphAsSVG(graphDisplay, file):
+def WriteGraphAsSVG(graphDisplay, file, idPrefix=''):
     # Write Bubbles from weighted matching
     # XXX We make use of the fact that they have a bubble tag
     # XXX What to use as the bubble ID?
-    bubbles = graphDisplay.canvas.find_withtag("bubbles")
-    for b in bubbles:
-        col = graphDisplay.canvas.itemcget(b,"fill")
-        # Find center and convert to Embedding coordinates
-        coords = graphDisplay.canvas.coords(b)
-        x = 0.5 * (coords[2] - coords[0]) + coords[0]
-        y = 0.5 * (coords[3] - coords[1]) + coords[1]
-        r = 0.5 * (coords[2] - coords[0])
-        xe,ye = graphDisplay.CanvasToEmbedding(x,y)
-        re,dummy = graphDisplay.CanvasToEmbedding(r,0)
-        file.write('<circle cx="%s" cy="%s" r="%s" fill="%s" '\
-                   ' stroke-width="0" />\n' % (xe,ye,re,col))           
+##    bubbles = graphDisplay.canvas.find_withtag("bubbles")
+##    for b in bubbles:
+##        col = graphDisplay.canvas.itemcget(b,"fill")
+##        # Find center and convert to Embedding coordinates
+##        coords = graphDisplay.canvas.coords(b)
+##        x = 0.5 * (coords[2] - coords[0]) + coords[0]
+##        y = 0.5 * (coords[3] - coords[1]) + coords[1]
+##        r = 0.5 * (coords[2] - coords[0])
+##        xe,ye = graphDisplay.CanvasToEmbedding(x,y)
+##        re,dummy = graphDisplay.CanvasToEmbedding(r,0)
+##        file.write('<circle cx="%s" cy="%s" r="%s" fill="%s" '\
+##                   ' stroke-width="0" />\n' % (xe,ye,re,col))           
 
 
-    # Write Highlighted paths
-    # XXX What to use as the bubble ID?
-    for pathID, draw_path in graphDisplay.highlightedPath.items():
-        # XXX Need to check visibility? See HidePath
-        col = graphDisplay.canvas.itemcget(draw_path,"fill")
-        width = graphDisplay.canvas.itemcget(draw_path,"width")
-        points = ["%s,%s" % graphDisplay.VertexPositionAndRadius(v)[0:2] for v in pathID]
-        file.write('<polyline points="%s" stroke="%s" stroke-width="%s" '\
-                   'fill="None" />\n' % (" ".join(points),col,width))
+##    # Write Highlighted paths
+##    # XXX What to use as the bubble ID?
+##    for pathID, draw_path in graphDisplay.highlightedPath.items():
+##        # XXX Need to check visibility? See HidePath
+##        col = graphDisplay.canvas.itemcget(draw_path,"fill")
+##        width = graphDisplay.canvas.itemcget(draw_path,"width")
+##        points = ["%s,%s" % graphDisplay.VertexPositionAndRadius(v)[0:2] for v in pathID]
+##        file.write('<polyline points="%s" stroke="%s" stroke-width="%s" '\
+##                   'fill="None" />\n' % (" ".join(points),col,width))
 
 
 
@@ -927,7 +937,7 @@ def WriteGraphAsSVG(graphDisplay, file):
 
         if graphDisplay.G.directed == 0:
             file.write('<line id="%s" x1="%s" y1="%s" x2="%s" y2="%s" stroke="%s"'\
-                       ' stroke-width="%s"/>\n' % ((v,w),vx,vy,wx,wy,col,width))
+                       ' stroke-width="%s"/>\n' % (idPrefix+str((v,w)),vx,vy,wx,wy,col,width))
         else:
             # AAARGH. SVG has a retarded way of dealing with arrowheads 
             # It is a known bug in SVG 1.1 that the color of the arrowhead is not inherited
@@ -939,14 +949,15 @@ def WriteGraphAsSVG(graphDisplay, file):
             # Implement arrows as closed polylines including the arrow (7 vs. 2 coordinates)
             # Q> How to do curved edges with arrows? Loops? 
             x1,y1,x2,y2 = graphDisplay.directedDrawEdgePoints(graphDisplay.VertexPosition(v),
-                                                              graphDisplay.VertexPosition(w),0)
+                                                              graphDisplay.VertexPosition(w),
+                                                              0)
             x1e,y1e = graphDisplay.CanvasToEmbedding(x1,y1)
             x2e,y2e = graphDisplay.CanvasToEmbedding(x2,y2)
 
 
             if graphDisplay.G.QEdge(w,v): # Directed edges both ways
                 file.write('<line id="%s" x1="%s" y1="%s" x2="%s" y2="%s" stroke="%s"'\
-                           ' stroke-width="%s"/>\n' % ((v,w),x1e,y1e,x2e,y2e,col,width))
+                           ' stroke-width="%s"/>\n' % (idPrefix+str((v,w)),x1e,y1e,x2e,y2e,col,width))
             else: # Just one directed edge
                 # XXX How to color arrowhead?
                 l = sqrt((float(wx)-float(vx))**2 + (float(wy)-float(vy))**2)
@@ -968,7 +979,8 @@ def WriteGraphAsSVG(graphDisplay, file):
                     if(cx == wx and cy == wy):
                         angle = atan2(int(float(wy))-int(float(vy)), int(float(wx))-int(float(vx)))
                         file.write('<line id="%s" x1="%s" y1="%s" x2="%f" y2="%f" stroke="%s"'\
-                               ' stroke-width="%s" />\n' % ((v,w),vx,vy,tmpX,tmpY,col,width))
+                               ' stroke-width="%s" />\n' % (idPrefix+str((v,w)),vx,vy,tmpX,tmpY,
+                                                            col,width))
                         break
 
                 #Temporary settings for size of polyline arrowhead
@@ -984,7 +996,8 @@ def WriteGraphAsSVG(graphDisplay, file):
                 tmpX = float(vx) + c*(float(wx) - float(vx))
                 tmpY = float(vy) + c*(float(wy) - float(vy))
                 file.write('<polyline id="ea%s" points="%f %f %f %f %s %f" fill="%s" transform="translate(%f,%f)'\
-                           ' rotate(%f %f %f)" />\n' % ((v,w), p1[0], p1[1], p2[0], p2[1], p3[0], p3[1], col, tmpX, tmpY - a_width/2, angle, p1[0], a_width/2))
+                           ' rotate(%f %f %f)" />\n' % (idPrefix+str((v,w)), p1[0], p1[1], p2[0], p2[1], p3[0], p3[1],
+                                                        col, tmpX, tmpY - a_width/2, angle, p1[0], a_width/2))
 
 
         # Write Edge Annotations
@@ -999,7 +1012,8 @@ def WriteGraphAsSVG(graphDisplay, file):
             if text != "":
                 file.write('<text id="ea%s" x="%s" y="%s" text-anchor="center" '\
                            'fill="%s" font-family="Helvetica" '\
-                           'font-size="%s" font-style="normal">%s</text>\n' % (xe,ye+offset,col,size,text))
+                           'font-size="%s" font-style="normal">%s</text>\n' % (idPrefix+str(xe),
+                                                                               ye+offset,col,size,text))
 
 
     for v in graphDisplay.G.Vertices():
@@ -1013,7 +1027,7 @@ def WriteGraphAsSVG(graphDisplay, file):
 
         #print x,y,r,col,fwe,stroke
         file.write('<circle id="%s" cx="%s" cy="%s" r="%s" fill="%s" stroke="%s"'\
-                   ' stroke-width="%s" />\n' % (v,x,y,r,col,stroke,fwe))
+                   ' stroke-width="%s" />\n' % (idPrefix+str(v),x,y,r,col,stroke,fwe))
 
         # Write Vertex Label
         col = graphDisplay.canvas.itemcget(graphDisplay.drawLabel[v], "fill")
@@ -1021,7 +1035,9 @@ def WriteGraphAsSVG(graphDisplay, file):
         offset = 0.33 * size
 
         file.write('<text id="vl%s" x="%s" y="%s" text-anchor="middle" fill="%s" font-family="Helvetica" '\
-                   'font-size="%s" font-style="normal" font-weight="bold" >%s</text>\n' % (v,x,y+offset,col,size,graphDisplay.G.GetLabeling(v)))
+                   'font-size="%s" font-style="normal" font-weight="bold" >%s</text>\n' % (idPrefix+str(v),x,
+                                                                                           y+offset,col,size,
+                                                                                           graphDisplay.G.GetLabeling(v)))
 
         # Write vertex annotation
         size = r*0.9
@@ -1029,36 +1045,57 @@ def WriteGraphAsSVG(graphDisplay, file):
         col = 'black'
         if text != "":
             file.write('<text id="va%s" x="%s" y="%s" text-anchor="left" fill="%s" font-family="Helvetica" '\
-                       'font-size="%s" font-style="normal">%s</text>\n' % (v,x+r+1,y+r+1,col,size,text))
+                       'font-size="%s" font-style="normal">%s</text>\n' % (idPrefix+str(v),x+r+1,y+r+1,col,size,text))
     
         
 
 
 
-def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay,
+def ExportSVG(fileName, algowin, algorithm, graphDisplay,
+              secondaryGraphDisplay=None,
+              secondaryGraphDisplayAnimationHistory=None,
               showAnimation=False):
     """ Export either the current graphs or the complete animation
         (showAnimation=True) to the file fileName
     """
+    print algowin.codeLineHistory
+    
     if showAnimation:
-        animation = collectAnimation(algorithm)
+        animation = collectAnimations([algorithm.animation_history.history,
+                                       secondaryGraphDisplayAnimationHistory.history,
+                                       algowin.codeLineHistory],
+                                      ['g1_','g2_','l_'])
 
         # Reload the graph and execute prolog so we can save the initial state
         # to SVG
-        if algorithm.graphFileName is not "":
-            algowin.OpenGraph(algorithm.graphFileName)
-            execfile(os.path.splitext(algorithm.algoFileName)[0] + ".pro", 
-                     algorithm.algoGlobals,
-                     algorithm.algoGlobals)
+        algorithm.Start(prologOnly=True)
         
         file = open(fileName,'w')
-        vars = boundingBox(graphDisplay)
+
+        # We need to change the coordinates and sizes of the SVG
+        # to accomodate two graphs. How do we deal with various
+        # browser window sizes???
+        vars = {'x':0,'y':0,'width':1024,'height':768}
+
+        # Merge animation commands from the graph windows and the algo window
         vars['animation'] = ",\n".join(animation)
         file.write(animationhead % vars)
-        # <g id="graph1"> </g>
-        WriteGraphAsSVG(graphDisplay, file)
-        # mmitsui:  Each line of the graph should be written as a regular <text> element.  When tabs are needed, just make
-        # dx=15*t, where t stands for the number of tabs.
+
+        # Write out first graph as group and translate it
+        bbg1 = boundingBox(graphDisplay)
+        file.write('<g id="g1" transform="translate(%d,%d)">\n' % (200,0))
+        WriteGraphAsSVG(graphDisplay, file, idPrefix='g1_')    
+        file.write('</g>\n')
+
+        if secondaryGraphDisplay:
+            # Write out second graph as group and translate it
+            bbg2 = boundingBox(secondaryGraphDisplay)
+            file.write('<g id="g2" transform="translate(%d,%d)">\n' % (200,bbg1['height']))
+            WriteGraphAsSVG(secondaryGraphDisplay, file, idPrefix='g2_')    
+            file.write('</g>\n')
+
+        algowin.CommitStop()
+        # Write algorithm to SVG    
         source = algorithm.GetSource()
         print source
         file.write(footer)
