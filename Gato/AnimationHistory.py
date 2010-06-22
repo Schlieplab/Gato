@@ -77,6 +77,9 @@ class AnimationCommand:
 ##            result.append(quote(arg))
 ##        return "Array(" + ", ".join(result) + ")"
 
+    def __repr__(self):
+        return self.log_str()
+
     def log_str(self):
         if len(self.target) == 1:
             t = self.target[0]
@@ -189,7 +192,7 @@ class AnimationHistory:
             self.history_index = len(self.history) - 1
             
         if self.history_index >= 0:
-            self.history[self.history_index][1].Undo()
+            self.history[self.history_index].Undo()
             self.history_index -= 1
             
     def Do(self):
@@ -198,7 +201,7 @@ class AnimationHistory:
         if self.history_index >= len(self.history):
             self.history_index = None
         else:       
-            self.history[self.history_index][1].Do()
+            self.history[self.history_index].Do()
             self.history_index += 1
             
     def DoAll(self):
@@ -210,21 +213,21 @@ class AnimationHistory:
             
     def Replay(self):
         if len(self.history) > 1:
-            self.history[-1][1].Undo()
+            self.history[-1].Undo()
             self.animator.update()
             self.animator.canvas.after(10 * g.BlinkRate)
-            self.history[-1][1].Do()
+            self.history[-1].Do()
             self.animator.update()
             self.animator.canvas.after(10 * g.BlinkRate)
-            self.history[-1][1].Undo()
+            self.history[-1].Undo()
             self.animator.update()
             self.animator.canvas.after(10 * g.BlinkRate)
-            self.history[-1][1].Do()
+            self.history[-1].Do()
             self.animator.update()
             
     def append(self, animation):
         #print "AnimationHistory: appending animation", animation.method
         if self.auto_print:
             print self.logPrefix + animation.log_str() 
-        self.history.append((time.time(), animation))
+        self.history.append(animation)
         

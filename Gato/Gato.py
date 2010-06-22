@@ -66,7 +66,7 @@ from GatoDialogs import AboutBox, SplashScreen, HTMLViewer, AutoScrolledText
 import GatoIcons
 # Only needed for Trial-Solution version. 
 #import GatoSystemConfiguration
-from AnimationHistory import AnimationHistory
+from AnimationHistory import AnimationHistory, AnimationCommand
 
 
 g = GatoGlobals.AnimationParameters
@@ -188,7 +188,8 @@ class AlgoWin(Frame):
         self.AboutGraphDialog = None
         
         self.lastActiveLine = 0
-        
+        self.codeLineHistory = []
+
         self.algorithmIsRunning = 0    # state
         self.commandAfterStop = None   # command to call after forced Stop
         
@@ -573,7 +574,9 @@ class AlgoWin(Frame):
             except (EOFError, IOError), (errno, strerror):
                 self.HandleFileIOError("Algorithm",file,errno,strerror)
                 return 
-                
+
+            self.codeLineHistory = []
+               
             self.algoText['state'] = NORMAL 
             self.algoText.delete('0.0', END)
             self.algoText.insert('0.0', self.algorithm.GetSource())
@@ -833,7 +836,9 @@ class AlgoWin(Frame):
                                  )
         if fileName is not "":
             import GatoExport
-            GatoExport.ExportSVG(fileName, self, self.algorithm,
+            GatoExport.ExportSVG(fileName,
+                                 self,
+                                 self.algorithm,
                                  self.graphDisplay,
                                  self.secondaryGraphDisplay.animator, #XXX potential bug
                                  # self.secondaryGraphDisplay is AnimationHistory(sec...),
@@ -1158,6 +1163,7 @@ class AlgoWin(Frame):
         self.tagLine(lineNo,'Active')	
         self.algoText.yview_pickplace('%d.0' % lineNo)
         self.update() # Forcing redraw
+        self.codeLineHistory.append(AnimationCommand(self.ShowActive, (lineNo,), []))
         
         
     def ShowBreakpoint(self, lineNo):
