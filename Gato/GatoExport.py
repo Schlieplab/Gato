@@ -53,31 +53,36 @@ onload="StartAnimation(evt)">
       markerWidth="4" markerHeight="3" 
       orient="auto"> 
       <path d="M 0 0 L 10 5 L 0 10 z" /> 
-    </marker>
-
-    <linearGradient id="button_bg1" x1="0" y1="0" x2="0" y2="1">
-	<stop offset="0" stop-color="turquoise">
-	</stop>						
-	<stop offset="1" stop-color="navy">	
-	</stop>	
-    </linearGradient>
-    <linearGradient id="button_light1" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="white">
-		</stop>					
-		<stop offset="1" stop-color="white" stop-opacity="0">	
-		</stop>								
-	
-    </linearGradient>
-    <linearGradient id="button_light2" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="black" stop-opacity="0">
+    </marker> 
+    
+    <linearGradient id="active_button_lg" x1="0" y1="0" x2="0" y2="1">
+		<stop offset="0" stop-color="blue">
 		</stop>
 		<stop offset="1" stop-color="black">
 		</stop>
     </linearGradient>
-    <filter id="button_gb">
-		<feGaussianBlur stdDeviation="3">
-		</feGaussianBlur>	
-    </filter>
+    
+    <linearGradient id="inactive_button_lg" x1="0" y1="0" x2="0" y2="1">
+		<stop offset="0" stop-color="blue" stop-opacity="0">
+		</stop>
+		<stop offset="1" stop-color="black">
+		</stop>
+    </linearGradient>
+    
+    
+    
+    <linearGradient id="slider_bar_lg" x1="0" y1="0" x2="0" y2="1">
+		<stop offset="0" stop-color="skyblue" >
+		</stop>
+		<stop offset="1" stop-color="black">
+		</stop>
+    </linearGradient>
+    <linearGradient id="slider_thumb_lg" x1="0" y1="0" x2="0" y2="1">
+		<stop offset="0" stop-color="#C0C0C0">
+		</stop>
+		<stop offset="1" stop-color="black">
+		</stop>
+    </linearGradient>
 </defs>
 <script type="text/ecmascript"><![CDATA[
 var step = 0;
@@ -88,6 +93,8 @@ var the_evt;
 var element;
 var blinkcolor;
 var blinkcount;
+
+
 var code;    //tracks HTB of code
 var init_graph;  //initial graph, for restarting
 var action_panel;   //tracks buttons
@@ -96,6 +103,9 @@ var timer;	//variable for timer for AnimateLoop
 var timeout = 4;  //timeout
 var horiz_layout;
 var verti_layout;
+var speed_slider;
+
+
 
 
 function getTranslate(str){
@@ -464,67 +474,15 @@ function BP_prototypeInit(){
 	bp.llc.group.parentNode.removeChild(bp.llc.group);
 }
 
-function BP_createButton(id, text, index, action){  //Create button with corresponding id, text, and action into slot #index
+function BP_createButton(id, draw_path, color, index, action){  //Create button with corresponding id, text, and action into slot #index
 	if(the_evt.target.ownerDocument.getElementById(id) == null){
-		var button_group = the_evt.target.ownerDocument.createElementNS(svgNS, "g");
+		var button_group = the_evt.target.ownerDocument.createElementNS(svgNS, "path");
 		button_group.setAttribute("id", id);
-		
-		
-		var element1 = the_evt.target.ownerDocument.createElementNS(svgNS, "rect");
-		element1.setAttribute("x", 5);
-		element1.setAttribute("y", 5);
-		element1.setAttribute("width", 150);
-		element1.setAttribute("height", 30);
-		element1.setAttribute("rx", 10);
-		element1.setAttribute("ry", 10);
-		element1.setAttribute("fill", "grey");
-		element1.setAttribute("filter", "url(#button_gb)");
-		button_group.appendChild(element1);
-	
-		element1 = the_evt.target.ownerDocument.createElementNS(svgNS, "rect");
-		element1.setAttribute("x", 0);
-		element1.setAttribute("y", 0);
-		element1.setAttribute("width", 150);
-		element1.setAttribute("height", 30);
-		element1.setAttribute("rx", 10);
-		element1.setAttribute("ry", 10);
-		element1.setAttribute("fill", "url(#button_bg1)");
-		button_group.appendChild(element1);
-	
-		
-		element1 = the_evt.target.ownerDocument.createElementNS(svgNS, "rect");
-		element1.setAttribute("x", 2);
-		element1.setAttribute("y", 2);
-		element1.setAttribute("width", 146);
-		element1.setAttribute("height", 17);
-		element1.setAttribute("rx", 8);
-		element1.setAttribute("ry", 8);
-		element1.setAttribute("fill", "url(#button_light1)");
-		button_group.appendChild(element1);
-		
-		element1 = the_evt.target.ownerDocument.createElementNS(svgNS, "rect");
-		element1.setAttribute("x", 4);
-		element1.setAttribute("y", 21);
-		element1.setAttribute("width", 142);
-		element1.setAttribute("height", 7);
-		element1.setAttribute("rx", 8);
-		element1.setAttribute("ry", 8);
-		element1.setAttribute("fill", "url(#button_light2)");
-		button_group.appendChild(element1);
-		
-		element1 = the_evt.target.ownerDocument.createElementNS(svgNS, "text");
-		element1.setAttribute("x", 75);
-		element1.setAttribute("y", 19);
-		element1.setAttribute("text-anchor", "middle");
-		element1.setAttribute("fill", "yellow");
-		element1.setAttribute("font-weight", 900);
-		element1.setAttribute("id", id + "_text");
-		element1.appendChild(the_evt.target.ownerDocument.createTextNode(text));
-		button_group.appendChild(element1);
-		
-		
-		button_group.setAttribute("onclick", action);
+		button_group.setAttribute("d", draw_path);
+		button_group.setAttribute("fill", color);
 		button_group.setAttribute("cursor", "pointer");
+		button_group.setAttribute("onclick", action);
+
 		the_evt.target.ownerDocument.documentElement.appendChild(button_group);
 		this.llc.insertComponent(button_group.getAttribute("id"), index);
 
@@ -561,13 +519,7 @@ function BP_activateButton(id, action){
 		if(children.item(i).getAttribute("id") == id){
 			children.item(i).setAttribute("onclick", action);
 			children.item(i).setAttribute("cursor", "pointer");
-			var grandchildren = children.item(i).childNodes;
-			for(j = 0; j < grandchildren.length; j++){
-				if(grandchildren.item(j).getAttribute("id") == (id + "_text")){
-					grandchildren.item(j).setAttribute("fill", "yellow");
-					break;
-				}
-			}
+			children.item(i).setAttribute("fill", "url(#active_button_lg)");
 			break;
 		}
 	}
@@ -580,13 +532,8 @@ function BP_deactivateButton(id){
 		if(children.item(i).getAttribute("id") == id){
 			children.item(i).setAttribute("onclick", "");
 			children.item(i).setAttribute("cursor", "default");
-			var grandchildren = children.item(i).childNodes;
-			for(j = 0; j < grandchildren.length; j++){
-				if(grandchildren.item(j).getAttribute("id") == id + "_text"){
-					grandchildren.item(j).setAttribute("fill", "grey");
-					break;
-				}
-			}			
+			children.item(i).setAttribute("fill", "url(#inactive_button_lg)");
+
 			break;
 		}
 	}
@@ -598,7 +545,87 @@ function BP_deactivateButton(id){
 
 
 
+function Slider(id, slider_width, thumb_height, offset, range, labels, title, actions){ //range is a 2-indexed array. labels is an arbitrarily sized array.  actions is an array of 2-index arrays [["attribute", "action"], ...]
 
+	
+	this.slider = null;
+	this.slider_bar = null;
+	this.slider_thumb = null;
+	this.low_bound = range[0];
+	this.up_bound = range[1];
+	this.thumb_active = false;
+	this.current_setting = range[0];
+	this.offset = offset;
+	
+	this.default_thickness = 10;
+	var font_size = 10;
+	var x_translation = 20;
+	
+	this.slider = the_evt.target.ownerDocument.createElementNS(svgNS, "g");	
+	this.slider.setAttribute("id", id);
+	
+	this.slider_bar = the_evt.target.ownerDocument.createElementNS(svgNS, "rect");
+	this.slider_bar.setAttribute("width", slider_width);
+	this.slider_bar.setAttribute("height", this.default_thickness);
+	this.slider_bar.setAttribute("x", this.default_thickness/2);
+	this.slider_bar.setAttribute("y",(thumb_height-this.default_thickness)/2);
+	this.slider_bar.setAttribute("rx", this.default_thickness/2);
+	this.slider_bar.setAttribute("ry", this.default_thickness/2);
+	this.slider_bar.setAttribute("stroke", "black");
+	this.slider_bar.setAttribute("fill", "url(#slider_bar_lg)");
+	this.slider_bar.setAttribute("stroke-width", 1);
+	this.slider_bar.setAttribute("cursor", "pointer");
+	this.slider_bar.setAttribute("id", id + "_slider_bar");
+	this.slider.appendChild(this.slider_bar);
+	
+	this.slider_thumb = the_evt.target.ownerDocument.createElementNS(svgNS, "rect");
+	this.slider_thumb = the_evt.target.ownerDocument.createElementNS(svgNS, "rect");
+	this.slider_thumb.setAttribute("width", this.default_thickness);
+	this.slider_thumb.setAttribute("height", thumb_height);
+	this.slider_thumb.setAttribute("rx", this.default_thickness/2);
+	this.slider_thumb.setAttribute("ry", this.default_thickness/2);
+	this.slider_thumb.setAttribute("stroke", "black");
+	this.slider_thumb.setAttribute("fill", "url(#slider_thumb_lg)");
+	this.slider_thumb.setAttribute("stroke-width", 1);
+	this.slider_thumb.setAttribute("cursor", "pointer");
+	this.slider_thumb.setAttribute("id", id + "_slider_thumb");
+	this.slider.appendChild(this.slider_thumb);
+	
+	//create labels below slider
+	for(i in labels){
+		var text = the_evt.target.ownerDocument.createElementNS(svgNS, "text");
+		text.setAttribute("x", this.default_thickness/2 + i*(slider_width/(labels.length-1)));
+		text.setAttribute("y", thumb_height+ font_size);
+		text.setAttribute("text-anchor","middle");
+		text.setAttribute("font-size", font_size);
+		text.setAttribute("font-family","Helvetica");
+		text.setAttribute("font-style","normal");
+		text.appendChild(the_evt.target.ownerDocument.createTextNode(labels[i]));
+		this.slider.appendChild(text);
+	}
+	
+	//create slider title
+	
+	var header = the_evt.target.ownerDocument.createElementNS(svgNS, "text");
+	header.setAttribute("x", (this.default_thickness + slider_width)/2);
+	header.setAttribute("y", 0);
+	header.setAttribute("text-anchor","middle");
+	header.setAttribute("font-size", font_size);
+	header.setAttribute("font-family","Helvetica");
+	header.setAttribute("font-style","normal");
+	header.appendChild(the_evt.target.ownerDocument.createTextNode(title));
+	this.slider.appendChild(header);
+	
+	//this.slider.setAttribute("transform", "translate(" + x_translation + " 0)");
+	
+	for(i in actions){
+		this.slider.setAttribute(actions[i][0], actions[i][1]);
+	}
+	
+	the_evt.target.ownerDocument.documentElement.appendChild(this.slider);
+	
+
+}
 
 
 
@@ -608,42 +635,84 @@ function Initialize(evt) {
 	LLC_prototypeInit();
 	BP_prototypeInit();
 
+	code = new HighlightableTextBlock(2, 2, "code", 14, "vertical");
 
-        /*
-        I commented out this part for now, so nothing will display.  I wanted to wait until I saw
-        what the final product looked like (i.e. how the elements are actually listed at the bottom of the document)
-        */
-	/*code = new HighlightableTextBlock(2, 2, "code", 14, "vertical");
-
-	for(i = 0; i < 5; i++){
+	/*for(i = 0; i < 5; i++){
 		code.insertLine("cl" + i, i);
 	}
 	for(i = 0; i < 5; i++){
 		code.insertLine("foocl" + i, i+5);
-	}	
+	}	*/
 	
 	
-	init_graph = the_evt.target.ownerDocument.getElementById("graph1").cloneNode(true);
+	init_graph = the_evt.target.ownerDocument.getElementById("g1").cloneNode(true);
 	
-	action_panel = new ButtonPanel(2, 2, "actions", "horizontal");
-	action_panel.createButton("start_button", "Start", 0, "StartAnimation(evt)");
-	action_panel.createButton("step_button", "Step", 1, "StepAnimation(evt)");
-	action_panel.createButton("continue_button", "Continue", 2, "ContinueAnimation(evt)");
-	action_panel.createButton("stop_button", "Stop", 3, "StopAnimation(evt)");
-
+	
+	action_panel = new ButtonPanel(15, 2, "actions", "horizontal");
+	action_panel.createButton("start_button", "M0,0 0,40 30,20 Z", "url(#active_button_lg)", 0, "StartAnimation(evt)");
+	action_panel.createButton("step_button", "M0,0 0,40 30,20 Z M30,0 30,40 40,40 40,0 Z" , "url(#active_button_lg)", 1, "StepAnimation(evt)");
+	action_panel.createButton("continue_button", "M0,0 0,40 10,40 10,0 Z M20,0 20,40 50,20 Z", "url(#active_button_lg)", 2, "ContinueAnimation(evt)");
+	action_panel.createButton("stop_button", "M0,0 0,40 40,40 40,0 Z", "url(#active_button_lg)", 3, "StopAnimation(evt)");
+	action_panel.deactivateButton("continue_button");
+	action_panel.deactivateButton("stop_button");
+	action_panel.deactivateButton("step_button");
+	
+	
+	speed_slider = new Slider("speed_slider", 400, 50, 0, [50,1], ["Slow", "Fast"], "Speed", [["onmousedown", "SSlider_Click(evt)"],["onmouseup", "Deactivate_SSlider(evt)"], ["onmousemove","Drag_SSlider(evt)"]]);
+	
+	
 	horiz_layout = new LinearLayoutComponent(2, 2, "horizontal_layout", "horizontal");	
-	vert_layout = new Array(new LinearLayoutComponent(2, 2, "vert_layout_0", "vertical"), new LinearLayoutComponent(2, 2, "vert_layout_1", "vertical"));
+	vert_layout = new Array(new LinearLayoutComponent(2, 5, "vert_layout_0", "vertical"), new LinearLayoutComponent(2, 2, "vert_layout_1", "vertical"));
 
 	vert_layout[0].insertComponent(code.line_llc.group.getAttribute("id"), 0);
 	vert_layout[0].insertComponent(action_panel.llc.group.getAttribute("id"), 1);
+	vert_layout[0].insertComponent(speed_slider.slider.getAttribute("id"), 2);
 	vert_layout[1].insertComponent(the_evt.target.ownerDocument.getElementById("graph1").getAttribute("id"), 0);
 	horiz_layout.insertComponent(vert_layout[0].group.getAttribute("id"), 0);
 	horiz_layout.insertComponent(vert_layout[1].group.getAttribute("id"), 1);
 	var bbox1 = vert_layout[0].group.getBBox();
-	var bbox2 = vert_layout[1].group.getBBox();*/
+	var bbox2 = vert_layout[1].group.getBBox();
+	
 
 }
 
+
+
+function SSlider_Click(evt){
+	if(evt.target.getAttribute("id") == "speed_slider_slider_thumb"){  //Drag thumb
+		speed_slider.thumb_active = true;
+	} else if(evt.target.getAttribute("id") == "speed_slider_slider_bar"){	//Move thumb.
+		Move_SSlider(evt);
+	}	
+}
+
+function Deactivate_SSlider(evt){
+	speed_slider.thumb_active=false;
+}
+
+function Move_SSlider(evt){
+	var bbox = speed_slider.slider_bar.getBBox();
+	speed_slider.slider_thumb.setAttribute("x", evt.clientX-speed_slider.offset-(speed_slider.default_thickness/2));
+
+	speed_slider.current_setting = speed_slider.low_bound + (speed_slider.up_bound-speed_slider.low_bound)*(speed_slider.slider_thumb.getAttribute("x")/speed_slider.slider_bar.getAttribute("width"));
+	timeout = speed_slider.current_setting;
+
+
+
+}
+
+function Drag_SSlider(evt){
+	if(speed_slider.thumb_active){
+		if(evt.clientX >= speed_slider.slider_bar.getBBox().x+speed_slider.offset && evt.clientX <= (speed_slider.slider_bar.getBBox().x + speed_slider.offset + speed_slider.slider_bar.getBBox().width)){
+
+			speed_slider.slider_thumb.setAttribute("x", evt.clientX-speed_slider.offset-(speed_slider.default_thickness/2));
+			speed_slider.current_setting = speed_slider.low_bound + (speed_slider.up_bound-speed_slider.low_bound)*(speed_slider.slider_thumb.getAttribute("x")/speed_slider.slider_bar.getAttribute("width"));
+			timeout = speed_slider.current_setting;
+		}
+
+
+	}
+}
 
 
 
@@ -687,6 +756,7 @@ function AnimateLoop(){
 }
 
 function ContinueAnimation(evt){
+
 	if(evt.target.getAttribute("id") == "continue_button" || evt.target.parentNode.getAttribute("id") == "continue_button" ){
 		if(state != "running"){
 			state = "running";
@@ -696,6 +766,7 @@ function ContinueAnimation(evt){
 }
 
 function StepAnimation(evt){
+
 	if(evt.target.getAttribute("id") == "step_button" || evt.target.parentNode.getAttribute("id") == "step_button"){
 		animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
 		step = step + 1;
@@ -705,6 +776,7 @@ function StepAnimation(evt){
 }
 
 function StopAnimation(evt){
+
 	if(evt.target.getAttribute("id") == "stop_button" || evt.target.parentNode.getAttribute("id") == "stop_button"){
 		clearTimeout(timer);
 		
@@ -720,10 +792,9 @@ function StopAnimation(evt){
 
 
 
-function StartAnimation(evt) {
-	the_evt = evt;	
-	ShowAnimation();
-}
+
+
+
 function SetVertexColor(v, color) {
     element = the_evt.target.ownerDocument.getElementById(v);
     element.setAttribute("fill", color);
@@ -749,7 +820,7 @@ function BlinkVertex(v, color) {
     setTimeout(VertexBlinker, 3);
 }
 function VertexBlinker() {
-    if (blinkcount %% 2 == 1) {
+    if (blinkcount % 2 == 1) {
        element.setAttribute("fill", blinkcolor); 
     } else {
        element.setAttribute("fill", "black"); 
@@ -817,31 +888,36 @@ viewbox="%(x)d %(y)d %(width)d %(height)d" width="30cm" height="30cm">
       markerWidth="4" markerHeight="3" 
       orient="auto"> 
       <path d="M 0 0 L 10 5 L 0 10 z" /> 
-    </marker>
+    </marker>    
     
-    <linearGradient id="button_bg1" x1="0" y1="0" x2="0" y2="1">
-	<stop offset="0" stop-color="turquoise">
-	</stop>						
-	<stop offset="1" stop-color="navy">	
-	</stop>	
-    </linearGradient>
-    <linearGradient id="button_light1" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="white">
-		</stop>					
-		<stop offset="1" stop-color="white" stop-opacity="0">	
-		</stop>								
-	
-    </linearGradient>
-    <linearGradient id="button_light2" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="black" stop-opacity="0">
+    <linearGradient id="active_button_lg" x1="0" y1="0" x2="0" y2="1">
+		<stop offset="0" stop-color="blue">
 		</stop>
 		<stop offset="1" stop-color="black">
 		</stop>
     </linearGradient>
-    <filter id="button_gb">
-		<feGaussianBlur stdDeviation="3">
-		</feGaussianBlur>	
-    </filter>
+    
+    <linearGradient id="inactive_button_lg" x1="0" y1="0" x2="0" y2="1">
+		<stop offset="0" stop-color="blue" stop-opacity="0">
+		</stop>
+		<stop offset="1" stop-color="black">
+		</stop>
+    </linearGradient>
+    
+    
+    
+    <linearGradient id="slider_bar_lg" x1="0" y1="0" x2="0" y2="1">
+		<stop offset="0" stop-color="skyblue" >
+		</stop>
+		<stop offset="1" stop-color="black">
+		</stop>
+    </linearGradient>
+    <linearGradient id="slider_thumb_lg" x1="0" y1="0" x2="0" y2="1">
+		<stop offset="0" stop-color="#C0C0C0">
+		</stop>
+		<stop offset="1" stop-color="black">
+		</stop>
+    </linearGradient>
 </defs>
 """
 
