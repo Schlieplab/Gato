@@ -96,7 +96,7 @@ var blinkcount;
 
 
 var code;    //tracks HTB of code
-var init_graph;  //initial graph, for restarting
+var init_graphs;  //initial graph, for restarting
 var action_panel;   //tracks buttons
 var state;	//tracks state of animation
 var timer;	//variable for timer for AnimateLoop
@@ -645,7 +645,15 @@ function Initialize(evt) {
 	}	*/
 	
 	
-	init_graph = the_evt.target.ownerDocument.getElementById("g1").cloneNode(true);
+	init_graphs = new Array();
+	var i = 1;
+	var tree = the_evt.target.ownerDocument.getElementById("g" + i);
+	while(tree != null){
+            init_graphs[i-1] = tree.cloneNode(true);
+            i++;
+            tree = the_evt.target.ownerDocument.getElementById("g" + i);
+	}
+	
 	
 	
 	action_panel = new ButtonPanel(15, 2, "actions", "horizontal");
@@ -667,7 +675,10 @@ function Initialize(evt) {
 	vert_layout[0].insertComponent(code.line_llc.group.getAttribute("id"), 0);
 	vert_layout[0].insertComponent(action_panel.llc.group.getAttribute("id"), 1);
 	vert_layout[0].insertComponent(speed_slider.slider.getAttribute("id"), 2);
-	vert_layout[1].insertComponent(the_evt.target.ownerDocument.getElementById("graph1").getAttribute("id"), 0);
+
+        for(x in init_graphs){
+            vert_layout[1].insertComponent(init_graphs[x].getAttribute("id"), x);
+	}
 	horiz_layout.insertComponent(vert_layout[0].group.getAttribute("id"), 0);
 	horiz_layout.insertComponent(vert_layout[1].group.getAttribute("id"), 1);
 	var bbox1 = vert_layout[0].group.getBBox();
@@ -723,11 +734,13 @@ function StartAnimation(evt){
 		if(state != null){
 			horiz_layout.deleteComponent(1);
 			vert_layout[1] = new LinearLayoutComponent(2, 2, "vert_layout_1", "vertical");
+
+			for(x in init_graphs){
+                            var new_graph = init_graphs[x].cloneNode(true);
+                            the_evt.target.ownerDocument.documentElement.appendChild(new_graph);
 			
-			var new_graph = init_graph.cloneNode(true);
-			the_evt.target.ownerDocument.documentElement.appendChild(new_graph);
-			
-			vert_layout[1].insertComponent(the_evt.target.ownerDocument.getElementById("graph1").getAttribute("id"), 0);
+                            vert_layout[1].insertComponent(new_graph.getAttribute("id"), x);
+                        }
 			horiz_layout.insertComponent(vert_layout[1].group.getAttribute("id"), 1);
 
 		}
@@ -750,8 +763,16 @@ function AnimateLoop(){
 	var duration = animation[step][0] * timeout;
 	animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
 	step = step + 1; 
-	if(step < animation.length) 
+	if(step < animation.length) {
 		timer = setTimeout(AnimateLoop, duration);
+	}else{
+                state = "stopped";
+		action_panel.activateButton("start_button", "StartAnimation(evt)");
+		action_panel.deactivateButton("continue_button");
+		action_panel.deactivateButton("stop_button");
+		action_panel.deactivateButton("step_button");
+		step = 0;
+	}
 
 }
 
@@ -1065,7 +1086,7 @@ def WriteGraphAsSVG(graphDisplay, file, idPrefix=''):
                     a_width = 5.0
                 a_width *= float(width) 
                 p1 = (0,0)
-                p2 = (0, a_width) #0 + int(round(1.5*int(float(width)))))       float(wy) - (p2[1]+p1[1])/2
+                p2 = (0, a_width)
                 p3 = (cr, a_width/2)
                 angle = degrees(atan2(int(wy)-int(vy), int(wx)-int(vx)))
                 c = (l-2*graphDisplay.zVertexRadius)/l
