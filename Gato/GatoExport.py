@@ -841,7 +841,7 @@ function BlinkVertex(v, color) {
     setTimeout(VertexBlinker, 3);
 }
 function VertexBlinker() {
-    if (blinkcount % 2 == 1) {
+    if (blinkcount %% 2 == 1) {
        element.setAttribute("fill", blinkcolor); 
     } else {
        element.setAttribute("fill", "black"); 
@@ -1155,7 +1155,7 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
     """ Export either the current graphs or the complete animation
         (showAnimation=True) to the file fileName
     """
-    print algowin.codeLineHistory
+    #print algowin.codeLineHistory
     
     if showAnimation:
         animation = collectAnimations([algorithm.animation_history.history,
@@ -1176,6 +1176,8 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
 
         # Merge animation commands from the graph windows and the algo window
         vars['animation'] = ",\n".join(animation)
+        print "vars", vars
+        print "animationhead", animationhead
         file.write(animationhead % vars)
 
         # Write out first graph as group and translate it
