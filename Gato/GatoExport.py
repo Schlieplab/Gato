@@ -36,7 +36,9 @@
 #
 ################################################################################
 import os
-from math import sqrt, pi, sin, cos, atan2, degrees, log10
+import StringIO
+import tokenize
+from math import sqrt, pi, sin, cos, atan2, degrees, log10, floor
 
 # SVG Fileheader and JavaScript animation code
 #
@@ -45,7 +47,7 @@ animationhead = """<?xml version="1.0" encoding="utf-8"?>
 xmlns:xlink="http://www.w3.org/1999/xlink"
 xmlns:ev="http://www.w3.org/2001/xml-events" version="1.1" baseProfile="full"
 viewbox="%(x)d %(y)d %(width)d %(height)d" width="30cm" height="30cm"
-onload="StartAnimation(evt)">
+onload="Initialize(evt)">
 <defs> 
     <marker id="Arrowhead" 
       viewBox="0 0 10 10" refX="0" refY="5" 
@@ -100,10 +102,11 @@ var init_graphs;  //initial graph, for restarting
 var action_panel;   //tracks buttons
 var state;	//tracks state of animation
 var timer;	//variable for timer for AnimateLoop
-var timeout = 4;  //timeout
+var timeout = 10;  //timeout
 var horiz_layout;
 var verti_layout;
 var speed_slider;
+var current_line = -1;
 
 
 
@@ -248,9 +251,10 @@ function HTB_highlightLine(n){
 }
 
 function HTB_removeHighlight(n){
+
 	var hl = the_evt.target.ownerDocument.getElementById(this.line_llc.group.getAttribute("id") + "_hl" + n);
 	if(hl != null){
-		this.highlight_group.removeChild(hl);
+		hl.parentNode.removeChild(hl);
 	}
 }
 
@@ -637,12 +641,11 @@ function Initialize(evt) {
 
 	code = new HighlightableTextBlock(2, 2, "code", 14, "vertical");
 
-	/*for(i = 0; i < 5; i++){
-		code.insertLine("cl" + i, i);
+	var linenum = 1;
+	while(the_evt.target.ownerDocument.getElementById("l_" + linenum) != null){
+		code.insertLine("l_" + linenum, linenum-1);
+		linenum++;
 	}
-	for(i = 0; i < 5; i++){
-		code.insertLine("foocl" + i, i+5);
-	}	*/
 	
 	
 	init_graphs = new Array();
@@ -657,16 +660,16 @@ function Initialize(evt) {
 	
 	
 	action_panel = new ButtonPanel(15, 2, "actions", "horizontal");
-	action_panel.createButton("start_button", "M0,0 0,40 30,20 Z", "url(#active_button_lg)", 0, "StartAnimation(evt)");
+	action_panel.createButton("start_button", "M0,0 0,40 10,40 10,0 Z M20,0 20,40 50,20 Z", "url(#active_button_lg)", 0, "StartAnimation(evt)");
 	action_panel.createButton("step_button", "M0,0 0,40 30,20 Z M30,0 30,40 40,40 40,0 Z" , "url(#active_button_lg)", 1, "StepAnimation(evt)");
-	action_panel.createButton("continue_button", "M0,0 0,40 10,40 10,0 Z M20,0 20,40 50,20 Z", "url(#active_button_lg)", 2, "ContinueAnimation(evt)");
+	action_panel.createButton("continue_button", "M0,0 0,40 30,20 Z", "url(#active_button_lg)", 2, "ContinueAnimation(evt)");
 	action_panel.createButton("stop_button", "M0,0 0,40 40,40 40,0 Z", "url(#active_button_lg)", 3, "StopAnimation(evt)");
 	action_panel.deactivateButton("continue_button");
 	action_panel.deactivateButton("stop_button");
 	action_panel.deactivateButton("step_button");
 	
 	
-	speed_slider = new Slider("speed_slider", 400, 50, 0, [50,1], ["Slow", "Fast"], "Speed", [["onmousedown", "SSlider_Click(evt)"],["onmouseup", "Deactivate_SSlider(evt)"], ["onmousemove","Drag_SSlider(evt)"]]);
+	speed_slider = new Slider("speed_slider", 400, 50, 0, [10,1], ["Slow", "Fast"], "Speed", [["onmousedown", "SSlider_Click(evt)"],["onmouseup", "Deactivate_SSlider(evt)"], ["onmousemove","Drag_SSlider(evt)"]]);
 	
 	
 	horiz_layout = new LinearLayoutComponent(2, 2, "horizontal_layout", "horizontal");	
@@ -684,6 +687,7 @@ function Initialize(evt) {
 	var bbox1 = vert_layout[0].group.getBBox();
 	var bbox2 = vert_layout[1].group.getBBox();
 	
+	//horiz_layout.group.setAttribute("transform", "translate(20 20)");
 
 }
 
@@ -728,9 +732,8 @@ function Drag_SSlider(evt){
 
 
 function StartAnimation(evt){
-
 	if(evt.target.getAttribute("id") == "start_button" || evt.target.parentNode.getAttribute("id") == "start_button"){
-	
+
 		if(state != null){
 			horiz_layout.deleteComponent(1);
 			vert_layout[1] = new LinearLayoutComponent(2, 2, "vert_layout_1", "vertical");
@@ -831,6 +834,7 @@ function SetEdgeColor(e, color) {
         element.setAttribute("fill", color);
     }
 }
+
 //function SetEdgesColor(edge_array, color) {
 // Cannot map: SetAllEdgesColor(self, color, graph=None, leaveColors=None)
 function BlinkVertex(v, color) {
@@ -841,22 +845,24 @@ function BlinkVertex(v, color) {
     setTimeout(VertexBlinker, 3);
 }
 function VertexBlinker() {
-    if (blinkcount %% 2 == 1) {
+    if (blinkcount % 2 == 1) {
        element.setAttribute("fill", blinkcolor); 
     } else {
        element.setAttribute("fill", "black"); 
     }
     blinkcount = blinkcount - 1;
-    if (blickcount >= 0)
+    if (blinkcount >= 0)
        setTimeout(VertexBlinker, 3);
 }
 
 
 
 
-//
-//BlinkEdge(self, tail, head, color=None):
-//
+//TODO
+function BlinkEdge(self, tail, head, color){
+	1;
+}
+
 //Blink(self, list, color=None):
 function SetVertexFrameWidth(v, val) {
     var element = the_evt.target.ownerDocument.getElementById(v);
@@ -888,6 +894,20 @@ function SetVertexAnnotation(v, annotation, color) //removed 'self' parameter to
 	element.parentNode.appendChild(newano);
 	
     }
+}
+
+
+function ShowActive(line_id){
+
+	for(i = 0; i < code.line_llc.group.childNodes.length; i++){
+		if(code.line_llc.group.childNodes.item(i).getAttribute("id") == line_id){
+			code.removeHighlight(current_line);
+			code.highlightLine(i);
+			current_line = i;
+			break;
+		}
+		
+	}	
 }
 
 //function SetEdgeAnnotation(self,tail,head,annotation,color="black"):
@@ -946,9 +966,81 @@ footer = """
 </svg>
 """
 
+#Global constants for tokenEater
+line_count = 1
+keywordsList = [
+          "del", "from", "lambda", "return",
+          "and", "elif", "global", "not", "try",
+          "break", "else", "if", "or", "while",
+          "class", "except", "import", "pass",
+          "continue", "finally", "in", "print",
+          "def", "for", "is", "raise"]
+
+operatorsList = ["+", "-", "*", "/", "^", "%", "=",
+                 "+=", "-=", "*=", "/=", "^=", "%=",
+                 ">", "<", "==", "!=", ">=", "<=",
+                 "**", "<>", "|", "&", "<<", ">>",
+                 "//", "~", "**="]
+
+specialList = ["(", ",", ".", ")", "[", "]"]
+
+begun_line = False
+num_tabs = 0
+SVG_Animation = None
+prev = ""
+
+def tokenEater(type, token, (srow, scol), (erow, ecol), line):
+    global line_count
+    global prev
+    global begun_line
+    global num_tabs
+    global SVG_Animation
+
+    if (type == 1): #Word.  Potential keyword.  Must check keywordsList
+        if begun_line == False:
+            begun_line = True
+            SVG_Animation.write('<text id="%s" x="10" y="10" dx = "%d" text-anchor="start" '\
+                       'fill="black" font-family="Courier New" font-size="14.0" font-style="normal">' % ("l_" + str(line_count), 15*num_tabs))
+
+        if token in keywordsList:
+            if prev in specialList:
+                SVG_Animation.write('<tspan font-weight="bold">%s</tspan>' % token)
+            else:
+                SVG_Animation.write('<tspan font-weight="bold"> %s</tspan>' % token)
+        else:
+            if prev in specialList:
+                SVG_Animation.write(token)
+            else:
+                SVG_Animation.write(" " + token)
+    elif (type == 4): #Newline on nonempty line
+        SVG_Animation.write('</text>\n')
+        begun_line = False
+        line_count += 1
+    elif (type == 5):  #Arbitrary number of tabs at beginning of line  tabs are 4 spaces long
+        num_tabs += int(floor(len(token))/4)
+    elif (type == 6):  #One backpedal
+        num_tabs -=1
+    elif (type == 51): #Operators and punctuation
+        if begun_line == False:
+            begun_line = True
+            SVG_Animation.write('<text id="%s" x="10" y="10" dx = "%d" text-anchor="start" '\
+                       'fill="black" font-family="Courier New" font-size="14.0" font-style="normal">' % ("l_" + str(line_count), 15*num_tabs))
+
+        if token in operatorsList:
+            SVG_Animation.write(' %s' % token)
+        else:
+            SVG_Animation.write('%s' % token)
+    elif (type == 53): #Comment
+        x = 1+1  #For now, do nothing
+    elif (type == 54): #Empty line with newline
+        SVG_Animation.write('<text id="%s" x="10" y="10" dx = "%d" text-anchor="start" '\
+                       'fill="black" font-family="Courier New" font-size="14.0" font-style="normal"></text>\n' % ("l_" + str(line_count), 15*num_tabs))
+        line_begun = False
+        line_count += 1
 
 
-
+    prev = token
+    
 
 
 def cmd_as_javascript(cmd, idPrefix=''):
@@ -1156,7 +1248,7 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
         (showAnimation=True) to the file fileName
     """
     #print algowin.codeLineHistory
-    
+    global SVG_Animation
     if showAnimation:
         animation = collectAnimations([algorithm.animation_history.history,
                                        secondaryGraphDisplayAnimationHistory.history,
@@ -1168,7 +1260,7 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
         algorithm.Start(prologOnly=True)
         
         file = open(fileName,'w')
-
+        SVG_Animation = file
         # We need to change the coordinates and sizes of the SVG
         # to accomodate two graphs. How do we deal with various
         # browser window sizes???
@@ -1196,7 +1288,9 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
         algowin.CommitStop()
         # Write algorithm to SVG    
         source = algorithm.GetSource()
-        print source
+        #Call tokenEater
+        tokenize.tokenize(StringIO.StringIO(source).readline, 
+                              tokenEater)
         file.write(footer)
         file.close()
     else:
