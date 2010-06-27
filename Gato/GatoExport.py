@@ -95,6 +95,8 @@ var the_evt;
 var element;
 var blinkcolor;
 var blinkcount;
+var e_blinkcolor;
+var e_blinkcount;
 
 
 var code;    //tracks HTB of code
@@ -195,6 +197,34 @@ function HTB_prototypeInit(){
 //insert line into nth slot.  0-based indexing.  May also be used to rearrange lines
 function HTB_insertLine(id, n){
 
+	var to_insert = the_evt.target.ownerDocument.getElementById(id);
+	if(to_insert != null && to_insert.childNodes.length == 0){ // Empty Text  Replace with Rectangle
+		var new_rect = the_evt.target.ownerDocument.createElementNS(svgNS, "rect");
+		var children = this.line_llc.group.childNodes;
+		for(i = 0; i < children.length; i++){
+			if(children.item(i).childNodes.length > 0){
+				for(j = 0; j < children.item(i).childNodes.length; j++){
+					if(children.item(i).childNodes.item(j).wholeText != null){
+						new_rect.setAttribute("x", children.item(i).getAttribute("x"));
+						new_rect.setAttribute("y", children.item(i).getAttribute("y"));
+						new_rect.setAttribute("height", children.item(i).getBBox().height);
+						new_rect.setAttribute("width", this.line_llc.group.getBBox().width);
+						to_insert.parentNode.removeChild(to_insert);
+						new_rect.setAttribute("id", to_insert.getAttribute("id"));
+						new_rect.setAttribute("fill", "white");
+						new_rect.setAttribute("fill-opacity", 0);
+						the_evt.target.ownerDocument.documentElement.appendChild(new_rect);
+						break;
+					}
+				}
+				if(new_rect.getAttribute("id") != null){
+					break;
+				}
+			}
+		}
+	
+	
+	}
 	this.line_llc.insertComponent(id, n);
 }
 
@@ -234,8 +264,7 @@ function HTB_highlightLine(n){
 			}else{
 				dy = parseFloat(dy);
 			}
-			
-			//setTranslate(background, line_translation[0] , line_translation[1]-this.line_llc.v_padding);
+
 			background.setAttribute("x", line_bbox.x + line_translation[0] - this.line_llc.h_padding - dx);
 			background.setAttribute("y", line_bbox.y + line_translation[1] - this.line_llc.v_padding - dy);
 			background.setAttribute("width", htb_bbox.width + 2*this.line_llc.h_padding);
@@ -669,7 +698,7 @@ function Initialize(evt) {
 	action_panel.deactivateButton("step_button");
 	
 	
-	speed_slider = new Slider("speed_slider", 400, 50, 0, [10,1], ["Slow", "Fast"], "Speed", [["onmousedown", "SSlider_Click(evt)"],["onmouseup", "Deactivate_SSlider(evt)"], ["onmousemove","Drag_SSlider(evt)"]]);
+	speed_slider = new Slider("speed_slider", 400, 50, 0, [timeout,1], ["Slow", "Fast"], "Speed", [["onmousedown", "SSlider_Click(evt)"],["onmouseup", "Deactivate_SSlider(evt)"], ["onmousemove","Drag_SSlider(evt)"]]);
 	
 	
 	horiz_layout = new LinearLayoutComponent(2, 2, "horizontal_layout", "horizontal");	
@@ -679,16 +708,16 @@ function Initialize(evt) {
 	vert_layout[0].insertComponent(action_panel.llc.group.getAttribute("id"), 1);
 	vert_layout[0].insertComponent(speed_slider.slider.getAttribute("id"), 2);
 
+
         for(x in init_graphs){
             vert_layout[1].insertComponent(init_graphs[x].getAttribute("id"), x);
 	}
 	horiz_layout.insertComponent(vert_layout[0].group.getAttribute("id"), 0);
 	horiz_layout.insertComponent(vert_layout[1].group.getAttribute("id"), 1);
-	var bbox1 = vert_layout[0].group.getBBox();
-	var bbox2 = vert_layout[1].group.getBBox();
 	
-	//horiz_layout.group.setAttribute("transform", "translate(20 20)");
-
+	
+	horiz_layout.group.setAttribute("transform", "translate(10 0)");
+	code.highlight_group.setAttribute("transform", "translate(10 0)");
 }
 
 
@@ -792,9 +821,17 @@ function ContinueAnimation(evt){
 function StepAnimation(evt){
 
 	if(evt.target.getAttribute("id") == "step_button" || evt.target.parentNode.getAttribute("id") == "step_button"){
+                clearTimeout(timer);
 		animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
 		step = step + 1;
-
+                if(step >= animation.length){
+                    state = "stopped";
+                    action_panel.activateButton("start_button", "StartAnimation(evt)");
+                    action_panel.deactivateButton("continue_button");
+                    action_panel.deactivateButton("stop_button");
+                    action_panel.deactivateButton("step_button");
+                    step = 0;
+                }
 	}
 	
 }
@@ -803,8 +840,6 @@ function StopAnimation(evt){
 
 	if(evt.target.getAttribute("id") == "stop_button" || evt.target.parentNode.getAttribute("id") == "stop_button"){
 		clearTimeout(timer);
-		
-		
 		state = "stopped";
 		action_panel.activateButton("start_button", "StartAnimation(evt)");
 		action_panel.deactivateButton("continue_button");
@@ -845,7 +880,7 @@ function BlinkVertex(v, color) {
     setTimeout(VertexBlinker, 3);
 }
 function VertexBlinker() {
-    if (blinkcount % 2 == 1) {
+    if (blinkcount %% 2 == 1) {
        element.setAttribute("fill", blinkcolor); 
     } else {
        element.setAttribute("fill", "black"); 
@@ -858,9 +893,38 @@ function VertexBlinker() {
 
 
 
-//TODO
-function BlinkEdge(self, tail, head, color){
-	1;
+function BlinkEdge(e, color){
+    e_element = the_evt.target.ownerDocument.getElementById(e);
+    e_blinkcolor = e_element.getAttribute("stroke");
+    e_blinkcount = 3;
+    e_element.setAttribute("stroke", "black");
+    var element2 = the_evt.target.ownerDocument.getElementById(e_arrow_id + e);
+    if(element2 != null){
+        element2.setAttribute("fill", "black");
+    }
+    setTimeout(EdgeBlinker, 3);
+    
+}
+
+
+function EdgeBlinker(){
+    var element2;
+    if (e_blinkcount %% 2 == 1) {
+       e_element.setAttribute("stroke",e_blinkcolor);
+       element2 = the_evt.target.ownerDocument.getElementById(e_arrow_id + element.getAttribute("id"));
+       if(element2 != null){
+           element2.setAttribute("fill", e_blinkcolor);
+       }
+    } else {
+       e_element.setAttribute("stroke", "black");
+       element2 = the_evt.target.ownerDocument.getElementById(e_arrow_id + element.getAttribute("id"));
+       if(element2 != null){
+           element2.setAttribute("fill", "black");
+       }
+    }
+    e_blinkcount = e_blinkcount - 1;
+    if (e_blinkcount >= 0)
+       setTimeout(EdgeBlinker, 3);
 }
 
 //Blink(self, list, color=None):
@@ -996,6 +1060,8 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
     global num_tabs
     global SVG_Animation
 
+    print("'%s'" % token + " of " + str((srow,scol)) + " , " + str((erow, ecol)) + " - type: " + str(type) + "line: " + str(line))
+
     if (type == 1): #Word.  Potential keyword.  Must check keywordsList
         if begun_line == False:
             begun_line = True
@@ -1017,7 +1083,7 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
         begun_line = False
         line_count += 1
     elif (type == 5):  #Arbitrary number of tabs at beginning of line  tabs are 4 spaces long
-        num_tabs += int(floor(len(token))/4)
+        num_tabs = int(floor(len(token))/4)
     elif (type == 6):  #One backpedal
         num_tabs -=1
     elif (type == 51): #Operators and punctuation
