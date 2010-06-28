@@ -43,39 +43,32 @@ g = GatoGlobals.AnimationParameters
 class AnimationCommand:
 
 
-    def __init__(self, method, target, args, undo_method=None, undo_args=None):
+    def __init__(self, method, target, args,
+                 undo_method=None, undo_args=None, canUndo=True):
         self.target = target
         self.method = method
         self.args = args
-        self.time = time.time()
-        
+
+        self.canUndo = canUndo
         self.undo_method = undo_method
         self.undo_args = undo_args
+
+        self.time = time.time()
+
+    def CanUndo(self):
+        return self.canUndo
         
     def Do(self):
         apply(self.method, self.target + self.args)
         
         
     def Undo(self):
-        if self.undo_method == None:
-            apply(self.method, self.target + self.undo_args)
-        else:
-            apply(self.undo_method, self.target + self.undo_args)
+        if self.canUndo:
+            if self.undo_method == None:
+                apply(self.method, self.target + self.undo_args)
+            else:
+                apply(self.undo_method, self.target + self.undo_args)
 
-##    def print_svg(self, currentTime = 0):
-##        def quote(s):
-##            return "\"%s\"" % str(s)
-##        if len(self.target) == 1:
-##            target = quote(self.target[0])
-##        else:
-##            target = quote(self.target)
-
-##        duration = max(1,int(round((self.time - currentTime) * 1000, 0)))
-                                 
-##        result = [str(duration), self.method.__name__, target]
-##        for arg in self.args:
-##            result.append(quote(arg))
-##        return "Array(" + ", ".join(result) + ")"
 
     def __repr__(self):
         return self.log_str()
@@ -132,8 +125,20 @@ class AnimationHistory:
                                      undo_args=(self.animator.GetVertexColor(v),))
         animation.Do()
         self.append(animation)
-        
-        #SetAllVerticesColor
+
+##    def SetAllVerticesColor(self, color, graph=None, vertices=None):
+##        if graph:
+##            vertices = graph.Vertices()
+##        if vertices:
+##            animation = AnimationCommand(self.animator.SetAllVerticesColor,
+##                                         (color,vertices=vertices),
+##                                         canUndo=False)
+##        else:
+##            animation = AnimationCommand(self.animator.SetAllVerticesColor, (color,),
+##                                         canUndo=False)        
+##        animation.Do()
+##        self.append(animation)
+
         #SetAllEdgesColor
         
     def SetEdgeColor(self, tail, head, color):
@@ -166,7 +171,30 @@ class AnimationHistory:
                                      undo_args=(self.animator.GetVertexAnnotation(v),))
         animation.Do()
         self.append(animation)
-        
+
+
+    def AddVertex(self, x, y, v = None):
+        if v:
+            animation = AnimationCommand(self.animator.AddVertexAnnotation, (), (x,y,v),
+                                         canUndo=False)
+        else:
+            animation = AnimationCommand(self.animator.AddVertexAnnotation, (), (x,y),
+                                         canUndo=False)
+        animation.Do()
+        self.append(animation)
+
+    def AddEdge(self, tail, head):
+        animation = AnimationCommand(self.animator.AddEdge, (tail,head), (),
+                                     canUndo=False)
+        animation.Do()
+        self.append(animation)
+
+    def DeleteEdge(self, tail, head, repaint=1):
+        animation = AnimationCommand(self.animator.DeleteEdge, (tail,head), (repaint,),
+                                     canUndo=False)
+        animation.Do()
+        self.append(animation)
+            
         
     #========== Handle all other methods from GraphDisplay =====================
     def __getattr__(self,arg):
@@ -188,12 +216,14 @@ class AnimationHistory:
         
     #========== AnimationHistory methods =======================================
     def Undo(self):
+        """ Undo last command if there is one and if it can be undone """
         if self.history_index == None: # Have never undone anything
             self.history_index = len(self.history) - 1
             
         if self.history_index >= 0:
-            self.history[self.history_index].Undo()
-            self.history_index -= 1
+            if self.history[self.history_index].CanUndo():            
+                self.history[self.history_index].Undo()
+                self.history_index -= 1
             
     def Do(self):
         if self.history_index is None:
@@ -212,7 +242,7 @@ class AnimationHistory:
             self.history_index = None
             
     def Replay(self):
-        if len(self.history) > 1:
+        if len(self.history) > 1 and self.history[-1].CanUndo():
             self.history[-1].Undo()
             self.animator.update()
             self.animator.canvas.after(10 * g.BlinkRate)
