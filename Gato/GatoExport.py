@@ -1316,10 +1316,16 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
     #print algowin.codeLineHistory
     global SVG_Animation
     if showAnimation:
-        animation = collectAnimations([algorithm.animation_history.history,
-                                       secondaryGraphDisplayAnimationHistory.history,
-                                       algowin.codeLineHistory],
-                                      ['g1_','g2_','l_'])
+        if secondaryGraphDisplayAnimationHistory:
+            animation = collectAnimations([algorithm.animation_history.history,
+                                           secondaryGraphDisplayAnimationHistory.history,
+                                           algowin.codeLineHistory],
+                                          ['g1_','g2_','l_'])
+        else:
+            animation = collectAnimations([algorithm.animation_history.history,
+                                           algowin.codeLineHistory],
+                                          ['g1_','l_'])
+            
 
         # Reload the graph and execute prolog so we can save the initial state
         # to SVG
