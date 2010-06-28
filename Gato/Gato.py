@@ -836,14 +836,26 @@ class AlgoWin(Frame):
                                  )
         if fileName is not "":
             import GatoExport
-            GatoExport.ExportSVG(fileName,
-                                 self,
-                                 self.algorithm,
-                                 self.graphDisplay,
-                                 self.secondaryGraphDisplay.animator, #XXX potential bug
-                                 # self.secondaryGraphDisplay is AnimationHistory(sec...),
-                                 self.secondaryGraphDisplay,
-                                 showAnimation=True)
+
+            # We never destroy the secondary graph display (and create it from the beginning
+            # for the paned viewed. graphDisplays is set from prolog
+            if self.algorithm.graphDisplays == None or self.algorithm.graphDisplays == 1:
+                GatoExport.ExportSVG(fileName,
+                                     self,
+                                     self.algorithm,
+                                     self.graphDisplay,
+                                     None,
+                                     None,
+                                     showAnimation=True)
+            else:
+                GatoExport.ExportSVG(fileName,
+                                     self,
+                                     self.algorithm,
+                                     self.graphDisplay,
+                                     self.secondaryGraphDisplay.animator, #XXX potential bug
+                                     # self.secondaryGraphDisplay is AnimationHistory(sec...),
+                                     self.secondaryGraphDisplay,
+                                     showAnimation=True)
 
 
 ##            if 1:
