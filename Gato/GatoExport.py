@@ -104,7 +104,7 @@ var init_graphs;  //initial graph, for restarting
 var action_panel;   //tracks buttons
 var state;	//tracks state of animation
 var timer;	//variable for timer for AnimateLoop
-var timeout = 10;  //timeout
+var timeout = 50;  //timeout
 var horiz_layout;
 var verti_layout;
 var speed_slider;
@@ -698,7 +698,7 @@ function Initialize(evt) {
 	action_panel.deactivateButton("step_button");
 	
 	
-	speed_slider = new Slider("speed_slider", 400, 50, 0, [timeout,1], ["Slow", "Fast"], "Speed", [["onmousedown", "SSlider_Click(evt)"],["onmouseup", "Deactivate_SSlider(evt)"], ["onmousemove","Drag_SSlider(evt)"]]);
+	speed_slider = new Slider("speed_slider", 400, 50, 20, [timeout,1], ["Slow", "Fast"], "Speed", [["onmousedown", "SSlider_Click(evt)"],["onmouseup", "Deactivate_SSlider(evt)"], ["onmousemove","Drag_SSlider(evt)"]]);
 	
 	
 	horiz_layout = new LinearLayoutComponent(2, 2, "horizontal_layout", "horizontal");	
@@ -716,8 +716,8 @@ function Initialize(evt) {
 	horiz_layout.insertComponent(vert_layout[1].group.getAttribute("id"), 1);
 	
 	
-	horiz_layout.group.setAttribute("transform", "translate(10 0)");
-	code.highlight_group.setAttribute("transform", "translate(10 0)");
+	horiz_layout.group.setAttribute("transform", "translate(20 20)");
+	code.highlight_group.setAttribute("transform", "translate(20 20)");
 }
 
 
@@ -877,17 +877,17 @@ function BlinkVertex(v, color) {
     blinkcolor = element.getAttribute("fill")
     blinkcount = 3;
     element.setAttribute("fill", "black");
-    setTimeout(VertexBlinker, 3);
+    setTimeout(VertexBlinker, 3*timeout);
 }
 function VertexBlinker() {
     if (blinkcount %% 2 == 1) {
-       element.setAttribute("fill", blinkcolor); 
-    } else {
        element.setAttribute("fill", "black"); 
+    } else {
+       element.setAttribute("fill", blinkcolor); 
     }
     blinkcount = blinkcount - 1;
     if (blinkcount >= 0)
-       setTimeout(VertexBlinker, 3);
+       setTimeout(VertexBlinker, 3*timeout);
 }
 
 
@@ -902,7 +902,7 @@ function BlinkEdge(e, color){
     if(element2 != null){
         element2.setAttribute("fill", "black");
     }
-    setTimeout(EdgeBlinker, 3);
+    setTimeout(EdgeBlinker, 3*timeout);
     
 }
 
@@ -913,18 +913,18 @@ function EdgeBlinker(){
        e_element.setAttribute("stroke",e_blinkcolor);
        element2 = the_evt.target.ownerDocument.getElementById(e_arrow_id + element.getAttribute("id"));
        if(element2 != null){
-           element2.setAttribute("fill", e_blinkcolor);
+           element2.setAttribute("fill", "black");
        }
     } else {
        e_element.setAttribute("stroke", "black");
        element2 = the_evt.target.ownerDocument.getElementById(e_arrow_id + element.getAttribute("id"));
        if(element2 != null){
-           element2.setAttribute("fill", "black");
+           element2.setAttribute("fill", e_blinkcolor);
        }
     }
     e_blinkcount = e_blinkcount - 1;
     if (e_blinkcount >= 0)
-       setTimeout(EdgeBlinker, 3);
+       setTimeout(EdgeBlinker, 3*timeout);
 }
 
 //Blink(self, list, color=None):
@@ -1060,7 +1060,7 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
     global num_tabs
     global SVG_Animation
 
-    print("'%s'" % token + " of " + str((srow,scol)) + " , " + str((erow, ecol)) + " - type: " + str(type) + "line: " + str(line))
+    #print("'%s'" % token + " of " + str((srow,scol)) + " , " + str((erow, ecol)) + " - type: " + str(type) + "line: " + str(line))
 
     if (type == 1): #Word.  Potential keyword.  Must check keywordsList
         if begun_line == False:
@@ -1346,14 +1346,23 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
 
         # Write out first graph as group and translate it
         bbg1 = boundingBox(graphDisplay)
-        file.write('<g id="g1" transform="translate(%d,%d)">\n' % (200,0))
+        graph_type = ""
+        if(graphDisplay.G.directed == 0):
+                graph_type = "undirected"
+        else:
+                graph_type = "directed"
+        file.write('<g id="g1" transform="translate(%d,%d)" type="%s">\n' % (200,0, graph_type))
         WriteGraphAsSVG(graphDisplay, file, idPrefix='g1_')    
         file.write('</g>\n')
 
         if secondaryGraphDisplay:
             # Write out second graph as group and translate it
             bbg2 = boundingBox(secondaryGraphDisplay)
-            file.write('<g id="g2" transform="translate(%d,%d)">\n' % (200,bbg1['height']))
+            if(secondaryGraphDisplay.G.directed == 0):
+                graph_type = "undirected"
+            else:
+                graph_type = "directed"
+            file.write('<g id="g2" transform="translate(%d,%d)" type="%s">\n' % (200,bbg1['height'], graph_type))
             WriteGraphAsSVG(secondaryGraphDisplay, file, idPrefix='g2_')    
             file.write('</g>\n')
 
