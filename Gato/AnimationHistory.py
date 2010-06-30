@@ -59,7 +59,7 @@ class AnimationCommand:
         return self.canUndo
         
     def Do(self):
-        apply(self.method, self.target + self.args)
+        return apply(self.method, self.target + self.args)
         
         
     def Undo(self):
@@ -175,13 +175,14 @@ class AnimationHistory:
 
     def AddVertex(self, x, y, v = None):
         if v:
-            animation = AnimationCommand(self.animator.AddVertexAnnotation, (), (x,y,v),
+            animation = AnimationCommand(self.animator.AddVertex, (x,y), (v,),
                                          canUndo=False)
         else:
-            animation = AnimationCommand(self.animator.AddVertexAnnotation, (), (x,y),
+            animation = AnimationCommand(self.animator.AddVertex, (x,y), (),
                                          canUndo=False)
-        animation.Do()
+        result = animation.Do()
         self.append(animation)
+        return result
 
     def AddEdge(self, tail, head):
         animation = AnimationCommand(self.animator.AddEdge, (tail,head), (),
