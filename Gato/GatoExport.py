@@ -106,10 +106,13 @@ var state;	//tracks state of animation
 var timer;	//variable for timer for AnimateLoop
 var timeout = 50;  //timeout
 var horiz_layout;
-var verti_layout;
+var vert_layout;
 var speed_slider;
 var current_line = -1;
-
+var default_vertex_radius = 14.0;
+var default_line_width = 4.0;
+var x_offset = 20;
+var y_offset = 20;
 
 
 
@@ -430,8 +433,8 @@ function LLC_insertComponent(id, n){
 function LLC_resnapComponent(n){
 	var children = this.group.childNodes;
 	var child = children.item(n);
+	child.parentNode.removeChild(child);
 	
-	child.parentNode.removeChild(n);
 	the_evt.target.ownerDocument.documentElement.appendChild(child);
 	this.insertComponent(child.getAttribute("id"), n);
 }
@@ -592,7 +595,6 @@ function Slider(id, slider_width, thumb_height, offset, range, labels, title, ac
 	
 	this.default_thickness = 10;
 	var font_size = 10;
-	var x_translation = 20;
 	
 	this.slider = the_evt.target.ownerDocument.createElementNS(svgNS, "g");	
 	this.slider.setAttribute("id", id);
@@ -648,9 +650,7 @@ function Slider(id, slider_width, thumb_height, offset, range, labels, title, ac
 	header.setAttribute("font-style","normal");
 	header.appendChild(the_evt.target.ownerDocument.createTextNode(title));
 	this.slider.appendChild(header);
-	
-	//this.slider.setAttribute("transform", "translate(" + x_translation + " 0)");
-	
+		
 	for(i in actions){
 		this.slider.setAttribute(actions[i][0], actions[i][1]);
 	}
@@ -698,7 +698,7 @@ function Initialize(evt) {
 	action_panel.deactivateButton("step_button");
 	
 	
-	speed_slider = new Slider("speed_slider", 400, 50, 20, [timeout,1], ["Slow", "Fast"], "Speed", [["onmousedown", "SSlider_Click(evt)"],["onmouseup", "Deactivate_SSlider(evt)"], ["onmousemove","Drag_SSlider(evt)"]]);
+	speed_slider = new Slider("speed_slider", 400, 50, x_offset, [timeout,1], ["Slow", "Fast"], "Speed", [["onmousedown", "SSlider_Click(evt)"],["onmouseup", "Deactivate_SSlider(evt)"], ["onmousemove","Drag_SSlider(evt)"]]);
 	
 	
 	horiz_layout = new LinearLayoutComponent(2, 2, "horizontal_layout", "horizontal");	
@@ -716,8 +716,8 @@ function Initialize(evt) {
 	horiz_layout.insertComponent(vert_layout[1].group.getAttribute("id"), 1);
 	
 	
-	horiz_layout.group.setAttribute("transform", "translate(20 20)");
-	code.highlight_group.setAttribute("transform", "translate(20 20)");
+	horiz_layout.group.setAttribute("transform", "translate(" + x_offset + " " + y_offset + ")");
+	code.highlight_group.setAttribute("transform","translate(" + x_offset + " " + y_offset + ")");
 }
 
 
@@ -792,6 +792,7 @@ function StartAnimation(evt){
 
 
 function AnimateLoop(){
+
 	var duration = animation[step][0] * timeout;
 	animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
 	step = step + 1; 
@@ -822,6 +823,7 @@ function StepAnimation(evt){
 
 	if(evt.target.getAttribute("id") == "step_button" || evt.target.parentNode.getAttribute("id") == "step_button"){
                 clearTimeout(timer);
+		
 		animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
 		step = step + 1;
                 if(step >= animation.length){
@@ -957,6 +959,8 @@ function SetVertexAnnotation(v, annotation, color) //removed 'self' parameter to
 	newano.appendChild(the_evt.target.ownerDocument.createTextNode(annotation));
 	element.parentNode.appendChild(newano);
 	
+	the_evt.target.ownerDocument.documentElement.setAttribute("width", x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
+	the_evt.target.ownerDocument.documentElement.setAttribute("height", y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);	
     }
 }
 
@@ -972,6 +976,177 @@ function ShowActive(line_id){
 		}
 		
 	}	
+}
+
+/*else: # Compute middle point for curves
+            # (mX,mY) to difference vector h - t
+            (mX,mY) = orthogonal((head.x - tail.x, head.y - tail.y))
+            c = 1.5 * self.zVertexRadius + l / 25
+            # Add c * (mX,mY) at midpoint between h and t
+            mX = tail.x + .5 * (head.x - tail.x) + c * mX
+            mY = tail.y + .5 * (head.y - tail.y) + c * mY            
+            return tail.x, tail.y, mX, mY, tmpX, tmpY*/
+function AddEdge(edge_id){
+
+	var graph_id = edge_id.split("_")[0];
+	var vertices = edge_id.split("_")[1].match(/\d+/g);
+	var v = the_evt.target.ownerDocument.getElementById(graph_id + "_" + vertices[0]);
+	var w = the_evt.target.ownerDocument.getElementById(graph_id + "_" + vertices[1]);
+	
+	
+	
+	if(v != null && w != null){
+		var parent_graph = the_evt.target.ownerDocument.getElementById(graph_id);
+		var arrowhead = null;
+		var edge = the_evt.target.ownerDocument.createElementNS(svgNS,"line");
+		edge.setAttribute("id", edge_id);
+		edge.setAttribute("stroke", "#EEEEEE");
+		edge.setAttribute("stroke-width", 4.0);
+		
+		if(parent_graph.getAttribute("type") == "directed"){
+			if(the_evt.target.ownerDocument.getElementById(graph_id + "_(" + vertices[1] + ", " + vertices[0] + ")") != null){  
+				//Another directed edge.  Great... Change existing edge to arc and add new arc
+				//Be sure to alter polylines as well.
+				
+				
+				
+				
+				1;
+			}else{  //We're cool. Just add this edge
+				edge.setAttribute("x1", v.getAttribute("cx"));
+				edge.setAttribute("y1", v.getAttribute("cy"));
+				
+				var vx = v.getAttribute("cx");
+				var wx = w.getAttribute("cx");
+				var vy = v.getAttribute("cy");
+				var wy = w.getAttribute("cy");
+				
+				var l = Math.sqrt(Math.pow((parseFloat(wx)-parseFloat(vx)),2) + Math.pow((parseFloat(wy)-parseFloat(vy)),2));
+               
+				if (l < .001)
+					l = .001;
+				
+
+				var c = (l-2*default_vertex_radius)/l + .01;
+				var tmpX = parseFloat(vx) + c*(parseFloat(wx) - parseFloat(vx));
+				var tmpY = parseFloat(vy) + c*(parseFloat(wy) - parseFloat(vy));
+								
+				edge.setAttribute("x2", tmpX);
+				edge.setAttribute("y2", tmpY);
+
+				arrowhead = createArrowhead(vx, vy, wx, wy, 4.0, "ea" + edge_id);	
+				
+				
+			}
+		}else{
+			edge.setAttribute("x1", v.getAttribute("cx"));
+			edge.setAttribute("y1", v.getAttribute("cy"));
+			edge.setAttribute("x2", w.getAttribute("cx"));
+			edge.setAttribute("y2", w.getAttribute("cy"));
+			
+			
+			
+		}
+		
+		parent_graph.insertBefore(edge, parent_graph.childNodes.item(0));
+		if(arrowhead != null)
+			parent_graph.insertBefore(arrowhead, parent_graph.childNodes.item(1));
+	}
+}
+
+function createArrowhead(vx, vy, wx, wy, stroke_width, id){
+
+ 		var l = Math.sqrt(Math.pow(parseFloat(wx)-parseFloat(vx),2) + Math.pow(parseFloat(wy)-parseFloat(vy), 2));
+		
+		
+                if (l < .001)
+                    l = .001;
+		    
+		
+		
+		var a_width = (1 + 1.5/(1*Math.pow(Math.log(parseFloat(stroke_width))/Math.log(10), 6)));
+
+                if(a_width > 5.0)
+                    a_width = 5.0;
+		    
+		var cr = default_vertex_radius;
+		
+		
+                a_width = a_width * parseFloat(stroke_width);
+
+                var p1 = [0,0];
+                var p2 = [0, a_width];
+                var p3 = [cr, a_width/2];
+                var angle = (Math.atan2(parseInt(wy)-parseInt(vy), parseInt(wx)-parseInt(vx))) * 180/Math.PI;
+                var c = (l-2*default_vertex_radius)/l;
+                var tmpX = parseFloat(vx) + c*(parseFloat(wx) - parseFloat(vx));
+                var tmpY = parseFloat(vy) + c*(parseFloat(wy) - parseFloat(vy));
+		
+		
+		var arrowhead = the_evt.target.ownerDocument.createElementNS(svgNS, "polyline");
+		arrowhead.setAttribute("points", p1[0] + " " + p1[1] + " " + p2[0] + " " + p2[1] + " " + p3[0] + " " + p3[1]);
+		arrowhead.setAttribute("fill", "#EEEEEE");
+		arrowhead.setAttribute("transform", "translate(" + tmpX + " " + (tmpY-a_width/2) + ") rotate(" + angle + " " + p1[0] + " " + a_width/2 + ")");
+		arrowhead.setAttribute("id", id);
+
+                return arrowhead;
+}
+
+function DeleteEdge(edge_id){
+
+	//temporary.  Fix later.
+	var edge =  the_evt.target.ownerDocument.getElementById(edge_id);
+	if(edge != null){
+		edge.parentNode.removeChild(edge);
+	}
+}
+
+function AddVertex(graph_and_coordinates){
+	
+	var graph = the_evt.target.ownerDocument.getElementById(graph_and_coordinates.split("_")[0]);
+	var next_vertex = 1;
+	var id = ""
+	while(true){
+		if(the_evt.target.ownerDocument.getElementById(graph.getAttribute("id") + "_" + next_vertex) == null){
+			break;
+		}
+		next_vertex++;
+	}
+	
+	var coords = graph_and_coordinates.split("(")[1].match(/\d+/g);
+	
+	var new_vertex = the_evt.target.ownerDocument.createElementNS(svgNS,"circle");
+	new_vertex.setAttribute("cx", coords[0]);
+	new_vertex.setAttribute("cy", coords[1]);
+	new_vertex.setAttribute("r", default_vertex_radius);
+	new_vertex.setAttribute("fill", "#000099");
+	new_vertex.setAttribute("stroke", "black");
+	new_vertex.setAttribute("stroke-width", 0.0);
+	new_vertex.setAttribute("id", graph.getAttribute("id") + "_" + next_vertex);
+	graph.appendChild(new_vertex);
+	
+	var new_label = the_evt.target.ownerDocument.createElementNS(svgNS,"text");
+	new_label.setAttribute("x", coords[0]);
+	new_label.setAttribute("y", parseFloat(coords[1]) + .33*parseFloat(new_vertex.getAttribute("r")));
+	new_label.setAttribute("text-anchor", "middle");
+	new_label.setAttribute("fill", "white");
+	new_label.setAttribute("font-family", "Helvetica");
+	new_label.setAttribute("font-size", 14.0);
+	new_label.setAttribute("font-style", "normal");
+	new_label.setAttribute("font-weight", "bold");
+	new_label.setAttribute("id", "vl" + new_vertex.getAttribute("id"));
+	new_label.appendChild(the_evt.target.ownerDocument.createTextNode(next_vertex + ""));
+	graph.appendChild(new_label);
+
+        //resnap graph to fit	
+	for(i = 0; i < vert_layout[1].group.childNodes.length; i++){
+		vert_layout[1].resnapComponent(i);
+	}
+	
+	
+	the_evt.target.ownerDocument.documentElement.setAttribute("width", x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
+	the_evt.target.ownerDocument.documentElement.setAttribute("height", y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
+
 }
 
 //function SetEdgeAnnotation(self,tail,head,annotation,color="black"):
