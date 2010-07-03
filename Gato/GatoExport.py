@@ -912,14 +912,14 @@ function BlinkEdge(e, color){
 function EdgeBlinker(){
     var element2;
     if (e_blinkcount %% 2 == 1) {
-       e_element.setAttribute("stroke",e_blinkcolor);
-       element2 = the_evt.target.ownerDocument.getElementById(e_arrow_id + element.getAttribute("id"));
+       e_element.setAttribute("stroke", "black");
+       element2 = the_evt.target.ownerDocument.getElementById(e_arrow_id + e_element.getAttribute("id"));
        if(element2 != null){
            element2.setAttribute("fill", "black");
        }
     } else {
-       e_element.setAttribute("stroke", "black");
-       element2 = the_evt.target.ownerDocument.getElementById(e_arrow_id + element.getAttribute("id"));
+       e_element.setAttribute("stroke", e_blinkcolor);
+       element2 = the_evt.target.ownerDocument.getElementById(e_arrow_id + e_element.getAttribute("id"));
        if(element2 != null){
            element2.setAttribute("fill", e_blinkcolor);
        }
@@ -978,14 +978,6 @@ function ShowActive(line_id){
 	}	
 }
 
-/*else: # Compute middle point for curves
-            # (mX,mY) to difference vector h - t
-            (mX,mY) = orthogonal((head.x - tail.x, head.y - tail.y))
-            c = 1.5 * self.zVertexRadius + l / 25
-            # Add c * (mX,mY) at midpoint between h and t
-            mX = tail.x + .5 * (head.x - tail.x) + c * mX
-            mY = tail.y + .5 * (head.y - tail.y) + c * mY            
-            return tail.x, tail.y, mX, mY, tmpX, tmpY*/
 function AddEdge(edge_id){
 
 	var graph_id = edge_id.split("_")[0];
@@ -993,7 +985,10 @@ function AddEdge(edge_id){
 	var v = the_evt.target.ownerDocument.getElementById(graph_id + "_" + vertices[0]);
 	var w = the_evt.target.ownerDocument.getElementById(graph_id + "_" + vertices[1]);
 	
-	
+	var vx = v.getAttribute("cx");
+	var wx = w.getAttribute("cx");
+	var vy = v.getAttribute("cy");
+	var wy = w.getAttribute("cy");
 	
 	if(v != null && w != null){
 		var parent_graph = the_evt.target.ownerDocument.getElementById(graph_id);
@@ -1004,28 +999,77 @@ function AddEdge(edge_id){
 		edge.setAttribute("stroke-width", 4.0);
 		
 		if(parent_graph.getAttribute("type") == "directed"){
-			if(the_evt.target.ownerDocument.getElementById(graph_id + "_(" + vertices[1] + ", " + vertices[0] + ")") != null){  
+			var reverse_edge = the_evt.target.ownerDocument.getElementById(graph_id + "_(" + vertices[1] + ", " + vertices[0] + ")");
+			if(reverse_edge != null){  //reverse edge exists.  Make this edge an arc.
 				//Another directed edge.  Great... Change existing edge to arc and add new arc
 				//Be sure to alter polylines as well.
 				
 				
+				var l = Math.sqrt(Math.pow((parseFloat(vx)-parseFloat(wx)),2) + Math.pow((parseFloat(vy)-parseFloat(wy)),2));
+				
+				if(l < 0.001)
+					l = 0.001;
+				
+				var c = (l - default_vertex_radius)/l - 0.001;
+				var tmpX = parseFloat(vx) + c * (parseFloat(wx) - parseFloat(vx));
+				var tmpY = parseFloat(vy) + c * (parseFloat(wy) - parseFloat(vy));
 				
 				
-				1;
-			}else{  //We're cool. Just add this edge
-				edge.setAttribute("x1", v.getAttribute("cx"));
-				edge.setAttribute("y1", v.getAttribute("cy"));
+				var orthogonal = Orthogonal((parseFloat(wx)-parseFloat(vx)),(parseFloat(wy)-parseFloat(vy)));
 				
-				var vx = v.getAttribute("cx");
-				var wx = w.getAttribute("cx");
-				var vy = v.getAttribute("cy");
-				var wy = w.getAttribute("cy");
+				var mX = orthogonal[0];
+				var mY = orthogonal[1];
+				c = 1.5*default_vertex_radius + l/25;
+				mX = parseFloat(vx) + .5 * (parseFloat(wx) - parseFloat(vx)) + c * mX
+				mY = parseFloat(vy) + .5 * (parseFloat(wy) - parseFloat(vy)) + c * mY
 				
-				var l = Math.sqrt(Math.pow((parseFloat(wx)-parseFloat(vx)),2) + Math.pow((parseFloat(wy)-parseFloat(vy)),2));
+				
+				
+				arrowhead = createArrowhead(mX, mY, wx, wy, 4.0, "ea" + edge_id);
+				
+				
+				l = Math.sqrt(Math.pow(wx-mX,2) + Math.pow(wy-mY,2));
                
 				if (l < .001)
 					l = .001;
 				
+
+				c = (l-2*default_vertex_radius)/l + .01;
+				tmpX = mX + c*(wx - mX);
+				tmpY = mY + c*(wy - mY);
+				
+				
+				edge = the_evt.target.ownerDocument.createElementNS(svgNS,"path");
+				edge.setAttribute("id", edge_id);
+				edge.setAttribute("stroke", "#EEEEEE");
+				edge.setAttribute("stroke-width", 4.0);
+				edge.setAttribute("fill", "none");
+				edge.setAttribute("d", "M " + vx +"," + vy +" Q "+ mX +"," + mY + " " + tmpX + "," + tmpY);
+	    
+				
+				
+				
+				
+				parent_graph.insertBefore(edge, parent_graph.childNodes.item(0));
+				if(arrowhead != null)
+					parent_graph.insertBefore(arrowhead, parent_graph.childNodes.item(1));
+					
+					
+				if(reverse_edge.getAttribute("d") == null){
+					reverse_edge.parentNode.removeChild(the_evt.target.ownerDocument.getElementById("ea" + reverse_edge.getAttribute("id")));
+					reverse_edge.parentNode.removeChild(reverse_edge);
+					AddEdge(reverse_edge.getAttribute("id"));
+				}
+				the_evt.target.ownerDocument.getElementById(reverse_edge.getAttribute("id")).setAttribute("stroke", reverse_edge.getAttribute("stroke"));
+				the_evt.target.ownerDocument.getElementById("ea" + reverse_edge.getAttribute("id")).setAttribute("fill", reverse_edge.getAttribute("stroke"));
+			}else{  //No reverse edge.  Just make a straight line
+				edge.setAttribute("x1", vx);
+				edge.setAttribute("y1", vy);
+
+				var l = Math.sqrt(Math.pow((parseFloat(wx)-parseFloat(vx)),2) + Math.pow((parseFloat(wy)-parseFloat(vy)),2));
+               
+				if (l < .001)
+					l = .001;
 
 				var c = (l-2*default_vertex_radius)/l + .01;
 				var tmpX = parseFloat(vx) + c*(parseFloat(wx) - parseFloat(vx));
@@ -1036,22 +1080,39 @@ function AddEdge(edge_id){
 
 				arrowhead = createArrowhead(vx, vy, wx, wy, 4.0, "ea" + edge_id);	
 				
-				
+				parent_graph.insertBefore(edge, parent_graph.childNodes.item(0));
+				if(arrowhead != null)
+					parent_graph.insertBefore(arrowhead, parent_graph.childNodes.item(1));
 			}
-		}else{
-			edge.setAttribute("x1", v.getAttribute("cx"));
-			edge.setAttribute("y1", v.getAttribute("cy"));
-			edge.setAttribute("x2", w.getAttribute("cx"));
-			edge.setAttribute("y2", w.getAttribute("cy"));
+		}else{ //Undirected edge
+			edge.setAttribute("x1", vx);
+			edge.setAttribute("y1", vy);
+			edge.setAttribute("x2", wx);
+			edge.setAttribute("y2", wy);
 			
-			
-			
+			parent_graph.insertBefore(edge, parent_graph.childNodes.item(0));
+			if(arrowhead != null)
+				parent_graph.insertBefore(arrowhead, parent_graph.childNodes.item(1));
 		}
 		
-		parent_graph.insertBefore(edge, parent_graph.childNodes.item(0));
-		if(arrowhead != null)
-			parent_graph.insertBefore(arrowhead, parent_graph.childNodes.item(1));
 	}
+}
+
+
+function Orthogonal(dx, dy){
+
+	var u1 = dx;
+	var u2 = dy;
+	
+	var length = Math.sqrt(Math.pow(u1,2) + Math.pow(u2,2));
+	
+	if(length < 0.001){
+		length = 0.001;
+	}
+	
+	u1 /= length;
+	u2 /= length;
+	return [-1*u2, u1];
 }
 
 function createArrowhead(vx, vy, wx, wy, stroke_width, id){
@@ -1098,6 +1159,11 @@ function DeleteEdge(edge_id){
 	var edge =  the_evt.target.ownerDocument.getElementById(edge_id);
 	if(edge != null){
 		edge.parentNode.removeChild(edge);
+	}
+	var arrowhead = the_evt.target.ownerDocument.getElementById("ea" + edge_id);
+	
+	if(arrowhead != null){
+		arrowhead.parentNode.removeChild(arrowhead);
 	}
 }
 
