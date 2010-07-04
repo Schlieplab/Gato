@@ -99,20 +99,20 @@ var e_blinkcolor;
 var e_blinkcount;
 
 
-var code;    //tracks HTB of code
+var code;    //tracks HTB of code.  Vertical layout
 var init_graphs;  //initial graph, for restarting
 var action_panel;   //tracks buttons
 var state;	//tracks state of animation
 var timer;	//variable for timer for AnimateLoop
-var timeout = 50;  //timeout
-var horiz_layout;
-var vert_layout;
-var speed_slider;
-var current_line = -1;
-var default_vertex_radius = 14.0;
-var default_line_width = 4.0;
-var x_offset = 20;
-var y_offset = 20;
+var timeout = 50;  //Initial timeout
+var horiz_layout;  //horizontal layout manager of visible elements
+var vert_layout;   //vertical layout manager of visible elements
+var speed_slider;  //Manages speed settings of animation
+var current_line = -1;  //Currently 'executing' line of code in program
+var default_vertex_radius = 14.0; //Default vertex radius
+var default_line_width = 4.0; //Default line width
+var x_offset = 20;  //How far horizontal layout is translated horizontally, in pixels
+var y_offset = 20;  //How far horizontal layout is translated vertically, in pixels
 
 
 /**
@@ -123,6 +123,7 @@ var y_offset = 20;
 *
 *
 **/
+//Accepts a string of the form "transform(x y)" and returns x and y in a 2-index array
 function getTranslate(str){
 	var x;
 	var y;
@@ -156,7 +157,7 @@ function getTranslate(str){
 
 }
 
-
+//Sets the first instance of "translate" in components "transform" attribute to "translate(x y)"
 function setTranslate(component, x, y){
 	var transformation = component.getAttribute("transform");
 	
@@ -179,7 +180,8 @@ function setTranslate(component, x, y){
 	}
 }
 
-
+//Return a 2-index array [v1,v2] which has an angle of
+//90 degrees clockwise to the vector (dx,dy)
 function Orthogonal(dx, dy){
 
 	var u1 = dx;
@@ -196,6 +198,8 @@ function Orthogonal(dx, dy){
 	return [-1*u2, u1];
 }
 
+//Creates an arrowhead aligned with line starting at (vx,vy) and ending at (wx,wy)
+//Arrowhead has specified id and ends outside the radius of a vertex with cx=wx and cy=wy
 function createArrowhead(vx, vy, wx, wy, stroke_width, id){
 
  		var l = Math.sqrt(Math.pow(parseFloat(wx)-parseFloat(vx),2) + Math.pow(parseFloat(wy)-parseFloat(vy), 2));
@@ -203,16 +207,13 @@ function createArrowhead(vx, vy, wx, wy, stroke_width, id){
 		
                 if (l < .001)
                     l = .001;
-		    
-		
-		
+		    	
 		var a_width = (1 + 1.5/(1*Math.pow(Math.log(parseFloat(stroke_width))/Math.log(10), 6)));
 
                 if(a_width > 5.0)
                     a_width = 5.0;
 		    
 		var cr = default_vertex_radius;
-		
 		
                 a_width = a_width * parseFloat(stroke_width);
 
@@ -223,7 +224,6 @@ function createArrowhead(vx, vy, wx, wy, stroke_width, id){
                 var c = (l-2*default_vertex_radius)/l;
                 var tmpX = parseFloat(vx) + c*(parseFloat(wx) - parseFloat(vx));
                 var tmpY = parseFloat(vy) + c*(parseFloat(wy) - parseFloat(vy));
-		
 		
 		var arrowhead = the_evt.target.ownerDocument.createElementNS(svgNS, "polyline");
 		arrowhead.setAttribute("points", p1[0] + " " + p1[1] + " " + p2[0] + " " + p2[1] + " " + p3[0] + " " + p3[1]);
@@ -296,8 +296,6 @@ function HTB_insertLine(id, n){
 				}
 			}
 		}
-	
-	
 	}
 	this.line_llc.insertComponent(id, n);
 }
@@ -310,13 +308,10 @@ function HTB_deleteLine(n){
 
 
 
-//highlight nth line
+//highlight nth line, using 0-based indexing
 function HTB_highlightLine(n){
-
 	if(n < this.line_llc.group.childNodes.length && n >= 0){
-
 		if(the_evt.target.ownerDocument.getElementById(this.line_llc.group.getAttribute("id") + "_hl" + n) == null){
-
 			var line = this.line_llc.group.childNodes.item(n);
 			var htb_bbox = this.line_llc.group.getBBox();
 			var line_bbox = line.getBBox();
@@ -390,7 +385,6 @@ function LLC_prototypeInit(){
 //Insert element of specified id into nth slot, using 0-based indexing.
 //If element is already in LLC, element is moved to nth slot
 function LLC_insertComponent(id, n){
-
 	var new_c = the_evt.target.ownerDocument.getElementById(id);
 	var padding = 0;
 	if(this.layout == "horizontal"){
@@ -439,7 +433,6 @@ function LLC_insertComponent(id, n){
 					
 				}
 			}
-			
 		}else if(n <= this.group.childNodes.length && (n >= 0)){ //Component is in group.  Move it and shift necessary lines
 			var children = this.group.childNodes;
 			var old_index = 0;
@@ -469,7 +462,6 @@ function LLC_insertComponent(id, n){
 			}else if(old_index < n){
 				if(n == children.length){
 					this.group.appendChild(new_c);
-
 				}else{	
 					this.group.insertBefore(new_c, children.item(n+1));
 				}
@@ -547,9 +539,7 @@ function LLC_deleteComponent(n){
 				setTranslate(children.item(i), 0, shift);
 			}
 		}
-
 	}
-
 }
 
 
@@ -721,6 +711,13 @@ function Slider(id, slider_width, thumb_height, offset, range, labels, title, ac
 	the_evt.target.ownerDocument.documentElement.appendChild(this.slider);
 }
 
+/**
+*
+*
+* Speed Slider functions
+*
+*
+*/
 //Drags or moves thumb when slider is clicked
 function SSlider_Click(evt){
 	if(evt.target.getAttribute("id") == "speed_slider_slider_thumb"){  //Drag thumb
@@ -831,6 +828,9 @@ function StepAnimation(evt){
 		state = "stepping";
 		animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
 		step = step + 1;
+		the_evt.target.ownerDocument.documentElement.setAttribute("width", x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
+        	the_evt.target.ownerDocument.documentElement.setAttribute("height", y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
+        	
                 if(step >= animation.length){
                     state = "stopped";
                     action_panel.activateButton("start_button", "StartAnimation(evt)");
@@ -1007,10 +1007,7 @@ function AddEdge(edge_id){
 	if(v != null && w != null){
 		var parent_graph = the_evt.target.ownerDocument.getElementById(graph_id);
 		var arrowhead = null;
-		var edge = the_evt.target.ownerDocument.createElementNS(svgNS,"line");
-		edge.setAttribute("id", edge_id);
-		edge.setAttribute("stroke", "#EEEEEE");
-		edge.setAttribute("stroke-width", 4.0);
+		var edge = null;
 		
 		if(parent_graph.getAttribute("type") == "directed"){
 			var reverse_edge = the_evt.target.ownerDocument.getElementById(graph_id + "_(" + vertices[1] + ", " + vertices[0] + ")");
@@ -1073,6 +1070,10 @@ function AddEdge(edge_id){
 				the_evt.target.ownerDocument.getElementById(reverse_edge.getAttribute("id")).setAttribute("stroke", reverse_edge.getAttribute("stroke"));
 				the_evt.target.ownerDocument.getElementById("ea" + reverse_edge.getAttribute("id")).setAttribute("fill", reverse_edge.getAttribute("stroke"));
 			}else{  //No reverse edge.  Just make a straight line
+                                edge = the_evt.target.ownerDocument.createElementNS(svgNS,"line");
+                                edge.setAttribute("id", edge_id);
+                                edge.setAttribute("stroke", "#EEEEEE");
+                                edge.setAttribute("stroke-width", 4.0);
 				edge.setAttribute("x1", vx);
 				edge.setAttribute("y1", vy);
 
@@ -1095,6 +1096,10 @@ function AddEdge(edge_id){
 					parent_graph.insertBefore(arrowhead, parent_graph.childNodes.item(1));
 			}
 		}else{ //Undirected edge
+                        edge = the_evt.target.ownerDocument.createElementNS(svgNS,"line");
+            		edge.setAttribute("id", edge_id);
+                	edge.setAttribute("stroke", "#EEEEEE");
+                	edge.setAttribute("stroke-width", 4.0);
 			edge.setAttribute("x1", vx);
 			edge.setAttribute("y1", vy);
 			edge.setAttribute("x2", wx);
@@ -1199,6 +1204,8 @@ function Initialize(evt) {
 	LLC_prototypeInit();
 	BP_prototypeInit();
 
+
+        //Create code layout
 	code = new HighlightableTextBlock(2, 0, "code", 14, "vertical");
 
 	var linenum = 1;
@@ -1207,7 +1214,8 @@ function Initialize(evt) {
 		linenum++;
 	}
 	
-	
+
+	//Clone initial graphs and keep references to them
 	init_graphs = new Array();
 	var i = 1;
 	var tree = the_evt.target.ownerDocument.getElementById("g" + i);
@@ -1218,7 +1226,7 @@ function Initialize(evt) {
 	}
 	
 	
-	
+	//Create buttons
 	action_panel = new ButtonPanel(15, 2, "actions", "horizontal");
 	action_panel.createButton("start_button", "M0,0 0,40 10,40 10,0 Z M20,0 20,40 50,20 Z", "url(#active_button_lg)", 0, "StartAnimation(evt)");
 	action_panel.createButton("step_button", "M0,0 0,40 30,20 Z M30,0 30,40 40,40 40,0 Z" , "url(#active_button_lg)", 1, "StepAnimation(evt)");
@@ -1228,10 +1236,12 @@ function Initialize(evt) {
 	action_panel.deactivateButton("stop_button");
 	action_panel.deactivateButton("step_button");
 	
-	
+
+	//Create speed slider 
 	speed_slider = new Slider("speed_slider", 400, 50, x_offset, [timeout,1], ["Slow", "Fast"], "Speed", [["onmousedown", "SSlider_Click(evt)"],["onmouseup", "Deactivate_SSlider(evt)"], ["onmousemove","Drag_SSlider(evt)"]]);
 	
-	
+
+	//Lay out code, speed slider, and graphs
 	horiz_layout = new LinearLayoutComponent(2, 2, "horizontal_layout", "horizontal");	
 	vert_layout = new Array(new LinearLayoutComponent(2, 5, "vert_layout_0", "vertical"), new LinearLayoutComponent(2, 2, "vert_layout_1", "vertical"));
 
@@ -1246,7 +1256,7 @@ function Initialize(evt) {
 	horiz_layout.insertComponent(vert_layout[0].group.getAttribute("id"), 0);
 	horiz_layout.insertComponent(vert_layout[1].group.getAttribute("id"), 1);
 	
-	
+	//offset to make everything visible
 	horiz_layout.group.setAttribute("transform", "translate(" + x_offset + " " + y_offset + ")");
 	code.highlight_group.setAttribute("transform","translate(" + x_offset + " " + y_offset + ")");
 }
@@ -1336,9 +1346,15 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
     global num_tabs
     global SVG_Animation
 
-    #print("'%s'" % token + " of " + str((srow,scol)) + " , " + str((erow, ecol)) + " - type: " + str(type) + "line: " + str(line))
-
-    if (type == 1): #Word.  Potential keyword.  Must check keywordsList
+    print("'%s'" % token + " of " + str((srow,scol)) + " , " + str((erow, ecol)) + " - type: " + str(type) + "line: " + str(line))
+    print(token in specialList)
+    if (type == 0): #EOF.  Reset globals
+        line_count = 1
+        num_tabs = 0
+        begun_line = False
+        SVG_Animation = None
+        prev = ""
+    elif (type == 1): #Word.  Potential keyword.  Must check keywordsList
         if begun_line == False:
             begun_line = True
             SVG_Animation.write('<text id="%s" x="10" y="10" dx = "%d" text-anchor="start" '\
@@ -1379,8 +1395,18 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
                        'fill="black" font-family="Courier New" font-size="14.0" font-style="normal"></text>\n' % ("l_" + str(line_count), 15*num_tabs))
         line_begun = False
         line_count += 1
+    else:
+        if begun_line == False:
+            begun_line = True
+            SVG_Animation.write('<text id="%s" x="10" y="10" dx = "%d" text-anchor="start" '\
+                       'fill="black" font-family="Courier New" font-size="14.0" font-style="normal">' % ("l_" + str(line_count), 15*num_tabs))
 
-
+        if prev in specialList:
+            SVG_Animation.write(token)
+        else:
+            SVG_Animation.write(" " + token)
+                
+    
     prev = token
     
 
@@ -1616,8 +1642,8 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
 
         # Merge animation commands from the graph windows and the algo window
         vars['animation'] = ",\n".join(animation)
-        print "vars", vars
-        print "animationhead", animationhead
+       # print "vars", vars
+       # print "animationhead", animationhead
         file.write(animationhead % vars)
 
         # Write out first graph as group and translate it
