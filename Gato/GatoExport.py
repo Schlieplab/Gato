@@ -1351,7 +1351,7 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
     global SVG_Animation
     global indent_stack
 
-    print("'%s'" % token + " of " + str((srow,scol)) + " , " + str((erow, ecol)) + " - type: " + str(type) + "line: " + str(line) + "len=" + str(len(token)))
+    #print("'%s'" % token + " of " + str((srow,scol)) + " , " + str((erow, ecol)) + " - type: " + str(type) + "line: " + str(line) + "len=" + str(len(token)))
     if (type == 0): #EOF.  Reset globals
         line_count = 1
         num_spaces = 0.0
