@@ -111,8 +111,8 @@ var speed_slider;  //Manages speed settings of animation
 var current_line = -1;  //Currently 'executing' line of code in program
 var default_vertex_radius = 14.0; //Default vertex radius
 var default_line_width = 4.0; //Default line width
-var x_offset = 20;  //How far horizontal layout is translated horizontally, in pixels
-var y_offset = 20;  //How far horizontal layout is translated vertically, in pixels
+var x_offset = 20;  //Twice the distance the layout is translated horizontally, in pixels
+var y_offset = 20;  //Twice the distance layout is translated vertically, in pixels
 
 
 /**
@@ -139,7 +139,7 @@ function getTranslate(str){
 	}
 	
 	
-	var r = to_parse.match(/\d+/g);
+	var r = to_parse.match(/[^,\(\)\sA-Za-z]+/g);;
 	
 	if(r[0] != null){
 		x = parseFloat(r[0]);
@@ -793,8 +793,8 @@ function AnimateLoop(){
 	var duration = animation[step][0] * timeout;
 	animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
 	step = step + 1;
-	the_evt.target.ownerDocument.documentElement.setAttribute("width", x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
-	the_evt.target.ownerDocument.documentElement.setAttribute("height", y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
+	the_evt.target.ownerDocument.documentElement.setAttribute("width", 2*x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
+	the_evt.target.ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
 	
 	if(step < animation.length) {
 		timer = setTimeout(AnimateLoop, duration);
@@ -828,8 +828,8 @@ function StepAnimation(evt){
 		state = "stepping";
 		animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
 		step = step + 1;
-		the_evt.target.ownerDocument.documentElement.setAttribute("width", x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
-        	the_evt.target.ownerDocument.documentElement.setAttribute("height", y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
+		the_evt.target.ownerDocument.documentElement.setAttribute("width", 2*x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
+        	the_evt.target.ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
         	
                 if(step >= animation.length){
                     state = "stopped";
@@ -995,7 +995,7 @@ function ShowActive(line_id){
 //Directed or undirected added to graph.
 function AddEdge(edge_id){
 	var graph_id = edge_id.split("_")[0];
-	var vertices = edge_id.split("_")[1].match(/\d+/g);
+	var vertices = edge_id.split("_")[1].match(/[^,\(\)\s]+/g);
 	var v = the_evt.target.ownerDocument.getElementById(graph_id + "_" + vertices[0]);
 	var w = the_evt.target.ownerDocument.getElementById(graph_id + "_" + vertices[1]);
 	
@@ -1125,7 +1125,7 @@ function DeleteEdge(edge_id){
 	}
 
 	var graph_id = edge_id.split("_")[0];
-	var vertices = edge_id.split("_")[1].match(/\d+/g);
+	var vertices = edge_id.split("_")[1].match(/[^,\(\)\s]+/g);
 	var reverse_edge = the_evt.target.ownerDocument.getElementById(graph_id + "_(" + vertices[1] + ", " + vertices[0] + ")");
 	if(reverse_edge != null){
             DeleteEdge(reverse_edge.getAttribute("id"));
@@ -1148,7 +1148,7 @@ function AddVertex(graph_and_coordinates, id){
 		next_vertex++;
 	}
 	
-	var coords = graph_and_coordinates.split("(")[1].match(/\d+/g);
+	var coords = graph_and_coordinates.split("(")[1].match(/[\d\.]+/g);
 	
 	var new_vertex = the_evt.target.ownerDocument.createElementNS(svgNS,"circle");
 	new_vertex.setAttribute("cx", coords[0]);
@@ -1259,6 +1259,9 @@ function Initialize(evt) {
 	//offset to make everything visible
 	horiz_layout.group.setAttribute("transform", "translate(" + x_offset + " " + y_offset + ")");
 	code.highlight_group.setAttribute("transform","translate(" + x_offset + " " + y_offset + ")");
+
+	the_evt.target.ownerDocument.documentElement.setAttribute("width", x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
+	the_evt.target.ownerDocument.documentElement.setAttribute("height", y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
 }
 
 
@@ -1335,22 +1338,24 @@ operatorsList = ["+", "-", "*", "/", "^", "%", "=",
 specialList = ["(", ",", ".", ")", "[", "]"]
 
 begun_line = False
-num_tabs = 0
+num_spaces = 0.0
 SVG_Animation = None
 prev = ""
+indent_stack = [0]
 
 def tokenEater(type, token, (srow, scol), (erow, ecol), line):
     global line_count
     global prev
     global begun_line
-    global num_tabs
+    global num_spaces
     global SVG_Animation
+    global indent_stack
 
-    print("'%s'" % token + " of " + str((srow,scol)) + " , " + str((erow, ecol)) + " - type: " + str(type) + "line: " + str(line))
-    print(token in specialList)
+    print("'%s'" % token + " of " + str((srow,scol)) + " , " + str((erow, ecol)) + " - type: " + str(type) + "line: " + str(line) + "len=" + str(len(token)))
     if (type == 0): #EOF.  Reset globals
         line_count = 1
-        num_tabs = 0
+        num_spaces = 0.0
+        indent_stack = [0]
         begun_line = False
         SVG_Animation = None
         prev = ""
@@ -1358,15 +1363,15 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
         if begun_line == False:
             begun_line = True
             SVG_Animation.write('<text id="%s" x="10" y="10" dx = "%d" text-anchor="start" '\
-                       'fill="black" font-family="Courier New" font-size="14.0" font-style="normal">' % ("l_" + str(line_count), 15*num_tabs))
+                       'fill="black" font-family="Courier New" font-size="14.0" font-style="normal">' % ("l_" + str(line_count), 7*indent_stack[len(indent_stack)-1]))
 
         if token in keywordsList:
-            if prev in specialList:
+            if (prev in specialList and (prev != "]" and prev != ")")):
                 SVG_Animation.write('<tspan font-weight="bold">%s</tspan>' % token)
             else:
                 SVG_Animation.write('<tspan font-weight="bold"> %s</tspan>' % token)
         else:
-            if prev in specialList:
+            if (prev in specialList and (prev != "]" and prev != ")")):
                 SVG_Animation.write(token)
             else:
                 SVG_Animation.write(" " + token)
@@ -1375,33 +1380,53 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
         begun_line = False
         line_count += 1
     elif (type == 5):  #Arbitrary number of tabs at beginning of line  tabs are 4 spaces long
-        num_tabs = int(floor(len(token))/4)
+        num_spaces = 0.0
+        for x in token:
+            if ord(x) == 9:
+                num_spaces += 7.7
+            elif ord(x) == 32:
+                num_spaces += 1.0
+
+        num_spaces = int(floor(num_spaces))
+        indent_stack.append(num_spaces)
+        #num_spaces = int(floor(len(token))/4)
     elif (type == 6):  #One backpedal
-        num_tabs -=1
+        indent_stack.pop()
     elif (type == 51): #Operators and punctuation
         if begun_line == False:
             begun_line = True
             SVG_Animation.write('<text id="%s" x="10" y="10" dx = "%d" text-anchor="start" '\
-                       'fill="black" font-family="Courier New" font-size="14.0" font-style="normal">' % ("l_" + str(line_count), 15*num_tabs))
+                       'fill="black" font-family="Courier New" font-size="14.0" font-style="normal">' % ("l_" + str(line_count), 7*indent_stack[len(indent_stack)-1]))
 
         if token in operatorsList:
+            if token == "<":
+                token = "lessthan"
+            elif token == "<<":
+                token = "leftshift"
+            elif token == "<=":
+                token = "lessthanoreq"
+            elif token == "<>":
+                token = "!="
             SVG_Animation.write(' %s' % token)
         else:
-            SVG_Animation.write('%s' % token)
+            if prev in operatorsList:
+                SVG_Animation.write(' %s' % token)
+            else:
+                SVG_Animation.write('%s' % token)
     elif (type == 53): #Comment
         x = 1+1  #For now, do nothing
     elif (type == 54): #Empty line with newline
         SVG_Animation.write('<text id="%s" x="10" y="10" dx = "%d" text-anchor="start" '\
-                       'fill="black" font-family="Courier New" font-size="14.0" font-style="normal"></text>\n' % ("l_" + str(line_count), 15*num_tabs))
+                       'fill="black" font-family="Courier New" font-size="14.0" font-style="normal"></text>\n' % ("l_" + str(line_count), 7*indent_stack[len(indent_stack)-1]))
         line_begun = False
         line_count += 1
     else:
         if begun_line == False:
             begun_line = True
             SVG_Animation.write('<text id="%s" x="10" y="10" dx = "%d" text-anchor="start" '\
-                       'fill="black" font-family="Courier New" font-size="14.0" font-style="normal">' % ("l_" + str(line_count), 15*num_tabs))
+                       'fill="black" font-family="Courier New" font-size="14.0" font-style="normal">' % ("l_" + str(line_count), 7*indent_stack[len(indent_stack)-1]))
 
-        if prev in specialList:
+        if (prev in specialList and (prev != "]" and prev != ")")):
             SVG_Animation.write(token)
         else:
             SVG_Animation.write(" " + token)
