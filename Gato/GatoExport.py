@@ -1449,6 +1449,12 @@ def cmd_as_javascript(cmd, idPrefix=''):
     result = [cmd.time, cmd.method.__name__, target]
     for arg in cmd.args:
         result.append(quote(arg))
+
+    # Special case for some animatin commands
+    if cmd.method.__name__ == 'SetAllVerticesColor' and 'vertices' in cmd.kwargs:
+        for v in cmd.kwargs['vertices']:
+            result.append(quote(v))
+
     return result
     
 
@@ -1470,15 +1476,21 @@ def collectAnimations(histories, prefixes):
         mergedCmds[i][0] = str(duration)
     return ["Array(" + ", ".join(cmd) + ")" for cmd in mergedCmds]
 
-def boundingBox(graphDisplay):
+def boundingBox(graphDisplay, resultForEmptyCanvas=None):
+    """ If there are no elements on the canvas, a bounding box
+        cannot be computed and bb is indeed None. In that case
+        we use resultForEmptyCanvas.
+    """
     bb = graphDisplay.canvas.bbox("all") # Bounding box of all elements on canvas
-    # Give 10 pixels room to breathe
-    x = max(bb[0] - 10,0)
-    y = max(bb[1] - 10,0)
-    width=bb[2] - bb[0] + 10
-    height=bb[3] - bb[1] + 10
-    return {'x':x,'y':y,'width':width,'height':height}
-
+    if bb:
+        # Give 10 pixels room to breathe
+        x = max(bb[0] - 10,0)
+        y = max(bb[1] - 10,0)
+        width=bb[2] - bb[0] + 10
+        height=bb[3] - bb[1] + 10
+        return {'x':x,'y':y,'width':width,'height':height}
+    else:
+        return resultForEmptyCanvas
 
 def WriteGraphAsSVG(graphDisplay, file, idPrefix=''):
     # Write Bubbles from weighted matching
@@ -1667,8 +1679,8 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
 
         # Merge animation commands from the graph windows and the algo window
         vars['animation'] = ",\n".join(animation)
-       # print "vars", vars
-       # print "animationhead", animationhead
+        # print "vars", vars
+        # print "animationhead", animationhead
         file.write(animationhead % vars)
 
         # Write out first graph as group and translate it
@@ -1683,8 +1695,9 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
         file.write('</g>\n')
 
         if secondaryGraphDisplay:
-            # Write out second graph as group and translate it
-            bbg2 = boundingBox(secondaryGraphDisplay)
+            # Write out second graph as group and translate it using the primary graphs
+            # bounding box for empty graphs on the second display
+            bbg2 = boundingBox(secondaryGraphDisplay, bbg1)
             if(secondaryGraphDisplay.G.directed == 0):
                 graph_type = "undirected"
             else:

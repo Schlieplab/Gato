@@ -648,7 +648,7 @@ class AnimatedSubGraph(SubGraph):
         for t,h in G.Edges():
             SubGraph.AddEdge(self, t, h)
         self.Animator.SetEdgesColor(G.Edges(),self.Color) 
-        self.Animator.SetAllVerticesColor(self.Color, G)
+        self.Animator.SetAllVerticesColor(self.Color, graph=G)
         self.RaiseEdges()
         self.Animator.DefaultInfo()
 

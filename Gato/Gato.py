@@ -1176,7 +1176,7 @@ class AlgoWin(Frame):
         self.algoText.yview_pickplace('%d.0' % lineNo)
         self.update() # Forcing redraw
         self.codeLineHistory.append(AnimationCommand(self.ShowActive, (lineNo,), []))
-        
+        print "algo \tShowActive(%d)" % lineNo
         
     def ShowBreakpoint(self, lineNo):
         """ Show  lineNo as breakpoint """
@@ -1262,8 +1262,14 @@ class AlgoWin(Frame):
                                                                 fileName, strError)
         log.error(msg)
         showerror("Gato - File Error",msg)
-        
-        
+
+
+
+    def ClearHistory(self):
+        self.lastActiveLine = 0
+        self.codeLineHistory = []
+
+                
 # Endof: AlgoWin ---------------------------------------------------------------
         
         
@@ -1623,6 +1629,7 @@ class Algorithm:
                 # graph. Otherwise the GraphDisplay is unhappy.
                 self.graphIsDirty = 1
                 self.cleanGraphCopy = Graph()
+                print "ReadyToStart", self.cleanGraphCopy.directed
                 return 1
             else:
                 return 0
@@ -1652,7 +1659,8 @@ class Algorithm:
         self.algoGlobals['G'] = self.graph
         
         self.animation_history = None
-        
+        self.GUI.ClearHistory()
+
         if self.logAnimator == 1:
             self.animation_history = AnimationHistory(self.GUI.graphDisplay)
             self.algoGlobals['A'] = self.animation_history

@@ -43,12 +43,12 @@ g = GatoGlobals.AnimationParameters
 class AnimationCommand:
 
 
-    def __init__(self, method, target, args,
+    def __init__(self, method, target, args, kwargs={},
                  undo_method=None, undo_args=None, canUndo=True):
         self.target = target
         self.method = method
         self.args = args
-
+        self.kwargs = kwargs
         self.canUndo = canUndo
         self.undo_method = undo_method
         self.undo_args = undo_args
@@ -59,7 +59,9 @@ class AnimationCommand:
         return self.canUndo
         
     def Do(self):
-        return apply(self.method, self.target + self.args)
+        #return apply(self.method, self.target + self.args)
+        args = self.target + self.args
+        return self.method(*args,**self.kwargs)
         
         
     def Undo(self):
@@ -78,14 +80,21 @@ class AnimationCommand:
             t = self.target[0]
         else:
             t = self.target
-            
+
+        if self.kwargs:
+            kwstr = ["%s=%s" % (str(key),str(val)) for key,val in self.kwargs.items()]
+            kwstr = ",".join(kwstr)
+        else:
+            kwstr = ''
+           
         if len(self.args) == 0:
-            return "%s(%s)" % (self.method.__name__, t)
+            return "%s(%s) %s" % (self.method.__name__, t, kwstr)
         elif len(self.args) == 1:
             argstr = str(self.args[0])
         else:
             argstr = ",".join(self.args)
-        return "%s(%s,%s)" % (self.method.__name__, t, argstr)      
+                
+        return "%s(%s,%s) %s" % (self.method.__name__, t, argstr, kwstr)      
 
 
 class AnimationHistory:
@@ -126,18 +135,19 @@ class AnimationHistory:
         animation.Do()
         self.append(animation)
 
-##    def SetAllVerticesColor(self, color, graph=None, vertices=None):
-##        if graph:
-##            vertices = graph.Vertices()
-##        if vertices:
-##            animation = AnimationCommand(self.animator.SetAllVerticesColor,
-##                                         (color,vertices=vertices),
-##                                         canUndo=False)
-##        else:
-##            animation = AnimationCommand(self.animator.SetAllVerticesColor, (color,),
-##                                         canUndo=False)        
-##        animation.Do()
-##        self.append(animation)
+    def SetAllVerticesColor(self, color, graph=None, vertices=None):
+        if graph:
+            vertices = graph.Vertices()
+        if vertices:
+            animation = AnimationCommand(self.animator.SetAllVerticesColor,
+                                         (color,),(),
+                                         kwargs={'vertices':vertices},
+                                         canUndo=False)
+        else:
+            animation = AnimationCommand(self.animator.SetAllVerticesColor, (color,), (),
+                                         canUndo=False)        
+        animation.Do()
+        self.append(animation)
 
         #SetAllEdgesColor
         
