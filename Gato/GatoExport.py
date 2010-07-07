@@ -1400,13 +1400,13 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
 
         if token in operatorsList:
             if token == "<":
-                token = "lessthan"
+                token = "&lt;"
             elif token == "<<":
-                token = "leftshift"
+                token = "&lt;&lt;"
             elif token == "<=":
-                token = "lessthanoreq"
+                token = "&lt;="
             elif token == "<>":
-                token = "!="
+                token = "&lt;>"
             SVG_Animation.write(' %s' % token)
         else:
             if prev in operatorsList:
