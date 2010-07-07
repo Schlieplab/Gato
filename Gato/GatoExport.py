@@ -889,7 +889,6 @@ function SetAllVerticesColor(graph_id_and_color) {
     var children = the_evt.target.ownerDocument.getElementById(graph_id).childNodes;
 
     for(i = 0; i < children.length; i++){
-    	SetVertexAnnotation("g1_1", children.length, "black");
 	if(children.item(i).nodeName == "circle"){
        	    children.item(i).setAttribute("fill", color);
 	}
