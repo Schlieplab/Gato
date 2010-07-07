@@ -272,28 +272,21 @@ function HTB_prototypeInit(){
 //Insert line with respective into nth slot.  0-based indexing.  If line already exists in HTB, line is shifted to respective spot.
 function HTB_insertLine(id, n){
 	var to_insert = the_evt.target.ownerDocument.getElementById(id);
-	if(to_insert != null && to_insert.childNodes.length == 0){ // Empty Text  Replace with Rectangle
+	if(to_insert != null && to_insert.getAttribute("blank") != null && to_insert.getAttribute("blank") == "true"){ // Empty Text  Replace with Rectangle
 		var new_rect = the_evt.target.ownerDocument.createElementNS(svgNS, "rect");
 		var children = this.line_llc.group.childNodes;
 		for(i = 0; i < children.length; i++){
-			if(children.item(i).childNodes.length > 0){
-				for(j = 0; j < children.item(i).childNodes.length; j++){
-					if(children.item(i).childNodes.item(j).wholeText != null){
-						new_rect.setAttribute("x", children.item(i).getAttribute("x"));
-						new_rect.setAttribute("y", children.item(i).getAttribute("y"));
-						new_rect.setAttribute("height", children.item(i).getBBox().height);
-						new_rect.setAttribute("width", this.line_llc.group.getBBox().width);
-						to_insert.parentNode.removeChild(to_insert);
-						new_rect.setAttribute("id", to_insert.getAttribute("id"));
-						new_rect.setAttribute("fill", "white");
-						new_rect.setAttribute("fill-opacity", 0);
-						the_evt.target.ownerDocument.documentElement.appendChild(new_rect);
-						break;
-					}
-				}
-				if(new_rect.getAttribute("id") != null){
-					break;
-				}
+			if(children.item(i).getAttribute("blank") == "false"){
+				new_rect.setAttribute("x", children.item(i).getAttribute("x"));
+				new_rect.setAttribute("y", children.item(i).getAttribute("y"));
+				new_rect.setAttribute("height", children.item(i).getBBox().height);
+				new_rect.setAttribute("width", this.line_llc.group.getBBox().width);
+				to_insert.parentNode.removeChild(to_insert);
+				new_rect.setAttribute("id", to_insert.getAttribute("id"));
+				new_rect.setAttribute("fill", "white");
+				new_rect.setAttribute("fill-opacity", 0);
+				the_evt.target.ownerDocument.documentElement.appendChild(new_rect);
+				break;
 			}
 		}
 	}
@@ -888,7 +881,21 @@ function SetEdgeColor(e, color) {
     }
 }
 
-//function SetEdgesColor(edge_array, color) {
+//Sets color of all vertices of a given graph to a given color
+function SetAllVerticesColor(graph_id_and_color) {
+
+    var graph_id = graph_id_and_color.split("_")[0];
+    var color = graph_id_and_color.split("_")[1];
+    var children = the_evt.target.ownerDocument.getElementById(graph_id).childNodes;
+
+    for(i = 0; i < children.length; i++){
+    	SetVertexAnnotation("g1_1", children.length, "black");
+	if(children.item(i).nodeName == "circle"){
+       	    children.item(i).setAttribute("fill", color);
+	}
+    }
+}
+
 // Cannot map: SetAllEdgesColor(self, color, graph=None, leaveColors=None)
 //Vertex blinks between black and current color
 function BlinkVertex(v, color) {
@@ -1340,7 +1347,7 @@ specialList = ["(", ",", ".", ")", "[", "]"]
 begun_line = False
 num_spaces = 0.0
 SVG_Animation = None
-prev = ""
+prev = ["",-1]
 indent_stack = [0]
 
 def tokenEater(type, token, (srow, scol), (erow, ecol), line):
@@ -1352,29 +1359,35 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
     global indent_stack
 
     #print("'%s'" % token + " of " + str((srow,scol)) + " , " + str((erow, ecol)) + " - type: " + str(type) + "line: " + str(line) + "len=" + str(len(token)))
+    #print(prev)
+    #print(indent_stack[len(indent_stack)-1])
     if (type == 0): #EOF.  Reset globals
         line_count = 1
         num_spaces = 0.0
         indent_stack = [0]
         begun_line = False
         SVG_Animation = None
-        prev = ""
+        prev = ["",-1]
     elif (type == 1): #Word.  Potential keyword.  Must check keywordsList
         if begun_line == False:
             begun_line = True
-            SVG_Animation.write('<text id="%s" x="10" y="10" dx = "%d" text-anchor="start" '\
+            SVG_Animation.write('<text blank = "false" id="%s" x="10" y="10" dx = "%d" text-anchor="start" '\
                        'fill="black" font-family="Courier New" font-size="14.0" font-style="normal">' % ("l_" + str(line_count), 7*indent_stack[len(indent_stack)-1]))
 
         if token in keywordsList:
-            if (prev in specialList and (prev != "]" and prev != ")")):
+            if (prev[1] == -1 or prev[1] == 5 or prev[1] == 4 or prev[1] == 54 or prev[1] == 6): #first word
+                SVG_Animation.write('<tspan font-weight="bold" dx = "%d">%s</tspan>' % (7*indent_stack[len(indent_stack)-1], token))
+            elif (prev[0] in specialList and (prev[0] != "]" and prev[0] != ")")):
                 SVG_Animation.write('<tspan font-weight="bold">%s</tspan>' % token)
             else:
-                SVG_Animation.write('<tspan font-weight="bold"> %s</tspan>' % token)
+                SVG_Animation.write('<tspan font-weight="bold" dx="7">%s</tspan>' % token)
         else:
-            if (prev in specialList and (prev != "]" and prev != ")")):
-                SVG_Animation.write(token)
+            if (prev[1] == -1 or prev[1] == 5 or prev[1] == 4 or prev[1] == 54 or prev[1] == 6): #first word
+                SVG_Animation.write('<tspan dx = "%d">%s</tspan>' % (7*indent_stack[len(indent_stack)-1], token))
+            elif (prev[0] in specialList and (prev[0] != "]" and prev[0] != ")")):
+                SVG_Animation.write('<tspan>%s</tspan>' % token)
             else:
-                SVG_Animation.write(" " + token)
+                SVG_Animation.write('<tspan dx="7">%s</tspan>' % token)
     elif (type == 4): #Newline on nonempty line
         SVG_Animation.write('</text>\n')
         begun_line = False
@@ -1395,7 +1408,7 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
     elif (type == 51): #Operators and punctuation
         if begun_line == False:
             begun_line = True
-            SVG_Animation.write('<text id="%s" x="10" y="10" dx = "%d" text-anchor="start" '\
+            SVG_Animation.write('<text blank = "false" id="%s" x="10" y="10" dx = "%d" text-anchor="start" '\
                        'fill="black" font-family="Courier New" font-size="14.0" font-style="normal">' % ("l_" + str(line_count), 7*indent_stack[len(indent_stack)-1]))
 
         if token in operatorsList:
@@ -1407,33 +1420,42 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
                 token = "&lt;="
             elif token == "<>":
                 token = "&lt;>"
-            SVG_Animation.write(' %s' % token)
+
+            #if (prev[1] == -1 or prev[1] == 5 or prev[1] == 4 or prev[1] == 54 or prev[1] == 6): #first word
+            #    SVG_Animation.write('<tspan dx = "%d">%s</tspan>' % (7*indent_stack[len(indent_stack)-1], token))
+            #elif (prev[0] in specialList and (prev[0] != "]" and prev[0] != ")")):
+            #    SVG_Animation.write('<tspan>%s</tspan>' % token)
+            #else:
+            #    SVG_Animation.write('<tspan dx="7">%s</tspan>' % token)
+                
+            SVG_Animation.write('<tspan dx="7">%s</tspan>' % token)
         else:
-            if prev in operatorsList:
-                SVG_Animation.write(' %s' % token)
+            if prev[0] in operatorsList:
+                SVG_Animation.write('<tspan dx="7">%s</tspan>' % token)
             else:
-                SVG_Animation.write('%s' % token)
+                SVG_Animation.write('<tspan>%s</tspan>' % token)
     elif (type == 53): #Comment
         x = 1+1  #For now, do nothing
     elif (type == 54): #Empty line with newline
-        SVG_Animation.write('<text id="%s" x="10" y="10" dx = "%d" text-anchor="start" '\
+        SVG_Animation.write('<text blank = "true" id="%s" x="10" y="10" dx = "%d" text-anchor="start" '\
                        'fill="black" font-family="Courier New" font-size="14.0" font-style="normal"></text>\n' % ("l_" + str(line_count), 7*indent_stack[len(indent_stack)-1]))
         line_begun = False
         line_count += 1
     else:
         if begun_line == False:
             begun_line = True
-            SVG_Animation.write('<text id="%s" x="10" y="10" dx = "%d" text-anchor="start" '\
+            SVG_Animation.write('<text blank = "false" id="%s" x="10" y="10" dx = "%d" text-anchor="start" '\
                        'fill="black" font-family="Courier New" font-size="14.0" font-style="normal">' % ("l_" + str(line_count), 7*indent_stack[len(indent_stack)-1]))
 
-        if (prev in specialList and (prev != "]" and prev != ")")):
-            SVG_Animation.write(token)
+        if (prev[0] in specialList and (prev[0] != "]" and prev[0] != ")")):
+            SVG_Animation.write('<tspan>%s</tspan>' % token)
         else:
-            SVG_Animation.write(" " + token)
+            SVG_Animation.write('<tspan dx="7">%s</tspan>' % token)
                 
     
-    prev = token
-    
+    if type != 0:
+        prev[0] = token
+        prev[1] = type
 
 
 def cmd_as_javascript(cmd, idPrefix=''):
