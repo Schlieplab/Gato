@@ -1010,7 +1010,7 @@ function AddEdge(edge_id){
 	var vy = v.getAttribute("cy");
 	var wy = w.getAttribute("cy");
 	
-	if(v != null && w != null){
+	if(v != null && w != null && the_evt.target.ownerDocument.getElementById(graph_id + "_(" + vertices[0] + ", " + vertices[1] + ")") == null){
 		var parent_graph = the_evt.target.ownerDocument.getElementById(graph_id);
 		var arrowhead = null;
 		var edge = null;
@@ -1137,6 +1137,10 @@ function DeleteEdge(edge_id){
             var new_edge = the_evt.target.ownerDocument.getElementById(reverse_edge.getAttribute("id"));
             new_edge.setAttribute("stroke", reverse_edge.getAttribute("stroke"));
             new_edge.setAttribute("stroke-width", reverse_edge.getAttribute("stroke-width"));
+            var arrowhead = the_evt.target.ownerDocument.getElementById("ea" + new_edge.getAttribute("id"));
+            if(arrowhead != null){
+                arrowhead.setAttribute("fill", new_edge.getAttribute("stroke"));
+            }
 	}
 }
 
