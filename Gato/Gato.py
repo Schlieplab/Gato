@@ -1660,6 +1660,11 @@ class Algorithm:
         
         self.animation_history = None
         self.GUI.ClearHistory()
+        if self.logAnimator > 0 and self.GUI.secondaryGraphDisplay:
+            self.GUI.secondaryGraphDisplay.Clear()
+
+        #XXX Take care of second graph window
+        
 
         if self.logAnimator == 1:
             self.animation_history = AnimationHistory(self.GUI.graphDisplay)

@@ -272,3 +272,8 @@ class AnimationHistory:
             print self.logPrefix + animation.log_str() 
         self.history.append(animation)
         
+
+    def Clear(self):
+        self.history = []
+        self.history_index = None
+        
