@@ -114,7 +114,6 @@ var default_line_width = 4.0; //Default line width
 var x_offset = 20;  //Twice the distance the layout is translated horizontally, in pixels
 var y_offset = 20;  //Twice the distance layout is translated vertically, in pixels
 
-
 /**
 *
 *
@@ -790,7 +789,11 @@ function AnimateLoop(){
 	the_evt.target.ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
 	
 	if(step < animation.length) {
-		timer = setTimeout(AnimateLoop, duration);
+		if(animation[step-1][1] != ShowActive || the_evt.target.ownerDocument.getElementById(code.line_llc.group.getAttribute("id") + "_bp" + animation[step-1][2].split("_")[1]) == null){
+			timer = setTimeout(AnimateLoop, duration);
+		}else{
+			state = "stopped";
+		}
 	}else{
                 state = "stopped";
 		action_panel.activateButton("start_button", "StartAnimation(evt)");
@@ -801,7 +804,6 @@ function AnimateLoop(){
 		code.removeHighlight(current_line);
                 current_line = -1;
 	}
-
 }
 
 //Resumes execution of animation loop if paused by pressing step button
@@ -853,7 +855,64 @@ function StopAnimation(evt){
 }
 
 
+//Inserts a breakpoint by creating a grey highlight
+function SetBreakpoint(evt){            
+        var line = evt.target;
+	
+	if(line.nodeName == "tspan"){
+		line = line.parentNode;
+	}
+	var htb_bbox = code.line_llc.group.getBBox();
+	var line_bbox = line.getBBox();
+	var line_translation = getTranslate(line.getAttribute("transform"));
+	var m = 1;
 
+	var background = the_evt.target.ownerDocument.createElementNS(svgNS, "rect");
+			
+	var dx = line.getAttribute("dx");
+	var dy = line.getAttribute("dy");
+	if(dx == null){
+		dx = 0;
+	}else{
+	    	dx = parseFloat(dx);
+	}
+	if(dy == null){
+	    	dy = 0;
+	}else{
+	    	dy = parseFloat(dy);
+	}
+
+	background.setAttribute("x", line_bbox.x + line_translation[0] - code.line_llc.h_padding - dx);
+	background.setAttribute("y", line_bbox.y + line_translation[1] - code.line_llc.v_padding - dy);
+	background.setAttribute("width", htb_bbox.width + 2*code.line_llc.h_padding);
+	background.setAttribute("height", line_bbox.height + 2*code.line_llc.v_padding);
+
+	background.setAttribute("stroke", "blue");
+	background.setAttribute("fill", "grey");
+	background.setAttribute("id", code.line_llc.group.getAttribute("id") + "_bp" + line.getAttribute("id").split("_")[1]);
+	background.setAttribute("transform", "translate(" + x_offset + " " + y_offset + ")");
+	code.highlight_group.parentNode.insertBefore(background, code.highlight_group);
+	line.setAttribute("onclick", "RemoveBreakpoint(evt)");
+	return;
+}
+
+//Removes a highlight by removing a grey highlight
+function RemoveBreakpoint(evt){
+	var line = evt.target;
+	
+	if(line.nodeName == "tspan"){
+		line = line.parentNode;
+	}
+	
+	if(line.nodeName == "text"){
+		var background = the_evt.target.ownerDocument.getElementById(code.line_llc.group.getAttribute("id") + "_bp" + line.getAttribute("id").split("_")[1]);
+		if(background != null){
+			background.parentNode.removeChild(background);
+			line.setAttribute("onclick", "SetBreakpoint(evt)");
+			return;
+		}
+	}
+}
 
 /**
 *
@@ -1167,6 +1226,8 @@ function AddVertex(graph_and_coordinates, id){
 	new_vertex.setAttribute("stroke-width", 0.0);
 	if(id != null){
 		new_vertex.setAttribute("id", graph.getAttribute("id") + "_" + id);
+		if(the_evt.target.ownerDocument.getElementById(new_vertex.getAttribute("id")) != null)
+			return;
 	}else{
 		new_vertex.setAttribute("id", graph.getAttribute("id") + "_" + next_vertex);
 	}
@@ -1221,7 +1282,18 @@ function Initialize(evt) {
 		code.insertLine("l_" + linenum, linenum-1);
 		linenum++;
 	}
-	
+
+
+	//Make code lines interactive
+	//chidlren.item(i).nodeName
+	var code_lines = code.line_llc.group.childNodes;
+
+	for(i = 0; i < code_lines.length; i++){
+            if(code_lines.item(i).nodeName == "text"){
+                code_lines.item(i).setAttribute("cursor", "pointer");
+                code_lines.item(i).setAttribute("onclick", "SetBreakpoint(evt)");
+            }
+	}
 
 	//Clone initial graphs and keep references to them
 	init_graphs = new Array();
