@@ -711,12 +711,13 @@ function Slider(id, slider_width, thumb_height, offset, range, labels, title, ac
 *
 */
 //Drags or moves thumb when slider is clicked
+//Drags or moves thumb when slider is clicked
 function SSlider_Click(evt){
 	if(evt.target.getAttribute("id") == "speed_slider_slider_thumb"){  //Drag thumb
 		speed_slider.thumb_active = true;
 	} else if(evt.target.getAttribute("id") == "speed_slider_slider_bar"){	//Move thumb.
 		Move_SSlider(evt);
-	}	
+	}
 }
 
 //Stops thumb movement
@@ -727,7 +728,11 @@ function Deactivate_SSlider(evt){
 //Moves thumb and changes associated values
 function Move_SSlider(evt){
 	var bbox = speed_slider.slider_bar.getBBox();
-	speed_slider.slider_thumb.setAttribute("x", evt.clientX-speed_slider.offset-(speed_slider.default_thickness/2));
+	var x_pos = evt.clientX;
+	if(evt.clientX == undefined)
+		x_pos = evt.touches[0].clientX;
+		
+	speed_slider.slider_thumb.setAttribute("x", x_pos-speed_slider.offset-(speed_slider.default_thickness/2));
 
 	speed_slider.current_setting = speed_slider.low_bound + (speed_slider.up_bound-speed_slider.low_bound)*(speed_slider.slider_thumb.getAttribute("x")/speed_slider.slider_bar.getAttribute("width"));
 	timeout = speed_slider.current_setting;
@@ -736,14 +741,33 @@ function Move_SSlider(evt){
 //Drag slider and change associated values
 function Drag_SSlider(evt){
 	if(speed_slider.thumb_active){
-		if(evt.clientX >= speed_slider.slider_bar.getBBox().x+speed_slider.offset && evt.clientX <= (speed_slider.slider_bar.getBBox().x + speed_slider.offset + speed_slider.slider_bar.getBBox().width)){
-			speed_slider.slider_thumb.setAttribute("x", evt.clientX-speed_slider.offset-(speed_slider.default_thickness/2));
+		var x_pos = evt.clientX;
+		
+		if(x_pos==undefined){
+			x_pos = evt.touches[0].clientX;
+		}
+		if(x_pos >= speed_slider.slider_bar.getBBox().x+speed_slider.offset && x_pos <= (speed_slider.slider_bar.getBBox().x + speed_slider.offset + speed_slider.slider_bar.getBBox().width)){
+			speed_slider.slider_thumb.setAttribute("x", x_pos-speed_slider.offset-(speed_slider.default_thickness/2));
 			speed_slider.current_setting = speed_slider.low_bound + (speed_slider.up_bound-speed_slider.low_bound)*(speed_slider.slider_thumb.getAttribute("x")/speed_slider.slider_bar.getAttribute("width"));
 			timeout = speed_slider.current_setting;
 		}
 	}
 }
 
+//iPad-specific slider event handling
+function TouchDrag_SSlider(evt){
+	evt.preventDefault();
+	Drag_SSlider(evt);
+}
+
+function TouchStart_SSlider(evt){
+	evt.preventDefault();
+	SSlider_Click(evt);
+}
+function Touch_Deactivate_SSlider(evt){
+	evt.preventDefault();
+	Deactivate_SSlider(evt);
+}
 
 /**
 *
@@ -927,7 +951,7 @@ function SetVertexColor(v, color) {
     element = the_evt.target.ownerDocument.getElementById(v);
     element.setAttribute("fill", color);
 }
-// Cannot map: SetAllVerticesColor(self, color, graph=None, vertices=None):
+
 //Colors edge with id given by e
 function SetEdgeColor(e, color) {
     // NOTE: Gato signature SetEdgeColor(v, w, color)
@@ -1285,7 +1309,6 @@ function Initialize(evt) {
 
 
 	//Make code lines interactive
-	//chidlren.item(i).nodeName
 	var code_lines = code.line_llc.group.childNodes;
 
 	for(i = 0; i < code_lines.length; i++){
@@ -1318,7 +1341,7 @@ function Initialize(evt) {
 	
 
 	//Create speed slider 
-	speed_slider = new Slider("speed_slider", 400, 50, x_offset, [timeout,1], ["Slow", "Fast"], "Speed", [["onmousedown", "SSlider_Click(evt)"],["onmouseup", "Deactivate_SSlider(evt)"], ["onmousemove","Drag_SSlider(evt)"]]);
+	speed_slider = new Slider("speed_slider", 400, 50, x_offset, [timeout,1], ["Slow", "Fast"], "Speed", [["ontouchstart","TouchStart_SSlider(evt)"],["ontouchmove", "TouchDrag_SSlider(evt)"],["ontouchend", "TouchDeactivate_SSlider(evt)"],["onmousedown", "SSlider_Click(evt)"],["onmouseup", "Deactivate_SSlider(evt)"], ["onmousemove","Drag_SSlider(evt)"]]);
 	
 
 	//Lay out code, speed slider, and graphs
