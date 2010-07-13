@@ -122,12 +122,12 @@ var y_offset = 20;  //Twice the distance layout is translated vertically, in pix
 *
 *
 **/
-//Accepts a string of the form "transform(x y)" and returns x and y in a 2-index array
+//Accepts a string of the form "...translate(x y)..." and returns x and y in a 2-index array
 function getTranslate(str){
 	var x;
 	var y;
 	
-	if(str == null){
+	if(str == null || str.indexOf("translate") == -1){
 		return new Array(0, 0);
 	}
 	
@@ -178,6 +178,111 @@ function setTranslate(component, x, y){
 		component.setAttribute("transform", "translate(" + x + " " + y + ")");
 	}
 }
+
+//Accepts a string of the form "...rotate(d)..." and returns x and y in a 2-index array
+function getRotate(str){
+	var degrees;
+	
+	if(str == null || str.indexOf("rotate") == -1){
+		return 0;
+	}
+	
+	var to_parse = str.slice(str.indexOf("rotate") + "rotate".length);
+	
+	if(to_parse == null){
+		return 0;
+	}
+	
+	
+	var r = to_parse.match(/[^,\(\)\sA-Za-z]+/g);;
+	
+	if(r[0] != null){
+		degrees = parseFloat(r[0]);
+	}
+	
+	return degrees;
+
+}
+
+//Sets the first instance of "rotate" in components "transform" attribute to "rotate(x y)"
+function setRotate(component, d){
+	var transformation = component.getAttribute("transform");
+	
+	if(transformation != null){
+		var header = transformation.substring(0, transformation.indexOf("rotate") + "rotate".length);
+		if(transformation.indexOf("rotate") == -1){
+			component.setAttribute("transform", transformation + " rotate(" + d + ")");
+		}else{
+
+			var trailer = transformation.slice(transformation.indexOf("rotate") + "rotate".length);
+			trailer = trailer.slice(trailer.indexOf(")"));
+		
+			var newattr = header + "(" + d + trailer;
+
+			component.setAttribute("transform", newattr);
+		}
+
+	}else{
+		component.setAttribute("transform", "translate(" + d + ")");
+	}
+}
+//Accepts a string of the form "...scale(x y)..." and returns x and y in a 2-index array
+function getScale(str){
+	var x;
+	var y;
+	
+	if(str == null || str.indexOf("scale") == -1){
+		return new Array(1, 1);
+	}
+	
+	var to_parse = str.slice(str.indexOf("scale") + "scale".length);
+	
+	if(to_parse == null){
+		return new Array(1, 1);
+	}
+	
+	
+	var r = to_parse.match(/[^,\(\)\sA-Za-z]+/g);;
+	
+	if(r[0] != null){
+		x = parseFloat(r[0]);
+	}
+	
+	if(r[1] != null){
+		y = x;
+	}
+	
+	if(r[1] == null || (to_parse.indexOf(")") < to_parse.indexOf(r[1]))){
+		return new Array(x, x);
+	}
+	
+	return new Array(x, y);
+
+}
+
+//Sets the first instance of "scale" in components "transform" attribute to "scale(x y)"
+function setScale(component, x, y){
+	var transformation = component.getAttribute("transform");
+	
+	if(transformation != null){
+		var header = transformation.substring(0, transformation.indexOf("scale") + "scale".length);
+		if(transformation.indexOf("scale") == -1){
+			component.setAttribute("transform", transformation + " scale(" + x + " " + y + ")");
+		}else{
+
+			var trailer = transformation.slice(transformation.indexOf("scale") + "scale".length);
+			trailer = trailer.slice(trailer.indexOf(")"));
+		
+			var newattr = header + "(" + x + " " + y + trailer;
+
+			component.setAttribute("transform", newattr);
+		}
+
+	}else{
+		component.setAttribute("transform", "scale(" + x + " " + y + ")");
+	}
+}
+
 
 //Return a 2-index array [v1,v2] which has an angle of
 //90 degrees clockwise to the vector (dx,dy)
@@ -754,21 +859,6 @@ function Drag_SSlider(evt){
 	}
 }
 
-//iPad-specific slider event handling
-function TouchDrag_SSlider(evt){
-	evt.preventDefault();
-	Drag_SSlider(evt);
-}
-
-function TouchStart_SSlider(evt){
-	evt.preventDefault();
-	SSlider_Click(evt);
-}
-function Touch_Deactivate_SSlider(evt){
-	evt.preventDefault();
-	Deactivate_SSlider(evt);
-}
-
 /**
 *
 *
@@ -792,6 +882,19 @@ function StartAnimation(evt){
                             vert_layout[1].insertComponent(new_graph.getAttribute("id"), x);
                         }
 			horiz_layout.insertComponent(vert_layout[1].group.getAttribute("id"), 1);
+
+			for(x in init_graphs){
+				var graph = the_evt.target.ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
+				var rect = the_evt.target.ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+				rect.setAttribute("width",graph.getBBox().width);
+				rect.setAttribute("height",graph.getBBox().height);
+				rect.setAttribute("x", graph.getBBox().x);
+				rect.setAttribute("y", graph.getBBox().y);
+	    			var translation1 = getTranslate(vert_layout[1].group.getAttribute("transform"));
+				var translation2 = getTranslate(horiz_layout.group.getAttribute("transform"));
+				var translation3 = getTranslate(graph.getAttribute("transform"));
+				setTranslate(rect, translation1[0] + translation2[0] + translation3[0], translation1[1] + translation2[1] + translation3[1]);
+			}
 		}
 	
 		state = "running";
@@ -1039,6 +1142,12 @@ function EdgeBlinker(){
 function SetVertexFrameWidth(v, val) {
     var element = the_evt.target.ownerDocument.getElementById(v);
     element.setAttribute("stroke-width", val);
+    var graph = the_evt.target.ownerDocument.getElementById(v).parentNode;
+    var rect = the_evt.target.ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+    rect.setAttribute("width",graph.getBBox().width);
+    rect.setAttribute("height",graph.getBBox().height);
+    rect.setAttribute("x", graph.getBBox().x);
+    rect.setAttribute("y", graph.getBBox().y);
 }
 
 //Sets annotation of vertex v to annotation.  Annotation's color is specified
@@ -1066,6 +1175,13 @@ function SetVertexAnnotation(v, annotation, color) //removed 'self' parameter to
 	newano.setAttribute("font-weight","bold");
 	newano.appendChild(the_evt.target.ownerDocument.createTextNode(annotation));
 	element.parentNode.appendChild(newano);
+
+	var graph = the_evt.target.ownerDocument.getElementById(v).parentNode;
+	var rect = the_evt.target.ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+	rect.setAttribute("width",graph.getBBox().width);
+	rect.setAttribute("height",graph.getBBox().height);
+	rect.setAttribute("x", graph.getBBox().x);
+	rect.setAttribute("y", graph.getBBox().y);
     }
 }
 
@@ -1196,6 +1312,13 @@ function AddEdge(edge_id){
 			if(arrowhead != null)
 				parent_graph.insertBefore(arrowhead, parent_graph.childNodes.item(1));
 		}
+
+		var graph = the_evt.target.ownerDocument.getElementById(edge_id).parentNode;
+		var rect = the_evt.target.ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+		rect.setAttribute("width",graph.getBBox().width);
+		rect.setAttribute("height",graph.getBBox().height);
+		rect.setAttribute("x", graph.getBBox().x);
+		rect.setAttribute("y", graph.getBBox().y);
 	}
 }
 
@@ -1225,6 +1348,13 @@ function DeleteEdge(edge_id){
                 arrowhead.setAttribute("fill", new_edge.getAttribute("stroke"));
             }
 	}
+
+	var graph = the_evt.target.ownerDocument.getElementById(graph_id);
+	var rect = the_evt.target.ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+	rect.setAttribute("width",graph.getBBox().width);
+	rect.setAttribute("height",graph.getBBox().height);
+	rect.setAttribute("x", graph.getBBox().x);
+	rect.setAttribute("y", graph.getBBox().y);
 }
 
 //Adds vertex of into specified graph and coordinates in graph.  Optional id argument may be given.
@@ -1277,11 +1407,122 @@ function AddVertex(graph_and_coordinates, id){
         //resnap graph to fit	
 	for(i = 0; i < vert_layout[1].group.childNodes.length; i++){
 		vert_layout[1].resnapComponent(i);
+		
+		if(vert_layout[1].group.childNodes.item(i).nodeName == "g"){
+			var graph = vert_layout[1].group.childNodes.item(i)
+			var rect = the_evt.target.ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+			rect.setAttribute("width",graph.getBBox().width);
+			rect.setAttribute("height",graph.getBBox().height);
+			rect.setAttribute("x", graph.getBBox().x);
+			rect.setAttribute("y", graph.getBBox().y);
+			var translation1 = getTranslate(vert_layout[1].group.getAttribute("transform"));
+			var translation2 = getTranslate(horiz_layout.group.getAttribute("transform"));
+			var translation3 = getTranslate(graph.getAttribute("transform"));
+			setTranslate(rect, translation1[0] + translation2[0] + translation3[0], translation1[1] + translation2[1] + translation3[1]);
+		}
 	}
 }
 
 //function SetEdgeAnnotation(self,tail,head,annotation,color="black"):
 //def UpdateVertexLabel(self, v, blink=1, color=None):
+/**
+*
+*
+*
+* iPad functions
+*
+*
+*
+*/
+//iPad-specific slider event handling
+function TouchDrag_SSlider(evt){
+	evt.preventDefault();
+	Drag_SSlider(evt);
+}
+
+function TouchStart_SSlider(evt){
+	evt.preventDefault();
+	SSlider_Click(evt);
+}
+function Touch_Deactivate_SSlider(evt){
+	evt.preventDefault();
+	Deactivate_SSlider(evt);
+}
+
+
+//iPad-specific functions for rotating and scaling graphs
+function GestureStart_Transform(evt){
+	evt.preventDefault();
+	
+	var graph = evt.target;
+	var graph_bg = null;
+	if(graph.nodeName == "rect"){
+		graph_bg = graph;
+		graph = the_evt.target.ownerDocument.getElementById(graph.getAttribute("id").split("_")[0]);
+	}else{
+		graph = graph.parentNode;
+		graph_bg = the_evt.target.ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+	}
+	
+	
+	if(graph.getAttribute("transform_buffer") == null){
+		graph.setAttribute("transform_buffer", graph.getAttribute("transform"));
+		graph_bg.setAttribute("transform_buffer", graph_bg.getAttribute("transform"));
+	}
+	
+	TransformGraph(graph, graph_bg, evt);
+}
+
+function GestureChange_Transform(evt){
+	evt.preventDefault();
+	
+	var graph = evt.target;
+	var graph_bg = null;
+	if(graph.nodeName == "rect"){
+		graph_bg = graph;
+		graph = the_evt.target.ownerDocument.getElementById(graph.getAttribute("id").split("_")[0]);
+	}else{
+		graph = graph.parentNode;
+		graph_bg = the_evt.target.ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+	}
+
+	TransformGraph(graph, graph_bg, evt);
+}
+
+function GestureEnd_Transform(evt){
+	evt.preventDefault();
+	
+	var graph = evt.target;
+	var graph_bg = null;
+	if(graph.nodeName == "rect"){
+		graph_bg = graph;
+		graph = the_evt.target.ownerDocument.getElementById(graph.getAttribute("id").split("_")[0]);
+	}else{
+		graph = graph.parentNode;
+		graph_bg = the_evt.target.ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+	}
+
+	
+	TransformGraph(graph, graph_bg, evt);
+	graph.setAttribute("transform_buffer", graph.getAttribute("transform"));
+	graph_bg.setAttribute("transform_buffer", graph_bg.getAttribute("transform"));
+}
+
+function TransformGraph(graph, graph_bg, evt){
+	var scale = evt.scale;
+	var rotate = evt.rotation;
+	
+	var graph_scale = getScale(graph.getAttribute("transform_buffer"));
+	var gbg_scale = getScale(graph_bg.getAttribute("transform_buffer"));
+	var graph_rotate = getRotate(graph.getAttribute("transform_buffer"));
+	var gbg_rotate = getRotate(graph_bg.getAttribute("transform_buffer"));
+	
+	setScale(graph, scale * graph_scale[0], scale * graph_scale[1]);
+	setScale(graph_bg, scale * gbg_scale[0], scale * gbg_scale[1]);
+	setRotate(graph, rotate + graph_rotate)
+	setRotate(graph_bg, rotate + gbg_rotate);
+}
+
 
 /**
 *
@@ -1362,6 +1603,26 @@ function Initialize(evt) {
 	//offset to make everything visible
 	horiz_layout.group.setAttribute("transform", "translate(" + x_offset + " " + y_offset + ")");
 	code.highlight_group.setAttribute("transform","translate(" + x_offset + " " + y_offset + ")");
+
+	//Make rectangles behind graphs, for intuitive iPad usage
+	for(x in init_graphs){
+		var rect = the_evt.target.ownerDocument.createElementNS(svgNS, "rect");
+		var graph = the_evt.target.ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
+		rect.setAttribute("id", graph.getAttribute("id") + "_bg");
+		rect.setAttribute("width",graph.getBBox().width);
+		rect.setAttribute("height",graph.getBBox().height);
+		rect.setAttribute("fill", "magenta");
+		rect.setAttribute("x", graph.getBBox().x);
+		rect.setAttribute("y", graph.getBBox().y);
+		rect.setAttribute("ongesturestart", "TransformGraph(evt)");
+		rect.setAttribute("ongesturechange","TransformGraph(evt)");
+		rect.setAttribute("ongestureend","TransformGraph(evt)");
+		var translation1 = getTranslate(vert_layout[1].group.getAttribute("transform"));
+		var translation2 = getTranslate(horiz_layout.group.getAttribute("transform"));
+		var translation3 = getTranslate(graph.getAttribute("transform"));
+		setTranslate(rect, translation1[0] + translation2[0] + translation3[0], translation1[1] + translation2[1] + translation3[1]);
+		the_evt.target.ownerDocument.documentElement.insertBefore(rect, the_evt.target.ownerDocument.documentElement.childNodes.item(0));
+	}
 
 	the_evt.target.ownerDocument.documentElement.setAttribute("width", x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
 	the_evt.target.ownerDocument.documentElement.setAttribute("height", y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
