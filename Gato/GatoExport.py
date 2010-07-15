@@ -104,7 +104,7 @@ var init_graphs;  //initial graph, for restarting
 var action_panel;   //tracks buttons
 var state;	//tracks state of animation
 var timer;	//variable for timer for AnimateLoop
-var timeout = 50;  //Initial timeout
+var timeout = 300;  //Initial timeout
 var horiz_layout;  //horizontal layout manager of visible elements
 var vert_layout;   //vertical layout manager of visible elements
 var speed_slider;  //Manages speed settings of animation
@@ -726,14 +726,21 @@ function BP_deactivateButton(id){
 }
 
 
-//Slider
+/**
+*
+*
+*
+* Slider
+*
+*
+*/
 //Creates a simple slider with corresponding id
 //Thumb's height is specified.  'Offset' is the x-offset from the edge of the canvas (pixels)
 //Range is a 2-index array, specifying the upper and lower bounds of the slider.
 //labels specifies the labels given to the slider
 //Title indicates the slider's title
 //Actions is an array of 2-index arrays of ['attribute', 'action'] pairs
-function Slider(id, slider_width, thumb_height, offset, range, labels, title, actions){	
+function Slider(id, slider_width, thumb_height, offset, range, start_value, labels, title, actions){	
 	this.slider = null;
 	this.slider_bar = null;
 	this.slider_thumb = null;
@@ -804,6 +811,14 @@ function Slider(id, slider_width, thumb_height, offset, range, labels, title, ac
 	for(i in actions){
 		this.slider.setAttribute(actions[i][0], actions[i][1]);
 	}
+
+	//Set starting point for thumb
+        //speed_slider.slider_thumb.setAttribute("x", x_pos-speed_slider.offset-(speed_slider.default_thickness/2));
+
+	//speed_slider.current_setting = speed_slider.low_bound + (speed_slider.up_bound-speed_slider.low_bound)*(speed_slider.slider_thumb.getAttribute("x")/speed_slider.slider_bar.getAttribute("width"));
+	//timeout = speed_slider.current_setting;
+
+	
 	
 	the_evt.target.ownerDocument.documentElement.appendChild(this.slider);
 }
@@ -878,7 +893,6 @@ function StartAnimation(evt){
 			for(x in init_graphs){
                             var new_graph = init_graphs[x].cloneNode(true);
                             the_evt.target.ownerDocument.documentElement.appendChild(new_graph);
-			
                             vert_layout[1].insertComponent(new_graph.getAttribute("id"), x);
                         }
 			horiz_layout.insertComponent(vert_layout[1].group.getAttribute("id"), 1);
@@ -890,6 +904,7 @@ function StartAnimation(evt){
 				rect.setAttribute("height",graph.getBBox().height);
 				rect.setAttribute("x", graph.getBBox().x);
 				rect.setAttribute("y", graph.getBBox().y);
+				rect.setAttribute("transform", "");
 	    			var translation1 = getTranslate(vert_layout[1].group.getAttribute("transform"));
 				var translation2 = getTranslate(horiz_layout.group.getAttribute("transform"));
 				var translation3 = getTranslate(graph.getAttribute("transform"));
@@ -981,7 +996,6 @@ function StopAnimation(evt){
 	}
 }
 
-
 //Inserts a breakpoint by creating a grey highlight
 function SetBreakpoint(evt){            
         var line = evt.target;
@@ -1018,6 +1032,8 @@ function SetBreakpoint(evt){
 	background.setAttribute("fill", "grey");
 	background.setAttribute("id", code.line_llc.group.getAttribute("id") + "_bp" + line.getAttribute("id").split("_")[1]);
 	background.setAttribute("transform", "translate(" + x_offset + " " + y_offset + ")");
+	background.setAttribute("onclick", "RemoveBreakpoint(evt)");
+	background.setAttribute("cursor", "pointer");
 	code.highlight_group.parentNode.insertBefore(background, code.highlight_group);
 	line.setAttribute("onclick", "RemoveBreakpoint(evt)");
 	return;
@@ -1026,6 +1042,11 @@ function SetBreakpoint(evt){
 //Removes a highlight by removing a grey highlight
 function RemoveBreakpoint(evt){
 	var line = evt.target;
+
+	if(line.nodeName == "rect"){
+		var id = "l_" + evt.target.getAttribute("id").substring(evt.target.getAttribute("id").indexOf("_") + "_bp".length);
+		line = the_evt.target.ownerDocument.getElementById(id);
+	}
 	
 	if(line.nodeName == "tspan"){
 		line = line.parentNode;
@@ -1036,10 +1057,11 @@ function RemoveBreakpoint(evt){
 		if(background != null){
 			background.parentNode.removeChild(background);
 			line.setAttribute("onclick", "SetBreakpoint(evt)");
-			return;
 		}
+		
 	}
 }
+
 
 /**
 *
@@ -1444,14 +1466,29 @@ function TouchStart_SSlider(evt){
 	evt.preventDefault();
 	SSlider_Click(evt);
 }
-function Touch_Deactivate_SSlider(evt){
+function TouchDeactivate_SSlider(evt){
 	evt.preventDefault();
 	Deactivate_SSlider(evt);
 }
 
+/*//iPad-specific slider event handling
+function TouchDrag_Graph(evt){
+	evt.preventDefault();
+	TranslateGraph(evt);
+}
+
+function TouchStart_Graph(evt){
+	evt.preventDefault();
+	TranslateGraph(evt);
+}
+
+function TouchDeactivate_Graph(evt){
+	evt.preventDefault();
+	TranslateGraph(evt);
+}*/
 
 //iPad-specific functions for rotating and scaling graphs
-function GestureStart_Transform(evt){
+function GestureStart_TransformGraph(evt){
 	evt.preventDefault();
 	
 	var graph = evt.target;
@@ -1473,7 +1510,7 @@ function GestureStart_Transform(evt){
 	TransformGraph(graph, graph_bg, evt);
 }
 
-function GestureChange_Transform(evt){
+function GestureChange_TransformGraph(evt){
 	evt.preventDefault();
 	
 	var graph = evt.target;
@@ -1489,7 +1526,7 @@ function GestureChange_Transform(evt){
 	TransformGraph(graph, graph_bg, evt);
 }
 
-function GestureEnd_Transform(evt){
+function GestureEnd_TransformGraph(evt){
 	evt.preventDefault();
 	
 	var graph = evt.target;
@@ -1510,17 +1547,12 @@ function GestureEnd_Transform(evt){
 
 function TransformGraph(graph, graph_bg, evt){
 	var scale = evt.scale;
-	var rotate = evt.rotation;
 	
 	var graph_scale = getScale(graph.getAttribute("transform_buffer"));
 	var gbg_scale = getScale(graph_bg.getAttribute("transform_buffer"));
-	var graph_rotate = getRotate(graph.getAttribute("transform_buffer"));
-	var gbg_rotate = getRotate(graph_bg.getAttribute("transform_buffer"));
 	
 	setScale(graph, scale * graph_scale[0], scale * graph_scale[1]);
 	setScale(graph_bg, scale * gbg_scale[0], scale * gbg_scale[1]);
-	setRotate(graph, rotate + graph_rotate)
-	setRotate(graph_bg, rotate + gbg_rotate);
 }
 
 
@@ -1582,7 +1614,7 @@ function Initialize(evt) {
 	
 
 	//Create speed slider 
-	speed_slider = new Slider("speed_slider", 400, 50, x_offset, [timeout,1], ["Slow", "Fast"], "Speed", [["ontouchstart","TouchStart_SSlider(evt)"],["ontouchmove", "TouchDrag_SSlider(evt)"],["ontouchend", "TouchDeactivate_SSlider(evt)"],["onmousedown", "SSlider_Click(evt)"],["onmouseup", "Deactivate_SSlider(evt)"], ["onmousemove","Drag_SSlider(evt)"]]);
+	speed_slider = new Slider("speed_slider", 400, 50, x_offset, [timeout,.1], timeout/2, ["Slow", "Fast"], "Speed", [["ontouchstart","TouchStart_SSlider(evt)"],["ontouchmove", "TouchDrag_SSlider(evt)"],["ontouchend", "TouchDeactivate_SSlider(evt)"],["onmousedown", "SSlider_Click(evt)"],["onmouseup", "Deactivate_SSlider(evt)"], ["onmousemove","Drag_SSlider(evt)"]]);
 	
 
 	//Lay out code, speed slider, and graphs
@@ -1611,12 +1643,13 @@ function Initialize(evt) {
 		rect.setAttribute("id", graph.getAttribute("id") + "_bg");
 		rect.setAttribute("width",graph.getBBox().width);
 		rect.setAttribute("height",graph.getBBox().height);
-		rect.setAttribute("fill", "magenta");
+		rect.setAttribute("fill", "white");
+		rect.setAttribute("fill-opacity", 0);
 		rect.setAttribute("x", graph.getBBox().x);
 		rect.setAttribute("y", graph.getBBox().y);
-		rect.setAttribute("ongesturestart", "TransformGraph(evt)");
-		rect.setAttribute("ongesturechange","TransformGraph(evt)");
-		rect.setAttribute("ongestureend","TransformGraph(evt)");
+		rect.setAttribute("ongesturestart", "GestureStart_TransformGraph(evt)");
+		rect.setAttribute("ongesturechange","GestureChange_TransformGraph(evt)");
+		rect.setAttribute("ongestureend","GestureEnd_TransformGraph(evt)");
 		var translation1 = getTranslate(vert_layout[1].group.getAttribute("transform"));
 		var translation2 = getTranslate(horiz_layout.group.getAttribute("transform"));
 		var translation3 = getTranslate(graph.getAttribute("transform"));
@@ -2075,7 +2108,7 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
                 graph_type = "undirected"
         else:
                 graph_type = "directed"
-        file.write('<g id="g1" transform="translate(%d,%d)" type="%s">\n' % (200,0, graph_type))
+        file.write('<g id="g1" transform="translate(%d,%d)" type="%s" ongesturestart="GestureStart_TransformGraph(evt)" ongesturechange="GestureChange_TransformGraph(evt)" ongestureend="GestureEnd_TransformGraph(evt)">\n' % (200,0, graph_type))
         WriteGraphAsSVG(graphDisplay, file, idPrefix='g1_')    
         file.write('</g>\n')
 
@@ -2087,7 +2120,7 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
                 graph_type = "undirected"
             else:
                 graph_type = "directed"
-            file.write('<g id="g2" transform="translate(%d,%d)" type="%s">\n' % (200,bbg1['height'], graph_type))
+            file.write('<g id="g2" transform="translate(%d,%d)" type="%s" ongesturestart="GestureStart_TransformGraph(evt)" ongesturechange="GestureChange_TransformGraph(evt)" ongestureend="GestureEnd_TransformGraph(evt)">\n' % (200,bbg1['height'], graph_type))
             WriteGraphAsSVG(secondaryGraphDisplay, file, idPrefix='g2_')    
             file.write('</g>\n')
 
