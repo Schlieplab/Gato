@@ -48,37 +48,14 @@ xmlns:xlink="http://www.w3.org/1999/xlink"
 xmlns:ev="http://www.w3.org/2001/xml-events" version="1.1" baseProfile="full"
 viewbox="%(x)d %(y)d %(width)d %(height)d" width="30cm" height="30cm"
 onload="Initialize(evt)">
-<defs> 
-    <marker id="Arrowhead" 
-      viewBox="0 0 10 10" refX="0" refY="5" 
-      markerUnits="strokeWidth" 
-      markerWidth="4" markerHeight="3" 
-      orient="auto"> 
-      <path d="M 0 0 L 10 5 L 0 10 z" /> 
-    </marker> 
-    
-    <linearGradient id="active_button_lg" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="blue">
-		</stop>
-		<stop offset="1" stop-color="black">
-		</stop>
-    </linearGradient>
-    
-    <linearGradient id="inactive_button_lg" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="blue" stop-opacity="0">
-		</stop>
-		<stop offset="1" stop-color="black">
-		</stop>
-    </linearGradient>
-    
-    
-    
+<defs>     
     <linearGradient id="slider_bar_lg" x1="0" y1="0" x2="0" y2="1">
 		<stop offset="0" stop-color="skyblue" >
 		</stop>
 		<stop offset="1" stop-color="black">
 		</stop>
     </linearGradient>
+    
     <linearGradient id="slider_thumb_lg" x1="0" y1="0" x2="0" y2="1">
 		<stop offset="0" stop-color="#C0C0C0">
 		</stop>
@@ -97,23 +74,22 @@ var blinkcolor;
 var blinkcount;
 var e_blinkcolor;
 var e_blinkcount;
-
-
-var code;    //tracks HTB of code.  Vertical layout
-var init_graphs;  //initial graph, for restarting
-var action_panel;   //tracks buttons
-var state;	//tracks state of animation
-var timer;	//variable for timer for AnimateLoop
-var timeout = 300;  //Initial timeout
-var horiz_layout;  //horizontal layout manager of visible elements
-var vert_layout;   //vertical layout manager of visible elements
+var code;    //HTB of code in a vertical layout
+var init_graphs;  //initial graphs used for restarting animation
+var action_panel;   //ButtonPanel object for start, step, continue, and stop buttons
+var state;	//tracks animation state ("running", "stopped", "stepping")
+var timer;	//timer for AnimateLoop
+var timeout = 300;  //Multiplicative factor for timeout
+var horiz_layout;  //horizontal LLC for visible elements
+var vert_layout;   //vertical LLC for visible elements
 var speed_slider;  //Manages speed settings of animation
-var current_line = -1;  //Currently 'executing' line of code in program
+var current_line = 0;  //Currently 'executing' line of code in program.  While running, in range [1, infinity).  0 otherwise.
 var default_vertex_radius = 14.0; //Default vertex radius
 var default_line_width = 4.0; //Default line width
-var x_offset = 20;  //Twice the distance the layout is translated horizontally, in pixels
-var y_offset = 20;  //Twice the distance layout is translated vertically, in pixels
-
+var x_offset = 20;  //Distance the layout is translated horizontally, in pixels
+var y_offset = 20;  //Distance layout is translated vertically, in pixels
+var translate_buffer = []; //Gloval buffer for translating graphs.
+var blinking = false; //True iff blinking animation is commencing.  Prevents premature stepping
 /**
 *
 *
@@ -157,15 +133,15 @@ function getTranslate(str){
 }
 
 //Sets the first instance of "translate" in components "transform" attribute to "translate(x y)"
+//Creates one if none exists.
 function setTranslate(component, x, y){
 	var transformation = component.getAttribute("transform");
 	
 	if(transformation != null){
-		var header = transformation.substring(0, transformation.indexOf("translate") + "translate".length);
 		if(transformation.indexOf("translate") == -1){
 			component.setAttribute("transform", transformation + " translate(" + x + " " + y + ")");
 		}else{
-
+                        var header = transformation.substring(0, transformation.indexOf("translate") + "translate".length);
 			var trailer = transformation.slice(transformation.indexOf("translate") + "translate".length);
 			trailer = trailer.slice(trailer.indexOf(")"));
 		
@@ -179,53 +155,6 @@ function setTranslate(component, x, y){
 	}
 }
 
-//Accepts a string of the form "...rotate(d)..." and returns x and y in a 2-index array
-function getRotate(str){
-	var degrees;
-	
-	if(str == null || str.indexOf("rotate") == -1){
-		return 0;
-	}
-	
-	var to_parse = str.slice(str.indexOf("rotate") + "rotate".length);
-	
-	if(to_parse == null){
-		return 0;
-	}
-	
-	
-	var r = to_parse.match(/[^,\(\)\sA-Za-z]+/g);;
-	
-	if(r[0] != null){
-		degrees = parseFloat(r[0]);
-	}
-	
-	return degrees;
-
-}
-
-//Sets the first instance of "rotate" in components "transform" attribute to "rotate(x y)"
-function setRotate(component, d){
-	var transformation = component.getAttribute("transform");
-	
-	if(transformation != null){
-		var header = transformation.substring(0, transformation.indexOf("rotate") + "rotate".length);
-		if(transformation.indexOf("rotate") == -1){
-			component.setAttribute("transform", transformation + " rotate(" + d + ")");
-		}else{
-
-			var trailer = transformation.slice(transformation.indexOf("rotate") + "rotate".length);
-			trailer = trailer.slice(trailer.indexOf(")"));
-		
-			var newattr = header + "(" + d + trailer;
-
-			component.setAttribute("transform", newattr);
-		}
-
-	}else{
-		component.setAttribute("transform", "translate(" + d + ")");
-	}
-}
 //Accepts a string of the form "...scale(x y)..." and returns x and y in a 2-index array
 function getScale(str){
 	var x;
@@ -261,15 +190,15 @@ function getScale(str){
 }
 
 //Sets the first instance of "scale" in components "transform" attribute to "scale(x y)"
+//Creates one if none exists
 function setScale(component, x, y){
 	var transformation = component.getAttribute("transform");
 	
 	if(transformation != null){
-		var header = transformation.substring(0, transformation.indexOf("scale") + "scale".length);
 		if(transformation.indexOf("scale") == -1){
 			component.setAttribute("transform", transformation + " scale(" + x + " " + y + ")");
 		}else{
-
+                        var header = transformation.substring(0, transformation.indexOf("scale") + "scale".length);
 			var trailer = transformation.slice(transformation.indexOf("scale") + "scale".length);
 			trailer = trailer.slice(trailer.indexOf(")"));
 		
@@ -302,8 +231,8 @@ function Orthogonal(dx, dy){
 	return [-1*u2, u1];
 }
 
-//Creates an arrowhead aligned with line starting at (vx,vy) and ending at (wx,wy)
-//Arrowhead has specified id and ends outside the radius of a vertex with cx=wx and cy=wy
+//Creates an arrowhead on a line starting at (vx,vy) and ending at (wx,wy) and parallel to it
+//Arrowhead with given id touches the outide of a vertex with cx=wx and xy=wy
 function createArrowhead(vx, vy, wx, wy, stroke_width, id){
 
  		var l = Math.sqrt(Math.pow(parseFloat(wx)-parseFloat(vx),2) + Math.pow(parseFloat(wy)-parseFloat(vy), 2));
@@ -350,7 +279,7 @@ function createArrowhead(vx, vy, wx, wy, stroke_width, id){
 *
 */
 //Highlightable block of text
-//Accepts parameters: horizontal and vertical padding between lines, id, font size of text, and layout mode (horizontal or vertical)
+//Parameters: horizontal and vertical padding between lines, id, font size of text, and layout mode (horizontal or vertical)
 function HighlightableTextBlock(hp, vp, id, font_size, layout){
 	this.line_llc = new LinearLayoutComponent(hp, vp, id, layout);
 	this.line_llc.group.setAttribute("font-size", font_size);
@@ -408,14 +337,12 @@ function HTB_deleteLine(n){
 //highlight nth line, using 0-based indexing
 function HTB_highlightLine(n){
 	if(n < this.line_llc.group.childNodes.length && n >= 0){
-		if(the_evt.target.ownerDocument.getElementById(this.line_llc.group.getAttribute("id") + "_hl" + n) == null){
+		if(the_evt.target.ownerDocument.getElementById(this.line_llc.group.getAttribute("id") + "_hl" + (n+1)) == null){
 			var line = this.line_llc.group.childNodes.item(n);
 			var htb_bbox = this.line_llc.group.getBBox();
 			var line_bbox = line.getBBox();
 			var line_translation = getTranslate(this.line_llc.group.childNodes.item(n).getAttribute("transform"));
-			var m = 1;
 
-			var background = the_evt.target.ownerDocument.createElementNS(svgNS, "rect");
 			
 			var dx = line.getAttribute("dx");
 			var dy = line.getAttribute("dy");
@@ -430,14 +357,14 @@ function HTB_highlightLine(n){
 				dy = parseFloat(dy);
 			}
 
+			var background = the_evt.target.ownerDocument.createElementNS(svgNS, "rect");
 			background.setAttribute("x", line_bbox.x + line_translation[0] - this.line_llc.h_padding - dx);
 			background.setAttribute("y", line_bbox.y + line_translation[1] - this.line_llc.v_padding - dy);
 			background.setAttribute("width", htb_bbox.width + 2*this.line_llc.h_padding);
 			background.setAttribute("height", line_bbox.height + 2*this.line_llc.v_padding);
-
 			background.setAttribute("stroke", "blue");
 			background.setAttribute("fill", "yellow");
-			background.setAttribute("id", this.line_llc.group.getAttribute("id") + "_hl" + n);
+			background.setAttribute("id", this.line_llc.group.getAttribute("id") + "_hl" + (n+1));
 			
 			this.highlight_group.appendChild(background);
 		}
@@ -446,7 +373,7 @@ function HTB_highlightLine(n){
 
 //Removes the highlight of the nth line, using 0-based indexing.
 function HTB_removeHighlight(n){
-	var hl = the_evt.target.ownerDocument.getElementById(this.line_llc.group.getAttribute("id") + "_hl" + n);
+	var hl = the_evt.target.ownerDocument.getElementById(this.line_llc.group.getAttribute("id") + "_hl" + (n+1));
 	if(hl != null){
 		hl.parentNode.removeChild(hl);
 	}
@@ -660,8 +587,9 @@ function BP_prototypeInit(){
 	bp.llc.group.parentNode.removeChild(bp.llc.group);
 }
 
-//Creates a button of specified ID with shape and color specified by draw_path and color
-//Inserts it into slot #index, and assigned an action
+//Creates a button
+//Parameters:  button id, shape (path), color, index in button panel, button action
+//Inserts button into specified and assigns specifieds action
 function BP_createButton(id, draw_path, color, index, action){  //Create button with corresponding id, text, and action into slot #index
 	if(the_evt.target.ownerDocument.getElementById(id) == null){
 		var button_group = the_evt.target.ownerDocument.createElementNS(svgNS, "path");
@@ -670,13 +598,11 @@ function BP_createButton(id, draw_path, color, index, action){  //Create button 
 		button_group.setAttribute("fill", color);
 		button_group.setAttribute("cursor", "pointer");
 		button_group.setAttribute("onclick", action);
-
+                button_group.setAttribute("fill-opacity", 1);
 		the_evt.target.ownerDocument.documentElement.appendChild(button_group);
 		this.llc.insertComponent(button_group.getAttribute("id"), index);
-
 	}else{
 		this.llc.insertComponent(id, index);
-
 	}
 }
 
@@ -697,14 +623,14 @@ function BP_deleteButtonById(id){
 	}
 }
 
-//Makes button with corresponding id active, assigning it the given action
+//Activates button with corresponding id and assigns a specified action
 function BP_activateButton(id, action){
 	var children = this.llc.group.childNodes;
 	for(i = 0; i < children.length; i++){
 		if(children.item(i).getAttribute("id") == id){
 			children.item(i).setAttribute("onclick", action);
 			children.item(i).setAttribute("cursor", "pointer");
-			children.item(i).setAttribute("fill", "url(#active_button_lg)");
+			children.item(i).setAttribute("fill-opacity", 1);
 			break;
 		}
 	}
@@ -718,8 +644,7 @@ function BP_deactivateButton(id){
 		if(children.item(i).getAttribute("id") == id){
 			children.item(i).setAttribute("onclick", "");
 			children.item(i).setAttribute("cursor", "default");
-			children.item(i).setAttribute("fill", "url(#inactive_button_lg)");
-
+			children.item(i).setAttribute("fill-opacity", "0.5");
 			break;
 		}
 	}
@@ -734,12 +659,10 @@ function BP_deactivateButton(id){
 *
 *
 */
-//Creates a simple slider with corresponding id
-//Thumb's height is specified.  'Offset' is the x-offset from the edge of the canvas (pixels)
-//Range is a 2-index array, specifying the upper and lower bounds of the slider.
-//labels specifies the labels given to the slider
-//Title indicates the slider's title
-//Actions is an array of 2-index arrays of ['attribute', 'action'] pairs
+//Creates a simple slider
+//Parameters: slider id, height of slider thumb, x-offset from edge of canvas (pixels), 2-index array, specifying the upper and lower bounds of the slider,
+//start value of slider, array of strings specifying  labels distributed along slider
+//title of slider, and an array of 2-index arrays of ['attribute', 'action'] pairs
 function Slider(id, slider_width, thumb_height, offset, range, start_value, labels, title, actions){	
 	this.slider = null;
 	this.slider_bar = null;
@@ -811,14 +734,6 @@ function Slider(id, slider_width, thumb_height, offset, range, start_value, labe
 	for(i in actions){
 		this.slider.setAttribute(actions[i][0], actions[i][1]);
 	}
-
-	//Set starting point for thumb
-        //speed_slider.slider_thumb.setAttribute("x", x_pos-speed_slider.offset-(speed_slider.default_thickness/2));
-
-	//speed_slider.current_setting = speed_slider.low_bound + (speed_slider.up_bound-speed_slider.low_bound)*(speed_slider.slider_thumb.getAttribute("x")/speed_slider.slider_bar.getAttribute("width"));
-	//timeout = speed_slider.current_setting;
-
-	
 	
 	the_evt.target.ownerDocument.documentElement.appendChild(this.slider);
 }
@@ -831,8 +746,7 @@ function Slider(id, slider_width, thumb_height, offset, range, start_value, labe
 *
 */
 //Drags or moves thumb when slider is clicked
-//Drags or moves thumb when slider is clicked
-function SSlider_Click(evt){
+function Click_SSlider(evt){
 	if(evt.target.getAttribute("id") == "speed_slider_slider_thumb"){  //Drag thumb
 		speed_slider.thumb_active = true;
 	} else if(evt.target.getAttribute("id") == "speed_slider_slider_bar"){	//Move thumb.
@@ -884,8 +798,7 @@ function Drag_SSlider(evt){
 */
 //Starts animation loop.  If called more than once, resets display and begins loop
 function StartAnimation(evt){
-	if(evt.target.getAttribute("id") == "start_button" || evt.target.parentNode.getAttribute("id") == "start_button"){
-
+	if(evt.target.getAttribute("id") == "start_button"){
 		if(state != null){
 			horiz_layout.deleteComponent(1);
 			vert_layout[1] = new LinearLayoutComponent(2, 2, "vert_layout_1", "vertical");
@@ -899,16 +812,16 @@ function StartAnimation(evt){
 
 			for(x in init_graphs){
 				var graph = the_evt.target.ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
-				var rect = the_evt.target.ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
-				rect.setAttribute("width",graph.getBBox().width);
-				rect.setAttribute("height",graph.getBBox().height);
-				rect.setAttribute("x", graph.getBBox().x);
-				rect.setAttribute("y", graph.getBBox().y);
-				rect.setAttribute("transform", "");
+				var background = the_evt.target.ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+				background.setAttribute("width",graph.getBBox().width);
+				background.setAttribute("height",graph.getBBox().height);
+				background.setAttribute("x", graph.getBBox().x);
+				background.setAttribute("y", graph.getBBox().y);
+				background.setAttribute("transform", "");
 	    			var translation1 = getTranslate(vert_layout[1].group.getAttribute("transform"));
 				var translation2 = getTranslate(horiz_layout.group.getAttribute("transform"));
 				var translation3 = getTranslate(graph.getAttribute("transform"));
-				setTranslate(rect, translation1[0] + translation2[0] + translation3[0], translation1[1] + translation2[1] + translation3[1]);
+				setTranslate(background, translation1[0] + translation2[0] + translation3[0], translation1[1] + translation2[1] + translation3[1]);
 			}
 		}
 	
@@ -943,14 +856,14 @@ function AnimateLoop(){
 		action_panel.deactivateButton("stop_button");
 		action_panel.deactivateButton("step_button");
 		step = 0;
-		code.removeHighlight(current_line);
-                current_line = -1;
+		code.removeHighlight(current_line-1);
+                current_line = 0;
 	}
 }
 
 //Resumes execution of animation loop if paused by pressing step button
 function ContinueAnimation(evt){
-	if(evt.target.getAttribute("id") == "continue_button" || evt.target.parentNode.getAttribute("id") == "continue_button" ){
+	if(evt.target.getAttribute("id") == "continue_button"){
 		if(state != "running"){
 			state = "running";
 			AnimateLoop();
@@ -960,7 +873,10 @@ function ContinueAnimation(evt){
 
 //Stops execution of animation loop and plays next animation on press of step button
 function StepAnimation(evt){
-	if(evt.target.getAttribute("id") == "step_button" || evt.target.parentNode.getAttribute("id") == "step_button"){
+        if(blinking)  
+            return; //prevent buggy behavior
+
+	if(evt.target.getAttribute("id") == "step_button"){
                 clearTimeout(timer);
 		state = "stepping";
 		animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
@@ -975,15 +891,15 @@ function StepAnimation(evt){
                     action_panel.deactivateButton("stop_button");
                     action_panel.deactivateButton("step_button");
                     step = 0;
-                    code.removeHighlight(current_line);
-                    current_line = -1;
+                    code.removeHighlight(current_line-1);
+                    current_line = 0;
                 }
 	}
 }
 
 //Stops animation and clears code highlights.  To resume animation, it must be restarted
 function StopAnimation(evt){
-	if(evt.target.getAttribute("id") == "stop_button" || evt.target.parentNode.getAttribute("id") == "stop_button"){
+	if(evt.target.getAttribute("id") == "stop_button"){
 		clearTimeout(timer);
 		state = "stopped";
 		action_panel.activateButton("start_button", "StartAnimation(evt)");
@@ -991,8 +907,8 @@ function StopAnimation(evt){
 		action_panel.deactivateButton("stop_button");
 		action_panel.deactivateButton("step_button");
 		step = 0;
-		code.removeHighlight(current_line);
-                current_line = -1;
+		code.removeHighlight(current_line-1);
+                current_line = 0;
 	}
 }
 
@@ -1003,13 +919,19 @@ function SetBreakpoint(evt){
 	if(line.nodeName == "tspan"){
 		line = line.parentNode;
 	}
+
+	//put breakpoint functionality on highligt if it is over highlighted text
+	var hl_num = line.getAttribute("id").split("_")[1];
+	var hl = the_evt.target.ownerDocument.getElementById("code_hl" + hl_num);
+	if(hl != null){
+		hl.setAttribute("cursor", "pointer");
+		hl.setAttribute("onclick", "RemoveBreakpoint(evt)");
+	}
+	
 	var htb_bbox = code.line_llc.group.getBBox();
 	var line_bbox = line.getBBox();
 	var line_translation = getTranslate(line.getAttribute("transform"));
-	var m = 1;
 
-	var background = the_evt.target.ownerDocument.createElementNS(svgNS, "rect");
-			
 	var dx = line.getAttribute("dx");
 	var dy = line.getAttribute("dy");
 	if(dx == null){
@@ -1023,11 +945,11 @@ function SetBreakpoint(evt){
 	    	dy = parseFloat(dy);
 	}
 
+        var background = the_evt.target.ownerDocument.createElementNS(svgNS, "rect");
 	background.setAttribute("x", line_bbox.x + line_translation[0] - code.line_llc.h_padding - dx);
 	background.setAttribute("y", line_bbox.y + line_translation[1] - code.line_llc.v_padding - dy);
 	background.setAttribute("width", htb_bbox.width + 2*code.line_llc.h_padding);
 	background.setAttribute("height", line_bbox.height + 2*code.line_llc.v_padding);
-
 	background.setAttribute("stroke", "blue");
 	background.setAttribute("fill", "grey");
 	background.setAttribute("id", code.line_llc.group.getAttribute("id") + "_bp" + line.getAttribute("id").split("_")[1]);
@@ -1036,7 +958,6 @@ function SetBreakpoint(evt){
 	background.setAttribute("cursor", "pointer");
 	code.highlight_group.parentNode.insertBefore(background, code.highlight_group);
 	line.setAttribute("onclick", "RemoveBreakpoint(evt)");
-	return;
 }
 
 //Removes a highlight by removing a grey highlight
@@ -1044,7 +965,15 @@ function RemoveBreakpoint(evt){
 	var line = evt.target;
 
 	if(line.nodeName == "rect"){
-		var id = "l_" + evt.target.getAttribute("id").substring(evt.target.getAttribute("id").indexOf("_") + "_bp".length);
+		var id = "";
+		if(line.getAttribute("id").indexOf("_bp") != -1){
+			id = "l_" + evt.target.getAttribute("id").substring(evt.target.getAttribute("id").indexOf("_") + "_bp".length);
+		}else if(line.getAttribute("id").indexOf("_hl") != -1){
+			id = "l_" + evt.target.getAttribute("id").substring(evt.target.getAttribute("id").indexOf("_") + "_hl".length);
+			line.setAttribute("cursor", "default");
+			line.setAttribute("onclick", "");
+		}else return;
+		
 		line = the_evt.target.ownerDocument.getElementById(id);
 	}
 	
@@ -1057,8 +986,7 @@ function RemoveBreakpoint(evt){
 		if(background != null){
 			background.parentNode.removeChild(background);
 			line.setAttribute("onclick", "SetBreakpoint(evt)");
-		}
-		
+		}	
 	}
 }
 
@@ -1106,6 +1034,7 @@ function SetAllVerticesColor(graph_id_and_color) {
 // Cannot map: SetAllEdgesColor(self, color, graph=None, leaveColors=None)
 //Vertex blinks between black and current color
 function BlinkVertex(v, color) {
+    blinking = true;
     element = the_evt.target.ownerDocument.getElementById(v);
     blinkcolor = element.getAttribute("fill")
     blinkcount = 3;
@@ -1122,11 +1051,14 @@ function VertexBlinker() {
     blinkcount = blinkcount - 1;
     if (blinkcount >= 0)
        setTimeout(VertexBlinker, 3*timeout);
+    else
+        blinking = false;
 }
 
 
 //Edge blinks between black and current color
 function BlinkEdge(e, color){
+    blinking = true;
     e_element = the_evt.target.ownerDocument.getElementById(e);
     e_blinkcolor = e_element.getAttribute("stroke");
     e_blinkcount = 3;
@@ -1157,6 +1089,8 @@ function EdgeBlinker(){
     e_blinkcount = e_blinkcount - 1;
     if (e_blinkcount >= 0)
        setTimeout(EdgeBlinker, 3*timeout);
+    else
+        blinking = false;
 }
 
 //Blink(self, list, color=None):
@@ -1211,12 +1145,17 @@ function SetVertexAnnotation(v, annotation, color) //removed 'self' parameter to
 function ShowActive(line_id){
 	for(i = 0; i < code.line_llc.group.childNodes.length; i++){
 		if(code.line_llc.group.childNodes.item(i).getAttribute("id") == line_id){
-			code.removeHighlight(current_line);
+			code.removeHighlight(current_line-1);
 			code.highlightLine(i);
-			current_line = i;
+			current_line = i+1;
+			if(the_evt.target.ownerDocument.getElementById("code_bp" + current_line) != null){
+				var hl = the_evt.target.ownerDocument.getElementById("code_hl" + current_line);
+				hl.setAttribute("cursor", "pointer");
+				hl.setAttribute("onclick", "RemoveBreakpoint(evt)");
+			}
 			break;
 		}
-	}	
+	}
 }
 
 //Directed or undirected added to graph.
@@ -1464,14 +1403,14 @@ function TouchDrag_SSlider(evt){
 
 function TouchStart_SSlider(evt){
 	evt.preventDefault();
-	SSlider_Click(evt);
+	Click_SSlider(evt);
 }
 function TouchDeactivate_SSlider(evt){
 	evt.preventDefault();
 	Deactivate_SSlider(evt);
 }
 
-/*//iPad-specific slider event handling
+//iPad-specific graph translations
 function TouchDrag_Graph(evt){
 	evt.preventDefault();
 	TranslateGraph(evt);
@@ -1479,13 +1418,42 @@ function TouchDrag_Graph(evt){
 
 function TouchStart_Graph(evt){
 	evt.preventDefault();
-	TranslateGraph(evt);
+	translate_buffer = [evt.touches[0].clientX, evt.touches[0].clientY];
 }
 
 function TouchDeactivate_Graph(evt){
 	evt.preventDefault();
-	TranslateGraph(evt);
-}*/
+	translate_buffer = [];
+}
+
+function TranslateGraph(evt){
+	var graph = evt.target;
+	var graph_bg = null;
+	if(graph.nodeName == "rect"){
+		graph_bg = graph;
+		graph = the_evt.target.ownerDocument.getElementById(graph.getAttribute("id").split("_")[0]);
+	}else{
+		graph = graph.parentNode;
+		graph_bg = the_evt.target.ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+	}
+	
+	var x = evt.clientX;
+	if(x == undefined)
+		x = evt.touches[0].clientX;
+	var y = evt.clientX;
+	if(y == undefined)
+		y = evt.touches[0].clientY;
+	
+	var translation = getTranslate(graph.getAttribute("transform"));
+	var bg_translation = getTranslate(graph_bg.getAttribute("transform"));
+	setTranslate(graph, translation[0] + (x-translate_buffer[0]), translation[1] + (y - translate_buffer[1]));
+	setTranslate(graph_bg, bg_translation[0] + (x-translate_buffer[0]), bg_translation[1] + (y - translate_buffer[1]));
+	translate_buffer[0] = x;
+	translate_buffer[1] = y;
+
+	the_evt.target.ownerDocument.documentElement.setAttribute("width", 2*x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
+        the_evt.target.ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
+}
 
 //iPad-specific functions for rotating and scaling graphs
 function GestureStart_TransformGraph(evt){
@@ -1539,7 +1507,6 @@ function GestureEnd_TransformGraph(evt){
 		graph_bg = the_evt.target.ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
 	}
 
-	
 	TransformGraph(graph, graph_bg, evt);
 	graph.setAttribute("transform_buffer", graph.getAttribute("transform"));
 	graph_bg.setAttribute("transform_buffer", graph_bg.getAttribute("transform"));
@@ -1553,6 +1520,9 @@ function TransformGraph(graph, graph_bg, evt){
 	
 	setScale(graph, scale * graph_scale[0], scale * graph_scale[1]);
 	setScale(graph_bg, scale * gbg_scale[0], scale * gbg_scale[1]);
+
+	the_evt.target.ownerDocument.documentElement.setAttribute("width", 2*x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
+        the_evt.target.ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
 }
 
 
@@ -1583,13 +1553,13 @@ function Initialize(evt) {
 
 	//Make code lines interactive
 	var code_lines = code.line_llc.group.childNodes;
-
 	for(i = 0; i < code_lines.length; i++){
             if(code_lines.item(i).nodeName == "text"){
                 code_lines.item(i).setAttribute("cursor", "pointer");
                 code_lines.item(i).setAttribute("onclick", "SetBreakpoint(evt)");
             }
 	}
+
 
 	//Clone initial graphs and keep references to them
 	init_graphs = new Array();
@@ -1601,26 +1571,24 @@ function Initialize(evt) {
             tree = the_evt.target.ownerDocument.getElementById("g" + i);
 	}
 	
-	
 	//Create buttons
 	action_panel = new ButtonPanel(15, 2, "actions", "horizontal");
-	action_panel.createButton("start_button", "M0,0 0,40 10,40 10,0 Z M20,0 20,40 50,20 Z", "url(#active_button_lg)", 0, "StartAnimation(evt)");
-	action_panel.createButton("step_button", "M0,0 0,40 30,20 Z M30,0 30,40 40,40 40,0 Z" , "url(#active_button_lg)", 1, "StepAnimation(evt)");
-	action_panel.createButton("continue_button", "M0,0 0,40 30,20 Z", "url(#active_button_lg)", 2, "ContinueAnimation(evt)");
-	action_panel.createButton("stop_button", "M0,0 0,40 40,40 40,0 Z", "url(#active_button_lg)", 3, "StopAnimation(evt)");
+	action_panel.createButton("start_button", "M0,0 0,40 30,20 Z", "blue", 0, "StartAnimation(evt)");
+	action_panel.createButton("step_button", "M0,0 0,40 30,20 Z M30,0 30,40 40,40 40,0 Z", "blue", 1, "StepAnimation(evt)");
+	action_panel.createButton("continue_button", "M0,0 0,40 10,40 10,0 Z M20,0 20,40 50,20 Z", "blue", 2, "ContinueAnimation(evt)");
+	action_panel.createButton("stop_button", "M0,0 0,40 40,40 40,0 Z", "blue", 3, "StopAnimation(evt)");
 	action_panel.deactivateButton("continue_button");
 	action_panel.deactivateButton("stop_button");
 	action_panel.deactivateButton("step_button");
-	
+
 
 	//Create speed slider 
-	speed_slider = new Slider("speed_slider", 400, 50, x_offset, [timeout,.1], timeout/2, ["Slow", "Fast"], "Speed", [["ontouchstart","TouchStart_SSlider(evt)"],["ontouchmove", "TouchDrag_SSlider(evt)"],["ontouchend", "TouchDeactivate_SSlider(evt)"],["onmousedown", "SSlider_Click(evt)"],["onmouseup", "Deactivate_SSlider(evt)"], ["onmousemove","Drag_SSlider(evt)"]]);
-	
+	speed_slider = new Slider("speed_slider", 400, 50, x_offset, [timeout,.1], timeout/2, ["Slow", "Fast"], "Speed", [["ontouchstart","TouchStart_SSlider(evt)"],["ontouchmove", "TouchDrag_SSlider(evt)"],["ontouchend", "TouchDeactivate_SSlider(evt)"],["onmousedown", "Click_SSlider(evt)"],["onmouseup", "Deactivate_SSlider(evt)"], ["onmousemove","Drag_SSlider(evt)"]]);
+
 
 	//Lay out code, speed slider, and graphs
 	horiz_layout = new LinearLayoutComponent(2, 2, "horizontal_layout", "horizontal");	
 	vert_layout = new Array(new LinearLayoutComponent(2, 5, "vert_layout_0", "vertical"), new LinearLayoutComponent(2, 2, "vert_layout_1", "vertical"));
-
 	vert_layout[0].insertComponent(code.line_llc.group.getAttribute("id"), 0);
 	vert_layout[0].insertComponent(action_panel.llc.group.getAttribute("id"), 1);
 	vert_layout[0].insertComponent(speed_slider.slider.getAttribute("id"), 2);
@@ -1643,13 +1611,16 @@ function Initialize(evt) {
 		rect.setAttribute("id", graph.getAttribute("id") + "_bg");
 		rect.setAttribute("width",graph.getBBox().width);
 		rect.setAttribute("height",graph.getBBox().height);
-		rect.setAttribute("fill", "white");
-		rect.setAttribute("fill-opacity", 0);
+		rect.setAttribute("fill", "magenta");
+		rect.setAttribute("fill-opacity", 1);
 		rect.setAttribute("x", graph.getBBox().x);
 		rect.setAttribute("y", graph.getBBox().y);
 		rect.setAttribute("ongesturestart", "GestureStart_TransformGraph(evt)");
 		rect.setAttribute("ongesturechange","GestureChange_TransformGraph(evt)");
 		rect.setAttribute("ongestureend","GestureEnd_TransformGraph(evt)");
+		rect.setAttribute("ontouchstart", "TouchStart_Graph(evt)");
+		rect.setAttribute("ontouchmove", "TouchDrag_Graph(evt)");
+		rect.setAttribute("ontouchend", "TouchDeactivate_Graph(evt)");
 		var translation1 = getTranslate(vert_layout[1].group.getAttribute("transform"));
 		var translation2 = getTranslate(horiz_layout.group.getAttribute("transform"));
 		var translation3 = getTranslate(graph.getAttribute("transform"));
@@ -1672,37 +1643,14 @@ head = """<?xml version="1.0" encoding="utf-8"?>
 xmlns:xlink="http://www.w3.org/1999/xlink"
 xmlns:ev="http://www.w3.org/2001/xml-events" version="1.1" baseProfile="full"
 viewbox="%(x)d %(y)d %(width)d %(height)d" width="30cm" height="30cm">
-<defs> 
-    <marker id="Arrowhead" 
-      viewBox="0 0 10 10" refX="0" refY="5" 
-      markerUnits="strokeWidth" 
-      markerWidth="4" markerHeight="3" 
-      orient="auto"> 
-      <path d="M 0 0 L 10 5 L 0 10 z" /> 
-    </marker>    
-    
-    <linearGradient id="active_button_lg" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="blue">
-		</stop>
-		<stop offset="1" stop-color="black">
-		</stop>
-    </linearGradient>
-    
-    <linearGradient id="inactive_button_lg" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="blue" stop-opacity="0">
-		</stop>
-		<stop offset="1" stop-color="black">
-		</stop>
-    </linearGradient>
-    
-    
-    
+<defs>  
     <linearGradient id="slider_bar_lg" x1="0" y1="0" x2="0" y2="1">
 		<stop offset="0" stop-color="skyblue" >
 		</stop>
 		<stop offset="1" stop-color="black">
 		</stop>
     </linearGradient>
+    
     <linearGradient id="slider_thumb_lg" x1="0" y1="0" x2="0" y2="1">
 		<stop offset="0" stop-color="#C0C0C0">
 		</stop>
@@ -2108,7 +2056,9 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
                 graph_type = "undirected"
         else:
                 graph_type = "directed"
-        file.write('<g id="g1" transform="translate(%d,%d)" type="%s" ongesturestart="GestureStart_TransformGraph(evt)" ongesturechange="GestureChange_TransformGraph(evt)" ongestureend="GestureEnd_TransformGraph(evt)">\n' % (200,0, graph_type))
+        file.write('<g id="g1" transform="translate(%d,%d)" type="%s" ongesturestart="GestureStart_TransformGraph(evt)" '\
+                   'ongesturechange="GestureChange_TransformGraph(evt)" ongestureend="GestureEnd_TransformGraph(evt)" '\
+                   'ontouchstart="TouchStart_Graph(evt)" ontouchmove="TouchDrag_Graph(evt)" ontouchend="TouchDeactivate_Graph(evt)">\n' % (200,0, graph_type))
         WriteGraphAsSVG(graphDisplay, file, idPrefix='g1_')    
         file.write('</g>\n')
 
@@ -2120,7 +2070,9 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
                 graph_type = "undirected"
             else:
                 graph_type = "directed"
-            file.write('<g id="g2" transform="translate(%d,%d)" type="%s" ongesturestart="GestureStart_TransformGraph(evt)" ongesturechange="GestureChange_TransformGraph(evt)" ongestureend="GestureEnd_TransformGraph(evt)">\n' % (200,bbg1['height'], graph_type))
+            file.write('<g id="g2" transform="translate(%d,%d)" type="%s" ongesturestart="GestureStart_TransformGraph(evt)" '\
+                       'ongesturechange="GestureChange_TransformGraph(evt)" ongestureend="GestureEnd_TransformGraph(evt)" '\
+                       'ontouchstart="TouchStart_Graph(evt)" ontouchmove="TouchDrag_Graph(evt)" ontouchend="TouchDeactivate_Graph(evt)">\n' % (200,bbg1['height'], graph_type))
             WriteGraphAsSVG(secondaryGraphDisplay, file, idPrefix='g2_')    
             file.write('</g>\n')
 
