@@ -1412,16 +1412,23 @@ function TouchDeactivate_SSlider(evt){
 
 //iPad-specific graph translations
 function TouchDrag_Graph(evt){
+	if(evt.touches == undefined || evt.touches.length != 1)
+		return;
+
 	evt.preventDefault();
 	TranslateGraph(evt);
 }
 
 function TouchStart_Graph(evt){
+	if(evt.touches == undefined || evt.touches.length != 1)
+		return;
 	evt.preventDefault();
 	translate_buffer = [evt.touches[0].clientX, evt.touches[0].clientY];
 }
 
 function TouchDeactivate_Graph(evt){
+	if(evt.touches == undefined || evt.touches.length != 1)
+		return;
 	evt.preventDefault();
 	translate_buffer = [];
 }
@@ -1448,6 +1455,8 @@ function TranslateGraph(evt){
 	var bg_translation = getTranslate(graph_bg.getAttribute("transform"));
 	setTranslate(graph, translation[0] + (x-translate_buffer[0]), translation[1] + (y - translate_buffer[1]));
 	setTranslate(graph_bg, bg_translation[0] + (x-translate_buffer[0]), bg_translation[1] + (y - translate_buffer[1]));
+	graph.setAttribute("transform_buffer", graph.getAttribute("transform"));
+	graph_bg.setAttribute("transform_buffer", graph_bg.getAttribute("transform"));
 	translate_buffer[0] = x;
 	translate_buffer[1] = y;
 
@@ -1456,7 +1465,9 @@ function TranslateGraph(evt){
 }
 
 //iPad-specific functions for rotating and scaling graphs
-function GestureStart_TransformGraph(evt){
+function GestureStart_TransformGraph(evt){		
+	if(evt.touches != undefined)
+		return;
 	evt.preventDefault();
 	
 	var graph = evt.target;
@@ -1470,15 +1481,16 @@ function GestureStart_TransformGraph(evt){
 	}
 	
 	
-	if(graph.getAttribute("transform_buffer") == null){
+	if(graph.getAttribute("transform_buffer") == null){		
 		graph.setAttribute("transform_buffer", graph.getAttribute("transform"));
 		graph_bg.setAttribute("transform_buffer", graph_bg.getAttribute("transform"));
 	}
 	
-	TransformGraph(graph, graph_bg, evt);
 }
 
 function GestureChange_TransformGraph(evt){
+	if(evt.touches != undefined)
+		return;
 	evt.preventDefault();
 	
 	var graph = evt.target;
@@ -1495,6 +1507,9 @@ function GestureChange_TransformGraph(evt){
 }
 
 function GestureEnd_TransformGraph(evt){
+	if(evt.touches != undefined)
+		return;
+		
 	evt.preventDefault();
 	
 	var graph = evt.target;
@@ -1507,7 +1522,6 @@ function GestureEnd_TransformGraph(evt){
 		graph_bg = the_evt.target.ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
 	}
 
-	TransformGraph(graph, graph_bg, evt);
 	graph.setAttribute("transform_buffer", graph.getAttribute("transform"));
 	graph_bg.setAttribute("transform_buffer", graph_bg.getAttribute("transform"));
 }
@@ -1517,12 +1531,25 @@ function TransformGraph(graph, graph_bg, evt){
 	
 	var graph_scale = getScale(graph.getAttribute("transform_buffer"));
 	var gbg_scale = getScale(graph_bg.getAttribute("transform_buffer"));
+	var graph_scaling_factor = 1 - scale;
+	var gbg_scaling_factor = 1 - scale;
+	
+	var gscf_width = graph_scaling_factor* graph.getBBox().width*graph_scale[0];
+	var gscf_height = graph_scaling_factor* graph.getBBox().height*graph_scale[1];  
+	var gbgscf_width = gbg_scaling_factor * graph_bg.getBBox().width*gbg_scale[0];
+	var gbgscf_height = gbg_scaling_factor * graph_bg.getBBox().height*gbg_scale[1];
 	
 	setScale(graph, scale * graph_scale[0], scale * graph_scale[1]);
 	setScale(graph_bg, scale * gbg_scale[0], scale * gbg_scale[1]);
-
+	
+	graph_translation = getTranslate(graph.getAttribute("transform_buffer"));
+	gbg_translation = getTranslate(graph_bg.getAttribute("transform_buffer"));
+	
+	setTranslate(graph, graph_translation[0] + gscf_width/2, graph_translation[1] + gscf_height/2);
+	setTranslate(graph_bg, gbg_translation[0] + gbgscf_width/2, gbg_translation[1] + gbgscf_height/2);
+	
 	the_evt.target.ownerDocument.documentElement.setAttribute("width", 2*x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
-        the_evt.target.ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
+	the_evt.target.ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
 }
 
 
