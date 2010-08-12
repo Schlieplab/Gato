@@ -79,7 +79,7 @@ var init_graphs;  //initial graphs used for restarting animation
 var action_panel;   //ButtonPanel object for start, step, continue, and stop buttons
 var state;	//tracks animation state ("running", "stopped", "stepping")
 var timer;	//timer for AnimateLoop
-var timeout = 300;  //Multiplicative factor for timeout
+var timeout = 1000;  //Multiplicative factor for timeout
 var horiz_layout;  //horizontal LLC for visible elements
 var vert_layout;   //vertical LLC for visible elements
 var speed_slider;  //Manages speed settings of animation
@@ -90,6 +90,7 @@ var x_offset = 20;  //Distance the layout is translated horizontally, in pixels
 var y_offset = 20;  //Distance layout is translated vertically, in pixels
 var translate_buffer = []; //Gloval buffer for translating graphs.
 var blinking = false; //True iff blinking animation is commencing.  Prevents premature stepping
+var step_pressed = false;  //Whether the step button was pressed.  Used to emulate an interrupt.
 /**
 *
 *
@@ -769,7 +770,7 @@ function Move_SSlider(evt){
 	speed_slider.slider_thumb.setAttribute("x", x_pos-speed_slider.offset-(speed_slider.default_thickness/2));
 
 	speed_slider.current_setting = speed_slider.low_bound + (speed_slider.up_bound-speed_slider.low_bound)*(speed_slider.slider_thumb.getAttribute("x")/speed_slider.slider_bar.getAttribute("width"));
-	timeout = speed_slider.current_setting;
+	timeout = Math.log(speed_slider.current_setting) * Math.log(speed_slider.current_setting);
 }
 
 //Drag slider and change associated values
@@ -783,7 +784,7 @@ function Drag_SSlider(evt){
 		if(x_pos >= speed_slider.slider_bar.getBBox().x+speed_slider.offset && x_pos <= (speed_slider.slider_bar.getBBox().x + speed_slider.offset + speed_slider.slider_bar.getBBox().width)){
 			speed_slider.slider_thumb.setAttribute("x", x_pos-speed_slider.offset-(speed_slider.default_thickness/2));
 			speed_slider.current_setting = speed_slider.low_bound + (speed_slider.up_bound-speed_slider.low_bound)*(speed_slider.slider_thumb.getAttribute("x")/speed_slider.slider_bar.getAttribute("width"));
-			timeout = speed_slider.current_setting;
+			timeout = Math.log(speed_slider.current_setting) * Math.log(speed_slider.current_setting);
 		}
 	}
 }
@@ -837,14 +838,28 @@ function StartAnimation(evt){
 
 //Loop of animation.  Performs actions in animation array at specified intervals
 function AnimateLoop(){
-	var duration = animation[step][0] * timeout;
-	animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
-	step = step + 1;
-	the_evt.target.ownerDocument.documentElement.setAttribute("width", 2*x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
-	the_evt.target.ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
 	
+	while(animation[step][1] != ShowActive && step < animation.length){
+		animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
+		step = step + 1;
+		the_evt.target.ownerDocument.documentElement.setAttribute("width", 2*x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
+		the_evt.target.ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
+	}
+	
+	if(step < animation.length){
+		animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
+		step = step + 1;
+		the_evt.target.ownerDocument.documentElement.setAttribute("width", 2*x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
+		the_evt.target.ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
+	}
+	
+	var duration = animation[step-1][0] * timeout;
+
 	if(step < animation.length) {
-		if(animation[step-1][1] != ShowActive || the_evt.target.ownerDocument.getElementById(code.line_llc.group.getAttribute("id") + "_bp" + animation[step-1][2].split("_")[1]) == null){
+		if(step_pressed){
+			step_pressed = false;
+			state = "stopped"
+		}else if(animation[step-1][1] != ShowActive || the_evt.target.ownerDocument.getElementById(code.line_llc.group.getAttribute("id") + "_bp" + animation[step-1][2].split("_")[1]) == null){
 			timer = setTimeout(AnimateLoop, duration);
 		}else{
 			state = "stopped";
@@ -875,15 +890,28 @@ function ContinueAnimation(evt){
 function StepAnimation(evt){
         if(blinking)  
             return; //prevent buggy behavior
+	if(state == "running"){
+		step_pressed = true;
+		return;
+	}
 
 	if(evt.target.getAttribute("id") == "step_button"){
                 clearTimeout(timer);
 		state = "stepping";
-		animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
-		step = step + 1;
-		the_evt.target.ownerDocument.documentElement.setAttribute("width", 2*x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
-        	the_evt.target.ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
-        	
+		while(animation[step][1] != ShowActive && step < animation.length){
+			animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
+			step = step + 1;
+			the_evt.target.ownerDocument.documentElement.setAttribute("width", 2*x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
+			the_evt.target.ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
+		}
+		
+		if(step < animation.length){
+			animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
+			step = step + 1;
+			the_evt.target.ownerDocument.documentElement.setAttribute("width", 2*x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
+			the_evt.target.ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
+		}
+		
                 if(step >= animation.length){
                     state = "stopped";
                     action_panel.activateButton("start_button", "StartAnimation(evt)");
@@ -1043,7 +1071,7 @@ function BlinkVertex(v, color) {
 }
 //Helper for BlinkVertex
 function VertexBlinker() {
-    if (blinkcount %% 2 == 1) {
+    if (blinkcount % 2 == 1) {
        element.setAttribute("fill", "black"); 
     } else {
        element.setAttribute("fill", blinkcolor); 
@@ -1073,7 +1101,7 @@ function BlinkEdge(e, color){
 //Helper for BlinkEdge
 function EdgeBlinker(){
     var element2;
-    if (e_blinkcount %% 2 == 1) {
+    if (e_blinkcount % 2 == 1) {
        e_element.setAttribute("stroke", "black");
        element2 = the_evt.target.ownerDocument.getElementById(e_arrow_id + e_element.getAttribute("id"));
        if(element2 != null){
@@ -1610,8 +1638,8 @@ function Initialize(evt) {
 
 
 	//Create speed slider 
-	speed_slider = new Slider("speed_slider", 400, 50, x_offset, [timeout,.1], timeout/2, ["Slow", "Fast"], "Speed", [["ontouchstart","TouchStart_SSlider(evt)"],["ontouchmove", "TouchDrag_SSlider(evt)"],["ontouchend", "TouchDeactivate_SSlider(evt)"],["onmousedown", "Click_SSlider(evt)"],["onmouseup", "Deactivate_SSlider(evt)"], ["onmousemove","Drag_SSlider(evt)"]]);
-
+	speed_slider = new Slider("speed_slider", 400, 50, x_offset, [timeout,1], timeout/2, ["Slow", "Fast"], "Speed", [["ontouchstart","TouchStart_SSlider(evt)"],["ontouchmove", "TouchDrag_SSlider(evt)"],["ontouchend", "TouchDeactivate_SSlider(evt)"],["onmousedown", "Click_SSlider(evt)"],["onmouseup", "Deactivate_SSlider(evt)"], ["onmousemove","Drag_SSlider(evt)"]]);
+	timeout = Math.log(1000) * Math.log(1000);
 
 	//Lay out code, speed slider, and graphs
 	horiz_layout = new LinearLayoutComponent(2, 2, "horizontal_layout", "horizontal");	
