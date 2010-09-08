@@ -704,6 +704,19 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
         self.canvas.itemconfig( de, fill=color)
         self.update()
 
+    def SetEdgeFill(self, tail, head, dashtype):
+        """ Change color of (tail,head) to color. No error checking! 
+            Handles undirected graphs. """
+        if self.G.QDirected() == 1:
+            de = self.drawEdges[(tail,head)]
+        else:
+            try:
+                de = self.drawEdges[(tail,head)]
+            except KeyError:
+                de = self.drawEdges[(head,tail)]            
+        self.canvas.itemconfig( de, dash=dashtype )
+        self.update()    
+        
 
     def SetEdgesColor(self, edges, color):
         """ Change color of [(tail1,head1),...] to color. No error checking! 

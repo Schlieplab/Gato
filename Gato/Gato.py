@@ -461,7 +461,7 @@ class AlgoWin(Frame):
             elif self.algorithm.logAnimator == 2:
                 self.secondaryGraphDisplay = AnimationHistory(self.secondaryGraphDisplay,
                                                           'disp2\t')
-                self.secondaryGraphDisplay.auto_print = 1
+                self.secondaryGraphDisplay.auto_print = 0
         else:
             if self.graph_panes:
                 self.setSash(0.5)
@@ -1176,7 +1176,6 @@ class AlgoWin(Frame):
         self.algoText.yview_pickplace('%d.0' % lineNo)
         self.update() # Forcing redraw
         self.codeLineHistory.append(AnimationCommand(self.ShowActive, (lineNo,), []))
-        print "algo \tShowActive(%d)" % lineNo
         
     def ShowBreakpoint(self, lineNo):
         """ Show  lineNo as breakpoint """
@@ -1672,7 +1671,7 @@ class Algorithm:
         elif self.logAnimator == 2:
             self.animation_history = AnimationHistory(self.GUI.graphDisplay,
                                                       'disp1\t')
-            self.animation_history.auto_print = 1
+            self.animation_history.auto_print = 0
             self.algoGlobals['A'] = self.animation_history
         else:
             self.algoGlobals['A'] = self.GUI.graphDisplay
