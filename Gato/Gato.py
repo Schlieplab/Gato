@@ -2024,7 +2024,7 @@ def main(argv=None):
             tk.tk.createcommand("::tk::mac::Quit",app.Quit)
             
         #======================================================================
-        import profile
+        #import profile
         
         # Gato.py <algorithm> <graph>
         if len(args) == 2:
