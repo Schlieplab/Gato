@@ -1071,7 +1071,7 @@ function BlinkVertex(v, color) {
 }
 //Helper for BlinkVertex
 function VertexBlinker() {
-    if (blinkcount % 2 == 1) {
+    if (blinkcount %% 2 == 1) {
        element.setAttribute("fill", "black"); 
     } else {
        element.setAttribute("fill", blinkcolor); 
@@ -1101,7 +1101,7 @@ function BlinkEdge(e, color){
 //Helper for BlinkEdge
 function EdgeBlinker(){
     var element2;
-    if (e_blinkcount % 2 == 1) {
+    if (e_blinkcount %% 2 == 1) {
        e_element.setAttribute("stroke", "black");
        element2 = the_evt.target.ownerDocument.getElementById(e_arrow_id + e_element.getAttribute("id"));
        if(element2 != null){
@@ -1639,7 +1639,7 @@ function Initialize(evt) {
 
 	//Create speed slider 
 	speed_slider = new Slider("speed_slider", 400, 50, x_offset, [timeout,1], timeout/2, ["Slow", "Fast"], "Speed", [["ontouchstart","TouchStart_SSlider(evt)"],["ontouchmove", "TouchDrag_SSlider(evt)"],["ontouchend", "TouchDeactivate_SSlider(evt)"],["onmousedown", "Click_SSlider(evt)"],["onmouseup", "Deactivate_SSlider(evt)"], ["onmousemove","Drag_SSlider(evt)"]]);
-	timeout = Math.log(1000) * Math.log(1000);
+	timeout = Math.log(timeout) * Math.log(timeout);
 
 	//Lay out code, speed slider, and graphs
 	horiz_layout = new LinearLayoutComponent(2, 2, "horizontal_layout", "horizontal");	
