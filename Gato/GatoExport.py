@@ -840,14 +840,30 @@ function StartAnimation(evt){
 function AnimateLoop(){
 	
 	while(animation[step][1] != ShowActive && step < animation.length){
-		animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
+		if(animation[step][1] == SetAllVerticesColor && animation[step].length > 3){
+			var vertexArray = new Array();
+			for(i = 3; i < animation[step].length; i++){
+				vertexArray[i-3] = animation[step][i];
+			}
+			animation[step][1](animation[step][2],vertexArray);
+		}else{
+			animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
+		}
 		step = step + 1;
 		the_evt.target.ownerDocument.documentElement.setAttribute("width", 2*x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
 		the_evt.target.ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
 	}
 	
 	if(step < animation.length){
-		animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
+		if(animation[step][1] == SetAllVerticesColor && animation[step].length > 3){
+			var vertexArray = new Array();
+			for(i = 3; i < animation[step].length; i++){
+				vertexArray[i-3] = animation[step][i];
+			}
+			animation[step][1](animation[step][2],vertexArray);
+		}else{
+			animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
+		}		
 		step = step + 1;
 		the_evt.target.ownerDocument.documentElement.setAttribute("width", 2*x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
 		the_evt.target.ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
@@ -1046,17 +1062,55 @@ function SetEdgeColor(e, color) {
 }
 
 //Sets color of all vertices of a given graph to a given color
-function SetAllVerticesColor(graph_id_and_color) {
+//If vertices != null, then only color the set of vertices specified by vertices
+function SetAllVerticesColor(graph_id_and_color, vertices) {
 
     var graph_id = graph_id_and_color.split("_")[0];
     var color = graph_id_and_color.split("_")[1];
     var children = the_evt.target.ownerDocument.getElementById(graph_id).childNodes;
 
-    for(i = 0; i < children.length; i++){
-	if(children.item(i).nodeName == "circle"){
-       	    children.item(i).setAttribute("fill", color);
+    if(vertices != null){
+    	for(i = 0; i < children.length; i++){
+		for(j = 0; j < vertices.length; j++){
+			if(children.item(i).nodeName == "circle" && children.item(i).getAttribute("id") == graph_id + "_" + vertices[j]){
+				children.item(i).setAttribute("fill", color);
+				break;
+			}
+		}
+	}
+    }else{
+    	for(i = 0; i < children.length; i++){
+		if(children.item(i).nodeName == "circle"){
+			children.item(i).setAttribute("fill", color);
+		}
 	}
     }
+    
+}//Sets color of all vertices of a given graph to a given color
+//If vertices != null, then only color the set of vertices specified by vertices
+function SetAllVerticesColor(graph_id_and_color, vertices) {
+
+    var graph_id = graph_id_and_color.split("_")[0];
+    var color = graph_id_and_color.split("_")[1];
+    var children = the_evt.target.ownerDocument.getElementById(graph_id).childNodes;
+
+    if(vertices != null){
+    	for(i = 0; i < children.length; i++){
+		for(j = 0; j < vertices.length; j++){
+			if(children.item(i).nodeName == "circle" && children.item(i).getAttribute("id") == graph_id + "_" + vertices[j]){
+				children.item(i).setAttribute("fill", color);
+				break;
+			}
+		}
+	}
+    }else{
+    	for(i = 0; i < children.length; i++){
+		if(children.item(i).nodeName == "circle"){
+			children.item(i).setAttribute("fill", color);
+		}
+	}
+    }
+    
 }
 
 // Cannot map: SetAllEdgesColor(self, color, graph=None, leaveColors=None)
