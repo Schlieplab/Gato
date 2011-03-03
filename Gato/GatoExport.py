@@ -839,7 +839,7 @@ function StartAnimation(evt){
 //Loop of animation.  Performs actions in animation array at specified intervals
 function AnimateLoop(){
 	
-	while(animation[step][1] != ShowActive && step < animation.length){
+	while(step < animation.length && animation[step][1] != ShowActive){
 		if(animation[step][1] == SetAllVerticesColor && animation[step].length > 3){
 			var vertexArray = new Array();
 			for(i = 3; i < animation[step].length; i++){
@@ -915,14 +915,30 @@ function StepAnimation(evt){
                 clearTimeout(timer);
 		state = "stepping";
 		while(animation[step][1] != ShowActive && step < animation.length){
-			animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
+			if(animation[step][1] == SetAllVerticesColor && animation[step].length > 3){
+				var vertexArray = new Array();
+				for(i = 3; i < animation[step].length; i++){
+					vertexArray[i-3] = animation[step][i];
+				}
+					animation[step][1](animation[step][2],vertexArray);
+				}else{
+				animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
+			}
 			step = step + 1;
 			the_evt.target.ownerDocument.documentElement.setAttribute("width", 2*x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
 			the_evt.target.ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
 		}
 		
 		if(step < animation.length){
-			animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
+			if(animation[step][1] == SetAllVerticesColor && animation[step].length > 3){
+				var vertexArray = new Array();
+				for(i = 3; i < animation[step].length; i++){
+					vertexArray[i-3] = animation[step][i];
+				}
+					animation[step][1](animation[step][2],vertexArray);
+			}else{
+				animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
+			}
 			step = step + 1;
 			the_evt.target.ownerDocument.documentElement.setAttribute("width", 2*x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
 			the_evt.target.ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
@@ -1402,15 +1418,16 @@ function DeleteEdge(edge_id){
 
 //Adds vertex of into specified graph and coordinates in graph.  Optional id argument may be given.
 function AddVertex(graph_and_coordinates, id){
+
 	var graph = the_evt.target.ownerDocument.getElementById(graph_and_coordinates.split("_")[0]);
 	var next_vertex = 1;
-
 	while(true){
 		if(the_evt.target.ownerDocument.getElementById(graph.getAttribute("id") + "_" + next_vertex) == null){
 			break;
 		}
 		next_vertex++;
 	}
+
 	
 	var coords = graph_and_coordinates.split("(")[1].match(/[\d\.]+/g);
 	
@@ -1421,6 +1438,7 @@ function AddVertex(graph_and_coordinates, id){
 	new_vertex.setAttribute("fill", "#000099");
 	new_vertex.setAttribute("stroke", "black");
 	new_vertex.setAttribute("stroke-width", 0.0);
+
 	if(id != null){
 		new_vertex.setAttribute("id", graph.getAttribute("id") + "_" + id);
 		if(the_evt.target.ownerDocument.getElementById(new_vertex.getAttribute("id")) != null)
@@ -1428,8 +1446,10 @@ function AddVertex(graph_and_coordinates, id){
 	}else{
 		new_vertex.setAttribute("id", graph.getAttribute("id") + "_" + next_vertex);
 	}
+
 	graph.appendChild(new_vertex);
 	
+
 	var new_label = the_evt.target.ownerDocument.createElementNS(svgNS,"text");
 	new_label.setAttribute("x", coords[0]);
 	new_label.setAttribute("y", parseFloat(coords[1]) + .33*parseFloat(new_vertex.getAttribute("r")));
@@ -1440,6 +1460,7 @@ function AddVertex(graph_and_coordinates, id){
 	new_label.setAttribute("font-style", "normal");
 	new_label.setAttribute("font-weight", "bold");
 	new_label.setAttribute("id", "vl" + new_vertex.getAttribute("id"));
+
 	if(id != null){
 		new_label.appendChild(the_evt.target.ownerDocument.createTextNode(id));
 	}else{
@@ -1447,12 +1468,14 @@ function AddVertex(graph_and_coordinates, id){
 	}
 	graph.appendChild(new_label);
 
+
         //resnap graph to fit	
-	for(i = 0; i < vert_layout[1].group.childNodes.length; i++){
-		vert_layout[1].resnapComponent(i);
-		
-		if(vert_layout[1].group.childNodes.item(i).nodeName == "g"){
-			var graph = vert_layout[1].group.childNodes.item(i)
+
+	for(k = 0; k < vert_layout[1].group.childNodes.length; k++){
+		vert_layout[1].resnapComponent(k);
+	
+		if(vert_layout[1].group.childNodes.item(x).nodeName == "g"){
+			var graph = vert_layout[1].group.childNodes.item(k);
 			var rect = the_evt.target.ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
 			rect.setAttribute("width",graph.getBBox().width);
 			rect.setAttribute("height",graph.getBBox().height);
