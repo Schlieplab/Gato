@@ -149,7 +149,20 @@ class AnimationHistory:
         animation.Do()
         self.append(animation)
 
-        #SetAllEdgesColor
+    def SetAllEdgesColor(self, color, graph=None, edges=None):
+        if graph:
+            edges = graph.Edges()
+        if edges:
+            animation = AnimationCommand(self.animator.SetAllEdgesColor,
+                                         (color,),(),
+                                         kwargs={'edges':edges},
+                                         canUndo=False)
+        else:
+            animation = AnimationCommand(self.animator.SetAllEdgesColor, (color,), (),
+                                         canUndo=False)        
+        animation.Do()
+        self.append(animation)
+
         
     def SetEdgeColor(self, tail, head, color):
         tail, head = self.animator.G.Edge(tail, head)
