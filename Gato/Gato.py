@@ -461,7 +461,7 @@ class AlgoWin(Frame):
             elif self.algorithm.logAnimator == 2:
                 self.secondaryGraphDisplay = AnimationHistory(self.secondaryGraphDisplay,
                                                           'disp2\t')
-                self.secondaryGraphDisplay.auto_print = 0
+                self.secondaryGraphDisplay.auto_print = 1
         else:
             if self.graph_panes:
                 self.setSash(0.5)
@@ -1671,7 +1671,7 @@ class Algorithm:
         elif self.logAnimator == 2:
             self.animation_history = AnimationHistory(self.GUI.graphDisplay,
                                                       'disp1\t')
-            self.animation_history.auto_print = 0
+            self.animation_history.auto_print = 1
             self.algoGlobals['A'] = self.animation_history
         else:
             self.algoGlobals['A'] = self.GUI.graphDisplay
@@ -1965,7 +1965,7 @@ def main(argv=None):
                                 filemode='w',
                                 format='%(name)s %(levelname)s %(message)s')
             
-        #print "Debug is",debug
+        print "Debug is",debug
 
         tk = Tk()
         # Prevent the Tcl console from popping up in standalone apps on MacOS X

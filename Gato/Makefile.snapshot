@@ -46,8 +46,8 @@
 
 # Vars
 
-VERSION       = 1.01
-DATE          = 1/28/2010
+VERSION       = 1.02
+DATE          = 2/25/2010
 DISTNAME      = Gato
 DISTNAMEDOC   = $(DISTNAME)-Doc
 

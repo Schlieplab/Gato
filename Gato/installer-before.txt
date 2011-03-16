@@ -1,0 +1,12 @@
+Welcome to the supplementary material for CATBox - an interactive
+course in combinatorial optimization, Springer 2010.
+
+There are two parts to this: Gato, the graph animation toolbox
+(http://gato.sf.net) which is copyright 1998-2010 Alexander Schliep
+and Winfried Hochstaettler and copyright 1998-2001 ZAIK/ZPR University
+of Cologne. Gato is licensed under the LGPL.
+
+The algorithms and graphs used in CATBox are copyright 1998-2010
+Alexander Schliep and Winfried Hochstaettler and copyright 2010
+Springer Verlag. All rights reserved. These are not open-source and
+you are not allowed to redistribute them.

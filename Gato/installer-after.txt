@@ -1,0 +1,5 @@
+Welcome to CATBox - an interactive course in combinatorial
+optimization using Gato, the graph animation toolbox.
+
+
+Try running Gato or Gred.

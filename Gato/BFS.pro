@@ -36,8 +36,8 @@
 ################################################################################
 
 # Options ----------------------------------------------------------------------
-breakpoints = [9]
-interactive = [4]
+#breakpoints = [9]
+#interactive = [4]
 graphDisplays = 1
 about = """<HTML>
 <HEAD>
@@ -51,7 +51,7 @@ order.
 </BODY></HTML>
 """
 #--------------------------------------------------------------------------------
-self.NeededProperties({'Simple':0, 'Undirected':1})
+#self.NeededProperties({'Simple':0, 'Undirected':1})
 
 pickCallback = lambda v, a=A: A.SetVertexAnnotation(v,"source")
 PickVertex   = lambda f=pickCallback: self.PickVertex(1,None,f)

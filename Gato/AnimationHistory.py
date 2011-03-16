@@ -149,19 +149,20 @@ class AnimationHistory:
         animation.Do()
         self.append(animation)
 
-    def SetAllEdgesColor(self, color, graph=None, edges=None):
-        if graph:
-            edges = graph.Edges()
-        if edges:
-            animation = AnimationCommand(self.animator.SetAllEdgesColor,
-                                         (color,),(),
-                                         kwargs={'edges':edges},
-                                         canUndo=False)
-        else:
-            animation = AnimationCommand(self.animator.SetAllEdgesColor, (color,), (),
-                                         canUndo=False)        
-        animation.Do()
-        self.append(animation)
+# XXXBUG edgeds not part of the signature 
+#    def SetAllEdgesColor(self, color, graph=None, edges=None):
+#        if graph:
+#            edges = graph.Edges()
+#        if edges:
+#            animation = AnimationCommand(self.animator.SetAllEdgesColor,
+#                                         (color,),(),
+#                                         kwargs={'edges':edges},
+#                                         canUndo=False)
+#        else:
+#            animation = AnimationCommand(self.animator.SetAllEdgesColor, (color,), (),
+#                                         canUndo=False)        
+#        animation.Do()
+#        self.append(animation)
 
         
     def SetEdgeColor(self, tail, head, color):
@@ -199,6 +200,7 @@ class AnimationHistory:
     def AddVertex(self, x, y, v = None):
         if v:
             animation = AnimationCommand(self.animator.AddVertex, (x,y), (v,),
+                                         
                                          canUndo=False)
         else:
             animation = AnimationCommand(self.animator.AddVertex, (x,y), (),
@@ -218,6 +220,9 @@ class AnimationHistory:
                                      canUndo=False)
         animation.Do()
         self.append(animation)
+
+    #def HighlightPath(self, path, color, closed):
+    #    XXXIMPLEMENTME
             
         
     #========== Handle all other methods from GraphDisplay =====================

@@ -927,8 +927,10 @@ class Start:
         ################################################################################
 
 def main(argv=None):
-    if argv is None:
-        argv = sys.argv
+##    if argv is None:
+##        argv = sys.argv
+
+    argv = []
 
 ##    globals()['gVertexRadius'] = 12
 ##    globals()['gVertexFrameWidth'] = 0
