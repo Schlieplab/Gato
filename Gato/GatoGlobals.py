@@ -68,15 +68,15 @@ class AnimationParameters:
     # Colors
     cVertexDefault = "#000099" # 'red'
     cVertexBlink = "black"
-    cEdgeDefault = "#444444" #"#EEEEEE"
+    cEdgeDefault = "#DDDDDD" #"#EEEEEE"
     cEditorEdgeDefault = "#444444"
     cLabelDefault = "white"
     cLabelDefaultInverted = "black"
     cLabelBlink = "green"
 
 
-    cInitial = "#EEEEEE"
-    cVisited = "grey"
+    cInitial = "#CFCFCF"
+    cVisited = "#555555"
     cOnQueue = "red"
     cRemovedFromQueue = "blue"
     cOnQueue = "blue"

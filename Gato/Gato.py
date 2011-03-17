@@ -68,6 +68,16 @@ import GatoIcons
 #import GatoSystemConfiguration
 from AnimationHistory import AnimationHistory, AnimationCommand
 
+# Workaround for bug in py2exe which mangles linecache on Windows
+# On Windows put a copy of linecache.py included in your Python's 
+# standard lib into the same directory as Gato.py and name it
+# linecacheCopy
+try:
+    import linecacheCopy as linecache
+except:
+    import linecache
+
+
 
 g = GatoGlobals.AnimationParameters
 
@@ -1628,7 +1638,6 @@ class Algorithm:
                 # graph. Otherwise the GraphDisplay is unhappy.
                 self.graphIsDirty = 1
                 self.cleanGraphCopy = Graph()
-                print "ReadyToStart", self.cleanGraphCopy.directed
                 return 1
             else:
                 return 0
@@ -1795,7 +1804,6 @@ class Algorithm:
         else: # New Breakpoint
         
             # check for not breaking in comments nor on empty lines. 
-            import linecache
             codeline = linecache.getline(self.algoFileName,line)
             if codeline != '' and self.commentPattern.match(codeline) == None and \
                    self.blankLinePattern.match(codeline) == None:
@@ -1958,15 +1966,6 @@ def main(argv=None):
             if o in ("-d", "--debug"):
                 debug = True
 
-        # XXX Here we should actually provide our own buffer and a Tk Textbox to write too
-        if not verbose:
-            logging.basicConfig(level=logging.WARNING,
-                                filename='/tmp/Gato.log',
-                                filemode='w',
-                                format='%(name)s %(levelname)s %(message)s')
-            
-        print "Debug is",debug
-
         tk = Tk()
         # Prevent the Tcl console from popping up in standalone apps on MacOS X
         # Checking for hasattr(sys,'frozen') does not work for bundelbuilder
@@ -2023,6 +2022,16 @@ def main(argv=None):
         if not paned and algo.windowingsystem == 'aqua':
             tk.tk.createcommand("::tk::mac::Quit",app.Quit)
             
+        # XXX Here we should actually provide our own buffer and a Tk Textbox to write too
+        if not verbose:
+            if app.windowingsystem == 'win32':
+                True
+            else:
+                logging.basicConfig(level=logging.WARNING,
+                                    filename='/tmp/Gato.log',
+                                    filemode='w',
+                                    format='%(name)s %(levelname)s %(message)s')
+
         #======================================================================
         #import profile
         
