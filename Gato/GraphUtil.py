@@ -39,7 +39,7 @@ import StringIO
 from string import split
 import string
 from GatoGlobals import *
-from Graph import Graph
+import Graph
 from DataStructures import Point2D, VertexLabeling, EdgeLabeling, EdgeWeight, VertexWeight, Queue
 import logging
 log = logging.getLogger("Gato")
@@ -135,7 +135,42 @@ def ConnectedComponents(G):
             
     return result
     
-    
+
+def FindBipartitePartitions(G):
+    """ Finds the two partitions of a bipartite graph G and returns
+        two vertex sets. If G is not bipartite, it returns two empty
+        sets.
+    """
+    Q = Queue()
+    V = set()
+    W = set()
+    dist = {}
+
+    for v in G.vertices:
+        if v not in dist:
+            dist[v] = 0
+            Q.Append(v)
+            V.add(v)
+
+            while Q.IsNotEmpty():
+                v = Q.Top()
+
+                for w in G.Neighborhood(v):
+                    if w not in dist:
+                        dist[w] = dist[v] + 1
+                        Q.Append(w)
+
+                        if dist[w] % 2 == 1:
+                            W.add(w)
+                        else:
+                            V.add(w)
+                    else:
+                        if (dist[w] + dist[v]) % 2 == 0:
+                            # Found an incompatible edge
+                            return (set(), set())                            
+    return (V, W)
+
+
     
     ################################################################################
     #
@@ -243,7 +278,7 @@ class ResidualGraphInformer(FlowGraphInformer):
 def OpenCATBoxGraph(_file):
     """ Reads in a graph from file fileName. File-format is supposed
         to be from old CATBOX++ (*.cat) """
-    G = Graph()
+    G = Graph.Graph()
     E = VertexLabeling()
     W = EdgeWeight(G)
     L = VertexLabeling()
@@ -422,7 +457,7 @@ def PairListToDictionary(l):
 def OpenGMLGraph(fileName):
     """ Reads in a graph from file fileName. File-format is supposed
         to be GML (*.gml) """
-    G = Graph()
+    G = Graph.Graph()
     G.directed = 0
     E = VertexLabeling()
     W = EdgeWeight(G)
@@ -491,7 +526,7 @@ def OpenGMLGraph(fileName):
 def OpenDotGraph(fileName):
     """ Reads in a graph from file fileName. File-format is supposed
         to be dot (*.dot) used in """
-    G = Graph()
+    G = Graph.Graph()
     G.directed = 1
     E = VertexLabeling()
     W = EdgeWeight(G)

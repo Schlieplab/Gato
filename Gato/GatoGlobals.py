@@ -136,7 +136,11 @@ class NoSuchEdgeError(GatoError):
 # XXX  property name    cmp, explanation if no such prop,  human readable prop name
 # XXX MOVE all strings somewhere, can we consolidate?
 gProperty = {
+    # NOTE: Connected only for Undirected graphs
     'Connected':     (0, 'one connected component', 'connected'),
+    # NOTE: Bipartite only for Undirected graphs
+    'Bipartite':     (0, 'vertices that can be partitioned into two sets with all edges ' +
+                      'going from a vertex in one set to the other', 'bipartite'),
     'Directed':      (0, 'edges which are directed', 'directed'),
     'Undirected':    (0, 'edges which are undirected', 'undirected'),
     'EdgeWeights':   (1, 'a number of edge weights', 'edge weight(s)'),

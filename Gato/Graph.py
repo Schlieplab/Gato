@@ -36,6 +36,8 @@
 
 from GatoGlobals import *
 from DataStructures import Point2D, VertexLabeling, EdgeLabeling, EdgeWeight
+import GraphUtil #import ConnectedComponents, FindBipartitePartitions 
+
 
 from math import sqrt
 import logging
@@ -417,11 +419,34 @@ class Graph:
             return self.simple
         elif name == "VertexWeights":
             return self.NrOfVertexWeights()
+        elif name == "Connected":
+            # NOTE: Connected only for Undirected graphs
+            if self.directed:
+                return 0
+            else:
+                return self.QConnected()
+        elif name == "Bipartite":
+            # NOTE: Bipartite only for Undirected graphs
+            if self.directed:
+                return 0
+            else:
+                return self.QBipartite()
         else:
             try:
                 return self.properties[name]
             except KeyError:
                 return 'Unknown'
+
+    def QConnected(self):
+        """ Check if I am connected (assuming I am undirected)"""
+        components = GraphUtil.ConnectedComponents(self)
+        return len(components) == 1
+
+    def QBipartite(self):
+        """ Check if I am bipartite (assuming I am undirected)"""
+        partitions = GraphUtil.FindBipartitePartitions(self)
+        return len(partitions[0]) > 0 and len(partitions[1]) > 0 
+
             
     def About(self, graphName=""):
         """ Return string containing HTML code providing information
