@@ -1691,7 +1691,8 @@ class Algorithm:
                    'AnimatedDataStructures', 
                    'AnimatedAlgorithms',
                    'GraphUtil',
-                   'GatoUtil']
+                   'GatoUtil',
+                   'Graph']
         
         for m in modules:
             exec("from %s import *" % m, self.algoGlobals, self.algoGlobals)
