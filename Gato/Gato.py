@@ -225,7 +225,7 @@ class AlgoWin(Frame):
             height = self.master.winfo_reqheight()
 
             # XXX Some WM + packer combinatios ocassionally produce absurd requested sizes
-            log.debug(os.name + str(wmExtras) + " width = %f height = %f " % (width, height))
+            #log.debug(os.name + str(wmExtras) + " width = %f height = %f " % (width, height))
             width = min(600, self.master.winfo_reqwidth())
             height = min(750, self.master.winfo_reqheight())
             if os.name == 'nt' or os.name == 'dos':
@@ -1315,6 +1315,8 @@ class AlgorithmDebugger(bdb.Bdb):
         #import inspect
         fn = frame.f_code.co_filename
         line = self.currentLine(frame)
+        #log.debug("dispatch_call %s %s %s %s %s %s" % (fn, line, frame, self.stop_here(frame), self.break_anywhere(frame), self.break_here(frame)))
+        #log.debug("%s" % inspect.getframeinfo(frame))
         doTrace = self.doTrace # value of self.doTrace might change
         # No tracing of functions defined outside of our algorithmfile 
         if fn != self.GUI.algoFileName:
@@ -1337,7 +1339,7 @@ class AlgorithmDebugger(bdb.Bdb):
             self.doTrace = 0
             return self.trace_dispatch
         if self.break_anywhere(frame):
-            self.doTrace = 1 # We will break if there is a breakpoint set in
+            self.doTrace = 0 #1 # We will break if there is a breakpoint set in
             # function called (set to self.doTrace = 1 if you don't want that)
             return self.trace_nofeedback_dispatch	    
         #log.debug("%s" % inspect.getframeinfo(frame))
@@ -1384,7 +1386,7 @@ class AlgorithmDebugger(bdb.Bdb):
         """ *Internal* This function is called when we stop or break
             at this line """
         line = self.currentLine(frame)
-        # log.debug("*user_call* %s %s" % (line, argument_list))
+        #log.debug("*user_call* %s %s" % (line, argument_list))
         if self.doTrace == 1:
             line = self.currentLine(frame)
             if line in self.GUI.breakpoints:
