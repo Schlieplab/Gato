@@ -813,6 +813,11 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
                 self.canvas.itemconfig(drawItems[j], fill=oldColor[j])
             self.update()
 
+    def SetVertexFrameColor(self, v, color):
+        """ Set the color of the outline of a vertex """
+        dv = self.drawVertex[v]
+        self.canvas.itemconfig(dv, outline=color)
+        self.update()
             
     def GetVertexFrameColor(self,v):
         """ Get the color of the outline of a vertex """
