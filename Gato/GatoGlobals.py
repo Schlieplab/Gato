@@ -37,6 +37,9 @@
 
 import tkFont
 
+gatoVersion = '1.1'
+gatoBuildDate = '3/30/2011'
+
 class AnimationParameters:
     """ Convenience class to collect all globals. 
 
@@ -157,7 +160,7 @@ gCATBoxURL = 'http://schliep.org/CATBox'
 
 gGatoHelp = """
 <HTML>
-<HEAD><TITLE>Gato _VERSION_ </TITLE></HEAD>
+<HEAD><TITLE>Gato %s </TITLE></HEAD>
 <BODY>
 
 <H3>Keyboard Shortcuts</H3>
@@ -174,7 +177,7 @@ gGatoHelp = """
 <img src="Icons/gato.gif">
 
 </BODY>
-</HTML>"""
+</HTML>""" % gatoVersion
 
 
 

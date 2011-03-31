@@ -148,8 +148,9 @@ class AlgoWin(Frame):
     """ Provide GUI with main menubar for displaying and controlling
         algorithms and the algorithm text widget """
     
-    def __init__(self, parent=None, graph_panes=None, paned=False):
+    def __init__(self, parent=None, graph_panes=None, paned=False, experimental=False):
         self.graph_panes = graph_panes
+        self.experimental = experimental
         Frame.__init__(self,parent)
         
         #XXX import tkoptions
@@ -182,8 +183,8 @@ class AlgoWin(Frame):
         self.makeMenuBar()
         self.makeAlgoTextWidget()
         self.makeToolBar()
-        self.master.title("Gato _VERSION_ - Algorithm")
-        self.master.iconname("Gato _VERSION_")
+        self.master.title("Gato %s - Algorithm" % GatoGlobals.gatoVersion)
+        self.master.iconname("Gato %s" % GatoGlobals.gatoVersion)
         
         self.algorithm = Algorithm()
         self.algorithm.SetGUI(self) # So that algorithm can call us
@@ -258,9 +259,9 @@ class AlgoWin(Frame):
                                   command=self.OpenAlgorithm)
         self.fileMenu.add_command(label='Open Graph...',	
                                   command=self.OpenGraph)
-        if self.windowingsystem != 'aqua':
-            self.fileMenu.add_command(label='New Graph...',	
-                                      command=self.NewGraph)
+        #if self.windowingsystem != 'aqua':
+        self.fileMenu.add_command(label='New Graph...',	
+                                  command=self.NewGraph)
         # Only used for TRIAL-SOLUTION Gato version. Might be reused for easy
         # web-deployment
         #self.fileMenu.add_command(label='Open GatoFile...',
@@ -271,10 +272,12 @@ class AlgoWin(Frame):
                                   command=self.ReloadAlgorithmGraph)
         self.fileMenu.add_command(label='Export Graph as EPS...',	
                                   command=self.ExportEPSF)
-        self.fileMenu.add_command(label='Export Graph as SVG...',	
-                                  command=self.ExportSVG)
-        self.fileMenu.add_command(label='Export Animation as SVG...',	
-                                  command=self.ExportSVGAnimation)
+
+        if self.experimental:
+            self.fileMenu.add_command(label='Export Graph as SVG...',	
+                                      command=self.ExportSVG)
+            self.fileMenu.add_command(label='Export Animation as SVG...',	
+                                      command=self.ExportSVGAnimation)
         if self.windowingsystem != 'aqua':
             self.fileMenu.add_separator()
             self.fileMenu.add_command(label='Preferences...',
@@ -572,12 +575,16 @@ class AlgoWin(Frame):
             return
             
         if file == "": # caller did not specify file
+            # Windows screws up order 
+            if self.windowingsystem == "win32":
+                ft = [("Gato Algorithm", ".alg")]
+            else:
+                ft = [("Gato Algorithm", ".alg")
+                      ,("Python Code", ".py")
+                      ]
             file = askopenfilename(title="Open Algorithm",
                                    defaultextension=".py",
-                                   filetypes = [  ("Gato Algorithm", ".alg")
-                                                 ,("Python Code", ".py")
-                                               ]
-                                   )
+                                   filetypes = ft)
         if file is not "" and file is not ():
             try:
                 self.algorithm.Open(file)
@@ -604,7 +611,7 @@ class AlgoWin(Frame):
                 self.buttonStart['state'] = NORMAL 
             else:
                 self.buttonStart['state'] = DISABLED                
-            self.master.title("Gato _VERSION_ - " + stripPath(file))
+            self.master.title("Gato %s - %s" % (GatoGlobals.gatoVersion, stripPath(file)))
             
             if self.AboutAlgorithmDialog:
                 self.AboutAlgorithmDialog.Update(self.algorithm.About(),"About Algorithm")
@@ -781,7 +788,8 @@ class AlgoWin(Frame):
                 # set the state
                 if self.algorithm.ReadyToStart():
                     self.buttonStart['state'] = NORMAL
-                self.master.title("Gato _VERSION_ - " + stripPath(self.algoDisplayFileName))
+                self.master.title("Gato %s - %s" % (GatoGlobals.gatoVersion,
+                                                    stripPath(self.algoDisplayFileName)))
                 
                 if self.AboutAlgorithmDialog:
                     # to do ... alright for xml about ?!
@@ -1099,9 +1107,10 @@ class AlgoWin(Frame):
         widget.bind('c', self.KeyContinue)
         widget.bind('t', self.KeyTrace)
         widget.bind('b', self.KeyBreak)        
-        widget.bind('r', self.KeyReplay)
-        widget.bind('u', self.KeyUndo)
-        widget.bind('d', self.KeyDo)
+        if self.experimental:
+            widget.bind('r', self.KeyReplay)
+            widget.bind('u', self.KeyUndo)
+            widget.bind('d', self.KeyDo)
         
         # Cross-plattform accelerators
         if self.windowingsystem == 'aqua':
@@ -1506,11 +1515,11 @@ class Algorithm:
         
     def Open(self,file):
         """ Read in an algorithm from file. """
-        self.ClearBreakpoints()
-        self.algoFileName = file
         input=open(file, 'r')
         self.source = input.read()
         input.close()
+        self.ClearBreakpoints()
+        self.algoFileName = file
         
         # Now read in the prolog as a module to get access to the following data
         # Maybe should obfuscate the names ala xxx_<bla>, have one dict ?
@@ -1936,7 +1945,7 @@ def main(argv=None):
         argv = sys.argv
     
     try:
-        opts, args = getopt.getopt(argv[1:], "pvd", ["verbose","paned","debug"])
+        opts, args = getopt.getopt(argv[1:], "pvdx", ["verbose","paned","debug","experimental"])
     except getopt.GetoptError:
         usage()
         return 2
@@ -1948,6 +1957,7 @@ def main(argv=None):
     paned = False
     debug = False
     verbose = False        
+    experimental = False
 
     if (len(args) < 4):
     
@@ -1968,6 +1978,8 @@ def main(argv=None):
                 paned = True
             if o in ("-d", "--debug"):
                 debug = True
+            if o in ("-x", "--experimental"):
+                experimental = True
 
         tk = Tk()
         # Prevent the Tcl console from popping up in standalone apps on MacOS X
@@ -1993,7 +2005,7 @@ def main(argv=None):
             pw = PanedWindow(tk)
             pw.pack(fill=BOTH, expand=1)
             graph_panes = PanedWindow(pw, orient=VERTICAL)
-            app = AlgoWin(tk, graph_panes)
+            app = AlgoWin(tk, graph_panes, experimental=experimental)
             if debug:
                 app.algorithm.logAnimator = 2
 
@@ -2013,7 +2025,7 @@ def main(argv=None):
                 app.tkraise()
                 app.master.update()            
         else:
-            app = AlgoWin(tk)
+            app = AlgoWin(tk,experimental=experimental)
             algo = app
             if debug:
                 app.algorithm.logAnimator = 2

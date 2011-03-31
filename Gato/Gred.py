@@ -562,7 +562,7 @@ class SAGraphEditor(GraphEditor, Frame):
         self.fileName = None
         self.makeDirty()
         self.dirty = 0
-        self.SetTitle("Gred _VERSION_ - New Graph")
+        self.SetTitle("Gred %s - New Graph" % gatoVersion)
 
     def OpenGraph(self,dummy=None,fileName=None):
         if self.dirty == 1:
@@ -637,7 +637,7 @@ class SAGraphEditor(GraphEditor, Frame):
                     self.SetEdgeAnnotation(e[0],e[1],self.G.edgeAnnotation[e])
                     
                     
-            self.SetTitle("Gred _VERSION_ - " + self.graphName)
+            self.SetTitle("Gred %s - %s" % (self.graphName, gatoBuildDate))
             self.makeDirty()
             self.dirty = 0
             
@@ -662,7 +662,7 @@ class SAGraphEditor(GraphEditor, Frame):
             self.dirty = 0
             SaveCATBoxGraph(self.G,file)
             self.graphName = stripPath(file)
-            self.SetTitle("Gred _VERSION_ - " + self.graphName)
+            self.SetTitle("Gred %s - %s" % (gatoVersion, self.graphName))
         self.makeDirty()
         self.dirty = 0
             

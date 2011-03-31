@@ -48,7 +48,8 @@ import htmllib, formatter
 crnotice1 = "Copyright (C) 1998-2011, Alexander Schliep\n"\
             "and Winfried Hochstaettler. Copyright (C)\n"\
             "1998-2001 ZPR, University of Cologne\n"\
-            "Gato version _VERSION_ from _BUILDDATE_"
+            "Gato version %s from %s" % (GatoGlobals.gatoVersion,GatoGlobals.gatoBuildDate)
+
 crnotice2 = "Written by Alexander Schliep (alexander@schliep.org).\n" \
             "Application Design: Alexander Schliep and \n" \
             "Winfried Hochstaettler. Additional developers: Torsten\n" \

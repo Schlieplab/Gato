@@ -542,7 +542,7 @@ class SAGraphEditor(GraphEditor, Frame):
         self.ShowGraph(G,self.graphName)
         self.RegisterGraphInformer(WeightedGraphInformer(G,"weight"))
         self.fileName = None
-        self.SetTitle("Gred _VERSION_ - New Graph")
+        self.SetTitle("Gred %s - New Graph" % GatoGlobals.gatoVersion)
         
     def OpenGraph(self):	
         file = askopenfilename(title="Open Graph",
@@ -615,7 +615,7 @@ class SAGraphEditor(GraphEditor, Frame):
                     self.SetEdgeAnnotation(e[0],e[1],self.G.edgeAnnotation[e])
                     
                     
-            self.SetTitle("Gred _VERSION_ - " + self.graphName)
+            self.SetTitle("Gred %s - %s" (GatoGlobals.gatoVersion,self.graphName))
             
             
             
@@ -638,7 +638,7 @@ class SAGraphEditor(GraphEditor, Frame):
             self.dirty = 0
             SaveCATBoxGraph(self.G,file)
             self.graphName = stripPath(file)
-            self.SetTitle("Gred _VERSION_ - " + self.graphName)
+            self.SetTitle("Gred %s - %s" % (GatoGlobals.gatoVersion,self.graphName))
             
     def ExportEPSF(self):
         file = asksaveasfilename(title="Export EPSF",
