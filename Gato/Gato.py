@@ -259,8 +259,10 @@ class AlgoWin(Frame):
                                   command=self.OpenAlgorithm)
         self.fileMenu.add_command(label='Open Graph...',	
                                   command=self.OpenGraph)
-        #if self.windowingsystem != 'aqua':
-        self.fileMenu.add_command(label='New Graph...',	
+        # On the Mac starting gred from Gato will not create a seperate process
+        # It is just one app where the menu bar switches based on which window has focus
+        if self.windowingsystem != 'aqua':
+            self.fileMenu.add_command(label='New Graph...',	
                                   command=self.NewGraph)
         # Only used for TRIAL-SOLUTION Gato version. Might be reused for easy
         # web-deployment
@@ -2038,9 +2040,17 @@ def main(argv=None):
             tk.tk.createcommand("::tk::mac::Quit",app.Quit)
             
         # XXX Here we should actually provide our own buffer and a Tk Textbox to write too
+        # or at least make the logger shut up. Example taken from
+        # http://docs.python.org/library/logging.html        
         if not verbose:
             if app.windowingsystem == 'win32':
-                True
+
+               class NullHandler(logging.Handler):
+                   def emit(self, record):
+                       pass
+               h = NullHandler()
+               logging.getLogger("Gato").addHandler(h)
+               
             else:
                 logging.basicConfig(level=logging.WARNING,
                                     filename='/tmp/Gato.log',
