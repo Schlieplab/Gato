@@ -30,16 +30,18 @@
 #             last change by $Author: schliep $.
 #
 #
-# MacOS X 10.4 has a MacPython with Tk on board. So we can deploy
-# semi-standalones
+# MacOS X 10.4-10.6 have a MacPython with Tk on board.
 #
-#/usr/bin/python buildMacGred.py -v --python=/usr/bin/python -a --semi-standalone build
+#  10.4: N/A
+#  10.5: We can deploy semi-stand-alones (using the System Python and Tk)
+#  10.6: Tk/Tkinter/Python combo still broken in 10.6.7: Need to build standalones on 10.5
+#
+# /usr/bin/python buildMacGredSA.py -v --python=/usr/bin/python -a --standalone build
 #
 # NOTE: --python=/usr/bin/pythonw produces pesky Python name
 #
 # The -a is needed to keep whomever from passing dorky args.
 #
-### makeapplication.py
 from bundlebuilder import buildapp
 
 buildapp(
@@ -71,7 +73,7 @@ buildapp(
     'TreeWidget',
     'logging'
     ],
-    includePackages=[], # list of additional Packages to force in
+    includePackages=['argvemulator'], # list of additional Packages to force in
     # Works on 10.4.7 without it
     libs=['/System/Library/Frameworks/Tk.Framework',
           '/System/Library/Frameworks/Tcl.Framework'
