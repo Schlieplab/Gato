@@ -51,19 +51,19 @@ g = GatoGlobals.AnimationParameters
 # graphs.
 instance = {
     '02-GraphsNetworks/BFS-components.alg':[
-    '02-GraphsNetworks/BFS.cat'
+    '02-GraphsNetworks/3components.cat'
     ],
     '02-GraphsNetworks/BFS.alg':[
-    '02-GraphsNetworks/BFS.cat'
+    '02-GraphsNetworks/DoubleTriangle.cat'
     ],
     '02-GraphsNetworks/BFStoDFS.alg':[
     '02-GraphsNetworks/BFS.cat'
     ],
     '02-GraphsNetworks/DFS-Recursive.alg':[
-    '02-GraphsNetworks/BFS.cat'
+    '02-GraphsNetworks/DoubleTriangle.cat'
     ],
     '02-GraphsNetworks/DFS.alg':[
-    '02-GraphsNetworks/BFS.cat'
+    '02-GraphsNetworks/DoubleTriangle.cat'
     ],
     '03-MinimalSpanningTrees/Kruskal.alg':[
     '03-MinimalSpanningTrees/Kruskal4.cat'
@@ -77,17 +77,19 @@ instance = {
     '03-MinimalSpanningTrees/KruskalTrace.alg':[
     '03-MinimalSpanningTrees/Kruskal4.cat'
     ],
-    # XXX Not sure whether it terminatas
+    # XXX Not sure whether it terminates: on a small instance it does
+    # But since this is random this is not good for regression testing
     #'03-MinimalSpanningTrees/MSTInteractive.alg':[
+    #'03-MinimalSpanningTrees/Kruskal3.cat'
     #],
     '03-MinimalSpanningTrees/MatroidDualKruskal.alg':[
-    '03-MinimalSpanningTrees/Kruskal4.cat'    
+    '03-MinimalSpanningTrees/Kruskal3.cat'    
     ],
     '03-MinimalSpanningTrees/Prim.alg':[
-    '03-MinimalSpanningTrees/Prim4.cat'
+    '03-MinimalSpanningTrees/Prim1.cat'
     ],
     '04-LPDuality/PrimalDualKruskal.alg':[
-    '03-MinimalSpanningTrees/Kruskal4.cat'
+    '04-LPDuality/PD_Kruskal3.cat'
     ],
     '05-ShortestPaths/BellmanFord.alg':[
     '05-ShortestPaths/BellmanFordWC.cat'
@@ -99,16 +101,16 @@ instance = {
     '05-ShortestPaths/DijkstraRelabel.cat'
     ],
     '05-ShortestPaths/FindPath.alg':[
-    '05-ShortestPaths/11x11grid.cat'
+    '05-ShortestPaths/ShortestPathsUndirected05.cat'
     ],
     '05-ShortestPaths/FindPathEuclid.alg':[
-    '05-ShortestPaths/11x11grid.cat'
+    '05-ShortestPaths/ShortestPathsUndirected05.cat'
     ],
     '05-ShortestPaths/NegativeCircuits.alg':[
     '05-ShortestPaths/NegCircuit.cat'
     ],
     '05-ShortestPaths/TwoSources.alg':[
-    '05-ShortestPaths/11x11grid.cat'    
+    '05-ShortestPaths/ShortestPathsUndirected05.cat'    
     ],
     '06-MaximalFlows/FordFulkerson.alg':[
     '06-MaximalFlows/FordFulkerson4.cat'
@@ -198,7 +200,9 @@ if __name__ == '__main__':
     else:
         if svg:
             instance = svg_instance
-        tests = [(algo, graph) for algo in instance.keys() for graph in instance[algo]]
+        algorithms = instance.keys()
+        algorithms.sort()
+        tests = [(algo, graph) for algo in algorithms for graph in instance[algo]]
         testPath = "../CATBox/"
 
 
@@ -235,7 +239,7 @@ if __name__ == '__main__':
                                 filemode='w',
                                     format='%(name)s %(levelname)s %(message)s')        
     for case in tests:
-        log.info("=== TEST ==="+case[0]+"==="+case[1]+"===")
+        log.info("=== TEST === "+case[0]+" === "+case[1]+" ===")
         app.OpenAlgorithm(testPath + case[0])
         g.Interactive = 0
         app.algorithm.ClearBreakpoints()
