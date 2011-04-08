@@ -34,15 +34,21 @@
 #             last change by $Author$.
 #
 ################################################################################
+import getopt
+import sys
+import os
+import logging
 from Gato import *
 import GatoGlobals
 g = GatoGlobals.AnimationParameters
-# To speed up running of tests
-g.BlinkRepeat = 1
-g.BlinkRate = 2
 
-testPath = "../CATBox/"
 
+# instance is a dictionary where the keys are 
+# algorithms and their value is a list of graphs
+# they will work on.
+#
+# Testcases are all combinations of algorithm with all their
+# graphs.
 instance = {
     '02-GraphsNetworks/BFS-components.alg':[
     '02-GraphsNetworks/BFS.cat'
@@ -130,34 +136,106 @@ instance = {
     ]
     }
 
+# svg_instance is a dictionary where the keys are 
+# algorithms and their value is a list of graphs
+# they will work on.
+#
+# Testcases are all combinations of algorithm with all their
+# graphs.
+svg_instance = {
+    '02-GraphsNetworks/BFS-components.alg':[
+    '02-GraphsNetworks/BFS.cat'
+    ],
+    '02-GraphsNetworks/BFS.alg':[
+    '02-GraphsNetworks/BFS.cat'
+    ],
+    '02-GraphsNetworks/BFStoDFS.alg':[
+    '02-GraphsNetworks/BFS.cat'
+    ],
+    '02-GraphsNetworks/DFS-Recursive.alg':[
+    '02-GraphsNetworks/BFS.cat'
+    ],
+    '02-GraphsNetworks/DFS.alg':[
+    '02-GraphsNetworks/BFS.cat'
+    ]
+    }
 
-##tests = [('02-GraphsNetworks/BFS.alg',
-##          '02-GraphsNetworks/BFS.cat'),
-##         ('02-GraphsNetworks/DFS.alg',
-##          '02-GraphsNetworks/BFS.cat'),
-##         ('06-MaximalFlows/FordFulkerson.alg',
-##          '06-MaximalFlows/FordFulkerson4.cat')
-##        ]
-##testPath = "./"
 
-##tests = [ ("BFS.alg", "sample.cat") ]
+#------------------------------------------------------------------
+def usage():
+    print "Usage: GatoTest.py"
+    print "       GatoTest.py -v -d"
+    print "               -v or --verbose switches on the logging information"
+    print "               -d or --debug switches on the debugging  information"
 
-tests = [(algo, graph) for algo in instance.keys() for graph in instance[algo]]
 
 if __name__ == '__main__':
-    app = AlgoWin()    
-    app.algorithm.logAnimator = 2
-    g.Interactive = 0
-    if sys.version_info[0:2] < (2,4):
-        log.addHandler(logging.StreamHandler(sys.stdout))
-        log.setLevel(logging.DEBUG)
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "sdvt",
+                                   ["svg","debug","verbose", "test"])
+    except getopt.GetoptError:
+        usage()
+        exit()
+
+    svg = False
+    debug = False
+    verbose = False
+    test = False
+    for o, a in opts:
+        if o in ("-v", "--verbose"):
+            verbose = True
+        if o in ("-d", "--debug"):
+            debug = True
+        if o in ("-s", "--svg"):
+            svg = True
+        if o in ("-t", "--test"):
+            test = True
+            
+            
+    if test:
+        testPath = "./"
+        tests = [ ("BFS.alg", "sample.cat") ]
     else:
-        logging.basicConfig(level=logging.DEBUG,
-                            stream=sys.stdout,
-                            format='%(name)s %(levelname)s %(message)s')
-        
+        if svg:
+            instance = svg_instance
+        tests = [(algo, graph) for algo in instance.keys() for graph in instance[algo]]
+        testPath = "../CATBox/"
+
+
+    app = AlgoWin()
+    # To speed up running of tests
+    g.BlinkRepeat = 1 
+    g.BlinkRate = 2
+    
+    g.Interactive = 0 # Same effect as hitting continue for interactive lines
+    log = logging.getLogger("Gato")
+
+    if debug:
+        app.algorithm.logAnimator = 2
+    if verbose:
+        if sys.version_info[0:2] < (2,4):
+            log.addHandler(logging.StreamHandler(sys.stdout))
+            log.setLevel(logging.DEBUG)
+        else:
+            logging.basicConfig(level=logging.DEBUG,
+                                stream=sys.stdout,
+                                format='%(name)s %(levelname)s %(message)s')
+    else:
+        if app.windowingsystem == 'win32':
+
+           class NullHandler(logging.Handler):
+               def emit(self, record):
+                   pass
+           h = NullHandler()
+           logging.getLogger("Gato").addHandler(h)
+
+        else:
+            logging.basicConfig(level=logging.WARNING,
+                                filename='/tmp/Gato.log',
+                                filemode='w',
+                                    format='%(name)s %(levelname)s %(message)s')        
     for case in tests:
-        print "=== TEST ===",case[0],"===",case[1],"==="
+        log.info("=== TEST ==="+case[0]+"==="+case[1]+"===")
         app.OpenAlgorithm(testPath + case[0])
         g.Interactive = 0
         app.algorithm.ClearBreakpoints()
@@ -172,3 +250,8 @@ if __name__ == '__main__':
         app.CmdStart()
         app.update_idletasks()
         #app.mainloop()
+
+        if svg:
+            app.ExportSVGAnimation('%s-%s.svg' %
+                                   (os.path.splitext(os.path.basename(case[0]))[0],
+                                    os.path.splitext(os.path.basename(case[1]))[0]))

@@ -848,12 +848,13 @@ class AlgoWin(Frame):
                                  # self.secondaryGraphDisplay is AnimationHistory(sec...)
                                  showAnimation=False)
 
-    def ExportSVGAnimation(self):
+    def ExportSVGAnimation(self, fileName=None):
         """ GUI to control export of SVG file  """
-        fileName = asksaveasfilename(title="Export SVG",
-                                 defaultextension=".svg",
-                                 filetypes = [("SVG", ".svg")]
-                                 )
+        if not fileName:
+            fileName = asksaveasfilename(title="Export SVG",
+                                         defaultextension=".svg",
+                                         filetypes = [("SVG", ".svg")]
+                                         )
         if fileName is not "":
             import GatoExport
 
