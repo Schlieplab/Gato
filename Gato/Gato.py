@@ -360,7 +360,7 @@ class AlgoWin(Frame):
             py = 3 
 
         if self.windowingsystem == 'aqua':
-            bWidth = 10
+            bWidth = 7
         else:
             bWidth = 8
             
@@ -373,8 +373,12 @@ class AlgoWin(Frame):
         self.buttonTrace    = Button(toolbar, width=bWidth, padx=px, pady=py, 
                                      text='Trace', command=self.CmdTrace,
                                      highlightbackground='#DDDDDD')
+        if self.windowingsystem == 'aqua':
+            text = 'Cont.'
+        else:
+             text = 'Continue'           
         self.buttonContinue = Button(toolbar, width=bWidth, padx=px, pady=py, 
-                                     text='Continue', command=self.CmdContinue,
+                                     text=text, command=self.CmdContinue,
                                      highlightbackground='#DDDDDD')
         self.buttonStop     = Button(toolbar, width=bWidth, padx=px, pady=py, 
                                      text='Stop', command=self.CmdStop,
@@ -879,26 +883,6 @@ class AlgoWin(Frame):
                                      # self.secondaryGraphDisplay is AnimationHistory(sec...),
                                      self.secondaryGraphDisplay,
                                      showAnimation=True)
-
-
-##            if 1:
-##                # Collect animation commands
-##                lastTime = self.algorithm.animation_history.history[0][0]
-##                animation = []
-##                for time, command in self.algorithm.animation_history.history:
-##                    animation.append(command.print_svg(lastTime))
-##                    lastTime = time
-
-##                if self.algorithm.graphFileName is not "":
-##                    self.OpenGraph(self.algorithm.graphFileName)
-##                    execfile(os.path.splitext(self.algorithm.algoFileName)[0] + ".pro", 
-##                             self.algorithm.algoGlobals,
-##                             self.algorithm.algoGlobals)
-
-##                self.graphDisplay.ExportSVG(file, animation)
-##            else:
-##                self.graphDisplay.ExportSVG(file)
-                
             
     def Quit(self,event=None):
         if self.algorithmIsRunning == 1:
@@ -924,7 +908,6 @@ class AlgoWin(Frame):
         self.master.update()
         if self.graph_panes: # Pane is already moved by Withdraw ...
             # XXX Restrain window size: Bigger Problem on MacOS X/Aqua
-            # there the green resize button does not work.
             return        
         if self.windowingsystem == 'aqua':
             screenTop = 22 # Take care of menubar
@@ -2006,23 +1989,24 @@ def main(argv=None):
             pw.pack(fill=BOTH, expand=1)
             graph_panes = PanedWindow(pw, orient=VERTICAL)
             app = AlgoWin(tk, graph_panes, experimental=experimental)
+            print app.master.geometry()
             app.OpenSecondaryGraphDisplay()
             graph_panes.add(app.graphDisplay)
             graph_panes.add(app.secondaryGraphDisplay)                        
             pw.add(app)
             pw.add(graph_panes)
+            #if app.windowingsystem == 'aqua':
+            app.master.geometry("%dx%d+%d+%d" % (
+                880,
+                600, 
+                50, 	    
+                50))
+            app.tkraise()
+            app.master.update()            
             app.OneGraphWindow()
-            #XXX HACK See comment in OneGraphWindow. Broken on 10.6.7
-            if app.windowingsystem == 'aqua':
-                app.master.geometry("%dx%d+%d+%d" % (
-                    50,# see 1 below  
-                    50, 
-                    800, 	    
-                    600))
-                app.tkraise()
-                app.master.update()            
         else:
             app = AlgoWin(tk,experimental=experimental)
+            print app.master.geometry()
         if debug:
             app.algorithm.logAnimator = 2
 
