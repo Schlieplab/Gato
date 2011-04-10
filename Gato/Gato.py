@@ -151,8 +151,10 @@ class AlgoWin(Frame):
     def __init__(self, parent=None, graph_panes=None, paned=False, experimental=False):
         self.graph_panes = graph_panes
         self.experimental = experimental
+        if parent:
+            parent.report_callback_exception = self.ReportCallbackException
         Frame.__init__(self,parent)
-        
+
         #XXX import tkoptions
         #tkoptions.tkoptions(self)
 
@@ -1284,7 +1286,14 @@ class AlgoWin(Frame):
         log.error(msg)
         showerror("Gato - File Error",msg)
 
+    def HandleError(self, short_msg, long_msg, log_function):
+        log_function(short_msg)
+        showerror("Gato - Error", short_msg + '\n' + long_msg)
 
+    def ReportCallbackException(self, *args):
+        short_msg = "Internal Gato error"
+        long_msg = ''.join(traceback.format_exception(*args))
+        self.HandleError(short_msg, long_msg, log.exception)
 
     def ClearHistory(self):
         self.lastActiveLine = 0
@@ -1719,15 +1728,21 @@ class Algorithm:
                      self.algoGlobals, self.algoGlobals)
         except AbortProlog:
             # Only get here because NeededProperties was canceled by user
-            self.GUI.CmdStop()
+            self.GUI.CommitStop()
+            return
         except (EOFError, IOError), (errno, strerror):
             self.GUI.HandleFileIOError("prolog",
                                        os.path.splitext(self.algoFileName)[0] + ".pro",
                                        errno,strerror)
-        except:
-            log.exception("Bug in %s.pro" % os.path.splitext(self.algoFileName)[0])
-            #traceback.print_exc()
-
+            self.GUI.CommitStop()
+            return
+        except: # Bug in the prolog
+            short_msg = "Error in %s.pro" % os.path.splitext(self.algoFileName)[0]
+            long_msg = traceback.format_exc()
+            self.GUI.HandleError(short_msg, long_msg, log.exception)            
+            self.GUI.CommitStop()
+            return
+        
         if prologOnly:
             return
         # Read in algo and execute it in the debugger
@@ -1743,8 +1758,9 @@ class Algorithm:
             command = "execfile(_tmp_file)"
             self.DB.run(command, self.algoGlobals, self.algoGlobals)
         except:
-            log.exception("Bug in %s" % self.algoFileName)
-            #traceback.print_exc()
+            short_msg = "Error in %s.alg" % os.path.splitext(self.algoFileName)[0]
+            long_msg = traceback.format_exc()
+            self.GUI.HandleError(short_msg, long_msg, log.exception)            
             
         self.GUI.CommitStop()
         
@@ -1849,7 +1865,7 @@ class Algorithm:
         
             Proper names for properties are defined in gProperty
         """
-        if not g.Interactive: # Needed for GatoTest
+        if not g.Interactive: # Suppress property check for GatoTest
             return 
         for property,requiredValue in propertyValueDict.iteritems():
             failed = 0
@@ -1895,17 +1911,11 @@ class Algorithm:
             - visual is a function which takes the vertex as its 
               only argument and cause e.g. some visual feedback """
         v = None
-        
-        #log.debug("pickVertex %s" %s globals()['gInteractive'])
         if g.Interactive:
             v = self.GUI.PickInteractive('vertex', filter, default)
-            
-        if v == None:
-            if default == None:
-                v = random.choice(self.graph.vertices)
-            else:
-                v = default
-        if visual is not None:
+        if not v:
+            v = default if default else random.choice(self.graph.vertices)
+        if visual:
             visual(v)
         return v
         
@@ -1920,18 +1930,12 @@ class Algorithm:
         
             - visual is a function which takes the edge as its 
               only argument and cause e.g. some visual feedback """ 
-        e = None
-        
+        e = None        
         if g.Interactive:
             e = self.GUI.PickInteractive('edge', filter, default)
-            
-        if e == None:
-            if default == None:
-                e = random.choice(self.graph.Edges())
-            else:
-                e = default
-                
-        if visual is not None:
+        if not e:
+            e = default if default else random.choice(self.graph.Edges())
+        if visual:
             visual(e)
         return e
         
@@ -1944,29 +1948,22 @@ def usage():
 
 
 def main(argv=None):
-    if argv is None:
-        argv = sys.argv
-    
+    if not argv: 
+        argv = sys.argv    
     try:
         opts, args = getopt.getopt(argv[1:], "pvdx", ["verbose","paned","debug","experimental"])
     except getopt.GetoptError:
         usage()
         return 2
 
-    # HACK for Windows
-    #args = []
-    #opts = []
-
     paned = False
     debug = False
     verbose = False        
     experimental = False
 
-    if (len(args) < 4):
-    
+    if len(args) < 4:
         import logging
         log = logging.getLogger("Gato")
-
         for o, a in opts:
             if o in ("-v", "--verbose"):
                 verbose = True
@@ -2009,16 +2006,13 @@ def main(argv=None):
             pw.pack(fill=BOTH, expand=1)
             graph_panes = PanedWindow(pw, orient=VERTICAL)
             app = AlgoWin(tk, graph_panes, experimental=experimental)
-            if debug:
-                app.algorithm.logAnimator = 2
-
             app.OpenSecondaryGraphDisplay()
             graph_panes.add(app.graphDisplay)
             graph_panes.add(app.secondaryGraphDisplay)                        
             pw.add(app)
             pw.add(graph_panes)
             app.OneGraphWindow()
-            #XXX HACK See comment in OneGraphWindow
+            #XXX HACK See comment in OneGraphWindow. Broken on 10.6.7
             if app.windowingsystem == 'aqua':
                 app.master.geometry("%dx%d+%d+%d" % (
                     50,# see 1 below  
@@ -2029,42 +2023,35 @@ def main(argv=None):
                 app.master.update()            
         else:
             app = AlgoWin(tk,experimental=experimental)
-            algo = app
-            if debug:
-                app.algorithm.logAnimator = 2
+        if debug:
+            app.algorithm.logAnimator = 2
 
-        # On MacOS X the Quit menu entry otherwise bypasses our Quit Handler
-        # According to
+        # On MacOS X the Quit menu entry otherwise bypasses our Quit
+        # Handler According to
         # http://mail.python.org/pipermail/pythonmac-sig/2006-May/017432.html
-        # this should work, Maybr
-        if not paned and algo.windowingsystem == 'aqua':
+        # this should work
+        if not paned and app.windowingsystem == 'aqua':
             tk.tk.createcommand("::tk::mac::Quit",app.Quit)
             
-        # XXX Here we should actually provide our own buffer and a Tk Textbox to write too
-        # or at least make the logger shut up. Example taken from
-        # http://docs.python.org/library/logging.html        
+        # XXX Here we should actually provide our own buffer and a Tk
+        # Textbox to write to. NullHandler taken from
+        # http://docs.python.org/library/logging.html
         if not verbose:
             if app.windowingsystem == 'win32':
-
                class NullHandler(logging.Handler):
                    def emit(self, record):
                        pass
                h = NullHandler()
                logging.getLogger("Gato").addHandler(h)
-               
             else:
                 logging.basicConfig(level=logging.WARNING,
                                     filename='/tmp/Gato.log',
                                     filemode='w',
                                     format='%(name)s %(levelname)s %(message)s')
-
-        #======================================================================
-        #import profile
         
-        # Gato.py <algorithm> <graph>
+        # We get here if Gato.py <algorithm> <graph>
         if len(args) == 2:
-            algorithm = args[0]
-            graph = args[1]
+            algorithm, graph = args[0:2]
             app.OpenAlgorithm(algorithm)
             app.update_idletasks()
             app.update()
@@ -2072,24 +2059,19 @@ def main(argv=None):
             app.update_idletasks()
             app.update()
             app.after_idle(app.CmdContinue) # after idle needed since CmdStart
-            #profile.run("app.CmdStart()","spiral-small-nohist-2.out")
             app.CmdStart()
             app.update_idletasks()
             
+        # We get here if Gato.py <gatofile-name|url>
         elif len(args)==1:
-            # expect gato file name or url
             fileName=args[0]
             app.OpenGatoFile(fileName)
             app.update_idletasks()
             app.update()
-
-        #profile.run("app.mainloop()","spiral-small.out")
         app.mainloop()
-        
     else:
         usage()
         return 2
-
-
+    
 if __name__ == '__main__':
     sys.exit(main())
