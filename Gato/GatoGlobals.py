@@ -38,7 +38,7 @@
 import tkFont
 
 gatoVersion = '1.1'
-gatoBuildDate = '3/30/2011'
+gatoBuildDate = '4/10/2011'
 
 class AnimationParameters:
     """ Convenience class to collect all globals. 
@@ -80,8 +80,6 @@ class AnimationParameters:
 
     cInitial = "#CFCFCF"
     cVisited = "#555555"
-    cOnQueue = "red"
-    cRemovedFromQueue = "blue"
     cOnQueue = "blue"
     cRemovedFromQueue = "grey"
     cTraversedEdge = "grey"

@@ -51,7 +51,7 @@ g = GatoGlobals.AnimationParameters
 # graphs.
 instance = {
     '02-GraphsNetworks/BFS-components.alg':[
-    '02-GraphsNetworks/3components.cat'
+    '02-GraphsNetworks/3Components.cat'
     ],
     '02-GraphsNetworks/BFS.alg':[
     '02-GraphsNetworks/DoubleTriangle.cat'
