@@ -1678,8 +1678,6 @@ class Algorithm:
             self.GUI.secondaryGraphDisplay.Clear()
 
         #XXX Take care of second graph window
-        
-
         if self.logAnimator == 1:
             self.animation_history = AnimationHistory(self.GUI.graphDisplay)
             self.algoGlobals['A'] = self.animation_history
@@ -1691,8 +1689,9 @@ class Algorithm:
         else:
             self.algoGlobals['A'] = self.GUI.graphDisplay
 
-        # XXX
-        # explictely loading packages we want to make available to the algorithm
+        # Explictely load packages we want to make available to the algorithm
+        # NOTE: algorithm prologs should not import Gato modules directly
+        # see below
         modules = ['DataStructures', 
                    'AnimatedDataStructures', 
                    'AnimatedAlgorithms',
@@ -1700,8 +1699,17 @@ class Algorithm:
                    'GatoUtil',
                    'Graph']
         
-        for m in modules:
-            exec("from %s import *" % m, self.algoGlobals, self.algoGlobals)
+        try:
+            # The binaries behave as if you are starting Gato.py in the directory
+            # containing it
+            for m in modules:
+                exec("from %s import *" % m, self.algoGlobals, self.algoGlobals)
+        except:
+            # For a Gato installed in <some-path>/lib/site-packages/Gato/ with
+            # <some-path>/lib/site-packages on the Python path.
+            for m in modules:
+                exec("from Gato.%s import *" % m, self.algoGlobals, self.algoGlobals)
+            
             
         # transfer required globals
         self.algoGlobals['gInteractive'] = g.Interactive
@@ -1989,7 +1997,6 @@ def main(argv=None):
             pw.pack(fill=BOTH, expand=1)
             graph_panes = PanedWindow(pw, orient=VERTICAL)
             app = AlgoWin(tk, graph_panes, experimental=experimental)
-            print app.master.geometry()
             app.OpenSecondaryGraphDisplay()
             graph_panes.add(app.graphDisplay)
             graph_panes.add(app.secondaryGraphDisplay)                        
@@ -2006,7 +2013,6 @@ def main(argv=None):
             app.OneGraphWindow()
         else:
             app = AlgoWin(tk,experimental=experimental)
-            print app.master.geometry()
         if debug:
             app.algorithm.logAnimator = 2
 
