@@ -2,11 +2,18 @@ Welcome to the supplementary material for CATBox - an interactive
 course in combinatorial optimization, Springer 2010.
 
 There are two parts to this: Gato, the graph animation toolbox
-(http://gato.sf.net) which is copyright 1998-2010 Alexander Schliep
+(http://gato.sf.net) which is copyright 1998-2011 Alexander Schliep
 and Winfried Hochstaettler and copyright 1998-2001 ZAIK/ZPR University
 of Cologne. Gato is licensed under the LGPL.
 
-The algorithms and graphs used in CATBox are copyright 1998-2010
+The algorithms and graphs used in CATBox are copyright 1998-2011
 Alexander Schliep and Winfried Hochstaettler and copyright 2010
 Springer Verlag. All rights reserved. These are not open-source and
-you are not allowed to redistribute them.
+you are not allowed to redistribute them without written permission.
+
+The included version of the Python interpreter is copyright by the Python
+software foundation 2001-2011 and licensed under PSF's license agreement.
+See http://docs.python.org/license.html for details.
+
+The included version of Tcl/Tk is licensed under a BSD-style license,
+see http://www.tcl.tk/software/tcltk/license.html for details.
