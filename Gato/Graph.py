@@ -431,6 +431,8 @@ class Graph:
                 return 0
             else:
                 return self.QBipartite()
+        elif name == "EvenOrder":
+            return (self.Order() % 2) == 0
         else:
             try:
                 return self.properties[name]

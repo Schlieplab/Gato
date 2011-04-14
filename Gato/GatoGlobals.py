@@ -149,7 +149,8 @@ gProperty = {
                       'to Euclidean distance between incident vertices',
                       'Euclidean'),
     'Simple':        (0, 'neither loops nor multiple edges', 'simple'),
-    'VertexWeights': (1, 'a number of vertex weights', 'vertex weight(s)') 
+    'VertexWeights': (1, 'a number of vertex weights', 'vertex weight(s)'),
+    'EvenOrder':     (0, 'an even number of vertices', 'even order') 
     }
 
 gGatoURL = 'http://gato.sf.net'
