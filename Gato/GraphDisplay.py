@@ -1198,16 +1198,17 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
         
     def AddEdge(self,tail,head):
         """ *Internal* Add Edge. Note: unless graph is Euclidian weight is set
-            to 0. No error checking !""" 
+            to 0. No error checking ! Returns tail, head (See Subgraph.AddEdge
+            in Graph.py for explanation) """ 
         try:
-            self.G.AddEdge(tail,head)
+            tail, head = self.G.AddEdge(tail,head) # Note if we display a sub-graph
+            # an edge (tail, head) might be (head, tail) in super-graph
             de = self.CreateDrawEdge(tail,head)
             self.drawEdges[(tail, head)] = de
             self.canvas.lower(de,"vertices")
-                
+            return tail, head                
         except GatoGlobals.GraphNotSimpleError:
             log.error("Inserting edge (%d,%d) would result in non-simple graph" % (tail,head))
-            return
             
             
     def DeleteEdge(self,tail,head,repaint=1):

@@ -119,14 +119,14 @@ class Graph:
         return v in self.vertices
         
     def AddEdge(self, tail, head, initialize_weight=True):
-        """ Add an edge (tail,head). Returns nothing
+        """ Add an edge (tail,head). Returns tail, head. See SubGraph.AddEdge
+            for an explanation.
             Raises GraphNotSimpleError if
             - trying to add a loop
             - trying to add an edge multiply 
         
             In case of directed graphs (tail,head) and (head,tail)
             are distinct edges """
-        
         if self.simple == 1 and tail == head: # Loop
             raise GraphNotSimpleError('(%d,%d) is a loop' % (tail,head))
         if self.directed == 0 and tail in self.adjLists[head]: 
@@ -139,7 +139,7 @@ class Graph:
         self.size = self.size + 1
 
         if not initialize_weight:
-            return
+            return tail, head
 
         if self.QEuclidian():
             t = self.GetEmbedding(tail)
@@ -149,6 +149,7 @@ class Graph:
             self.SetEdgeWeight(0,tail,head,0)
         for i in xrange(1,self.NrOfEdgeWeights()):
             self.SetEdgeWeight(i,tail,head,0)
+        return tail, head
         
         
     def DeleteEdge(self,tail,head):
@@ -536,16 +537,18 @@ class SubGraph(Graph):
             raise NoSuchVertexError("%d is not a vertex in the supergraph" % v)
             
     def AddEdge(self,tail,head):
-        """ Add an edge from the supergraph to the subgraph.
-            Will also add tail and/or head if there are not
-            already in subgraph """
+        """ Add an edge from the supergraph to the subgraph. Note: For undirected
+            graphs the edge (tail, head) might actually be (head, tail), so we
+            return the correct tail, head to caller.
+            
+            Will also add tail and/or head if there are not already in subgraph """
         try:
+            if not self.directed:
+                tail, head = self.superGraph.Edge(tail,head) 
             if not tail in self.vertices:
                 self.AddVertex(tail)
             if not head in self.vertices:
                 self.AddVertex(head)
-            (tail,head) = self.superGraph.Edge(tail,head) 
-            
             self.adjLists[tail].append(head)
             self.invAdjLists[head].append(tail)
             self.size = self.size + 1
@@ -554,6 +557,7 @@ class SubGraph(Graph):
             except KeyError:
                 w = 0.0 # XXX we dont have w weight for the edge. Make totalWeight configurable/subclass
             self.totalWeight += w
+            return tail, head
             
         except (KeyError, NoSuchVertexError, NoSuchEdgeError):
             raise NoSuchEdgeError("(%d,%d) is not an edge in the supergraph." % (tail,head))

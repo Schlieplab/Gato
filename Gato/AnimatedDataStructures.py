@@ -625,12 +625,12 @@ class AnimatedSubGraph(SubGraph):
             t = edge
             h = head
         try:
-            SubGraph.AddEdge(self,t,h)
-            self.Animator.SetEdgeColor(t,h,self.Color)
+            tt, hh = SubGraph.AddEdge(self,t,h)
+            self.Animator.SetEdgeColor(tt,hh,self.Color)
             # Raise edges above other
-            tt, hh = self.superGraph.Edge(t,h)
             self.Animator.RaiseEdge(tt,hh)
             self.Animator.DefaultInfo()
+            return tt,hh
         except NoSuchVertexError, NoSuchEdgeError:
             return
 
