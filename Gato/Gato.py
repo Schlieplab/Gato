@@ -1874,6 +1874,8 @@ class Algorithm:
                     failed = 1
             
             if failed or value == 'Unknown':
+                if not g.Interactive:
+                    raise AbortProlog, "Not running interactively. Aborting due check for property %s" % property                    
                 errMsg = "The algorithm %s requires that the graph %s has %s" % \
                          (stripPath(self.algoFileName),
                           stripPath(self.graphFileName),

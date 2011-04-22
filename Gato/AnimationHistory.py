@@ -28,7 +28,7 @@
 #
 #
 #
-#       This file is version $Revision$ 
+1#       This file is version $Revision$ 
 #                       from $Date$
 #             last change by $Author$.
 #
@@ -136,6 +136,7 @@ class AnimationHistory:
         self.append(animation)
 
     def SetAllVerticesColor(self, color, graph=None, vertices=None):
+        #print "SetAllVerticesColor", color, graph, vertices
         if graph:
             vertices = graph.Vertices()
         if vertices:

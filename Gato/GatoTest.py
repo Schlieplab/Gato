@@ -37,10 +37,46 @@
 import getopt
 import sys
 import os
+import fnmatch
 import logging
 from Gato import *
 import GatoGlobals
 g = GatoGlobals.AnimationParameters
+
+
+
+def allInstances(exclude_algorithms=[]):
+    """ Compute instances for all *.alg and all *.cat files across directories.
+        Algorithms need to set self.NeededProperties() in Prolog correctly to
+        avoid incompatible algorithm-graph pairings. E.g.
+        self.NeededProperties({'EvenOrder':1}) for WeightedMatching
+    """
+    testPath = "../CATBox/"
+    directories = [
+        '02-GraphsNetworks/',
+        '03-MinimalSpanningTrees/',
+        '04-LPDuality/',
+        '05-ShortestPaths/',
+        '06-MaximalFlows/',
+        '07-MinimumCostFlows/',
+        '08-Matching/',
+        '09-WeightedMatching/'
+        ]
+
+    algorithms = []
+    graphs = []
+
+    for d in directories:
+        algorithms += [os.path.join(d,file) for file in os.listdir(os.path.join(testPath,d)) \
+                       if (fnmatch.fnmatch(file, '*.alg') and not file in exclude_algorithms)]
+        graphs += [os.path.join(d,file) for file in os.listdir(os.path.join(testPath,d)) if \
+                   fnmatch.fnmatch(file, '*.cat')]
+
+    instance = {}
+    for a in algorithms:
+        instance[a] = graphs
+
+    return instance
 
 
 # instance is a dictionary where the keys are 
@@ -173,17 +209,20 @@ def usage():
 
 if __name__ == '__main__':
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "sdvt",
-                                   ["svg","debug","verbose", "test"])
+        opts, args = getopt.getopt(sys.argv[1:], "asdvt",
+                                   ["all", "svg","debug","verbose", "test"])
     except getopt.GetoptError:
         usage()
         exit()
 
+    all = False
     svg = False
     debug = False
     verbose = False
     test = False
     for o, a in opts:
+        if o in ("-a", "--all"):
+            all = True
         if o in ("-v", "--verbose"):
             verbose = True
         if o in ("-d", "--debug"):
@@ -200,6 +239,8 @@ if __name__ == '__main__':
     else:
         if svg:
             instance = svg_instance
+        if all:
+            instance = allInstances(exclude_algorithms=['MSTInteractive.alg'])
         algorithms = instance.keys()
         algorithms.sort()
         tests = [(algo, graph) for algo in algorithms for graph in instance[algo]]

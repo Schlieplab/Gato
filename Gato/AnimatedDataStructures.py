@@ -750,6 +750,7 @@ class ComponentMaker:
         self.G = graph
         self.A = animator
         self.lastColor = 0
+        self.firstCall = True
         self.colors = copy.copy(self.colors)
         if forbidden_colors:
             for color in forbidden_colors:
@@ -757,6 +758,7 @@ class ComponentMaker:
                     self.colors.remove(color)
         
     def NewComponent(self):
+        self.firstCall = False
         comp = AnimatedSubGraph(self.G, self.A, self.colors[self.lastColor])
         self.lastColor = self.lastColor + 1
         if self.lastColor == len(self.colors):
@@ -764,9 +766,13 @@ class ComponentMaker:
         return comp
         
     def LastComponentColor(self):
+        if self.firstCall:
+            return None
         if self.lastColor > 0:
             return self.colors[self.lastColor -1]
-        return None
+        else:
+            return self.colors[-1]
+  
         
 ################################################################################
 #
