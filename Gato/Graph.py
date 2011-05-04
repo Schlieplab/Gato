@@ -323,10 +323,11 @@ class Graph:
         
         self.edgeWidth = EdgeLabeling()
         edges = self.Edges()
-        maxWeight = max(self.edgeWeights[weightID].label.values())
-        for e in edges:
-            self.edgeWidth[e] = scale * (1 + 35 * self.edgeWeights[weightID][e] / maxWeight) 
-            
+        if len(edges) > 0:
+            maxWeight = max(self.edgeWeights[weightID].label.values())
+            for e in edges:
+                self.edgeWidth[e] = scale * (1 + 35 * self.edgeWeights[weightID][e] / maxWeight) 
+        
     def NrOfEdgeWeights(self):
         return len(self.edgeWeights.keys())
 

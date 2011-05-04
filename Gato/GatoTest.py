@@ -44,8 +44,20 @@ import GatoGlobals
 g = GatoGlobals.AnimationParameters
 
 
+#
+# Negative cycle property
+#
+# 05-ShortestPaths/BellmanFord.alg === 05-ShortestPaths/11x11neg.cat
+# 05-ShortestPaths/BellmanFord.alg === 05-ShortestPaths/NegCircuit.cat
+# 05-ShortestPaths/BellmanFord.alg === 05-ShortestPaths/NegCircuit2.cat
+# 05-ShortestPaths/DijkstraPQ.alg === 05-ShortestPaths/11x11neg.cat
+# 05-ShortestPaths/DijkstraPQ.alg === 05-ShortestPaths/NegCircuit2.cat
+# 05-ShortestPaths/FindPath.alg === 05-ShortestPaths/11x11neg.cat
+#
+#
+# 07-MinimumCostFlows/SuccessiveShortestPath.alg === 06-MaximalFlows/Didacta.cat
 
-def allInstances(exclude_algorithms=[]):
+def allInstances(exclude_algorithms=[], exclude_instances = {}):
     """ Compute instances for all *.alg and all *.cat files across directories.
         Algorithms need to set self.NeededProperties() in Prolog correctly to
         avoid incompatible algorithm-graph pairings. E.g.
@@ -74,7 +86,10 @@ def allInstances(exclude_algorithms=[]):
 
     instance = {}
     for a in algorithms:
-        instance[a] = graphs
+        if a in exclude_instances:
+            instance[a] = list(set(graphs) - set(exclude_instances[a]))
+        else:
+            instance[a] = graphs
 
     return instance
 
@@ -240,7 +255,30 @@ if __name__ == '__main__':
         if svg:
             instance = svg_instance
         if all:
-            instance = allInstances(exclude_algorithms=['MSTInteractive.alg'])
+            ei = {
+                '05-ShortestPaths/BellmanFord.alg':['05-ShortestPaths/11x11neg.cat',
+                                                    '05-ShortestPaths/NegCircuit.cat',
+                                                    '05-ShortestPaths/NegCircuit2.cat'
+                                                    ],
+                '05-ShortestPaths/FindPath.alg':['05-ShortestPaths/11x11neg.cat',
+                                                 '05-ShortestPaths/NegCircuit.cat',
+                                                 '05-ShortestPaths/NegCircuit2.cat'
+                                                 ],
+                '05-ShortestPaths/FindPathEuclid.alg':['05-ShortestPaths/11x11neg.cat',
+                                                       '05-ShortestPaths/NegCircuit.cat',
+                                                       '05-ShortestPaths/NegCircuit2.cat'
+                                                       ],
+                '05-ShortestPaths/Dijkstra.alg':['05-ShortestPaths/11x11neg.cat',
+                                                 '05-ShortestPaths/NegCircuit.cat',
+                                                 '05-ShortestPaths/NegCircuit2.cat'
+                                                 ],
+                '05-ShortestPaths/DijkstraPQ.alg':['05-ShortestPaths/11x11neg.cat',
+                                                   '05-ShortestPaths/NegCircuit.cat',
+                                                   '05-ShortestPaths/NegCircuit2.cat'
+                                                   ]
+                }
+            instance = allInstances(exclude_algorithms=['MSTInteractive.alg'],
+                                    exclude_instances=ei)
         algorithms = instance.keys()
         algorithms.sort()
         tests = [(algo, graph) for algo in algorithms for graph in instance[algo]]

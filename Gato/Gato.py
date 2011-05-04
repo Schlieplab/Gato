@@ -1271,7 +1271,8 @@ class AlgoWin(Frame):
 
     def HandleError(self, short_msg, long_msg, log_function):
         log_function(short_msg)
-        showerror("Gato - Error", short_msg + '\n' + long_msg)
+        if g.Interactive:
+            showerror("Gato - Error", short_msg + '\n' + long_msg)
 
     def ReportCallbackException(self, *args):
         short_msg = "Internal Gato error"
@@ -1717,8 +1718,9 @@ class Algorithm:
         try:
             execfile(os.path.splitext(self.algoFileName)[0] + ".pro", 
                      self.algoGlobals, self.algoGlobals)
-        except AbortProlog:
+        except AbortProlog as e:
             # Only get here because NeededProperties was canceled by user
+            log.info(e.value)
             self.GUI.CommitStop()
             return
         except (EOFError, IOError), (errno, strerror):
@@ -1856,8 +1858,6 @@ class Algorithm:
         
             Proper names for properties are defined in gProperty
         """
-        if not g.Interactive: # Suppress property check for GatoTest
-            return 
         for property,requiredValue in propertyValueDict.iteritems():
             failed = 0
             value = self.graph.Property(property)
@@ -1874,8 +1874,10 @@ class Algorithm:
                     failed = 1
             
             if failed or value == 'Unknown':
+                # For GatoTest: Abort if needed property is missing from graph 
                 if not g.Interactive:
-                    raise AbortProlog, "Not running interactively. Aborting due check for property %s" % property                    
+                    raise AbortProlog, "Not running interactively. Aborting due to" \
+                          " check for property %s" % property                    
                 errMsg = "The algorithm %s requires that the graph %s has %s" % \
                          (stripPath(self.algoFileName),
                           stripPath(self.graphFileName),
