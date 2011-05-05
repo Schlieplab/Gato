@@ -1,0 +1,28 @@
+
+Gato the Graph Animation Toolbox
+
+Gato, the Graph Animation Toolbox http://gato.sf.net by Alexander
+Schliep and Winfried Hochstaettler, is a LGPL-licensed Python
+application which animates algorithms on graphs. It uses Tkinter and
+runs on Unix, MacOS X, Linux and Windows.
+
+It is primarily a teaching tool, but can also be useful in research on
+algorithm design and engineering, for example by demonstrating effects of
+heuristics.
+
+It is used in CATBox (Springer 2010, see authors' website
+http://schliep.org/CATBox) by Winfried Hochstaettler and Alexander
+Schliep. CATBox is a textbook on combinatorial optimization on graphs
+(traversals, minimal spanning trees, shortest paths, maximum flows,
+min-cost flows, cardinality and weighted matching) which uses Gato to
+provide interactive animations and exercises for all algorithms.  A
+screencast is at:
+http://biomaps.rutgers.edu/~schliep/CATBox/Dijkstra.swf
+
+Gato and CATBox has been used in university classrooms for several
+years by us and colleagues on several continents at the undergraduate
+and graduate level.  Winfried Hochstaettler is a professor in
+mathematics at the FernUniversitaet Hagen, Germany and Alexander
+Schliep is an associate professor in computer science and quantitative
+biology at Rutgers University.
+
