@@ -137,21 +137,29 @@ class NoSuchEdgeError(GatoError):
 # XXX  property name    cmp, explanation if no such prop,  human readable prop name
 # XXX MOVE all strings somewhere, can we consolidate?
 gProperty = {
-    # NOTE: Connected only for Undirected graphs
-    'Connected':     (0, 'one connected component', 'connected'),
-    # NOTE: Bipartite only for Undirected graphs
-    'Bipartite':     (0, 'vertices that can be partitioned into two sets with all edges ' +
+    # NOTE: Connected implies Undirected graph
+    'Connected':(0, 'one connected component', 'connected'),
+    # NOTE: Bipartite implies Undirected graph
+    'Bipartite':(0, 'vertices that can be partitioned into two sets with all edges ' +
                       'going from a vertex in one set to the other', 'bipartite'),
-    'Directed':      (0, 'edges which are directed', 'directed'),
-    'Undirected':    (0, 'edges which are undirected', 'undirected'),
-    'EdgeWeights':   (1, 'a number of edge weights', 'edge weight(s)'),
-    'Euclidean':     (0, 'edges with weights which are proportional' + \
-                      'to Euclidean distance between incident vertices',
-                      'Euclidean'),
-    'Simple':        (0, 'neither loops nor multiple edges', 'simple'),
-    'VertexWeights': (1, 'a number of vertex weights', 'vertex weight(s)'),
-    'EvenOrder':     (0, 'an even number of vertices', 'even order') 
+    'Directed':(0, 'edges which are directed', 'directed'),
+    'Undirected':(0, 'edges which are undirected', 'undirected'),
+    # Number of edge weights
+    'EdgeWeights':(1, 'a number of edge weights', 'edge weight(s)'),
+    # Whether the first set of edge weights G.edgeWeights[0] is consistent with
+    # Euclidean distances between the vertices in the 2D embedding
+    'Euclidean':(0, 'edges with weights which are proportional' + \
+                 'to Euclidean distance between incident vertices',
+                 'Euclidean'),
+    'Simple':(0, 'neither loops nor multiple edges', 'simple'),
+    # Number of vertex weights
+    'VertexWeights':(1, 'a number of vertex weights', 'vertex weight(s)'),
+    'EvenOrder':(0, 'an even number of vertices', 'even order'),
+    # Whether the first set of edge weights G.edgeWeights[0] are all non-negative
+    'NonNegativeEdgeWeights':(0, 'edge weights which are all non-negative',
+                              'non-negative edge weights')
     }
+
 
 gGatoURL = 'http://gato.sf.net'
 gCATBoxURL = 'http://schliep.org/CATBox'

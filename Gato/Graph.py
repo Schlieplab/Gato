@@ -326,7 +326,9 @@ class Graph:
         if len(edges) > 0:
             maxWeight = max(self.edgeWeights[weightID].label.values())
             for e in edges:
-                self.edgeWidth[e] = scale * (1 + 35 * self.edgeWeights[weightID][e] / maxWeight) 
+                self.edgeWidth[e] = max(
+                    scale * (1 + 35 * self.edgeWeights[weightID][e] / maxWeight),
+                    0.001)
         
     def NrOfEdgeWeights(self):
         return len(self.edgeWeights.keys())
@@ -435,6 +437,13 @@ class Graph:
                 return self.QBipartite()
         elif name == "EvenOrder":
             return (self.Order() % 2) == 0
+        elif name == 'NonNegativeEdgeWeights':
+            # There is a bug in gred which allows editing edge weights of
+            # Euclidean graphs.
+            #if self.euclidian:
+            #    return True
+            #else:
+            return self.QNonNegativeEdgeWeights()     
         else:
             try:
                 return self.properties[name]
@@ -451,6 +460,14 @@ class Graph:
         partitions = GraphUtil.FindBipartitePartitions(self)
         return len(partitions[0]) > 0 and len(partitions[1]) > 0 
 
+
+    def QNonNegativeEdgeWeights(self):
+        """ Check that all edge-weights of edgeWeights[0] are non-negative """
+        if self.NrOfEdgeWeights() > 0:
+            for e in self.Edges():
+                if self.edgeWeights[0][e] < 0:
+                    return False
+        return True
             
     def About(self, graphName=""):
         """ Return string containing HTML code providing information
