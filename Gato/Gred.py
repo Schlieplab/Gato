@@ -859,7 +859,16 @@ class SAGraphEditor(GraphEditor, Frame):
         self.dirty = 1
         if self.AboutGraphDialog != None:
             self.AboutGraphDialog.Update(self.About(self.graphName), "About Graph")
-            
+
+    def SetEdgeWeight(self, i, tail, head, val):
+        GraphEditor.SetEdgeWeight(self, i, tail, head, val)
+        self.SetGraphMenuEuclidean(0)
+        self.makeDirty()
+
+    def SetVertexWeight(self, i, v, val):
+        GraphEditor.SetVertexWeight(self, i, v, val)
+        self.makeDirty()
+
       
         
 class SAGraphEditorToplevel(SAGraphEditor, Toplevel):

@@ -341,6 +341,12 @@ class GraphEditor(GraphDisplay):
                 (tail,head) = self.edge[widget]
                 self.SwapEdgeOrientation(tail,head)
                 
+
+    def SetEdgeWeight(self, i, tail, head, val):
+        self.G.SetEdgeWeight(i, tail, head, val)
+
+    def SetVertexWeight(self, i, v, val):
+        self.G.SetVertexWeight(i, v, val)
                 
     def EditWeightUp(self,event):
         if event.widget.find_withtag(CURRENT):
@@ -360,7 +366,7 @@ class GraphEditor(GraphDisplay):
                                       count, weights, intFlag) 
                 if d.result is not None:
                     for i in xrange(count):
-                        self.G.SetEdgeWeight(i,tail,head, d.result[i])
+                        self.SetEdgeWeight(i, tail, head, d.result[i])
             else: # We have a vertex
                 v = self.FindVertex(event)
                 if v != None and self.G.NrOfVertexWeights() > 0:
