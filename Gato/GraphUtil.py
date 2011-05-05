@@ -389,6 +389,10 @@ def SaveCATBoxGraph(G, _file):
     file.write("scroller:\n")
     file.write("vdim:1000; hdim:1000; vlinc:10; hlinc:10; vpinc:50; hpinc:50;\n")
     file.write("vertices:" + `G.Order()` + ";\n")
+
+    # Being paranoid here: We force edge weights to be euclidean 
+    if G.QEuclidian():
+        G.Euclidify()
     
     # Force continous numbering of vertices
     count = 1
