@@ -789,6 +789,7 @@ function Drag_SSlider(evt){
 	}
 }
 
+
 /**
 *
 *
@@ -839,47 +840,41 @@ function StartAnimation(evt){
 //Loop of animation.  Performs actions in animation array at specified intervals
 function AnimateLoop(){
 	
-	while(step < animation.length && animation[step][1] != ShowActive){
-		if(animation[step][1] == SetAllVerticesColor && animation[step].length > 3){
-			var vertexArray = new Array();
-			for(i = 3; i < animation[step].length; i++){
-				vertexArray[i-3] = animation[step][i];
-			}
-			animation[step][1](animation[step][2],vertexArray);
-		}else{
-			animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
+	if(animation[step][1] == SetAllVerticesColor && animation[step].length > 3){
+		var vertexArray = new Array();
+		for(i = 3; i < animation[step].length; i++){
+			vertexArray[i-3] = animation[step][i];
 		}
-		step = step + 1;
-		the_evt.target.ownerDocument.documentElement.setAttribute("width", 2*x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
-		the_evt.target.ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
-	}
+		animation[step][1](animation[step][2],vertexArray);
+	}else{
+		animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
+	}		
+	step = step + 1;
+	the_evt.target.ownerDocument.documentElement.setAttribute("width", 2*x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
+	the_evt.target.ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
 	
-	if(step < animation.length){
-		if(animation[step][1] == SetAllVerticesColor && animation[step].length > 3){
-			var vertexArray = new Array();
-			for(i = 3; i < animation[step].length; i++){
-				vertexArray[i-3] = animation[step][i];
-			}
-			animation[step][1](animation[step][2],vertexArray);
-		}else{
-			animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
-		}		
-		step = step + 1;
-		the_evt.target.ownerDocument.documentElement.setAttribute("width", 2*x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
-		the_evt.target.ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
-	}
 	
-	var duration = animation[step-1][0] * timeout;
+	
 
 	if(step < animation.length) {
-		if(step_pressed){
-			step_pressed = false;
-			state = "stopped"
-		}else if(animation[step-1][1] != ShowActive || the_evt.target.ownerDocument.getElementById(code.line_llc.group.getAttribute("id") + "_bp" + animation[step-1][2].split("_")[1]) == null){
-			timer = setTimeout(AnimateLoop, duration);
+
+		if(animation[step-1][1] == ShowActive && ( the_evt.target.ownerDocument.getElementById(code.line_llc.group.getAttribute("id") + "_bp" + animation[step-1][2].split("_")[1]) != null 
+				|| step_pressed) ){
+				
+				
+				state = "stopped";
+				
+				if(step_pressed){ //Never reached (see StepAnimation code)
+					step_pressed = false;
+					StepAnimation(evt);
+				}else{
+					step_pressed = false;
+				}
 		}else{
-			state = "stopped";
+			var duration = animation[step][0] * timeout;
+			timer = setTimeout(AnimateLoop, duration);
 		}
+		
 	}else{
                 state = "stopped";
 		action_panel.activateButton("start_button", "StartAnimation(evt)");
@@ -906,28 +901,31 @@ function ContinueAnimation(evt){
 function StepAnimation(evt){
         if(blinking)  
             return; //prevent buggy behavior
-	if(state == "running"){
-		step_pressed = true;
-		return;
-	}
+	//if(state == "running"){
+	//	step_pressed = true;
+	//	return;
+	//}
 
-	if(evt.target.getAttribute("id") == "step_button"){
+	if(evt.target.getAttribute("id") == "step_button" || evt.target.getAttribute("id") == "start_button"){ //see StartAnimation to see why start button is here
                 clearTimeout(timer);
 		state = "stepping";
+		step_pressed = true;
+		
 		while(animation[step][1] != ShowActive && step < animation.length){
 			if(animation[step][1] == SetAllVerticesColor && animation[step].length > 3){
 				var vertexArray = new Array();
 				for(i = 3; i < animation[step].length; i++){
 					vertexArray[i-3] = animation[step][i];
 				}
-					animation[step][1](animation[step][2],vertexArray);
-				}else{
+				animation[step][1](animation[step][2],vertexArray);
+			}else{
 				animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
-			}
+			}		
 			step = step + 1;
 			the_evt.target.ownerDocument.documentElement.setAttribute("width", 2*x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
 			the_evt.target.ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
 		}
+		
 		
 		if(step < animation.length){
 			if(animation[step][1] == SetAllVerticesColor && animation[step].length > 3){
@@ -942,9 +940,7 @@ function StepAnimation(evt){
 			step = step + 1;
 			the_evt.target.ownerDocument.documentElement.setAttribute("width", 2*x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
 			the_evt.target.ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
-		}
-		
-                if(step >= animation.length){
+		}else{
                     state = "stopped";
                     action_panel.activateButton("start_button", "StartAnimation(evt)");
                     action_panel.deactivateButton("continue_button");
