@@ -57,7 +57,7 @@ from tkFileDialog import askopenfilename, asksaveasfilename
 from tkMessageBox import askokcancel, showerror, askyesno
 #from ScrolledText import ScrolledText
 from GatoConfiguration import GatoConfiguration
-from Graph import Graph
+import Graph #from Graph import Graph
 from GraphUtil import *
 from GraphDisplay import GraphDisplayToplevel, GraphDisplayFrame
 from GatoUtil import *
@@ -1644,7 +1644,7 @@ class Algorithm:
                 # If no graph is loaded then we still have to show an empty
                 # graph. Otherwise the GraphDisplay is unhappy.
                 self.graphIsDirty = 1
-                self.cleanGraphCopy = Graph()
+                self.cleanGraphCopy = Graph.Graph()
                 return 1
             else:
                 return 0
