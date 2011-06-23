@@ -632,6 +632,23 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
                                       tag="edgeAnno",
                                       fill=color)
         return da
+
+
+    def UpdateEdgeAnnotationPosition(self, tail, head):
+        """ *Internal* Create an edge annotation for (tail,head) on the canvas. 
+            Position is determined by the embedding specified. """
+        t = self.VertexPosition(tail)  
+        h = self.VertexPosition(head)
+        da = self.edgeAnnotation[(tail,head)]
+        (mX,mY) = orthogonal((h.x - t.x, h.y - t.y))
+        c = self.zVertexRadius
+        x = t.x + .5 * (h.x - t.x) + c * mX
+        y = t.y + .5 * (h.y - t.y) + c * mY
+        # Label to the bottom, to the right
+        self.canvas.coords(da, x, y)
+
+
+        
         
         
     ############################################################################
@@ -872,8 +889,7 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
             
     def SetEdgeAnnotation(self,tail,head,annotation,color="black"):
         """ Add an annotation to (tail,head). Annotations are displayed to the left and
-            the bottom of v and allow to display more info about a vertex. 
-            No error checking!  Does not handle edge deletions/moves !"""	
+            the bottom of v and allow to display more info about a vertex. """	
         if not self.edgeAnnotation.QDefined((tail,head)):
             self.edgeAnnotation[(tail,head)] = self.CreateEdgeAnnotation(tail,head,
                                                                          annotation,
@@ -1141,7 +1157,7 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
             self.G.SetEmbedding(v,x,y)
             
             
-            # move incident edges
+        # move incident edges
         outVertices = self.G.OutNeighbors(v)[:] # Need a copy here
         inVertices = self.G.InNeighbors(v)[:]
         euclidian = self.G.QEuclidian()
@@ -1157,6 +1173,8 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
             if euclidian:
                 h = self.G.GetEmbedding(w)
                 self.G.SetEdgeWeight(0,v,w,sqrt((h.x - t.x)**2 + (h.y - t.y)**2))
+            if self.edgeAnnotation.QDefined((v,w)):
+                self.UpdateEdgeAnnotationPosition(v,w)
                 
         # Handle incoming edges
         h = self.G.GetEmbedding(v)
@@ -1168,7 +1186,9 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
             self.canvas.lower(de,"vertices")
             if euclidian:
                 t = self.G.GetEmbedding(w)
-                self.G.SetEdgeWeight(0,w,v,sqrt((h.x - t.x)**2 + (h.y - t.y)**2))                
+                self.G.SetEdgeWeight(0,w,v,sqrt((h.x - t.x)**2 + (h.y - t.y)**2))
+            if self.edgeAnnotation.QDefined((w,v)):
+                self.UpdateEdgeAnnotationPosition(w,v)
         if self.vertexAnnotation.QDefined(v):
             self.UpdateVertexAnnotationPosition(v)
         if self.autoUpdateScrollRegion:
