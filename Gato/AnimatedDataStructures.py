@@ -562,13 +562,14 @@ class AnimatedEdgeSet:
         - cVisited  if they have been in the set and were
           removed """
     
-    def __init__(self, theAnimator,edgeSet=None):
+    def __init__(self, theAnimator, edgeSet=None, color='blue'):
         """ theAnimator will usually be the GraphDisplay(Frame/Toplevel) """
         if edgeSet == None:
             self.edges = []
         else:
             self.edges = edgeSet	    
         self.Animator = theAnimator
+        self.color = color
         
     def __len__(self):
         return len(self.edges)
@@ -581,7 +582,7 @@ class AnimatedEdgeSet:
         self.edges = edgeSet[:]
         
     def AddEdge(self, e):
-        self.Animator.SetEdgeColor(e[0],e[1],"blue")
+        self.Animator.SetEdgeColor(e[0],e[1], self.color)
         self.edges.append(e)
         
     def Remove(self, e):
