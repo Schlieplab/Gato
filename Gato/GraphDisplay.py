@@ -1166,8 +1166,10 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
         t = self.G.GetEmbedding(v)
         for w in outVertices:
             de = self.drawEdges[(v,w)]
+            color = self.canvas.itemconfig(de, "fill")[4]
             self.canvas.delete(de)
             de = self.CreateDrawEdge(v,w)
+            self.canvas.itemconfig( de, fill=color)            
             self.drawEdges[(v,w)] = de
             self.canvas.lower(de,"vertices")
             if euclidian:
@@ -1180,8 +1182,10 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
         h = self.G.GetEmbedding(v)
         for w in inVertices:
             de = self.drawEdges[(w,v)]
+            color = self.canvas.itemconfig(de, "fill")[4]
             self.canvas.delete(de)
             de = self.CreateDrawEdge(w,v)
+            self.canvas.itemconfig( de, fill=color)            
             self.drawEdges[(w,v)] = de
             self.canvas.lower(de,"vertices")
             if euclidian:
