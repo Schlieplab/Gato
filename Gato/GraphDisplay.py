@@ -609,9 +609,9 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
     def UpdateVertexAnnotationPosition(self,v):
         pos = self.VertexPosition(v)
         da = self.vertexAnnotation[v]
-        self.canvas.move(da,
-                         pos.x + self.zVertexRadius + 1,
-                         pos.y + self.zVertexRadius + 1)
+        self.canvas.coords(da,
+                           pos.x + self.zVertexRadius + 1,
+                           pos.y + self.zVertexRadius + 1)
         
     def CreateEdgeAnnotation(self,tail,head,annotation,color):
         """ *Internal* Create an edge annotation for (tail,head) on the canvas. 
@@ -1312,10 +1312,12 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
             and rotated as to maximize size while still fitting on paper """ 
         bb = self.canvas.bbox("all") # Bounding box of all elements on canvas
         # Give 10 pixels room to breathe
-        x = max(bb[0] - 10,0)
-        y = max(bb[1] - 10,0)
-        width=bb[2] - bb[0] + 10
-        height=bb[3] - bb[1] + 10
+        print "PrintToPSFile", bb
+        padding = 15
+        x = bb[0] - padding
+        y = bb[1] - padding
+        width=bb[2] - bb[0] + 2*padding
+        height=bb[3] - bb[1] + 2*padding
         
         printablePageHeight=280 #m
         printablePageWidth =190 #m
