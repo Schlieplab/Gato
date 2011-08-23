@@ -28,7 +28,7 @@
 #
 #
 #
-1#       This file is version $Revision$ 
+#       This file is version $Revision$ 
 #                       from $Date$
 #             last change by $Author$.
 #
