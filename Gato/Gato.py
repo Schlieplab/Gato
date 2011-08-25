@@ -72,6 +72,8 @@ from AnimationHistory import AnimationHistory, AnimationCommand
 # On Windows put a copy of linecache.py included in your Python's 
 # standard lib into the same directory as Gato.py and name it
 # linecacheCopy
+# Same problem exists with py2app on Mac, only py2app is smarter
+# in sabotaging linecache
 try:
     import linecacheCopy as linecache
 except:
