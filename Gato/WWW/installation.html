@@ -19,10 +19,10 @@ yet compatible with Python 3.X.
 <li> Tkinter module enabled in Python
 </ul>
 
-
-<h3>Linux</h3>
+<h3>Unix (Linux, MacOS X, BSD, ...)</h3>
 
 <p>Most distributions come with Python installed. You can check that you are all set up
+by invoking the Python interpreter in a terminal
 <pre>
   > python
   Python 2.6.4 (r264:75706, Mar 16 2010, 09:46:46) 
@@ -32,9 +32,12 @@ yet compatible with Python 3.X.
   >>> t = Tkinter.Tk()
   >>> 
 </pre>
-Ctrl-D exists the Python shell. If there are problems, or you only have an outdated Python version available install Python and Tkinter packages with the package manager for your distribution.</p>
+Ctrl-D exists the Python shell. If there are problems, or you only
+have an outdated Python version available install Python and Tkinter
+packages with the package manager for your distribution.</p>
 
-<p>If your Python is set-up download Gato, unpack it and execute either Gato.py or Gred.py by evoking
+<p>If your Python is set-up, download Gato, unpack it and execute
+either Gato.py or Gred.py by evoking
 <pre>
   you@yourbox> python Gato.py
 </pre>
@@ -57,6 +60,20 @@ so all users on the system can use gato and gred without worrying
 about paths or gato's files cluttered in all kinds of directories.
 </p>
 
+<p>If you want to install Gato permanently, you can do so by using 
+Python's setuptools and the provided <tt>setup.py</tt> in the Gato
+directory,
+<pre>
+> python setup.py install
+</pre>
+to install Gato in the default <tt>site-packages</tt> directory
+for your python installation. If you need to install it elsewhere
+you can control the install location by specifying an alternative
+prefix path and/or an alternative Python interpreter.
+<pre>
+> /some/otherpath/python setup.py install --prefix=/yetanotherpath/
+</pre></P>
+
 <H3>Linux packages</H3>
 
 For Gentoo there is a Gato package available at <A
@@ -73,12 +90,20 @@ HREF="http://portsmon.freebsd.org/portoverview.py?category=math&portname=py-gato
 
 <H3>MacOS X</H3>
 
-<p>Version 10.4 and above come with Python 2.5 and Tkinter installed.
-You can run Gato either using with or without X11. If you want to use
-Gato without X11 you need to start it with <tt>pythonw</tt>, otherwise
-you will just get an error message. From within X11 you need to use
-<tt>python</tt>. Updates to the Python which comes pre-installed on
-MacOS X are available from <A
+<p>Starting with MaxOS X 10.6 the situation with Tk and Python has
+been somewhat difficult, see <A
+HREF="http://www.python.org/download/mac/tcltk/">http://www.python.org/download/mac/tcltk/</A>.
+The binaries for MacOS X have been tested on 10.5.x and
+10.6.x and you can just use them if you run into difficulties installing
+from source.  Please make sure that you have all the system updates.</P>
+
+<P>MacOS X Version 10.4 and above come with Python 2.5 or 2.6 and
+Tkinter installed.  You can run Gato either using with or without X11,
+based on the Tk library (Tk for X11, or AquaTk) used. If you want to
+use Gato without X11 you need to start it with <tt>pythonw</tt>,
+otherwise you will just get an error message. From within X11 you need
+to use <tt>python</tt>. Updates to the Python which comes
+pre-installed on MacOS X are available from <A
 href="http://www.python.org/download">http://www.python.org/download</A>.
 </p>
 
