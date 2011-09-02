@@ -68,7 +68,9 @@ var step = 0;
 var v_ano_id = "va"; //ID prefix for vertex annotation
 var e_arrow_id = "ea"; //ID prefix for edge arrow
 var svgNS="http://www.w3.org/2000/svg";
-var the_evt;
+var the_evt_target;
+var the_target;
+var the_evt_target_ownerDocument;
 var element;
 var blinkcolor;
 var blinkcount;
@@ -259,7 +261,7 @@ function createArrowhead(vx, vy, wx, wy, stroke_width, id){
                 var tmpX = parseFloat(vx) + c*(parseFloat(wx) - parseFloat(vx));
                 var tmpY = parseFloat(vy) + c*(parseFloat(wy) - parseFloat(vy));
 		
-		var arrowhead = the_evt.target.ownerDocument.createElementNS(svgNS, "polyline");
+		var arrowhead = the_evt_target_ownerDocument.createElementNS(svgNS, "polyline");
 		arrowhead.setAttribute("points", p1[0] + " " + p1[1] + " " + p2[0] + " " + p2[1] + " " + p3[0] + " " + p3[1]);
 		arrowhead.setAttribute("fill", "#EEEEEE");
 		arrowhead.setAttribute("transform", "translate(" + tmpX + " " + (tmpY-a_width/2) + ") rotate(" + angle + " " + p1[0] + " " + a_width/2 + ")");
@@ -284,9 +286,9 @@ function createArrowhead(vx, vy, wx, wy, stroke_width, id){
 function HighlightableTextBlock(hp, vp, id, font_size, layout){
 	this.line_llc = new LinearLayoutComponent(hp, vp, id, layout);
 	this.line_llc.group.setAttribute("font-size", font_size);
-	this.highlight_group = the_evt.target.ownerDocument.createElementNS(svgNS,"g");
+	this.highlight_group = the_evt_target_ownerDocument.createElementNS(svgNS,"g");
 	this.highlight_group.setAttribute("id", id + "_hg");
-	the_evt.target.ownerDocument.documentElement.insertBefore(this.highlight_group, this.line_llc.group);	
+	the_evt_target_ownerDocument.documentElement.insertBefore(this.highlight_group, this.line_llc.group);	
 }
 
 //Initializes prototype, to call object.function
@@ -297,17 +299,17 @@ function HTB_prototypeInit(){
 	HighlightableTextBlock.prototype.highlightLine = HTB_highlightLine;
 	HighlightableTextBlock.prototype.removeHighlight = HTB_removeHighlight;
 
-	htb = the_evt.target.ownerDocument.getElementById("foo");
+	htb = the_evt_target_ownerDocument.getElementById("foo");
 	htb.parentNode.removeChild(htb);
-	htb = the_evt.target.ownerDocument.getElementById("foo_hg");
+	htb = the_evt_target_ownerDocument.getElementById("foo_hg");
 	htb.parentNode.removeChild(htb);
 }
 
 //Insert line with respective into nth slot.  0-based indexing.  If line already exists in HTB, line is shifted to respective spot.
 function HTB_insertLine(id, n){
-	var to_insert = the_evt.target.ownerDocument.getElementById(id);
+	var to_insert = the_evt_target_ownerDocument.getElementById(id);
 	if(to_insert != null && to_insert.getAttribute("blank") != null && to_insert.getAttribute("blank") == "true"){ // Empty Text  Replace with Rectangle
-		var new_rect = the_evt.target.ownerDocument.createElementNS(svgNS, "rect");
+		var new_rect = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
 		var children = this.line_llc.group.childNodes;
 		for(i = 0; i < children.length; i++){
 			if(children.item(i).getAttribute("blank") == "false"){
@@ -319,7 +321,7 @@ function HTB_insertLine(id, n){
 				new_rect.setAttribute("id", to_insert.getAttribute("id"));
 				new_rect.setAttribute("fill", "white");
 				new_rect.setAttribute("fill-opacity", 0);
-				the_evt.target.ownerDocument.documentElement.appendChild(new_rect);
+				the_evt_target_ownerDocument.documentElement.appendChild(new_rect);
 				break;
 			}
 		}
@@ -338,7 +340,7 @@ function HTB_deleteLine(n){
 //highlight nth line, using 0-based indexing
 function HTB_highlightLine(n){
 	if(n < this.line_llc.group.childNodes.length && n >= 0){
-		if(the_evt.target.ownerDocument.getElementById(this.line_llc.group.getAttribute("id") + "_hl" + (n+1)) == null){
+		if(the_evt_target_ownerDocument.getElementById(this.line_llc.group.getAttribute("id") + "_hl" + (n+1)) == null){
 			var line = this.line_llc.group.childNodes.item(n);
 			var htb_bbox = this.line_llc.group.getBBox();
 			var line_bbox = line.getBBox();
@@ -358,7 +360,7 @@ function HTB_highlightLine(n){
 				dy = parseFloat(dy);
 			}
 
-			var background = the_evt.target.ownerDocument.createElementNS(svgNS, "rect");
+			var background = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
 			background.setAttribute("x", line_bbox.x + line_translation[0] - this.line_llc.h_padding - dx);
 			background.setAttribute("y", line_bbox.y + line_translation[1] - this.line_llc.v_padding - dy);
 			background.setAttribute("width", htb_bbox.width + 2*this.line_llc.h_padding);
@@ -374,7 +376,7 @@ function HTB_highlightLine(n){
 
 //Removes the highlight of the nth line, using 0-based indexing.
 function HTB_removeHighlight(n){
-	var hl = the_evt.target.ownerDocument.getElementById(this.line_llc.group.getAttribute("id") + "_hl" + (n+1));
+	var hl = the_evt_target_ownerDocument.getElementById(this.line_llc.group.getAttribute("id") + "_hl" + (n+1));
 	if(hl != null){
 		hl.parentNode.removeChild(hl);
 	}
@@ -390,9 +392,9 @@ function LinearLayoutComponent(hp, vp, id, layout){
 	this.id = id;           //ID of group that is abstracted by this HTB instance
 	
 	//Create new group element to place all lines of code
-	this.group = the_evt.target.ownerDocument.createElementNS(svgNS,"g");
+	this.group = the_evt_target_ownerDocument.createElementNS(svgNS,"g");
 	this.group.setAttribute("id", id);
-	the_evt.target.ownerDocument.documentElement.appendChild(this.group);
+	the_evt_target_ownerDocument.documentElement.appendChild(this.group);
 	this.layout = layout;  //'horizontal' or 'vertical'
 }
 
@@ -410,7 +412,7 @@ function LLC_prototypeInit(){
 //Insert element of specified id into nth slot, using 0-based indexing.
 //If element is already in LLC, element is moved to nth slot
 function LLC_insertComponent(id, n){
-	var new_c = the_evt.target.ownerDocument.getElementById(id);
+	var new_c = the_evt_target_ownerDocument.getElementById(id);
 	var padding = 0;
 	if(this.layout == "horizontal"){
 		padding = this.h_padding;
@@ -518,7 +520,7 @@ function LLC_resnapComponent(n){
 	var child = children.item(n);
 	child.parentNode.removeChild(child);
 	
-	the_evt.target.ownerDocument.documentElement.appendChild(child);
+	the_evt_target_ownerDocument.documentElement.appendChild(child);
 	this.insertComponent(child.getAttribute("id"), n);
 }
 
@@ -592,15 +594,15 @@ function BP_prototypeInit(){
 //Parameters:  button id, shape (path), color, index in button panel, button action
 //Inserts button into specified and assigns specifieds action
 function BP_createButton(id, draw_path, color, index, action){  //Create button with corresponding id, text, and action into slot #index
-	if(the_evt.target.ownerDocument.getElementById(id) == null){
-		var button_group = the_evt.target.ownerDocument.createElementNS(svgNS, "path");
+	if(the_evt_target_ownerDocument.getElementById(id) == null){
+		var button_group = the_evt_target_ownerDocument.createElementNS(svgNS, "path");
 		button_group.setAttribute("id", id);
 		button_group.setAttribute("d", draw_path);
 		button_group.setAttribute("fill", color);
 		button_group.setAttribute("cursor", "pointer");
 		button_group.setAttribute("onclick", action);
                 button_group.setAttribute("fill-opacity", 1);
-		the_evt.target.ownerDocument.documentElement.appendChild(button_group);
+		the_evt_target_ownerDocument.documentElement.appendChild(button_group);
 		this.llc.insertComponent(button_group.getAttribute("id"), index);
 	}else{
 		this.llc.insertComponent(id, index);
@@ -677,10 +679,10 @@ function Slider(id, slider_width, thumb_height, offset, range, start_value, labe
 	this.default_thickness = 10;
 	var font_size = 10;
 	
-	this.slider = the_evt.target.ownerDocument.createElementNS(svgNS, "g");	
+	this.slider = the_evt_target_ownerDocument.createElementNS(svgNS, "g");	
 	this.slider.setAttribute("id", id);
 	
-	this.slider_bar = the_evt.target.ownerDocument.createElementNS(svgNS, "rect");
+	this.slider_bar = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
 	this.slider_bar.setAttribute("width", slider_width);
 	this.slider_bar.setAttribute("height", this.default_thickness);
 	this.slider_bar.setAttribute("x", this.default_thickness/2);
@@ -694,8 +696,8 @@ function Slider(id, slider_width, thumb_height, offset, range, start_value, labe
 	this.slider_bar.setAttribute("id", id + "_slider_bar");
 	this.slider.appendChild(this.slider_bar);
 	
-	this.slider_thumb = the_evt.target.ownerDocument.createElementNS(svgNS, "rect");
-	this.slider_thumb = the_evt.target.ownerDocument.createElementNS(svgNS, "rect");
+	this.slider_thumb = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
+	this.slider_thumb = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
 	this.slider_thumb.setAttribute("width", this.default_thickness);
 	this.slider_thumb.setAttribute("height", thumb_height);
 	this.slider_thumb.setAttribute("rx", this.default_thickness/2);
@@ -709,34 +711,34 @@ function Slider(id, slider_width, thumb_height, offset, range, start_value, labe
 	
 	//create labels below slider
 	for(i in labels){
-		var text = the_evt.target.ownerDocument.createElementNS(svgNS, "text");
+		var text = the_evt_target_ownerDocument.createElementNS(svgNS, "text");
 		text.setAttribute("x", this.default_thickness/2 + i*(slider_width/(labels.length-1)));
 		text.setAttribute("y", thumb_height+ font_size);
 		text.setAttribute("text-anchor","middle");
 		text.setAttribute("font-size", font_size);
 		text.setAttribute("font-family","Helvetica");
 		text.setAttribute("font-style","normal");
-		text.appendChild(the_evt.target.ownerDocument.createTextNode(labels[i]));
+		text.appendChild(the_evt_target_ownerDocument.createTextNode(labels[i]));
 		this.slider.appendChild(text);
 	}
 	
 	//create slider title
 	
-	var header = the_evt.target.ownerDocument.createElementNS(svgNS, "text");
+	var header = the_evt_target_ownerDocument.createElementNS(svgNS, "text");
 	header.setAttribute("x", (this.default_thickness + slider_width)/2);
 	header.setAttribute("y", 0);
 	header.setAttribute("text-anchor","middle");
 	header.setAttribute("font-size", font_size);
 	header.setAttribute("font-family","Helvetica");
 	header.setAttribute("font-style","normal");
-	header.appendChild(the_evt.target.ownerDocument.createTextNode(title));
+	header.appendChild(the_evt_target_ownerDocument.createTextNode(title));
 	this.slider.appendChild(header);
 		
 	for(i in actions){
 		this.slider.setAttribute(actions[i][0], actions[i][1]);
 	}
 	
-	the_evt.target.ownerDocument.documentElement.appendChild(this.slider);
+	the_evt_target_ownerDocument.documentElement.appendChild(this.slider);
 }
 
 /**
@@ -807,14 +809,14 @@ function StartAnimation(evt){
 
 			for(x in init_graphs){
                             var new_graph = init_graphs[x].cloneNode(true);
-                            the_evt.target.ownerDocument.documentElement.appendChild(new_graph);
+                            the_evt_target_ownerDocument.documentElement.appendChild(new_graph);
                             vert_layout[1].insertComponent(new_graph.getAttribute("id"), x);
                         }
 			horiz_layout.insertComponent(vert_layout[1].group.getAttribute("id"), 1);
 
 			for(x in init_graphs){
-				var graph = the_evt.target.ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
-				var background = the_evt.target.ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+				var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
+				var background = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
 				background.setAttribute("width",graph.getBBox().width);
 				background.setAttribute("height",graph.getBBox().height);
 				background.setAttribute("x", graph.getBBox().x);
@@ -850,15 +852,15 @@ function AnimateLoop(){
 		animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
 	}		
 	step = step + 1;
-	the_evt.target.ownerDocument.documentElement.setAttribute("width", 2*x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
-	the_evt.target.ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
+	the_evt_target_ownerDocument.documentElement.setAttribute("width", 2*x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
+	the_evt_target_ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
 	
 	
 	
 
 	if(step < animation.length) {
 
-		if(animation[step-1][1] == ShowActive && ( the_evt.target.ownerDocument.getElementById(code.line_llc.group.getAttribute("id") + "_bp" + animation[step-1][2].split("_")[1]) != null 
+		if(animation[step-1][1] == ShowActive && ( the_evt_target_ownerDocument.getElementById(code.line_llc.group.getAttribute("id") + "_bp" + animation[step-1][2].split("_")[1]) != null 
 				|| step_pressed) ){
 				
 				
@@ -885,6 +887,8 @@ function AnimateLoop(){
 		code.removeHighlight(current_line-1);
                 current_line = 0;
 	}
+	
+
 }
 
 //Resumes execution of animation loop if paused by pressing step button
@@ -906,11 +910,17 @@ function StepAnimation(evt){
 	//	return;
 	//}
 
+	
 	if(evt.target.getAttribute("id") == "step_button" || evt.target.getAttribute("id") == "start_button"){ //see StartAnimation to see why start button is here
                 clearTimeout(timer);
 		state = "stepping";
 		step_pressed = true;
 		
+		alert("animation:" + animation);
+		alert("step: " + step);
+		alert("animation[step]:" + animation[step][1]);
+		alert("animation:" + animation[step][1]);
+
 		while(animation[step][1] != ShowActive && step < animation.length){
 			if(animation[step][1] == SetAllVerticesColor && animation[step].length > 3){
 				var vertexArray = new Array();
@@ -922,8 +932,8 @@ function StepAnimation(evt){
 				animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
 			}		
 			step = step + 1;
-			the_evt.target.ownerDocument.documentElement.setAttribute("width", 2*x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
-			the_evt.target.ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
+			the_evt_target_ownerDocument.documentElement.setAttribute("width", 2*x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
+			the_evt_target_ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
 		}
 		
 		
@@ -938,8 +948,8 @@ function StepAnimation(evt){
 				animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
 			}
 			step = step + 1;
-			the_evt.target.ownerDocument.documentElement.setAttribute("width", 2*x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
-			the_evt.target.ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
+			the_evt_target_ownerDocument.documentElement.setAttribute("width", 2*x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
+			the_evt_target_ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
 		}else{
                     state = "stopped";
                     action_panel.activateButton("start_button", "StartAnimation(evt)");
@@ -978,7 +988,7 @@ function SetBreakpoint(evt){
 
 	//put breakpoint functionality on highligt if it is over highlighted text
 	var hl_num = line.getAttribute("id").split("_")[1];
-	var hl = the_evt.target.ownerDocument.getElementById("code_hl" + hl_num);
+	var hl = the_evt_target_ownerDocument.getElementById("code_hl" + hl_num);
 	if(hl != null){
 		hl.setAttribute("cursor", "pointer");
 		hl.setAttribute("onclick", "RemoveBreakpoint(evt)");
@@ -1001,7 +1011,7 @@ function SetBreakpoint(evt){
 	    	dy = parseFloat(dy);
 	}
 
-        var background = the_evt.target.ownerDocument.createElementNS(svgNS, "rect");
+        var background = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
 	background.setAttribute("x", line_bbox.x + line_translation[0] - code.line_llc.h_padding - dx);
 	background.setAttribute("y", line_bbox.y + line_translation[1] - code.line_llc.v_padding - dy);
 	background.setAttribute("width", htb_bbox.width + 2*code.line_llc.h_padding);
@@ -1030,7 +1040,7 @@ function RemoveBreakpoint(evt){
 			line.setAttribute("onclick", "");
 		}else return;
 		
-		line = the_evt.target.ownerDocument.getElementById(id);
+		line = the_evt_target_ownerDocument.getElementById(id);
 	}
 	
 	if(line.nodeName == "tspan"){
@@ -1038,7 +1048,7 @@ function RemoveBreakpoint(evt){
 	}
 	
 	if(line.nodeName == "text"){
-		var background = the_evt.target.ownerDocument.getElementById(code.line_llc.group.getAttribute("id") + "_bp" + line.getAttribute("id").split("_")[1]);
+		var background = the_evt_target_ownerDocument.getElementById(code.line_llc.group.getAttribute("id") + "_bp" + line.getAttribute("id").split("_")[1]);
 		if(background != null){
 			background.parentNode.removeChild(background);
 			line.setAttribute("onclick", "SetBreakpoint(evt)");
@@ -1057,17 +1067,17 @@ function RemoveBreakpoint(evt){
 */
 //Sets color of vertex with id given by v to specified color
 function SetVertexColor(v, color) {
-    element = the_evt.target.ownerDocument.getElementById(v);
+    element = the_evt_target_ownerDocument.getElementById(v);
     element.setAttribute("fill", color);
 }
 
 //Colors edge with id given by e
 function SetEdgeColor(e, color) {
     // NOTE: Gato signature SetEdgeColor(v, w, color)
-    element = the_evt.target.ownerDocument.getElementById(e);
+    element = the_evt_target_ownerDocument.getElementById(e);
     element.setAttribute("stroke", color);
     //added changes to color of arrowheads
-    element = the_evt.target.ownerDocument.getElementById(e_arrow_id + e);
+    element = the_evt_target_ownerDocument.getElementById(e_arrow_id + e);
     if(element != null){
         element.setAttribute("fill", color);
     }
@@ -1079,7 +1089,7 @@ function SetAllVerticesColor(graph_id_and_color, vertices) {
 
     var graph_id = graph_id_and_color.split("_")[0];
     var color = graph_id_and_color.split("_")[1];
-    var children = the_evt.target.ownerDocument.getElementById(graph_id).childNodes;
+    var children = the_evt_target_ownerDocument.getElementById(graph_id).childNodes;
 
     if(vertices != null){
     	for(i = 0; i < children.length; i++){
@@ -1104,7 +1114,7 @@ function SetAllVerticesColor(graph_id_and_color, vertices) {
 
     var graph_id = graph_id_and_color.split("_")[0];
     var color = graph_id_and_color.split("_")[1];
-    var children = the_evt.target.ownerDocument.getElementById(graph_id).childNodes;
+    var children = the_evt_target_ownerDocument.getElementById(graph_id).childNodes;
 
     if(vertices != null){
     	for(i = 0; i < children.length; i++){
@@ -1129,7 +1139,7 @@ function SetAllVerticesColor(graph_id_and_color, vertices) {
 //Vertex blinks between black and current color
 function BlinkVertex(v, color) {
     blinking = true;
-    element = the_evt.target.ownerDocument.getElementById(v);
+    element = the_evt_target_ownerDocument.getElementById(v);
     blinkcolor = element.getAttribute("fill")
     blinkcount = 3;
     element.setAttribute("fill", "black");
@@ -1153,11 +1163,11 @@ function VertexBlinker() {
 //Edge blinks between black and current color
 function BlinkEdge(e, color){
     blinking = true;
-    e_element = the_evt.target.ownerDocument.getElementById(e);
+    e_element = the_evt_target_ownerDocument.getElementById(e);
     e_blinkcolor = e_element.getAttribute("stroke");
     e_blinkcount = 3;
     e_element.setAttribute("stroke", "black");
-    var element2 = the_evt.target.ownerDocument.getElementById(e_arrow_id + e);
+    var element2 = the_evt_target_ownerDocument.getElementById(e_arrow_id + e);
     if(element2 != null){
         element2.setAttribute("fill", "black");
     }
@@ -1169,13 +1179,13 @@ function EdgeBlinker(){
     var element2;
     if (e_blinkcount %% 2 == 1) {
        e_element.setAttribute("stroke", "black");
-       element2 = the_evt.target.ownerDocument.getElementById(e_arrow_id + e_element.getAttribute("id"));
+       element2 = the_evt_target_ownerDocument.getElementById(e_arrow_id + e_element.getAttribute("id"));
        if(element2 != null){
            element2.setAttribute("fill", "black");
        }
     } else {
        e_element.setAttribute("stroke", e_blinkcolor);
-       element2 = the_evt.target.ownerDocument.getElementById(e_arrow_id + e_element.getAttribute("id"));
+       element2 = the_evt_target_ownerDocument.getElementById(e_arrow_id + e_element.getAttribute("id"));
        if(element2 != null){
            element2.setAttribute("fill", e_blinkcolor);
        }
@@ -1190,10 +1200,10 @@ function EdgeBlinker(){
 //Blink(self, list, color=None):
 //Sets the frame width of a vertex
 function SetVertexFrameWidth(v, val) {
-    var element = the_evt.target.ownerDocument.getElementById(v);
+    var element = the_evt_target_ownerDocument.getElementById(v);
     element.setAttribute("stroke-width", val);
-    var graph = the_evt.target.ownerDocument.getElementById(v).parentNode;
-    var rect = the_evt.target.ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+    var graph = the_evt_target_ownerDocument.getElementById(v).parentNode;
+    var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
     rect.setAttribute("width",graph.getBBox().width);
     rect.setAttribute("height",graph.getBBox().height);
     rect.setAttribute("x", graph.getBBox().x);
@@ -1203,15 +1213,19 @@ function SetVertexFrameWidth(v, val) {
 //Sets annotation of vertex v to annotation.  Annotation's color is specified
 function SetVertexAnnotation(v, annotation, color) //removed 'self' parameter to because 'self' parameter was assigned value of v, v of annotation, and so on.
 {
-    element = the_evt.target.ownerDocument.getElementById(v);
+    element = the_evt_target_ownerDocument.getElementById(v);
+    
     if(element != null){
-	if(the_evt.target.ownerDocument.getElementById(v_ano_id + v) !=null){
-		ano = the_evt.target.ownerDocument.getElementById(v_ano_id + v);
+    	if(typeof color == "undefined")
+		color = "black";		
+		
+	if(the_evt_target_ownerDocument.getElementById(v_ano_id + v) !=null){
+		ano = the_evt_target_ownerDocument.getElementById(v_ano_id + v);
 		ano.parentNode.removeChild(ano);
 	
 	}
 	
-	var newano = the_evt.target.ownerDocument.createElementNS(svgNS,"text");
+	var newano = the_evt_target_ownerDocument.createElementNS(svgNS,"text");
 	x_pos = parseFloat(element.getAttribute("cx")) + parseFloat(element.getAttribute("r")) + 1;
 	y_pos = parseFloat(element.getAttribute("cy")) + parseFloat(element.getAttribute("r")) + 1;
 	newano.setAttribute("x", x_pos);
@@ -1223,11 +1237,11 @@ function SetVertexAnnotation(v, annotation, color) //removed 'self' parameter to
 	newano.setAttribute("font-family","Helvetica");
 	newano.setAttribute("font-style","normal");
 	newano.setAttribute("font-weight","bold");
-	newano.appendChild(the_evt.target.ownerDocument.createTextNode(annotation));
+	newano.appendChild(the_evt_target_ownerDocument.createTextNode(annotation));
 	element.parentNode.appendChild(newano);
 
-	var graph = the_evt.target.ownerDocument.getElementById(v).parentNode;
-	var rect = the_evt.target.ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+	var graph = the_evt_target_ownerDocument.getElementById(v).parentNode;
+	var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
 	rect.setAttribute("width",graph.getBBox().width);
 	rect.setAttribute("height",graph.getBBox().height);
 	rect.setAttribute("x", graph.getBBox().x);
@@ -1242,8 +1256,8 @@ function ShowActive(line_id){
 			code.removeHighlight(current_line-1);
 			code.highlightLine(i);
 			current_line = i+1;
-			if(the_evt.target.ownerDocument.getElementById("code_bp" + current_line) != null){
-				var hl = the_evt.target.ownerDocument.getElementById("code_hl" + current_line);
+			if(the_evt_target_ownerDocument.getElementById("code_bp" + current_line) != null){
+				var hl = the_evt_target_ownerDocument.getElementById("code_hl" + current_line);
 				hl.setAttribute("cursor", "pointer");
 				hl.setAttribute("onclick", "RemoveBreakpoint(evt)");
 			}
@@ -1256,21 +1270,21 @@ function ShowActive(line_id){
 function AddEdge(edge_id){
 	var graph_id = edge_id.split("_")[0];
 	var vertices = edge_id.split("_")[1].match(/[^,\(\)\s]+/g);
-	var v = the_evt.target.ownerDocument.getElementById(graph_id + "_" + vertices[0]);
-	var w = the_evt.target.ownerDocument.getElementById(graph_id + "_" + vertices[1]);
+	var v = the_evt_target_ownerDocument.getElementById(graph_id + "_" + vertices[0]);
+	var w = the_evt_target_ownerDocument.getElementById(graph_id + "_" + vertices[1]);
 	
 	var vx = v.getAttribute("cx");
 	var wx = w.getAttribute("cx");
 	var vy = v.getAttribute("cy");
 	var wy = w.getAttribute("cy");
 	
-	if(v != null && w != null && the_evt.target.ownerDocument.getElementById(graph_id + "_(" + vertices[0] + ", " + vertices[1] + ")") == null){
-		var parent_graph = the_evt.target.ownerDocument.getElementById(graph_id);
+	if(v != null && w != null && the_evt_target_ownerDocument.getElementById(graph_id + "_(" + vertices[0] + ", " + vertices[1] + ")") == null){
+		var parent_graph = the_evt_target_ownerDocument.getElementById(graph_id);
 		var arrowhead = null;
 		var edge = null;
 		
 		if(parent_graph.getAttribute("type") == "directed"){
-			var reverse_edge = the_evt.target.ownerDocument.getElementById(graph_id + "_(" + vertices[1] + ", " + vertices[0] + ")");
+			var reverse_edge = the_evt_target_ownerDocument.getElementById(graph_id + "_(" + vertices[1] + ", " + vertices[0] + ")");
 			if(reverse_edge != null){  //reverse edge exists.  Make this edge an arc.
 				//Another directed edge.  Great... Change existing edge to arc and add new arc
 				//Be sure to alter polylines as well.	
@@ -1308,7 +1322,7 @@ function AddEdge(edge_id){
 				tmpY = mY + c*(wy - mY);
 				
 				
-				edge = the_evt.target.ownerDocument.createElementNS(svgNS,"path");
+				edge = the_evt_target_ownerDocument.createElementNS(svgNS,"path");
 				edge.setAttribute("id", edge_id);
 				edge.setAttribute("stroke", "#EEEEEE");
 				edge.setAttribute("stroke-width", 4.0);
@@ -1321,14 +1335,14 @@ function AddEdge(edge_id){
 					
 					
 				if(reverse_edge.getAttribute("d") == null){
-					reverse_edge.parentNode.removeChild(the_evt.target.ownerDocument.getElementById("ea" + reverse_edge.getAttribute("id")));
+					reverse_edge.parentNode.removeChild(the_evt_target_ownerDocument.getElementById("ea" + reverse_edge.getAttribute("id")));
 					reverse_edge.parentNode.removeChild(reverse_edge);
 					AddEdge(reverse_edge.getAttribute("id"));
 				}
-				the_evt.target.ownerDocument.getElementById(reverse_edge.getAttribute("id")).setAttribute("stroke", reverse_edge.getAttribute("stroke"));
-				the_evt.target.ownerDocument.getElementById("ea" + reverse_edge.getAttribute("id")).setAttribute("fill", reverse_edge.getAttribute("stroke"));
+				the_evt_target_ownerDocument.getElementById(reverse_edge.getAttribute("id")).setAttribute("stroke", reverse_edge.getAttribute("stroke"));
+				the_evt_target_ownerDocument.getElementById("ea" + reverse_edge.getAttribute("id")).setAttribute("fill", reverse_edge.getAttribute("stroke"));
 			}else{  //No reverse edge.  Just make a straight line
-                                edge = the_evt.target.ownerDocument.createElementNS(svgNS,"line");
+                                edge = the_evt_target_ownerDocument.createElementNS(svgNS,"line");
                                 edge.setAttribute("id", edge_id);
                                 edge.setAttribute("stroke", "#EEEEEE");
                                 edge.setAttribute("stroke-width", 4.0);
@@ -1354,7 +1368,7 @@ function AddEdge(edge_id){
 					parent_graph.insertBefore(arrowhead, parent_graph.childNodes.item(1));
 			}
 		}else{ //Undirected edge
-                        edge = the_evt.target.ownerDocument.createElementNS(svgNS,"line");
+                        edge = the_evt_target_ownerDocument.createElementNS(svgNS,"line");
             		edge.setAttribute("id", edge_id);
                 	edge.setAttribute("stroke", "#EEEEEE");
                 	edge.setAttribute("stroke-width", 4.0);
@@ -1368,8 +1382,8 @@ function AddEdge(edge_id){
 				parent_graph.insertBefore(arrowhead, parent_graph.childNodes.item(1));
 		}
 
-		var graph = the_evt.target.ownerDocument.getElementById(edge_id).parentNode;
-		var rect = the_evt.target.ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+		var graph = the_evt_target_ownerDocument.getElementById(edge_id).parentNode;
+		var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
 		rect.setAttribute("width",graph.getBBox().width);
 		rect.setAttribute("height",graph.getBBox().height);
 		rect.setAttribute("x", graph.getBBox().x);
@@ -1379,11 +1393,11 @@ function AddEdge(edge_id){
 
 //Deletes edge of corresponding id from graph
 function DeleteEdge(edge_id){
-	var edge =  the_evt.target.ownerDocument.getElementById(edge_id);
+	var edge =  the_evt_target_ownerDocument.getElementById(edge_id);
 	if(edge != null){
 		edge.parentNode.removeChild(edge);
 	}
-	var arrowhead = the_evt.target.ownerDocument.getElementById("ea" + edge_id);
+	var arrowhead = the_evt_target_ownerDocument.getElementById("ea" + edge_id);
 	
 	if(arrowhead != null){
 		arrowhead.parentNode.removeChild(arrowhead);
@@ -1391,21 +1405,21 @@ function DeleteEdge(edge_id){
 
 	var graph_id = edge_id.split("_")[0];
 	var vertices = edge_id.split("_")[1].match(/[^,\(\)\s]+/g);
-	var reverse_edge = the_evt.target.ownerDocument.getElementById(graph_id + "_(" + vertices[1] + ", " + vertices[0] + ")");
+	var reverse_edge = the_evt_target_ownerDocument.getElementById(graph_id + "_(" + vertices[1] + ", " + vertices[0] + ")");
 	if(reverse_edge != null){
             DeleteEdge(reverse_edge.getAttribute("id"));
             AddEdge(reverse_edge.getAttribute("id"));
-            var new_edge = the_evt.target.ownerDocument.getElementById(reverse_edge.getAttribute("id"));
+            var new_edge = the_evt_target_ownerDocument.getElementById(reverse_edge.getAttribute("id"));
             new_edge.setAttribute("stroke", reverse_edge.getAttribute("stroke"));
             new_edge.setAttribute("stroke-width", reverse_edge.getAttribute("stroke-width"));
-            var arrowhead = the_evt.target.ownerDocument.getElementById("ea" + new_edge.getAttribute("id"));
+            var arrowhead = the_evt_target_ownerDocument.getElementById("ea" + new_edge.getAttribute("id"));
             if(arrowhead != null){
                 arrowhead.setAttribute("fill", new_edge.getAttribute("stroke"));
             }
 	}
 
-	var graph = the_evt.target.ownerDocument.getElementById(graph_id);
-	var rect = the_evt.target.ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+	var graph = the_evt_target_ownerDocument.getElementById(graph_id);
+	var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
 	rect.setAttribute("width",graph.getBBox().width);
 	rect.setAttribute("height",graph.getBBox().height);
 	rect.setAttribute("x", graph.getBBox().x);
@@ -1415,10 +1429,10 @@ function DeleteEdge(edge_id){
 //Adds vertex of into specified graph and coordinates in graph.  Optional id argument may be given.
 function AddVertex(graph_and_coordinates, id){
 
-	var graph = the_evt.target.ownerDocument.getElementById(graph_and_coordinates.split("_")[0]);
+	var graph = the_evt_target_ownerDocument.getElementById(graph_and_coordinates.split("_")[0]);
 	var next_vertex = 1;
 	while(true){
-		if(the_evt.target.ownerDocument.getElementById(graph.getAttribute("id") + "_" + next_vertex) == null){
+		if(the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_" + next_vertex) == null){
 			break;
 		}
 		next_vertex++;
@@ -1427,7 +1441,7 @@ function AddVertex(graph_and_coordinates, id){
 	
 	var coords = graph_and_coordinates.split("(")[1].match(/[\d\.]+/g);
 	
-	var new_vertex = the_evt.target.ownerDocument.createElementNS(svgNS,"circle");
+	var new_vertex = the_evt_target_ownerDocument.createElementNS(svgNS,"circle");
 	new_vertex.setAttribute("cx", coords[0]);
 	new_vertex.setAttribute("cy", coords[1]);
 	new_vertex.setAttribute("r", default_vertex_radius);
@@ -1437,7 +1451,7 @@ function AddVertex(graph_and_coordinates, id){
 
 	if(id != null){
 		new_vertex.setAttribute("id", graph.getAttribute("id") + "_" + id);
-		if(the_evt.target.ownerDocument.getElementById(new_vertex.getAttribute("id")) != null)
+		if(the_evt_target_ownerDocument.getElementById(new_vertex.getAttribute("id")) != null)
 			return;
 	}else{
 		new_vertex.setAttribute("id", graph.getAttribute("id") + "_" + next_vertex);
@@ -1446,7 +1460,7 @@ function AddVertex(graph_and_coordinates, id){
 	graph.appendChild(new_vertex);
 	
 
-	var new_label = the_evt.target.ownerDocument.createElementNS(svgNS,"text");
+	var new_label = the_evt_target_ownerDocument.createElementNS(svgNS,"text");
 	new_label.setAttribute("x", coords[0]);
 	new_label.setAttribute("y", parseFloat(coords[1]) + .33*parseFloat(new_vertex.getAttribute("r")));
 	new_label.setAttribute("text-anchor", "middle");
@@ -1458,9 +1472,9 @@ function AddVertex(graph_and_coordinates, id){
 	new_label.setAttribute("id", "vl" + new_vertex.getAttribute("id"));
 
 	if(id != null){
-		new_label.appendChild(the_evt.target.ownerDocument.createTextNode(id));
+		new_label.appendChild(the_evt_target_ownerDocument.createTextNode(id));
 	}else{
-		new_label.appendChild(the_evt.target.ownerDocument.createTextNode(next_vertex + ""));
+		new_label.appendChild(the_evt_target_ownerDocument.createTextNode(next_vertex + ""));
 	}
 	graph.appendChild(new_label);
 
@@ -1472,7 +1486,7 @@ function AddVertex(graph_and_coordinates, id){
 	
 		if(vert_layout[1].group.childNodes.item(x).nodeName == "g"){
 			var graph = vert_layout[1].group.childNodes.item(k);
-			var rect = the_evt.target.ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+			var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
 			rect.setAttribute("width",graph.getBBox().width);
 			rect.setAttribute("height",graph.getBBox().height);
 			rect.setAttribute("x", graph.getBBox().x);
@@ -1539,10 +1553,10 @@ function TranslateGraph(evt){
 	var graph_bg = null;
 	if(graph.nodeName == "rect"){
 		graph_bg = graph;
-		graph = the_evt.target.ownerDocument.getElementById(graph.getAttribute("id").split("_")[0]);
+		graph = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id").split("_")[0]);
 	}else{
 		graph = graph.parentNode;
-		graph_bg = the_evt.target.ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+		graph_bg = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
 	}
 	
 	var x = evt.clientX;
@@ -1561,8 +1575,8 @@ function TranslateGraph(evt){
 	translate_buffer[0] = x;
 	translate_buffer[1] = y;
 
-	the_evt.target.ownerDocument.documentElement.setAttribute("width", 2*x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
-        the_evt.target.ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
+	the_evt_target_ownerDocument.documentElement.setAttribute("width", 2*x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
+        the_evt_target_ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
 }
 
 //iPad-specific functions for rotating and scaling graphs
@@ -1575,10 +1589,10 @@ function GestureStart_TransformGraph(evt){
 	var graph_bg = null;
 	if(graph.nodeName == "rect"){
 		graph_bg = graph;
-		graph = the_evt.target.ownerDocument.getElementById(graph.getAttribute("id").split("_")[0]);
+		graph = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id").split("_")[0]);
 	}else{
 		graph = graph.parentNode;
-		graph_bg = the_evt.target.ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+		graph_bg = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
 	}
 	
 	
@@ -1598,10 +1612,10 @@ function GestureChange_TransformGraph(evt){
 	var graph_bg = null;
 	if(graph.nodeName == "rect"){
 		graph_bg = graph;
-		graph = the_evt.target.ownerDocument.getElementById(graph.getAttribute("id").split("_")[0]);
+		graph = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id").split("_")[0]);
 	}else{
 		graph = graph.parentNode;
-		graph_bg = the_evt.target.ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+		graph_bg = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
 	}
 
 	TransformGraph(graph, graph_bg, evt);
@@ -1617,10 +1631,10 @@ function GestureEnd_TransformGraph(evt){
 	var graph_bg = null;
 	if(graph.nodeName == "rect"){
 		graph_bg = graph;
-		graph = the_evt.target.ownerDocument.getElementById(graph.getAttribute("id").split("_")[0]);
+		graph = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id").split("_")[0]);
 	}else{
 		graph = graph.parentNode;
-		graph_bg = the_evt.target.ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+		graph_bg = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
 	}
 
 	graph.setAttribute("transform_buffer", graph.getAttribute("transform"));
@@ -1649,8 +1663,8 @@ function TransformGraph(graph, graph_bg, evt){
 	setTranslate(graph, graph_translation[0] + gscf_width/2, graph_translation[1] + gscf_height/2);
 	setTranslate(graph_bg, gbg_translation[0] + gbgscf_width/2, gbg_translation[1] + gbgscf_height/2);
 	
-	the_evt.target.ownerDocument.documentElement.setAttribute("width", 2*x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
-	the_evt.target.ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
+	the_evt_target_ownerDocument.documentElement.setAttribute("width", 2*x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
+	the_evt_target_ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
 }
 
 
@@ -1664,16 +1678,19 @@ function TransformGraph(graph, graph_bg, evt){
 */
 function Initialize(evt) {
 	the_evt = evt;
+	the_evt_target = evt.target;
+	the_evt_target_ownerDocument = evt.target.ownerDocument;
 	HTB_prototypeInit();
 	LLC_prototypeInit();
 	BP_prototypeInit();
 
 
+	
         //Create code layout
 	code = new HighlightableTextBlock(2, 0, "code", 14, "vertical");
 
 	var linenum = 1;
-	while(the_evt.target.ownerDocument.getElementById("l_" + linenum) != null){
+	while(the_evt_target_ownerDocument.getElementById("l_" + linenum) != null){
 		code.insertLine("l_" + linenum, linenum-1);
 		linenum++;
 	}
@@ -1692,13 +1709,13 @@ function Initialize(evt) {
 	//Clone initial graphs and keep references to them
 	init_graphs = new Array();
 	var i = 1;
-	var tree = the_evt.target.ownerDocument.getElementById("g" + i);
+	var tree = the_evt_target_ownerDocument.getElementById("g" + i);
 	while(tree != null){
             init_graphs[i-1] = tree.cloneNode(true);
             i++;
-            tree = the_evt.target.ownerDocument.getElementById("g" + i);
+            tree = the_evt_target_ownerDocument.getElementById("g" + i);
 	}
-	
+		
 	//Create buttons
 	action_panel = new ButtonPanel(15, 2, "actions", "horizontal");
 	action_panel.createButton("start_button", "M0,0 0,40 30,20 Z", "blue", 0, "StartAnimation(evt)");
@@ -1734,8 +1751,8 @@ function Initialize(evt) {
 
 	//Make rectangles behind graphs, for intuitive iPad usage
 	for(x in init_graphs){
-		var rect = the_evt.target.ownerDocument.createElementNS(svgNS, "rect");
-		var graph = the_evt.target.ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
+		var rect = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
+		var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
 		rect.setAttribute("id", graph.getAttribute("id") + "_bg");
 		rect.setAttribute("width",graph.getBBox().width);
 		rect.setAttribute("height",graph.getBBox().height);
@@ -1753,11 +1770,11 @@ function Initialize(evt) {
 		var translation2 = getTranslate(horiz_layout.group.getAttribute("transform"));
 		var translation3 = getTranslate(graph.getAttribute("transform"));
 		setTranslate(rect, translation1[0] + translation2[0] + translation3[0], translation1[1] + translation2[1] + translation3[1]);
-		the_evt.target.ownerDocument.documentElement.insertBefore(rect, the_evt.target.ownerDocument.documentElement.childNodes.item(0));
+		the_evt_target_ownerDocument.documentElement.insertBefore(rect, the_evt_target_ownerDocument.documentElement.childNodes.item(0));
 	}
 
-	the_evt.target.ownerDocument.documentElement.setAttribute("width", x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
-	the_evt.target.ownerDocument.documentElement.setAttribute("height", y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
+	the_evt_target_ownerDocument.documentElement.setAttribute("width", x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
+	the_evt_target_ownerDocument.documentElement.setAttribute("height", y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
 }
 
 
