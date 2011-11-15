@@ -841,6 +841,13 @@ function StartAnimation(evt){
 
 //Loop of animation.  Performs actions in animation array at specified intervals
 function AnimateLoop(){
+
+        //Without this block, edges/vertices may be black
+	//on the fastest speed.  Comment this out to verify
+	if(blinking){
+		setTimeout(AnimateLoop, 1);
+		return;
+	}
 	
 	if(animation[step][1] == SetAllVerticesColor && animation[step].length > 3){
 		var vertexArray = new Array();
