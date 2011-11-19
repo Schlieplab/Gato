@@ -93,6 +93,9 @@ var y_offset = 20;  //Distance layout is translated vertically, in pixels
 var translate_buffer = []; //Gloval buffer for translating graphs.
 var blinking = false; //True iff blinking animation is commencing.  Prevents premature stepping
 var step_pressed = false;  //Whether the step button was pressed.  Used to emulate an interrupt.
+var step_evt;
+var continue_pressed = false;
+var continue_evt;
 /**
 *
 *
@@ -803,7 +806,7 @@ function Drag_SSlider(evt){
 //Starts animation loop.  If called more than once, resets display and begins loop
 function StartAnimation(evt){
 	if(evt.target.getAttribute("id") == "start_button"){
-		if(state != null){
+		if(state != null){ //Graph must be refreshed
 			horiz_layout.deleteComponent(1);
 			vert_layout[1] = new LinearLayoutComponent(2, 2, "vert_layout_1", "vertical");
 
@@ -835,20 +838,24 @@ function StartAnimation(evt){
 		action_panel.activateButton("step_button", "StepAnimation(evt)");
 		action_panel.deactivateButton("start_button");
 
+		//Begin animation loop
 		AnimateLoop();
 	}
 }
 
 //Loop of animation.  Performs actions in animation array at specified intervals
 function AnimateLoop(){
-
-        //Without this block, edges/vertices may be black
+	
+	//Without this block, edges/vertices may be black
 	//on the fastest speed.  Comment this out to verify
 	if(blinking){
 		setTimeout(AnimateLoop, 1);
 		return;
 	}
 	
+	
+	//Do next command
+	//Special case for SetAllVertices Color
 	if(animation[step][1] == SetAllVerticesColor && animation[step].length > 3){
 		var vertexArray = new Array();
 		for(i = 3; i < animation[step].length; i++){
@@ -859,32 +866,34 @@ function AnimateLoop(){
 		animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
 	}		
 	step = step + 1;
+	
+	//Realign components
 	the_evt_target_ownerDocument.documentElement.setAttribute("width", 2*x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
 	the_evt_target_ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
 	
-	
-	
-
-	if(step < animation.length) {
-
+	//Check if steps remain
+	if(step < animation.length) { //If steps remain
+		
 		if(animation[step-1][1] == ShowActive && ( the_evt_target_ownerDocument.getElementById(code.line_llc.group.getAttribute("id") + "_bp" + animation[step-1][2].split("_")[1]) != null 
-				|| step_pressed) ){
+				|| step_pressed) ){ //If the line was a show_active and the line is a breakpoint or the step button was pressed, wait
 				
 				
-				state = "stopped";
-				
-				if(step_pressed){ //Never reached (see StepAnimation code)
+				state = "waiting";
+				//If waiting because step pressed, then step animation
+				if(step_pressed){
 					step_pressed = false;
-					StepAnimation(evt);
+					StepAnimation(step_evt);
 				}else{
 					step_pressed = false;
 				}
 		}else{
+			//Otherwise, execute the next command
 			var duration = animation[step][0] * timeout;
 			timer = setTimeout(AnimateLoop, duration);
 		}
 		
-	}else{
+	}else{  //If no steps left, stop
+		
                 state = "stopped";
 		action_panel.activateButton("start_button", "StartAnimation(evt)");
 		action_panel.deactivateButton("continue_button");
@@ -901,33 +910,36 @@ function AnimateLoop(){
 //Resumes execution of animation loop if paused by pressing step button
 function ContinueAnimation(evt){
 	if(evt.target.getAttribute("id") == "continue_button"){
-		if(state != "running"){
+		if(state == "waiting"){
 			state = "running";
+			continue_pressed = false;
 			AnimateLoop();
+		}else{
+			continue_pressed = true;
+			continue_evt = evt;
 		}
 	}
 }
 
 //Stops execution of animation loop and plays next animation on press of step button
 function StepAnimation(evt){
-        if(blinking)  
-            return; //prevent buggy behavior
-	//if(state == "running"){
-	//	step_pressed = true;
-	//	return;
-	//}
+        if(state == "running"){
+        	step_evt = evt;
+		step_pressed = true;
+		return;
+	}
 
 	
-	if(evt.target.getAttribute("id") == "step_button" || evt.target.getAttribute("id") == "start_button"){ //see StartAnimation to see why start button is here
-                clearTimeout(timer);
+	if(evt.target.getAttribute("id") == "step_button" || evt.target.getAttribute("id") == "start_button"){ //see StartAnimation to see why start button is here                
+                if(blinking){
+                	if(state == "stepping"){
+                		setTimeout(StepAnimation,1, evt);
+                	}
+            			return; //prevent buggy behavior
+            	}
 		state = "stepping";
-		step_pressed = true;
-		
-		alert("animation:" + animation);
-		alert("step: " + step);
-		alert("animation[step]:" + animation[step][1]);
-		alert("animation:" + animation[step][1]);
 
+		
 		while(animation[step][1] != ShowActive && step < animation.length){
 			if(animation[step][1] == SetAllVerticesColor && animation[step].length > 3){
 				var vertexArray = new Array();
@@ -939,6 +951,11 @@ function StepAnimation(evt){
 				animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
 			}		
 			step = step + 1;
+			
+			if(blinking){
+                		setTimeout(StepAnimation,1, evt);
+				return;
+			}
 			the_evt_target_ownerDocument.documentElement.setAttribute("width", 2*x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
 			the_evt_target_ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
 		}
@@ -957,6 +974,11 @@ function StepAnimation(evt){
 			step = step + 1;
 			the_evt_target_ownerDocument.documentElement.setAttribute("width", 2*x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
 			the_evt_target_ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
+			state = "waiting";
+			if(continue_pressed){
+				continue_pressed = false;
+				ContinueAnimation(continue_evt);
+			}
 		}else{
                     state = "stopped";
                     action_panel.activateButton("start_button", "StartAnimation(evt)");
