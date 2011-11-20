@@ -940,7 +940,7 @@ function StepAnimation(evt){
 		state = "stepping";
 
 		
-		while(animation[step][1] != ShowActive && step < animation.length){
+		if(animation[step][1] != ShowActive && step < animation.length){
 			if(animation[step][1] == SetAllVerticesColor && animation[step].length > 3){
 				var vertexArray = new Array();
 				for(i = 3; i < animation[step].length; i++){
@@ -958,6 +958,8 @@ function StepAnimation(evt){
 			}
 			the_evt_target_ownerDocument.documentElement.setAttribute("width", 2*x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
 			the_evt_target_ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
+			setTimeout(StepAnimation,1,evt);
+			return;
 		}
 		
 		
