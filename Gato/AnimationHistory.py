@@ -134,6 +134,7 @@ class AnimationHistory:
                                      undo_args=(self.animator.GetVertexColor(v),))
         animation.Do()
         self.append(animation)
+        print len(self.history)
 
     def SetAllVerticesColor(self, color, graph=None, vertices=None):
         #print "SetAllVerticesColor", color, graph, vertices
@@ -267,7 +268,7 @@ class AnimationHistory:
     def DoAll(self):
         # Catchup
         if self.history_index is not None:
-            for time, cmd in self.history[self.history_index:]:
+            for cmd in self.history[self.history_index:]:     #formerly time, cmd
                 cmd.Do()
             self.history_index = None
             
