@@ -36,6 +36,7 @@
 
 import time
 import GatoGlobals
+import inspect
 
 g = GatoGlobals.AnimationParameters
 
@@ -67,6 +68,7 @@ class AnimationCommand:
     def Undo(self):
         if self.canUndo:
             if self.undo_method == None:
+                print "applying method with target ", self.target, "  method is ", self.method
                 apply(self.method, self.target + self.undo_args)
             else:
                 apply(self.undo_method, self.target + self.undo_args)
@@ -121,6 +123,7 @@ class AnimationHistory:
             logPrefix to the output
         """
         self.animator = animator
+        print "\nAnimationHistory animator is ", self.animator.__class__.__name__
         self.history = []
         self.history_index = None
         self.auto_print = 0
@@ -134,7 +137,6 @@ class AnimationHistory:
                                      undo_args=(self.animator.GetVertexColor(v),))
         animation.Do()
         self.append(animation)
-        print len(self.history)
 
     def SetAllVerticesColor(self, color, graph=None, vertices=None):
         #print "SetAllVerticesColor", color, graph, vertices
@@ -150,27 +152,41 @@ class AnimationHistory:
                                          canUndo=False)        
         animation.Do()
         self.append(animation)
+        
+        
 
-# XXXBUG edgeds not part of the signature 
-#    def SetAllEdgesColor(self, color, graph=None, edges=None):
-#        if graph:
-#            edges = graph.Edges()
-#        if edges:
-#            animation = AnimationCommand(self.animator.SetAllEdgesColor,
-#                                         (color,),(),
-#                                         kwargs={'edges':edges},
-#                                         canUndo=False)
-#        else:
-#            animation = AnimationCommand(self.animator.SetAllEdgesColor, (color,), (),
-#                                         canUndo=False)        
-#        animation.Do()
-#        self.append(animation)
+    def SetAllEdgesColor(self, color, graph=None, edges=None):
+        if graph:
+            edges = graph.Edges()
+        if edges:
+            animation = AnimationCommand(self.animator.SetAllEdgesColor,
+                                    (color,),(), kwargs={'edges':edges},
+                                        canUndo=False)
+        else:
+            animation = AnimationCommand(self.animator.SetAllEdgesColor, (color,), (),
+                                        canUndo=False)        
+        animation.Do()
+        self.append(animation)
+        
+    #Recently added, beware
+    def SetEdgesColor(self, edges, color):
+        #print "In setEdgesColor in AnimationHistory"
+        for head, tail in edges:
+            animation = AnimationCommand(self.animator.SetEdgeColor, (tail,head), 
+                                        (color,), canUndo = False)
+            animation.Do()
+            self.append(animation)
+            
+            
+        
 
         
     def SetEdgeColor(self, tail, head, color):
+        #print inspect.stack()[1]
         tail, head = self.animator.G.Edge(tail, head)
         animation = AnimationCommand(self.animator.SetEdgeColor, (tail,head), (color,),
                                      undo_args=(self.animator.GetEdgeColor(tail,head),))
+        #print "target is ", animation.target
         animation.Do()
         self.append(animation)
         
@@ -287,7 +303,7 @@ class AnimationHistory:
             self.animator.update()
             
     def append(self, animation):
-        #print "AnimationHistory: appending animation", animation.method
+        #print "AnimationHistory: appending animation", animation.method, animation.target
         if self.auto_print:
             print self.logPrefix + animation.log_str() 
         self.history.append(animation)

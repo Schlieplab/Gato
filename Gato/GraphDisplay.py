@@ -694,6 +694,7 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
     def SetAllEdgesColor(self, color, graph=None, leaveColors=None):
         """ Change the color of all edges to 'color' at once
             You can also pass an induced subgraph  """
+        print "in SetAllEdgesColor in GraphDisplay"
         if graph == None:
             if leaveColors == None:	
                 self.canvas.itemconfig("edges", fill=color)
@@ -712,6 +713,7 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
         """ Change color of (tail,head) to color. No error checking! 
             Handles undirected graphs. """
         if self.G.QDirected() == 1:
+            #print "tail: ", tail, "  head: ", head
             de = self.drawEdges[(tail,head)]
         else:
             try:
@@ -738,6 +740,7 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
     def SetEdgesColor(self, edges, color):
         """ Change color of [(tail1,head1),...] to color. No error checking! 
             Handles undirected graphs. """
+        #print "in setEdgesColor in GraphDisplay"
         for tail, head in edges:
             if self.G.QDirected() == 1:
                 de = self.drawEdges[(tail,head)]
