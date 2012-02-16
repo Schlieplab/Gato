@@ -2003,6 +2003,8 @@ def main(argv=None):
             pw.pack(fill=BOTH, expand=1)
             graph_panes = PanedWindow(pw, orient=VERTICAL)
             app = AlgoWin(tk, graph_panes, experimental=experimental)
+            if debug:
+                app.algorithm.logAnimator = 2
             app.OpenSecondaryGraphDisplay()
             graph_panes.add(app.graphDisplay)
             graph_panes.add(app.secondaryGraphDisplay)                        
@@ -2019,8 +2021,8 @@ def main(argv=None):
             app.OneGraphWindow()
         else:
             app = AlgoWin(tk,experimental=experimental)
-        if debug:
-            app.algorithm.logAnimator = 2
+            if debug:
+                app.algorithm.logAnimator = 2
 
         # On MacOS X the Quit menu entry otherwise bypasses our Quit
         # Handler According to
