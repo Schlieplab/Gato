@@ -68,7 +68,6 @@ class AnimationCommand:
     def Undo(self):
         if self.canUndo:
             if self.undo_method == None:
-                print "applying method with target ", self.target, "  method is ", self.method
                 apply(self.method, self.target + self.undo_args)
             else:
                 apply(self.undo_method, self.target + self.undo_args)
@@ -123,7 +122,6 @@ class AnimationHistory:
             logPrefix to the output
         """
         self.animator = animator
-        print "\nAnimationHistory animator is ", self.animator.__class__.__name__
         self.history = []
         self.history_index = None
         self.auto_print = 0
@@ -169,6 +167,7 @@ class AnimationHistory:
         self.append(animation)
         
     #Recently added, beware
+    #Need to handle directed/undirected differently?
     def SetEdgesColor(self, edges, color):
         #print "In setEdgesColor in AnimationHistory"
         for head, tail in edges:
@@ -178,15 +177,10 @@ class AnimationHistory:
             self.append(animation)
             
             
-        
-
-        
     def SetEdgeColor(self, tail, head, color):
-        #print inspect.stack()[1]
         tail, head = self.animator.G.Edge(tail, head)
         animation = AnimationCommand(self.animator.SetEdgeColor, (tail,head), (color,),
                                      undo_args=(self.animator.GetEdgeColor(tail,head),))
-        #print "target is ", animation.target
         animation.Do()
         self.append(animation)
         
@@ -238,6 +232,19 @@ class AnimationHistory:
                                      canUndo=False)
         animation.Do()
         self.append(animation)
+        
+    def DeleteVertex(self, v):
+        #Delete all edges containing v
+        #Call deletevertex command
+        for d in self.animator.drawEdges.keys():
+            if d[0]==v or d[1]==v:
+                self.DeleteEdge(d[0], d[1])
+        animation = AnimationCommand(self.animator.DeleteVertex, (v,), (), canUndo=False)
+        animation.Do()
+        self.append(animation)
+        
+        
+        
 
     #def HighlightPath(self, path, color, closed):
     #    XXXIMPLEMENTME
@@ -249,6 +256,7 @@ class AnimationHistory:
         # in self.animator method calls should fail. NOT sure about
         # this
         tmp = getattr(self.animator,arg)
+        #print "###AnimationHistory.__getattr__ ", arg
         if callable(tmp):
             self.methodName = arg
             self.method = tmp
@@ -271,6 +279,9 @@ class AnimationHistory:
             if self.history[self.history_index].CanUndo():            
                 self.history[self.history_index].Undo()
                 self.history_index -= 1
+                #blink the element that can't be undone
+                #Need to know if it's a vertex or edge
+                #if deleted no blink
             
     def Do(self):
         if self.history_index is None:
@@ -285,7 +296,9 @@ class AnimationHistory:
         # Catchup
         if self.history_index is not None:
             for cmd in self.history[self.history_index:]:     #formerly time, cmd
-                cmd.Do()
+                if cmd.canUndo:
+                    #if cmd cannot undo, then it is the one blocking further undoes, do not do command
+                    cmd.Do()
             self.history_index = None
             
     def Replay(self):
@@ -303,7 +316,6 @@ class AnimationHistory:
             self.animator.update()
             
     def append(self, animation):
-        #print "AnimationHistory: appending animation", animation.method, animation.target
         if self.auto_print:
             print self.logPrefix + animation.log_str() 
         self.history.append(animation)

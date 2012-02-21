@@ -694,7 +694,6 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
     def SetAllEdgesColor(self, color, graph=None, leaveColors=None):
         """ Change the color of all edges to 'color' at once
             You can also pass an induced subgraph  """
-        print "in SetAllEdgesColor in GraphDisplay"
         if graph == None:
             if leaveColors == None:	
                 self.canvas.itemconfig("edges", fill=color)
@@ -713,7 +712,6 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
         """ Change color of (tail,head) to color. No error checking! 
             Handles undirected graphs. """
         if self.G.QDirected() == 1:
-            #print "tail: ", tail, "  head: ", head
             de = self.drawEdges[(tail,head)]
         else:
             try:
@@ -1212,14 +1210,15 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
         del(self.drawVertex.label[v])
         self.canvas.delete(self.drawLabel[v])
         del(self.drawLabel.label[v])
-        # delete incident edges
+        """ delete incident edges
         outVertices = self.G.OutNeighbors(v)[:] # Need a copy here
         inVertices = self.G.InNeighbors(v)[:]
-        for w in outVertices:
-            self.DeleteEdge(v,w,0)
-        for w in inVertices:
-            if w != v: # We have already deleted loops
-                self.DeleteEdge(w,v,0)
+        #for w in outVertices:
+        #    self.DeleteEdge(v,w,0)
+        #for w in inVertices:
+        #    if w != v: # We have already deleted loops
+               self.DeleteEdge(w,v,0)
+        """
         self.G.DeleteVertex(v)
 
         
