@@ -33,11 +33,11 @@
 #             last change by $Author$.
 #
 ################################################################################
-
+import sys
+import inspect
 import time
 import GatoGlobals
-import inspect
-
+import MergedHistories
 g = GatoGlobals.AnimationParameters
 
 
@@ -117,7 +117,7 @@ class AnimationHistory:
        XXX Maybe decorators for graph display would be a better way to implement
        it. Here we incurr overhead for every method call
     """
-    def __init__(self, animator, logPrefix = ''):
+    def __init__(self, animator, logPrefix = '', displayNum=1):
         """ We wrap animator. If self.auto_print is true, then we prepend the
             logPrefix to the output
         """
@@ -127,123 +127,80 @@ class AnimationHistory:
         self.auto_print = 0
         self.logPrefix = logPrefix
         self.g = g
+        self.displayNum = displayNum
+        AnimationHistory.merged = MergedHistories.MergedHistories()
+        
 
         
     #========== Provide Undo/Redo for animation commands from GraphDisplay ======
     def SetVertexColor(self, v, color):
-        animation = AnimationCommand(self.animator.SetVertexColor, (v,), (color,), 
-                                     undo_args=(self.animator.GetVertexColor(v),))
-        animation.Do()
-        self.append(animation)
-
+        if self.auto_print == 1:
+            AnimationHistory.merged.auto_print = 1
+        AnimationHistory.merged.SetVertexColor(v, color, self.animator, self.displayNum)
+       
     def SetAllVerticesColor(self, color, graph=None, vertices=None):
-        #print "SetAllVerticesColor", color, graph, vertices
-        if graph:
-            vertices = graph.Vertices()
-        if vertices:
-            animation = AnimationCommand(self.animator.SetAllVerticesColor,
-                                         (color,),(),
-                                         kwargs={'vertices':vertices},
-                                         canUndo=False)
-        else:
-            animation = AnimationCommand(self.animator.SetAllVerticesColor, (color,), (),
-                                         canUndo=False)        
-        animation.Do()
-        self.append(animation)
+        if self.auto_print == 1:
+            AnimationHistory.merged.auto_print = 1
+        AnimationHistory.merged.SetAllVerticesColor(color, self.animator, self.displayNum, graph, vertices)
         
-        
-
     def SetAllEdgesColor(self, color, graph=None, edges=None):
-        if graph:
-            edges = graph.Edges()
-        if edges:
-            animation = AnimationCommand(self.animator.SetAllEdgesColor,
-                                    (color,),(), kwargs={'edges':edges},
-                                        canUndo=False)
-        else:
-            animation = AnimationCommand(self.animator.SetAllEdgesColor, (color,), (),
-                                        canUndo=False)        
-        animation.Do()
-        self.append(animation)
-        
-    #Recently added, beware
+        if self.auto_print == 1:
+            AnimationHistory.merged.auto_print = 1
+        AnimationHistory.merged.SetAllEdgesColor( color, self.animator, self.displayNum, graph, edges)
+       
     #Need to handle directed/undirected differently?
     def SetEdgesColor(self, edges, color):
-        #print "In setEdgesColor in AnimationHistory"
-        for head, tail in edges:
-            animation = AnimationCommand(self.animator.SetEdgeColor, (tail,head), 
-                                        (color,), canUndo = False)
-            animation.Do()
-            self.append(animation)
-            
-            
+        if self.auto_print == 1:
+            AnimationHistory.merged.auto_print = 1
+        AnimationHistory.merged.SetEdgesColor(edges, color, self.animator, self.displayNum)
+        
     def SetEdgeColor(self, tail, head, color):
-        tail, head = self.animator.G.Edge(tail, head)
-        animation = AnimationCommand(self.animator.SetEdgeColor, (tail,head), (color,),
-                                     undo_args=(self.animator.GetEdgeColor(tail,head),))
-        animation.Do()
-        self.append(animation)
+        if self.auto_print == 1:
+            AnimationHistory.merged.auto_print = 1
+        AnimationHistory.merged.SetEdgeColor(tail, head, color, self.animator, self.displayNum)
         
     def BlinkVertex(self, v, color=None):
-        animation = AnimationCommand(self.animator.BlinkVertex, (v,), (color,))
-        animation.Do()
-        self.append(animation)
-        
+        if self.auto_print == 1:
+            AnimationHistory.merged.auto_print = 1
+        AnimationHistory.merged.BlinkVertex(v, self.animator, self.displayNum, color)
+       
     def BlinkEdge(self, tail, head, color=None):
-        tail, head = self.animator.G.Edge(tail, head)
-        animation = AnimationCommand(self.animator.BlinkEdge, (tail,head), (color,))
-        animation.Do()
-        self.append(animation)
-        
-        
+        if self.auto_print == 1:
+            AnimationHistory.merged.auto_print = 1
+        AnimationHistory.merged.BlinkEdge(tail, head, self.animator, self.displayNum, color)
+       
     def SetVertexFrameWidth(self, v, val):
-        animation = AnimationCommand(self.animator.SetVertexFrameWidth, (v,), (val,),
-                                     undo_args=(self.animator.GetVertexFrameWidth(v),))
-        animation.Do()
-        self.append(animation)
+        if self.auto_print == 1:
+            AnimationHistory.merged.auto_print = 1
+        AnimationHistory.merged.SetVertexFrameWidth(v, val, self.animator, self.displayNum)
         
     def SetVertexAnnotation(self, v, annotation,color="black"):
-        animation = AnimationCommand(self.animator.SetVertexAnnotation, (v,), (annotation,),
-                                     undo_args=(self.animator.GetVertexAnnotation(v),))
-        animation.Do()
-        self.append(animation)
-
-
+        if self.auto_print == 1:
+            AnimationHistory.merged.auto_print = 1
+        AnimationHistory.merged.SetVertexAnnotation(v, annotation, self.animator, self.displayNum, color)
+        
     def AddVertex(self, x, y, v = None):
-        if v:
-            animation = AnimationCommand(self.animator.AddVertex, (x,y), (v,),
-                                         
-                                         canUndo=False)
-        else:
-            animation = AnimationCommand(self.animator.AddVertex, (x,y), (),
-                                         canUndo=False)
-        result = animation.Do()
-        self.append(animation)
-        return result
-
+        if self.auto_print == 1:
+            AnimationHistory.merged.auto_print = 1
+        return AnimationHistory.merged.AddVertex(x, y, self.animator, self.displayNum, v)  
+        
     def AddEdge(self, tail, head):
-        animation = AnimationCommand(self.animator.AddEdge, (tail,head), (),
-                                     canUndo=False)
-        animation.Do()
-        self.append(animation)
-
+        if self.auto_print == 1:
+            AnimationHistory.merged.auto_print = 1
+        AnimationHistory.merged.AddEdge(tail, head, self.animator, self.displayNum)
+       
     def DeleteEdge(self, tail, head, repaint=1):
-        animation = AnimationCommand(self.animator.DeleteEdge, (tail,head), (repaint,),
-                                     canUndo=False)
-        animation.Do()
-        self.append(animation)
+        if self.auto_print == 1:
+            AnimationHistory.merged.auto_print = 1
+        AnimationHistory.merged.DeleteEdge(tail, head, self.animator, self.displayNum, repaint)
+        
         
     def DeleteVertex(self, v):
         #Delete all edges containing v
         #Call deletevertex command
-        for d in self.animator.drawEdges.keys():
-            if d[0]==v or d[1]==v:
-                self.DeleteEdge(d[0], d[1])
-        animation = AnimationCommand(self.animator.DeleteVertex, (v,), (), canUndo=False)
-        animation.Do()
-        self.append(animation)
-        
-        
+        if self.auto_print == 1:
+            AnimationHistory.merged.auto_print = 1
+        AnimationHistory.merged.DeleteVertex(v, self.animator, self.displayNum)
         
 
     #def HighlightPath(self, path, color, closed):
@@ -272,49 +229,18 @@ class AnimationHistory:
     #========== AnimationHistory methods =======================================
     def Undo(self):
         """ Undo last command if there is one and if it can be undone """
-        if self.history_index == None: # Have never undone anything
-            self.history_index = len(self.history) - 1
-            
-        if self.history_index >= 0:
-            if self.history[self.history_index].CanUndo():            
-                self.history[self.history_index].Undo()
-                self.history_index -= 1
-                #blink the element that can't be undone
-                #Need to know if it's a vertex or edge
-                #if deleted no blink
-            
+        AnimationHistory.merged.Undo()
+                
     def Do(self):
-        if self.history_index is None:
-            return
-        if self.history_index >= len(self.history):
-            self.history_index = None
-        else:       
-            self.history[self.history_index].Do()
-            self.history_index += 1
-            
+        AnimationHistory.merged.Do()
+        
     def DoAll(self):
-        # Catchup
-        if self.history_index is not None:
-            for cmd in self.history[self.history_index:]:     #formerly time, cmd
-                if cmd.canUndo:
-                    #if cmd cannot undo, then it is the one blocking further undoes, do not do command
-                    cmd.Do()
-            self.history_index = None
-            
+        AnimationHistory.merged.DoAll()
+        
     def Replay(self):
-        if len(self.history) > 1 and self.history[-1].CanUndo():
-            self.history[-1].Undo()
-            self.animator.update()
-            self.animator.canvas.after(10 * g.BlinkRate)
-            self.history[-1].Do()
-            self.animator.update()
-            self.animator.canvas.after(10 * g.BlinkRate)
-            self.history[-1].Undo()
-            self.animator.update()
-            self.animator.canvas.after(10 * g.BlinkRate)
-            self.history[-1].Do()
-            self.animator.update()
-            
+        AnimationHistory.merged.Replay()
+       
+    #Deprecated Function
     def append(self, animation):
         if self.auto_print:
             print self.logPrefix + animation.log_str() 
