@@ -195,6 +195,8 @@ instance = {
 #
 # Testcases are all combinations of algorithm with all their
 # graphs.
+#TODO:  Comment out PrimalDualKruskal, MatroidDualKruskal, WeightedMatching
+#Rerun and check 
 svg_instance = {
     '02-GraphsNetworks/BFS-components.alg':[
     '02-GraphsNetworks/BFS.cat', '02-GraphsNetworks/3Components.cat'
