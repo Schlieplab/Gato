@@ -228,18 +228,18 @@ svg_instance = {
     '03-MinimalSpanningTrees/MSTInteractive.alg':[
     '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
     ],
-    '03-MinimalSpanningTrees/MatroidDualKruskal.alg':[
-    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
-    ],
+       #'03-MinimalSpanningTrees/MatroidDualKruskal.alg':[
+       #'03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
+       #    ],
     '03-MinimalSpanningTrees/Prim.alg':[
    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
     ],
    '03-MinimalSpanningTrees/Prim.alg':[
     '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
     ],
-   '04-LPDuality/PrimalDualKruskal.alg':[
-   '04-LPDuality/PD_Kruskal5.cat'
-   ],
+#'04-LPDuality/PrimalDualKruskal.alg':[
+#   '04-LPDuality/PD_Kruskal5.cat'
+       #   ],
     '05-ShortestPaths/BellmanFord.alg':[
     '05-ShortestPaths/BellmanFordWC.cat','05-ShortestPaths/NegCircuit.cat'
     ],
@@ -285,11 +285,11 @@ svg_instance = {
     '08-Matching/CardinalityMatching.alg':[
     '08-Matching/Edmonds1.cat', '08-Matching/Edmonds3.cat',
     '08-Matching/Edmonds6.cat'
-    ],
-    '09-WeightedMatching/WeightedMatching.alg':[
-    '09-WeightedMatching/bipmatch.cat', '09-WeightedMatching/var2zero.cat',
-    '09-WeightedMatching/twotriangles.cat'
-    ]
+                                           ]#,
+       #    '09-WeightedMatching/WeightedMatching.alg':[
+       #'09-WeightedMatching/bipmatch.cat', '09-WeightedMatching/var2zero.cat',
+       #'09-WeightedMatching/twotriangles.cat'
+       #]
     }
 
 
@@ -414,6 +414,6 @@ if __name__ == '__main__':
         #app.mainloop()
 
         if svg:
-            app.ExportSVGAnimation('%s-%s.svg' %
+            app.ExportSVGAnimation('svgs/%s-%s.svg' %
                                    (os.path.splitext(os.path.basename(case[0]))[0],
                                     os.path.splitext(os.path.basename(case[1]))[0]))
