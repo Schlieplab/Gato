@@ -1787,8 +1787,11 @@ function Initialize(evt) {
 		rect.setAttribute("id", graph.getAttribute("id") + "_bg");
 		rect.setAttribute("width",graph.getBBox().width);
 		rect.setAttribute("height",graph.getBBox().height);
-		rect.setAttribute("fill", "magenta");
-		rect.setAttribute("fill-opacity", 1);
+        rect.setAttribute("fill", "white");
+        rect.setAttribute("fill-opacity", 1);
+        rect.setAttribute("stroke-width",1);
+        rect.setAttribute("stroke",  "black");
+        rect.setAttribute("stroke-dasharray", "5 2");
 		rect.setAttribute("x", graph.getBBox().x);
 		rect.setAttribute("y", graph.getBBox().y);
 		rect.setAttribute("ongesturestart", "GestureStart_TransformGraph(evt)");
