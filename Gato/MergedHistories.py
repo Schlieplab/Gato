@@ -86,7 +86,7 @@ class MergedHistories:
         animation.Do()
         self.append(animation, display)
         
-    def SetAllEdgesColor(self, color, animator, display, graph=None, edges=None):
+    def SetAllEdgesColor(self, color, animator, display, leaveColor=None, graph=None, edges=None):
         if self.animator1 is None:
             if display==1:
                 self.animator1 = animator
@@ -97,11 +97,11 @@ class MergedHistories:
             edges = graph.Edges()
         if edges:
             animation = AnimationHistory.AnimationCommand(animator.SetAllEdgesColor,
-                                    (color,),(), kwargs={'edges':edges},
+                                    (color,),(), kwargs={'edges':edges, 'leaveColors':leaveColor},
                                         canUndo=False)
         else:
             animation = AnimationHistory.AnimationCommand(animator.SetAllEdgesColor, (color,), (),
-                                        canUndo=False)        
+                                        kwargs={'leaveColors':leaveColor}, canUndo=False)        
         animation.Do()
         self.append(animation, display)
         
@@ -315,7 +315,27 @@ class MergedHistories:
         self.history = []
         self.history_index = None
             
-        
+    def getHistoryOne(self):
+        firstHistory = []
+        print "In history One"
+        print "history size: ", len(self.history)
+        for cmd in self.history:
+            if cmd[1] == 1:
+                firstHistory.append(cmd[0])
+        for cmd in firstHistory:
+            print cmd
+        return firstHistory
+    
+    def getHistoryTwo(self):
+        secondHistory = []
+        print "IN history two"
+        for cmd in self.history:
+            if cmd[1] == 2:
+                secondHistory.append(cmd[0])
+        for cmd in secondHistory:
+            print cmd
+        return secondHistory
+
 
 
 

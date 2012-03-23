@@ -143,10 +143,10 @@ class AnimationHistory:
             AnimationHistory.merged.auto_print = 1
         AnimationHistory.merged.SetAllVerticesColor(color, self.animator, self.displayNum, graph, vertices)
         
-    def SetAllEdgesColor(self, color, graph=None, edges=None):
+    def SetAllEdgesColor(self, color, graph=None, leaveColor=None, edges=None):
         if self.auto_print == 1:
             AnimationHistory.merged.auto_print = 1
-        AnimationHistory.merged.SetAllEdgesColor( color, self.animator, self.displayNum, graph, edges)
+        AnimationHistory.merged.SetAllEdgesColor( color, self.animator, self.displayNum, leaveColor, graph, edges)
        
     #Need to handle directed/undirected differently?
     def SetEdgesColor(self, edges, color):
@@ -250,4 +250,12 @@ class AnimationHistory:
     def Clear(self):
         self.history = []
         self.history_index = None
+        
+    def getHistoryOne(self):
+        print "IN gethistory one"
+        return AnimationHistory.merged.getHistoryOne()
+    
+    def getHistoryTwo(self):
+        print "In gethistory two"
+        return AnimationHistory.merged.getHistoryTwo()
         

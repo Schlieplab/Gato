@@ -2201,12 +2201,12 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
     global SVG_Animation
     if showAnimation:
         if secondaryGraphDisplayAnimationHistory:
-            animation = collectAnimations([algorithm.animation_history.history,
-                                           secondaryGraphDisplayAnimationHistory.history,
+            animation = collectAnimations([algorithm.animation_history.getHistoryOne(),
+                                           secondaryGraphDisplayAnimationHistory.getHistoryTwo(),
                                            algowin.codeLineHistory],
                                           ['g1_','g2_','l_'])
         else:
-            animation = collectAnimations([algorithm.animation_history.history,
+            animation = collectAnimations([algorithm.animation_history.getHistoryOne(),
                                            algowin.codeLineHistory],
                                           ['g1_','l_'])
             
