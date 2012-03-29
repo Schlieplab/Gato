@@ -241,7 +241,7 @@ svg_instance = {
 #   '04-LPDuality/PD_Kruskal5.cat'
        #   ],
     '05-ShortestPaths/BellmanFord.alg':[
-    '05-ShortestPaths/BellmanFordWC.cat','05-ShortestPaths/NegCircuit.cat'
+    '05-ShortestPaths/BellmanFordWC.cat'  #,'05-ShortestPaths/NegCircuit.cat'
     ],
     '05-ShortestPaths/Dijkstra.alg':[
     '05-ShortestPaths/ShortestPathsUndirected06.cat'

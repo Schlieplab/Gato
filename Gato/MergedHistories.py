@@ -317,23 +317,16 @@ class MergedHistories:
             
     def getHistoryOne(self):
         firstHistory = []
-        print "In history One"
-        print "history size: ", len(self.history)
         for cmd in self.history:
             if cmd[1] == 1:
                 firstHistory.append(cmd[0])
-        for cmd in firstHistory:
-            print cmd
         return firstHistory
     
     def getHistoryTwo(self):
         secondHistory = []
-        print "IN history two"
         for cmd in self.history:
             if cmd[1] == 2:
                 secondHistory.append(cmd[0])
-        for cmd in secondHistory:
-            print cmd
         return secondHistory
 
 

@@ -775,7 +775,8 @@ function Move_SSlider(evt){
 	speed_slider.slider_thumb.setAttribute("x", x_pos-speed_slider.offset-(speed_slider.default_thickness/2));
 
 	speed_slider.current_setting = speed_slider.low_bound + (speed_slider.up_bound-speed_slider.low_bound)*(speed_slider.slider_thumb.getAttribute("x")/speed_slider.slider_bar.getAttribute("width"));
-	timeout = Math.log(speed_slider.current_setting) * Math.log(speed_slider.current_setting);
+	//timeout = Math.log(speed_slider.current_setting) * Math.log(speed_slider.current_setting);
+        timeout = speed_slider.current_setting/20;
 }
 
 //Drag slider and change associated values
@@ -789,7 +790,8 @@ function Drag_SSlider(evt){
 		if(x_pos >= speed_slider.slider_bar.getBBox().x+speed_slider.offset && x_pos <= (speed_slider.slider_bar.getBBox().x + speed_slider.offset + speed_slider.slider_bar.getBBox().width)){
 			speed_slider.slider_thumb.setAttribute("x", x_pos-speed_slider.offset-(speed_slider.default_thickness/2));
 			speed_slider.current_setting = speed_slider.low_bound + (speed_slider.up_bound-speed_slider.low_bound)*(speed_slider.slider_thumb.getAttribute("x")/speed_slider.slider_bar.getAttribute("width"));
-			timeout = Math.log(speed_slider.current_setting) * Math.log(speed_slider.current_setting);
+			//timeout = Math.log(speed_slider.current_setting) * Math.log(speed_slider.current_setting);
+                        timeout = speed_slider.current_setting/20;
 		}
 	}
 }

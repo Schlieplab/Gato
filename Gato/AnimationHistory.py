@@ -252,10 +252,8 @@ class AnimationHistory:
         self.history_index = None
         
     def getHistoryOne(self):
-        print "IN gethistory one"
         return AnimationHistory.merged.getHistoryOne()
     
     def getHistoryTwo(self):
-        print "In gethistory two"
         return AnimationHistory.merged.getHistoryTwo()
         
