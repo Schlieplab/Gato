@@ -1054,7 +1054,7 @@ function SetBreakpoint(evt){
 	indicator.setAttribute("width", 10);
 	indicator.setAttribute("height", line_bbox.height-5);
 	indicator.setAttribute("stroke", "blue");
-	indicator.setAttribute("fill", "grey");
+	indicator.setAttribute("fill", "blue");
 	indicator.setAttribute("id", code.line_llc.group.getAttribute("id") + "_bp" + line.getAttribute("id").split("_")[1]);
 	indicator.setAttribute("transform", "translate(" + x_offset + " " + y_offset + ")");
 	indicator.setAttribute("onclick", "RemoveBreakpoint(evt)");
