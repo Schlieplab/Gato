@@ -1044,18 +1044,22 @@ function SetBreakpoint(evt){
 	    	dy = parseFloat(dy);
 	}
 
-        var background = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
-	background.setAttribute("x", line_bbox.x + line_translation[0] - code.line_llc.h_padding - dx);
-	background.setAttribute("y", line_bbox.y + line_translation[1] - code.line_llc.v_padding - dy);
-	background.setAttribute("width", htb_bbox.width + 2*code.line_llc.h_padding);
-	background.setAttribute("height", line_bbox.height + 2*code.line_llc.v_padding);
-	background.setAttribute("stroke", "blue");
-	background.setAttribute("fill", "grey");
-	background.setAttribute("id", code.line_llc.group.getAttribute("id") + "_bp" + line.getAttribute("id").split("_")[1]);
-	background.setAttribute("transform", "translate(" + x_offset + " " + y_offset + ")");
-	background.setAttribute("onclick", "RemoveBreakpoint(evt)");
-	background.setAttribute("cursor", "pointer");
-	code.highlight_group.parentNode.insertBefore(background, code.highlight_group);
+        var indicator = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
+	//indicator.setAttribute("x", line_bbox.x + line_translation[0] - code.line_llc.h_padding - dx);
+	//indicator.setAttribute("y", line_bbox.y + line_translation[1] - code.line_llc.v_padding - dy);
+	//indicator.setAttribute("width", htb_bbox.width + 2*code.line_llc.h_padding);
+	//indicator.setAttribute("height", line_bbox.height + 2*code.line_llc.v_padding);
+	indicator.setAttribute("x", -10);
+	indicator.setAttribute("y", line_bbox.y + line_translation[1] - code.line_llc.v_padding - dy);
+	indicator.setAttribute("width", 10);
+	indicator.setAttribute("height", line_bbox.height-5);
+	indicator.setAttribute("stroke", "blue");
+	indicator.setAttribute("fill", "grey");
+	indicator.setAttribute("id", code.line_llc.group.getAttribute("id") + "_bp" + line.getAttribute("id").split("_")[1]);
+	indicator.setAttribute("transform", "translate(" + x_offset + " " + y_offset + ")");
+	indicator.setAttribute("onclick", "RemoveBreakpoint(evt)");
+	indicator.setAttribute("cursor", "pointer");
+	code.highlight_group.parentNode.insertBefore(indicator, code.highlight_group);
 	line.setAttribute("onclick", "RemoveBreakpoint(evt)");
 }
 
