@@ -46,7 +46,7 @@ animationhead = """<?xml version="1.0" encoding="utf-8"?>
 <svg xmlns="http://www.w3.org/2000/svg"
 xmlns:xlink="http://www.w3.org/1999/xlink"
 xmlns:ev="http://www.w3.org/2001/xml-events" version="1.1" baseProfile="full"
-viewbox="%(x)d %(y)d %(width)d %(height)d" width="30cm" height="30cm"
+viewbox="%(x)d %(y)d %(width)d %(height)d" width="40cm" height="30cm"
 onload="Initialize(evt)">
 <defs>     
     <linearGradient id="slider_bar_lg" x1="0" y1="0" x2="0" y2="1">
@@ -1237,10 +1237,10 @@ function SetVertexFrameWidth(v, val) {
     element.setAttribute("stroke-width", val);
     var graph = the_evt_target_ownerDocument.getElementById(v).parentNode;
     var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
-    rect.setAttribute("width",graph.getBBox().width);
-    rect.setAttribute("height",graph.getBBox().height);
-    rect.setAttribute("x", graph.getBBox().x);
-    rect.setAttribute("y", graph.getBBox().y);
+    rect.setAttribute("width",graph.getBBox().width+20);
+    rect.setAttribute("height",graph.getBBox().height+20);
+    rect.setAttribute("x", graph.getBBox().x-10);
+    rect.setAttribute("y", graph.getBBox().y-10);
 }
 
 //Sets annotation of vertex v to annotation.  Annotation's color is specified
@@ -1275,10 +1275,10 @@ function SetVertexAnnotation(v, annotation, color) //removed 'self' parameter to
 
 	var graph = the_evt_target_ownerDocument.getElementById(v).parentNode;
 	var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
-	rect.setAttribute("width",graph.getBBox().width);
-	rect.setAttribute("height",graph.getBBox().height);
-	rect.setAttribute("x", graph.getBBox().x);
-	rect.setAttribute("y", graph.getBBox().y);
+	rect.setAttribute("width",graph.getBBox().width+20);
+	rect.setAttribute("height",graph.getBBox().height+20);
+	rect.setAttribute("x", graph.getBBox().x-10);
+	rect.setAttribute("y", graph.getBBox().y-10);
     }
 }
 
@@ -1417,10 +1417,10 @@ function AddEdge(edge_id){
 
 		var graph = the_evt_target_ownerDocument.getElementById(edge_id).parentNode;
 		var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
-		rect.setAttribute("width",graph.getBBox().width);
-		rect.setAttribute("height",graph.getBBox().height);
-		rect.setAttribute("x", graph.getBBox().x);
-		rect.setAttribute("y", graph.getBBox().y);
+		rect.setAttribute("width",graph.getBBox().width+20);
+		rect.setAttribute("height",graph.getBBox().height+20);
+		rect.setAttribute("x", graph.getBBox().x-10);
+		rect.setAttribute("y", graph.getBBox().y-10);
 	}
 }
 
@@ -1453,10 +1453,10 @@ function DeleteEdge(edge_id){
 
 	var graph = the_evt_target_ownerDocument.getElementById(graph_id);
 	var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
-	rect.setAttribute("width",graph.getBBox().width);
-	rect.setAttribute("height",graph.getBBox().height);
-	rect.setAttribute("x", graph.getBBox().x);
-	rect.setAttribute("y", graph.getBBox().y);
+	rect.setAttribute("width",graph.getBBox().width+20);
+	rect.setAttribute("height",graph.getBBox().height+20);
+	rect.setAttribute("x", graph.getBBox().x-10);
+	rect.setAttribute("y", graph.getBBox().y-10);
 }
 
 //Adds vertex of into specified graph and coordinates in graph.  Optional id argument may be given.
@@ -1520,10 +1520,10 @@ function AddVertex(graph_and_coordinates, id){
 		if(vert_layout[1].group.childNodes.item(x).nodeName == "g"){
 			var graph = vert_layout[1].group.childNodes.item(k);
 			var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
-			rect.setAttribute("width",graph.getBBox().width);
-			rect.setAttribute("height",graph.getBBox().height);
-			rect.setAttribute("x", graph.getBBox().x);
-			rect.setAttribute("y", graph.getBBox().y);
+			rect.setAttribute("width",graph.getBBox().width+20);
+			rect.setAttribute("height",graph.getBBox().height+20);
+			rect.setAttribute("x", graph.getBBox().x-10);
+			rect.setAttribute("y", graph.getBBox().y-10);
 			var translation1 = getTranslate(vert_layout[1].group.getAttribute("transform"));
 			var translation2 = getTranslate(horiz_layout.group.getAttribute("transform"));
 			var translation3 = getTranslate(graph.getAttribute("transform"));
@@ -1787,15 +1787,15 @@ function Initialize(evt) {
 		var rect = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
 		var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
 		rect.setAttribute("id", graph.getAttribute("id") + "_bg");
-		rect.setAttribute("width",graph.getBBox().width);
-		rect.setAttribute("height",graph.getBBox().height);
+		rect.setAttribute("width",graph.getBBox().width+20);
+		rect.setAttribute("height",graph.getBBox().height+20);
         rect.setAttribute("fill", "white");
         rect.setAttribute("fill-opacity", 1);
         rect.setAttribute("stroke-width",1);
-        rect.setAttribute("stroke",  "black");
+        rect.setAttribute("stroke",  "#bcbcbc");
         rect.setAttribute("stroke-dasharray", "5 2");
-		rect.setAttribute("x", graph.getBBox().x);
-		rect.setAttribute("y", graph.getBBox().y);
+		rect.setAttribute("x", graph.getBBox().x-10);
+		rect.setAttribute("y", graph.getBBox().y-10);
 		rect.setAttribute("ongesturestart", "GestureStart_TransformGraph(evt)");
 		rect.setAttribute("ongesturechange","GestureChange_TransformGraph(evt)");
 		rect.setAttribute("ongestureend","GestureEnd_TransformGraph(evt)");

@@ -731,7 +731,8 @@ function Move_SSlider(evt){
 	speed_slider.slider_thumb.setAttribute("x", x_pos-speed_slider.offset-(speed_slider.default_thickness/2));
 
 	speed_slider.current_setting = speed_slider.low_bound + (speed_slider.up_bound-speed_slider.low_bound)*(speed_slider.slider_thumb.getAttribute("x")/speed_slider.slider_bar.getAttribute("width"));
-	timeout = Math.log(speed_slider.current_setting) * Math.log(speed_slider.current_setting);
+	//timeout = Math.log(speed_slider.current_setting) * Math.log(speed_slider.current_setting);
+        timeout = speed_slider.current_setting/20;
 }
 
 //Drag slider and change associated values
@@ -745,7 +746,8 @@ function Drag_SSlider(evt){
 		if(x_pos >= speed_slider.slider_bar.getBBox().x+speed_slider.offset && x_pos <= (speed_slider.slider_bar.getBBox().x + speed_slider.offset + speed_slider.slider_bar.getBBox().width)){
 			speed_slider.slider_thumb.setAttribute("x", x_pos-speed_slider.offset-(speed_slider.default_thickness/2));
 			speed_slider.current_setting = speed_slider.low_bound + (speed_slider.up_bound-speed_slider.low_bound)*(speed_slider.slider_thumb.getAttribute("x")/speed_slider.slider_bar.getAttribute("width"));
-			timeout = Math.log(speed_slider.current_setting) * Math.log(speed_slider.current_setting);
+			//timeout = Math.log(speed_slider.current_setting) * Math.log(speed_slider.current_setting);
+                        timeout = speed_slider.current_setting/20;
 		}
 	}
 }
@@ -1769,7 +1771,7 @@ function Initialize(evt) {
 
 
 var animation = Array(Array(1, SetAllVerticesColor, "g1_#EEEEEE"),
-Array(5, SetVertexAnnotation, "g1_1", "None"),
+Array(4, SetVertexAnnotation, "g1_1", "None"),
 Array(27, SetVertexColor, "g1_1", "#CFCFCF"),
 Array(1, SetVertexAnnotation, "g1_2", "None"),
 Array(27, SetVertexColor, "g1_2", "#CFCFCF"),
@@ -1799,10 +1801,10 @@ Array(1, SetVertexAnnotation, "g1_14", "None"),
 Array(27, SetVertexColor, "g1_14", "#CFCFCF"),
 Array(1, ShowActive, "l_1"),
 Array(10, ShowActive, "l_3"),
-Array(10, ShowActive, "l_12"),
-Array(10, ShowActive, "l_13"),
-Array(10, SetVertexAnnotation, "g1_1", "1"),
-Array(27, SetVertexColor, "g1_1", "red"),
+Array(9, ShowActive, "l_12"),
+Array(9, ShowActive, "l_13"),
+Array(9, SetVertexAnnotation, "g1_1", "1"),
+Array(28, SetVertexColor, "g1_1", "red"),
 Array(1, SetVertexFrameWidth, "g1_1", "6"),
 Array(1, SetEdgeColor, "g1_(1, 2)", "yellow"),
 Array(1, BlinkEdge, "g1_(1, 2)", "white"),
@@ -1860,7 +1862,7 @@ Array(1, SetEdgeColor, "g1_(1, 3)", "yellow"),
 Array(1, BlinkEdge, "g1_(1, 3)", "white"),
 Array(1, SetEdgeColor, "g1_(1, 3)", "red"),
 Array(1, SetVertexAnnotation, "g1_3", "9"),
-Array(30, SetVertexColor, "g1_3", "red"),
+Array(27, SetVertexColor, "g1_3", "red"),
 Array(1, SetVertexFrameWidth, "g1_3", "6"),
 Array(1, SetEdgeColor, "g1_(3, 6)", "yellow"),
 Array(1, BlinkEdge, "g1_(3, 6)", "white"),

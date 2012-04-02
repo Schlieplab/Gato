@@ -731,7 +731,8 @@ function Move_SSlider(evt){
 	speed_slider.slider_thumb.setAttribute("x", x_pos-speed_slider.offset-(speed_slider.default_thickness/2));
 
 	speed_slider.current_setting = speed_slider.low_bound + (speed_slider.up_bound-speed_slider.low_bound)*(speed_slider.slider_thumb.getAttribute("x")/speed_slider.slider_bar.getAttribute("width"));
-	timeout = Math.log(speed_slider.current_setting) * Math.log(speed_slider.current_setting);
+	//timeout = Math.log(speed_slider.current_setting) * Math.log(speed_slider.current_setting);
+        timeout = speed_slider.current_setting/20;
 }
 
 //Drag slider and change associated values
@@ -745,7 +746,8 @@ function Drag_SSlider(evt){
 		if(x_pos >= speed_slider.slider_bar.getBBox().x+speed_slider.offset && x_pos <= (speed_slider.slider_bar.getBBox().x + speed_slider.offset + speed_slider.slider_bar.getBBox().width)){
 			speed_slider.slider_thumb.setAttribute("x", x_pos-speed_slider.offset-(speed_slider.default_thickness/2));
 			speed_slider.current_setting = speed_slider.low_bound + (speed_slider.up_bound-speed_slider.low_bound)*(speed_slider.slider_thumb.getAttribute("x")/speed_slider.slider_bar.getAttribute("width"));
-			timeout = Math.log(speed_slider.current_setting) * Math.log(speed_slider.current_setting);
+			//timeout = Math.log(speed_slider.current_setting) * Math.log(speed_slider.current_setting);
+                        timeout = speed_slider.current_setting/20;
 		}
 	}
 }
@@ -1780,14 +1782,14 @@ Array(1, SetVertexColor, "g1_9", "#666699"),
 Array(1, SetVertexColor, "g1_10", "#0066CC"),
 Array(1, SetAllEdgesColor, "g1_#444444"),
 Array(1, ShowActive, "l_3"),
-Array(9, SetEdgeColor, "g1_(1, 2)", "green"),
+Array(10, SetEdgeColor, "g1_(1, 2)", "green"),
 Array(1, BlinkEdge, "g1_(1, 2)", "None"),
 Array(1, ShowActive, "l_5"),
 Array(9, ShowActive, "l_6"),
 Array(9, SetAllVerticesColor, "g1_#FF0000", "2"),
 Array(1, SetEdgeColor, "g1_(1, 2)", "#FF0000"),
 Array(1, ShowActive, "l_1"),
-Array(9, ShowActive, "l_3"),
+Array(10, ShowActive, "l_3"),
 Array(9, SetEdgeColor, "g1_(2, 3)", "green"),
 Array(1, BlinkEdge, "g1_(2, 3)", "None"),
 Array(1, ShowActive, "l_5"),
@@ -1796,14 +1798,14 @@ Array(9, SetAllVerticesColor, "g1_#FF0000", "3"),
 Array(1, SetEdgeColor, "g1_(2, 3)", "#FF0000"),
 Array(1, ShowActive, "l_1"),
 Array(9, ShowActive, "l_3"),
-Array(10, SetEdgeColor, "g1_(3, 4)", "green"),
+Array(9, SetEdgeColor, "g1_(3, 4)", "green"),
 Array(1, BlinkEdge, "g1_(3, 4)", "None"),
 Array(1, ShowActive, "l_5"),
-Array(10, ShowActive, "l_6"),
+Array(9, ShowActive, "l_6"),
 Array(10, SetAllVerticesColor, "g1_#FF0000", "4"),
 Array(1, SetEdgeColor, "g1_(3, 4)", "#FF0000"),
 Array(1, ShowActive, "l_1"),
-Array(10, ShowActive, "l_3"),
+Array(9, ShowActive, "l_3"),
 Array(10, SetEdgeColor, "g1_(4, 5)", "green"),
 Array(1, BlinkEdge, "g1_(4, 5)", "None"),
 Array(1, ShowActive, "l_5"),
@@ -1819,7 +1821,7 @@ Array(10, ShowActive, "l_6"),
 Array(9, SetAllVerticesColor, "g1_#FF0000", "10"),
 Array(1, SetEdgeColor, "g1_(4, 10)", "#FF0000"),
 Array(1, ShowActive, "l_1"),
-Array(10, ShowActive, "l_3"),
+Array(9, ShowActive, "l_3"),
 Array(9, SetEdgeColor, "g1_(5, 6)", "green"),
 Array(1, BlinkEdge, "g1_(5, 6)", "None"),
 Array(1, ShowActive, "l_5"),
@@ -1831,24 +1833,24 @@ Array(9, ShowActive, "l_3"),
 Array(9, SetEdgeColor, "g1_(5, 8)", "green"),
 Array(1, BlinkEdge, "g1_(5, 8)", "None"),
 Array(1, ShowActive, "l_5"),
-Array(9, ShowActive, "l_6"),
-Array(9, SetAllVerticesColor, "g1_#FF0000", "8"),
+Array(10, ShowActive, "l_6"),
+Array(10, SetAllVerticesColor, "g1_#FF0000", "8"),
 Array(1, SetEdgeColor, "g1_(5, 8)", "#FF0000"),
 Array(1, ShowActive, "l_1"),
-Array(8, ShowActive, "l_3"),
-Array(9, SetEdgeColor, "g1_(6, 7)", "green"),
+Array(9, ShowActive, "l_3"),
+Array(10, SetEdgeColor, "g1_(6, 7)", "green"),
 Array(1, BlinkEdge, "g1_(6, 7)", "None"),
 Array(1, ShowActive, "l_5"),
 Array(10, ShowActive, "l_6"),
-Array(10, SetAllVerticesColor, "g1_#FF0000", "7"),
+Array(9, SetAllVerticesColor, "g1_#FF0000", "7"),
 Array(1, SetEdgeColor, "g1_(6, 7)", "#FF0000"),
 Array(1, ShowActive, "l_1"),
-Array(10, ShowActive, "l_3"),
-Array(10, SetEdgeColor, "g1_(8, 9)", "green"),
+Array(9, ShowActive, "l_3"),
+Array(9, SetEdgeColor, "g1_(8, 9)", "green"),
 Array(1, BlinkEdge, "g1_(8, 9)", "None"),
 Array(1, ShowActive, "l_5"),
 Array(10, ShowActive, "l_6"),
-Array(10, SetAllVerticesColor, "g1_#FF0000", "9"),
+Array(9, SetAllVerticesColor, "g1_#FF0000", "9"),
 Array(1, SetEdgeColor, "g1_(8, 9)", "#FF0000"),
 Array(1, ShowActive, "l_1")
 );
