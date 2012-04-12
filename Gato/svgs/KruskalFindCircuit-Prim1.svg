@@ -2,7 +2,7 @@
 <svg xmlns="http://www.w3.org/2000/svg"
 xmlns:xlink="http://www.w3.org/1999/xlink"
 xmlns:ev="http://www.w3.org/2001/xml-events" version="1.1" baseProfile="full"
-viewbox="0 0 1024 768" width="30cm" height="30cm"
+viewbox="0 0 1024 768" width="40cm" height="30cm"
 onload="Initialize(evt)">
 <defs>     
     <linearGradient id="slider_bar_lg" x1="0" y1="0" x2="0" y2="1">
@@ -46,7 +46,7 @@ var default_vertex_radius = 14.0; //Default vertex radius
 var default_line_width = 4.0; //Default line width
 var x_offset = 20;  //Distance the layout is translated horizontally, in pixels
 var y_offset = 20;  //Distance layout is translated vertically, in pixels
-var translate_buffer = []; //Gloval buffer for translating graphs.
+var translate_buffer = []; //Global buffer for translating graphs.
 var blinking = false; //True iff blinking animation is commencing.  Prevents premature stepping
 var step_pressed = false;  //Whether the step button was pressed.  Used to emulate an interrupt.
 var step_evt;
@@ -1000,18 +1000,22 @@ function SetBreakpoint(evt){
 	    	dy = parseFloat(dy);
 	}
 
-        var background = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
-	background.setAttribute("x", line_bbox.x + line_translation[0] - code.line_llc.h_padding - dx);
-	background.setAttribute("y", line_bbox.y + line_translation[1] - code.line_llc.v_padding - dy);
-	background.setAttribute("width", htb_bbox.width + 2*code.line_llc.h_padding);
-	background.setAttribute("height", line_bbox.height + 2*code.line_llc.v_padding);
-	background.setAttribute("stroke", "blue");
-	background.setAttribute("fill", "grey");
-	background.setAttribute("id", code.line_llc.group.getAttribute("id") + "_bp" + line.getAttribute("id").split("_")[1]);
-	background.setAttribute("transform", "translate(" + x_offset + " " + y_offset + ")");
-	background.setAttribute("onclick", "RemoveBreakpoint(evt)");
-	background.setAttribute("cursor", "pointer");
-	code.highlight_group.parentNode.insertBefore(background, code.highlight_group);
+        var indicator = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
+	//indicator.setAttribute("x", line_bbox.x + line_translation[0] - code.line_llc.h_padding - dx);
+	//indicator.setAttribute("y", line_bbox.y + line_translation[1] - code.line_llc.v_padding - dy);
+	//indicator.setAttribute("width", htb_bbox.width + 2*code.line_llc.h_padding);
+	//indicator.setAttribute("height", line_bbox.height + 2*code.line_llc.v_padding);
+	indicator.setAttribute("x", -10);
+	indicator.setAttribute("y", line_bbox.y + line_translation[1] - code.line_llc.v_padding - dy);
+	indicator.setAttribute("width", 10);
+	indicator.setAttribute("height", line_bbox.height-5);
+	indicator.setAttribute("stroke", "blue");
+	indicator.setAttribute("fill", "blue");
+	indicator.setAttribute("id", code.line_llc.group.getAttribute("id") + "_bp" + line.getAttribute("id").split("_")[1]);
+	indicator.setAttribute("transform", "translate(" + x_offset + " " + y_offset + ")");
+	indicator.setAttribute("onclick", "RemoveBreakpoint(evt)");
+	indicator.setAttribute("cursor", "pointer");
+	code.highlight_group.parentNode.insertBefore(indicator, code.highlight_group);
 	line.setAttribute("onclick", "RemoveBreakpoint(evt)");
 }
 
@@ -1193,10 +1197,10 @@ function SetVertexFrameWidth(v, val) {
     element.setAttribute("stroke-width", val);
     var graph = the_evt_target_ownerDocument.getElementById(v).parentNode;
     var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
-    rect.setAttribute("width",graph.getBBox().width);
-    rect.setAttribute("height",graph.getBBox().height);
-    rect.setAttribute("x", graph.getBBox().x);
-    rect.setAttribute("y", graph.getBBox().y);
+    rect.setAttribute("width",graph.getBBox().width+20);
+    rect.setAttribute("height",graph.getBBox().height+20);
+    rect.setAttribute("x", graph.getBBox().x-10);
+    rect.setAttribute("y", graph.getBBox().y-10);
 }
 
 //Sets annotation of vertex v to annotation.  Annotation's color is specified
@@ -1231,10 +1235,10 @@ function SetVertexAnnotation(v, annotation, color) //removed 'self' parameter to
 
 	var graph = the_evt_target_ownerDocument.getElementById(v).parentNode;
 	var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
-	rect.setAttribute("width",graph.getBBox().width);
-	rect.setAttribute("height",graph.getBBox().height);
-	rect.setAttribute("x", graph.getBBox().x);
-	rect.setAttribute("y", graph.getBBox().y);
+	rect.setAttribute("width",graph.getBBox().width+20);
+	rect.setAttribute("height",graph.getBBox().height+20);
+	rect.setAttribute("x", graph.getBBox().x-10);
+	rect.setAttribute("y", graph.getBBox().y-10);
     }
 }
 
@@ -1373,10 +1377,10 @@ function AddEdge(edge_id){
 
 		var graph = the_evt_target_ownerDocument.getElementById(edge_id).parentNode;
 		var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
-		rect.setAttribute("width",graph.getBBox().width);
-		rect.setAttribute("height",graph.getBBox().height);
-		rect.setAttribute("x", graph.getBBox().x);
-		rect.setAttribute("y", graph.getBBox().y);
+		rect.setAttribute("width",graph.getBBox().width+20);
+		rect.setAttribute("height",graph.getBBox().height+20);
+		rect.setAttribute("x", graph.getBBox().x-10);
+		rect.setAttribute("y", graph.getBBox().y-10);
 	}
 }
 
@@ -1409,10 +1413,10 @@ function DeleteEdge(edge_id){
 
 	var graph = the_evt_target_ownerDocument.getElementById(graph_id);
 	var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
-	rect.setAttribute("width",graph.getBBox().width);
-	rect.setAttribute("height",graph.getBBox().height);
-	rect.setAttribute("x", graph.getBBox().x);
-	rect.setAttribute("y", graph.getBBox().y);
+	rect.setAttribute("width",graph.getBBox().width+20);
+	rect.setAttribute("height",graph.getBBox().height+20);
+	rect.setAttribute("x", graph.getBBox().x-10);
+	rect.setAttribute("y", graph.getBBox().y-10);
 }
 
 //Adds vertex of into specified graph and coordinates in graph.  Optional id argument may be given.
@@ -1476,10 +1480,10 @@ function AddVertex(graph_and_coordinates, id){
 		if(vert_layout[1].group.childNodes.item(x).nodeName == "g"){
 			var graph = vert_layout[1].group.childNodes.item(k);
 			var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
-			rect.setAttribute("width",graph.getBBox().width);
-			rect.setAttribute("height",graph.getBBox().height);
-			rect.setAttribute("x", graph.getBBox().x);
-			rect.setAttribute("y", graph.getBBox().y);
+			rect.setAttribute("width",graph.getBBox().width+20);
+			rect.setAttribute("height",graph.getBBox().height+20);
+			rect.setAttribute("x", graph.getBBox().x-10);
+			rect.setAttribute("y", graph.getBBox().y-10);
 			var translation1 = getTranslate(vert_layout[1].group.getAttribute("transform"));
 			var translation2 = getTranslate(horiz_layout.group.getAttribute("transform"));
 			var translation3 = getTranslate(graph.getAttribute("transform"));
@@ -1743,15 +1747,15 @@ function Initialize(evt) {
 		var rect = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
 		var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
 		rect.setAttribute("id", graph.getAttribute("id") + "_bg");
-		rect.setAttribute("width",graph.getBBox().width);
-		rect.setAttribute("height",graph.getBBox().height);
+		rect.setAttribute("width",graph.getBBox().width+20);
+		rect.setAttribute("height",graph.getBBox().height+20);
         rect.setAttribute("fill", "white");
         rect.setAttribute("fill-opacity", 1);
         rect.setAttribute("stroke-width",1);
-        rect.setAttribute("stroke",  "black");
+        rect.setAttribute("stroke",  "#bcbcbc");
         rect.setAttribute("stroke-dasharray", "5 2");
-		rect.setAttribute("x", graph.getBBox().x);
-		rect.setAttribute("y", graph.getBBox().y);
+		rect.setAttribute("x", graph.getBBox().x-10);
+		rect.setAttribute("y", graph.getBBox().y-10);
 		rect.setAttribute("ongesturestart", "GestureStart_TransformGraph(evt)");
 		rect.setAttribute("ongesturechange","GestureChange_TransformGraph(evt)");
 		rect.setAttribute("ongestureend","GestureEnd_TransformGraph(evt)");
@@ -1771,11 +1775,11 @@ function Initialize(evt) {
 
 
 var animation = Array(Array(1, SetVertexColor, "g1_1", "#FF0000"),
-Array(1, SetVertexColor, "g1_2", "#00FF00"),
-Array(9, SetVertexColor, "g1_3", "#0000FF"),
-Array(1, SetVertexColor, "g1_4", "#009999"),
+Array(4, SetVertexColor, "g1_2", "#00FF00"),
+Array(17, SetVertexColor, "g1_3", "#0000FF"),
+Array(6, SetVertexColor, "g1_4", "#009999"),
 Array(1, SetVertexColor, "g1_5", "#990099"),
-Array(4, SetVertexColor, "g1_6", "#999900"),
+Array(1, SetVertexColor, "g1_6", "#999900"),
 Array(1, SetVertexColor, "g1_7", "#996666"),
 Array(1, SetVertexColor, "g1_8", "#669966"),
 Array(1, SetVertexColor, "g1_9", "#666699"),
@@ -1786,15 +1790,15 @@ Array(1, SetVertexColor, "g1_13", "#00CC66"),
 Array(1, SetVertexColor, "g1_14", "#CC0066"),
 Array(1, SetVertexColor, "g1_15", "#CC6600"),
 Array(1, ShowActive, "l_1"),
-Array(15, ShowActive, "l_8"),
+Array(10, ShowActive, "l_8"),
 Array(12, ShowActive, "l_10"),
-Array(10, SetEdgeColor, "g1_(4, 9)", "yellow"),
+Array(9, SetEdgeColor, "g1_(4, 9)", "yellow"),
 Array(1, ShowActive, "l_11"),
-Array(10, SetAllEdgesColor, "g1_#DDDDDD"),
+Array(8, SetAllEdgesColor, "g1_#DDDDDD"),
 Array(1, SetAllVerticesColor, "g1_#000099"),
 Array(1, SetEdgeColor, "g1_(4, 9)", "green"),
 Array(1, ShowActive, "l_12"),
-Array(10, AddVertex, "g1_(257, 124)", "4"),
+Array(9, AddVertex, "g1_(257, 124)", "4"),
 Array(28, AddVertex, "g1_(299, 128)", "9"),
 Array(27, AddEdge, "g1_(4, 9)"),
 Array(1, SetAllVerticesColor, "g1_#009999", "9"),
@@ -1811,9 +1815,9 @@ Array(27, AddEdge, "g1_(8, 9)"),
 Array(1, SetAllVerticesColor, "g1_#009999", "8"),
 Array(2, SetEdgeColor, "g1_(8, 9)", "#009999"),
 Array(1, ShowActive, "l_10"),
-Array(10, SetEdgeColor, "g1_(7, 6)", "yellow"),
+Array(9, SetEdgeColor, "g1_(7, 6)", "yellow"),
 Array(1, ShowActive, "l_11"),
-Array(9, SetAllEdgesColor, "g1_#DDDDDD"),
+Array(8, SetAllEdgesColor, "g1_#DDDDDD"),
 Array(1, SetAllVerticesColor, "g1_#000099"),
 Array(1, SetEdgeColor, "g1_(7, 6)", "green"),
 Array(1, ShowActive, "l_12"),
@@ -1863,7 +1867,7 @@ Array(1, SetEdgeColor, "g1_(8, 9)", "grey"),
 Array(1, SetVertexFrameWidth, "g1_8", "0"),
 Array(1, SetEdgeColor, "g1_(9, 6)", "green"),
 Array(1, ShowActive, "l_12"),
-Array(9, AddEdge, "g1_(9, 6)"),
+Array(10, AddEdge, "g1_(9, 6)"),
 Array(1, SetVertexColor, "g1_7", "#009999"),
 Array(1, SetVertexColor, "g1_6", "#009999"),
 Array(1, SetEdgeColor, "g1_(6, 7)", "#009999"),
@@ -1985,14 +1989,14 @@ Array(1, SetAllVerticesColor, "g1_#000099"),
 Array(1, SetEdgeColor, "g1_(3, 9)", "green"),
 Array(1, ShowActive, "l_12"),
 Array(9, AddVertex, "g1_(312, 69)", "3"),
-Array(58, AddEdge, "g1_(3, 9)"),
+Array(27, AddEdge, "g1_(3, 9)"),
 Array(1, SetAllVerticesColor, "g1_#009999", "3"),
 Array(2, SetEdgeColor, "g1_(3, 9)", "#009999"),
-Array(26, ShowActive, "l_10"),
+Array(1, ShowActive, "l_10"),
 Array(9, SetEdgeColor, "g1_(6, 3)", "yellow"),
 Array(1, ShowActive, "l_11"),
-Array(9, SetVertexAnnotation, "g1_9", ""),
-Array(28, SetVertexAnnotation, "g1_7", ""),
+Array(8, SetVertexAnnotation, "g1_9", ""),
+Array(27, SetVertexAnnotation, "g1_7", ""),
 Array(27, SetVertexAnnotation, "g1_6", "s"),
 Array(27, SetVertexAnnotation, "g1_3", "t"),
 Array(27, SetAllEdgesColor, "g1_#DDDDDD"),
@@ -2049,20 +2053,20 @@ Array(1, SetEdgeColor, "g1_(9, 6)", "red"),
 Array(1, SetVertexColor, "g1_6", "red"),
 Array(1, SetEdgeColor, "g1_(6, 3)", "grey"),
 Array(1, ShowActive, "l_10"),
-Array(9, SetEdgeColor, "g1_(6, 10)", "yellow"),
+Array(8, SetEdgeColor, "g1_(6, 10)", "yellow"),
 Array(1, ShowActive, "l_11"),
-Array(8, SetVertexAnnotation, "g1_6", ""),
+Array(9, SetVertexAnnotation, "g1_6", ""),
 Array(27, SetVertexAnnotation, "g1_3", ""),
 Array(27, SetAllEdgesColor, "g1_#DDDDDD"),
 Array(1, SetAllVerticesColor, "g1_#000099"),
 Array(1, SetEdgeColor, "g1_(6, 10)", "green"),
 Array(1, ShowActive, "l_12"),
-Array(10, AddVertex, "g1_(400, 85)", "10"),
+Array(9, AddVertex, "g1_(400, 85)", "10"),
 Array(27, AddEdge, "g1_(6, 10)"),
 Array(1, SetAllVerticesColor, "g1_#009999", "10"),
 Array(2, SetEdgeColor, "g1_(6, 10)", "#009999"),
 Array(1, ShowActive, "l_10"),
-Array(9, SetEdgeColor, "g1_(4, 3)", "yellow"),
+Array(10, SetEdgeColor, "g1_(4, 3)", "yellow"),
 Array(1, ShowActive, "l_11"),
 Array(9, SetVertexAnnotation, "g1_6", ""),
 Array(27, SetVertexAnnotation, "g1_3", ""),
@@ -2090,7 +2094,7 @@ Array(1, SetVertexColor, "g1_9", "grey"),
 Array(1, SetVertexFrameWidth, "g1_4", "0"),
 Array(1, SetVertexFrameWidth, "g1_9", "6"),
 Array(1, SetVertexFrameWidth, "g1_9", "6"),
-Array(3, SetEdgeColor, "g1_(4, 9)", "yellow"),
+Array(1, SetEdgeColor, "g1_(4, 9)", "yellow"),
 Array(1, SetEdgeColor, "g1_(4, 9)", "grey"),
 Array(1, SetEdgeColor, "g1_(8, 9)", "yellow"),
 Array(1, SetVertexColor, "g1_8", "blue"),
@@ -2114,24 +2118,24 @@ Array(1, SetEdgeColor, "g1_(4, 3)", "grey"),
 Array(1, ShowActive, "l_10"),
 Array(9, SetEdgeColor, "g1_(10, 11)", "yellow"),
 Array(1, ShowActive, "l_11"),
-Array(9, SetVertexAnnotation, "g1_4", ""),
-Array(28, SetVertexAnnotation, "g1_3", ""),
+Array(8, SetVertexAnnotation, "g1_4", ""),
+Array(27, SetVertexAnnotation, "g1_3", ""),
 Array(27, SetAllEdgesColor, "g1_#DDDDDD"),
 Array(1, SetAllVerticesColor, "g1_#000099"),
 Array(1, SetEdgeColor, "g1_(10, 11)", "green"),
 Array(1, ShowActive, "l_12"),
-Array(9, AddVertex, "g1_(481, 57)", "11"),
-Array(29, AddEdge, "g1_(10, 11)"),
+Array(10, AddVertex, "g1_(481, 57)", "11"),
+Array(27, AddEdge, "g1_(10, 11)"),
 Array(1, SetAllVerticesColor, "g1_#009999", "11"),
 Array(2, SetEdgeColor, "g1_(10, 11)", "#009999"),
 Array(1, ShowActive, "l_10"),
-Array(9, SetEdgeColor, "g1_(3, 10)", "yellow"),
+Array(10, SetEdgeColor, "g1_(3, 10)", "yellow"),
 Array(1, ShowActive, "l_11"),
-Array(8, SetVertexAnnotation, "g1_4", ""),
+Array(9, SetVertexAnnotation, "g1_4", ""),
 Array(27, SetVertexAnnotation, "g1_3", ""),
 Array(27, SetVertexAnnotation, "g1_3", "s"),
-Array(29, SetVertexAnnotation, "g1_10", "t"),
-Array(31, SetAllEdgesColor, "g1_#DDDDDD"),
+Array(27, SetVertexAnnotation, "g1_10", "t"),
+Array(27, SetAllEdgesColor, "g1_#DDDDDD"),
 Array(1, SetAllVerticesColor, "g1_#000099"),
 Array(1, SetVertexColor, "g1_4", "#CFCFCF"),
 Array(1, SetVertexColor, "g1_9", "#CFCFCF"),
@@ -2164,10 +2168,10 @@ Array(1, SetVertexColor, "g1_8", "blue"),
 Array(1, SetEdgeColor, "g1_(8, 9)", "grey"),
 Array(1, SetEdgeColor, "g1_(3, 9)", "yellow"),
 Array(1, SetEdgeColor, "g1_(3, 9)", "grey"),
-Array(2, SetEdgeColor, "g1_(9, 6)", "yellow"),
-Array(6, SetVertexColor, "g1_6", "blue"),
+Array(1, SetEdgeColor, "g1_(9, 6)", "yellow"),
 Array(1, SetVertexColor, "g1_6", "blue"),
-Array(3, SetEdgeColor, "g1_(9, 6)", "grey"),
+Array(1, SetVertexColor, "g1_6", "blue"),
+Array(1, SetEdgeColor, "g1_(9, 6)", "grey"),
 Array(1, SetVertexFrameWidth, "g1_9", "0"),
 Array(1, SetVertexColor, "g1_4", "grey"),
 Array(1, SetVertexFrameWidth, "g1_9", "0"),
@@ -2209,18 +2213,18 @@ Array(1, SetEdgeColor, "g1_(3, 10)", "grey"),
 Array(1, ShowActive, "l_10"),
 Array(9, SetEdgeColor, "g1_(5, 4)", "yellow"),
 Array(1, ShowActive, "l_11"),
-Array(9, SetVertexAnnotation, "g1_3", ""),
+Array(8, SetVertexAnnotation, "g1_3", ""),
 Array(27, SetVertexAnnotation, "g1_10", ""),
 Array(27, SetAllEdgesColor, "g1_#DDDDDD"),
 Array(1, SetAllVerticesColor, "g1_#000099"),
 Array(1, SetEdgeColor, "g1_(5, 4)", "green"),
 Array(1, ShowActive, "l_12"),
-Array(9, AddVertex, "g1_(195, 199)", "5"),
+Array(10, AddVertex, "g1_(195, 199)", "5"),
 Array(27, AddEdge, "g1_(5, 4)"),
 Array(1, SetAllVerticesColor, "g1_#009999", "5"),
 Array(2, SetEdgeColor, "g1_(5, 4)", "#009999"),
 Array(1, ShowActive, "l_10"),
-Array(9, SetEdgeColor, "g1_(1, 2)", "yellow"),
+Array(10, SetEdgeColor, "g1_(1, 2)", "yellow"),
 Array(1, ShowActive, "l_11"),
 Array(9, SetVertexAnnotation, "g1_3", ""),
 Array(27, SetVertexAnnotation, "g1_10", ""),
@@ -2232,9 +2236,9 @@ Array(9, AddVertex, "g1_(85, 108)", "1"),
 Array(27, AddVertex, "g1_(165, 50)", "2"),
 Array(27, AddEdge, "g1_(1, 2)"),
 Array(1, SetAllVerticesColor, "g1_#FF0000", "2"),
-Array(1, SetEdgeColor, "g1_(1, 2)", "#FF0000"),
+Array(2, SetEdgeColor, "g1_(1, 2)", "#FF0000"),
 Array(1, ShowActive, "l_10"),
-Array(9, SetEdgeColor, "g1_(14, 13)", "yellow"),
+Array(10, SetEdgeColor, "g1_(14, 13)", "yellow"),
 Array(1, ShowActive, "l_11"),
 Array(9, SetVertexAnnotation, "g1_3", ""),
 Array(27, SetVertexAnnotation, "g1_10", ""),
@@ -2242,11 +2246,11 @@ Array(27, SetAllEdgesColor, "g1_#DDDDDD"),
 Array(1, SetAllVerticesColor, "g1_#000099"),
 Array(1, SetEdgeColor, "g1_(14, 13)", "green"),
 Array(1, ShowActive, "l_12"),
-Array(10, AddVertex, "g1_(687, 224)", "14"),
+Array(9, AddVertex, "g1_(687, 224)", "14"),
 Array(27, AddVertex, "g1_(725, 113)", "13"),
 Array(27, AddEdge, "g1_(14, 13)"),
 Array(1, SetAllVerticesColor, "g1_#CC0066", "13"),
-Array(2, SetEdgeColor, "g1_(14, 13)", "#CC0066"),
+Array(3, SetEdgeColor, "g1_(14, 13)", "#CC0066"),
 Array(1, ShowActive, "l_10"),
 Array(9, SetEdgeColor, "g1_(2, 4)", "yellow"),
 Array(1, ShowActive, "l_11"),
@@ -2254,7 +2258,7 @@ Array(9, SetVertexAnnotation, "g1_3", ""),
 Array(27, SetVertexAnnotation, "g1_10", ""),
 Array(27, SetVertexAnnotation, "g1_2", "s"),
 Array(27, SetVertexAnnotation, "g1_4", "t"),
-Array(29, SetAllEdgesColor, "g1_#DDDDDD"),
+Array(30, SetAllEdgesColor, "g1_#DDDDDD"),
 Array(1, SetAllVerticesColor, "g1_#000099"),
 Array(1, SetVertexColor, "g1_4", "#CFCFCF"),
 Array(1, SetVertexColor, "g1_9", "#CFCFCF"),
@@ -2297,13 +2301,13 @@ Array(1, ShowActive, "l_10"),
 Array(9, SetEdgeColor, "g1_(11, 12)", "yellow"),
 Array(1, ShowActive, "l_11"),
 Array(8, SetVertexAnnotation, "g1_2", ""),
-Array(29, SetVertexAnnotation, "g1_4", ""),
-Array(57, SetAllEdgesColor, "g1_#DDDDDD"),
+Array(27, SetVertexAnnotation, "g1_4", ""),
+Array(27, SetAllEdgesColor, "g1_#DDDDDD"),
 Array(1, SetAllVerticesColor, "g1_#000099"),
 Array(1, SetEdgeColor, "g1_(11, 12)", "green"),
 Array(1, ShowActive, "l_12"),
 Array(9, AddVertex, "g1_(606, 42)", "12"),
-Array(28, AddEdge, "g1_(11, 12)"),
+Array(27, AddEdge, "g1_(11, 12)"),
 Array(1, SetAllVerticesColor, "g1_#009999", "12"),
 Array(2, SetEdgeColor, "g1_(11, 12)", "#009999"),
 Array(1, ShowActive, "l_10"),
@@ -2457,7 +2461,7 @@ Array(1, SetEdgeColor, "g1_(1, 2)", "grey"),
 Array(1, SetVertexFrameWidth, "g1_1", "0"),
 Array(1, SetEdgeColor, "g1_(12, 13)", "green"),
 Array(1, ShowActive, "l_12"),
-Array(10, AddEdge, "g1_(12, 13)"),
+Array(9, AddEdge, "g1_(12, 13)"),
 Array(1, SetVertexColor, "g1_14", "#009999"),
 Array(1, SetVertexColor, "g1_13", "#009999"),
 Array(1, SetEdgeColor, "g1_(13, 14)", "#009999"),
@@ -2466,8 +2470,8 @@ Array(1, SetEdgeColor, "g1_(12, 13)", "#009999"),
 Array(1, ShowActive, "l_10"),
 Array(9, SetEdgeColor, "g1_(1, 5)", "yellow"),
 Array(1, ShowActive, "l_11"),
-Array(10, SetVertexAnnotation, "g1_12", ""),
-Array(28, SetVertexAnnotation, "g1_13", ""),
+Array(8, SetVertexAnnotation, "g1_12", ""),
+Array(27, SetVertexAnnotation, "g1_13", ""),
 Array(27, SetVertexAnnotation, "g1_1", "s"),
 Array(27, SetVertexAnnotation, "g1_5", "t"),
 Array(27, SetAllEdgesColor, "g1_#DDDDDD"),
@@ -2530,15 +2534,15 @@ Array(1, SetEdgeColor, "g1_(1, 2)", "red"),
 Array(1, SetVertexColor, "g1_1", "red"),
 Array(1, SetEdgeColor, "g1_(1, 5)", "grey"),
 Array(1, ShowActive, "l_10"),
-Array(10, SetEdgeColor, "g1_(3, 2)", "yellow"),
+Array(9, SetEdgeColor, "g1_(3, 2)", "yellow"),
 Array(1, ShowActive, "l_11"),
 Array(9, SetVertexAnnotation, "g1_1", ""),
-Array(27, SetVertexAnnotation, "g1_5", ""),
-Array(27, SetVertexAnnotation, "g1_3", "s"),
-Array(27, SetVertexAnnotation, "g1_2", "t"),
-Array(38, SetAllEdgesColor, "g1_#DDDDDD"),
-Array(4, SetAllVerticesColor, "g1_#000099"),
-Array(1, SetVertexColor, "g1_4", "#CFCFCF"),
+Array(69, SetVertexAnnotation, "g1_5", ""),
+Array(33, SetVertexAnnotation, "g1_3", "s"),
+Array(29, SetVertexAnnotation, "g1_2", "t"),
+Array(31, SetAllEdgesColor, "g1_#DDDDDD"),
+Array(1, SetAllVerticesColor, "g1_#000099"),
+Array(6, SetVertexColor, "g1_4", "#CFCFCF"),
 Array(1, SetVertexColor, "g1_9", "#CFCFCF"),
 Array(1, SetVertexColor, "g1_8", "#CFCFCF"),
 Array(1, SetVertexColor, "g1_7", "#CFCFCF"),
@@ -2604,12 +2608,12 @@ Array(1, SetEdgeColor, "g1_(3, 9)", "red"),
 Array(1, SetVertexColor, "g1_3", "red"),
 Array(1, SetEdgeColor, "g1_(3, 2)", "grey"),
 Array(1, ShowActive, "l_10"),
-Array(10, SetEdgeColor, "g1_(2, 5)", "yellow"),
+Array(9, SetEdgeColor, "g1_(2, 5)", "yellow"),
 Array(1, ShowActive, "l_11"),
-Array(10, SetVertexAnnotation, "g1_3", ""),
-Array(27, SetVertexAnnotation, "g1_2", ""),
-Array(27, SetVertexAnnotation, "g1_2", "s"),
-Array(27, SetVertexAnnotation, "g1_5", "t"),
+Array(9, SetVertexAnnotation, "g1_3", ""),
+Array(28, SetVertexAnnotation, "g1_2", ""),
+Array(28, SetVertexAnnotation, "g1_2", "s"),
+Array(28, SetVertexAnnotation, "g1_5", "t"),
 Array(27, SetAllEdgesColor, "g1_#DDDDDD"),
 Array(1, SetAllVerticesColor, "g1_#000099"),
 Array(1, SetVertexColor, "g1_4", "#CFCFCF"),
@@ -2668,9 +2672,9 @@ Array(1, SetEdgeColor, "g1_(2, 4)", "red"),
 Array(1, SetVertexColor, "g1_2", "red"),
 Array(1, SetEdgeColor, "g1_(2, 5)", "grey"),
 Array(1, ShowActive, "l_10"),
-Array(10, SetEdgeColor, "g1_(6, 15)", "yellow"),
+Array(9, SetEdgeColor, "g1_(6, 15)", "yellow"),
 Array(1, ShowActive, "l_11"),
-Array(10, SetVertexAnnotation, "g1_2", ""),
+Array(8, SetVertexAnnotation, "g1_2", ""),
 Array(27, SetVertexAnnotation, "g1_5", ""),
 Array(27, SetAllEdgesColor, "g1_#DDDDDD"),
 Array(1, SetAllVerticesColor, "g1_#000099"),
@@ -2681,9 +2685,9 @@ Array(27, AddEdge, "g1_(6, 15)"),
 Array(1, SetAllVerticesColor, "g1_#009999", "15"),
 Array(2, SetEdgeColor, "g1_(6, 15)", "#009999"),
 Array(1, ShowActive, "l_10"),
-Array(10, SetEdgeColor, "g1_(15, 14)", "yellow"),
+Array(9, SetEdgeColor, "g1_(15, 14)", "yellow"),
 Array(1, ShowActive, "l_11"),
-Array(10, SetVertexAnnotation, "g1_2", ""),
+Array(9, SetVertexAnnotation, "g1_2", ""),
 Array(27, SetVertexAnnotation, "g1_5", ""),
 Array(27, SetVertexAnnotation, "g1_15", "s"),
 Array(27, SetVertexAnnotation, "g1_14", "t"),
@@ -2805,7 +2809,7 @@ Array(1, SetVertexFrameWidth, "g1_11", "6"),
 Array(1, SetEdgeColor, "g1_(10, 11)", "yellow"),
 Array(1, SetEdgeColor, "g1_(10, 11)", "grey"),
 Array(1, SetEdgeColor, "g1_(11, 12)", "yellow"),
-Array(2, SetVertexColor, "g1_12", "blue"),
+Array(1, SetVertexColor, "g1_12", "blue"),
 Array(1, SetVertexColor, "g1_12", "blue"),
 Array(1, SetEdgeColor, "g1_(11, 12)", "grey"),
 Array(1, SetVertexFrameWidth, "g1_11", "0"),
@@ -2871,9 +2875,9 @@ Array(1, SetEdgeColor, "g1_(6, 15)", "red"),
 Array(1, SetVertexColor, "g1_15", "red"),
 Array(1, SetEdgeColor, "g1_(15, 14)", "grey"),
 Array(1, ShowActive, "l_10"),
-Array(10, SetEdgeColor, "g1_(12, 15)", "yellow"),
+Array(9, SetEdgeColor, "g1_(12, 15)", "yellow"),
 Array(1, ShowActive, "l_11"),
-Array(9, SetVertexAnnotation, "g1_15", ""),
+Array(8, SetVertexAnnotation, "g1_15", ""),
 Array(27, SetVertexAnnotation, "g1_14", ""),
 Array(27, SetVertexAnnotation, "g1_12", "s"),
 Array(27, SetVertexAnnotation, "g1_15", "t"),
@@ -2926,7 +2930,7 @@ Array(1, SetEdgeColor, "g1_(14, 13)", "yellow"),
 Array(1, SetVertexColor, "g1_14", "blue"),
 Array(1, SetVertexColor, "g1_14", "blue"),
 Array(1, SetEdgeColor, "g1_(14, 13)", "grey"),
-Array(1, SetEdgeColor, "g1_(12, 13)", "yellow"),
+Array(2, SetEdgeColor, "g1_(12, 13)", "yellow"),
 Array(1, SetEdgeColor, "g1_(12, 13)", "grey"),
 Array(1, SetVertexFrameWidth, "g1_13", "0"),
 Array(1, SetVertexColor, "g1_10", "grey"),

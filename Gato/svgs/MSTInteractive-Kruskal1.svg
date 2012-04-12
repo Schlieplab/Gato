@@ -2,7 +2,7 @@
 <svg xmlns="http://www.w3.org/2000/svg"
 xmlns:xlink="http://www.w3.org/1999/xlink"
 xmlns:ev="http://www.w3.org/2001/xml-events" version="1.1" baseProfile="full"
-viewbox="0 0 1024 768" width="30cm" height="30cm"
+viewbox="0 0 1024 768" width="40cm" height="30cm"
 onload="Initialize(evt)">
 <defs>     
     <linearGradient id="slider_bar_lg" x1="0" y1="0" x2="0" y2="1">
@@ -46,7 +46,7 @@ var default_vertex_radius = 14.0; //Default vertex radius
 var default_line_width = 4.0; //Default line width
 var x_offset = 20;  //Distance the layout is translated horizontally, in pixels
 var y_offset = 20;  //Distance layout is translated vertically, in pixels
-var translate_buffer = []; //Gloval buffer for translating graphs.
+var translate_buffer = []; //Global buffer for translating graphs.
 var blinking = false; //True iff blinking animation is commencing.  Prevents premature stepping
 var step_pressed = false;  //Whether the step button was pressed.  Used to emulate an interrupt.
 var step_evt;
@@ -1000,18 +1000,22 @@ function SetBreakpoint(evt){
 	    	dy = parseFloat(dy);
 	}
 
-        var background = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
-	background.setAttribute("x", line_bbox.x + line_translation[0] - code.line_llc.h_padding - dx);
-	background.setAttribute("y", line_bbox.y + line_translation[1] - code.line_llc.v_padding - dy);
-	background.setAttribute("width", htb_bbox.width + 2*code.line_llc.h_padding);
-	background.setAttribute("height", line_bbox.height + 2*code.line_llc.v_padding);
-	background.setAttribute("stroke", "blue");
-	background.setAttribute("fill", "grey");
-	background.setAttribute("id", code.line_llc.group.getAttribute("id") + "_bp" + line.getAttribute("id").split("_")[1]);
-	background.setAttribute("transform", "translate(" + x_offset + " " + y_offset + ")");
-	background.setAttribute("onclick", "RemoveBreakpoint(evt)");
-	background.setAttribute("cursor", "pointer");
-	code.highlight_group.parentNode.insertBefore(background, code.highlight_group);
+        var indicator = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
+	//indicator.setAttribute("x", line_bbox.x + line_translation[0] - code.line_llc.h_padding - dx);
+	//indicator.setAttribute("y", line_bbox.y + line_translation[1] - code.line_llc.v_padding - dy);
+	//indicator.setAttribute("width", htb_bbox.width + 2*code.line_llc.h_padding);
+	//indicator.setAttribute("height", line_bbox.height + 2*code.line_llc.v_padding);
+	indicator.setAttribute("x", -10);
+	indicator.setAttribute("y", line_bbox.y + line_translation[1] - code.line_llc.v_padding - dy);
+	indicator.setAttribute("width", 10);
+	indicator.setAttribute("height", line_bbox.height-5);
+	indicator.setAttribute("stroke", "blue");
+	indicator.setAttribute("fill", "blue");
+	indicator.setAttribute("id", code.line_llc.group.getAttribute("id") + "_bp" + line.getAttribute("id").split("_")[1]);
+	indicator.setAttribute("transform", "translate(" + x_offset + " " + y_offset + ")");
+	indicator.setAttribute("onclick", "RemoveBreakpoint(evt)");
+	indicator.setAttribute("cursor", "pointer");
+	code.highlight_group.parentNode.insertBefore(indicator, code.highlight_group);
 	line.setAttribute("onclick", "RemoveBreakpoint(evt)");
 }
 
@@ -1193,10 +1197,10 @@ function SetVertexFrameWidth(v, val) {
     element.setAttribute("stroke-width", val);
     var graph = the_evt_target_ownerDocument.getElementById(v).parentNode;
     var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
-    rect.setAttribute("width",graph.getBBox().width);
-    rect.setAttribute("height",graph.getBBox().height);
-    rect.setAttribute("x", graph.getBBox().x);
-    rect.setAttribute("y", graph.getBBox().y);
+    rect.setAttribute("width",graph.getBBox().width+20);
+    rect.setAttribute("height",graph.getBBox().height+20);
+    rect.setAttribute("x", graph.getBBox().x-10);
+    rect.setAttribute("y", graph.getBBox().y-10);
 }
 
 //Sets annotation of vertex v to annotation.  Annotation's color is specified
@@ -1231,10 +1235,10 @@ function SetVertexAnnotation(v, annotation, color) //removed 'self' parameter to
 
 	var graph = the_evt_target_ownerDocument.getElementById(v).parentNode;
 	var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
-	rect.setAttribute("width",graph.getBBox().width);
-	rect.setAttribute("height",graph.getBBox().height);
-	rect.setAttribute("x", graph.getBBox().x);
-	rect.setAttribute("y", graph.getBBox().y);
+	rect.setAttribute("width",graph.getBBox().width+20);
+	rect.setAttribute("height",graph.getBBox().height+20);
+	rect.setAttribute("x", graph.getBBox().x-10);
+	rect.setAttribute("y", graph.getBBox().y-10);
     }
 }
 
@@ -1373,10 +1377,10 @@ function AddEdge(edge_id){
 
 		var graph = the_evt_target_ownerDocument.getElementById(edge_id).parentNode;
 		var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
-		rect.setAttribute("width",graph.getBBox().width);
-		rect.setAttribute("height",graph.getBBox().height);
-		rect.setAttribute("x", graph.getBBox().x);
-		rect.setAttribute("y", graph.getBBox().y);
+		rect.setAttribute("width",graph.getBBox().width+20);
+		rect.setAttribute("height",graph.getBBox().height+20);
+		rect.setAttribute("x", graph.getBBox().x-10);
+		rect.setAttribute("y", graph.getBBox().y-10);
 	}
 }
 
@@ -1409,10 +1413,10 @@ function DeleteEdge(edge_id){
 
 	var graph = the_evt_target_ownerDocument.getElementById(graph_id);
 	var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
-	rect.setAttribute("width",graph.getBBox().width);
-	rect.setAttribute("height",graph.getBBox().height);
-	rect.setAttribute("x", graph.getBBox().x);
-	rect.setAttribute("y", graph.getBBox().y);
+	rect.setAttribute("width",graph.getBBox().width+20);
+	rect.setAttribute("height",graph.getBBox().height+20);
+	rect.setAttribute("x", graph.getBBox().x-10);
+	rect.setAttribute("y", graph.getBBox().y-10);
 }
 
 //Adds vertex of into specified graph and coordinates in graph.  Optional id argument may be given.
@@ -1476,10 +1480,10 @@ function AddVertex(graph_and_coordinates, id){
 		if(vert_layout[1].group.childNodes.item(x).nodeName == "g"){
 			var graph = vert_layout[1].group.childNodes.item(k);
 			var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
-			rect.setAttribute("width",graph.getBBox().width);
-			rect.setAttribute("height",graph.getBBox().height);
-			rect.setAttribute("x", graph.getBBox().x);
-			rect.setAttribute("y", graph.getBBox().y);
+			rect.setAttribute("width",graph.getBBox().width+20);
+			rect.setAttribute("height",graph.getBBox().height+20);
+			rect.setAttribute("x", graph.getBBox().x-10);
+			rect.setAttribute("y", graph.getBBox().y-10);
 			var translation1 = getTranslate(vert_layout[1].group.getAttribute("transform"));
 			var translation2 = getTranslate(horiz_layout.group.getAttribute("transform"));
 			var translation3 = getTranslate(graph.getAttribute("transform"));
@@ -1743,15 +1747,15 @@ function Initialize(evt) {
 		var rect = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
 		var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
 		rect.setAttribute("id", graph.getAttribute("id") + "_bg");
-		rect.setAttribute("width",graph.getBBox().width);
-		rect.setAttribute("height",graph.getBBox().height);
+		rect.setAttribute("width",graph.getBBox().width+20);
+		rect.setAttribute("height",graph.getBBox().height+20);
         rect.setAttribute("fill", "white");
         rect.setAttribute("fill-opacity", 1);
         rect.setAttribute("stroke-width",1);
-        rect.setAttribute("stroke",  "black");
+        rect.setAttribute("stroke",  "#bcbcbc");
         rect.setAttribute("stroke-dasharray", "5 2");
-		rect.setAttribute("x", graph.getBBox().x);
-		rect.setAttribute("y", graph.getBBox().y);
+		rect.setAttribute("x", graph.getBBox().x-10);
+		rect.setAttribute("y", graph.getBBox().y-10);
 		rect.setAttribute("ongesturestart", "GestureStart_TransformGraph(evt)");
 		rect.setAttribute("ongesturechange","GestureChange_TransformGraph(evt)");
 		rect.setAttribute("ongestureend","GestureEnd_TransformGraph(evt)");
@@ -1785,7 +1789,7 @@ Array(1, ShowActive, "l_3"),
 Array(10, SetEdgeColor, "g1_(1, 2)", "green"),
 Array(1, BlinkEdge, "g1_(1, 2)", "None"),
 Array(1, ShowActive, "l_5"),
-Array(9, ShowActive, "l_6"),
+Array(10, ShowActive, "l_6"),
 Array(9, SetAllVerticesColor, "g1_#FF0000", "2"),
 Array(1, SetEdgeColor, "g1_(1, 2)", "#FF0000"),
 Array(1, ShowActive, "l_1"),
@@ -1801,7 +1805,7 @@ Array(9, ShowActive, "l_3"),
 Array(9, SetEdgeColor, "g1_(3, 4)", "green"),
 Array(1, BlinkEdge, "g1_(3, 4)", "None"),
 Array(1, ShowActive, "l_5"),
-Array(9, ShowActive, "l_6"),
+Array(10, ShowActive, "l_6"),
 Array(10, SetAllVerticesColor, "g1_#FF0000", "4"),
 Array(1, SetEdgeColor, "g1_(3, 4)", "#FF0000"),
 Array(1, ShowActive, "l_1"),
@@ -1825,11 +1829,11 @@ Array(9, ShowActive, "l_3"),
 Array(9, SetEdgeColor, "g1_(5, 6)", "green"),
 Array(1, BlinkEdge, "g1_(5, 6)", "None"),
 Array(1, ShowActive, "l_5"),
-Array(9, ShowActive, "l_6"),
+Array(10, ShowActive, "l_6"),
 Array(9, SetAllVerticesColor, "g1_#FF0000", "6"),
 Array(1, SetEdgeColor, "g1_(5, 6)", "#FF0000"),
 Array(1, ShowActive, "l_1"),
-Array(9, ShowActive, "l_3"),
+Array(8, ShowActive, "l_3"),
 Array(9, SetEdgeColor, "g1_(5, 8)", "green"),
 Array(1, BlinkEdge, "g1_(5, 8)", "None"),
 Array(1, ShowActive, "l_5"),
