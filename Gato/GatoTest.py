@@ -296,9 +296,15 @@ svg_instance = {
     }
 """
 
-instance = {'06-MaximalFlows/FordFulkerson.alg':['06-MaximalFlows/FordFulkerson6.cat']}
+instance = {'06-MaximalFlows/FordFulkerson.alg':['06-MaximalFlows/FordFulkerson6.cat'],
+     '02-GraphsNetworks/BFS.alg':[
+   '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
+   ]}
 
-svg_instance = {'06-MaximalFlows/FordFulkerson.alg':['06-MaximalFlows/FordFulkerson6.cat']
+svg_instance = {'06-MaximalFlows/FordFulkerson.alg':['06-MaximalFlows/FordFulkerson6.cat'],
+     '02-GraphsNetworks/BFS.alg':[
+   '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
+   ]
    }
 
 #------------------------------------------------------------------

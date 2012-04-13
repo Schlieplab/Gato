@@ -6,19 +6,30 @@ viewbox="0 0 1024 768" width="40cm" height="30cm"
 onload="Initialize(evt)">
 <defs>     
     <linearGradient id="slider_bar_lg" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="skyblue" >
-		</stop>
-		<stop offset="1" stop-color="black">
-		</stop>
+        <stop offset="0" stop-color="skyblue" >
+        </stop>
+        <stop offset="1" stop-color="black">
+        </stop>
     </linearGradient>
     
     <linearGradient id="slider_thumb_lg" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#C0C0C0">
-		</stop>
-		<stop offset="1" stop-color="black">
-		</stop>
+        <stop offset="0" stop-color="#C0C0C0">
+        </stop>
+        <stop offset="1" stop-color="black">
+        </stop>
     </linearGradient>
+    
+	<!-- symbols for radio buttons -->
+	<symbol id="radioBorder" overflow="visible">
+		<circle fill="white" stroke="dimgray" stroke-width="1.5" r="6"/>
+	</symbol>
+	<symbol id="radioPoint" overflow="visible">
+		<circle fill="dimgray" r="4" pointer-events="none"/>
+	</symbol>
 </defs>
+<script type="text/ecmascript" xlink:href="./JSIncludes/checkbox_and_radiobutton.js"/>
+<script type="text/ecmascript" xlink:href="./JSIncludes/helper_functions.js"/>
+<script type="text/ecmascript" xlink:href="./JSIncludes/timer.js"/>
 <script type="text/ecmascript"><![CDATA[
 var step = 0;
 var v_ano_id = "va"; //ID prefix for vertex annotation
@@ -149,6 +160,19 @@ function getScale(str){
 	
 	return new Array(x, y);
 
+}
+
+function SpeedChanged(id, selectedId, labelText) {
+	if (selectedId === "checkLowest") 
+		timeout = 50;
+	else if (selectedId === "checkLow") 
+		timeout = 37;
+	else if (selectedId === "checkMid") 
+		timeout = 22;
+	else if (selectedId === "checkHigh") 
+		timeout = 10;
+	else if (selectedId === "checkHighest") 
+		timeout = .8;
 }
 
 //Sets the first instance of "scale" in components "transform" attribute to "scale(x y)"
@@ -1719,24 +1743,36 @@ function Initialize(evt) {
 	action_panel.deactivateButton("stop_button");
 	action_panel.deactivateButton("step_button");
 
+	//Construct radio buttons
+    var radiogroup = new radioButtonGroup("radio", SpeedChanged);
+    var labeltextStyles = {"font-family":"Arial,Helvetica","fill":"dimgray","font-size":17};
+    var labelDistance = 12;
+    var labelYOffset = 5.5;
+    var label = new checkBox("label","radioGroup",0,80,undefined,undefined,false,"Speed",labeltextStyles,0,labelYOffset,radiogroup,undefined);
+    var checkHighest = new checkBox("checkHighest","radioGroup",6,100,"radioBorder","radioPoint",false,"4",labeltextStyles,labelDistance,labelYOffset,radiogroup,undefined);
+    var checkHigh = new checkBox("checkHigh","radioGroup",6,120,"radioBorder","radioPoint",false,"2",labeltextStyles,labelDistance,labelYOffset,radiogroup,undefined);
+    var checkMid = new checkBox("checkMid","radioGroup",6,140,"radioBorder","radioPoint",false,"1",labeltextStyles,labelDistance,labelYOffset,radiogroup,undefined);
+    var checkLow = new checkBox("checkLow","radioGroup",6,160,"radioBorder","radioPoint",false,".5",labeltextStyles,labelDistance,labelYOffset,radiogroup,undefined);
+    var checkLowest = new checkBox("checkLowest","radioGroup",6,180,"radioBorder","radioPoint",true,".25",labeltextStyles,labelDistance,labelYOffset,radiogroup,undefined);
 
 	//Create speed slider 
-	speed_slider = new Slider("speed_slider", 400, 50, x_offset, [timeout,1], timeout/2, ["Slow", "Fast"], "Speed", [["ontouchstart","TouchStart_SSlider(evt)"],["ontouchmove", "TouchDrag_SSlider(evt)"],["ontouchend", "TouchDeactivate_SSlider(evt)"],["onmousedown", "Click_SSlider(evt)"],["onmouseup", "Deactivate_SSlider(evt)"], ["onmousemove","Drag_SSlider(evt)"]]);
+	//speed_slider = new Slider("speed_slider", 400, 50, x_offset, [timeout,1], timeout/2, ["Slow", "Fast"], "Speed", [["ontouchstart","TouchStart_SSlider(evt)"],["ontouchmove", "TouchDrag_SSlider(evt)"],["ontouchend", "TouchDeactivate_SSlider(evt)"],["onmousedown", "Click_SSlider(evt)"],["onmouseup", "Deactivate_SSlider(evt)"], ["onmousemove","Drag_SSlider(evt)"]]);
 	timeout = Math.log(timeout) * Math.log(timeout);
 
 	//Lay out code, speed slider, and graphs
-	horiz_layout = new LinearLayoutComponent(2, 2, "horizontal_layout", "horizontal");	
+	horiz_layout = new LinearLayoutComponent(20, 2, "horizontal_layout", "horizontal");	
 	vert_layout = new Array(new LinearLayoutComponent(2, 5, "vert_layout_0", "vertical"), new LinearLayoutComponent(2, 2, "vert_layout_1", "vertical"));
 	vert_layout[0].insertComponent(code.line_llc.group.getAttribute("id"), 0);
 	vert_layout[0].insertComponent(action_panel.llc.group.getAttribute("id"), 1);
-	vert_layout[0].insertComponent(speed_slider.slider.getAttribute("id"), 2);
+	//vert_layout[0].insertComponent(speed_slider.slider.getAttribute("id"), 2);
 
 
         for(x in init_graphs){
             vert_layout[1].insertComponent(init_graphs[x].getAttribute("id"), x);
 	}
 	horiz_layout.insertComponent(vert_layout[0].group.getAttribute("id"), 0);
-	horiz_layout.insertComponent(vert_layout[1].group.getAttribute("id"), 1);
+	horiz_layout.insertComponent("radioGroup", 1);
+	horiz_layout.insertComponent(vert_layout[1].group.getAttribute("id"), 2);
 	
 	//offset to make everything visible
 	horiz_layout.group.setAttribute("transform", "translate(" + x_offset + " " + y_offset + ")");
@@ -7325,6 +7361,7 @@ Array(1, ShowActive, "l_6")
 <circle id="g1_45" cx="150.0" cy="350.0" r="14.0" fill="#EEEEEE" stroke="black" stroke-width="0.0" />
 <text id="vlg1_45" x="150.0" y="354.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >45</text>
 </g>
+<g id="radioGroup" />
 <text blank = "false" id="l_1" x="10" y="10" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal"><tspan dx = "0">s</tspan><tspan dx="7">=</tspan><tspan dx="7">PickVertex</tspan><tspan>(</tspan><tspan>)</tspan></text>
 <text blank = "false" id="l_2" x="10" y="10" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal"><tspan dx = "0">dist</tspan><tspan>[</tspan><tspan>s</tspan><tspan>]</tspan><tspan dx="7">=</tspan><tspan dx="7">0</tspan></text>
 <text blank = "false" id="l_3" x="10" y="10" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal"><tspan dx = "0">pred</tspan><tspan>[</tspan><tspan>s</tspan><tspan>]</tspan><tspan dx="7">=</tspan><tspan dx="7">None</tspan></text>

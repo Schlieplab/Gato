@@ -62,7 +62,18 @@ onload="Initialize(evt)">
         <stop offset="1" stop-color="black">
         </stop>
     </linearGradient>
+    
+	<!-- symbols for radio buttons -->
+	<symbol id="radioBorder" overflow="visible">
+		<circle fill="white" stroke="dimgray" stroke-width="1.5" r="6"/>
+	</symbol>
+	<symbol id="radioPoint" overflow="visible">
+		<circle fill="dimgray" r="4" pointer-events="none"/>
+	</symbol>
 </defs>
+<script type="text/ecmascript" xlink:href="./JSIncludes/checkbox_and_radiobutton.js"/>
+<script type="text/ecmascript" xlink:href="./JSIncludes/helper_functions.js"/>
+<script type="text/ecmascript" xlink:href="./JSIncludes/timer.js"/>
 <script type="text/ecmascript"><![CDATA[
 var step = 0;
 var v_ano_id = "va"; //ID prefix for vertex annotation
@@ -674,6 +685,19 @@ function BP_deactivateButton(id){
     }
 }
 
+//Adjusts the speed of the animation when a radiobutton is selected
+function SpeedChanged(id, selectedId, labelText) {
+	if (selectedId === "checkLowest") 
+		timeout = 50;
+	else if (selectedId === "checkLow") 
+		timeout = 37;
+	else if (selectedId === "checkMid") 
+		timeout = 22;
+	else if (selectedId === "checkHigh") 
+		timeout = 10;
+	else if (selectedId === "checkHighest") 
+		timeout = .8;
+}
 
 /**
 *
@@ -827,7 +851,7 @@ function Drag_SSlider(evt){
 function StartAnimation(evt){
     if(evt.target.getAttribute("id") == "start_button"){
         if(state != null){ //Graph must be refreshed
-            horiz_layout.deleteComponent(1);
+            horiz_layout.deleteComponent(2);
             vert_layout[1] = new LinearLayoutComponent(2, 2, "vert_layout_1", "vertical");
 
             for(x in init_graphs){
@@ -835,7 +859,7 @@ function StartAnimation(evt){
                             the_evt_target_ownerDocument.documentElement.appendChild(new_graph);
                             vert_layout[1].insertComponent(new_graph.getAttribute("id"), x);
                         }
-            horiz_layout.insertComponent(vert_layout[1].group.getAttribute("id"), 1);
+            horiz_layout.insertComponent(vert_layout[1].group.getAttribute("id"), 2);
 
             for(x in init_graphs){
                 var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
@@ -1775,25 +1799,38 @@ function Initialize(evt) {
     action_panel.deactivateButton("continue_button");
     action_panel.deactivateButton("stop_button");
     action_panel.deactivateButton("step_button");
+    
+    //Construct radio buttons
+    var radiogroup = new radioButtonGroup("radio", SpeedChanged);
+    var labeltextStyles = {"font-family":"Arial,Helvetica","fill":"dimgray","font-size":17};
+    var labelDistance = 12;
+    var labelYOffset = 5.5;
+    var label = new checkBox("label","radioGroup",0,80,undefined,undefined,false,"Speed",labeltextStyles,0,labelYOffset,radiogroup,undefined);
+    var checkHighest = new checkBox("checkHighest","radioGroup",6,100,"radioBorder","radioPoint",false,"4",labeltextStyles,labelDistance,labelYOffset,radiogroup,undefined);
+    var checkHigh = new checkBox("checkHigh","radioGroup",6,120,"radioBorder","radioPoint",false,"2",labeltextStyles,labelDistance,labelYOffset,radiogroup,undefined);
+    var checkMid = new checkBox("checkMid","radioGroup",6,140,"radioBorder","radioPoint",false,"1",labeltextStyles,labelDistance,labelYOffset,radiogroup,undefined);
+    var checkLow = new checkBox("checkLow","radioGroup",6,160,"radioBorder","radioPoint",false,".5",labeltextStyles,labelDistance,labelYOffset,radiogroup,undefined);
+    var checkLowest = new checkBox("checkLowest","radioGroup",6,180,"radioBorder","radioPoint",true,".25",labeltextStyles,labelDistance,labelYOffset,radiogroup,undefined);
 
 
-    //Create speed slider 
-    speed_slider = new Slider("speed_slider", 400, 50, x_offset, [timeout,1], timeout/2, ["Slow", "Fast"], "Speed", [["ontouchstart","TouchStart_SSlider(evt)"],["ontouchmove", "TouchDrag_SSlider(evt)"],["ontouchend", "TouchDeactivate_SSlider(evt)"],["onmousedown", "Click_SSlider(evt)"],["onmouseup", "Deactivate_SSlider(evt)"], ["onmousemove","Drag_SSlider(evt)"]]);
-    timeout = Math.log(timeout) * Math.log(timeout);
+    //speed_slider = new Slider("speed_slider", 400, 50, x_offset, [timeout,1], timeout/2, ["Slow", "Fast"], "Speed", [["ontouchstart","TouchStart_SSlider(evt)"],["ontouchmove", "TouchDrag_SSlider(evt)"],["ontouchend", "TouchDeactivate_SSlider(evt)"],["onmousedown", "Click_SSlider(evt)"],["onmouseup", "Deactivate_SSlider(evt)"], ["onmousemove","Drag_SSlider(evt)"]]);
+    //timeout = Math.log(timeout) * Math.log(timeout);
+    timeout = 50;
 
     //Lay out code, speed slider, and graphs
-    horiz_layout = new LinearLayoutComponent(2, 2, "horizontal_layout", "horizontal");  
+    horiz_layout = new LinearLayoutComponent(20, 2, "horizontal_layout", "horizontal");  
     vert_layout = new Array(new LinearLayoutComponent(2, 5, "vert_layout_0", "vertical"), new LinearLayoutComponent(2, 2, "vert_layout_1", "vertical"));
     vert_layout[0].insertComponent(code.line_llc.group.getAttribute("id"), 0);
     vert_layout[0].insertComponent(action_panel.llc.group.getAttribute("id"), 1);
-    vert_layout[0].insertComponent(speed_slider.slider.getAttribute("id"), 2);
+    //vert_layout[0].insertComponent(speed_slider.slider.getAttribute("id"), 2);
 
 
         for(x in init_graphs){
             vert_layout[1].insertComponent(init_graphs[x].getAttribute("id"), x);
     }
     horiz_layout.insertComponent(vert_layout[0].group.getAttribute("id"), 0);
-    horiz_layout.insertComponent(vert_layout[1].group.getAttribute("id"), 1);
+    horiz_layout.insertComponent("radioGroup", 1);
+    horiz_layout.insertComponent(vert_layout[1].group.getAttribute("id"), 2);
     
     //offset to make everything visible
     horiz_layout.group.setAttribute("transform", "translate(" + x_offset + " " + y_offset + ")");
@@ -2011,10 +2048,6 @@ def cmd_as_javascript(cmd, idPrefix=''):
         target = quote(cmd.target, idPrefix)
         
     result = [cmd.time, cmd.method.__name__, target]
-    #if cmd.method.__name__ == "SetEdgeColor":
-    #   print cmd
-    for k in result:
-        print k
         
     for arg in cmd.args:
         result.append(quote(arg))
@@ -2277,7 +2310,7 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
                        'ontouchstart="TouchStart_Graph(evt)" ontouchmove="TouchDrag_Graph(evt)" ontouchend="TouchDeactivate_Graph(evt)">\n' % (200,bbg1['height'], graph_type))
             WriteGraphAsSVG(secondaryGraphDisplay, file, idPrefix='g2_')    
             file.write('</g>\n')
-
+        file.write('<g id="radioGroup"/>');
         algowin.CommitStop()
         # Write algorithm to SVG    
         source = algorithm.GetSource()
