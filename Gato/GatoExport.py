@@ -330,11 +330,36 @@ function HTB_prototypeInit(){
     HighlightableTextBlock.prototype.deleteLine = HTB_deleteLine;
     HighlightableTextBlock.prototype.highlightLine = HTB_highlightLine;
     HighlightableTextBlock.prototype.removeHighlight = HTB_removeHighlight;
-
+    HighlightableTextBlock.prototype.addBoundingBox = HTB_addBoundingBox;
     htb = the_evt_target_ownerDocument.getElementById("foo");
     htb.parentNode.removeChild(htb);
     htb = the_evt_target_ownerDocument.getElementById("foo_hg");
     htb.parentNode.removeChild(htb);
+}
+
+//Adds a rectangular box around the code section
+function HTB_addBoundingBox(color) {
+	var bbox = this.line_llc.group.getBBox();
+    var line = this.line_llc.group.childNodes.item(0);
+    var line_bbox = line.getBBox();
+	var rect = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
+    var line_translation = getTranslate(this.line_llc.group.childNodes.item(0).getAttribute("transform"));
+    var dx = line.getAttribute("dx");
+    if(dx == null)
+        dx = 0;
+    else
+        dx = parseFloat(dx);
+    
+	rect.setAttribute("id", "codeBox");
+	rect.setAttribute("width", bbox.width + this.line_llc.h_padding*2);
+	rect.setAttribute("height", bbox.height + this.line_llc.v_padding*2 + 10);
+	//rect.setAttribute("x",0-this.line_llc.h_padding/2);
+    rect.setAttribute("x", line_bbox.x + line_translation[0] - this.line_llc.h_padding - dx);
+	rect.setAttribute("y", bbox.y - this.line_llc.v_padding - 5);
+	rect.setAttribute("fill", "none");
+	rect.setAttribute("stroke", color);
+	this.highlight_group.appendChild(rect);
+    this.highlight_group.appendChild(rect);
 }
 
 //Insert line with respective into nth slot.  0-based indexing.  If line already exists in HTB, line is shifted to respective spot.
@@ -1760,14 +1785,14 @@ function Initialize(evt) {
 
     
         //Create code layout
-    code = new HighlightableTextBlock(2, 0, "code", 14, "vertical");
+    code = new HighlightableTextBlock(20, 0, "code", 14, "vertical");
 
     var linenum = 1;
     while(the_evt_target_ownerDocument.getElementById("l_" + linenum) != null){
         code.insertLine("l_" + linenum, linenum-1);
         linenum++;
     }
-
+    code.addBoundingBox("#8888AA");
 
     //Make code lines interactive
     var code_lines = code.line_llc.group.childNodes;
