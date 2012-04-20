@@ -310,7 +310,6 @@ function HTB_addBoundingBox(color) {
 	rect.setAttribute("fill", "none");
 	rect.setAttribute("stroke", color);
 	this.highlight_group.appendChild(rect);
-    this.highlight_group.appendChild(rect);
 }
 
 //Insert line with respective into nth slot.  0-based indexing.  If line already exists in HTB, line is shifted to respective spot.
@@ -1757,7 +1756,34 @@ function Initialize(evt) {
             i++;
             tree = the_evt_target_ownerDocument.getElementById("g" + i);
 	}
-		
+	
+	
+	
+	/* ATTEMPT TO LEVEL GRAPH WITH ALGORITHM WINDOW
+	  for (i in init_graphs) {
+		var graphChildren = init_graphs[i].childNodes;
+		for (k in graphChildren) {
+			var elem = graphChildren[k];
+			var type = elem.tagName;
+			if (type == undefined)
+				continue;
+			if (type === "circle") {
+				var cy = elem.getAttribute("cy");
+				elem.setAttribute("cy", cy-150);
+			} else if (type === "text") {
+				var y = elem.getAttribute("y");
+				elem.setAttribute("y", y-150);
+			} else if (type === "line") {
+				var y1 = elem.getAttribute("y1");
+				var y2 = elem.getAttribute("y2");
+				elem.setAttribute("y1", y1-150);
+				elem.setAttribute("y2", y2-150);
+			} else
+				alert("UNREACHABLE BLOCK HIT IN INITIALIZE");
+		}
+	}*/
+	
+	
 	//Create buttons
 	action_panel = new ButtonPanel(15, 2, "actions", "horizontal");
 	action_panel.createButton("start_button", "M0,0 0,40 30,20 Z", "blue", 0, "StartAnimation(evt)");
@@ -1790,8 +1816,7 @@ function Initialize(evt) {
 	vert_layout[0].insertComponent(code.line_llc.group.getAttribute("id"), 0);
 	vert_layout[0].insertComponent(action_panel.llc.group.getAttribute("id"), 1);
 	//vert_layout[0].insertComponent(speed_slider.slider.getAttribute("id"), 2);
-
-
+	
         for(x in init_graphs){
             vert_layout[1].insertComponent(init_graphs[x].getAttribute("id"), x);
 	}
@@ -1828,6 +1853,20 @@ function Initialize(evt) {
 		var translation3 = getTranslate(graph.getAttribute("transform"));
 		setTranslate(rect, translation1[0] + translation2[0] + translation3[0], translation1[1] + translation2[1] + translation3[1]);
 		the_evt_target_ownerDocument.documentElement.insertBefore(rect, the_evt_target_ownerDocument.documentElement.childNodes.item(0));
+		var triang = the_evt_target_ownerDocument.createElementNS(svgNS, "poly");
+		triang.setAttribute("id", "triang");
+		var p1 = String(graph.getBBox().width+20) + "," + String(graph.getBBox().height+20);
+		var p2 = String(graph.getBBox().width) + "," + String(graph.getBBox().height+20);
+		var p3 = String(graph.getBBox().width+20) + "," + String(graph.getBBox().height);
+		triang.setAttribute("points", "50,50, 100,100, 30,30");
+		triang.setAttribute("fill", "#00ff00");
+		triang.setAttribute("stroke", "#ff0000");
+		alert(triang.getAttribute("points"));
+		init_graphs[x].appendChild(triang);
+		the_evt_target_ownerDocument.documentElement.appendChild(triang);
+		/*setTranslate(triang, translation1[0] + translation2[0] + translation3[0], translation1[1] + translation2[1] + translation3[1]);
+		the_evt_target_ownerDocument.documentElement.insertBefore(triang, the_evt_target_ownerDocument.documentElement.childNodes.item(0));
+		*/
 	}
 
 	the_evt_target_ownerDocument.documentElement.setAttribute("width", x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
@@ -7235,7 +7274,7 @@ Array(1, ShowActive, "l_6")
 );
 
 ]]></script>
-<g id="g1" transform="translate(200,0)" type="undirected" ongesturestart="GestureStart_TransformGraph(evt)" ongesturechange="GestureChange_TransformGraph(evt)" ongestureend="GestureEnd_TransformGraph(evt)" ontouchstart="TouchStart_Graph(evt)" ontouchmove="TouchDrag_Graph(evt)" ontouchend="TouchDeactivate_Graph(evt)">
+<g id="g1" transform="translate(200, 0)" type="undirected" ongesturestart="GestureStart_TransformGraph(evt)" ongesturechange="GestureChange_TransformGraph(evt)" ongestureend="GestureEnd_TransformGraph(evt)" ontouchstart="TouchStart_Graph(evt)" ontouchmove="TouchDrag_Graph(evt)" ontouchend="TouchDeactivate_Graph(evt)">
 <line id="g1_(1, 45)" x1="50.0" y1="350.0" x2="150.0" y2="350.0" stroke="#DDDDDD" stroke-width="4.0"/>
 <line id="g1_(2, 1)" x1="50.0" y1="100.0" x2="50.0" y2="350.0" stroke="#DDDDDD" stroke-width="4.0"/>
 <line id="g1_(2, 29)" x1="50.0" y1="100.0" x2="700.0" y2="100.0" stroke="#DDDDDD" stroke-width="4.0"/>

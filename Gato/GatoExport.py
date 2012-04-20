@@ -353,13 +353,11 @@ function HTB_addBoundingBox(color) {
 	rect.setAttribute("id", "codeBox");
 	rect.setAttribute("width", bbox.width + this.line_llc.h_padding*2);
 	rect.setAttribute("height", bbox.height + this.line_llc.v_padding*2 + 10);
-	//rect.setAttribute("x",0-this.line_llc.h_padding/2);
     rect.setAttribute("x", line_bbox.x + line_translation[0] - this.line_llc.h_padding - dx);
 	rect.setAttribute("y", bbox.y - this.line_llc.v_padding - 5);
 	rect.setAttribute("fill", "none");
 	rect.setAttribute("stroke", color);
 	this.highlight_group.appendChild(rect);
-    this.highlight_group.appendChild(rect);
 }
 
 //Insert line with respective into nth slot.  0-based indexing.  If line already exists in HTB, line is shifted to respective spot.
@@ -1784,7 +1782,7 @@ function Initialize(evt) {
 
 
     
-        //Create code layout
+    //Create code layout
     code = new HighlightableTextBlock(20, 0, "code", 14, "vertical");
 
     var linenum = 1;
@@ -1850,7 +1848,7 @@ function Initialize(evt) {
     //vert_layout[0].insertComponent(speed_slider.slider.getAttribute("id"), 2);
 
 
-        for(x in init_graphs){
+    for(x in init_graphs){
             vert_layout[1].insertComponent(init_graphs[x].getAttribute("id"), x);
     }
     horiz_layout.insertComponent(vert_layout[0].group.getAttribute("id"), 0);
