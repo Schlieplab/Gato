@@ -46,7 +46,7 @@ animationhead = """<?xml version="1.0" encoding="utf-8"?>
 <svg xmlns="http://www.w3.org/2000/svg"
 xmlns:xlink="http://www.w3.org/1999/xlink"
 xmlns:ev="http://www.w3.org/2001/xml-events" version="1.1" baseProfile="full"
-viewbox="%(x)d %(y)d %(width)d %(height)d" width="40cm" height="30cm"
+viewBox="%(x)d %(y)d %(width)d %(height)d" width="40cm" height="30cm"
 onload="Initialize(evt)">
 <defs>     
     <linearGradient id="slider_bar_lg" x1="0" y1="0" x2="0" y2="1">
