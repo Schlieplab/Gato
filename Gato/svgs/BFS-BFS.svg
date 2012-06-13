@@ -890,7 +890,7 @@ function createSpeedSelect(id, x, y, boxWidth, text, color) {
 function StartAnimation(evt){
     if(evt.target.getAttribute("id") == "start_button"){
         if(state != null){ //Graph must be refreshed
-            horiz_layout.deleteComponent(2);
+            horiz_layout.deleteComponent(1);
             vert_layout[1] = new LinearLayoutComponent(2, 2, "vert_layout_1", "vertical");
 
             for(x in init_graphs){
@@ -898,7 +898,7 @@ function StartAnimation(evt){
                             the_evt_target_ownerDocument.documentElement.appendChild(new_graph);
                             vert_layout[1].insertComponent(new_graph.getAttribute("id"), x);
                         }
-            horiz_layout.insertComponent(vert_layout[1].group.getAttribute("id"), 2);
+            horiz_layout.insertComponent(vert_layout[1].group.getAttribute("id"), 1);
 
             for(x in init_graphs){
                 var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));

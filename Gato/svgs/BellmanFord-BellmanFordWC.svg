@@ -11,7 +11,7 @@ var step = 0;
 var v_ano_id = "va"; //ID prefix for vertex annotation
 var e_arrow_id = "ea"; //ID prefix for edge arrow
 var svgNS="http://www.w3.org/2000/svg";
-var the_evt_target;
+var the_evt_target;     
 var the_target;
 var the_evt_target_ownerDocument;
 var element;
@@ -40,6 +40,7 @@ var step_pressed = false;  //Whether the step button was pressed.  Used to emula
 var step_evt;
 var continue_pressed = false;
 var continue_evt;
+var scaler;
 /**
 *
 *
