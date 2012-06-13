@@ -1323,7 +1323,7 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
         
         printablePageHeight=280 #m
         printablePageWidth =190 #m
-        
+		
         printableRatio=printablePageHeight/printablePageWidth
         
         bbRatio = height/width

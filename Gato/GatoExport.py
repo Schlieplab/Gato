@@ -46,34 +46,10 @@ animationhead = """<?xml version="1.0" encoding="utf-8"?>
 <svg xmlns="http://www.w3.org/2000/svg"
 xmlns:xlink="http://www.w3.org/1999/xlink"
 xmlns:ev="http://www.w3.org/2001/xml-events" version="1.1" baseProfile="full"
+preserveAspectRatio="xMinYMin meet"
 viewBox="%(x)d %(y)d %(width)d %(height)d" width="40cm" height="30cm"
 onload="Initialize(evt)">
-<defs>     
-    <linearGradient id="slider_bar_lg" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="skyblue" >
-        </stop>
-        <stop offset="1" stop-color="black">
-        </stop>
-    </linearGradient>
-    
-    <linearGradient id="slider_thumb_lg" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#C0C0C0">
-        </stop>
-        <stop offset="1" stop-color="black">
-        </stop>
-    </linearGradient>
-    
-	<!-- symbols for radio buttons -->
-	<symbol id="radioBorder" overflow="visible">
-		<circle fill="white" stroke="dimgray" stroke-width="1.5" r="6"/>
-	</symbol>
-	<symbol id="radioPoint" overflow="visible">
-		<circle fill="dimgray" r="4" pointer-events="none"/>
-	</symbol>
-</defs>
-<script type="text/ecmascript" xlink:href="./JSIncludes/checkbox_and_radiobutton.js"/>
-<script type="text/ecmascript" xlink:href="./JSIncludes/helper_functions.js"/>
-<script type="text/ecmascript" xlink:href="./JSIncludes/timer.js"/>
+
 <script type="text/ecmascript"><![CDATA[
 var step = 0;
 var v_ano_id = "va"; //ID prefix for vertex annotation
@@ -91,12 +67,12 @@ var code;    //HTB of code in a vertical layout
 var init_graphs;  //initial graphs used for restarting animation
 var edges;	//Array of all edges used for SetAllEdgesColor
 var action_panel;   //ButtonPanel object for start, step, continue, and stop buttons
+var speed_select;	//SpeedSelector object for controlling the speed
 var state;  //tracks animation state ("running", "stopped", "stepping")
 var timer;  //timer for AnimateLoop
 var timeout = 1000;  //Multiplicative factor for timeout
 var horiz_layout;  //horizontal LLC for visible elements
 var vert_layout;   //vertical LLC for visible elements
-var speed_slider;  //Manages speed settings of animation
 var current_line = 0;  //Currently 'executing' line of code in program.  While running, in range [1, infinity).  0 otherwise.
 var default_vertex_radius = 14.0; //Default vertex radius
 var default_line_width = 4.0; //Default line width
@@ -228,6 +204,19 @@ function setScale(component, x, y){
     }else{
         component.setAttribute("transform", "scale(" + x + " " + y + ")");
     }
+}
+
+//Creates a textnode with the given text
+function createLabel(id, text) {
+	var label = the_evt_target_ownerDocument.createElementNS(svgNS, "text");
+	label.setAttribute("id", id);
+	label.setAttribute("x", 0);
+	label.setAttribute("y", 14);
+	label.setAttribute("font-size", "15px");
+	var textNode = document.createTextNode(text);
+	label.appendChild(textNode);
+	the_evt_target_ownerDocument.documentElement.appendChild(label);
+	return label;
 }
 
 
@@ -481,10 +470,11 @@ function LLC_insertComponent(id, n){
     if(new_c != null){   //Component exists
         if((new_c.parentNode != this.group) && (n <= this.group.childNodes.length) && (n >=0)){ //Component is not in group.  Insert and shift if necessary
         
-            if(n == 0){
+            if(n == 0){ //inserting as first element
                 setTranslate(new_c, 0, 0);
-            }else{
+            }else{  //not inserting as first element
                 bbox = this.group.childNodes.item(n-1).getBBox();
+                //translation of previous element
                 translation = getTranslate(this.group.childNodes.item(n-1).getAttribute("transform"));
                 
                 if(this.layout == "horizontal"){
@@ -708,20 +698,6 @@ function BP_deactivateButton(id){
     }
 }
 
-//Adjusts the speed of the animation when a radiobutton is selected
-function SpeedChanged(id, selectedId, labelText) {
-	if (selectedId === "checkLowest") 
-		timeout = 50;
-	else if (selectedId === "checkLow") 
-		timeout = 37;
-	else if (selectedId === "checkMid") 
-		timeout = 22;
-	else if (selectedId === "checkHigh") 
-		timeout = 10;
-	else if (selectedId === "checkHighest") 
-		timeout = .8;
-}
-
 /**
 *
 *
@@ -861,6 +837,90 @@ function Drag_SSlider(evt){
     }
 }
 
+
+function SS_boxSelected(box) {
+	var boxId = box.getAttribute("id");
+   var groups = this.llc.group.childNodes; 	
+
+ 	//Change box colors
+ 	for ( i=1; i<groups.length; i++) {
+ 		var currBox = groups.item(i).firstChild;
+ 		
+ 		if (boxId === currBox.getAttribute("id"))
+ 			currBox.setAttribute("fill-opacity", 1);
+ 		else
+ 			currBox.setAttribute("fill-opacity", .5);
+ 	}
+ 	
+ 	//Change animation speed
+ 	if (boxId === "lo")
+ 		timeout = 50;
+ 	else if (boxId === "lomid") 
+ 		timeout = 37;
+ 	else if (boxId === "mid") 
+ 		timeout = 22;
+ 	else if (boxId === "midhi") 
+ 		timeout = 10;
+ 	else if (boxId === "hi") 
+ 		timeout = .8;
+}
+
+/* Constructor that creates a speed selector group.  Currently color and selectColor are
+hardcoded into the box functions. */
+function SpeedSelector(id, boxWidth, color, selectColor) {
+ 	this.llc = new LinearLayoutComponent(8,4,id, "horizontal");
+ 	this.color = color;
+ 	this.boxWidth = boxWidth;
+ 	this.selectColor = selectColor;
+ 	this.label = createLabel("speedLabel", "Speeds:");
+ 	this.llc.insertComponent(this.label.getAttribute("id"),0);
+ 	this.lo = createSpeedSelect("lo", "0", "0", boxWidth, ".25x", this.color);
+ 	this.lomid = createSpeedSelect("lomid", "0", "0", boxWidth, ".5x", this.color);
+ 	this.mid = createSpeedSelect("mid", "0", "0", boxWidth, "1x", this.color);
+ 	this.midhi = createSpeedSelect("midhi", "0", "0", boxWidth, "2x", this.color);
+ 	this.hi = createSpeedSelect("hi", "0", "0", boxWidth, "4x", this.color);
+ 	this.llc.insertComponent(this.lo.getAttribute("id"),1);
+ 	this.llc.insertComponent(this.lomid.getAttribute("id"), 2);
+ 	this.llc.insertComponent(this.mid.getAttribute("id"), 3);
+ 	this.llc.insertComponent(this.midhi.getAttribute("id"), 4);
+ 	this.llc.insertComponent(this.hi.getAttribute("id"), 5);
+ 	
+ 	this.boxSelected(this.lo.firstChild);
+}
+
+function SS_prototypeInit() {
+ 	SpeedSelector.prototype.boxSelected = SS_boxSelected;
+}
+
+//Creates a speed selector box with the given parameters
+function createSpeedSelect(id, x, y, boxWidth, text, color) {
+	var group = the_evt_target_ownerDocument.createElementNS(svgNS, "g");
+	var rect = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
+	var label = the_evt_target_ownerDocument.createElementNS(svgNS, "text");
+	
+	group.setAttribute("id", id + "_g");
+	
+	rect.setAttribute("id", id);
+	rect.setAttribute("x", x);
+	rect.setAttribute("y", y);
+	rect.setAttribute("width", boxWidth);
+	rect.setAttribute("height", boxWidth);
+	rect.setAttribute("fill", "blue");
+	rect.setAttribute("cursor", "pointer");
+	rect.setAttribute("onclick", "speed_select.boxSelected(this)");
+	
+	label.setAttribute("x", x);
+	label.setAttribute("y", y-5);
+	label.setAttribute("font-size", "10px");
+	var textNode = document.createTextNode(text);
+	label.appendChild(textNode);
+	
+	group.appendChild(rect);
+	group.appendChild(label);
+	
+	the_evt_target_ownerDocument.documentElement.appendChild(group);
+	return group;
+}
 
 /**
 *
@@ -1779,8 +1839,9 @@ function Initialize(evt) {
     HTB_prototypeInit();
     LLC_prototypeInit();
     BP_prototypeInit();
+    SS_prototypeInit();
 
-
+    speed_select = new SpeedSelector("speedSelect", 20, "blue", "red");
     
     //Create code layout
     code = new HighlightableTextBlock(20, 0, "code", 14, "vertical");
@@ -1822,19 +1883,6 @@ function Initialize(evt) {
     action_panel.deactivateButton("continue_button");
     action_panel.deactivateButton("stop_button");
     action_panel.deactivateButton("step_button");
-    
-    //Construct radio buttons
-    var radiogroup = new radioButtonGroup("radio", SpeedChanged);
-    var labeltextStyles = {"font-family":"Arial,Helvetica","fill":"dimgray","font-size":17};
-    var labelDistance = 12;
-    var labelYOffset = 5.5;
-    var label = new checkBox("label","radioGroup",0,80,undefined,undefined,false,"Speed",labeltextStyles,0,labelYOffset,radiogroup,undefined);
-    var checkHighest = new checkBox("checkHighest","radioGroup",6,100,"radioBorder","radioPoint",false,"4",labeltextStyles,labelDistance,labelYOffset,radiogroup,undefined);
-    var checkHigh = new checkBox("checkHigh","radioGroup",6,120,"radioBorder","radioPoint",false,"2",labeltextStyles,labelDistance,labelYOffset,radiogroup,undefined);
-    var checkMid = new checkBox("checkMid","radioGroup",6,140,"radioBorder","radioPoint",false,"1",labeltextStyles,labelDistance,labelYOffset,radiogroup,undefined);
-    var checkLow = new checkBox("checkLow","radioGroup",6,160,"radioBorder","radioPoint",false,".5",labeltextStyles,labelDistance,labelYOffset,radiogroup,undefined);
-    var checkLowest = new checkBox("checkLowest","radioGroup",6,180,"radioBorder","radioPoint",true,".25",labeltextStyles,labelDistance,labelYOffset,radiogroup,undefined);
-
 
     //speed_slider = new Slider("speed_slider", 400, 50, x_offset, [timeout,1], timeout/2, ["Slow", "Fast"], "Speed", [["ontouchstart","TouchStart_SSlider(evt)"],["ontouchmove", "TouchDrag_SSlider(evt)"],["ontouchend", "TouchDeactivate_SSlider(evt)"],["onmousedown", "Click_SSlider(evt)"],["onmouseup", "Deactivate_SSlider(evt)"], ["onmousemove","Drag_SSlider(evt)"]]);
     //timeout = Math.log(timeout) * Math.log(timeout);
@@ -1842,9 +1890,10 @@ function Initialize(evt) {
 
     //Lay out code, speed slider, and graphs
     horiz_layout = new LinearLayoutComponent(20, 2, "horizontal_layout", "horizontal");  
-    vert_layout = new Array(new LinearLayoutComponent(2, 5, "vert_layout_0", "vertical"), new LinearLayoutComponent(2, 2, "vert_layout_1", "vertical"));
+    vert_layout = new Array(new LinearLayoutComponent(2, 10, "vert_layout_0", "vertical"), new LinearLayoutComponent(2, 2, "vert_layout_1", "vertical"));
     vert_layout[0].insertComponent(code.line_llc.group.getAttribute("id"), 0);
-    vert_layout[0].insertComponent(action_panel.llc.group.getAttribute("id"), 1);
+    vert_layout[0].insertComponent(speed_select.llc.group.getAttribute("id"), 1);
+    vert_layout[0].insertComponent(action_panel.llc.group.getAttribute("id"), 2);
     //vert_layout[0].insertComponent(speed_slider.slider.getAttribute("id"), 2);
 
 
@@ -1852,8 +1901,7 @@ function Initialize(evt) {
             vert_layout[1].insertComponent(init_graphs[x].getAttribute("id"), x);
     }
     horiz_layout.insertComponent(vert_layout[0].group.getAttribute("id"), 0);
-    horiz_layout.insertComponent("radioGroup", 1);
-    horiz_layout.insertComponent(vert_layout[1].group.getAttribute("id"), 2);
+    horiz_layout.insertComponent(vert_layout[1].group.getAttribute("id"), 1);
     
     //offset to make everything visible
     horiz_layout.group.setAttribute("transform", "translate(" + x_offset + " " + y_offset + ")");
@@ -2144,15 +2192,27 @@ def WriteGraphAsSVG(graphDisplay, file, idPrefix=''):
 ##        file.write('<polyline points="%s" stroke="%s" stroke-width="%s" '\
 ##                   'fill="None" />\n' % (" ".join(points),col,width))
 
-
-
+    min_y = 9999
+    
+    for v,w in graphDisplay.G.Edges():
+        vx, vy, r = graphDisplay.VertexPositionAndRadius(v)
+        if vy < min_y:
+            min_y = vy
+			
+	# Subtract y_normalizer from all y-values to move closer to the top of the screen.  Give 18px padding
+    y_normalizer = min_y - 18
+    #y_normalizer = 0
+    
     # Write Edges
     for v,w in graphDisplay.G.Edges():
         vx,vy,r = graphDisplay.VertexPositionAndRadius(v)
         wx,wy,r = graphDisplay.VertexPositionAndRadius(w)
         col = graphDisplay.GetEdgeColor(v,w)
         width = graphDisplay.GetEdgeWidth(v,w)
-
+        
+        vy = vy - y_normalizer
+        wy = wy - y_normalizer
+        
         if graphDisplay.G.directed == 0:
             file.write('<line id="%s" x1="%s" y1="%s" x2="%s" y2="%s" stroke="%s"'\
                        ' stroke-width="%s"/>\n' % (idPrefix+str((v,w)),vx,vy,wx,wy,col,width))
@@ -2169,9 +2229,11 @@ def WriteGraphAsSVG(graphDisplay, file, idPrefix=''):
             x1,y1,x2,y2 = graphDisplay.directedDrawEdgePoints(graphDisplay.VertexPosition(v),
                                                               graphDisplay.VertexPosition(w),
                                                               0)
+            
             x1e,y1e = graphDisplay.CanvasToEmbedding(x1,y1)
             x2e,y2e = graphDisplay.CanvasToEmbedding(x2,y2)
-
+            y1e -= y_normalizer
+            y2e -= y_normalizer
 
             if graphDisplay.G.QEdge(w,v): # Directed edges both ways
                 file.write('<line id="%s" x1="%s" y1="%s" x2="%s" y2="%s" stroke="%s"'\
@@ -2185,6 +2247,8 @@ def WriteGraphAsSVG(graphDisplay, file, idPrefix=''):
                 c = (l-2*graphDisplay.zVertexRadius)/l + .01
                 tmpX = float(vx) + c*(float(wx) - float(vx))
                 tmpY = float(vy) + c*(float(wy) - float(vy))
+                
+                #tmpY -= y_normalizer
 
 
                 #dx = 0 #offset of wx to make room for arrow
@@ -2194,6 +2258,7 @@ def WriteGraphAsSVG(graphDisplay, file, idPrefix=''):
                 #Shrink line to make room for arrow
                 for z in graphDisplay.G.Vertices():
                     cx,cy,cr = graphDisplay.VertexPositionAndRadius(z)
+                    cy -= y_normalizer
                     if(cx == wx and cy == wy):
                         angle = atan2(int(float(wy))-int(float(vy)), int(float(wx))-int(float(vx)))
                         file.write('<line id="%s" x1="%s" y1="%s" x2="%f" y2="%f" stroke="%s"'\
@@ -2223,6 +2288,8 @@ def WriteGraphAsSVG(graphDisplay, file, idPrefix=''):
             da = graphDisplay.edgeAnnotation[(v,w)]
             x,y = graphDisplay.canvas.coords(graphDisplay.edgeAnnotation[(v,w)])
             xe,ye = graphDisplay.CanvasToEmbedding(x,y)
+            y -= y_normalizer
+            ye -= y_normalizer
             text = graphDisplay.canvas.itemcget(graphDisplay.edgeAnnotation[(v,w)],"text") 
             size = r * 0.9
             offset = 0.33 * size
@@ -2236,7 +2303,9 @@ def WriteGraphAsSVG(graphDisplay, file, idPrefix=''):
 
     for v in graphDisplay.G.Vertices():
         x,y,r = graphDisplay.VertexPositionAndRadius(v)
-
+        
+        y = y - y_normalizer
+        
         # Write Vertex
         col = graphDisplay.GetVertexColor(v)
         fw = graphDisplay.GetVertexFrameWidth(v)
@@ -2256,7 +2325,6 @@ def WriteGraphAsSVG(graphDisplay, file, idPrefix=''):
                    'font-size="%s" font-style="normal" font-weight="bold" >%s</text>\n' % (idPrefix+str(v),x,
                                                                                            y+offset,col,size,
                                                                                            graphDisplay.G.GetLabeling(v)))
-
         # Write vertex annotation
         size = r*0.9
         text = graphDisplay.GetVertexAnnotation(v)
@@ -2309,6 +2377,8 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
 
         # Write out first graph as group and translate it
         bbg1 = boundingBox(graphDisplay)
+        print fileName
+        print bbg1
         graph_type = ""
         if(graphDisplay.G.directed == 0):
                 graph_type = "undirected"
@@ -2333,7 +2403,6 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
                        'ontouchstart="TouchStart_Graph(evt)" ontouchmove="TouchDrag_Graph(evt)" ontouchend="TouchDeactivate_Graph(evt)">\n' % (200,bbg1['height'], graph_type))
             WriteGraphAsSVG(secondaryGraphDisplay, file, idPrefix='g2_')    
             file.write('</g>\n')
-        file.write('<g id="radioGroup"/>');
         algowin.CommitStop()
         # Write algorithm to SVG    
         source = algorithm.GetSource()

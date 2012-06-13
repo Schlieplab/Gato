@@ -383,7 +383,8 @@ function LLC_insertComponent(id, n){
 	var shift = 0;
 	
 	if(new_c != null){   //Component exists
-		if((new_c.parentNode != this.group) && (n <= this.group.childNodes.length) && (n >=0)){ //Component is not in group.  Insert and shift if necessary
+		
+	if((new_c.parentNode != this.group) && (n <= this.group.childNodes.length) && (n >=0)){ //Component is not in group.  Insert and shift if necessary
 		
 			if(n == 0){
 				setTranslate(new_c, 0, 0);
@@ -1732,7 +1733,7 @@ function Initialize(evt) {
 	vert_layout[0].insertComponent(speed_slider.slider.getAttribute("id"), 2);
 
 
-        for(x in init_graphs){
+    for(x in init_graphs) {
             vert_layout[1].insertComponent(init_graphs[x].getAttribute("id"), x);
 	}
 	horiz_layout.insertComponent(vert_layout[0].group.getAttribute("id"), 0);
@@ -1741,6 +1742,8 @@ function Initialize(evt) {
 	//offset to make everything visible
 	horiz_layout.group.setAttribute("transform", "translate(" + x_offset + " " + y_offset + ")");
 	code.highlight_group.setAttribute("transform","translate(" + x_offset + " " + y_offset + ")");
+
+	
 
 	//Make rectangles behind graphs, for intuitive iPad usage
 	for(x in init_graphs){

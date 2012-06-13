@@ -2,34 +2,10 @@
 <svg xmlns="http://www.w3.org/2000/svg"
 xmlns:xlink="http://www.w3.org/1999/xlink"
 xmlns:ev="http://www.w3.org/2001/xml-events" version="1.1" baseProfile="full"
-viewbox="0 0 1024 768" width="40cm" height="30cm"
+preserveAspectRatio="xMinYMin meet"
+viewBox="0 0 1024 768" width="40cm" height="30cm"
 onload="Initialize(evt)">
-<defs>     
-    <linearGradient id="slider_bar_lg" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="skyblue" >
-        </stop>
-        <stop offset="1" stop-color="black">
-        </stop>
-    </linearGradient>
-    
-    <linearGradient id="slider_thumb_lg" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#C0C0C0">
-        </stop>
-        <stop offset="1" stop-color="black">
-        </stop>
-    </linearGradient>
-    
-	<!-- symbols for radio buttons -->
-	<symbol id="radioBorder" overflow="visible">
-		<circle fill="white" stroke="dimgray" stroke-width="1.5" r="6"/>
-	</symbol>
-	<symbol id="radioPoint" overflow="visible">
-		<circle fill="dimgray" r="4" pointer-events="none"/>
-	</symbol>
-</defs>
-<script type="text/ecmascript" xlink:href="./JSIncludes/checkbox_and_radiobutton.js"/>
-<script type="text/ecmascript" xlink:href="./JSIncludes/helper_functions.js"/>
-<script type="text/ecmascript" xlink:href="./JSIncludes/timer.js"/>
+
 <script type="text/ecmascript"><![CDATA[
 var step = 0;
 var v_ano_id = "va"; //ID prefix for vertex annotation
@@ -47,12 +23,12 @@ var code;    //HTB of code in a vertical layout
 var init_graphs;  //initial graphs used for restarting animation
 var edges;	//Array of all edges used for SetAllEdgesColor
 var action_panel;   //ButtonPanel object for start, step, continue, and stop buttons
+var speed_select;	//SpeedSelector object for controlling the speed
 var state;  //tracks animation state ("running", "stopped", "stepping")
 var timer;  //timer for AnimateLoop
 var timeout = 1000;  //Multiplicative factor for timeout
 var horiz_layout;  //horizontal LLC for visible elements
 var vert_layout;   //vertical LLC for visible elements
-var speed_slider;  //Manages speed settings of animation
 var current_line = 0;  //Currently 'executing' line of code in program.  While running, in range [1, infinity).  0 otherwise.
 var default_vertex_radius = 14.0; //Default vertex radius
 var default_line_width = 4.0; //Default line width
@@ -186,6 +162,19 @@ function setScale(component, x, y){
     }
 }
 
+//Creates a textnode with the given text
+function createLabel(id, text) {
+	var label = the_evt_target_ownerDocument.createElementNS(svgNS, "text");
+	label.setAttribute("id", id);
+	label.setAttribute("x", 0);
+	label.setAttribute("y", 14);
+	label.setAttribute("font-size", "15px");
+	var textNode = document.createTextNode(text);
+	label.appendChild(textNode);
+	the_evt_target_ownerDocument.documentElement.appendChild(label);
+	return label;
+}
+
 
 //Return a 2-index array [v1,v2] which has an angle of
 //90 degrees clockwise to the vector (dx,dy)
@@ -309,13 +298,11 @@ function HTB_addBoundingBox(color) {
 	rect.setAttribute("id", "codeBox");
 	rect.setAttribute("width", bbox.width + this.line_llc.h_padding*2);
 	rect.setAttribute("height", bbox.height + this.line_llc.v_padding*2 + 10);
-	//rect.setAttribute("x",0-this.line_llc.h_padding/2);
     rect.setAttribute("x", line_bbox.x + line_translation[0] - this.line_llc.h_padding - dx);
 	rect.setAttribute("y", bbox.y - this.line_llc.v_padding - 5);
 	rect.setAttribute("fill", "none");
 	rect.setAttribute("stroke", color);
 	this.highlight_group.appendChild(rect);
-    this.highlight_group.appendChild(rect);
 }
 
 //Insert line with respective into nth slot.  0-based indexing.  If line already exists in HTB, line is shifted to respective spot.
@@ -439,10 +426,11 @@ function LLC_insertComponent(id, n){
     if(new_c != null){   //Component exists
         if((new_c.parentNode != this.group) && (n <= this.group.childNodes.length) && (n >=0)){ //Component is not in group.  Insert and shift if necessary
         
-            if(n == 0){
+            if(n == 0){ //inserting as first element
                 setTranslate(new_c, 0, 0);
-            }else{
+            }else{  //not inserting as first element
                 bbox = this.group.childNodes.item(n-1).getBBox();
+                //translation of previous element
                 translation = getTranslate(this.group.childNodes.item(n-1).getAttribute("transform"));
                 
                 if(this.layout == "horizontal"){
@@ -666,20 +654,6 @@ function BP_deactivateButton(id){
     }
 }
 
-//Adjusts the speed of the animation when a radiobutton is selected
-function SpeedChanged(id, selectedId, labelText) {
-	if (selectedId === "checkLowest") 
-		timeout = 50;
-	else if (selectedId === "checkLow") 
-		timeout = 37;
-	else if (selectedId === "checkMid") 
-		timeout = 22;
-	else if (selectedId === "checkHigh") 
-		timeout = 10;
-	else if (selectedId === "checkHighest") 
-		timeout = .8;
-}
-
 /**
 *
 *
@@ -819,6 +793,90 @@ function Drag_SSlider(evt){
     }
 }
 
+
+function SS_boxSelected(box) {
+	var boxId = box.getAttribute("id");
+   var groups = this.llc.group.childNodes; 	
+
+ 	//Change box colors
+ 	for ( i=1; i<groups.length; i++) {
+ 		var currBox = groups.item(i).firstChild;
+ 		
+ 		if (boxId === currBox.getAttribute("id"))
+ 			currBox.setAttribute("fill-opacity", 1);
+ 		else
+ 			currBox.setAttribute("fill-opacity", .5);
+ 	}
+ 	
+ 	//Change animation speed
+ 	if (boxId === "lo")
+ 		timeout = 50;
+ 	else if (boxId === "lomid") 
+ 		timeout = 37;
+ 	else if (boxId === "mid") 
+ 		timeout = 22;
+ 	else if (boxId === "midhi") 
+ 		timeout = 10;
+ 	else if (boxId === "hi") 
+ 		timeout = .8;
+}
+
+/* Constructor that creates a speed selector group.  Currently color and selectColor are
+hardcoded into the box functions. */
+function SpeedSelector(id, boxWidth, color, selectColor) {
+ 	this.llc = new LinearLayoutComponent(8,4,id, "horizontal");
+ 	this.color = color;
+ 	this.boxWidth = boxWidth;
+ 	this.selectColor = selectColor;
+ 	this.label = createLabel("speedLabel", "Speeds:");
+ 	this.llc.insertComponent(this.label.getAttribute("id"),0);
+ 	this.lo = createSpeedSelect("lo", "0", "0", boxWidth, ".25x", this.color);
+ 	this.lomid = createSpeedSelect("lomid", "0", "0", boxWidth, ".5x", this.color);
+ 	this.mid = createSpeedSelect("mid", "0", "0", boxWidth, "1x", this.color);
+ 	this.midhi = createSpeedSelect("midhi", "0", "0", boxWidth, "2x", this.color);
+ 	this.hi = createSpeedSelect("hi", "0", "0", boxWidth, "4x", this.color);
+ 	this.llc.insertComponent(this.lo.getAttribute("id"),1);
+ 	this.llc.insertComponent(this.lomid.getAttribute("id"), 2);
+ 	this.llc.insertComponent(this.mid.getAttribute("id"), 3);
+ 	this.llc.insertComponent(this.midhi.getAttribute("id"), 4);
+ 	this.llc.insertComponent(this.hi.getAttribute("id"), 5);
+ 	
+ 	this.boxSelected(this.lo.firstChild);
+}
+
+function SS_prototypeInit() {
+ 	SpeedSelector.prototype.boxSelected = SS_boxSelected;
+}
+
+//Creates a speed selector box with the given parameters
+function createSpeedSelect(id, x, y, boxWidth, text, color) {
+	var group = the_evt_target_ownerDocument.createElementNS(svgNS, "g");
+	var rect = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
+	var label = the_evt_target_ownerDocument.createElementNS(svgNS, "text");
+	
+	group.setAttribute("id", id + "_g");
+	
+	rect.setAttribute("id", id);
+	rect.setAttribute("x", x);
+	rect.setAttribute("y", y);
+	rect.setAttribute("width", boxWidth);
+	rect.setAttribute("height", boxWidth);
+	rect.setAttribute("fill", "blue");
+	rect.setAttribute("cursor", "pointer");
+	rect.setAttribute("onclick", "speed_select.boxSelected(this)");
+	
+	label.setAttribute("x", x);
+	label.setAttribute("y", y-5);
+	label.setAttribute("font-size", "10px");
+	var textNode = document.createTextNode(text);
+	label.appendChild(textNode);
+	
+	group.appendChild(rect);
+	group.appendChild(label);
+	
+	the_evt_target_ownerDocument.documentElement.appendChild(group);
+	return group;
+}
 
 /**
 *
@@ -1737,10 +1795,11 @@ function Initialize(evt) {
     HTB_prototypeInit();
     LLC_prototypeInit();
     BP_prototypeInit();
+    SS_prototypeInit();
 
-
+    speed_select = new SpeedSelector("speedSelect", 20, "blue", "red");
     
-        //Create code layout
+    //Create code layout
     code = new HighlightableTextBlock(20, 0, "code", 14, "vertical");
 
     var linenum = 1;
@@ -1780,19 +1839,6 @@ function Initialize(evt) {
     action_panel.deactivateButton("continue_button");
     action_panel.deactivateButton("stop_button");
     action_panel.deactivateButton("step_button");
-    
-    //Construct radio buttons
-    var radiogroup = new radioButtonGroup("radio", SpeedChanged);
-    var labeltextStyles = {"font-family":"Arial,Helvetica","fill":"dimgray","font-size":17};
-    var labelDistance = 12;
-    var labelYOffset = 5.5;
-    var label = new checkBox("label","radioGroup",0,80,undefined,undefined,false,"Speed",labeltextStyles,0,labelYOffset,radiogroup,undefined);
-    var checkHighest = new checkBox("checkHighest","radioGroup",6,100,"radioBorder","radioPoint",false,"4",labeltextStyles,labelDistance,labelYOffset,radiogroup,undefined);
-    var checkHigh = new checkBox("checkHigh","radioGroup",6,120,"radioBorder","radioPoint",false,"2",labeltextStyles,labelDistance,labelYOffset,radiogroup,undefined);
-    var checkMid = new checkBox("checkMid","radioGroup",6,140,"radioBorder","radioPoint",false,"1",labeltextStyles,labelDistance,labelYOffset,radiogroup,undefined);
-    var checkLow = new checkBox("checkLow","radioGroup",6,160,"radioBorder","radioPoint",false,".5",labeltextStyles,labelDistance,labelYOffset,radiogroup,undefined);
-    var checkLowest = new checkBox("checkLowest","radioGroup",6,180,"radioBorder","radioPoint",true,".25",labeltextStyles,labelDistance,labelYOffset,radiogroup,undefined);
-
 
     //speed_slider = new Slider("speed_slider", 400, 50, x_offset, [timeout,1], timeout/2, ["Slow", "Fast"], "Speed", [["ontouchstart","TouchStart_SSlider(evt)"],["ontouchmove", "TouchDrag_SSlider(evt)"],["ontouchend", "TouchDeactivate_SSlider(evt)"],["onmousedown", "Click_SSlider(evt)"],["onmouseup", "Deactivate_SSlider(evt)"], ["onmousemove","Drag_SSlider(evt)"]]);
     //timeout = Math.log(timeout) * Math.log(timeout);
@@ -1800,18 +1846,18 @@ function Initialize(evt) {
 
     //Lay out code, speed slider, and graphs
     horiz_layout = new LinearLayoutComponent(20, 2, "horizontal_layout", "horizontal");  
-    vert_layout = new Array(new LinearLayoutComponent(2, 5, "vert_layout_0", "vertical"), new LinearLayoutComponent(2, 2, "vert_layout_1", "vertical"));
+    vert_layout = new Array(new LinearLayoutComponent(2, 10, "vert_layout_0", "vertical"), new LinearLayoutComponent(2, 2, "vert_layout_1", "vertical"));
     vert_layout[0].insertComponent(code.line_llc.group.getAttribute("id"), 0);
-    vert_layout[0].insertComponent(action_panel.llc.group.getAttribute("id"), 1);
+    vert_layout[0].insertComponent(speed_select.llc.group.getAttribute("id"), 1);
+    vert_layout[0].insertComponent(action_panel.llc.group.getAttribute("id"), 2);
     //vert_layout[0].insertComponent(speed_slider.slider.getAttribute("id"), 2);
 
 
-        for(x in init_graphs){
+    for(x in init_graphs){
             vert_layout[1].insertComponent(init_graphs[x].getAttribute("id"), x);
     }
     horiz_layout.insertComponent(vert_layout[0].group.getAttribute("id"), 0);
-    horiz_layout.insertComponent("radioGroup", 1);
-    horiz_layout.insertComponent(vert_layout[1].group.getAttribute("id"), 2);
+    horiz_layout.insertComponent(vert_layout[1].group.getAttribute("id"), 1);
     
     //offset to make everything visible
     horiz_layout.group.setAttribute("transform", "translate(" + x_offset + " " + y_offset + ")");
@@ -1850,66 +1896,66 @@ function Initialize(evt) {
 
 
 var animation = Array(Array(1, SetAllVerticesColor, "g1_#EEEEEE"),
-Array(1, SetVertexAnnotation, "g1_1", "None"),
-Array(27, SetVertexColor, "g1_1", "#CFCFCF"),
+Array(12, SetVertexAnnotation, "g1_1", "None"),
+Array(5, SetVertexColor, "g1_1", "#CFCFCF"),
 Array(1, SetVertexAnnotation, "g1_2", "None"),
-Array(27, SetVertexColor, "g1_2", "#CFCFCF"),
+Array(4, SetVertexColor, "g1_2", "#CFCFCF"),
 Array(1, SetVertexAnnotation, "g1_3", "None"),
-Array(27, SetVertexColor, "g1_3", "#CFCFCF"),
+Array(4, SetVertexColor, "g1_3", "#CFCFCF"),
 Array(1, SetVertexAnnotation, "g1_4", "None"),
-Array(27, SetVertexColor, "g1_4", "#CFCFCF"),
-Array(1, SetVertexAnnotation, "g1_5", "None"),
-Array(27, SetVertexColor, "g1_5", "#CFCFCF"),
+Array(5, SetVertexColor, "g1_4", "#CFCFCF"),
+Array(2, SetVertexAnnotation, "g1_5", "None"),
+Array(5, SetVertexColor, "g1_5", "#CFCFCF"),
 Array(1, SetVertexAnnotation, "g1_6", "None"),
-Array(27, SetVertexColor, "g1_6", "#CFCFCF"),
+Array(5, SetVertexColor, "g1_6", "#CFCFCF"),
 Array(1, SetVertexAnnotation, "g1_7", "None"),
-Array(27, SetVertexColor, "g1_7", "#CFCFCF"),
+Array(5, SetVertexColor, "g1_7", "#CFCFCF"),
 Array(1, SetVertexAnnotation, "g1_8", "None"),
-Array(27, SetVertexColor, "g1_8", "#CFCFCF"),
+Array(5, SetVertexColor, "g1_8", "#CFCFCF"),
 Array(1, SetVertexAnnotation, "g1_9", "None"),
-Array(27, SetVertexColor, "g1_9", "#CFCFCF"),
+Array(5, SetVertexColor, "g1_9", "#CFCFCF"),
 Array(1, SetVertexAnnotation, "g1_10", "None"),
-Array(27, SetVertexColor, "g1_10", "#CFCFCF"),
+Array(5, SetVertexColor, "g1_10", "#CFCFCF"),
 Array(1, SetVertexAnnotation, "g1_11", "None"),
-Array(27, SetVertexColor, "g1_11", "#CFCFCF"),
+Array(4, SetVertexColor, "g1_11", "#CFCFCF"),
 Array(1, SetVertexAnnotation, "g1_12", "None"),
-Array(27, SetVertexColor, "g1_12", "#CFCFCF"),
+Array(5, SetVertexColor, "g1_12", "#CFCFCF"),
 Array(1, SetVertexAnnotation, "g1_13", "None"),
-Array(27, SetVertexColor, "g1_13", "#CFCFCF"),
+Array(5, SetVertexColor, "g1_13", "#CFCFCF"),
 Array(1, SetVertexAnnotation, "g1_14", "None"),
-Array(27, SetVertexColor, "g1_14", "#CFCFCF"),
+Array(4, SetVertexColor, "g1_14", "#CFCFCF"),
 Array(1, SetVertexAnnotation, "g1_15", "None"),
-Array(27, SetVertexColor, "g1_15", "#CFCFCF"),
-Array(1, ShowActive, "l_1"),
-Array(10, ShowActive, "l_3"),
-Array(9, ShowActive, "l_12"),
-Array(9, ShowActive, "l_13"),
-Array(9, SetVertexAnnotation, "g1_1", "1"),
-Array(27, SetVertexColor, "g1_1", "red"),
-Array(1, SetVertexFrameWidth, "g1_1", "6"),
-Array(1, SetEdgeColor, "g1_(1, 2)", "yellow"),
+Array(5, SetVertexColor, "g1_15", "#CFCFCF"),
+Array(2, ShowActive, "l_1"),
+Array(9, ShowActive, "l_3"),
+Array(13, ShowActive, "l_12"),
+Array(10, ShowActive, "l_13"),
+Array(8, SetVertexAnnotation, "g1_1", "1"),
+Array(6, SetVertexColor, "g1_1", "red"),
+Array(2, SetVertexFrameWidth, "g1_1", "6"),
+Array(2, SetEdgeColor, "g1_(1, 2)", "yellow"),
 Array(1, BlinkEdge, "g1_(1, 2)", "white"),
 Array(1, SetEdgeColor, "g1_(1, 2)", "red"),
-Array(1, SetVertexAnnotation, "g1_2", "2"),
-Array(27, SetVertexColor, "g1_2", "red"),
+Array(4, SetVertexAnnotation, "g1_2", "2"),
+Array(5, SetVertexColor, "g1_2", "red"),
 Array(1, SetVertexFrameWidth, "g1_2", "6"),
-Array(1, SetEdgeColor, "g1_(1, 2)", "yellow"),
+Array(2, SetEdgeColor, "g1_(1, 2)", "yellow"),
 Array(1, BlinkEdge, "g1_(1, 2)", "white"),
 Array(1, SetEdgeColor, "g1_(1, 2)", "red"),
 Array(1, SetEdgeColor, "g1_(2, 4)", "yellow"),
 Array(1, BlinkEdge, "g1_(2, 4)", "white"),
 Array(1, SetEdgeColor, "g1_(2, 4)", "red"),
-Array(1, SetVertexAnnotation, "g1_4", "3"),
-Array(27, SetVertexColor, "g1_4", "red"),
+Array(5, SetVertexAnnotation, "g1_4", "3"),
+Array(5, SetVertexColor, "g1_4", "red"),
 Array(1, SetVertexFrameWidth, "g1_4", "6"),
-Array(1, SetEdgeColor, "g1_(2, 4)", "yellow"),
+Array(2, SetEdgeColor, "g1_(2, 4)", "yellow"),
 Array(1, BlinkEdge, "g1_(2, 4)", "white"),
 Array(1, SetEdgeColor, "g1_(2, 4)", "red"),
 Array(1, SetEdgeColor, "g1_(4, 8)", "yellow"),
 Array(1, BlinkEdge, "g1_(4, 8)", "white"),
 Array(1, SetEdgeColor, "g1_(4, 8)", "red"),
 Array(1, SetVertexAnnotation, "g1_8", "4"),
-Array(27, SetVertexColor, "g1_8", "red"),
+Array(5, SetVertexColor, "g1_8", "red"),
 Array(1, SetVertexFrameWidth, "g1_8", "6"),
 Array(1, SetEdgeColor, "g1_(4, 8)", "yellow"),
 Array(1, BlinkEdge, "g1_(4, 8)", "white"),
@@ -1918,65 +1964,65 @@ Array(1, SetEdgeColor, "g1_(8, 9)", "yellow"),
 Array(1, BlinkEdge, "g1_(8, 9)", "white"),
 Array(1, SetEdgeColor, "g1_(8, 9)", "red"),
 Array(1, SetVertexAnnotation, "g1_9", "5"),
-Array(27, SetVertexColor, "g1_9", "red"),
+Array(8, SetVertexColor, "g1_9", "red"),
 Array(1, SetVertexFrameWidth, "g1_9", "6"),
-Array(1, SetEdgeColor, "g1_(4, 9)", "yellow"),
+Array(2, SetEdgeColor, "g1_(4, 9)", "yellow"),
 Array(1, BlinkEdge, "g1_(4, 9)", "white"),
 Array(1, SetEdgeColor, "g1_(4, 9)", "grey"),
 Array(1, SetEdgeColor, "g1_(8, 9)", "yellow"),
 Array(1, BlinkEdge, "g1_(8, 9)", "white"),
 Array(1, SetEdgeColor, "g1_(8, 9)", "red"),
 Array(1, SetVertexFrameWidth, "g1_9", "0"),
-Array(1, SetVertexFrameWidth, "g1_8", "0"),
-Array(1, SetEdgeColor, "g1_(4, 9)", "yellow"),
-Array(1, BlinkEdge, "g1_(4, 9)", "white"),
+Array(2, SetVertexFrameWidth, "g1_8", "0"),
+Array(2, SetEdgeColor, "g1_(4, 9)", "yellow"),
+Array(4, BlinkEdge, "g1_(4, 9)", "white"),
 Array(1, SetEdgeColor, "g1_(4, 9)", "grey"),
 Array(1, SetEdgeColor, "g1_(4, 10)", "yellow"),
 Array(1, BlinkEdge, "g1_(4, 10)", "white"),
 Array(1, SetEdgeColor, "g1_(4, 10)", "red"),
 Array(1, SetVertexAnnotation, "g1_10", "6"),
-Array(27, SetVertexColor, "g1_10", "red"),
+Array(6, SetVertexColor, "g1_10", "red"),
 Array(1, SetVertexFrameWidth, "g1_10", "6"),
-Array(1, SetEdgeColor, "g1_(4, 10)", "yellow"),
-Array(1, BlinkEdge, "g1_(4, 10)", "white"),
+Array(2, SetEdgeColor, "g1_(4, 10)", "yellow"),
+Array(4, BlinkEdge, "g1_(4, 10)", "white"),
 Array(1, SetEdgeColor, "g1_(4, 10)", "red"),
 Array(1, SetEdgeColor, "g1_(5, 10)", "yellow"),
 Array(1, BlinkEdge, "g1_(5, 10)", "white"),
 Array(1, SetEdgeColor, "g1_(5, 10)", "red"),
 Array(1, SetVertexAnnotation, "g1_5", "7"),
-Array(27, SetVertexColor, "g1_5", "red"),
+Array(6, SetVertexColor, "g1_5", "red"),
 Array(1, SetVertexFrameWidth, "g1_5", "6"),
-Array(1, SetEdgeColor, "g1_(2, 5)", "yellow"),
-Array(1, BlinkEdge, "g1_(2, 5)", "white"),
+Array(2, SetEdgeColor, "g1_(2, 5)", "yellow"),
+Array(4, BlinkEdge, "g1_(2, 5)", "white"),
 Array(1, SetEdgeColor, "g1_(2, 5)", "grey"),
 Array(1, SetEdgeColor, "g1_(15, 5)", "yellow"),
 Array(1, BlinkEdge, "g1_(15, 5)", "white"),
 Array(1, SetEdgeColor, "g1_(15, 5)", "red"),
 Array(1, SetVertexAnnotation, "g1_15", "8"),
-Array(27, SetVertexColor, "g1_15", "red"),
+Array(6, SetVertexColor, "g1_15", "red"),
 Array(1, SetVertexFrameWidth, "g1_15", "6"),
-Array(1, SetEdgeColor, "g1_(1, 15)", "yellow"),
-Array(1, BlinkEdge, "g1_(1, 15)", "white"),
+Array(2, SetEdgeColor, "g1_(1, 15)", "yellow"),
+Array(4, BlinkEdge, "g1_(1, 15)", "white"),
 Array(1, SetEdgeColor, "g1_(1, 15)", "grey"),
-Array(1, SetEdgeColor, "g1_(2, 15)", "yellow"),
+Array(2, SetEdgeColor, "g1_(2, 15)", "yellow"),
 Array(1, BlinkEdge, "g1_(2, 15)", "white"),
 Array(1, SetEdgeColor, "g1_(2, 15)", "grey"),
 Array(1, SetEdgeColor, "g1_(15, 5)", "yellow"),
 Array(1, BlinkEdge, "g1_(15, 5)", "white"),
 Array(1, SetEdgeColor, "g1_(15, 5)", "red"),
 Array(1, SetEdgeColor, "g1_(15, 6)", "yellow"),
-Array(1, BlinkEdge, "g1_(15, 6)", "white"),
+Array(2, BlinkEdge, "g1_(15, 6)", "white"),
 Array(1, SetEdgeColor, "g1_(15, 6)", "red"),
 Array(1, SetVertexAnnotation, "g1_6", "9"),
-Array(27, SetVertexColor, "g1_6", "red"),
+Array(9, SetVertexColor, "g1_6", "red"),
 Array(1, SetVertexFrameWidth, "g1_6", "6"),
-Array(1, SetEdgeColor, "g1_(3, 6)", "yellow"),
+Array(2, SetEdgeColor, "g1_(3, 6)", "yellow"),
 Array(1, BlinkEdge, "g1_(3, 6)", "white"),
 Array(1, SetEdgeColor, "g1_(3, 6)", "red"),
-Array(1, SetVertexAnnotation, "g1_3", "10"),
-Array(27, SetVertexColor, "g1_3", "red"),
+Array(2, SetVertexAnnotation, "g1_3", "10"),
+Array(9, SetVertexColor, "g1_3", "red"),
 Array(1, SetVertexFrameWidth, "g1_3", "6"),
-Array(1, SetEdgeColor, "g1_(1, 3)", "yellow"),
+Array(2, SetEdgeColor, "g1_(1, 3)", "yellow"),
 Array(1, BlinkEdge, "g1_(1, 3)", "white"),
 Array(1, SetEdgeColor, "g1_(1, 3)", "grey"),
 Array(1, SetEdgeColor, "g1_(3, 6)", "yellow"),
@@ -1986,9 +2032,9 @@ Array(1, SetEdgeColor, "g1_(3, 7)", "yellow"),
 Array(1, BlinkEdge, "g1_(3, 7)", "white"),
 Array(1, SetEdgeColor, "g1_(3, 7)", "red"),
 Array(1, SetVertexAnnotation, "g1_7", "11"),
-Array(27, SetVertexColor, "g1_7", "red"),
+Array(6, SetVertexColor, "g1_7", "red"),
 Array(1, SetVertexFrameWidth, "g1_7", "6"),
-Array(1, SetEdgeColor, "g1_(3, 7)", "yellow"),
+Array(2, SetEdgeColor, "g1_(3, 7)", "yellow"),
 Array(1, BlinkEdge, "g1_(3, 7)", "white"),
 Array(1, SetEdgeColor, "g1_(3, 7)", "red"),
 Array(1, SetEdgeColor, "g1_(6, 7)", "yellow"),
@@ -1998,27 +2044,27 @@ Array(1, SetEdgeColor, "g1_(7, 13)", "yellow"),
 Array(1, BlinkEdge, "g1_(7, 13)", "white"),
 Array(1, SetEdgeColor, "g1_(7, 13)", "red"),
 Array(1, SetVertexAnnotation, "g1_13", "12"),
-Array(27, SetVertexColor, "g1_13", "red"),
+Array(8, SetVertexColor, "g1_13", "red"),
 Array(1, SetVertexFrameWidth, "g1_13", "6"),
-Array(1, SetEdgeColor, "g1_(7, 13)", "yellow"),
+Array(2, SetEdgeColor, "g1_(7, 13)", "yellow"),
 Array(1, BlinkEdge, "g1_(7, 13)", "white"),
 Array(1, SetEdgeColor, "g1_(7, 13)", "red"),
 Array(1, SetEdgeColor, "g1_(12, 13)", "yellow"),
 Array(1, BlinkEdge, "g1_(12, 13)", "white"),
 Array(1, SetEdgeColor, "g1_(12, 13)", "red"),
 Array(1, SetVertexAnnotation, "g1_12", "13"),
-Array(27, SetVertexColor, "g1_12", "red"),
+Array(8, SetVertexColor, "g1_12", "red"),
 Array(1, SetVertexFrameWidth, "g1_12", "6"),
-Array(1, SetEdgeColor, "g1_(6, 12)", "yellow"),
+Array(2, SetEdgeColor, "g1_(6, 12)", "yellow"),
 Array(1, BlinkEdge, "g1_(6, 12)", "white"),
 Array(1, SetEdgeColor, "g1_(6, 12)", "grey"),
 Array(1, SetEdgeColor, "g1_(11, 12)", "yellow"),
 Array(1, BlinkEdge, "g1_(11, 12)", "white"),
 Array(1, SetEdgeColor, "g1_(11, 12)", "red"),
 Array(1, SetVertexAnnotation, "g1_11", "14"),
-Array(27, SetVertexColor, "g1_11", "red"),
+Array(9, SetVertexColor, "g1_11", "red"),
 Array(1, SetVertexFrameWidth, "g1_11", "6"),
-Array(1, SetEdgeColor, "g1_(5, 11)", "yellow"),
+Array(2, SetEdgeColor, "g1_(5, 11)", "yellow"),
 Array(1, BlinkEdge, "g1_(5, 11)", "white"),
 Array(1, SetEdgeColor, "g1_(5, 11)", "grey"),
 Array(1, SetEdgeColor, "g1_(10, 11)", "yellow"),
@@ -2028,34 +2074,34 @@ Array(1, SetEdgeColor, "g1_(11, 6)", "yellow"),
 Array(1, BlinkEdge, "g1_(11, 6)", "white"),
 Array(1, SetEdgeColor, "g1_(11, 6)", "grey"),
 Array(1, SetEdgeColor, "g1_(11, 12)", "yellow"),
-Array(1, BlinkEdge, "g1_(11, 12)", "white"),
+Array(4, BlinkEdge, "g1_(11, 12)", "white"),
 Array(1, SetEdgeColor, "g1_(11, 12)", "red"),
 Array(1, SetVertexFrameWidth, "g1_11", "0"),
-Array(1, SetEdgeColor, "g1_(12, 13)", "yellow"),
+Array(2, SetEdgeColor, "g1_(12, 13)", "yellow"),
 Array(1, BlinkEdge, "g1_(12, 13)", "white"),
 Array(1, SetEdgeColor, "g1_(12, 13)", "red"),
 Array(1, SetEdgeColor, "g1_(12, 14)", "yellow"),
 Array(1, BlinkEdge, "g1_(12, 14)", "white"),
 Array(1, SetEdgeColor, "g1_(12, 14)", "red"),
 Array(1, SetVertexAnnotation, "g1_14", "15"),
-Array(28, SetVertexColor, "g1_14", "red"),
+Array(9, SetVertexColor, "g1_14", "red"),
 Array(1, SetVertexFrameWidth, "g1_14", "6"),
-Array(1, SetEdgeColor, "g1_(7, 14)", "yellow"),
+Array(2, SetEdgeColor, "g1_(7, 14)", "yellow"),
 Array(1, BlinkEdge, "g1_(7, 14)", "white"),
 Array(1, SetEdgeColor, "g1_(7, 14)", "grey"),
 Array(1, SetEdgeColor, "g1_(12, 14)", "yellow"),
 Array(1, BlinkEdge, "g1_(12, 14)", "white"),
 Array(1, SetEdgeColor, "g1_(12, 14)", "red"),
 Array(1, SetVertexFrameWidth, "g1_14", "0"),
-Array(1, SetVertexFrameWidth, "g1_12", "0"),
-Array(1, SetVertexFrameWidth, "g1_13", "0"),
-Array(1, SetEdgeColor, "g1_(7, 14)", "yellow"),
+Array(2, SetVertexFrameWidth, "g1_12", "0"),
+Array(2, SetVertexFrameWidth, "g1_13", "0"),
+Array(5, SetEdgeColor, "g1_(7, 14)", "yellow"),
 Array(1, BlinkEdge, "g1_(7, 14)", "white"),
 Array(1, SetEdgeColor, "g1_(7, 14)", "grey"),
 Array(1, SetVertexFrameWidth, "g1_7", "0"),
 Array(1, SetVertexFrameWidth, "g1_3", "0"),
-Array(1, SetEdgeColor, "g1_(11, 6)", "yellow"),
-Array(1, BlinkEdge, "g1_(11, 6)", "white"),
+Array(2, SetEdgeColor, "g1_(11, 6)", "yellow"),
+Array(2, BlinkEdge, "g1_(11, 6)", "white"),
 Array(1, SetEdgeColor, "g1_(11, 6)", "grey"),
 Array(1, SetEdgeColor, "g1_(15, 6)", "yellow"),
 Array(1, BlinkEdge, "g1_(15, 6)", "white"),
@@ -2067,7 +2113,7 @@ Array(1, SetEdgeColor, "g1_(6, 12)", "yellow"),
 Array(1, BlinkEdge, "g1_(6, 12)", "white"),
 Array(1, SetEdgeColor, "g1_(6, 12)", "grey"),
 Array(1, SetVertexFrameWidth, "g1_6", "0"),
-Array(1, SetVertexFrameWidth, "g1_15", "0"),
+Array(5, SetVertexFrameWidth, "g1_15", "0"),
 Array(1, SetEdgeColor, "g1_(5, 11)", "yellow"),
 Array(1, BlinkEdge, "g1_(5, 11)", "white"),
 Array(1, SetEdgeColor, "g1_(5, 11)", "grey"),
@@ -2075,19 +2121,19 @@ Array(1, SetEdgeColor, "g1_(5, 10)", "yellow"),
 Array(1, BlinkEdge, "g1_(5, 10)", "white"),
 Array(1, SetEdgeColor, "g1_(5, 10)", "red"),
 Array(1, SetVertexFrameWidth, "g1_5", "0"),
-Array(1, SetEdgeColor, "g1_(10, 11)", "yellow"),
+Array(2, SetEdgeColor, "g1_(10, 11)", "yellow"),
 Array(1, BlinkEdge, "g1_(10, 11)", "white"),
 Array(1, SetEdgeColor, "g1_(10, 11)", "grey"),
 Array(1, SetVertexFrameWidth, "g1_10", "0"),
 Array(1, SetVertexFrameWidth, "g1_4", "0"),
 Array(1, SetEdgeColor, "g1_(2, 5)", "yellow"),
-Array(1, BlinkEdge, "g1_(2, 5)", "white"),
+Array(4, BlinkEdge, "g1_(2, 5)", "white"),
 Array(1, SetEdgeColor, "g1_(2, 5)", "grey"),
 Array(1, SetEdgeColor, "g1_(2, 15)", "yellow"),
 Array(1, BlinkEdge, "g1_(2, 15)", "white"),
 Array(1, SetEdgeColor, "g1_(2, 15)", "grey"),
 Array(1, SetVertexFrameWidth, "g1_2", "0"),
-Array(1, SetEdgeColor, "g1_(1, 15)", "yellow"),
+Array(2, SetEdgeColor, "g1_(1, 15)", "yellow"),
 Array(1, BlinkEdge, "g1_(1, 15)", "white"),
 Array(1, SetEdgeColor, "g1_(1, 15)", "grey"),
 Array(1, SetEdgeColor, "g1_(1, 3)", "yellow"),
@@ -2098,63 +2144,63 @@ Array(1, SetVertexFrameWidth, "g1_1", "0")
 
 ]]></script>
 <g id="g1" transform="translate(200,0)" type="undirected" ongesturestart="GestureStart_TransformGraph(evt)" ongesturechange="GestureChange_TransformGraph(evt)" ongestureend="GestureEnd_TransformGraph(evt)" ontouchstart="TouchStart_Graph(evt)" ontouchmove="TouchDrag_Graph(evt)" ontouchend="TouchDeactivate_Graph(evt)">
-<line id="g1_(1, 2)" x1="200.0" y1="50.0" x2="150.0" y2="100.0" stroke="#DDDDDD" stroke-width="4.0"/>
-<line id="g1_(1, 15)" x1="200.0" y1="50.0" x2="200.0" y2="100.0" stroke="#DDDDDD" stroke-width="4.0"/>
-<line id="g1_(1, 3)" x1="200.0" y1="50.0" x2="250.0" y2="100.0" stroke="#DDDDDD" stroke-width="4.0"/>
-<line id="g1_(2, 4)" x1="150.0" y1="100.0" x2="100.0" y2="200.0" stroke="#DDDDDD" stroke-width="4.0"/>
-<line id="g1_(2, 5)" x1="150.0" y1="100.0" x2="150.0" y2="200.0" stroke="#DDDDDD" stroke-width="4.0"/>
-<line id="g1_(2, 15)" x1="150.0" y1="100.0" x2="200.0" y2="100.0" stroke="#DDDDDD" stroke-width="4.0"/>
-<line id="g1_(3, 6)" x1="250.0" y1="100.0" x2="250.0" y2="200.0" stroke="#DDDDDD" stroke-width="4.0"/>
-<line id="g1_(3, 7)" x1="250.0" y1="100.0" x2="300.0" y2="200.0" stroke="#DDDDDD" stroke-width="4.0"/>
-<line id="g1_(4, 8)" x1="100.0" y1="200.0" x2="50.0" y2="300.0" stroke="#DDDDDD" stroke-width="4.0"/>
-<line id="g1_(4, 9)" x1="100.0" y1="200.0" x2="100.0" y2="300.0" stroke="#DDDDDD" stroke-width="4.0"/>
-<line id="g1_(4, 10)" x1="100.0" y1="200.0" x2="150.0" y2="300.0" stroke="#DDDDDD" stroke-width="4.0"/>
-<line id="g1_(5, 11)" x1="150.0" y1="200.0" x2="200.0" y2="300.0" stroke="#DDDDDD" stroke-width="4.0"/>
-<line id="g1_(5, 10)" x1="150.0" y1="200.0" x2="150.0" y2="300.0" stroke="#DDDDDD" stroke-width="4.0"/>
-<line id="g1_(6, 7)" x1="250.0" y1="200.0" x2="300.0" y2="200.0" stroke="#DDDDDD" stroke-width="4.0"/>
-<line id="g1_(6, 12)" x1="250.0" y1="200.0" x2="250.0" y2="300.0" stroke="#DDDDDD" stroke-width="4.0"/>
-<line id="g1_(7, 13)" x1="300.0" y1="200.0" x2="300.0" y2="300.0" stroke="#DDDDDD" stroke-width="4.0"/>
-<line id="g1_(7, 14)" x1="300.0" y1="200.0" x2="350.0" y2="300.0" stroke="#DDDDDD" stroke-width="4.0"/>
-<line id="g1_(8, 9)" x1="50.0" y1="300.0" x2="100.0" y2="300.0" stroke="#DDDDDD" stroke-width="4.0"/>
-<line id="g1_(10, 11)" x1="150.0" y1="300.0" x2="200.0" y2="300.0" stroke="#DDDDDD" stroke-width="4.0"/>
-<line id="g1_(11, 6)" x1="200.0" y1="300.0" x2="250.0" y2="200.0" stroke="#DDDDDD" stroke-width="4.0"/>
-<line id="g1_(11, 12)" x1="200.0" y1="300.0" x2="250.0" y2="300.0" stroke="#DDDDDD" stroke-width="4.0"/>
-<line id="g1_(12, 13)" x1="250.0" y1="300.0" x2="300.0" y2="300.0" stroke="#DDDDDD" stroke-width="4.0"/>
-<line id="g1_(12, 14)" x1="250.0" y1="300.0" x2="350.0" y2="300.0" stroke="#DDDDDD" stroke-width="4.0"/>
-<line id="g1_(15, 5)" x1="200.0" y1="100.0" x2="150.0" y2="200.0" stroke="#DDDDDD" stroke-width="4.0"/>
-<line id="g1_(15, 6)" x1="200.0" y1="100.0" x2="250.0" y2="200.0" stroke="#DDDDDD" stroke-width="4.0"/>
-<circle id="g1_1" cx="200.0" cy="50.0" r="14.0" fill="#CFCFCF" stroke="black" stroke-width="0.0" />
-<text id="vlg1_1" x="200.0" y="54.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >1</text>
-<circle id="g1_2" cx="150.0" cy="100.0" r="14.0" fill="#CFCFCF" stroke="black" stroke-width="0.0" />
-<text id="vlg1_2" x="150.0" y="104.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >2</text>
-<circle id="g1_3" cx="250.0" cy="100.0" r="14.0" fill="#CFCFCF" stroke="black" stroke-width="0.0" />
-<text id="vlg1_3" x="250.0" y="104.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >3</text>
-<circle id="g1_4" cx="100.0" cy="200.0" r="14.0" fill="#CFCFCF" stroke="black" stroke-width="0.0" />
-<text id="vlg1_4" x="100.0" y="204.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >4</text>
-<circle id="g1_5" cx="150.0" cy="200.0" r="14.0" fill="#CFCFCF" stroke="black" stroke-width="0.0" />
-<text id="vlg1_5" x="150.0" y="204.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >5</text>
-<circle id="g1_6" cx="250.0" cy="200.0" r="14.0" fill="#CFCFCF" stroke="black" stroke-width="0.0" />
-<text id="vlg1_6" x="250.0" y="204.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >6</text>
-<circle id="g1_7" cx="300.0" cy="200.0" r="14.0" fill="#CFCFCF" stroke="black" stroke-width="0.0" />
-<text id="vlg1_7" x="300.0" y="204.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >7</text>
-<circle id="g1_8" cx="50.0" cy="300.0" r="14.0" fill="#CFCFCF" stroke="black" stroke-width="0.0" />
-<text id="vlg1_8" x="50.0" y="304.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >8</text>
-<circle id="g1_9" cx="100.0" cy="300.0" r="14.0" fill="#CFCFCF" stroke="black" stroke-width="0.0" />
-<text id="vlg1_9" x="100.0" y="304.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >9</text>
-<circle id="g1_10" cx="150.0" cy="300.0" r="14.0" fill="#CFCFCF" stroke="black" stroke-width="0.0" />
-<text id="vlg1_10" x="150.0" y="304.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >10</text>
-<circle id="g1_11" cx="200.0" cy="300.0" r="14.0" fill="#CFCFCF" stroke="black" stroke-width="0.0" />
-<text id="vlg1_11" x="200.0" y="304.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >11</text>
-<circle id="g1_12" cx="250.0" cy="300.0" r="14.0" fill="#CFCFCF" stroke="black" stroke-width="0.0" />
-<text id="vlg1_12" x="250.0" y="304.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >12</text>
-<circle id="g1_13" cx="300.0" cy="300.0" r="14.0" fill="#CFCFCF" stroke="black" stroke-width="0.0" />
-<text id="vlg1_13" x="300.0" y="304.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >13</text>
-<circle id="g1_14" cx="350.0" cy="300.0" r="14.0" fill="#CFCFCF" stroke="black" stroke-width="0.0" />
-<text id="vlg1_14" x="350.0" y="304.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >14</text>
-<circle id="g1_15" cx="200.0" cy="100.0" r="14.0" fill="#CFCFCF" stroke="black" stroke-width="0.0" />
-<text id="vlg1_15" x="200.0" y="104.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >15</text>
+<line id="g1_(1, 2)" x1="200.0" y1="18.0" x2="150.0" y2="68.0" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g1_(1, 15)" x1="200.0" y1="18.0" x2="200.0" y2="68.0" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g1_(1, 3)" x1="200.0" y1="18.0" x2="250.0" y2="68.0" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g1_(2, 4)" x1="150.0" y1="68.0" x2="100.0" y2="168.0" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g1_(2, 5)" x1="150.0" y1="68.0" x2="150.0" y2="168.0" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g1_(2, 15)" x1="150.0" y1="68.0" x2="200.0" y2="68.0" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g1_(3, 6)" x1="250.0" y1="68.0" x2="250.0" y2="168.0" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g1_(3, 7)" x1="250.0" y1="68.0" x2="300.0" y2="168.0" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g1_(4, 8)" x1="100.0" y1="168.0" x2="50.0" y2="268.0" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g1_(4, 9)" x1="100.0" y1="168.0" x2="100.0" y2="268.0" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g1_(4, 10)" x1="100.0" y1="168.0" x2="150.0" y2="268.0" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g1_(5, 11)" x1="150.0" y1="168.0" x2="200.0" y2="268.0" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g1_(5, 10)" x1="150.0" y1="168.0" x2="150.0" y2="268.0" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g1_(6, 7)" x1="250.0" y1="168.0" x2="300.0" y2="168.0" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g1_(6, 12)" x1="250.0" y1="168.0" x2="250.0" y2="268.0" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g1_(7, 13)" x1="300.0" y1="168.0" x2="300.0" y2="268.0" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g1_(7, 14)" x1="300.0" y1="168.0" x2="350.0" y2="268.0" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g1_(8, 9)" x1="50.0" y1="268.0" x2="100.0" y2="268.0" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g1_(10, 11)" x1="150.0" y1="268.0" x2="200.0" y2="268.0" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g1_(11, 6)" x1="200.0" y1="268.0" x2="250.0" y2="168.0" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g1_(11, 12)" x1="200.0" y1="268.0" x2="250.0" y2="268.0" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g1_(12, 13)" x1="250.0" y1="268.0" x2="300.0" y2="268.0" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g1_(12, 14)" x1="250.0" y1="268.0" x2="350.0" y2="268.0" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g1_(15, 5)" x1="200.0" y1="68.0" x2="150.0" y2="168.0" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g1_(15, 6)" x1="200.0" y1="68.0" x2="250.0" y2="168.0" stroke="#DDDDDD" stroke-width="4.0"/>
+<circle id="g1_1" cx="200.0" cy="18.0" r="14.0" fill="#CFCFCF" stroke="black" stroke-width="0.0" />
+<text id="vlg1_1" x="200.0" y="22.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >1</text>
+<circle id="g1_2" cx="150.0" cy="68.0" r="14.0" fill="#CFCFCF" stroke="black" stroke-width="0.0" />
+<text id="vlg1_2" x="150.0" y="72.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >2</text>
+<circle id="g1_3" cx="250.0" cy="68.0" r="14.0" fill="#CFCFCF" stroke="black" stroke-width="0.0" />
+<text id="vlg1_3" x="250.0" y="72.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >3</text>
+<circle id="g1_4" cx="100.0" cy="168.0" r="14.0" fill="#CFCFCF" stroke="black" stroke-width="0.0" />
+<text id="vlg1_4" x="100.0" y="172.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >4</text>
+<circle id="g1_5" cx="150.0" cy="168.0" r="14.0" fill="#CFCFCF" stroke="black" stroke-width="0.0" />
+<text id="vlg1_5" x="150.0" y="172.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >5</text>
+<circle id="g1_6" cx="250.0" cy="168.0" r="14.0" fill="#CFCFCF" stroke="black" stroke-width="0.0" />
+<text id="vlg1_6" x="250.0" y="172.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >6</text>
+<circle id="g1_7" cx="300.0" cy="168.0" r="14.0" fill="#CFCFCF" stroke="black" stroke-width="0.0" />
+<text id="vlg1_7" x="300.0" y="172.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >7</text>
+<circle id="g1_8" cx="50.0" cy="268.0" r="14.0" fill="#CFCFCF" stroke="black" stroke-width="0.0" />
+<text id="vlg1_8" x="50.0" y="272.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >8</text>
+<circle id="g1_9" cx="100.0" cy="268.0" r="14.0" fill="#CFCFCF" stroke="black" stroke-width="0.0" />
+<text id="vlg1_9" x="100.0" y="272.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >9</text>
+<circle id="g1_10" cx="150.0" cy="268.0" r="14.0" fill="#CFCFCF" stroke="black" stroke-width="0.0" />
+<text id="vlg1_10" x="150.0" y="272.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >10</text>
+<circle id="g1_11" cx="200.0" cy="268.0" r="14.0" fill="#CFCFCF" stroke="black" stroke-width="0.0" />
+<text id="vlg1_11" x="200.0" y="272.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >11</text>
+<circle id="g1_12" cx="250.0" cy="268.0" r="14.0" fill="#CFCFCF" stroke="black" stroke-width="0.0" />
+<text id="vlg1_12" x="250.0" y="272.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >12</text>
+<circle id="g1_13" cx="300.0" cy="268.0" r="14.0" fill="#CFCFCF" stroke="black" stroke-width="0.0" />
+<text id="vlg1_13" x="300.0" y="272.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >13</text>
+<circle id="g1_14" cx="350.0" cy="268.0" r="14.0" fill="#CFCFCF" stroke="black" stroke-width="0.0" />
+<text id="vlg1_14" x="350.0" y="272.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >14</text>
+<circle id="g1_15" cx="200.0" cy="68.0" r="14.0" fill="#CFCFCF" stroke="black" stroke-width="0.0" />
+<text id="vlg1_15" x="200.0" y="72.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >15</text>
 </g>
-<g id="radioGroup"/><text blank = "false" id="l_1" x="10" y="10" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal"><tspan dx = "0">step</tspan><tspan dx="7">=</tspan><tspan dx="7">1</tspan></text>
+<text blank = "false" id="l_1" x="10" y="10" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal"><tspan dx = "0">step</tspan><tspan dx="7">=</tspan><tspan dx="7">1</tspan></text>
 <text blank = "true" id="l_2" x="10" y="10" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal"></text>
 <text blank = "false" id="l_3" x="10" y="10" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal"><tspan font-weight="bold" dx="0">def</tspan><tspan dx="7">DFS</tspan><tspan>(</tspan><tspan>v</tspan><tspan>)</tspan><tspan>:</tspan></text>
 <text blank = "false" id="l_4" x="10" y="10" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal"><tspan font-weight="bold" dx="28">global</tspan><tspan dx="7">step</tspan></text>

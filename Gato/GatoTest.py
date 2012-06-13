@@ -301,14 +301,20 @@ instance = {'06-MaximalFlows/FordFulkerson.alg':['06-MaximalFlows/FordFulkerson6
    '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
    ],'02-GraphsNetworks/DFS-Recursive.alg':[
    '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
-   ]}
+   ],
+   '05-ShortestPaths/BellmanFord.alg':[
+    '05-ShortestPaths/BellmanFordWC.cat'  #,'05-ShortestPaths/NegCircuit.cat'
+    ]}
 
 svg_instance = {'06-MaximalFlows/FordFulkerson.alg':['06-MaximalFlows/FordFulkerson6.cat'],
      '02-GraphsNetworks/BFS.alg':[
    '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
    ],'02-GraphsNetworks/DFS-Recursive.alg':[
    '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
-   ]}
+   ],
+   '05-ShortestPaths/BellmanFord.alg':[
+    '05-ShortestPaths/BellmanFordWC.cat'  #,'05-ShortestPaths/NegCircuit.cat'
+    ]}
 
 #------------------------------------------------------------------
 def usage():
