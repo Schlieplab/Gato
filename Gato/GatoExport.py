@@ -50,6 +50,19 @@ preserveAspectRatio="xMinYMin meet"
 viewBox="%(x)d %(y)d %(width)d %(height)d" width="40cm" height="30cm"
 onload="Initialize(evt)">
 
+<style type="text/css">
+   <![CDATA[
+    * {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    }
+   ]]>
+</style>
+
 <script type="text/ecmascript"><![CDATA[
 var step = 0;
 var v_ano_id = "va"; //ID prefix for vertex annotation
