@@ -1797,6 +1797,11 @@ function Initialize(evt) {
     BP_prototypeInit();
     SS_prototypeInit();
 
+    alert(the_evt_target.getBBox().width);
+    alert(window.innerWidth);
+    
+    
+
     speed_select = new SpeedSelector("speedSelect", 20, "blue", "red");
     
     //Create code layout

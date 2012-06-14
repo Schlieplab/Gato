@@ -422,6 +422,7 @@ function HTB_highlightLine(n){
             background.setAttribute("y", line_bbox.y + line_translation[1] - this.line_llc.v_padding - dy);
             background.setAttribute("width", htb_bbox.width + 2*this.line_llc.h_padding);
             background.setAttribute("height", line_bbox.height + 2*this.line_llc.v_padding);
+            background.setAttribute("style", "opacity:.35");
             background.setAttribute("stroke", "blue");
             background.setAttribute("fill", "yellow");
             background.setAttribute("id", this.line_llc.group.getAttribute("id") + "_hl" + (n+1));
@@ -1182,15 +1183,15 @@ function SetBreakpoint(evt){
             dy = parseFloat(dy);
     }
 
-        var indicator = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
+    var indicator = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
     //indicator.setAttribute("x", line_bbox.x + line_translation[0] - code.line_llc.h_padding - dx);
     //indicator.setAttribute("y", line_bbox.y + line_translation[1] - code.line_llc.v_padding - dy);
     //indicator.setAttribute("width", htb_bbox.width + 2*code.line_llc.h_padding);
     //indicator.setAttribute("height", line_bbox.height + 2*code.line_llc.v_padding);
-    indicator.setAttribute("x", -10);
-    indicator.setAttribute("y", line_bbox.y + line_translation[1] - code.line_llc.v_padding - dy);
-    indicator.setAttribute("width", 10);
-    indicator.setAttribute("height", line_bbox.height-5);
+    indicator.setAttribute("x", -8);
+    indicator.setAttribute("y", line_bbox.y + line_translation[1] - code.line_llc.v_padding - dy + 2);
+    indicator.setAttribute("width", 12);
+    indicator.setAttribute("height", line_bbox.height + 2*code.line_llc.v_padding - 4);
     indicator.setAttribute("stroke", "blue");
     indicator.setAttribute("fill", "blue");
     indicator.setAttribute("id", code.line_llc.group.getAttribute("id") + "_bp" + line.getAttribute("id").split("_")[1]);
