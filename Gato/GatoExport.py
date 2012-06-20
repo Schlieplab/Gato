@@ -97,6 +97,10 @@ var step_pressed = false;  //Whether the step button was pressed.  Used to emula
 var step_evt;
 var continue_pressed = false;
 var continue_evt;
+var scaler;            //Triangular scaler at bottom right of graph
+var scaler_width;       //Width of the scaler
+var mouse_start = undefined;        //Coordinates of mouse start when scaling
+var pt;             //SVGPoint for converting browser space to svg space
 /**
 *
 *
@@ -886,7 +890,7 @@ function SpeedSelector(id, boxWidth, color, selectColor) {
  	this.color = color;
  	this.boxWidth = boxWidth;
  	this.selectColor = selectColor;
- 	this.label = createLabel("speedLabel", "Speeds:");
+ 	this.label = createLabel("speedLabel", "Speed:");
  	this.llc.insertComponent(this.label.getAttribute("id"),0);
  	this.lo = createSpeedSelect("lo", "0", "0", boxWidth, ".25x", this.color);
  	this.lomid = createSpeedSelect("lomid", "0", "0", boxWidth, ".5x", this.color);
@@ -1837,6 +1841,70 @@ function TransformGraph(graph, graph_bg, evt){
     the_evt_target_ownerDocument.documentElement.setAttribute("height", 2*y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
 }
 
+function Scaler(points, width) {
+ 	this.triang_scaler = the_evt_target.getElementById("triangle_scaler");
+ 	this.scaler_active = false;
+ 	
+    scaler_width = width;
+ 	this.triang_scaler.setAttribute("points", points);
+ 	this.triang_scaler.setAttribute("cursor", "move");
+ 	this.triang_scaler.setAttribute("onmousedown", "click_scaler(evt)");
+    this.triang_scaler.setAttribute("onmouseup", "deactivate_scaler(evt)");
+    this.triang_scaler.setAttribute("onmousemove", "drag_scaler(evt)");
+}
+
+function click_scaler(evt) {
+ 	scaler.scaler_active = true;
+    if (mouse_start == undefined) 
+        mouse_start = cursorPoint(evt);
+}
+
+function deactivate_scaler(evt) {
+ 	if (scaler.scaler_active === false)
+ 		return;
+ 	
+ 	scaler.scaler_active = false;
+}
+ 
+function pointIn(el,x,y){
+		pt.x = x; pt.y = y;
+		return pt.matrixTransform(el.getTransformToElement(svg).inverse());
+}
+ 
+function drag_scaler(evt) {
+ 	if (scaler.scaler_active === false)
+ 		return;
+ 
+ 	var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
+ 	var graph_bg = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+ 	scaleGraph( graph, graph_bg, evt);
+}
+ 
+function scaleGraph(graph, graph_bg, evt) {
+
+    cursor_point = cursorPoint(evt);
+
+ 	var graph_width = graph.getBBox().width;
+ 	var translation1 = getTranslate(vert_layout[1].group.getAttribute("transform"));
+    var translation2 = getTranslate(horiz_layout.group.getAttribute("transform"));
+    var translation3 = getTranslate(graph.getAttribute("transform"));
+    var total_trans_x = translation2[0] + translation3[0] +translation1[0];
+    var graph_scale = getScale(graph.getAttribute("transform"));
+    var scaler_pos = graph_scale[0] * (total_trans_x + graph_width) + scaler_width/2 + horiz_layout.h_padding;
+    
+ 	var delta = cursor_point.x - mouse_start.x;
+ 	var scale_factor = (graph_width + delta)/graph_width;
+    
+ 	setScale(graph, scale_factor, scale_factor);
+    setScale(graph_bg, scale_factor, scale_factor);
+}
+
+function cursorPoint(evt){
+    pt.x = evt.clientX; 
+    pt.y = evt.clientY;
+    return pt.matrixTransform(the_evt_target.getScreenCTM().inverse());
+}
+
 
 /**
 *
@@ -1854,6 +1922,11 @@ function Initialize(evt) {
     LLC_prototypeInit();
     BP_prototypeInit();
     SS_prototypeInit();
+    
+    pt = the_evt_target.createSVGPoint();
+
+    the_evt_target.setAttribute("onmouseup", "deactivate_scaler(evt)");
+    the_evt_target.setAttribute("onmousemove", "drag_scaler(evt)");
 
     speed_select = new SpeedSelector("speedSelect", 20, "blue", "red");
     
@@ -1921,6 +1994,9 @@ function Initialize(evt) {
     horiz_layout.group.setAttribute("transform", "translate(" + x_offset + " " + y_offset + ")");
     code.highlight_group.setAttribute("transform","translate(" + x_offset + " " + y_offset + ")");
 
+    var scaler_x;
+ 	var scaler_y;
+
     //Make rectangles behind graphs, for intuitive iPad usage
     for(x in init_graphs){
         var rect = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
@@ -1946,7 +2022,12 @@ function Initialize(evt) {
         var translation3 = getTranslate(graph.getAttribute("transform"));
         setTranslate(rect, translation1[0] + translation2[0] + translation3[0], translation1[1] + translation2[1] + translation3[1]);
         the_evt_target_ownerDocument.documentElement.insertBefore(rect, the_evt_target_ownerDocument.documentElement.childNodes.item(0));
+        scaler_x = graph.getBBox().x + graph.getBBox().width + 10;
+        scaler_y = graph.getBBox().y + graph.getBBox().height + 10;
     }
+    
+    var points_val = String(scaler_x) + "," + String(scaler_y) + " " + String(scaler_x-20) + "," + String(scaler_y) + " " + String(scaler_x) + "," + String(scaler_y-20);
+    scaler = new Scaler(points_val, 20);
 
     the_evt_target_ownerDocument.documentElement.setAttribute("width", x_offset + horiz_layout.group.getBBox().x + horiz_layout.group.getBBox().width);
     the_evt_target_ownerDocument.documentElement.setAttribute("height", y_offset + horiz_layout.group.getBBox().y + horiz_layout.group.getBBox().height);
@@ -2402,6 +2483,7 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
                    'ongesturechange="GestureChange_TransformGraph(evt)" ongestureend="GestureEnd_TransformGraph(evt)" '\
                    'ontouchstart="TouchStart_Graph(evt)" ontouchmove="TouchDrag_Graph(evt)" ontouchend="TouchDeactivate_Graph(evt)">\n' % (200,0, graph_type))
         WriteGraphAsSVG(graphDisplay, file, idPrefix='g1_')    
+        file.write('<polygon id="triangle_scaler" points="150,150  150,150  150,150" style="stroke:#660000; fill:#cc3333;"/>')
         file.write('</g>\n')
 
         if secondaryGraphDisplay:
