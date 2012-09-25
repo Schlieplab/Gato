@@ -99,6 +99,8 @@ var option_dropdown;                //Option dropdown box at top right hand corn
 var viewbox_x;
 var viewbox_y;
 var filling_states = false;
+var MIN_SCALE_FACTOR = .2;          // Minimum scale factor for the graph
+var scale_graph_width = undefined;  // Graph width(considering scaling) at the time of a mouse click on the scaler
 /**
 *
 *
@@ -1934,12 +1936,18 @@ function Scaler(points, width) {
     this.triang_scaler.setAttribute("onmousemove", "drag_scaler(evt)");
 }
 
+
+// Click-handler for scaler.  Sets scaler_active to true to enable scaling with drags,
+// and sets mouse_start to the current cursor position
 function click_scaler(evt) {
  	scaler.scaler_active = true;
-    if (mouse_start == undefined) 
-        mouse_start = cursorPoint(evt);
+    var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
+    scale_graph_width = graph.getBBox().width * g_scale_factor;
+    mouse_start = cursorPoint(evt);
 }
 
+
+// Global-mouseup handler that deactivates scaler_active
 function deactivate_scaler(evt) {
  	if (scaler.scaler_active === false)
  		return;
@@ -1947,6 +1955,8 @@ function deactivate_scaler(evt) {
  	scaler.scaler_active = false;
 }
  
+
+// ???
 function pointIn(el,x,y){
 		pt.x = x; pt.y = y;
 		return pt.matrixTransform(el.getTransformToElement(svg).inverse());
@@ -1972,29 +1982,34 @@ function scaleGraph(graph, graph_bg, evt, use_curr_sf) {
         return;
     }
 
-    // Forget why this variable is here exactly...
+    // Factor the graph_width is multiplied by to get the actual width
     var width_factor = 1;
-
     if (max_scale_factor < 1)
         width_factor = max_scale_factor;
     
-
     cursor_point = cursorPoint(evt);
 
-    var graph_width = graph.getBBox().width * width_factor;
-    var translation1 = getTranslate(right_vert_layout.group.getAttribute("transform"));
-    var translation2 = getTranslate(vert_layout.group.getAttribute("transform"));
-    var translation3 = getTranslate(graph.getAttribute("transform"));
-    var total_trans_x = translation2[0] + translation3[0] +translation1[0];
-    
-    var delta = cursor_point.x - mouse_start.x;
-    
-    //Scale factor used to compute size of graph-- if it is too large then it is thrown away.  If it fits then g_scale_factor = temp_scale_factor
-    var temp_scale_factor = (graph_width + delta)/graph_width;  
-    
-    var sum = graph_width*temp_scale_factor + graph.getBBox().x + total_trans_x;
+    //console.log('Cursor_point: (' + cursor_point.x + ', ' + cursor_point.y + ')');
+    //console.log('Mouse_start: (' + mouse_start.x + ', ' + mouse_start.y + ')');
 
-    if (temp_scale_factor < .2)
+    var graph_width = graph.getBBox().width * width_factor;
+    var cursor_delta = cursor_point.x - mouse_start.x;
+    if (cursor_delta === 0)
+        return;
+    console.log("cursor_delta: " + cursor_delta);
+    console.log("graph_width: " + scale_graph_width);
+
+    var new_width = scale_graph_width + cursor_delta;
+    console.log("new_width: " + new_width);
+    var temp_scale_factor = new_width / graph_width;
+
+    //console.log("temp_scale_factor: " + temp_scale_factor);
+    
+    //Scale factor used to compute size of graph
+   // var temp_scale_factor = (graph_width + cursor_delta)/graph_width;
+
+    // If temp_scale_factor is too small then do not do the scaling
+    if (temp_scale_factor < MIN_SCALE_FACTOR)
         return;
     
     g_scale_factor = temp_scale_factor * width_factor;
