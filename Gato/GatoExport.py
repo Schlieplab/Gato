@@ -2010,32 +2010,29 @@ function scaleGraph(graph, graph_bg, evt, use_curr_sf) {
         setScale(graph_bg, g_scale_factor, g_scale_factor);
         return;
     }
-    
+
+    // Forget why this variable is here exactly...
     var width_factor = 1;
+
     if (max_scale_factor < 1)
         width_factor = max_scale_factor;
     
+
     cursor_point = cursorPoint(evt);
 
- 	var graph_width = graph.getBBox().width * width_factor;
- 	var translation1 = getTranslate(right_vert_layout.group.getAttribute("transform"));
+    var graph_width = graph.getBBox().width * width_factor;
+    var translation1 = getTranslate(right_vert_layout.group.getAttribute("transform"));
     var translation2 = getTranslate(vert_layout.group.getAttribute("transform"));
     var translation3 = getTranslate(graph.getAttribute("transform"));
     var total_trans_x = translation2[0] + translation3[0] +translation1[0];
     
- 	var delta = cursor_point.x - mouse_start.x;
+    var delta = cursor_point.x - mouse_start.x;
     
     //Scale factor used to compute size of graph-- if it is too large then it is thrown away.  If it fits then g_scale_factor = temp_scale_factor
     var temp_scale_factor = (graph_width + delta)/graph_width;  
     
     var sum = graph_width*temp_scale_factor + graph.getBBox().x + total_trans_x;
 
-    var max_width = browser_width/screen_ctm.a - 20;
-        
-        
-    if (sum > max_width)
-        return;
-    
     if (temp_scale_factor < .2)
         return;
     
@@ -2045,7 +2042,7 @@ function scaleGraph(graph, graph_bg, evt, use_curr_sf) {
     if (g_scale_factor > max_scale_factor)
         g_scale_factor = max_scale_factor;
     
- 	setScale(graph, g_scale_factor, g_scale_factor);
+    setScale(graph, g_scale_factor, g_scale_factor);
     setScale(graph_bg, g_scale_factor, g_scale_factor);
 }
 
@@ -2227,8 +2224,8 @@ function jumpToStep(n) {
             animation[i][1](animation[i][2],animation[i][3],animation[i][4]);
         }    
          
-    }//end for
-}//end jumpToStep
+    }// end for
+}
 
 
 
@@ -2237,8 +2234,7 @@ function jumpToStep(n) {
 //Movie Slider
 //
 */
-//Creates a simple slider that controls the position of the animation in the full "movie"
-//params: slider id, ...
+// Creates a simple slider that controls the position of the animation in the full "movie"
 function MovieSlider(id, slider_width, thumb_height, offset, end_step, labels, title, actions) {
 
     this.slider = null;
@@ -2311,8 +2307,10 @@ function MovieSlider(id, slider_width, thumb_height, offset, end_step, labels, t
 	}
 	
 	the_evt_target_ownerDocument.documentElement.appendChild(this.slider);
-}//end MovieSlider
+}
 
+
+// Click-handler for movie_slider, sets thumb_active if there's a drag, or calls Move_MovieSlider if there is only a click
 function Click_MovieSlider(evt) {
     if (evt.target.getAttribute("id") === "movie_slider_slider_thumb")
         movie_slider.thumb_active = true;
@@ -2320,16 +2318,18 @@ function Click_MovieSlider(evt) {
         Move_MovieSlider(evt);
 }
 
+
+// Called on mouse-up, deactivates movie_slider from any use
 function Deactivate_MovieSlider(evt){
     movie_slider.thumb_active = false;
 }
 
+
+// Click-handler for the movie_slider.
+// Changes the position and step setting of the movie_slider when the mouse is clicked on a given position
 function Move_MovieSlider(evt) {
     var bbox = movie_slider.slider_bar.getBBox();
     var x_pos = cursorPoint(evt).x;
-    
-    console.log('client_x:' + evt.clientX);
-    console.log('svg_x:' + x_pos);
     
     if (evt.clientX == undefined)
         x_pos = evt.touches[0].clientX;
@@ -2337,10 +2337,12 @@ function Move_MovieSlider(evt) {
     movie_slider.slider_thumb.setAttribute("x", x_pos - movie_slider.offset - (movie_slider.default_thickness/2) - getTranslate(movie_slider.slider.getAttribute("transform"))[0] - getTranslate(horiz_layout[1].group.getAttribute("transform"))[0]);
     movie_slider.current_setting = movie_slider.low_bound + (movie_slider.up_bound - movie_slider.low_bound)*(movie_slider.slider_thumb.getAttribute("x")/movie_slider.slider_bar.getAttribute("width"));
     movie_slider.current_setting = Math.floor(movie_slider.current_setting);
-    console.log('current step: ' + movie_slider.current_setting);
     jumpToStep(movie_slider.current_setting);
 }
 
+
+// Drag-handler for movie_slider
+// Changes the position of the movie_slider bar and the current step when the bar is dragged
 function Drag_MovieSlider(evt) {
     if (movie_slider.thumb_active) {
         var x_pos = cursorPoint(evt).x;
@@ -2348,7 +2350,6 @@ function Drag_MovieSlider(evt) {
         if (x_pos === undefined) 
             x_pos = evt.touches[0].clientX;
             
-        console.log(getTranslate(horiz_layout[1].group.getAttribute("transform"))[0]);
         if (x_pos >= (movie_slider.slider_bar.getBBox().x + getTranslate(movie_slider.slider.getAttribute("transform"))[0] + movie_slider.offset) && x_pos <= (movie_slider.slider_bar.getBBox().x + movie_slider.offset + movie_slider.slider_bar.getBBox().width + getTranslate(movie_slider.slider.getAttribute("transform"))[0])){
             movie_slider.slider_thumb.setAttribute("x", x_pos - movie_slider.offset - (movie_slider.default_thickness/2) - getTranslate(movie_slider.slider.getAttribute("transform"))[0] - getTranslate(horiz_layout[1].group.getAttribute("transform"))[0]);
             movie_slider.current_setting = movie_slider.low_bound + (movie_slider.up_bound - movie_slider.low_bound)*(movie_slider.slider_thumb.getAttribute("x")/movie_slider.slider_bar.getAttribute("width"));
@@ -2359,17 +2360,15 @@ function Drag_MovieSlider(evt) {
             //If slider bar is all the way to left set to 0
             movie_slider.current_setting = 0;
         }
-        //Limit the left range of bar to the slider
-       /* if (x_pos < (movie_slider.slider_bar.getBBox().x + getTranslate(movie_slider.slider.getAttribute("transform"))[0])) {
-            movie_slider.current_setting = 0;
-         */   
     
         movie_slider.current_setting = Math.floor(movie_slider.current_setting);
         console.log('current step: ' + movie_slider.current_setting);
         jumpToStep(movie_slider.current_setting);
     }
-}//end Drag_MovieSlider
+}
 
+
+// Changes the position of the movie slider handle to reflect the given step_num
 function Refresh_MovieSlider(step_num) {
     movie_slider.current_setting = step_num;
     var thumb_pos = (movie_slider.current_setting/movie_slider.up_bound) * movie_slider.slider_bar.getAttribute("width");
@@ -2377,7 +2376,7 @@ function Refresh_MovieSlider(step_num) {
 }
 
 
-//Adds a bounding box to the action controls at the bottom of the screen
+// Adds a bounding box to the action controls at the bottom of the screen
 function addControlBoundingBox(color) {
     var llc_box = horiz_layout[1].group.getBBox();
     
@@ -2398,7 +2397,7 @@ function addControlBoundingBox(color) {
 }
 
 
-//Position the action_panel and movie_slider controls at the bottom-center of the screen
+// Position the action_panel and movie_slider controls at the bottom-center of the screen
 function positionControls() {
     var bbox = horiz_layout[1].group.getBBox();
     var panel_width = screen_ctm.a * bbox.width;
@@ -2581,21 +2580,52 @@ function getViewboxVals() {
 // Sets the maximum scale factor the graph can apply before going off the screen
 function set_max_scale_factor() {
     
+    function max_factor_y(graph) {
+        // Graph Dimensions
+        var height = graph.getBBox().height;
+        var graph_y = graph.getBBox().y;
+
+        // Translation of right_vert_layout, the vert_layout, and the graph itself
+        var translation1 = getTranslate(right_vert_layout.group.getAttribute("transform"));
+        var translation2 = getTranslate(vert_layout.group.getAttribute("transform"));
+        var translation3 = getTranslate(graph.getAttribute("transform"));
+        var translate = translation1[1] + translation2[1] + translation3[1];
+
+        var bottom_height = horiz_layout[1].group.getBBox().height + 30;    // Height of the bottom action bar
+        var total_sans_height = y_offset + graph_y + translate + bottom_height;
+
+        // Find how much larger the graph could be before the total becomes greater than the viewbox_y
+        var max_height = viewbox_y - total_sans_height;
+        var max_factor_y = max_height / height;
+        return max_factor_y;
+    }
+
+    function max_factor_x(graph) {
+        // Graph Dimensions
+        var width = graph.getBBox().width;
+        var graph_x = graph.getBBox().x;
+
+        // Translation of right_vert_layout, the vert_layout, and the graph itself
+        var translation1 = getTranslate(right_vert_layout.group.getAttribute("transform"));
+        var translation2 = getTranslate(vert_layout.group.getAttribute("transform"));
+        var translation3 = getTranslate(graph.getAttribute("transform"));
+        var translate = translation1[0] + translation2[0] + translation3[0];
+
+        var total_sans_width = x_offset + graph_x + translate;
+
+        // Find how much larger the graph could be before the total becomes greater than the viewbox_x
+        var max_width = viewbox_x - total_sans_width;
+        var max_factor_x = max_width / width;
+        return max_factor_x;
+    }
+
     var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
-    var height = graph.getBBox().height;
-    var y = graph.getBBox().y;
-    var translation1 = getTranslate(right_vert_layout.group.getAttribute("transform"));
-    var translation2 = getTranslate(vert_layout.group.getAttribute("transform"));
-    var translation3 = getTranslate(graph.getAttribute("transform"));
-    var translate = translation1[1] + translation2[1] + translation3[1];
-    var bottom_height = horiz_layout[1].group.getBBox().height + 30;
-    var total = y_offset + height + y + translate + bottom_height;
-    max_scale_factor = viewbox_y / total;
-    console.log('max_scale_factor ' + max_scale_factor);
+    max_scale_factor = Math.min(max_factor_y(graph), max_factor_x(graph));
 }
 
 
-// DOES NOT CURRENTLY WORK, intented to scale the svg to fit the screen, unneeded msot likely
+// Scales the graph to fit the screen.  
+// Only really matters in cases where the graph is too large for the screen initially
 function scale_to_fit() {
     var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
  	var graph_bg = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
@@ -2640,12 +2670,13 @@ function Initialize(evt) {
     //Create code layout
     code = new HighlightableTextBlock(20, 0, "code", 14, "vertical");
 
+    // Insert lines of code into the HighlightableTextBlock
     var linenum = 1;
     while(the_evt_target_ownerDocument.getElementById("l_" + linenum) != null){
         code.insertLine("l_" + linenum, linenum-1);
         linenum++;
     }
-    
+
     code.addBoundingBox("#8888AA");
     
     speed_select = new SpeedSelector("speedSelect", 20, "blue", "red");

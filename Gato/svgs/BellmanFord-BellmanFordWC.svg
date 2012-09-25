@@ -1966,11 +1966,14 @@ function scaleGraph(graph, graph_bg, evt, use_curr_sf) {
         setScale(graph_bg, g_scale_factor, g_scale_factor);
         return;
     }
-    
+
+    // Forget why this variable is here exactly...
     var width_factor = 1;
+
     if (max_scale_factor < 1)
         width_factor = max_scale_factor;
     
+
     cursor_point = cursorPoint(evt);
 
  	var graph_width = graph.getBBox().width * width_factor;
@@ -1989,9 +1992,11 @@ function scaleGraph(graph, graph_bg, evt, use_curr_sf) {
     var max_width = browser_width/screen_ctm.a - 20;
         
         
-    if (sum > max_width)
+   /* if (sum > max_width) {
+        console.log('Returning due to max_width');
         return;
-    
+    }
+*/
     if (temp_scale_factor < .2)
         return;
     
@@ -2001,6 +2006,8 @@ function scaleGraph(graph, graph_bg, evt, use_curr_sf) {
     if (g_scale_factor > max_scale_factor)
         g_scale_factor = max_scale_factor;
     
+
+    console.log('scaling to: ' + g_scale_factor);
  	setScale(graph, g_scale_factor, g_scale_factor);
     setScale(graph_bg, g_scale_factor, g_scale_factor);
 }
@@ -2555,21 +2562,62 @@ function getViewboxVals() {
     viewbox_y = viewbox_str[3];
 }
 
+
+// Determines the maximum scale_factor in the x and y directions, and sets max_scale_factor 
+// to the lesser of these
 function set_max_scale_factor() {
-    
+
+    function max_factor_y(graph) {
+        // Graph Dimensions
+        var height = graph.getBBox().height;
+        var graph_y = graph.getBBox().y;
+
+        // Translation of right_vert_layout, the vert_layout, and the graph itself
+        var translation1 = getTranslate(right_vert_layout.group.getAttribute("transform"));
+        var translation2 = getTranslate(vert_layout.group.getAttribute("transform"));
+        var translation3 = getTranslate(graph.getAttribute("transform"));
+        var translate = translation1[1] + translation2[1] + translation3[1];
+
+        var bottom_height = horiz_layout[1].group.getBBox().height + 30;    // Height of the bottom action bar
+        var total_sans_height = y_offset + graph_y + translate + bottom_height;
+
+        // Find how much larger the graph could be before the total becomes greater than the viewbox_y
+        var max_height = viewbox_y - total_sans_height;
+        var max_factor_y = max_height / height;
+        return max_factor_y;
+    }
+
+    function max_factor_x(graph) {
+        // Graph Dimensions
+        var width = graph.getBBox().width;
+        var graph_x = graph.getBBox().x;
+
+        // Translation of right_vert_layout, the vert_layout, and the graph itself
+        var translation1 = getTranslate(right_vert_layout.group.getAttribute("transform"));
+        var translation2 = getTranslate(vert_layout.group.getAttribute("transform"));
+        var translation3 = getTranslate(graph.getAttribute("transform"));
+        var translate = translation1[0] + translation2[0] + translation3[0];
+
+        var total_sans_width = x_offset + graph_x + translate;
+
+        // Find how much larger the graph could be before the total becomes greater than the viewbox_x
+        var max_width = viewbox_x - total_sans_width;
+        var max_factor_x = max_width / width;
+        return max_factor_x;
+    }
+
     var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
-    height = graph.getBBox().height;
-    y = graph.getBBox().y;
-    var translation1 = getTranslate(right_vert_layout.group.getAttribute("transform"));
-    var translation2 = getTranslate(vert_layout.group.getAttribute("transform"));
-    var translation3 = getTranslate(graph.getAttribute("transform"));
-    translate = translation1[1] + translation2[1] + translation3[1];
-    var bottom_height = horiz_layout[1].group.getBBox().height + 30;
-    total = y_offset + height + y + translate + bottom_height;
-    max_scale_factor = viewbox_y / total;
-    console.log('max_scale_factor ' + max_scale_factor);
+    max_scale_factor = Math.min(max_factor_y(graph), max_factor_x(graph));
+    /*max_scale_factor = max_height/height;
+
+    console.log('height: ' + height + '\nmax_height: ' + max_height);
+
+    console.log('max_scale_factor ' + max_scale_factor);*/
 }
 
+
+// Scales the graph to fit the screen.  
+//Only really matters in cases where the graph is too large for the screen initially
 function scale_to_fit() {
     var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
  	var graph_bg = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
