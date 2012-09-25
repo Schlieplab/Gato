@@ -98,6 +98,7 @@ var screen_ctm;                     //Coordiante transformation matrix of the sc
 var option_dropdown;                //Option dropdown box at top right hand corner
 var viewbox_x;
 var viewbox_y;
+var filling_states = false;
 /**
 *
 *
@@ -402,6 +403,10 @@ function HTB_deleteLine(n){
 
 //highlight nth line, using 0-based indexing
 function HTB_highlightLine(n){
+    
+    //if (filling_states == true)
+    //    return;
+        
     if(n < this.line_llc.group.childNodes.length && n >= 0){
         if(the_evt_target_ownerDocument.getElementById(this.line_llc.group.getAttribute("id") + "_hl" + (n+1)) == null){
             var line = this.line_llc.group.childNodes.item(n);
@@ -2083,6 +2088,8 @@ doing the animations.  Save the graph state every STEP_INTERVAL commands, and in
 there save the commands */
 function fillGraphStates() {
     
+    filling_states = true;
+    
     //Send the graph off the screen
     var graph_id = init_graphs[0].getAttribute("id");
     var graph = the_evt_target_ownerDocument.getElementById(graph_id);
@@ -2110,6 +2117,7 @@ function fillGraphStates() {
     //Restore graph back to original state
     setGraphState(graph_states[0]);
     StopAnimation(undefined);
+    filling_states = false;
 }
 
 
@@ -2555,6 +2563,7 @@ function getViewboxVals() {
     viewbox_y = viewbox_str[3];
 }
 
+// Sets the max 
 function set_max_scale_factor() {
     
     var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
@@ -2727,7 +2736,6 @@ function Initialize(evt) {
     fillGraphStates();
     the_evt_target_ownerDocument.documentElement.setAttribute("width", 2*x_offset + vert_layout.group.getBBox().x + vert_layout.group.getBBox().width);
     the_evt_target_ownerDocument.documentElement.setAttribute("height", 2*y_offset + vert_layout.group.getBBox().y + vert_layout.group.getBBox().height);
-    resize_svg();
     
     browser_width = window.innerWidth;
     browser_height = window.innerHeight;

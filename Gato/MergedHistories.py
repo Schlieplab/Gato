@@ -46,11 +46,9 @@ class MergedHistories:
     def __init__(self):
         self.history = []
         self.history_index = None
-        self.count = 0
         self.animator1 = None
         self.animator2 = None
         self.auto_print = 0
-    
     
     def SetVertexColor(self, v, color, animator, display):
         if self.animator1 is None:
@@ -63,7 +61,6 @@ class MergedHistories:
                                                             undo_args=(animator.GetVertexColor(v),))
         animation.Do()
         self.append(animation, display)
-        self.count += 1
         
     #seperate the setAllVert call into component SetVertexColor calls?  Make it undoable
     def SetAllVerticesColor(self, color, animator, display, graph=None, vertices=None):
