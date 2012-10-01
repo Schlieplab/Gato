@@ -480,10 +480,10 @@ class AlgoWin(Frame):
             self.BindKeys(self.secondaryGraphDisplay)
             # Provide undo and logging of animations if required
             if self.algorithm.logAnimator == 1:
-                self.secondaryGraphDisplay = AnimationHistory(self.secondaryGraphDisplay)
+                self.secondaryGraphDisplay = AnimationHistory(self.secondaryGraphDisplay, displayNum=2)
             elif self.algorithm.logAnimator == 2:
                 self.secondaryGraphDisplay = AnimationHistory(self.secondaryGraphDisplay,
-                                                          'disp2\t')
+                                                          'disp2\t', displayNum=2)
                 self.secondaryGraphDisplay.auto_print = 1
         else:
             if self.graph_panes:
@@ -865,7 +865,10 @@ class AlgoWin(Frame):
                                          )
         if fileName is not "":
             import GatoExport
-
+            if self.graphDisplay is self.secondaryGraphDisplay.animator:
+                print "THEY'RE THE SAME"
+            else:
+                print "fasfsdafasdfsf"
             # We never destroy the secondary graph display (and create it from the beginning
             # for the paned viewed. graphDisplays is set from prolog
             if self.algorithm.graphDisplays == None or self.algorithm.graphDisplays == 1:
@@ -877,6 +880,7 @@ class AlgoWin(Frame):
                                      None,
                                      showAnimation=True)
             else:
+                print self.secondaryGraphDisplay.animator.__class__
                 GatoExport.ExportSVG(fileName,
                                      self,
                                      self.algorithm,

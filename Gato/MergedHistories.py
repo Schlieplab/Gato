@@ -49,7 +49,7 @@ class MergedHistories:
         self.animator1 = None
         self.animator2 = None
         self.auto_print = 0
-    
+
     def SetVertexColor(self, v, color, animator, display):
         if self.animator1 is None:
             if display==1:

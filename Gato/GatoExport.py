@@ -187,6 +187,7 @@ function getTranslate(str){
 
 }
 
+
 //Sets the first instance of "translate" in components "transform" attribute to "translate(x y)"
 //Creates one if none exists.
 function setTranslate(component, x, y){
@@ -209,6 +210,7 @@ function setTranslate(component, x, y){
         component.setAttribute("transform", "translate(" + x + " " + y + ")");
     }
 }
+
 
 //Accepts a string of the form "...scale(x y)..." and returns x and y in a 2-index array
 function getScale(str){
@@ -244,6 +246,7 @@ function getScale(str){
 
 }
 
+
 //Sets the first instance of "scale" in components "transform" attribute to "scale(x y)"
 //Creates one if none exists
 function setScale(component, x, y){
@@ -266,6 +269,7 @@ function setScale(component, x, y){
         component.setAttribute("transform", "scale(" + x + " " + y + ")");
     }
 }
+
 
 //Creates a textnode with the given text
 function createLabel(id, text) {
@@ -299,6 +303,7 @@ function Orthogonal(dx, dy){
     return [-1*u2, u1];
 }
 
+
 //Fills the edges array with all the edges that are currently active on the graph
 function fillEdgesArray() {
     edges = new Array();
@@ -315,6 +320,7 @@ function fillEdgesArray() {
     	}
     }
 }
+
 
 //Creates an arrowhead on a line starting at (vx,vy) and ending at (wx,wy) and parallel to it
 //Arrowhead with given id touches the outide of a vertex with cx=wx and xy=wy
@@ -353,8 +359,6 @@ function createArrowhead(vx, vy, wx, wy, stroke_width, id){
 }
 
 
-
-
 /**
 *
 *
@@ -373,6 +377,7 @@ function HighlightableTextBlock(hp, vp, id, font_size, layout){
     the_evt_target_ownerDocument.documentElement.insertBefore(this.highlight_group, this.line_llc.group);   
 }
 
+
 //Initializes prototype, to call object.function
 function HTB_prototypeInit(){
     var htb = new HighlightableTextBlock(2,2,"foo",14, "vertical");
@@ -386,6 +391,7 @@ function HTB_prototypeInit(){
     htb = the_evt_target_ownerDocument.getElementById("foo_hg");
     htb.parentNode.removeChild(htb);
 }
+
 
 //Adds a rectangular box around the code section
 function HTB_addBoundingBox(color) {
@@ -415,6 +421,7 @@ function HTB_addBoundingBox(color) {
 	this.highlight_group.insertBefore(rect, this.highlight_group.firstChild);
 }
 
+
 //Insert line with respective into nth slot.  0-based indexing.  If line already exists in HTB, line is shifted to respective spot.
 function HTB_insertLine(id, n){
     var to_insert = the_evt_target_ownerDocument.getElementById(id);
@@ -439,12 +446,12 @@ function HTB_insertLine(id, n){
     this.line_llc.insertComponent(id, n);
 }
 
+
 //Deletes nth line, using 0-based indexing
 function HTB_deleteLine(n){
     this.line_llc.deleteComponent(n);
     this.removeHighlight(this.line_llc.group.childNodes.length);
 }
-
 
 
 //highlight nth line, using 0-based indexing
@@ -485,6 +492,7 @@ function HTB_highlightLine(n){
     }
 }
 
+
 //Removes the highlight of the nth line, using 0-based indexing.
 function HTB_removeHighlight(n){
     var hl = the_evt_target_ownerDocument.getElementById(this.line_llc.group.getAttribute("id") + "_hl" + (n+1));
@@ -509,6 +517,7 @@ function LinearLayoutComponent(hp, vp, id, layout){
     this.layout = layout;  //'horizontal' or 'vertical'
 }
 
+
 //Initializes prototype to call methods of the form object.function
 function LLC_prototypeInit(){
     var llc = new LinearLayoutComponent(0,0,"foo","horizontal");
@@ -517,7 +526,6 @@ function LLC_prototypeInit(){
     LinearLayoutComponent.prototype.resnapComponent = LLC_resnapComponent;
     llc.group.parentNode.removeChild(llc.group);
 }
-
 
 
 //Insert element of specified id into nth slot, using 0-based indexing.
@@ -636,6 +644,7 @@ function LLC_resnapComponent(n){
     this.insertComponent(child.getAttribute("id"), n);
 }
 
+
 //Deletes the nth element, using 0-based indexing, and refits components if necessary
 function LLC_deleteComponent(n){
     var padding = 0;
@@ -682,14 +691,13 @@ function LLC_deleteComponent(n){
 }
 
 
-
-
 //Button Panel
 //Buttons are padded by hp and vp pixels.
 //Button panel's id given by id, and layout of buttons is given by layout
 function ButtonPanel(hp, vp, id, layout){
     this.llc = new LinearLayoutComponent(hp, vp, id, layout);
 }
+
 
 //Initializes prototype for button panel
 function BP_prototypeInit(){
@@ -701,6 +709,7 @@ function BP_prototypeInit(){
     ButtonPanel.prototype.deactivateButton = BP_deactivateButton;
     bp.llc.group.parentNode.removeChild(bp.llc.group);
 }
+
 
 //Creates a button
 //Parameters:  button id, shape (path), color, index in button panel, button action
@@ -721,10 +730,12 @@ function BP_createButton(id, draw_path, color, index, action){  //Create button 
     }
 }
 
+
 //Deletes the nth button from panel (0-based indexing)
 function BP_deleteButton(n){
     this.llc.deleteComponent(n);
 }
+
 
 //Deletes button of given id from the panel
 function BP_deleteButtonById(id){
@@ -737,6 +748,7 @@ function BP_deleteButtonById(id){
         }
     }
 }
+
 
 //Activates button with corresponding id and assigns a specified action
 function BP_activateButton(id, action){
@@ -751,6 +763,7 @@ function BP_activateButton(id, action){
     }
 }
 
+
 //Deactivates button with corresponding id
 function BP_deactivateButton(id){
     var children = this.llc.group.childNodes;
@@ -764,6 +777,7 @@ function BP_deactivateButton(id){
         }
     }
 }
+
 
 /**
 *
@@ -1084,7 +1098,6 @@ function AnimateLoop(){
         return;
     }
     
-    console.log('state: ' + state);
     if (movie_slider.thumb_active === true || scaler.scaler_active === true) {
         //console.log('returning because something is active');
         setTimeout(AnimateLoop, 1);
@@ -1112,9 +1125,8 @@ function AnimateLoop(){
     //Check if steps remain
     if(step < animation.length) { //If steps remain
         
-        if(animation[step-1][1] == ShowActive && ( the_evt_target_ownerDocument.getElementById(code.line_llc.group.getAttribute("id") + "_bp" + animation[step-1][2].split("_")[1]) != null 
+        if(animation[step-1][1] == ShowActive && ( the_evt_target_ownerDocument.getElementById(code.line_llc.group.getAttribute("id") + "_bp" + animation[step-1][2].split("_")[1] + "_act") != null 
                 || step_pressed) ){ //If the line was a show_active and the line is a breakpoint or the step button was pressed, wait
-                
                 
                 state = "waiting";
                 clearTimeout(timer);
@@ -1299,7 +1311,7 @@ function SetBreakpoint(evt){
     //indicator.setAttribute("y", line_bbox.y + line_translation[1] - code.line_llc.v_padding - dy);
     //indicator.setAttribute("width", htb_bbox.width + 2*code.line_llc.h_padding);
     //indicator.setAttribute("height", line_bbox.height + 2*code.line_llc.v_padding);
-    var y_start = line_bbox.y + line_translation[1] - code.line_llc.v_padding - dy + 8;
+    /*var y_start = line_bbox.y + line_translation[1] - code.line_llc.v_padding - dy + line_bbox.height/4;
     var x_start = -6;
     var indicator = the_evt_target_ownerDocument.createElementNS(svgNS, "path");
     indicator.setAttribute("d", String("M" + x_start + " " + y_start + " L" + (x_start+8) + " " + y_start + " L" + (x_start+12) + " " + (y_start+4) + " L" + (x_start+8) + " " + (y_start+8) + " L" + x_start + " " + (y_start+8) + " L" + x_start + " " + y_start + " Z"));
@@ -1313,26 +1325,74 @@ function SetBreakpoint(evt){
     indicator.setAttribute("id", code.line_llc.group.getAttribute("id") + "_bp" + line.getAttribute("id").split("_")[1]);
     indicator.setAttribute("transform", "translate(" + x_offset + " " + y_offset + ")");
     indicator.setAttribute("onclick", "RemoveBreakpoint(evt)");
-    indicator.setAttribute("cursor", "pointer");
+    indicator.setAttribute("cursor", "pointer");*/
     //code.highlight_group.parentNode.insertBefore(indicator, code.highlight_group);
-    code.highlight_group.parentNode.appendChild(indicator);
+    //code.highlight_group.parentNode.appendChild(indicator);
+    var indicator = the_evt_target.getElementById(code.line_llc.group.getAttribute("id") + "_bp" + line.getAttribute("id").split("_")[1]);
+    var new_id = indicator.getAttribute("id") + "_act";
+    indicator.setAttribute("id", new_id);
+    console.log("new_id: " + new_id);
+    indicator.setAttribute("opacity", 1);
     line.setAttribute("onclick", "RemoveBreakpoint(evt)");
 }
+
+
+// Add transparent breakpoints to codebox to indicate the breakpoint capability
+function AddBreakpoints(code) {
+    var lines = code.line_llc.group.childNodes;
+    for (l in lines) {
+        var line = lines[l];
+        //console.log(line);
+        if(line.nodeName == "tspan"){
+            line = line.parentNode;
+        }
+        if (line.nodeName != "text")
+            continue;
+        var line_bbox = line.getBBox();
+        var line_translation = getTranslate(line.getAttribute("transform"));
+        var dx = line.getAttribute("dx");
+        var dy = line.getAttribute("dy");
+        if(dx == null){
+            dx = 0;
+        }else{
+                dx = parseFloat(dx);
+        }
+        if(dy == null){
+                dy = 0;
+        }else{
+                dy = parseFloat(dy);
+        }
+        var y_start = line_bbox.y + line_translation[1] - code.line_llc.v_padding - dy + line_bbox.height/4;
+        var x_start = -6;
+        var indicator = the_evt_target_ownerDocument.createElementNS(svgNS, "path");
+        indicator.setAttribute("d", String("M" + x_start + " " + y_start + " L" + (x_start+8) + " " + y_start + " L" + (x_start+12) + " " + (y_start+4) + " L" + (x_start+8) + " " + (y_start+8) + " L" + x_start + " " + (y_start+8) + " L" + x_start + " " + y_start + " Z"));
+        indicator.setAttribute("stroke", "blue");
+        indicator.setAttribute("fill", "blue");
+        indicator.setAttribute("id", code.line_llc.group.getAttribute("id") + "_bp" + line.getAttribute("id").split("_")[1]);
+        indicator.setAttribute("transform", "translate(" + x_offset + " " + y_offset + ")");
+        indicator.setAttribute("onclick", "RemoveBreakpoint(evt)");
+        indicator.setAttribute("cursor", "pointer");
+        indicator.setAttribute("opacity", .2);
+        code.highlight_group.parentNode.appendChild(indicator);
+    }
+}
+
 
 //Removes a highlight by removing a grey highlight
 function RemoveBreakpoint(evt){
     var line = evt.target;
-
-    if(line.nodeName == "rect"){
+    console.log(line);
+    if(line.nodeName == "path"){
         var id = "";
         if(line.getAttribute("id").indexOf("_bp") != -1){
-            id = "l_" + evt.target.getAttribute("id").substring(evt.target.getAttribute("id").indexOf("_") + "_bp".length);
+            var target_id = evt.target.getAttribute("id");
+            id = "l_" + target_id.substring(target_id.indexOf("_") + "_bp".length, target_id.length-4);
         }else if(line.getAttribute("id").indexOf("_hl") != -1){
-            id = "l_" + evt.target.getAttribute("id").substring(evt.target.getAttribute("id").indexOf("_") + "_hl".length);
+            id = "l_" + target_id.substring(target_id.indexOf("_") + "_hl".length);
             line.setAttribute("cursor", "default");
             line.setAttribute("onclick", "");
         }else return;
-        
+        console.log("searching id: " + id);
         line = the_evt_target_ownerDocument.getElementById(id);
     }
     
@@ -1341,9 +1401,14 @@ function RemoveBreakpoint(evt){
     }
     
     if(line.nodeName == "text"){
-        var background = the_evt_target_ownerDocument.getElementById(code.line_llc.group.getAttribute("id") + "_bp" + line.getAttribute("id").split("_")[1]);
+        var background = the_evt_target_ownerDocument.getElementById(code.line_llc.group.getAttribute("id") + "_bp" + line.getAttribute("id").split("_")[1] + "_act");
         if(background != null){
-            background.parentNode.removeChild(background);
+            //background.parentNode.removeChild(background);
+            background.setAttribute("opacity", .2);
+            var new_id = background.getAttribute("id");
+            new_id = new_id.substring(0, new_id.length-4);
+            console.log("new_id: " + new_id);
+            background.setAttribute("id", new_id);
             line.setAttribute("onclick", "SetBreakpoint(evt)");
         }   
     }
@@ -2556,7 +2621,6 @@ function OD_mouseout(evt) {
     for (i in pieces) 
         pieces[i].setAttribute("opacity", 1);
         
-    option_dropdown.close_dropdown();
 }
 
 
@@ -2689,6 +2753,9 @@ function Initialize(evt) {
         code.insertLine("l_" + linenum, linenum-1);
         linenum++;
     }
+
+    // Add transparent breakpoints
+    AddBreakpoints(code);
 
     code.addBoundingBox("#8888AA");
     
@@ -3015,7 +3082,7 @@ def collectAnimations(histories, prefixes):
     """ Given a list of animation histories (aka list of AnimationCommands)
         combine them, giving all targets of animation commands their history-
         specific prefix, sort them and return a list of JavaScripts arrays.
-    """
+    """ 
     mergedCmds = [cmd_as_javascript(cmd, prefixes[0]) for cmd in histories[0]]
     for i, h in enumerate(histories[1:]):
         mergedCmds += [cmd_as_javascript(cmd, prefixes[i+1]) for cmd in h]
@@ -3228,6 +3295,7 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
     global SVG_Animation
     if showAnimation:
         if secondaryGraphDisplayAnimationHistory:
+            print secondaryGraphDisplayAnimationHistory.getHistoryTwo()
             animation = collectAnimations([algorithm.animation_history.getHistoryOne(),
                                            secondaryGraphDisplayAnimationHistory.getHistoryTwo(),
                                            algowin.codeLineHistory],
