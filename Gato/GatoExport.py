@@ -1281,6 +1281,20 @@ function SetBreakpoint(evt){
         line = line.parentNode;
     }
 
+    if(line.nodeName == "path"){
+        var id = "";
+        if(line.getAttribute("id").indexOf("_bp") != -1){
+            var target_id = evt.target.getAttribute("id");
+            id = "l_" + target_id.substring(target_id.indexOf("_") + "_bp".length);
+        }else if(line.getAttribute("id").indexOf("_hl") != -1){
+            id = "l_" + target_id.substring(target_id.indexOf("_") + "_hl".length);
+            line.setAttribute("cursor", "default");
+            line.setAttribute("onclick", "");
+        }else return;
+        console.log("new line id: " + id);
+        line = the_evt_target_ownerDocument.getElementById(id);
+    }
+
     //put breakpoint functionality on highligt if it is over highlighted text
     var hl_num = line.getAttribute("id").split("_")[1];
     var hl = the_evt_target_ownerDocument.getElementById("code_hl" + hl_num);
@@ -1333,6 +1347,7 @@ function SetBreakpoint(evt){
     indicator.setAttribute("id", new_id);
     console.log("new_id: " + new_id);
     indicator.setAttribute("opacity", 1);
+    indicator.setAttribute("onclick", "RemoveBreakpoint(evt)");
     line.setAttribute("onclick", "RemoveBreakpoint(evt)");
 }
 
@@ -1370,9 +1385,9 @@ function AddBreakpoints(code) {
         indicator.setAttribute("fill", "blue");
         indicator.setAttribute("id", code.line_llc.group.getAttribute("id") + "_bp" + line.getAttribute("id").split("_")[1]);
         indicator.setAttribute("transform", "translate(" + x_offset + " " + y_offset + ")");
-        indicator.setAttribute("onclick", "RemoveBreakpoint(evt)");
+        indicator.setAttribute("onclick", "SetBreakpoint(evt)");
         indicator.setAttribute("cursor", "pointer");
-        indicator.setAttribute("opacity", .2);
+        indicator.setAttribute("opacity", .15);
         code.highlight_group.parentNode.appendChild(indicator);
     }
 }
@@ -1386,10 +1401,12 @@ function RemoveBreakpoint(evt){
         var id = "";
         if(line.getAttribute("id").indexOf("_bp") != -1){
             var target_id = evt.target.getAttribute("id");
+            evt.target.setAttribute("onclick", "SetBreakpoint(evt)");
             id = "l_" + target_id.substring(target_id.indexOf("_") + "_bp".length, target_id.length-4);
         }else if(line.getAttribute("id").indexOf("_hl") != -1){
             id = "l_" + target_id.substring(target_id.indexOf("_") + "_hl".length);
             line.setAttribute("cursor", "default");
+            console.log("blargasdgasd");
             line.setAttribute("onclick", "");
         }else return;
         console.log("searching id: " + id);
@@ -1404,7 +1421,7 @@ function RemoveBreakpoint(evt){
         var background = the_evt_target_ownerDocument.getElementById(code.line_llc.group.getAttribute("id") + "_bp" + line.getAttribute("id").split("_")[1] + "_act");
         if(background != null){
             //background.parentNode.removeChild(background);
-            background.setAttribute("opacity", .2);
+            background.setAttribute("opacity", .15);
             var new_id = background.getAttribute("id");
             new_id = new_id.substring(0, new_id.length-4);
             console.log("new_id: " + new_id);
@@ -1433,12 +1450,29 @@ function SetVertexColor(v, color) {
 function SetEdgeColor(e, color) {
     // NOTE: Gato signature SetEdgeColor(v, w, color)
     element = the_evt_target_ownerDocument.getElementById(e);
+    if (element == null) {
+        e = switch_edge_vertices(e);
+        element = the_evt_target_ownerDocument.getElementById(e);
+    }
     element.setAttribute("stroke", color);
     //added changes to color of arrowheads
     element = the_evt_target_ownerDocument.getElementById(e_arrow_id + e);
     if(element != null){
         element.setAttribute("fill", color);
     }
+}
+
+//Takes in an edge and switches the vertices to accomodate for directed graphs.
+//Usual form of edge is g1_(1, 2) or g2_(2, 1) etc.
+function switch_edge_vertices(e){
+    var prefix = e.split('(')[0];
+    var split = e.split(',');
+    var losplit = split[0].split('(');
+    var v1 = losplit[1].substring(0, losplit[1].length);
+    //var v1 = split[0].split[0].length-1);
+    var v2 = split[1].substring(1, split[1].length-1);
+    var new_e = prefix + "(" + v2 + ", " + v1 + ")";
+    return new_e;
 }
 
 //Sets color of all vertices of a given graph to a given color

@@ -98,6 +98,9 @@ var screen_ctm;                     //Coordiante transformation matrix of the sc
 var option_dropdown;                //Option dropdown box at top right hand corner
 var viewbox_x;
 var viewbox_y;
+var MIN_SCALE_FACTOR = .2;          // Minimum scale factor for the graph
+var scale_graph_width = undefined;  // Graph width(considering scaling) at the time of a mouse click on the scaler
+
 /**
 *
 *
@@ -140,6 +143,7 @@ function getTranslate(str){
 
 }
 
+
 //Sets the first instance of "translate" in components "transform" attribute to "translate(x y)"
 //Creates one if none exists.
 function setTranslate(component, x, y){
@@ -162,6 +166,7 @@ function setTranslate(component, x, y){
         component.setAttribute("transform", "translate(" + x + " " + y + ")");
     }
 }
+
 
 //Accepts a string of the form "...scale(x y)..." and returns x and y in a 2-index array
 function getScale(str){
@@ -197,6 +202,7 @@ function getScale(str){
 
 }
 
+
 //Sets the first instance of "scale" in components "transform" attribute to "scale(x y)"
 //Creates one if none exists
 function setScale(component, x, y){
@@ -219,6 +225,7 @@ function setScale(component, x, y){
         component.setAttribute("transform", "scale(" + x + " " + y + ")");
     }
 }
+
 
 //Creates a textnode with the given text
 function createLabel(id, text) {
@@ -252,6 +259,7 @@ function Orthogonal(dx, dy){
     return [-1*u2, u1];
 }
 
+
 //Fills the edges array with all the edges that are currently active on the graph
 function fillEdgesArray() {
     edges = new Array();
@@ -268,6 +276,7 @@ function fillEdgesArray() {
     	}
     }
 }
+
 
 //Creates an arrowhead on a line starting at (vx,vy) and ending at (wx,wy) and parallel to it
 //Arrowhead with given id touches the outide of a vertex with cx=wx and xy=wy
@@ -306,8 +315,6 @@ function createArrowhead(vx, vy, wx, wy, stroke_width, id){
 }
 
 
-
-
 /**
 *
 *
@@ -326,6 +333,7 @@ function HighlightableTextBlock(hp, vp, id, font_size, layout){
     the_evt_target_ownerDocument.documentElement.insertBefore(this.highlight_group, this.line_llc.group);   
 }
 
+
 //Initializes prototype, to call object.function
 function HTB_prototypeInit(){
     var htb = new HighlightableTextBlock(2,2,"foo",14, "vertical");
@@ -339,6 +347,7 @@ function HTB_prototypeInit(){
     htb = the_evt_target_ownerDocument.getElementById("foo_hg");
     htb.parentNode.removeChild(htb);
 }
+
 
 //Adds a rectangular box around the code section
 function HTB_addBoundingBox(color) {
@@ -368,6 +377,7 @@ function HTB_addBoundingBox(color) {
 	this.highlight_group.insertBefore(rect, this.highlight_group.firstChild);
 }
 
+
 //Insert line with respective into nth slot.  0-based indexing.  If line already exists in HTB, line is shifted to respective spot.
 function HTB_insertLine(id, n){
     var to_insert = the_evt_target_ownerDocument.getElementById(id);
@@ -392,12 +402,12 @@ function HTB_insertLine(id, n){
     this.line_llc.insertComponent(id, n);
 }
 
+
 //Deletes nth line, using 0-based indexing
 function HTB_deleteLine(n){
     this.line_llc.deleteComponent(n);
     this.removeHighlight(this.line_llc.group.childNodes.length);
 }
-
 
 
 //highlight nth line, using 0-based indexing
@@ -438,6 +448,7 @@ function HTB_highlightLine(n){
     }
 }
 
+
 //Removes the highlight of the nth line, using 0-based indexing.
 function HTB_removeHighlight(n){
     var hl = the_evt_target_ownerDocument.getElementById(this.line_llc.group.getAttribute("id") + "_hl" + (n+1));
@@ -462,6 +473,7 @@ function LinearLayoutComponent(hp, vp, id, layout){
     this.layout = layout;  //'horizontal' or 'vertical'
 }
 
+
 //Initializes prototype to call methods of the form object.function
 function LLC_prototypeInit(){
     var llc = new LinearLayoutComponent(0,0,"foo","horizontal");
@@ -470,7 +482,6 @@ function LLC_prototypeInit(){
     LinearLayoutComponent.prototype.resnapComponent = LLC_resnapComponent;
     llc.group.parentNode.removeChild(llc.group);
 }
-
 
 
 //Insert element of specified id into nth slot, using 0-based indexing.
@@ -589,6 +600,7 @@ function LLC_resnapComponent(n){
     this.insertComponent(child.getAttribute("id"), n);
 }
 
+
 //Deletes the nth element, using 0-based indexing, and refits components if necessary
 function LLC_deleteComponent(n){
     var padding = 0;
@@ -635,14 +647,13 @@ function LLC_deleteComponent(n){
 }
 
 
-
-
 //Button Panel
 //Buttons are padded by hp and vp pixels.
 //Button panel's id given by id, and layout of buttons is given by layout
 function ButtonPanel(hp, vp, id, layout){
     this.llc = new LinearLayoutComponent(hp, vp, id, layout);
 }
+
 
 //Initializes prototype for button panel
 function BP_prototypeInit(){
@@ -654,6 +665,7 @@ function BP_prototypeInit(){
     ButtonPanel.prototype.deactivateButton = BP_deactivateButton;
     bp.llc.group.parentNode.removeChild(bp.llc.group);
 }
+
 
 //Creates a button
 //Parameters:  button id, shape (path), color, index in button panel, button action
@@ -674,10 +686,12 @@ function BP_createButton(id, draw_path, color, index, action){  //Create button 
     }
 }
 
+
 //Deletes the nth button from panel (0-based indexing)
 function BP_deleteButton(n){
     this.llc.deleteComponent(n);
 }
+
 
 //Deletes button of given id from the panel
 function BP_deleteButtonById(id){
@@ -690,6 +704,7 @@ function BP_deleteButtonById(id){
         }
     }
 }
+
 
 //Activates button with corresponding id and assigns a specified action
 function BP_activateButton(id, action){
@@ -704,6 +719,7 @@ function BP_activateButton(id, action){
     }
 }
 
+
 //Deactivates button with corresponding id
 function BP_deactivateButton(id){
     var children = this.llc.group.childNodes;
@@ -717,6 +733,7 @@ function BP_deactivateButton(id){
         }
     }
 }
+
 
 /**
 *
@@ -1037,7 +1054,6 @@ function AnimateLoop(){
         return;
     }
     
-    console.log('state: ' + state);
     if (movie_slider.thumb_active === true || scaler.scaler_active === true) {
         //console.log('returning because something is active');
         setTimeout(AnimateLoop, 1);
@@ -1065,9 +1081,8 @@ function AnimateLoop(){
     //Check if steps remain
     if(step < animation.length) { //If steps remain
         
-        if(animation[step-1][1] == ShowActive && ( the_evt_target_ownerDocument.getElementById(code.line_llc.group.getAttribute("id") + "_bp" + animation[step-1][2].split("_")[1]) != null 
+        if(animation[step-1][1] == ShowActive && ( the_evt_target_ownerDocument.getElementById(code.line_llc.group.getAttribute("id") + "_bp" + animation[step-1][2].split("_")[1] + "_act") != null 
                 || step_pressed) ){ //If the line was a show_active and the line is a breakpoint or the step button was pressed, wait
-                
                 
                 state = "waiting";
                 clearTimeout(timer);
@@ -1222,6 +1237,20 @@ function SetBreakpoint(evt){
         line = line.parentNode;
     }
 
+    if(line.nodeName == "path"){
+        var id = "";
+        if(line.getAttribute("id").indexOf("_bp") != -1){
+            var target_id = evt.target.getAttribute("id");
+            id = "l_" + target_id.substring(target_id.indexOf("_") + "_bp".length);
+        }else if(line.getAttribute("id").indexOf("_hl") != -1){
+            id = "l_" + target_id.substring(target_id.indexOf("_") + "_hl".length);
+            line.setAttribute("cursor", "default");
+            line.setAttribute("onclick", "");
+        }else return;
+        console.log("new line id: " + id);
+        line = the_evt_target_ownerDocument.getElementById(id);
+    }
+
     //put breakpoint functionality on highligt if it is over highlighted text
     var hl_num = line.getAttribute("id").split("_")[1];
     var hl = the_evt_target_ownerDocument.getElementById("code_hl" + hl_num);
@@ -1252,7 +1281,7 @@ function SetBreakpoint(evt){
     //indicator.setAttribute("y", line_bbox.y + line_translation[1] - code.line_llc.v_padding - dy);
     //indicator.setAttribute("width", htb_bbox.width + 2*code.line_llc.h_padding);
     //indicator.setAttribute("height", line_bbox.height + 2*code.line_llc.v_padding);
-    var y_start = line_bbox.y + line_translation[1] - code.line_llc.v_padding - dy + 8;
+    /*var y_start = line_bbox.y + line_translation[1] - code.line_llc.v_padding - dy + line_bbox.height/4;
     var x_start = -6;
     var indicator = the_evt_target_ownerDocument.createElementNS(svgNS, "path");
     indicator.setAttribute("d", String("M" + x_start + " " + y_start + " L" + (x_start+8) + " " + y_start + " L" + (x_start+12) + " " + (y_start+4) + " L" + (x_start+8) + " " + (y_start+8) + " L" + x_start + " " + (y_start+8) + " L" + x_start + " " + y_start + " Z"));
@@ -1266,26 +1295,77 @@ function SetBreakpoint(evt){
     indicator.setAttribute("id", code.line_llc.group.getAttribute("id") + "_bp" + line.getAttribute("id").split("_")[1]);
     indicator.setAttribute("transform", "translate(" + x_offset + " " + y_offset + ")");
     indicator.setAttribute("onclick", "RemoveBreakpoint(evt)");
-    indicator.setAttribute("cursor", "pointer");
+    indicator.setAttribute("cursor", "pointer");*/
     //code.highlight_group.parentNode.insertBefore(indicator, code.highlight_group);
-    code.highlight_group.parentNode.appendChild(indicator);
+    //code.highlight_group.parentNode.appendChild(indicator);
+    var indicator = the_evt_target.getElementById(code.line_llc.group.getAttribute("id") + "_bp" + line.getAttribute("id").split("_")[1]);
+    var new_id = indicator.getAttribute("id") + "_act";
+    indicator.setAttribute("id", new_id);
+    console.log("new_id: " + new_id);
+    indicator.setAttribute("opacity", 1);
+    indicator.setAttribute("onclick", "RemoveBreakpoint(evt)");
     line.setAttribute("onclick", "RemoveBreakpoint(evt)");
 }
+
+
+// Add transparent breakpoints to codebox to indicate the breakpoint capability
+function AddBreakpoints(code) {
+    var lines = code.line_llc.group.childNodes;
+    for (l in lines) {
+        var line = lines[l];
+        //console.log(line);
+        if(line.nodeName == "tspan"){
+            line = line.parentNode;
+        }
+        if (line.nodeName != "text")
+            continue;
+        var line_bbox = line.getBBox();
+        var line_translation = getTranslate(line.getAttribute("transform"));
+        var dx = line.getAttribute("dx");
+        var dy = line.getAttribute("dy");
+        if(dx == null){
+            dx = 0;
+        }else{
+                dx = parseFloat(dx);
+        }
+        if(dy == null){
+                dy = 0;
+        }else{
+                dy = parseFloat(dy);
+        }
+        var y_start = line_bbox.y + line_translation[1] - code.line_llc.v_padding - dy + line_bbox.height/4;
+        var x_start = -6;
+        var indicator = the_evt_target_ownerDocument.createElementNS(svgNS, "path");
+        indicator.setAttribute("d", String("M" + x_start + " " + y_start + " L" + (x_start+8) + " " + y_start + " L" + (x_start+12) + " " + (y_start+4) + " L" + (x_start+8) + " " + (y_start+8) + " L" + x_start + " " + (y_start+8) + " L" + x_start + " " + y_start + " Z"));
+        indicator.setAttribute("stroke", "blue");
+        indicator.setAttribute("fill", "blue");
+        indicator.setAttribute("id", code.line_llc.group.getAttribute("id") + "_bp" + line.getAttribute("id").split("_")[1]);
+        indicator.setAttribute("transform", "translate(" + x_offset + " " + y_offset + ")");
+        indicator.setAttribute("onclick", "SetBreakpoint(evt)");
+        indicator.setAttribute("cursor", "pointer");
+        indicator.setAttribute("opacity", .15);
+        code.highlight_group.parentNode.appendChild(indicator);
+    }
+}
+
 
 //Removes a highlight by removing a grey highlight
 function RemoveBreakpoint(evt){
     var line = evt.target;
-
-    if(line.nodeName == "rect"){
+    console.log(line);
+    if(line.nodeName == "path"){
         var id = "";
         if(line.getAttribute("id").indexOf("_bp") != -1){
-            id = "l_" + evt.target.getAttribute("id").substring(evt.target.getAttribute("id").indexOf("_") + "_bp".length);
+            var target_id = evt.target.getAttribute("id");
+            evt.target.setAttribute("onclick", "SetBreakpoint(evt)");
+            id = "l_" + target_id.substring(target_id.indexOf("_") + "_bp".length, target_id.length-4);
         }else if(line.getAttribute("id").indexOf("_hl") != -1){
-            id = "l_" + evt.target.getAttribute("id").substring(evt.target.getAttribute("id").indexOf("_") + "_hl".length);
+            id = "l_" + target_id.substring(target_id.indexOf("_") + "_hl".length);
             line.setAttribute("cursor", "default");
+            console.log("blargasdgasd");
             line.setAttribute("onclick", "");
         }else return;
-        
+        console.log("searching id: " + id);
         line = the_evt_target_ownerDocument.getElementById(id);
     }
     
@@ -1294,9 +1374,14 @@ function RemoveBreakpoint(evt){
     }
     
     if(line.nodeName == "text"){
-        var background = the_evt_target_ownerDocument.getElementById(code.line_llc.group.getAttribute("id") + "_bp" + line.getAttribute("id").split("_")[1]);
+        var background = the_evt_target_ownerDocument.getElementById(code.line_llc.group.getAttribute("id") + "_bp" + line.getAttribute("id").split("_")[1] + "_act");
         if(background != null){
-            background.parentNode.removeChild(background);
+            //background.parentNode.removeChild(background);
+            background.setAttribute("opacity", .15);
+            var new_id = background.getAttribute("id");
+            new_id = new_id.substring(0, new_id.length-4);
+            console.log("new_id: " + new_id);
+            background.setAttribute("id", new_id);
             line.setAttribute("onclick", "SetBreakpoint(evt)");
         }   
     }
@@ -1919,7 +2004,9 @@ function TransformGraph(graph, graph_bg, evt){
 */
 function Scaler(points, width) {
  	this.triang_scaler = the_evt_target.getElementById("triangle_scaler");
- 	this.scaler_active = false;
+
+    // Property that controls whether the scaler will alter the graph or not
+ 	this.scaler_active = false;    
  	
     scaler_width = width;
  	this.triang_scaler.setAttribute("points", points);
@@ -1929,35 +2016,38 @@ function Scaler(points, width) {
     this.triang_scaler.setAttribute("onmousemove", "drag_scaler(evt)");
 }
 
+
+// Click-handler for scaler.  Sets scaler_active to true to enable scaling with drags,
+// and sets mouse_start to the current cursor position
 function click_scaler(evt) {
  	scaler.scaler_active = true;
-    if (mouse_start == undefined) 
-        mouse_start = cursorPoint(evt);
+    var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
+    scale_graph_width = graph.getBBox().width * g_scale_factor;
+    mouse_start = cursorPoint(evt);
 }
 
+
+// Global-mouseup handler that deactivates scaler_active
 function deactivate_scaler(evt) {
  	if (scaler.scaler_active === false)
  		return;
  	
  	scaler.scaler_active = false;
 }
+
  
-function pointIn(el,x,y){
-		pt.x = x; pt.y = y;
-		return pt.matrixTransform(el.getTransformToElement(svg).inverse());
-}
- 
+// Global-mousemove handler that calls scaleGraph with the current evt if scaler_active is True
 function drag_scaler(evt) {
  	if (scaler.scaler_active === false)
  		return;
         
- 
  	var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
  	var graph_bg = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
  	scaleGraph( graph, graph_bg, evt, false);
 }
  
- /* Scales the graph and background.  If use_curr_sf is true then it uses the current g_scale_factor, otherwise it computes one based on scaler position */
+ // Scales the graph and background.  If use_curr_sf is true then it uses the current
+ // g_scale_factor, otherwise it computes one based on scaler position
 function scaleGraph(graph, graph_bg, evt, use_curr_sf) {
     
     if (use_curr_sf) {
@@ -1966,33 +2056,35 @@ function scaleGraph(graph, graph_bg, evt, use_curr_sf) {
         setScale(graph_bg, g_scale_factor, g_scale_factor);
         return;
     }
-    
+
+    // Factor the graph_width is multiplied by to get the actual width
     var width_factor = 1;
     if (max_scale_factor < 1)
         width_factor = max_scale_factor;
     
     cursor_point = cursorPoint(evt);
 
- 	var graph_width = graph.getBBox().width * width_factor;
- 	var translation1 = getTranslate(right_vert_layout.group.getAttribute("transform"));
-    var translation2 = getTranslate(vert_layout.group.getAttribute("transform"));
-    var translation3 = getTranslate(graph.getAttribute("transform"));
-    var total_trans_x = translation2[0] + translation3[0] +translation1[0];
-    
- 	var delta = cursor_point.x - mouse_start.x;
-    
-    //Scale factor used to compute size of graph-- if it is too large then it is thrown away.  If it fits then g_scale_factor = temp_scale_factor
-    var temp_scale_factor = (graph_width + delta)/graph_width;  
-    
-    var sum = graph_width*temp_scale_factor + graph.getBBox().x + total_trans_x;
+    //console.log('Cursor_point: (' + cursor_point.x + ', ' + cursor_point.y + ')');
+    //console.log('Mouse_start: (' + mouse_start.x + ', ' + mouse_start.y + ')');
 
-    var max_width = browser_width/screen_ctm.a - 20;
-        
-        
-    if (sum > max_width)
+    var graph_width = graph.getBBox().width * width_factor;
+    var cursor_delta = cursor_point.x - mouse_start.x;
+    if (cursor_delta === 0)
         return;
+    console.log("cursor_delta: " + cursor_delta);
+    console.log("graph_width: " + scale_graph_width);
+
+    var new_width = scale_graph_width + cursor_delta;
+    console.log("new_width: " + new_width);
+    var temp_scale_factor = new_width / graph_width;
+
+    //console.log("temp_scale_factor: " + temp_scale_factor);
     
-    if (temp_scale_factor < .2)
+    //Scale factor used to compute size of graph
+   // var temp_scale_factor = (graph_width + cursor_delta)/graph_width;
+
+    // If temp_scale_factor is too small then do not do the scaling
+    if (temp_scale_factor < MIN_SCALE_FACTOR)
         return;
     
     g_scale_factor = temp_scale_factor * width_factor;
@@ -2001,7 +2093,7 @@ function scaleGraph(graph, graph_bg, evt, use_curr_sf) {
     if (g_scale_factor > max_scale_factor)
         g_scale_factor = max_scale_factor;
     
- 	setScale(graph, g_scale_factor, g_scale_factor);
+    setScale(graph, g_scale_factor, g_scale_factor);
     setScale(graph_bg, g_scale_factor, g_scale_factor);
 }
 
@@ -2183,8 +2275,8 @@ function jumpToStep(n) {
             animation[i][1](animation[i][2],animation[i][3],animation[i][4]);
         }    
          
-    }//end for
-}//end jumpToStep
+    }// end for
+}
 
 
 
@@ -2193,8 +2285,7 @@ function jumpToStep(n) {
 //Movie Slider
 //
 */
-//Creates a simple slider that controls the position of the animation in the full "movie"
-//params: slider id, ...
+// Creates a simple slider that controls the position of the animation in the full "movie"
 function MovieSlider(id, slider_width, thumb_height, offset, end_step, labels, title, actions) {
 
     this.slider = null;
@@ -2267,8 +2358,10 @@ function MovieSlider(id, slider_width, thumb_height, offset, end_step, labels, t
 	}
 	
 	the_evt_target_ownerDocument.documentElement.appendChild(this.slider);
-}//end MovieSlider
+}
 
+
+// Click-handler for movie_slider, sets thumb_active if there's a drag, or calls Move_MovieSlider if there is only a click
 function Click_MovieSlider(evt) {
     if (evt.target.getAttribute("id") === "movie_slider_slider_thumb")
         movie_slider.thumb_active = true;
@@ -2276,16 +2369,18 @@ function Click_MovieSlider(evt) {
         Move_MovieSlider(evt);
 }
 
+
+// Called on mouse-up, deactivates movie_slider from any use
 function Deactivate_MovieSlider(evt){
     movie_slider.thumb_active = false;
 }
 
+
+// Click-handler for the movie_slider.
+// Changes the position and step setting of the movie_slider when the mouse is clicked on a given position
 function Move_MovieSlider(evt) {
     var bbox = movie_slider.slider_bar.getBBox();
     var x_pos = cursorPoint(evt).x;
-    
-    console.log('client_x:' + evt.clientX);
-    console.log('svg_x:' + x_pos);
     
     if (evt.clientX == undefined)
         x_pos = evt.touches[0].clientX;
@@ -2293,10 +2388,12 @@ function Move_MovieSlider(evt) {
     movie_slider.slider_thumb.setAttribute("x", x_pos - movie_slider.offset - (movie_slider.default_thickness/2) - getTranslate(movie_slider.slider.getAttribute("transform"))[0] - getTranslate(horiz_layout[1].group.getAttribute("transform"))[0]);
     movie_slider.current_setting = movie_slider.low_bound + (movie_slider.up_bound - movie_slider.low_bound)*(movie_slider.slider_thumb.getAttribute("x")/movie_slider.slider_bar.getAttribute("width"));
     movie_slider.current_setting = Math.floor(movie_slider.current_setting);
-    console.log('current step: ' + movie_slider.current_setting);
     jumpToStep(movie_slider.current_setting);
 }
 
+
+// Drag-handler for movie_slider
+// Changes the position of the movie_slider bar and the current step when the bar is dragged
 function Drag_MovieSlider(evt) {
     if (movie_slider.thumb_active) {
         var x_pos = cursorPoint(evt).x;
@@ -2304,7 +2401,6 @@ function Drag_MovieSlider(evt) {
         if (x_pos === undefined) 
             x_pos = evt.touches[0].clientX;
             
-        console.log(getTranslate(horiz_layout[1].group.getAttribute("transform"))[0]);
         if (x_pos >= (movie_slider.slider_bar.getBBox().x + getTranslate(movie_slider.slider.getAttribute("transform"))[0] + movie_slider.offset) && x_pos <= (movie_slider.slider_bar.getBBox().x + movie_slider.offset + movie_slider.slider_bar.getBBox().width + getTranslate(movie_slider.slider.getAttribute("transform"))[0])){
             movie_slider.slider_thumb.setAttribute("x", x_pos - movie_slider.offset - (movie_slider.default_thickness/2) - getTranslate(movie_slider.slider.getAttribute("transform"))[0] - getTranslate(horiz_layout[1].group.getAttribute("transform"))[0]);
             movie_slider.current_setting = movie_slider.low_bound + (movie_slider.up_bound - movie_slider.low_bound)*(movie_slider.slider_thumb.getAttribute("x")/movie_slider.slider_bar.getAttribute("width"));
@@ -2315,38 +2411,23 @@ function Drag_MovieSlider(evt) {
             //If slider bar is all the way to left set to 0
             movie_slider.current_setting = 0;
         }
-        //Limit the left range of bar to the slider
-       /* if (x_pos < (movie_slider.slider_bar.getBBox().x + getTranslate(movie_slider.slider.getAttribute("transform"))[0])) {
-            movie_slider.current_setting = 0;
-         */   
     
         movie_slider.current_setting = Math.floor(movie_slider.current_setting);
         console.log('current step: ' + movie_slider.current_setting);
         jumpToStep(movie_slider.current_setting);
     }
-}//end Drag_MovieSlider
+}
 
+
+// Changes the position of the movie slider handle to reflect the given step_num
 function Refresh_MovieSlider(step_num) {
     movie_slider.current_setting = step_num;
     var thumb_pos = (movie_slider.current_setting/movie_slider.up_bound) * movie_slider.slider_bar.getAttribute("width");
     movie_slider.slider_thumb.setAttribute('x', thumb_pos);
 }
-        
-function resize_svg() {
-   // setScale(the_evt_target.getElementById("wrapper"), .5, .5);
-   var elems = the_evt_target.childNodes;
-   console.log('in resize');
-   // setScale(horiz_layout.group, .5, .5);
-    var scale_factor = 1024/1500;
-    /*for (i in elems) {
-        if (elems[i].attributes === null || elems[i] == undefined || typeof(elems[i].getAttribute) == 'undefined')
-            continue;
-        setScale(elems[i], scale_factor, scale_factor);
-    }*/
-}
 
 
-//Adds a bounding box to the action controls at the bottom of the screen
+// Adds a bounding box to the action controls at the bottom of the screen
 function addControlBoundingBox(color) {
     var llc_box = horiz_layout[1].group.getBBox();
     
@@ -2366,7 +2447,8 @@ function addControlBoundingBox(color) {
     horiz_layout[1].group.insertBefore(rect, action_panel.llc.group);
 }
 
-//Position the action_panel and movie_slider controls at the bottom-center of the screen
+
+// Position the action_panel and movie_slider controls at the bottom-center of the screen
 function positionControls() {
     var bbox = horiz_layout[1].group.getBBox();
     var panel_width = screen_ctm.a * bbox.width;
@@ -2381,6 +2463,7 @@ function positionControls() {
 }
 
 
+// OptionDropdown Object constructor.  Creates the cog dropdown that controls animation speed
 function OptionDropdown(id, height, width) {
     
     this.height = height + 4;
@@ -2464,11 +2547,12 @@ function OptionDropdown(id, height, width) {
     the_evt_target_ownerDocument.documentElement.appendChild(this.dropdown);
 }
 
+
+// OptionDropdown initialization function
 function OD_build_dropdown() {
     
     this.menu = the_evt_target_ownerDocument.createElementNS(svgNS, "g");
     
-    //var x_trans = -1 * (speed_select.llc.group.getBBox().width - (browser_width/screen_ctm.a - this.x_trans)) - speed_select.llc.h_padding*2;
     var x_trans = -1*speed_select.llc.group.getBBox().width + speed_select.llc.h_padding*8;
     var y_trans = speed_select.llc.group.getBBox().height - speed_select.llc.v_padding*2;
     setTranslate(speed_select.llc.group, x_trans, y_trans);
@@ -2477,6 +2561,7 @@ function OD_build_dropdown() {
     this.menu.appendChild(speed_select.llc.group);
     this.dropdown.appendChild(this.menu);
 }
+
 
 //Positions the option dropdown at the top right of the screen
 function OD_position_dropdown() {
@@ -2492,6 +2577,7 @@ function OD_position_dropdown() {
     setTranslate(this.dropdown, this.x_trans, this.y_trans);
 }
 
+
 //Changes the appearance of the dropdown when the mouse is over it
 function OD_mouseover(evt) {
     var pieces = new Array(option_dropdown.rect, option_dropdown.triang);
@@ -2500,6 +2586,7 @@ function OD_mouseover(evt) {
         pieces[i].setAttribute("opacity", .5);
 }
 
+
 //reverses the change in appearance of mouseover, and closes dropdown menu
 function OD_mouseout(evt) {
     var pieces = new Array(option_dropdown.rect, option_dropdown.triang);
@@ -2507,8 +2594,8 @@ function OD_mouseout(evt) {
     for (i in pieces) 
         pieces[i].setAttribute("opacity", 1);
         
-    option_dropdown.close_dropdown();
 }
+
 
 //Pops open the dropdown menu
 function OD_mouseclick(evt) {
@@ -2524,52 +2611,71 @@ function OD_mouseclick(evt) {
         option_dropdown.speed_shown = true;
 }
 
-//Opens the dropdown, displaying all items
-function OD_open_dropdown() {
-    this.menu.setAttribute("visibility", "visible");
-}
 
-//Closes the dropdown
-function OD_close_dropdown() {
-    
-}
-
+// Initialize the functions for the OptionDropdown
 function Option_prototypeInit() {
     OptionDropdown.prototype.position_dropdown = OD_position_dropdown;
-    OptionDropdown.prototype.open_dropdown = OD_open_dropdown;
-    OptionDropdown.prototype.close_dropdown = OD_close_dropdown;
     OptionDropdown.prototype.build_dropdown = OD_build_dropdown;
 }
 
-function alert_click(evt) {
-    var point = the_evt_target.createSVGPoint();
-    var ctm = the_evt_target.getScreenCTM();
-    point.x = evt.clientX/ctm.a - ctm.e;
-    point.y = evt.clientY/ctm.d - ctm.f;
-    return;
-}
 
+// Retrieve the viewbox value set in the svg document
 function getViewboxVals() {
     viewbox_str = the_evt_target.getAttribute("viewBox").split(" ");
     viewbox_x = viewbox_str[2];
     viewbox_y = viewbox_str[3];
 }
 
+
+// Sets the maximum scale factor the graph can apply before going off the screen
 function set_max_scale_factor() {
     
+    function max_factor_y(graph) {
+        // Graph Dimensions
+        var height = graph.getBBox().height;
+        var graph_y = graph.getBBox().y;
+
+        // Translation of right_vert_layout, the vert_layout, and the graph itself
+        var translation1 = getTranslate(right_vert_layout.group.getAttribute("transform"));
+        var translation2 = getTranslate(vert_layout.group.getAttribute("transform"));
+        var translation3 = getTranslate(graph.getAttribute("transform"));
+        var translate = translation1[1] + translation2[1] + translation3[1];
+
+        var bottom_height = horiz_layout[1].group.getBBox().height + 30;    // Height of the bottom action bar
+        var total_sans_height = y_offset + graph_y + translate + bottom_height;
+
+        // Find how much larger the graph could be before the total becomes greater than the viewbox_y
+        var max_height = viewbox_y - total_sans_height;
+        var max_factor_y = max_height / height;
+        return max_factor_y;
+    }
+
+    function max_factor_x(graph) {
+        // Graph Dimensions
+        var width = graph.getBBox().width;
+        var graph_x = graph.getBBox().x;
+
+        // Translation of right_vert_layout, the vert_layout, and the graph itself
+        var translation1 = getTranslate(right_vert_layout.group.getAttribute("transform"));
+        var translation2 = getTranslate(vert_layout.group.getAttribute("transform"));
+        var translation3 = getTranslate(graph.getAttribute("transform"));
+        var translate = translation1[0] + translation2[0] + translation3[0];
+
+        var total_sans_width = x_offset + graph_x + translate;
+
+        // Find how much larger the graph could be before the total becomes greater than the viewbox_x
+        var max_width = viewbox_x - total_sans_width;
+        var max_factor_x = max_width / width;
+        return max_factor_x;
+    }
+
     var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
-    height = graph.getBBox().height;
-    y = graph.getBBox().y;
-    var translation1 = getTranslate(right_vert_layout.group.getAttribute("transform"));
-    var translation2 = getTranslate(vert_layout.group.getAttribute("transform"));
-    var translation3 = getTranslate(graph.getAttribute("transform"));
-    translate = translation1[1] + translation2[1] + translation3[1];
-    var bottom_height = horiz_layout[1].group.getBBox().height + 30;
-    total = y_offset + height + y + translate + bottom_height;
-    max_scale_factor = viewbox_y / total;
-    console.log('max_scale_factor ' + max_scale_factor);
+    max_scale_factor = Math.min(max_factor_y(graph), max_factor_x(graph));
 }
 
+
+// Scales the graph to fit the screen.  
+// Only really matters in cases where the graph is too large for the screen initially
 function scale_to_fit() {
     var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
  	var graph_bg = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
@@ -2591,35 +2697,39 @@ function Initialize(evt) {
     the_evt = evt;
     the_evt_target = evt.target;
     the_evt_target_ownerDocument = evt.target.ownerDocument;
+
+    // Object Prototype initialization
     HTB_prototypeInit();
     LLC_prototypeInit();
     BP_prototypeInit();
     SS_prototypeInit();
     Option_prototypeInit();
-    fillAttributeArray();
-    getViewboxVals();
+
+    fillAttributeArray();   // Fills the array of attributes that svg elements may contain
+    getViewboxVals();       // Set the viewbox_x and viewbox_y global vars
     
     pt = the_evt_target.createSVGPoint();       //Create a point for translating svg coords to mouse coords
     
+
+    // Set global event handlers
     the_evt_target.addEventListener("mousemove", drag_scaler, false);
-    //the_evt_target.addEventListener('mousedown', alert_click, false);
     the_evt_target.addEventListener("mouseup", deactivate_scaler, false);
     the_evt_target.addEventListener("mouseup", Deactivate_MovieSlider, false);
     the_evt_target.addEventListener("mousemove", Drag_MovieSlider, false);
-    //window.addEventListener('resize', resize_svg, false);
-    //the_evt_target.addEventListener("mousedown", show_cursor, false);
-
-    
     
     //Create code layout
     code = new HighlightableTextBlock(20, 0, "code", 14, "vertical");
 
+    // Insert lines of code into the HighlightableTextBlock
     var linenum = 1;
     while(the_evt_target_ownerDocument.getElementById("l_" + linenum) != null){
         code.insertLine("l_" + linenum, linenum-1);
         linenum++;
     }
-    
+
+    // Add transparent breakpoints
+    AddBreakpoints(code);
+
     code.addBoundingBox("#8888AA");
     
     speed_select = new SpeedSelector("speedSelect", 20, "blue", "red");
@@ -2727,7 +2837,6 @@ function Initialize(evt) {
     fillGraphStates();
     the_evt_target_ownerDocument.documentElement.setAttribute("width", 2*x_offset + vert_layout.group.getBBox().x + vert_layout.group.getBBox().width);
     the_evt_target_ownerDocument.documentElement.setAttribute("height", 2*y_offset + vert_layout.group.getBBox().y + vert_layout.group.getBBox().height);
-    resize_svg();
     
     browser_width = window.innerWidth;
     browser_height = window.innerHeight;
@@ -2750,265 +2859,265 @@ function Initialize(evt) {
 
 
 var animation = Array(Array(1, SetVertexColor, "g1_1", "#FF0000"),
-Array(2, SetVertexColor, "g1_2", "#00FF00"),
+Array(3, SetVertexColor, "g1_2", "#00FF00"),
 Array(2, SetVertexColor, "g1_3", "#0000FF"),
-Array(10, SetVertexColor, "g1_4", "#009999"),
+Array(1, SetVertexColor, "g1_4", "#009999"),
 Array(1, SetVertexColor, "g1_5", "#990099"),
 Array(1, SetVertexColor, "g1_6", "#999900"),
-Array(1, SetVertexColor, "g1_7", "#996666"),
-Array(1, SetVertexColor, "g1_8", "#669966"),
-Array(3, SetVertexColor, "g1_9", "#666699"),
+Array(2, SetVertexColor, "g1_7", "#996666"),
+Array(4, SetVertexColor, "g1_8", "#669966"),
+Array(2, SetVertexColor, "g1_9", "#666699"),
 Array(1, SetVertexColor, "g1_10", "#0066CC"),
 Array(2, ShowActive, "l_1"),
-Array(9, ShowActive, "l_8"),
-Array(10, ShowActive, "l_10"),
+Array(13, ShowActive, "l_8"),
+Array(15, ShowActive, "l_10"),
 Array(9, SetEdgeColor, "g1_(3, 4)", "yellow"),
-Array(11, ShowActive, "l_11"),
-Array(8, SetAllEdgesColor, "g1_#DDDDDD"),
-Array(1, SetAllVerticesColor, "g1_#000099"),
+Array(18, ShowActive, "l_11"),
+Array(9, SetAllEdgesColor, "g2_#DDDDDD"),
+Array(1, SetAllVerticesColor, "g2_#000099"),
 Array(1, SetEdgeColor, "g1_(3, 4)", "green"),
 Array(2, ShowActive, "l_12"),
-Array(8, AddVertex, "g1_(250, 50)", "3"),
-Array(8, AddVertex, "g1_(300, 100)", "4"),
-Array(7, AddEdge, "g1_(3, 4)"),
+Array(8, AddVertex, "g2_(250, 50)", "3"),
+Array(8, AddVertex, "g2_(300, 100)", "4"),
+Array(8, AddEdge, "g2_(3, 4)"),
 Array(1, SetAllVerticesColor, "g1_#0000FF", "4"),
-Array(9, SetEdgeColor, "g1_(3, 4)", "#0000FF"),
-Array(1, ShowActive, "l_10"),
+Array(12, SetEdgeColor, "g1_(3, 4)", "#0000FF"),
+Array(2, ShowActive, "l_10"),
 Array(9, SetEdgeColor, "g1_(1, 2)", "yellow"),
-Array(3, ShowActive, "l_11"),
-Array(8, SetAllEdgesColor, "g1_#DDDDDD"),
-Array(1, SetAllVerticesColor, "g1_#000099"),
+Array(2, ShowActive, "l_11"),
+Array(8, SetAllEdgesColor, "g2_#DDDDDD"),
+Array(4, SetAllVerticesColor, "g2_#000099"),
 Array(1, SetEdgeColor, "g1_(1, 2)", "green"),
-Array(3, ShowActive, "l_12"),
-Array(9, AddVertex, "g1_(50, 100)", "1"),
-Array(6, AddVertex, "g1_(150, 150)", "2"),
-Array(3, AddEdge, "g1_(1, 2)"),
+Array(2, ShowActive, "l_12"),
+Array(8, AddVertex, "g2_(50, 100)", "1"),
+Array(8, AddVertex, "g2_(150, 150)", "2"),
+Array(6, AddEdge, "g2_(1, 2)"),
 Array(1, SetAllVerticesColor, "g1_#FF0000", "2"),
-Array(2, SetEdgeColor, "g1_(1, 2)", "#FF0000"),
-Array(1, ShowActive, "l_10"),
-Array(8, SetEdgeColor, "g1_(4, 10)", "yellow"),
-Array(5, ShowActive, "l_11"),
-Array(8, SetAllEdgesColor, "g1_#DDDDDD"),
-Array(2, SetAllVerticesColor, "g1_#000099"),
+Array(3, SetEdgeColor, "g1_(1, 2)", "#FF0000"),
+Array(7, ShowActive, "l_10"),
+Array(9, SetEdgeColor, "g1_(4, 10)", "yellow"),
+Array(6, ShowActive, "l_11"),
+Array(8, SetAllEdgesColor, "g2_#DDDDDD"),
+Array(2, SetAllVerticesColor, "g2_#000099"),
 Array(2, SetEdgeColor, "g1_(4, 10)", "green"),
 Array(3, ShowActive, "l_12"),
-Array(9, AddVertex, "g1_(250, 200)", "10"),
-Array(8, AddEdge, "g1_(4, 10)"),
+Array(8, AddVertex, "g2_(250, 200)", "10"),
+Array(8, AddEdge, "g2_(4, 10)"),
 Array(1, SetAllVerticesColor, "g1_#0000FF", "10"),
 Array(3, SetEdgeColor, "g1_(4, 10)", "#0000FF"),
-Array(6, ShowActive, "l_10"),
+Array(7, ShowActive, "l_10"),
 Array(9, SetEdgeColor, "g1_(5, 8)", "yellow"),
 Array(2, ShowActive, "l_11"),
-Array(8, SetAllEdgesColor, "g1_#DDDDDD"),
-Array(1, SetAllVerticesColor, "g1_#000099"),
-Array(2, SetEdgeColor, "g1_(5, 8)", "green"),
-Array(5, ShowActive, "l_12"),
-Array(9, AddVertex, "g1_(550, 50)", "5"),
-Array(8, AddVertex, "g1_(500, 150)", "8"),
-Array(4, AddEdge, "g1_(5, 8)"),
-Array(1, SetAllVerticesColor, "g1_#990099", "8"),
-Array(4, SetEdgeColor, "g1_(5, 8)", "#990099"),
-Array(3, ShowActive, "l_10"),
-Array(9, SetEdgeColor, "g1_(6, 7)", "yellow"),
-Array(2, ShowActive, "l_11"),
-Array(8, SetAllEdgesColor, "g1_#DDDDDD"),
-Array(2, SetAllVerticesColor, "g1_#000099"),
-Array(1, SetEdgeColor, "g1_(6, 7)", "green"),
+Array(8, SetAllEdgesColor, "g2_#DDDDDD"),
+Array(2, SetAllVerticesColor, "g2_#000099"),
+Array(6, SetEdgeColor, "g1_(5, 8)", "green"),
 Array(2, ShowActive, "l_12"),
-Array(8, AddVertex, "g1_(650, 150)", "6"),
-Array(7, AddVertex, "g1_(750, 100)", "7"),
-Array(3, AddEdge, "g1_(6, 7)"),
+Array(8, AddVertex, "g2_(550, 50)", "5"),
+Array(7, AddVertex, "g2_(500, 150)", "8"),
+Array(8, AddEdge, "g2_(5, 8)"),
+Array(1, SetAllVerticesColor, "g1_#990099", "8"),
+Array(3, SetEdgeColor, "g1_(5, 8)", "#990099"),
+Array(6, ShowActive, "l_10"),
+Array(9, SetEdgeColor, "g1_(6, 7)", "yellow"),
+Array(3, ShowActive, "l_11"),
+Array(8, SetAllEdgesColor, "g2_#DDDDDD"),
+Array(1, SetAllVerticesColor, "g2_#000099"),
+Array(1, SetEdgeColor, "g1_(6, 7)", "green"),
+Array(1, ShowActive, "l_12"),
+Array(8, AddVertex, "g2_(650, 150)", "6"),
+Array(7, AddVertex, "g2_(750, 100)", "7"),
+Array(3, AddEdge, "g2_(6, 7)"),
 Array(1, SetAllVerticesColor, "g1_#999900", "7"),
-Array(2, SetEdgeColor, "g1_(6, 7)", "#999900"),
-Array(1, ShowActive, "l_10"),
-Array(9, SetEdgeColor, "g1_(8, 9)", "yellow"),
-Array(2, ShowActive, "l_11"),
-Array(8, SetAllEdgesColor, "g1_#DDDDDD"),
-Array(1, SetAllVerticesColor, "g1_#000099"),
+Array(4, SetEdgeColor, "g1_(6, 7)", "#999900"),
+Array(2, ShowActive, "l_10"),
+Array(8, SetEdgeColor, "g1_(8, 9)", "yellow"),
+Array(6, ShowActive, "l_11"),
+Array(8, SetAllEdgesColor, "g2_#DDDDDD"),
+Array(1, SetAllVerticesColor, "g2_#000099"),
 Array(1, SetEdgeColor, "g1_(8, 9)", "green"),
-Array(4, ShowActive, "l_12"),
-Array(8, AddVertex, "g1_(400, 200)", "9"),
-Array(8, AddEdge, "g1_(8, 9)"),
+Array(6, ShowActive, "l_12"),
+Array(8, AddVertex, "g2_(400, 200)", "9"),
+Array(7, AddEdge, "g2_(8, 9)"),
 Array(1, SetAllVerticesColor, "g1_#990099", "9"),
 Array(3, SetEdgeColor, "g1_(8, 9)", "#990099"),
 Array(3, ShowActive, "l_10"),
 Array(9, SetEdgeColor, "g1_(2, 3)", "yellow"),
-Array(4, ShowActive, "l_11"),
-Array(8, SetVertexAnnotation, "g1_2", "s"),
-Array(4, SetVertexAnnotation, "g1_3", "t"),
-Array(3, SetAllEdgesColor, "g1_#DDDDDD"),
-Array(4, SetAllVerticesColor, "g1_#000099"),
-Array(1, SetVertexColor, "g1_3", "#CFCFCF"),
-Array(1, SetVertexColor, "g1_4", "#CFCFCF"),
-Array(1, SetVertexColor, "g1_1", "#CFCFCF"),
-Array(1, SetVertexColor, "g1_2", "#CFCFCF"),
-Array(1, SetVertexColor, "g1_10", "#CFCFCF"),
-Array(1, SetVertexColor, "g1_5", "#CFCFCF"),
-Array(1, SetVertexColor, "g1_8", "#CFCFCF"),
-Array(1, SetVertexColor, "g1_6", "#CFCFCF"),
-Array(1, SetVertexColor, "g1_7", "#CFCFCF"),
-Array(1, SetVertexColor, "g1_9", "#CFCFCF"),
-Array(1, SetVertexColor, "g1_2", "blue"),
-Array(3, SetVertexColor, "g1_2", "grey"),
-Array(1, SetVertexFrameWidth, "g1_2", "6"),
-Array(1, SetVertexFrameWidth, "g1_2", "6"),
-Array(2, SetEdgeColor, "g1_(1, 2)", "yellow"),
-Array(1, SetVertexColor, "g1_1", "blue"),
-Array(1, SetVertexColor, "g1_1", "blue"),
-Array(1, SetEdgeColor, "g1_(1, 2)", "grey"),
-Array(1, SetVertexFrameWidth, "g1_2", "0"),
-Array(1, SetVertexColor, "g1_1", "grey"),
-Array(1, SetVertexFrameWidth, "g1_2", "0"),
-Array(1, SetVertexFrameWidth, "g1_1", "6"),
-Array(1, SetVertexFrameWidth, "g1_1", "6"),
-Array(1, SetEdgeColor, "g1_(1, 2)", "yellow"),
-Array(3, SetEdgeColor, "g1_(1, 2)", "grey"),
-Array(1, SetVertexFrameWidth, "g1_1", "0"),
+Array(3, ShowActive, "l_11"),
+Array(8, SetVertexAnnotation, "g2_2", "s"),
+Array(7, SetVertexAnnotation, "g2_3", "t"),
+Array(6, SetAllEdgesColor, "g2_#DDDDDD"),
+Array(2, SetAllVerticesColor, "g2_#000099"),
+Array(2, SetVertexColor, "g2_3", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_4", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_1", "#CFCFCF"),
+Array(4, SetVertexColor, "g2_2", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_10", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_5", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_8", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_6", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_7", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_9", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_2", "blue"),
+Array(1, SetVertexColor, "g2_2", "grey"),
+Array(1, SetVertexFrameWidth, "g2_2", "6"),
+Array(1, SetVertexFrameWidth, "g2_2", "6"),
+Array(2, SetEdgeColor, "g2_(1, 2)", "yellow"),
+Array(1, SetVertexColor, "g2_1", "blue"),
+Array(1, SetVertexColor, "g2_1", "blue"),
+Array(1, SetEdgeColor, "g2_(1, 2)", "grey"),
+Array(4, SetVertexFrameWidth, "g2_2", "0"),
+Array(1, SetVertexColor, "g2_1", "grey"),
+Array(1, SetVertexFrameWidth, "g2_2", "0"),
+Array(1, SetVertexFrameWidth, "g2_1", "6"),
+Array(1, SetVertexFrameWidth, "g2_1", "6"),
+Array(1, SetEdgeColor, "g2_(1, 2)", "yellow"),
+Array(1, SetEdgeColor, "g2_(1, 2)", "grey"),
+Array(1, SetVertexFrameWidth, "g2_1", "0"),
 Array(3, SetEdgeColor, "g1_(2, 3)", "green"),
-Array(2, ShowActive, "l_12"),
-Array(8, AddEdge, "g1_(2, 3)"),
+Array(3, ShowActive, "l_12"),
+Array(8, AddEdge, "g2_(2, 3)"),
 Array(1, SetVertexColor, "g1_1", "#0000FF"),
-Array(3, SetVertexColor, "g1_2", "#0000FF"),
+Array(2, SetVertexColor, "g1_2", "#0000FF"),
 Array(2, SetEdgeColor, "g1_(2, 1)", "#0000FF"),
 Array(1, SetAllVerticesColor, "g1_#0000FF", "1", "2"),
 Array(2, SetEdgeColor, "g1_(2, 3)", "#0000FF"),
-Array(3, ShowActive, "l_10"),
+Array(7, ShowActive, "l_10"),
 Array(9, SetEdgeColor, "g1_(5, 6)", "yellow"),
-Array(2, ShowActive, "l_11"),
-Array(8, SetVertexAnnotation, "g1_2", ""),
-Array(8, SetVertexAnnotation, "g1_3", ""),
-Array(3, SetVertexAnnotation, "g1_5", "s"),
-Array(7, SetVertexAnnotation, "g1_6", "t"),
-Array(7, SetAllEdgesColor, "g1_#DDDDDD"),
-Array(1, SetAllVerticesColor, "g1_#000099"),
-Array(1, SetVertexColor, "g1_3", "#CFCFCF"),
-Array(1, SetVertexColor, "g1_4", "#CFCFCF"),
-Array(1, SetVertexColor, "g1_1", "#CFCFCF"),
-Array(1, SetVertexColor, "g1_2", "#CFCFCF"),
-Array(1, SetVertexColor, "g1_10", "#CFCFCF"),
-Array(1, SetVertexColor, "g1_5", "#CFCFCF"),
-Array(1, SetVertexColor, "g1_8", "#CFCFCF"),
-Array(1, SetVertexColor, "g1_6", "#CFCFCF"),
-Array(1, SetVertexColor, "g1_7", "#CFCFCF"),
-Array(1, SetVertexColor, "g1_9", "#CFCFCF"),
-Array(2, SetVertexColor, "g1_5", "blue"),
-Array(1, SetVertexColor, "g1_5", "grey"),
-Array(1, SetVertexFrameWidth, "g1_5", "6"),
-Array(1, SetVertexFrameWidth, "g1_5", "6"),
-Array(1, SetEdgeColor, "g1_(5, 8)", "yellow"),
-Array(1, SetVertexColor, "g1_8", "blue"),
-Array(1, SetVertexColor, "g1_8", "blue"),
-Array(1, SetEdgeColor, "g1_(5, 8)", "grey"),
-Array(1, SetVertexFrameWidth, "g1_5", "0"),
-Array(1, SetVertexColor, "g1_8", "grey"),
-Array(1, SetVertexFrameWidth, "g1_5", "0"),
-Array(1, SetVertexFrameWidth, "g1_8", "6"),
-Array(1, SetVertexFrameWidth, "g1_8", "6"),
-Array(2, SetEdgeColor, "g1_(5, 8)", "yellow"),
-Array(1, SetEdgeColor, "g1_(5, 8)", "grey"),
-Array(1, SetEdgeColor, "g1_(8, 9)", "yellow"),
-Array(3, SetVertexColor, "g1_9", "blue"),
-Array(1, SetVertexColor, "g1_9", "blue"),
-Array(1, SetEdgeColor, "g1_(8, 9)", "grey"),
-Array(1, SetVertexFrameWidth, "g1_8", "0"),
-Array(1, SetVertexColor, "g1_9", "grey"),
-Array(1, SetVertexFrameWidth, "g1_8", "0"),
-Array(1, SetVertexFrameWidth, "g1_9", "6"),
-Array(1, SetVertexFrameWidth, "g1_9", "6"),
-Array(1, SetEdgeColor, "g1_(8, 9)", "yellow"),
-Array(1, SetEdgeColor, "g1_(8, 9)", "grey"),
-Array(2, SetVertexFrameWidth, "g1_9", "0"),
-Array(2, SetEdgeColor, "g1_(5, 6)", "green"),
-Array(3, ShowActive, "l_12"),
-Array(8, AddEdge, "g1_(5, 6)"),
+Array(6, ShowActive, "l_11"),
+Array(9, SetVertexAnnotation, "g2_2", ""),
+Array(8, SetVertexAnnotation, "g2_3", ""),
+Array(11, SetVertexAnnotation, "g2_5", "s"),
+Array(6, SetVertexAnnotation, "g2_6", "t"),
+Array(7, SetAllEdgesColor, "g2_#DDDDDD"),
+Array(1, SetAllVerticesColor, "g2_#000099"),
+Array(2, SetVertexColor, "g2_3", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_4", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_1", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_2", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_10", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_5", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_8", "#CFCFCF"),
+Array(11, SetVertexColor, "g2_6", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_7", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_9", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_5", "blue"),
+Array(1, SetVertexColor, "g2_5", "grey"),
+Array(1, SetVertexFrameWidth, "g2_5", "6"),
+Array(1, SetVertexFrameWidth, "g2_5", "6"),
+Array(1, SetEdgeColor, "g2_(5, 8)", "yellow"),
+Array(2, SetVertexColor, "g2_8", "blue"),
+Array(1, SetVertexColor, "g2_8", "blue"),
+Array(1, SetEdgeColor, "g2_(5, 8)", "grey"),
+Array(1, SetVertexFrameWidth, "g2_5", "0"),
+Array(1, SetVertexColor, "g2_8", "grey"),
+Array(1, SetVertexFrameWidth, "g2_5", "0"),
+Array(1, SetVertexFrameWidth, "g2_8", "6"),
+Array(1, SetVertexFrameWidth, "g2_8", "6"),
+Array(1, SetEdgeColor, "g2_(5, 8)", "yellow"),
+Array(1, SetEdgeColor, "g2_(5, 8)", "grey"),
+Array(1, SetEdgeColor, "g2_(8, 9)", "yellow"),
+Array(1, SetVertexColor, "g2_9", "blue"),
+Array(1, SetVertexColor, "g2_9", "blue"),
+Array(1, SetEdgeColor, "g2_(8, 9)", "grey"),
+Array(1, SetVertexFrameWidth, "g2_8", "0"),
+Array(5, SetVertexColor, "g2_9", "grey"),
+Array(1, SetVertexFrameWidth, "g2_8", "0"),
+Array(1, SetVertexFrameWidth, "g2_9", "6"),
+Array(1, SetVertexFrameWidth, "g2_9", "6"),
+Array(2, SetEdgeColor, "g2_(8, 9)", "yellow"),
+Array(1, SetEdgeColor, "g2_(8, 9)", "grey"),
+Array(1, SetVertexFrameWidth, "g2_9", "0"),
+Array(1, SetEdgeColor, "g1_(5, 6)", "green"),
+Array(2, ShowActive, "l_12"),
+Array(8, AddEdge, "g2_(5, 6)"),
 Array(1, SetVertexColor, "g1_6", "#990099"),
-Array(5, SetVertexColor, "g1_7", "#990099"),
-Array(2, SetEdgeColor, "g1_(7, 6)", "#990099"),
+Array(1, SetVertexColor, "g1_7", "#990099"),
+Array(1, SetEdgeColor, "g1_(7, 6)", "#990099"),
 Array(1, SetAllVerticesColor, "g1_#990099", "6", "7"),
-Array(5, SetEdgeColor, "g1_(5, 6)", "#990099"),
-Array(3, ShowActive, "l_10"),
+Array(3, SetEdgeColor, "g1_(5, 6)", "#990099"),
+Array(2, ShowActive, "l_10"),
 Array(9, SetEdgeColor, "g1_(4, 5)", "yellow"),
 Array(2, ShowActive, "l_11"),
-Array(8, SetVertexAnnotation, "g1_5", ""),
-Array(8, SetVertexAnnotation, "g1_6", ""),
-Array(7, SetVertexAnnotation, "g1_4", "s"),
-Array(7, SetVertexAnnotation, "g1_5", "t"),
-Array(12, SetAllEdgesColor, "g1_#DDDDDD"),
-Array(1, SetAllVerticesColor, "g1_#000099"),
-Array(1, SetVertexColor, "g1_3", "#CFCFCF"),
-Array(1, SetVertexColor, "g1_4", "#CFCFCF"),
-Array(4, SetVertexColor, "g1_1", "#CFCFCF"),
-Array(1, SetVertexColor, "g1_2", "#CFCFCF"),
-Array(1, SetVertexColor, "g1_10", "#CFCFCF"),
-Array(1, SetVertexColor, "g1_5", "#CFCFCF"),
-Array(1, SetVertexColor, "g1_8", "#CFCFCF"),
-Array(1, SetVertexColor, "g1_6", "#CFCFCF"),
-Array(1, SetVertexColor, "g1_7", "#CFCFCF"),
-Array(1, SetVertexColor, "g1_9", "#CFCFCF"),
-Array(1, SetVertexColor, "g1_4", "blue"),
-Array(1, SetVertexColor, "g1_4", "grey"),
-Array(1, SetVertexFrameWidth, "g1_4", "6"),
-Array(2, SetVertexFrameWidth, "g1_4", "6"),
-Array(2, SetEdgeColor, "g1_(3, 4)", "yellow"),
-Array(1, SetVertexColor, "g1_3", "blue"),
-Array(2, SetVertexColor, "g1_3", "blue"),
-Array(1, SetEdgeColor, "g1_(3, 4)", "grey"),
-Array(1, SetEdgeColor, "g1_(4, 10)", "yellow"),
-Array(1, SetVertexColor, "g1_10", "blue"),
-Array(1, SetVertexColor, "g1_10", "blue"),
-Array(1, SetEdgeColor, "g1_(4, 10)", "grey"),
-Array(9, SetVertexFrameWidth, "g1_4", "0"),
-Array(2, SetVertexColor, "g1_3", "grey"),
-Array(1, SetVertexFrameWidth, "g1_4", "0"),
-Array(2, SetVertexFrameWidth, "g1_3", "6"),
-Array(2, SetVertexFrameWidth, "g1_3", "6"),
-Array(2, SetEdgeColor, "g1_(2, 3)", "yellow"),
-Array(1, SetVertexColor, "g1_2", "blue"),
-Array(1, SetVertexColor, "g1_2", "blue"),
-Array(1, SetEdgeColor, "g1_(2, 3)", "grey"),
-Array(1, SetEdgeColor, "g1_(3, 4)", "yellow"),
-Array(1, SetEdgeColor, "g1_(3, 4)", "grey"),
-Array(1, SetVertexFrameWidth, "g1_3", "0"),
-Array(10, SetVertexColor, "g1_10", "grey"),
-Array(1, SetVertexFrameWidth, "g1_3", "0"),
-Array(1, SetVertexFrameWidth, "g1_10", "6"),
-Array(1, SetVertexFrameWidth, "g1_10", "6"),
-Array(1, SetEdgeColor, "g1_(4, 10)", "yellow"),
-Array(1, SetEdgeColor, "g1_(4, 10)", "grey"),
-Array(1, SetVertexFrameWidth, "g1_10", "0"),
-Array(2, SetVertexColor, "g1_2", "grey"),
-Array(1, SetVertexFrameWidth, "g1_10", "0"),
-Array(4, SetVertexFrameWidth, "g1_2", "6"),
-Array(2, SetVertexFrameWidth, "g1_2", "6"),
-Array(2, SetEdgeColor, "g1_(1, 2)", "yellow"),
-Array(1, SetVertexColor, "g1_1", "blue"),
-Array(1, SetVertexColor, "g1_1", "blue"),
-Array(1, SetEdgeColor, "g1_(1, 2)", "grey"),
-Array(1, SetEdgeColor, "g1_(2, 3)", "yellow"),
-Array(1, SetEdgeColor, "g1_(2, 3)", "grey"),
-Array(1, SetVertexFrameWidth, "g1_2", "0"),
-Array(1, SetVertexColor, "g1_1", "grey"),
-Array(1, SetVertexFrameWidth, "g1_2", "0"),
-Array(1, SetVertexFrameWidth, "g1_1", "6"),
-Array(4, SetVertexFrameWidth, "g1_1", "6"),
-Array(1, SetEdgeColor, "g1_(1, 2)", "yellow"),
-Array(1, SetEdgeColor, "g1_(1, 2)", "grey"),
-Array(1, SetVertexFrameWidth, "g1_1", "0"),
+Array(9, SetVertexAnnotation, "g2_5", ""),
+Array(7, SetVertexAnnotation, "g2_6", ""),
+Array(8, SetVertexAnnotation, "g2_4", "s"),
+Array(6, SetVertexAnnotation, "g2_5", "t"),
+Array(14, SetAllEdgesColor, "g2_#DDDDDD"),
+Array(1, SetAllVerticesColor, "g2_#000099"),
+Array(1, SetVertexColor, "g2_3", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_4", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_1", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_2", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_10", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_5", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_8", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_6", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_7", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_9", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_4", "blue"),
+Array(1, SetVertexColor, "g2_4", "grey"),
+Array(5, SetVertexFrameWidth, "g2_4", "6"),
+Array(1, SetVertexFrameWidth, "g2_4", "6"),
+Array(2, SetEdgeColor, "g2_(3, 4)", "yellow"),
+Array(1, SetVertexColor, "g2_3", "blue"),
+Array(2, SetVertexColor, "g2_3", "blue"),
+Array(1, SetEdgeColor, "g2_(3, 4)", "grey"),
+Array(1, SetEdgeColor, "g2_(4, 10)", "yellow"),
+Array(1, SetVertexColor, "g2_10", "blue"),
+Array(1, SetVertexColor, "g2_10", "blue"),
+Array(1, SetEdgeColor, "g2_(4, 10)", "grey"),
+Array(1, SetVertexFrameWidth, "g2_4", "0"),
+Array(2, SetVertexColor, "g2_3", "grey"),
+Array(1, SetVertexFrameWidth, "g2_4", "0"),
+Array(1, SetVertexFrameWidth, "g2_3", "6"),
+Array(1, SetVertexFrameWidth, "g2_3", "6"),
+Array(11, SetEdgeColor, "g2_(2, 3)", "yellow"),
+Array(1, SetVertexColor, "g2_2", "blue"),
+Array(1, SetVertexColor, "g2_2", "blue"),
+Array(1, SetEdgeColor, "g2_(2, 3)", "grey"),
+Array(1, SetEdgeColor, "g2_(3, 4)", "yellow"),
+Array(5, SetEdgeColor, "g2_(3, 4)", "grey"),
+Array(1, SetVertexFrameWidth, "g2_3", "0"),
+Array(1, SetVertexColor, "g2_10", "grey"),
+Array(1, SetVertexFrameWidth, "g2_3", "0"),
+Array(1, SetVertexFrameWidth, "g2_10", "6"),
+Array(1, SetVertexFrameWidth, "g2_10", "6"),
+Array(1, SetEdgeColor, "g2_(4, 10)", "yellow"),
+Array(1, SetEdgeColor, "g2_(4, 10)", "grey"),
+Array(1, SetVertexFrameWidth, "g2_10", "0"),
+Array(1, SetVertexColor, "g2_2", "grey"),
+Array(4, SetVertexFrameWidth, "g2_10", "0"),
+Array(1, SetVertexFrameWidth, "g2_2", "6"),
+Array(1, SetVertexFrameWidth, "g2_2", "6"),
+Array(2, SetEdgeColor, "g2_(1, 2)", "yellow"),
+Array(1, SetVertexColor, "g2_1", "blue"),
+Array(1, SetVertexColor, "g2_1", "blue"),
+Array(1, SetEdgeColor, "g2_(1, 2)", "grey"),
+Array(1, SetEdgeColor, "g2_(2, 3)", "yellow"),
+Array(1, SetEdgeColor, "g2_(2, 3)", "grey"),
+Array(1, SetVertexFrameWidth, "g2_2", "0"),
+Array(2, SetVertexColor, "g2_1", "grey"),
+Array(1, SetVertexFrameWidth, "g2_2", "0"),
+Array(5, SetVertexFrameWidth, "g2_1", "6"),
+Array(1, SetVertexFrameWidth, "g2_1", "6"),
+Array(1, SetEdgeColor, "g2_(1, 2)", "yellow"),
+Array(1, SetEdgeColor, "g2_(1, 2)", "grey"),
+Array(1, SetVertexFrameWidth, "g2_1", "0"),
 Array(1, SetEdgeColor, "g1_(4, 5)", "green"),
 Array(2, ShowActive, "l_12"),
-Array(8, AddEdge, "g1_(4, 5)"),
+Array(8, AddEdge, "g2_(4, 5)"),
 Array(1, SetVertexColor, "g1_5", "#0000FF"),
 Array(2, SetVertexColor, "g1_8", "#0000FF"),
 Array(2, SetVertexColor, "g1_6", "#0000FF"),
 Array(1, SetVertexColor, "g1_9", "#0000FF"),
-Array(2, SetVertexColor, "g1_7", "#0000FF"),
+Array(1, SetVertexColor, "g1_7", "#0000FF"),
 Array(1, SetEdgeColor, "g1_(8, 5)", "#0000FF"),
 Array(1, SetEdgeColor, "g1_(6, 5)", "#0000FF"),
 Array(1, SetEdgeColor, "g1_(9, 8)", "#0000FF"),
 Array(1, SetEdgeColor, "g1_(7, 6)", "#0000FF"),
 Array(1, SetAllVerticesColor, "g1_#0000FF", "5", "8", "9", "6", "7"),
-Array(3, SetEdgeColor, "g1_(4, 5)", "#0000FF"),
-Array(5, ShowActive, "l_10")
+Array(6, SetEdgeColor, "g1_(4, 5)", "#0000FF"),
+Array(3, ShowActive, "l_10")
 );
 
 ]]></script>

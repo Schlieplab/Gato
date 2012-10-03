@@ -865,7 +865,7 @@ class AlgoWin(Frame):
                                          )
         if fileName is not "":
             import GatoExport
-            if self.graphDisplay is self.secondaryGraphDisplay.animator:
+            if self.secondaryGraphDisplay and self.graphDisplay is self.secondaryGraphDisplay.animator:
                 print "THEY'RE THE SAME"
             else:
                 print "fasfsdafasdfsf"
