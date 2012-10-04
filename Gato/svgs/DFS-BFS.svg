@@ -100,6 +100,7 @@ var viewbox_x;
 var viewbox_y;
 var MIN_SCALE_FACTOR = .2;          // Minimum scale factor for the graph
 var scale_graph_width = undefined;  // Graph width(considering scaling) at the time of a mouse click on the scaler
+var pre_computing;
 
 /**
 *
@@ -1021,10 +1022,20 @@ function createSpeedSelect(id, x, y, boxWidth, text, color) {
 //Starts animation loop.  If called more than once, resets display and begins loop
 function StartAnimation(evt){
     console.log("id: " + evt.target.getAttribute("id"));
+    /*var node = the_evt_target.getElementById("g1_2");
+    node.setAttribute("fill", "#EEEEEE");
+    console.log("Color: " + node.getAttribute("fill"));
+    return;*/
     if(evt.target.getAttribute("id") == "start_button"){
         if(state != null){ //Graph must be refreshed
             //console.log("refreshing graph state: " + state);
+            console.log("state: " + state);
+            console.log("Refreshing!!!!! to step " + String(step));
+            var node = the_evt_target.getElementById("g1_2");
+            console.log("Color: " + node.getAttribute("fill"));
             jumpToStep(step);
+            console.log("Color: " + node.getAttribute("fill"));
+            //return;
         }
     
         state = "running";
@@ -1101,7 +1112,7 @@ function AnimateLoop(){
         
     }else{  //If no steps left, stop
         
-                state = "stopped";
+        state = "stopped";
         action_panel.activateButton("start_button", "StartAnimation(evt)");
         action_panel.deactivateButton("continue_button");
         action_panel.deactivateButton("stop_button");
@@ -1213,8 +1224,11 @@ function StopAnimation(evt){
     code.removeHighlight(current_line-1);
     current_line = 0;
     Refresh_MovieSlider(step);
+    var node = the_evt_target.getElementById("g1_2");
+    console.log("Color in stop: " + node.getAttribute("fill"));
     setGraphState(graph_states[0]);
     
+    console.log("Color in stop: " + node.getAttribute("fill"));
     //StopAnimation only ever called from stop button, or at end of fillGraphStates
     /*if(evt.target.getAttribute("id") == "stop_button"){
         clearTimeout(timer);
@@ -1459,6 +1473,9 @@ function SetAllEdgesColor(graphColor) {
 
 //Vertex blinks between black and current color
 function BlinkVertex(v, color) {
+    if (pre_computing)
+        return;
+    console.log("Starting blink Color: " + the_evt_target.getElementById("g1_2").getAttribute("fill"));
     blinking = true;
     element = the_evt_target_ownerDocument.getElementById(v);
     blinkcolor = element.getAttribute("fill")
@@ -1466,18 +1483,23 @@ function BlinkVertex(v, color) {
     element.setAttribute("fill", "black");
     setTimeout(VertexBlinker, 3*timeout);
 }
+
 //Helper for BlinkVertex
 function VertexBlinker() {
     if (blinkcount % 2 == 1) {
        element.setAttribute("fill", "black"); 
     } else {
+        if (element.getAttribute("id") === "g1_2" && blinkcolor === "red") 
+            console.trace();
        element.setAttribute("fill", blinkcolor); 
     }
+
     blinkcount = blinkcount - 1;
     if (blinkcount >= 0)
        setTimeout(VertexBlinker, 3*timeout);
     else
         blinking = false;
+    console.log("Color: " + the_evt_target.getElementById("g1_2").getAttribute("fill"));
 }
 
 
@@ -2131,7 +2153,7 @@ function GraphState(graph, step) {
 function buildStateArray(graph) {
 
     var graph_elems = graph.childNodes;
-    var state = new Array();
+    var state_arr = new Array();
     
     var i;
     //Start at one to avoid first, empty element
@@ -2164,10 +2186,10 @@ function buildStateArray(graph) {
                 elem_array.push(elem.getAttribute(attr));
             }
         }
-        state.push(elem_array);
+        state_arr.push(elem_array);
     }
     
-    return state;
+    return state_arr;
 }
 
 /* Model this off of AnimateLoop, except translate the graph off the screen before 
@@ -2175,6 +2197,8 @@ doing the animations.  Save the graph state every STEP_INTERVAL commands, and in
 there save the commands */
 function fillGraphStates() {
     
+    pre_computing = true;
+
     //Send the graph off the screen
     var graph_id = init_graphs[0].getAttribute("id");
     var graph = the_evt_target_ownerDocument.getElementById(graph_id);
@@ -2198,10 +2222,15 @@ function fillGraphStates() {
         //Need to realign components here??
         
     }
-    
+    console.log("State in fill: " + state);
     //Restore graph back to original state
+    var node = the_evt_target.getElementById("g1_2");
+    console.log("Color: " + node.getAttribute("fill"));
     setGraphState(graph_states[0]);
+    console.log("Color: " + node.getAttribute("fill"));
     StopAnimation(undefined);
+    console.log("Color: " + node.getAttribute("fill"));
+    pre_computing = false;
 }
 
 
@@ -2710,6 +2739,93 @@ function Initialize(evt) {
     
     pt = the_evt_target.createSVGPoint();       //Create a point for translating svg coords to mouse coords
     
+    /*if (!Object.prototype.watch) {
+    Object.defineProperty(Object.prototype, "watch", {
+          enumerable: false
+        , configurable: true
+        , writable: false
+        , value: function (prop, handler) {
+            var
+              oldval = this[prop]
+            , newval = oldval
+            , getter = function () {
+                return newval;
+            }
+            , setter = function (val) {
+                oldval = newval;
+                return newval = handler.call(this, prop, oldval, val);
+            }
+            ;
+
+            if (delete this[prop]) { // can't watch constants
+                Object.defineProperty(this, prop, {
+                      get: getter
+                    , set: setter
+                    , enumerable: true
+                    , configurable: true
+                });
+            }
+        }
+    });
+}
+    
+    function aaa() {
+        console.log("The fill was just canged");
+        console.trace();
+        alert("basdf");
+    }
+    console.log("blarg");
+    var k = the_evt_target.getElementById("g1_2");
+    if ("setAttribute" in k)
+        console.log("Fill is in !!!");
+    console.log("First color: " + k.getAttribute("fill"));
+    var fill_var;
+    for(var p in k.attributes) {
+   // propertyName is what you want
+   // you can get the value like this: myObject[propertyName]
+    if (typeof(k.attributes[p]) === "object"){
+        /*for (p in k.attributes[propertyName])
+            console.log("prop: " + k.attributes[propertyName][p]);
+        if (k.attributes[propertyName].hasOwnProperty("setAttribute"))
+            alert("found it");*/
+        /*if (k.attributes[propertyName].substring(0,4) === "fill")
+            alert("found it");*/
+    //}
+    /*if (!isNaN(p)) {
+        if (k.attributes[p]["name"] === "fill")
+            fill_var = p;
+        /*if ("fill" in k.attributes[p])
+            alert("foudn it");
+        for (x in k.attributes[p]) {
+            console.log("x: " + x);
+            if (x === "name")
+                console.log(k.attributes[p][x]);
+        }
+            /*if ("fill" in k.attributes[p][x])
+                alert("foudn it");*/
+    //}
+   /*console.log("attr: " + p + " val: " + k.attributes[p]);
+   console.log(k.attributes[p]);*/
+    //}
+   // var dd = k.attributes[fill_var];
+   // k.attributes.watch(fill_var, aaa);
+    //k.attributes[fill_var]["value"] = "fasdfas";
+
+    //console.log("Before: " + dd["nodeValue"]);
+    /*for (j in k.attributes[fill_var])
+        console.log("contains: " + j + " with val " + k.attributes[fill_var][j]);*/
+    //k.setAttribute("fill", "blue");
+    /*console.log("*****\n*****\n******");
+    for (j in k.attributes[fill_var])
+        console.log("contains: " + j + " with val " + k.attributes[fill_var][j]);
+    
+    
+    console.log("After: " + dd["nodeValue"]);
+    console.log(k.attributes[fill_var]);
+    /*for (j in k.attributes[fill_var])
+        console.log("contains: " + j + " with val " + k.attributes[fill_var][j]);*/
+    console.log('that was it');
+    
 
     // Set global event handlers
     the_evt_target.addEventListener("mousemove", drag_scaler, false);
@@ -2835,6 +2951,7 @@ function Initialize(evt) {
     scaler = new Scaler(points_val, 20);
     
     fillGraphStates();
+
     the_evt_target_ownerDocument.documentElement.setAttribute("width", 2*x_offset + vert_layout.group.getBBox().x + vert_layout.group.getBBox().width);
     the_evt_target_ownerDocument.documentElement.setAttribute("height", 2*y_offset + vert_layout.group.getBBox().y + vert_layout.group.getBBox().height);
     
@@ -2853,7 +2970,8 @@ function Initialize(evt) {
     
     console.log("innerwidth: " + window.innerWidth);
     console.log("outerWidth: " + window.outerWidth);
-    
+    var node = the_evt_target.getElementById("g1_2");
+    console.log("Coloraaa: " + node.getAttribute("fill"));
 }
 
 

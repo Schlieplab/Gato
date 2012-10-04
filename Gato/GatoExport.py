@@ -144,7 +144,7 @@ var viewbox_x;
 var viewbox_y;
 var MIN_SCALE_FACTOR = .2;          // Minimum scale factor for the graph
 var scale_graph_width = undefined;  // Graph width(considering scaling) at the time of a mouse click on the scaler
-
+var filling_states;                 // Boolean variable that is set to true when the graph states are being filled at the start of execution
 /**
 *
 *
@@ -1520,6 +1520,11 @@ function SetAllEdgesColor(graphColor) {
 
 //Vertex blinks between black and current color
 function BlinkVertex(v, color) {
+
+    // Return if doing the initial filling of graph states
+    if (filling_states)
+        return;
+
     blinking = true;
     element = the_evt_target_ownerDocument.getElementById(v);
     blinkcolor = element.getAttribute("fill")
@@ -1544,6 +1549,11 @@ function VertexBlinker() {
 
 //Edge blinks between black and current color
 function BlinkEdge(e, color){
+
+    // Return if doing the initial filling of graph states
+    if (filling_states)
+        return;
+
     blinking = true;
     e_element = the_evt_target_ownerDocument.getElementById(e);
     e_blinkcolor = e_element.getAttribute("stroke");
@@ -2236,6 +2246,9 @@ doing the animations.  Save the graph state every STEP_INTERVAL commands, and in
 there save the commands */
 function fillGraphStates() {
     
+    // Set filling_states to true to prevent blinking(causes a bug where color lingers after start)
+    filling_states = true;
+
     //Send the graph off the screen
     var graph_id = init_graphs[0].getAttribute("id");
     var graph = the_evt_target_ownerDocument.getElementById(graph_id);
@@ -2263,6 +2276,8 @@ function fillGraphStates() {
     //Restore graph back to original state
     setGraphState(graph_states[0]);
     StopAnimation(undefined);
+
+    filling_states = false;
 }
 
 
