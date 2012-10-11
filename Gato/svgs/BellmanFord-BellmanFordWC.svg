@@ -4,6 +4,7 @@ xmlns:xlink="http://www.w3.org/1999/xlink"
 style="position:absolute; width:100%; height:100%"
 xmlns:ev="http://www.w3.org/2001/xml-events" version="1.1" baseProfile="full"
 preserveAspectRatio="xMinYMin meet"
+width="1400" height="700"
 viewBox="0 0 1400 700"
 onload="Initialize(evt)">
 
@@ -2023,7 +2024,7 @@ function click_scaler(evt) {
  	scaler.scaler_active = true;
     var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
     scale_graph_width = graph.getBBox().width * g_scale_factor;
-    mouse_start = cursorPoint(evt);
+    mouse_start = cursorPoint(evt, null);
 }
 
 
@@ -2062,7 +2063,7 @@ function scaleGraph(graph, graph_bg, evt, use_curr_sf) {
     if (max_scale_factor < 1)
         width_factor = max_scale_factor;
     
-    cursor_point = cursorPoint(evt);
+    cursor_point = cursorPoint(evt, null);
 
     //console.log('Cursor_point: (' + cursor_point.x + ', ' + cursor_point.y + ')');
     //console.log('Mouse_start: (' + mouse_start.x + ', ' + mouse_start.y + ')');
@@ -2098,10 +2099,13 @@ function scaleGraph(graph, graph_bg, evt, use_curr_sf) {
 }
 
 //Translate client coordinates to svg coordinates.  
-function cursorPoint(evt){
+function cursorPoint(evt, element){
     pt.x = evt.clientX; 
     pt.y = evt.clientY;
-    return pt.matrixTransform(the_evt_target.getScreenCTM().inverse());
+    if (element === null)
+        return pt.matrixTransform(the_evt_target.getScreenCTM().inverse());
+    else
+        return pt.matrixTransform(element.getScreenCTM().inverse());
 }
 
 //This pushes the graph background too far to the left for some reason
@@ -2322,6 +2326,7 @@ function MovieSlider(id, slider_width, thumb_height, offset, end_step, labels, t
 	this.slider_thumb.setAttribute("height", thumb_height);
 	this.slider_thumb.setAttribute("rx", this.default_thickness/2);
 	this.slider_thumb.setAttribute("ry", this.default_thickness/2);
+    this.slider_thumb.setAttribute("x", 0);
 	this.slider_thumb.setAttribute("stroke", "black");
     this.slider_thumb.setAttribute("fill", "url(#slider_thumb_lg)");
 	this.slider_thumb.setAttribute("stroke-width", 1);
@@ -2380,12 +2385,15 @@ function Deactivate_MovieSlider(evt){
 // Changes the position and step setting of the movie_slider when the mouse is clicked on a given position
 function Move_MovieSlider(evt) {
     var bbox = movie_slider.slider_bar.getBBox();
-    var x_pos = cursorPoint(evt).x;
-    
+    var x_pos = cursorPoint(evt, movie_slider.slider_thumb).x;
+
     if (evt.clientX == undefined)
         x_pos = evt.touches[0].clientX;
-        
-    movie_slider.slider_thumb.setAttribute("x", x_pos - movie_slider.offset - (movie_slider.default_thickness/2) - getTranslate(movie_slider.slider.getAttribute("transform"))[0] - getTranslate(horiz_layout[1].group.getAttribute("transform"))[0]);
+
+
+    movie_slider.slider_thumb.setAttribute("x", x_pos);
+
+    //movie_slider.slider_thumb.setAttribute("x", x_pos - (movie_slider.default_thickness/2) - getTranslate(movie_slider.slider.getAttribute("transform"))[0] - getTranslate(horiz_layout[1].group.getAttribute("transform"))[0]);
     movie_slider.current_setting = movie_slider.low_bound + (movie_slider.up_bound - movie_slider.low_bound)*(movie_slider.slider_thumb.getAttribute("x")/movie_slider.slider_bar.getAttribute("width"));
     movie_slider.current_setting = Math.floor(movie_slider.current_setting);
     jumpToStep(movie_slider.current_setting);
@@ -2396,21 +2404,38 @@ function Move_MovieSlider(evt) {
 // Changes the position of the movie_slider bar and the current step when the bar is dragged
 function Drag_MovieSlider(evt) {
     if (movie_slider.thumb_active) {
-        var x_pos = cursorPoint(evt).x;
+        var x_pos = cursorPoint(evt, movie_slider.slider_bar).x;
         
         if (x_pos === undefined) 
             x_pos = evt.touches[0].clientX;
-            
-        if (x_pos >= (movie_slider.slider_bar.getBBox().x + getTranslate(movie_slider.slider.getAttribute("transform"))[0] + movie_slider.offset) && x_pos <= (movie_slider.slider_bar.getBBox().x + movie_slider.offset + movie_slider.slider_bar.getBBox().width + getTranslate(movie_slider.slider.getAttribute("transform"))[0])){
-            movie_slider.slider_thumb.setAttribute("x", x_pos - movie_slider.offset - (movie_slider.default_thickness/2) - getTranslate(movie_slider.slider.getAttribute("transform"))[0] - getTranslate(horiz_layout[1].group.getAttribute("transform"))[0]);
-            movie_slider.current_setting = movie_slider.low_bound + (movie_slider.up_bound - movie_slider.low_bound)*(movie_slider.slider_thumb.getAttribute("x")/movie_slider.slider_bar.getAttribute("width"));
-        } else if (x_pos > (movie_slider.slider_bar.getBBox().x + movie_slider.slider_bar.getBBox().width + getTranslate(horiz_layout[1].group.getAttribute("transform"))[0])){
+
+        if (x_pos >= movie_slider.slider_bar.getBBox().x && x_pos < movie_slider.slider_bar.getBBox().width){
+            movie_slider.slider_thumb.setAttribute("x", x_pos);
+            //movie_slider.slider_thumb.setAttribute("x", x_pos - (movie_slider.default_thickness/2) - getTranslate(movie_slider.slider.getAttribute("transform"))[0] - getTranslate(horiz_layout[1].group.getAttribute("transform"))[0]);
+            //movie_slider.current_setting = movie_slider.low_bound + (movie_slider.up_bound - movie_slider.low_bound)*(movie_slider.slider_thumb.getAttribute("x")/movie_slider.slider_bar.getAttribute("width"));
+        } else if (x_pos > movie_slider.slider_bar.width) {
             //If slider bar is all the way to right set to up_bound-1
+            //(movie_slider.slider_bar.getBBox().x + movie_slider.slider_bar.getBBox().width + getTranslate(horiz_layout[1].group.getAttribute("transform"))[0])
+            console.log(String(movie_slider.slider_bar.getBBox().x + getTranslate(horiz_layout[1].group.getAttribute("transform"))[0] + x_offset));
             movie_slider.current_setting = movie_slider.up_bound-1;
         } else {
             //If slider bar is all the way to left set to 0
             movie_slider.current_setting = 0;
         }
+
+        /*   
+        if (x_pos >= (movie_slider.slider_bar.getBBox().x + getTranslate(movie_slider.slider.getAttribute("transform"))[0]) && x_pos <= (movie_slider.slider_bar.getBBox().x + movie_slider.offset + movie_slider.slider_bar.getBBox().width + getTranslate(movie_slider.slider.getAttribute("transform"))[0])){
+            movie_slider.slider_thumb.setAttribute("x", x_pos - (movie_slider.default_thickness/2) - getTranslate(movie_slider.slider.getAttribute("transform"))[0] - getTranslate(horiz_layout[1].group.getAttribute("transform"))[0]);
+            movie_slider.current_setting = movie_slider.low_bound + (movie_slider.up_bound - movie_slider.low_bound)*(movie_slider.slider_thumb.getAttribute("x")/movie_slider.slider_bar.getAttribute("width"));
+        } else if ((x_pos - movie_slider.slider_bar.getBBox().x - getTranslate(horiz_layout[1].group.getAttribute("transform"))[0] - x_offset) > (movie_slider.slider_bar.getBBox().width)){
+            //If slider bar is all the way to right set to up_bound-1
+            //(movie_slider.slider_bar.getBBox().x + movie_slider.slider_bar.getBBox().width + getTranslate(horiz_layout[1].group.getAttribute("transform"))[0])
+            console.log(String(movie_slider.slider_bar.getBBox().x + getTranslate(horiz_layout[1].group.getAttribute("transform"))[0] + x_offset));
+            movie_slider.current_setting = movie_slider.up_bound-1;
+        } else {
+            //If slider bar is all the way to left set to 0
+            movie_slider.current_setting = 0;
+        }*/
     
         movie_slider.current_setting = Math.floor(movie_slider.current_setting);
         console.log('current step: ' + movie_slider.current_setting);
@@ -2685,6 +2710,13 @@ function scale_to_fit() {
     }
 }
 
+function alert_click(evt) {
+    var pt1 = cursorPoint(evt, null);
+    console.log("(" + pt1.x + ", " + pt.y + ")");
+    console.log("x_offset: " + x_offset);
+    console.log("y_offset: " + y_offset);
+}
+
 /**
 *
 *
@@ -2697,6 +2729,8 @@ function Initialize(evt) {
     the_evt = evt;
     the_evt_target = evt.target;
     the_evt_target_ownerDocument = evt.target.ownerDocument;
+
+    console.log(the_evt_target);
 
     // Object Prototype initialization
     HTB_prototypeInit();
@@ -2716,6 +2750,7 @@ function Initialize(evt) {
     the_evt_target.addEventListener("mouseup", deactivate_scaler, false);
     the_evt_target.addEventListener("mouseup", Deactivate_MovieSlider, false);
     the_evt_target.addEventListener("mousemove", Drag_MovieSlider, false);
+    the_evt_target.addEventListener("mousedown", alert_click, false);
     
     //Create code layout
     code = new HighlightableTextBlock(20, 0, "code", 14, "vertical");
@@ -2853,6 +2888,7 @@ function Initialize(evt) {
     
     console.log("innerwidth: " + window.innerWidth);
     console.log("outerWidth: " + window.outerWidth);
+    console.log(the_evt_target);
     
 }
 
@@ -8409,6 +8445,10 @@ Array(1, ShowActive, "l_6")
 <circle id="g1_45" cx="150.0" cy="268.0" r="14.0" fill="#EEEEEE" stroke="black" stroke-width="0.0" />
 <text id="vlg1_45" x="150.0" y="272.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >45</text>
 <polygon id="triangle_scaler" points="150,150  150,150  150,150" style="stroke:#660000; fill:#cc3333;"/></g>
+<rect x="100" y="500" width="5" height="5" fill="red" />
+<rect x="500" y="500" width="5" height="5" fill="red" />
+<rect x="1000" y="500" width="5" height="5" fill="red" />
+<rect x="1000" y="200" width="5" height="5" fill="red" />
 <text blank = "false" id="l_1" x="10" y="10" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal"><tspan dx = "0">s</tspan><tspan dx="7">=</tspan><tspan dx="7">PickVertex</tspan><tspan>(</tspan><tspan>)</tspan></text>
 <text blank = "false" id="l_2" x="10" y="10" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal"><tspan dx = "0">dist</tspan><tspan>[</tspan><tspan>s</tspan><tspan>]</tspan><tspan dx="7">=</tspan><tspan dx="7">0</tspan></text>
 <text blank = "false" id="l_3" x="10" y="10" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal"><tspan dx = "0">pred</tspan><tspan>[</tspan><tspan>s</tspan><tspan>]</tspan><tspan dx="7">=</tspan><tspan dx="7">None</tspan></text>

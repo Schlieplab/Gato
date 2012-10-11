@@ -1040,23 +1040,26 @@ function StartAnimation(evt){
 
 //Loop of animation.  Performs actions in animation array at specified intervals
 function AnimateLoop(){
-    
+    console.log("In animateloop");
     //Without this block, edges/vertices may be black
     //on the fastest speed.  Comment this out to verify
     if(blinking){
         setTimeout(AnimateLoop, 1);
+        console.log("Returning because blinking");
         return;
     }
     
     if (state === "stopped" || state === 'waiting') {
         //console.log("returning because stopped");
         setTimeout(AnimateLoop, 1);
+        console.log("Returning");
         return;
     }
     
     if (movie_slider.thumb_active === true || scaler.scaler_active === true) {
         //console.log('returning because something is active');
         setTimeout(AnimateLoop, 1);
+        console.log("Returning from animate");
         return;
     }
     
@@ -1071,8 +1074,10 @@ function AnimateLoop(){
     }else{
         animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
     }       
+    console.log("Exectuing animation: " + String(animation[step][1]));
     step = step + 1;
     Refresh_MovieSlider(step);
+    console.log("blarg");
     
     //Realign components
     the_evt_target_ownerDocument.documentElement.setAttribute("width", 2*x_offset + vert_layout.group.getBBox().x + vert_layout.group.getBBox().width);
@@ -1404,6 +1409,7 @@ function SetVertexColor(v, color) {
 
 //Colors edge with id given by e
 function SetEdgeColor(e, color) {
+    console.log("Setting edge color");
     // NOTE: Gato signature SetEdgeColor(v, w, color)
     element = the_evt_target_ownerDocument.getElementById(e);
     if (element == null) {
@@ -1608,6 +1614,7 @@ function ShowActive(line_id){
 
 //Directed or undirected added to graph.
 function AddEdge(edge_id){
+    console.log("In addege\n");
     var graph_id = edge_id.split("_")[0];
     var vertices = edge_id.split("_")[1].match(/[^,\(\)\s]+/g);
     var v = the_evt_target_ownerDocument.getElementById(graph_id + "_" + vertices[0]);
@@ -1730,6 +1737,7 @@ function AddEdge(edge_id){
         rect.setAttribute("y", graph.getBBox().y-10);
         //realignScaler(graph.getBBox().x + graph.getBBox().width + 10, graph.getBBox().y + graph.getBBox.height + 10);
     }
+    console.log("Leaving addedge");
     fillEdgesArray();
 }
 
@@ -2068,7 +2076,7 @@ function drag_scaler(evt) {
 function scaleGraph(graph, graph_bg, evt, use_curr_sf) {
     
     if (use_curr_sf) {
-        console.log('using curr_sf: ' + g_scale_factor);
+        //console.log('using curr_sf: ' + g_scale_factor);
         setScale(graph, g_scale_factor, g_scale_factor);
         setScale(graph_bg, g_scale_factor, g_scale_factor);
         return;
@@ -2088,11 +2096,11 @@ function scaleGraph(graph, graph_bg, evt, use_curr_sf) {
     var cursor_delta = cursor_point.x - mouse_start.x;
     if (cursor_delta === 0)
         return;
-    console.log("cursor_delta: " + cursor_delta);
-    console.log("graph_width: " + scale_graph_width);
+    ///console.log("cursor_delta: " + cursor_delta);
+    //console.log("graph_width: " + scale_graph_width);
 
     var new_width = scale_graph_width + cursor_delta;
-    console.log("new_width: " + new_width);
+    //console.log("new_width: " + new_width);
     var temp_scale_factor = new_width / graph_width;
 
     //console.log("temp_scale_factor: " + temp_scale_factor);
@@ -2205,7 +2213,7 @@ function fillGraphStates() {
         //Do the next command, special case for SetAllVerticesColor
         if(animation[step][1] == SetAllVerticesColor && animation[step].length > 3){
             var vertexArray = new Array();
-        for(i = 3; i < animation[step].length; i++){
+        for(var i = 3; i < animation[step].length; i++){
             vertexArray[i-3] = animation[step][i];
         }
             animation[step][1](animation[step][2],vertexArray);
@@ -2264,6 +2272,7 @@ function jumpToStep(n) {
     //graph state to which animations will be applied
     var base_state;     
     step = n;
+    console.log("In jumptostep");
     
     //Find the graph_state to build off of
     for ( i in graph_states) {
@@ -2276,16 +2285,16 @@ function jumpToStep(n) {
         base_state = graph_states[graph_states.length-1];
     
     setGraphState(base_state);
-    
     //Apply steps base_state.step -> n
     for ( var i=base_state.step; i<n; i++) {
-    
         //Do the next command, special case for SetAllVerticesColor
         if(animation[i][1] == SetAllVerticesColor && animation[i].length > 3){
             var vertexArray = new Array();
-            
-            for(i = 3; i < animation[i].length; i++)
-                vertexArray[i-3] = animation[i][i];
+            console.log("Setting all vertices color");
+
+            //
+            for(var j = 3; j < animation[i].length; j++)
+                vertexArray[j-3] = animation[i][j];
             
                 animation[i][1](animation[i][2],vertexArray);
         }else{
@@ -2293,6 +2302,7 @@ function jumpToStep(n) {
         }    
          
     }// end for
+    console.log("done in jumtostep");
 }
 
 
@@ -2430,7 +2440,7 @@ function Drag_MovieSlider(evt) {
         }
     
         movie_slider.current_setting = Math.floor(movie_slider.current_setting);
-        console.log('current step: ' + movie_slider.current_setting);
+        console.log("Jumping to step " + movie_slider.current_setting);
         jumpToStep(movie_slider.current_setting);
     }
 }

@@ -2122,7 +2122,6 @@ function drag_scaler(evt) {
 function scaleGraph(graph, graph_bg, evt, use_curr_sf) {
     
     if (use_curr_sf) {
-        console.log('using curr_sf: ' + g_scale_factor);
         setScale(graph, g_scale_factor, g_scale_factor);
         setScale(graph_bg, g_scale_factor, g_scale_factor);
         return;
@@ -2142,11 +2141,11 @@ function scaleGraph(graph, graph_bg, evt, use_curr_sf) {
     var cursor_delta = cursor_point.x - mouse_start.x;
     if (cursor_delta === 0)
         return;
-    console.log("cursor_delta: " + cursor_delta);
-    console.log("graph_width: " + scale_graph_width);
+    //console.log("cursor_delta: " + cursor_delta);
+    //console.log("graph_width: " + scale_graph_width);
 
     var new_width = scale_graph_width + cursor_delta;
-    console.log("new_width: " + new_width);
+    //console.log("new_width: " + new_width);
     var temp_scale_factor = new_width / graph_width;
 
     //console.log("temp_scale_factor: " + temp_scale_factor);
@@ -2343,8 +2342,8 @@ function jumpToStep(n) {
         if(animation[i][1] == SetAllVerticesColor && animation[i].length > 3){
             var vertexArray = new Array();
             
-            for(i = 3; i < animation[i].length; i++)
-                vertexArray[i-3] = animation[i][i];
+            for(var j = 3; j < animation[i].length; j++)
+                vertexArray[j-3] = animation[i][j];
             
                 animation[i][1](animation[i][2],vertexArray);
         }else{
