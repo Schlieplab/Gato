@@ -865,10 +865,7 @@ class AlgoWin(Frame):
                                          )
         if fileName is not "":
             import GatoExport
-            if self.secondaryGraphDisplay and self.graphDisplay is self.secondaryGraphDisplay.animator:
-                print "THEY'RE THE SAME"
-            else:
-                print "fasfsdafasdfsf"
+            
             # We never destroy the secondary graph display (and create it from the beginning
             # for the paned viewed. graphDisplays is set from prolog
             if self.algorithm.graphDisplays == None or self.algorithm.graphDisplays == 1:

@@ -44,6 +44,44 @@ import GatoGlobals
 g = GatoGlobals.AnimationParameters
 
 
+HTML_SKELETON = """ 
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html style="border-width: 0px; margin: 0px; width: 100%%; height: 100%%" xmlns="http://www.w3.org/1999/xhtml">
+<head >
+<style>
+html, body { margin:0; padding:0}
+embed {  overflow:scroll; position: absolute; width: 100%%; height: 100%%; background-color: #AAAAAA}
+</style>
+<meta http-equiv="content-type" content="application/xhtml+xml;charset=UTF-8" />
+</head>
+<body id="body" >
+    <embed id="svg_image" src="../src/%s" type="image/svg+xml"></embed>
+</body>
+</html>
+"""
+
+""" 
+ export_html_wrapper writes an html file to the given path with the name
+ 'svg_name.html'.  The html file references the svg with the given name.
+"""
+def export_html_wrapper(svg_name, svg_dir="./svgs/src/", html_dir="./svgs/html/"):
+
+    # Create the html directory if it doesn't exist
+    if not os.path.exists(html_dir):
+        os.makedirs(html_dir)
+
+    svg_path = svg_dir + svg_name
+    html_content = HTML_SKELETON % (svg_name)
+    file_name = html_dir + "%s.html" % (svg_name[0:-4])    # Strip the .svg off of the name and append .html
+    html_file = open(file_name, "w+")
+    html_file.write(html_content)
+    html_file.close()
+
+
+
 #
 # Negative cycle property
 #
@@ -443,7 +481,16 @@ if __name__ == '__main__':
         app.update_idletasks()
         #app.mainloop()
 
+        if not os.path.exists('./svgs'):
+            os.makedirs('./svgs')
+        if not os.path.exists('./svgs/src/'):
+            os.makedirs('./svgs/src/')
+
         if svg:
-            app.ExportSVGAnimation('svgs/%s-%s.svg' %
+            app.ExportSVGAnimation('svgs/src/%s-%s.svg' %
                                    (os.path.splitext(os.path.basename(case[0]))[0],
+                                    os.path.splitext(os.path.basename(case[1]))[0])) 
+            export_html_wrapper("%s-%s.svg" % (os.path.splitext(os.path.basename(case[0]))[0],
                                     os.path.splitext(os.path.basename(case[1]))[0]))
+
+

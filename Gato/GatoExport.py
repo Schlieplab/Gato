@@ -3335,11 +3335,10 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
     """ Export either the current graphs or the complete animation
         (showAnimation=True) to the file fileName
     """
-    #print algowin.codeLineHistory
+    
     global SVG_Animation
     if showAnimation:
         if secondaryGraphDisplayAnimationHistory:
-            print secondaryGraphDisplayAnimationHistory.getHistoryTwo()
             animation = collectAnimations([algorithm.animation_history.getHistoryOne(),
                                            secondaryGraphDisplayAnimationHistory.getHistoryTwo(),
                                            algowin.codeLineHistory],
