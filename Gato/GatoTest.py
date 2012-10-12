@@ -101,7 +101,7 @@ def allInstances(exclude_algorithms=[], exclude_instances = {}):
 # Testcases are all combinations of algorithm with all their
 # graphs.
 
-instance = {
+"""instance = {
     '02-GraphsNetworks/BFS-components.alg':[
     '02-GraphsNetworks/3Components.cat'
     ],
@@ -190,7 +190,7 @@ instance = {
     ]
     }
 
-
+"""
 #instance = {'06-MaximalFlows/FordFulkerson.alg':[
 #    '06-MaximalFlows/FordFulkerson4.cat']}
 
@@ -207,7 +207,7 @@ instance = {
 #    '06-MaximalFlows/FordFulkerson6.cat','06-MaximalFlows/FordFulkersonBad.cat'
 #    ]}
 
-svg_instance = {
+"""svg_instance = {
     '02-GraphsNetworks/BFS-components.alg':[
     '02-GraphsNetworks/BFS.cat', '02-GraphsNetworks/3Components.cat'
     ],
@@ -301,8 +301,8 @@ svg_instance = {
        #'09-WeightedMatching/twotriangles.cat'
        #]
     }
-
 """
+
 instance = {'06-MaximalFlows/FordFulkerson.alg':['06-MaximalFlows/FordFulkerson6.cat'],
      '02-GraphsNetworks/BFS.alg':[
    '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
@@ -321,7 +321,7 @@ svg_instance = {'06-MaximalFlows/FordFulkerson.alg':['06-MaximalFlows/FordFulker
    ],
    '05-ShortestPaths/BellmanFord.alg':[
     '05-ShortestPaths/BellmanFordWC.cat'  #,'05-ShortestPaths/NegCircuit.cat'
-    ]}"""
+    ]}
 
 #------------------------------------------------------------------
 def usage():

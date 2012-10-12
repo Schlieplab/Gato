@@ -1054,6 +1054,161 @@ function createSpeedSelect(id, x, y, boxWidth, text, color) {
 	return group;
 }
 
+// OptionDropdown Object constructor.  Creates the cog dropdown that controls animation speed
+function OptionDropdown(id, height, width) {
+    
+    this.height = height + 4;
+    this.width = width;
+    this.x_trans = null;
+    this.y_trans = null;
+    this.speed_shown = false;
+    
+    //The g-element containing all other pieces
+    this.dropdown = null;
+    
+    //The g-element containing the button always displayed
+    this.button = null;
+    
+    //The button rectangle
+    this.rect = null;
+    
+    //Cog image
+    this.cog = null;
+    
+    //Triangle dropdown icon
+    this.triang = null;
+    
+    //Options to go in the dropdown menu
+    this.options = new Array("This is an option");
+    //g-element containing the actual dropdown menu
+    this.menu = null;   
+    //Array of g-elements containing a rect, and text element 
+    this.menu_items = null;
+    
+    this.rect_fill = '#ffffff';
+    this.rect_selected_fill = '#aaaaaa';
+    
+    this.dropdown = the_evt_target_ownerDocument.createElementNS(svgNS, 'g');
+    this.dropdown.setAttribute("id", id);
+    
+    this.button = the_evt_target_ownerDocument.createElementNS(svgNS, 'g');
+    this.button.setAttribute('id', id + "_button");
+    this.button.setAttribute("cursor", "pointer");
+    this.dropdown.appendChild(this.button);
+    
+    this.rect = the_evt_target_ownerDocument.createElementNS(svgNS, 'rect');
+    this.rect.setAttribute('id', 'dropdown_rect');
+    this.rect.setAttribute("width", this.width);
+    this.rect.setAttribute("height", this.height);
+    this.rect.setAttribute("rx", '4');
+    this.rect.setAttribute("ry", '4');
+    this.rect.setAttribute('x', 0);
+    this.rect.setAttribute('y', 0);
+    this.rect.setAttribute('stroke', '#cbcbcb');
+    this.rect.setAttribute('stroke-width', '2px');
+    this.rect.setAttribute('fill', this.rect_fill);
+    this.button.appendChild(this.rect);
+    
+    this.cog = the_evt_target_ownerDocument.createElementNS(svgNS, "image");
+    this.cog.setAttribute("id", "dropdown_cog");
+    this.cog.setAttributeNS('http://www.w3.org/1999/xlink','href', "cog.png");
+    this.cog.setAttribute("x", 0);
+    this.cog.setAttribute("y", 2);
+    this.cog.setAttribute('width', this.width*2/3 + this.width/12);
+    this.cog.setAttribute('height', height);
+    this.button.appendChild(this.cog);
+    
+    this.triang = the_evt_target_ownerDocument.createElementNS(svgNS, "polygon");
+    this.triang.setAttribute("id", "dropdown_triang");
+    var x1 = width*2/3 + width/12 - 1;
+    var x2 = width - 3;
+    var x3 = (x1 + x2)/2;
+    this.triang.setAttribute("points",  String(x1 + "," + height/2 + " " + x2 + "," + height/2 + " " + x3 + "," + (height-2)));
+    this.triang.setAttribute("fill", "#888888");
+    this.button.appendChild(this.triang);
+    
+    this.position_dropdown();
+    this.build_dropdown();
+    
+    //Put mouseover and mouseout effects here
+    this.dropdown.setAttribute("onmouseover", "OD_mouseover(evt)");
+    this.dropdown.setAttribute("onmouseout", "OD_mouseout(evt)");
+    this.button.setAttribute("onmousedown", "OD_mouseclick(evt)");
+    
+    the_evt_target_ownerDocument.documentElement.appendChild(this.dropdown);
+}
+
+
+// OptionDropdown initialization function
+function OD_build_dropdown() {
+    
+    this.menu = the_evt_target_ownerDocument.createElementNS(svgNS, "g");
+    
+    var x_trans = -1*speed_select.llc.group.getBBox().width + speed_select.llc.h_padding*8;
+    var y_trans = speed_select.llc.group.getBBox().height - speed_select.llc.v_padding*2;
+    setTranslate(speed_select.llc.group, x_trans, y_trans);
+    
+    this.menu.setAttribute("visibility", "hidden");
+    this.menu.appendChild(speed_select.llc.group);
+    this.dropdown.appendChild(this.menu);
+}
+
+
+//Positions the option dropdown at the top right of the screen
+function OD_position_dropdown() {
+    this.y_trans = 10;
+    //var x_trans = right_vert_layout.group.getBBox().x + right_vert_layout.group.getBBox().width;
+    this.x_trans = (browser_width - 50)/screen_ctm.a;
+    var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
+    var translation1 = getTranslate(right_vert_layout.group.getAttribute("transform"));
+    var translation2 = getTranslate(vert_layout.group.getAttribute("transform"));
+    var translation3 = getTranslate(graph.getAttribute("transform"));
+    
+    this.x_trans = translation1[0] + translation2[0] + translation3[0] + graph.getBBox().width;
+    setTranslate(this.dropdown, this.x_trans, this.y_trans);
+}
+
+
+//Changes the appearance of the dropdown when the mouse is over it
+function OD_mouseover(evt) {
+    var pieces = new Array(option_dropdown.rect, option_dropdown.triang);
+    
+    for (i in pieces) 
+        pieces[i].setAttribute("opacity", .5);
+}
+
+
+//reverses the change in appearance of mouseover, and closes dropdown menu
+function OD_mouseout(evt) {
+    var pieces = new Array(option_dropdown.rect, option_dropdown.triang);
+    
+    for (i in pieces) 
+        pieces[i].setAttribute("opacity", 1);
+        
+}
+
+
+//Pops open the dropdown menu
+function OD_mouseclick(evt) {
+
+    if (option_dropdown.speed_shown === false) 
+        option_dropdown.menu.setAttribute('visibility', 'visible');
+    else 
+        option_dropdown.menu.setAttribute('visibility', 'hidden');
+        
+    if (option_dropdown.speed_shown)
+        option_dropdown.speed_shown = false;
+    else
+        option_dropdown.speed_shown = true;
+}
+
+
+// Initialize the functions for the OptionDropdown
+function Option_prototypeInit() {
+    OptionDropdown.prototype.position_dropdown = OD_position_dropdown;
+    OptionDropdown.prototype.build_dropdown = OD_build_dropdown;
+}
+
 /**
 *
 *
@@ -2094,7 +2249,7 @@ function click_scaler(evt) {
  	scaler.scaler_active = true;
     var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
     scale_graph_width = graph.getBBox().width * g_scale_factor;
-    mouse_start = cursorPoint(evt);
+    mouse_start = cursorPoint(evt, null);
 }
 
 
@@ -2132,26 +2287,15 @@ function scaleGraph(graph, graph_bg, evt, use_curr_sf) {
     if (max_scale_factor < 1)
         width_factor = max_scale_factor;
     
-    cursor_point = cursorPoint(evt);
-
-    //console.log('Cursor_point: (' + cursor_point.x + ', ' + cursor_point.y + ')');
-    //console.log('Mouse_start: (' + mouse_start.x + ', ' + mouse_start.y + ')');
+    cursor_point = cursorPoint(evt, null);
 
     var graph_width = graph.getBBox().width * width_factor;
     var cursor_delta = cursor_point.x - mouse_start.x;
     if (cursor_delta === 0)
         return;
-    //console.log("cursor_delta: " + cursor_delta);
-    //console.log("graph_width: " + scale_graph_width);
 
     var new_width = scale_graph_width + cursor_delta;
-    //console.log("new_width: " + new_width);
     var temp_scale_factor = new_width / graph_width;
-
-    //console.log("temp_scale_factor: " + temp_scale_factor);
-    
-    //Scale factor used to compute size of graph
-   // var temp_scale_factor = (graph_width + cursor_delta)/graph_width;
 
     // If temp_scale_factor is too small then do not do the scaling
     if (temp_scale_factor < MIN_SCALE_FACTOR)
@@ -2167,11 +2311,15 @@ function scaleGraph(graph, graph_bg, evt, use_curr_sf) {
     setScale(graph_bg, g_scale_factor, g_scale_factor);
 }
 
-//Translate client coordinates to svg coordinates.  
-function cursorPoint(evt){
+//Translate client coordinates to svg coordinates.  If given element then translates to coordinates
+//in that elements coordinate system
+function cursorPoint(evt, element){
     pt.x = evt.clientX; 
     pt.y = evt.clientY;
-    return pt.matrixTransform(the_evt_target.getScreenCTM().inverse());
+    if (element === null)
+        return pt.matrixTransform(the_evt_target.getScreenCTM().inverse());
+    else
+        return pt.matrixTransform(element.getScreenCTM().inverse());
 }
 
 //This pushes the graph background too far to the left for some reason
@@ -2364,75 +2512,76 @@ function jumpToStep(n) {
 function MovieSlider(id, slider_width, thumb_height, offset, end_step, labels, title, actions) {
 
     this.slider = null;
-	this.slider_bar = null;
-	this.slider_thumb = null;
-	this.low_bound = 0;
-	this.up_bound = end_step;
-	this.thumb_active = false;
-	this.current_setting = 0;
-	this.offset = offset;
+    this.slider_bar = null;
+    this.slider_thumb = null;
+    this.low_bound = 0;
+    this.up_bound = end_step;
+    this.thumb_active = false;
+    this.current_setting = 0;
+    this.offset = offset;
     
-    this.default_thickness = 10;
+    this.thumb_width = 10;
     var font_size = 10;
     
     this.slider = the_evt_target_ownerDocument.createElementNS(svgNS, 'g');
     this.slider.setAttribute("id", id);
-	
-	this.slider_bar = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
-	this.slider_bar.setAttribute("width", slider_width);
-	this.slider_bar.setAttribute("height", this.default_thickness);
-	this.slider_bar.setAttribute("x", this.default_thickness/2);
-	this.slider_bar.setAttribute("y",(thumb_height-this.default_thickness)/2);
-	this.slider_bar.setAttribute("rx", this.default_thickness/2);
-	this.slider_bar.setAttribute("ry", this.default_thickness/2);
-	this.slider_bar.setAttribute("stroke", "black");
-	this.slider_bar.setAttribute("fill", "url(#slider_bar_lg)");
-	this.slider_bar.setAttribute("stroke-width", 1);
-	this.slider_bar.setAttribute("cursor", "pointer");
-	this.slider_bar.setAttribute("id", id + "_slider_bar");
-	this.slider.appendChild(this.slider_bar);
     
-	this.slider_thumb = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
-	this.slider_thumb.setAttribute("width", this.default_thickness);
-	this.slider_thumb.setAttribute("height", thumb_height);
-	this.slider_thumb.setAttribute("rx", this.default_thickness/2);
-	this.slider_thumb.setAttribute("ry", this.default_thickness/2);
-	this.slider_thumb.setAttribute("stroke", "black");
+    this.slider_bar = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
+    this.slider_bar.setAttribute("width", slider_width);
+    this.slider_bar.setAttribute("height", this.thumb_width);
+    this.slider_bar.setAttribute("x", this.thumb_width/2);
+    this.slider_bar.setAttribute("y",(thumb_height-this.thumb_width)/2);
+    this.slider_bar.setAttribute("rx", this.thumb_width/2);
+    this.slider_bar.setAttribute("ry", this.thumb_width/2);
+    this.slider_bar.setAttribute("stroke", "black");
+    this.slider_bar.setAttribute("fill", "url(#slider_bar_lg)");
+    this.slider_bar.setAttribute("stroke-width", 1);
+    this.slider_bar.setAttribute("cursor", "pointer");
+    this.slider_bar.setAttribute("id", id + "_slider_bar");
+    this.slider.appendChild(this.slider_bar);
+    
+    this.slider_thumb = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
+    this.slider_thumb.setAttribute("width", this.thumb_width);
+    this.slider_thumb.setAttribute("height", thumb_height);
+    this.slider_thumb.setAttribute("rx", this.thumb_width/2);
+    this.slider_thumb.setAttribute("ry", this.thumb_width/2);
+    this.slider_thumb.setAttribute("x", 0);
+    this.slider_thumb.setAttribute("stroke", "black");
     this.slider_thumb.setAttribute("fill", "url(#slider_thumb_lg)");
-	this.slider_thumb.setAttribute("stroke-width", 1);
-	this.slider_thumb.setAttribute("cursor", "pointer");
-	this.slider_thumb.setAttribute("id", id + "_slider_thumb");
-	this.slider.appendChild(this.slider_thumb);
-	
-	//create labels below slider
-	for(i in labels){
-		var text = the_evt_target_ownerDocument.createElementNS(svgNS, "text");
-		text.setAttribute("x", this.default_thickness/2 + i*(slider_width/(labels.length-1)));
-		text.setAttribute("y", thumb_height+ font_size);
-		text.setAttribute("text-anchor","middle");
-		text.setAttribute("font-size", font_size);
-		text.setAttribute("font-family","Helvetica");
-		text.setAttribute("font-style","normal");
-		text.appendChild(the_evt_target_ownerDocument.createTextNode(labels[i]));
-		this.slider.appendChild(text);
-	}
-	
-	//create slider title
-	var header = the_evt_target_ownerDocument.createElementNS(svgNS, "text");
-	header.setAttribute("x", (this.default_thickness + slider_width)/2);
-	header.setAttribute("y", 0);
-	header.setAttribute("text-anchor","middle");
-	header.setAttribute("font-size", font_size);
-	header.setAttribute("font-family","Helvetica");
-	header.setAttribute("font-style","normal");
-	header.appendChild(the_evt_target_ownerDocument.createTextNode(title));
-	this.slider.appendChild(header);
-		
-	for(i in actions){
-		this.slider.setAttribute(actions[i][0], actions[i][1]);
-	}
-	
-	the_evt_target_ownerDocument.documentElement.appendChild(this.slider);
+    this.slider_thumb.setAttribute("stroke-width", 1);
+    this.slider_thumb.setAttribute("cursor", "pointer");
+    this.slider_thumb.setAttribute("id", id + "_slider_thumb");
+    this.slider.appendChild(this.slider_thumb);
+    
+    //create labels below slider
+    for(i in labels){
+        var text = the_evt_target_ownerDocument.createElementNS(svgNS, "text");
+        text.setAttribute("x", this.thumb_width/2 + i*(slider_width/(labels.length-1)));
+        text.setAttribute("y", thumb_height+ font_size);
+        text.setAttribute("text-anchor","middle");
+        text.setAttribute("font-size", font_size);
+        text.setAttribute("font-family","Helvetica");
+        text.setAttribute("font-style","normal");
+        text.appendChild(the_evt_target_ownerDocument.createTextNode(labels[i]));
+        this.slider.appendChild(text);
+    }
+    
+    //create slider title
+    var header = the_evt_target_ownerDocument.createElementNS(svgNS, "text");
+    header.setAttribute("x", (this.thumb_width + slider_width)/2);
+    header.setAttribute("y", 0);
+    header.setAttribute("text-anchor","middle");
+    header.setAttribute("font-size", font_size);
+    header.setAttribute("font-family","Helvetica");
+    header.setAttribute("font-style","normal");
+    header.appendChild(the_evt_target_ownerDocument.createTextNode(title));
+    this.slider.appendChild(header);
+        
+    for(i in actions){
+        this.slider.setAttribute(actions[i][0], actions[i][1]);
+    }
+    
+    the_evt_target_ownerDocument.documentElement.appendChild(this.slider);
 }
 
 
@@ -2455,12 +2604,15 @@ function Deactivate_MovieSlider(evt){
 // Changes the position and step setting of the movie_slider when the mouse is clicked on a given position
 function Move_MovieSlider(evt) {
     var bbox = movie_slider.slider_bar.getBBox();
-    var x_pos = cursorPoint(evt).x;
-    
+    var x_pos = cursorPoint(evt, movie_slider.slider_thumb).x;
+
     if (evt.clientX == undefined)
         x_pos = evt.touches[0].clientX;
-        
-    movie_slider.slider_thumb.setAttribute("x", x_pos - movie_slider.offset - (movie_slider.default_thickness/2) - getTranslate(movie_slider.slider.getAttribute("transform"))[0] - getTranslate(horiz_layout[1].group.getAttribute("transform"))[0]);
+
+
+    movie_slider.slider_thumb.setAttribute("x", x_pos - movie_slider.thumb_width/2);
+
+    //movie_slider.slider_thumb.setAttribute("x", x_pos - (movie_slider.thumb_width/2) - getTranslate(movie_slider.slider.getAttribute("transform"))[0] - getTranslate(horiz_layout[1].group.getAttribute("transform"))[0]);
     movie_slider.current_setting = movie_slider.low_bound + (movie_slider.up_bound - movie_slider.low_bound)*(movie_slider.slider_thumb.getAttribute("x")/movie_slider.slider_bar.getAttribute("width"));
     movie_slider.current_setting = Math.floor(movie_slider.current_setting);
     jumpToStep(movie_slider.current_setting);
@@ -2471,24 +2623,24 @@ function Move_MovieSlider(evt) {
 // Changes the position of the movie_slider bar and the current step when the bar is dragged
 function Drag_MovieSlider(evt) {
     if (movie_slider.thumb_active) {
-        var x_pos = cursorPoint(evt).x;
+        var x_pos = cursorPoint(evt, movie_slider.slider_bar).x;
         
         if (x_pos === undefined) 
             x_pos = evt.touches[0].clientX;
-            
-        if (x_pos >= (movie_slider.slider_bar.getBBox().x + getTranslate(movie_slider.slider.getAttribute("transform"))[0] + movie_slider.offset) && x_pos <= (movie_slider.slider_bar.getBBox().x + movie_slider.offset + movie_slider.slider_bar.getBBox().width + getTranslate(movie_slider.slider.getAttribute("transform"))[0])){
-            movie_slider.slider_thumb.setAttribute("x", x_pos - movie_slider.offset - (movie_slider.default_thickness/2) - getTranslate(movie_slider.slider.getAttribute("transform"))[0] - getTranslate(horiz_layout[1].group.getAttribute("transform"))[0]);
+
+        if (x_pos >= movie_slider.slider_bar.getBBox().x && x_pos < (movie_slider.slider_bar.getBBox().width + movie_slider.thumb_width/2)){
+            movie_slider.slider_thumb.setAttribute("x", x_pos - movie_slider.thumb_width/2);
             movie_slider.current_setting = movie_slider.low_bound + (movie_slider.up_bound - movie_slider.low_bound)*(movie_slider.slider_thumb.getAttribute("x")/movie_slider.slider_bar.getAttribute("width"));
-        } else if (x_pos > (movie_slider.slider_bar.getBBox().x + movie_slider.slider_bar.getBBox().width + getTranslate(horiz_layout[1].group.getAttribute("transform"))[0])){
+        } else if (x_pos >= (movie_slider.slider_bar.getBBox().width + movie_slider.thumb_width/2)) {
+            console.log("At els if");
             //If slider bar is all the way to right set to up_bound-1
-            movie_slider.current_setting = movie_slider.up_bound-1;
+           movie_slider.current_setting = movie_slider.up_bound-1;
         } else {
             //If slider bar is all the way to left set to 0
             movie_slider.current_setting = 0;
         }
     
         movie_slider.current_setting = Math.floor(movie_slider.current_setting);
-        console.log('current step: ' + movie_slider.current_setting);
         jumpToStep(movie_slider.current_setting);
     }
 }
@@ -2535,162 +2687,6 @@ function positionControls() {
     trans = viewbox_y - horiz_layout[1].group.getBBox().height*2;
     setTranslate(horiz_layout[1].group, 0, trans); 
     
-}
-
-
-// OptionDropdown Object constructor.  Creates the cog dropdown that controls animation speed
-function OptionDropdown(id, height, width) {
-    
-    this.height = height + 4;
-    this.width = width;
-    this.x_trans = null;
-    this.y_trans = null;
-    this.speed_shown = false;
-    
-    //The g-element containing all other pieces
-    this.dropdown = null;
-    
-    //The g-element containing the button always displayed
-    this.button = null;
-    
-    //The button rectangle
-    this.rect = null;
-    
-    //Cog image
-    this.cog = null;
-    
-    //Triangle dropdown icon
-    this.triang = null;
-    
-    //Options to go in the dropdown menu
-    this.options = new Array("This is an option");
-    //g-element containing the actual dropdown menu
-    this.menu = null;   
-    //Array of g-elements containing a rect, and text element 
-    this.menu_items = null;
-    
-    this.rect_fill = '#ffffff';
-    this.rect_selected_fill = '#aaaaaa';
-    
-    this.dropdown = the_evt_target_ownerDocument.createElementNS(svgNS, 'g');
-    this.dropdown.setAttribute("id", id);
-    
-    this.button = the_evt_target_ownerDocument.createElementNS(svgNS, 'g');
-    this.button.setAttribute('id', id + "_button");
-    this.button.setAttribute("cursor", "pointer");
-    this.dropdown.appendChild(this.button);
-    
-    this.rect = the_evt_target_ownerDocument.createElementNS(svgNS, 'rect');
-    this.rect.setAttribute('id', 'dropdown_rect');
-    this.rect.setAttribute("width", this.width);
-    this.rect.setAttribute("height", this.height);
-    this.rect.setAttribute("rx", '4');
-    this.rect.setAttribute("ry", '4');
-    this.rect.setAttribute('x', 0);
-    this.rect.setAttribute('y', 0);
-    this.rect.setAttribute('stroke', '#cbcbcb');
-    this.rect.setAttribute('stroke-width', '2px');
-    this.rect.setAttribute('fill', this.rect_fill);
-    this.button.appendChild(this.rect);
-    
-    this.cog = the_evt_target_ownerDocument.createElementNS(svgNS, "image");
-    this.cog.setAttribute("id", "dropdown_cog");
-    this.cog.setAttributeNS('http://www.w3.org/1999/xlink','href', "cog.png");
-    this.cog.setAttribute("x", 0);
-    this.cog.setAttribute("y", 2);
-    this.cog.setAttribute('width', this.width*2/3 + this.width/12);
-    this.cog.setAttribute('height', height);
-    this.button.appendChild(this.cog);
-    
-    this.triang = the_evt_target_ownerDocument.createElementNS(svgNS, "polygon");
-    this.triang.setAttribute("id", "dropdown_triang");
-    var x1 = width*2/3 + width/12 - 1;
-    var x2 = width - 3;
-    var x3 = (x1 + x2)/2;
-    this.triang.setAttribute("points",  String(x1 + "," + height/2 + " " + x2 + "," + height/2 + " " + x3 + "," + (height-2)));
-    this.triang.setAttribute("fill", "#888888");
-    this.button.appendChild(this.triang);
-    
-    this.position_dropdown();
-    this.build_dropdown();
-    
-    //Put mouseover and mouseout effects here
-    this.dropdown.setAttribute("onmouseover", "OD_mouseover(evt)");
-    this.dropdown.setAttribute("onmouseout", "OD_mouseout(evt)");
-    this.button.setAttribute("onmousedown", "OD_mouseclick(evt)");
-    
-    the_evt_target_ownerDocument.documentElement.appendChild(this.dropdown);
-}
-
-
-// OptionDropdown initialization function
-function OD_build_dropdown() {
-    
-    this.menu = the_evt_target_ownerDocument.createElementNS(svgNS, "g");
-    
-    var x_trans = -1*speed_select.llc.group.getBBox().width + speed_select.llc.h_padding*8;
-    var y_trans = speed_select.llc.group.getBBox().height - speed_select.llc.v_padding*2;
-    setTranslate(speed_select.llc.group, x_trans, y_trans);
-    
-    this.menu.setAttribute("visibility", "hidden");
-    this.menu.appendChild(speed_select.llc.group);
-    this.dropdown.appendChild(this.menu);
-}
-
-
-//Positions the option dropdown at the top right of the screen
-function OD_position_dropdown() {
-    this.y_trans = 10;
-    //var x_trans = right_vert_layout.group.getBBox().x + right_vert_layout.group.getBBox().width;
-    this.x_trans = (browser_width - 50)/screen_ctm.a;
-    var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
-    var translation1 = getTranslate(right_vert_layout.group.getAttribute("transform"));
-    var translation2 = getTranslate(vert_layout.group.getAttribute("transform"));
-    var translation3 = getTranslate(graph.getAttribute("transform"));
-    
-    this.x_trans = translation1[0] + translation2[0] + translation3[0] + graph.getBBox().width;
-    setTranslate(this.dropdown, this.x_trans, this.y_trans);
-}
-
-
-//Changes the appearance of the dropdown when the mouse is over it
-function OD_mouseover(evt) {
-    var pieces = new Array(option_dropdown.rect, option_dropdown.triang);
-    
-    for (i in pieces) 
-        pieces[i].setAttribute("opacity", .5);
-}
-
-
-//reverses the change in appearance of mouseover, and closes dropdown menu
-function OD_mouseout(evt) {
-    var pieces = new Array(option_dropdown.rect, option_dropdown.triang);
-    
-    for (i in pieces) 
-        pieces[i].setAttribute("opacity", 1);
-        
-}
-
-
-//Pops open the dropdown menu
-function OD_mouseclick(evt) {
-
-    if (option_dropdown.speed_shown === false) 
-        option_dropdown.menu.setAttribute('visibility', 'visible');
-    else 
-        option_dropdown.menu.setAttribute('visibility', 'hidden');
-        
-    if (option_dropdown.speed_shown)
-        option_dropdown.speed_shown = false;
-    else
-        option_dropdown.speed_shown = true;
-}
-
-
-// Initialize the functions for the OptionDropdown
-function Option_prototypeInit() {
-    OptionDropdown.prototype.position_dropdown = OD_position_dropdown;
-    OptionDropdown.prototype.build_dropdown = OD_build_dropdown;
 }
 
 
