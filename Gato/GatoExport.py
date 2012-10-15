@@ -128,23 +128,63 @@ var step_pressed = false;  //Whether the step button was pressed.  Used to emula
 var step_evt;
 var continue_pressed = false;
 var continue_evt;
-var scaler;            //Triangular scaler at bottom right of graph
-var scaler_width;       //Width of the scaler
+
+// Triangular scaler at bottom right of graph
+var scaler;            
+
+// Current scale factor of the graph
 var g_scale_factor = 1;
-var mouse_start = undefined;        //Coordinates of mouse start when scaling
-var pt;             //SVGPoint for converting browser space to svg space
+
+// Coordinates of mouse start when scaling
+var mouse_start = undefined;        
+
+// SVGPoint for converting browser space to svg space
+var pt;             
+
+// Interval between saved graph states
 var STEP_INTERVAL = 200;
-var graph_states = new Array();       //Array of GraphState objects representing the state of the graph at every STEP_INTERVAL
-var attr_array;                     //Array of attributes that are in use on the elements.  Check to make sure differnet graphs don't introduce new attributes.
-var browser_width;                  //Width of the browser after initialize
-var browser_height;                 //Height of the browser after initialize
-var screen_ctm;                     //Coordiante transformation matrix of the screen
-var option_dropdown;                //Option dropdown box at top right hand corner
+
+// Array of GraphState objects representing the state of the graph at every STEP_INTERVAL
+var graph_states = new Array();      
+
+// Array of attributes that are in use on the elements.  Check to make sure differnet graphs don't introduce new attributes.
+var attr_array;                     
+
+// Width and height of the browser after initialize
+var browser_width;                  
+var browser_height;                 
+
+//Coordiante transformation matrix of the screen
+var screen_ctm;                     
+
+// Option dropdown box
+var option_dropdown;                
+
+// Viewbox values of the containing svg
 var viewbox_x;
 var viewbox_y;
-var MIN_SCALE_FACTOR = .2;          // Minimum scale factor for the graph
-var scale_graph_width = undefined;  // Graph width(considering scaling) at the time of a mouse click on the scaler
-var filling_states;                 // Boolean variable that is set to true when the graph states are being filled at the start of execution
+
+// Minimum scale factor for the graph
+var MIN_SCALE_FACTOR = .2;          
+
+// Graph width(considering scaling) at the time of a mouse click on the scaler
+var scale_graph_width = undefined;  
+
+// Holds the bounding box maximum width and height, to which it will always be set
+var G_BBOX_WIDTH;   
+var G_BBOX_HEIGHT;
+
+// Graph width(considering scaling) at the time of a mouse click on the scaler
+var scale_graph_width = undefined;  
+
+// Boolean variable that is set to true when the graph states are being filled at the start of execution
+var filling_states;     
+
+// Max width and height that the graph bounding box is throughout the animation
+var MAX_GBBOX_WIDTH = 0;
+var MAX_GBBOX_HEIGHT = 0;            
+
+
 /**
 *
 *
@@ -271,17 +311,47 @@ function setScale(component, x, y){
 }
 
 
+// Resizes and positions the graph bounding box based on the size and position of the graph,
+// or the MAX_GBBOX_WIDTH/HEIGHT variables if not filling_states
+// Additionally, it positions the scaler at the bottom right of the box
+function sizeGraphBBox(graph) {
+    var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+
+    // Set the size of the bounding box
+    if (filling_states) {
+        rect.setAttribute("width",graph.getBBox().width+10);
+        rect.setAttribute("height",graph.getBBox().height+10);
+
+        // Update MAX_GBBOX values if needed
+        if ((graph.getBBox().width+10) > MAX_GBBOX_WIDTH)
+            MAX_GBBOX_WIDTH = graph.getBBox().width+10;
+        if ((graph.getBBox().height+10) > MAX_GBBOX_HEIGHT)
+            MAX_GBBOX_HEIGHT = graph.getBBox().height+10;
+
+    } else {
+        rect.setAttribute("width", MAX_GBBOX_WIDTH);
+        rect.setAttribute("height", MAX_GBBOX_HEIGHT);
+    }
+
+    repositionScaler(graph.getBBox().x, graph.getBBox().y);
+
+    // Reposition the bounding box
+    rect.setAttribute("x", graph.getBBox().x-10);
+    rect.setAttribute("y", graph.getBBox().y-10);
+}
+
+
 //Creates a textnode with the given text
 function createLabel(id, text) {
-	var label = the_evt_target_ownerDocument.createElementNS(svgNS, "text");
-	label.setAttribute("id", id);
-	label.setAttribute("x", 0);
-	label.setAttribute("y", 14);
-	label.setAttribute("font-size", "15px");
-	var textNode = document.createTextNode(text);
-	label.appendChild(textNode);
-	the_evt_target_ownerDocument.documentElement.appendChild(label);
-	return label;
+    var label = the_evt_target_ownerDocument.createElementNS(svgNS, "text");
+    label.setAttribute("id", id);
+    label.setAttribute("x", 0);
+    label.setAttribute("y", 14);
+    label.setAttribute("font-size", "15px");
+    var textNode = document.createTextNode(text);
+    label.appendChild(textNode);
+    the_evt_target_ownerDocument.documentElement.appendChild(label);
+    return label;
 }
 
 
@@ -309,15 +379,15 @@ function fillEdgesArray() {
     edges = new Array();
     var highestNode = 1;
     while (the_evt_target_ownerDocument.getElementById("g1_" + highestNode) != null)
-    	highestNode++;
+        highestNode++;
     highestNode--;
     //See if it is a two graph algo also, have 2nd edges array declared just in case
     for (var i=0; i<=highestNode; i++) {
-    	for (var j=0; j<=highestNode; j++) {
-    		var element = the_evt_target_ownerDocument.getElementById("g1_("+i+", "+j+")");
-    		if (element != null) 
-    		    edges.push(element);
-    	}
+        for (var j=0; j<=highestNode; j++) {
+            var element = the_evt_target_ownerDocument.getElementById("g1_("+i+", "+j+")");
+            if (element != null) 
+                edges.push(element);
+        }
     }
 }
 
@@ -395,10 +465,10 @@ function HTB_prototypeInit(){
 
 //Adds a rectangular box around the code section
 function HTB_addBoundingBox(color) {
-	var bbox = this.line_llc.group.getBBox();
+    var bbox = this.line_llc.group.getBBox();
     var line = this.line_llc.group.childNodes.item(0);
     var line_bbox = line.getBBox();
-	var rect = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
+    var rect = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
     var line_translation = getTranslate(this.line_llc.group.childNodes.item(0).getAttribute("transform"));
     var dx = line.getAttribute("dx");
     if(dx == null)
@@ -406,19 +476,17 @@ function HTB_addBoundingBox(color) {
     else
         dx = parseFloat(dx);
     
-	rect.setAttribute("id", "codeBox");
-	rect.setAttribute("width", bbox.width + this.line_llc.h_padding*2);
-	rect.setAttribute("height", bbox.height + this.line_llc.v_padding*2 + 10);
+    rect.setAttribute("id", "codeBox");
+    rect.setAttribute("width", bbox.width + this.line_llc.h_padding*2);
+    rect.setAttribute("height", bbox.height + this.line_llc.v_padding*2 + 10);
     rect.setAttribute("x", line_bbox.x + line_translation[0] - this.line_llc.h_padding - dx);
-	rect.setAttribute("y", bbox.y - this.line_llc.v_padding - 5);
-	rect.setAttribute("fill", "url(#code_box_lg)");
-	rect.setAttribute("stroke", color);
+    rect.setAttribute("y", bbox.y - this.line_llc.v_padding - 5);
+    rect.setAttribute("fill", "url(#code_box_lg)");
+    rect.setAttribute("stroke", color);
     rect.setAttribute("stroke-width", "3px");
     rect.setAttribute("rx", 5);
     rect.setAttribute("ry", 5);
-    //setScale(rect, .5, .5);
-    console.log('child: ' + this.highlight_group.firstChild);
-	this.highlight_group.insertBefore(rect, this.highlight_group.firstChild);
+    this.highlight_group.insertBefore(rect, this.highlight_group.firstChild);
 }
 
 
@@ -921,60 +989,59 @@ function Drag_SSlider(evt){
 /* Constructor that creates a speed selector group.  Currently color and selectColor are
 hardcoded into the box functions. */
 function SpeedSelector(id, boxWidth, color, selectColor) {
- 	this.llc = new LinearLayoutComponent(8,4,id, "horizontal");
- 	this.color = color;
- 	this.boxWidth = boxWidth;
- 	this.selectColor = selectColor;
- 	this.label = createLabel("speedLabel", "Animation Speed:");
- 	this.llc.insertComponent(this.label.getAttribute("id"),0);
- 	this.lo = createSpeedSelect("lo", "0", "0", boxWidth, ".25x", this.color);
- 	this.lomid = createSpeedSelect("lomid", "0", "0", boxWidth, ".5x", this.color);
- 	this.mid = createSpeedSelect("mid", "0", "0", boxWidth, "1x", this.color);
- 	this.midhi = createSpeedSelect("midhi", "0", "0", boxWidth, "2x", this.color);
- 	this.hi = createSpeedSelect("hi", "0", "0", boxWidth, "4x", this.color);
- 	this.llc.insertComponent(this.lo.getAttribute("id"),1);
- 	this.llc.insertComponent(this.lomid.getAttribute("id"), 2);
- 	this.llc.insertComponent(this.mid.getAttribute("id"), 3);
- 	this.llc.insertComponent(this.midhi.getAttribute("id"), 4);
- 	this.llc.insertComponent(this.hi.getAttribute("id"), 5);
+    this.llc = new LinearLayoutComponent(8,4,id, "horizontal");
+    this.color = color;
+    this.boxWidth = boxWidth;
+    this.selectColor = selectColor;
+    this.label = createLabel("speedLabel", "Animation Speed:");
+    this.llc.insertComponent(this.label.getAttribute("id"),0);
+    this.lo = createSpeedSelect("lo", "0", "0", boxWidth, ".25x", this.color);
+    this.lomid = createSpeedSelect("lomid", "0", "0", boxWidth, ".5x", this.color);
+    this.mid = createSpeedSelect("mid", "0", "0", boxWidth, "1x", this.color);
+    this.midhi = createSpeedSelect("midhi", "0", "0", boxWidth, "2x", this.color);
+    this.hi = createSpeedSelect("hi", "0", "0", boxWidth, "4x", this.color);
+    this.llc.insertComponent(this.lo.getAttribute("id"),1);
+    this.llc.insertComponent(this.lomid.getAttribute("id"), 2);
+    this.llc.insertComponent(this.mid.getAttribute("id"), 3);
+    this.llc.insertComponent(this.midhi.getAttribute("id"), 4);
+    this.llc.insertComponent(this.hi.getAttribute("id"), 5);
     
     setTranslate(this.llc.group, 100, 0);
-    console.log('Transform: ' + this.llc.group.getAttribute("transform"));
- 	
- 	this.boxSelected(this.lo.firstChild);
+    
+    this.boxSelected(this.lo.firstChild);
 }
 
 function SS_prototypeInit() {
- 	SpeedSelector.prototype.boxSelected = SS_boxSelected;
+    SpeedSelector.prototype.boxSelected = SS_boxSelected;
     SpeedSelector.prototype.addBoundingBox = SS_addBoundingBox;
 }
 
 function SS_boxSelected(box) {
     var boxId = box.getAttribute("id");
-    var groups = this.llc.group.childNodes; 	
+    var groups = this.llc.group.childNodes;     
 
- 	//Change box colors
+    //Change box colors
     //Start at i=2 to skip the label, and the bounding box
- 	for ( i=2; i<groups.length; i++) {
- 		var currBox = groups.item(i).firstChild;
+    for ( i=2; i<groups.length; i++) {
+        var currBox = groups.item(i).firstChild;
         
- 		if (boxId === currBox.getAttribute("id"))
- 			currBox.setAttribute("fill-opacity", 1);
- 		else
- 			currBox.setAttribute("fill-opacity", .5);
- 	}
- 	
- 	//Change animation speed
- 	if (boxId === "lo") 
- 		timeout = 200;
- 	else if (boxId === "lomid") 
- 		timeout = 37;
- 	else if (boxId === "mid") 
- 		timeout = 22;
- 	else if (boxId === "midhi") 
- 		timeout = 10;
- 	else if (boxId === "hi") 
- 		timeout = .8;
+        if (boxId === currBox.getAttribute("id"))
+            currBox.setAttribute("fill-opacity", 1);
+        else
+            currBox.setAttribute("fill-opacity", .5);
+    }
+    
+    //Change animation speed
+    if (boxId === "lo") 
+        timeout = 200;
+    else if (boxId === "lomid") 
+        timeout = 37;
+    else if (boxId === "mid") 
+        timeout = 22;
+    else if (boxId === "midhi") 
+        timeout = 10;
+    else if (boxId === "hi") 
+        timeout = .8;
     
 }
 
@@ -982,7 +1049,7 @@ function SS_boxSelected(box) {
 var bbox = this.line_llc.group.getBBox();
     var line = this.line_llc.group.childNodes.item(0);
     var line_bbox = line.getBBox();
-	var rect = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
+    var rect = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
     var line_translation = getTranslate(this.line_llc.group.childNodes.item(0).getAttribute("transform"));
     var dx = line.getAttribute("dx");
     if(dx == null)
@@ -990,68 +1057,68 @@ var bbox = this.line_llc.group.getBBox();
     else
         dx = parseFloat(dx);
     
-	rect.setAttribute("id", "codeBox");
-	rect.setAttribute("width", bbox.width + this.line_llc.h_padding*2);
-	rect.setAttribute("height", bbox.height + this.line_llc.v_padding*2 + 10);
+    rect.setAttribute("id", "codeBox");
+    rect.setAttribute("width", bbox.width + this.line_llc.h_padding*2);
+    rect.setAttribute("height", bbox.height + this.line_llc.v_padding*2 + 10);
     rect.setAttribute("x", line_bbox.x + line_translation[0] - this.line_llc.h_padding - dx);
-	rect.setAttribute("y", bbox.y - this.line_llc.v_padding - 5);
-	rect.setAttribute("fill", "none");
-	rect.setAttribute("stroke", color);
+    rect.setAttribute("y", bbox.y - this.line_llc.v_padding - 5);
+    rect.setAttribute("fill", "none");
+    rect.setAttribute("stroke", color);
     rect.setAttribute("stroke-width", "4px");
     //setScale(rect, .5, .5);
-	this.highlight_group.appendChild(rect);
+    this.highlight_group.appendChild(rect);
     */
 
 function SS_addBoundingBox(color) {
     var this_bbox = this.llc.group.getBBox();
     var llc_bbox = left_vert_layout.group.getBBox();
-	var rect = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
+    var rect = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
     
-	rect.setAttribute("id", "speedBox");
-	rect.setAttribute("width", this_bbox.width + this.llc.h_padding*3);
-	rect.setAttribute("height", this_bbox.height + this.llc.v_padding*2 + 10);
+    rect.setAttribute("id", "speedBox");
+    rect.setAttribute("width", this_bbox.width + this.llc.h_padding*3);
+    rect.setAttribute("height", this_bbox.height + this.llc.v_padding*2 + 10);
     rect.setAttribute("x", llc_bbox.x - left_vert_layout.h_padding);
-	rect.setAttribute("y", this_bbox.y - this.llc.v_padding);
+    rect.setAttribute("y", this_bbox.y - this.llc.v_padding);
     rect.setAttribute("rx", 5);
     rect.setAttribute("ry", 5);
-	rect.setAttribute("fill", "url(#speed_box_lg)");
-	rect.setAttribute("stroke", color);
+    rect.setAttribute("fill", "url(#speed_box_lg)");
+    rect.setAttribute("stroke", color);
     rect.setAttribute("stroke-width", "2px");
-	this.llc.group.insertBefore(rect, the_evt_target.getElementById('speedLabel'));
+    this.llc.group.insertBefore(rect, the_evt_target.getElementById('speedLabel'));
 }
 
 //Creates a speed selector box with the given parameters
 function createSpeedSelect(id, x, y, boxWidth, text, color) {
-	var group = the_evt_target_ownerDocument.createElementNS(svgNS, "g");
-	var rect = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
-	var label = the_evt_target_ownerDocument.createElementNS(svgNS, "text");
-	
-	group.setAttribute("id", id + "_g");
-	
-	rect.setAttribute("id", id);
-	rect.setAttribute("x", x);
-	rect.setAttribute("y", y);
+    var group = the_evt_target_ownerDocument.createElementNS(svgNS, "g");
+    var rect = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
+    var label = the_evt_target_ownerDocument.createElementNS(svgNS, "text");
+    
+    group.setAttribute("id", id + "_g");
+    
+    rect.setAttribute("id", id);
+    rect.setAttribute("x", x);
+    rect.setAttribute("y", y);
     rect.setAttribute("rx", 4);
     rect.setAttribute("ry", 4);
-	rect.setAttribute("width", boxWidth);
-	rect.setAttribute("height", boxWidth);
-	rect.setAttribute("fill", "blue");
+    rect.setAttribute("width", boxWidth);
+    rect.setAttribute("height", boxWidth);
+    rect.setAttribute("fill", "blue");
     rect.setAttribute("stroke", "#0000B2");
     rect.setAttribute("stroke-width", "1px");
-	rect.setAttribute("cursor", "pointer");
-	rect.setAttribute("onclick", "speed_select.boxSelected(this)");
-	
-	label.setAttribute("x", x + boxWidth/8);
-	label.setAttribute("y", y-4);
-	label.setAttribute("font-size", "10px");
-	var textNode = document.createTextNode(text);
-	label.appendChild(textNode);
-	
-	group.appendChild(rect);
-	group.appendChild(label);
-	
-	the_evt_target_ownerDocument.documentElement.appendChild(group);
-	return group;
+    rect.setAttribute("cursor", "pointer");
+    rect.setAttribute("onclick", "speed_select.boxSelected(this)");
+    
+    label.setAttribute("x", x + boxWidth/8);
+    label.setAttribute("y", y-4);
+    label.setAttribute("font-size", "10px");
+    var textNode = document.createTextNode(text);
+    label.appendChild(textNode);
+    
+    group.appendChild(rect);
+    group.appendChild(label);
+    
+    the_evt_target_ownerDocument.documentElement.appendChild(group);
+    return group;
 }
 
 // OptionDropdown Object constructor.  Creates the cog dropdown that controls animation speed
@@ -1750,11 +1817,12 @@ function SetVertexFrameWidth(v, val) {
     var element = the_evt_target_ownerDocument.getElementById(v);
     element.setAttribute("stroke-width", val);
     var graph = the_evt_target_ownerDocument.getElementById(v).parentNode;
-    var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+    sizeGraphBBox(graph);
+    /*var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
     rect.setAttribute("width",graph.getBBox().width+10);
     rect.setAttribute("height",graph.getBBox().height+10);
     rect.setAttribute("x", graph.getBBox().x-10);
-    rect.setAttribute("y", graph.getBBox().y-10);
+    rect.setAttribute("y", graph.getBBox().y-10);*/
     //realignScaler(graph.getBBox().x + graph.getBBox().width + 10, graph.getBBox().y + graph.getBBox.height + 10);
 }
 
@@ -1789,11 +1857,12 @@ function SetVertexAnnotation(v, annotation, color) //removed 'self' parameter to
     element.parentNode.appendChild(newano);
 
     var graph = the_evt_target_ownerDocument.getElementById(v).parentNode;
-    var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+    sizeGraphBBox(graph);
+    /*var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
     rect.setAttribute("width",graph.getBBox().width+10);
     rect.setAttribute("height",graph.getBBox().height+10);
     rect.setAttribute("x", graph.getBBox().x-10);
-    rect.setAttribute("y", graph.getBBox().y-10);
+    rect.setAttribute("y", graph.getBBox().y-10);*/
     //realignScaler(graph.getBBox().x + graph.getBBox().width + 10, graph.getBBox().y + graph.getBBox.height + 10);
     }
 }
@@ -1932,11 +2001,12 @@ function AddEdge(edge_id){
         }
 
         var graph = the_evt_target_ownerDocument.getElementById(edge_id).parentNode;
-        var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+        sizeGraphBBox(graph);
+        /*var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
         rect.setAttribute("width",graph.getBBox().width+10);
         rect.setAttribute("height",graph.getBBox().height+10);
         rect.setAttribute("x", graph.getBBox().x-10);
-        rect.setAttribute("y", graph.getBBox().y-10);
+        rect.setAttribute("y", graph.getBBox().y-10);*/
         //realignScaler(graph.getBBox().x + graph.getBBox().width + 10, graph.getBBox().y + graph.getBBox.height + 10);
     }
     fillEdgesArray();
@@ -1970,11 +2040,12 @@ function DeleteEdge(edge_id){
     }
 
     var graph = the_evt_target_ownerDocument.getElementById(graph_id);
-    var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+    sizeGraphBBox(graph);
+    /*var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
     rect.setAttribute("width",graph.getBBox().width+10);
     rect.setAttribute("height",graph.getBBox().height+10);
     rect.setAttribute("x", graph.getBBox().x-10);
-    rect.setAttribute("y", graph.getBBox().y-10);
+    rect.setAttribute("y", graph.getBBox().y-10);*/
     //realignScaler(graph.getBBox().x + graph.getBBox().width + 10, graph.getBBox().y + graph.getBBox.height + 10);
     fillEdgesArray();
 }
@@ -2039,11 +2110,12 @@ function AddVertex(graph_and_coordinates, id){
     
         if(vert_layout[1].group.childNodes.item(x).nodeName == "g"){
             var graph = vert_layout[1].group.childNodes.item(k);
-            var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
-            rect.setAttribute("width",graph.getBBox().width+10);
-            rect.setAttribute("height",graph.getBBox().height+10);
-            rect.setAttribute("x", graph.getBBox().x-10);
-            rect.setAttribute("y", graph.getBBox().y-10);
+            sizeGraphBBox(graph);
+    /*var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+    rect.setAttribute("width",graph.getBBox().width+10);
+    rect.setAttribute("height",graph.getBBox().height+10);
+    rect.setAttribute("x", graph.getBBox().x-10);
+    rect.setAttribute("y", graph.getBBox().y-10);*/
             ////realignScaler(graph.getBBox().x + graph.getBBox().width + 10, graph.getBBox().y + graph.getBBox.height + 10);
             var translation1 = getTranslate(right_vert_layout.group.getAttribute("transform"));
             var translation2 = getTranslate(vert_layout.group.getAttribute("transform"));
@@ -2229,24 +2301,34 @@ function TransformGraph(graph, graph_bg, evt){
 //
 */
 function Scaler(points, width) {
- 	this.triang_scaler = the_evt_target.getElementById("triangle_scaler");
+    this.triang_scaler = the_evt_target.getElementById("triangle_scaler");
 
     // Property that controls whether the scaler will alter the graph or not
- 	this.scaler_active = false;    
- 	
-    scaler_width = width;
- 	this.triang_scaler.setAttribute("points", points);
- 	this.triang_scaler.setAttribute("cursor", "move");
- 	this.triang_scaler.setAttribute("onmousedown", "click_scaler(evt)");
+    this.scaler_active = false;    
+    this.points = points;
+    this.scaler_width = width;
+    
+    this.triang_scaler.setAttribute("points", points);
+    this.triang_scaler.setAttribute("cursor", "move");
+    this.triang_scaler.setAttribute("onmousedown", "click_scaler(evt)");
     this.triang_scaler.setAttribute("onmouseup", "deactivate_scaler(evt)");
     this.triang_scaler.setAttribute("onmousemove", "drag_scaler(evt)");
+}
+
+
+// Repositions the scaler to match the 
+function repositionScaler(x, y) {
+    var scaler_x = x + MAX_GBBOX_WIDTH - 10;
+    var scaler_y = y + MAX_GBBOX_HEIGHT - 10;
+    var points_val = String(scaler_x) + "," + String(scaler_y) + " " + String(scaler_x-20) + "," + String(scaler_y) + " " + String(scaler_x) + "," + String(scaler_y-20);
+    scaler.triang_scaler.setAttribute("points", points_val);
 }
 
 
 // Click-handler for scaler.  Sets scaler_active to true to enable scaling with drags,
 // and sets mouse_start to the current cursor position
 function click_scaler(evt) {
- 	scaler.scaler_active = true;
+    scaler.scaler_active = true;
     var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
     scale_graph_width = graph.getBBox().width * g_scale_factor;
     mouse_start = cursorPoint(evt, null);
@@ -2255,21 +2337,21 @@ function click_scaler(evt) {
 
 // Global-mouseup handler that deactivates scaler_active
 function deactivate_scaler(evt) {
- 	if (scaler.scaler_active === false)
- 		return;
- 	
- 	scaler.scaler_active = false;
+    if (scaler.scaler_active === false)
+        return;
+    
+    scaler.scaler_active = false;
 }
 
  
 // Global-mousemove handler that calls scaleGraph with the current evt if scaler_active is True
 function drag_scaler(evt) {
- 	if (scaler.scaler_active === false)
- 		return;
+    if (scaler.scaler_active === false)
+        return;
         
- 	var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
- 	var graph_bg = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
- 	scaleGraph( graph, graph_bg, evt, false);
+    var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
+    var graph_bg = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+    scaleGraph( graph, graph_bg, evt, false);
 }
  
  // Scales the graph and background.  If use_curr_sf is true then it uses the current
@@ -2364,8 +2446,13 @@ function buildStateArray(graph) {
         var elem_array = new Array();
         elem_array.push(elem.tagName);
         var id = elem.getAttribute("id");
+
+        // Exclude scaler for positioning purposes
+        if (id === "triangle_scaler")
+            continue;
+
         elem_array.push(id);
-        
+
         if(the_evt_target_ownerDocument.getElementById(v_ano_id + id) != null){
             ano = the_evt_target_ownerDocument.getElementById(v_ano_id + id);
             elem_array.push(ano.firstChild.nodeValue);
@@ -2425,6 +2512,7 @@ function fillGraphStates() {
     StopAnimation(undefined);
 
     filling_states = false;
+    sizeGraphBBox(graph);
 }
 
 
@@ -2454,7 +2542,7 @@ function setGraphState(graph_state) {
         }
     }
     var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
- 	var graph_bg = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+    var graph_bg = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
     scaleGraph(graph, graph_bg, undefined, true);
 }
 
@@ -2749,7 +2837,7 @@ function set_max_scale_factor() {
 // Only really matters in cases where the graph is too large for the screen initially
 function scale_to_fit() {
     var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
- 	var graph_bg = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+    var graph_bg = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
     if (max_scale_factor < 1) {
         g_scale_factor = max_scale_factor;
         scaleGraph(graph, graph_bg, undefined, true);
@@ -2867,8 +2955,7 @@ function Initialize(evt) {
     vert_layout.group.setAttribute("transform", "translate(" + x_offset + " " + y_offset + ")");
     code.highlight_group.setAttribute("transform","translate(" + x_offset + " " + y_offset + ")");
 
-    var scaler_x;
- 	var scaler_y;
+    var scaler_y, scaler_x;
 
     //Make rectangles behind graphs, for intuitive iPad usage
     for(x in init_graphs){
@@ -2897,15 +2984,16 @@ function Initialize(evt) {
         the_evt_target_ownerDocument.documentElement.insertBefore(rect, the_evt_target_ownerDocument.documentElement.childNodes.item(0));
         scaler_x = graph.getBBox().x + graph.getBBox().width + 10;
         scaler_y = graph.getBBox().y + graph.getBBox().height + 10;
-    }
+    }   
     
     set_max_scale_factor();
     scale_to_fit();
-    
+
     var points_val = String(scaler_x) + "," + String(scaler_y) + " " + String(scaler_x-20) + "," + String(scaler_y) + " " + String(scaler_x) + "," + String(scaler_y-20);
     scaler = new Scaler(points_val, 20);
-    
+
     fillGraphStates();
+
     the_evt_target_ownerDocument.documentElement.setAttribute("width", 2*x_offset + vert_layout.group.getBBox().x + vert_layout.group.getBBox().width);
     the_evt_target_ownerDocument.documentElement.setAttribute("height", 2*y_offset + vert_layout.group.getBBox().y + vert_layout.group.getBBox().height);
     
@@ -3335,7 +3423,7 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
     """ Export either the current graphs or the complete animation
         (showAnimation=True) to the file fileName
     """
-    
+
     global SVG_Animation
     if showAnimation:
         if secondaryGraphDisplayAnimationHistory:

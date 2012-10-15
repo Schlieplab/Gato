@@ -85,7 +85,6 @@ var step_evt;
 var continue_pressed = false;
 var continue_evt;
 var scaler;            //Triangular scaler at bottom right of graph
-var scaler_width;       //Width of the scaler
 var g_scale_factor = 1;
 var mouse_start = undefined;        //Coordinates of mouse start when scaling
 var pt;             //SVGPoint for converting browser space to svg space
@@ -101,6 +100,9 @@ var viewbox_y;
 var MIN_SCALE_FACTOR = .2;          // Minimum scale factor for the graph
 var scale_graph_width = undefined;  // Graph width(considering scaling) at the time of a mouse click on the scaler
 var filling_states;                 // Boolean variable that is set to true when the graph states are being filled at the start of execution
+var MAX_GBBOX_WIDTH = 0;
+var MAX_GBBOX_HEIGHT = 0;
+
 /**
 *
 *
@@ -224,6 +226,36 @@ function setScale(component, x, y){
     }else{
         component.setAttribute("transform", "scale(" + x + " " + y + ")");
     }
+}
+
+
+// Resizes and positions the graph bounding box based on the size and position of the graph,
+// or the MAX_GBBOX_WIDTH/HEIGHT variables if not filling_states
+// Additionally, it positions the scaler at the bottom right of the box
+function sizeGraphBBox(graph) {
+    var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+
+    // Set the size of the bounding box
+    if (filling_states) {
+        rect.setAttribute("width",graph.getBBox().width+10);
+        rect.setAttribute("height",graph.getBBox().height+10);
+
+        // Update MAX_GBBOX values if needed
+        if ((graph.getBBox().width+10) > MAX_GBBOX_WIDTH)
+            MAX_GBBOX_WIDTH = graph.getBBox().width+10;
+        if ((graph.getBBox().height+10) > MAX_GBBOX_HEIGHT)
+            MAX_GBBOX_HEIGHT = graph.getBBox().height+10;
+
+    } else {
+        rect.setAttribute("width", MAX_GBBOX_WIDTH);
+        rect.setAttribute("height", MAX_GBBOX_HEIGHT);
+    }
+
+    repositionScaler(graph.getBBox().x, graph.getBBox().y);
+
+    // Reposition the bounding box
+    rect.setAttribute("x", graph.getBBox().x-10);
+    rect.setAttribute("y", graph.getBBox().y-10);
 }
 
 
@@ -372,8 +404,6 @@ function HTB_addBoundingBox(color) {
     rect.setAttribute("stroke-width", "3px");
     rect.setAttribute("rx", 5);
     rect.setAttribute("ry", 5);
-    //setScale(rect, .5, .5);
-    console.log('child: ' + this.highlight_group.firstChild);
 	this.highlight_group.insertBefore(rect, this.highlight_group.firstChild);
 }
 
@@ -895,7 +925,6 @@ function SpeedSelector(id, boxWidth, color, selectColor) {
  	this.llc.insertComponent(this.hi.getAttribute("id"), 5);
     
     setTranslate(this.llc.group, 100, 0);
-    console.log('Transform: ' + this.llc.group.getAttribute("transform"));
  	
  	this.boxSelected(this.lo.firstChild);
 }
@@ -1706,11 +1735,12 @@ function SetVertexFrameWidth(v, val) {
     var element = the_evt_target_ownerDocument.getElementById(v);
     element.setAttribute("stroke-width", val);
     var graph = the_evt_target_ownerDocument.getElementById(v).parentNode;
-    var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+    sizeGraphBBox(graph);
+    /*var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
     rect.setAttribute("width",graph.getBBox().width+10);
     rect.setAttribute("height",graph.getBBox().height+10);
     rect.setAttribute("x", graph.getBBox().x-10);
-    rect.setAttribute("y", graph.getBBox().y-10);
+    rect.setAttribute("y", graph.getBBox().y-10);*/
     //realignScaler(graph.getBBox().x + graph.getBBox().width + 10, graph.getBBox().y + graph.getBBox.height + 10);
 }
 
@@ -1745,11 +1775,12 @@ function SetVertexAnnotation(v, annotation, color) //removed 'self' parameter to
     element.parentNode.appendChild(newano);
 
     var graph = the_evt_target_ownerDocument.getElementById(v).parentNode;
-    var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+    sizeGraphBBox(graph);
+    /*var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
     rect.setAttribute("width",graph.getBBox().width+10);
     rect.setAttribute("height",graph.getBBox().height+10);
     rect.setAttribute("x", graph.getBBox().x-10);
-    rect.setAttribute("y", graph.getBBox().y-10);
+    rect.setAttribute("y", graph.getBBox().y-10);*/
     //realignScaler(graph.getBBox().x + graph.getBBox().width + 10, graph.getBBox().y + graph.getBBox.height + 10);
     }
 }
@@ -1888,11 +1919,12 @@ function AddEdge(edge_id){
         }
 
         var graph = the_evt_target_ownerDocument.getElementById(edge_id).parentNode;
-        var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+        sizeGraphBBox(graph);
+        /*var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
         rect.setAttribute("width",graph.getBBox().width+10);
         rect.setAttribute("height",graph.getBBox().height+10);
         rect.setAttribute("x", graph.getBBox().x-10);
-        rect.setAttribute("y", graph.getBBox().y-10);
+        rect.setAttribute("y", graph.getBBox().y-10);*/
         //realignScaler(graph.getBBox().x + graph.getBBox().width + 10, graph.getBBox().y + graph.getBBox.height + 10);
     }
     fillEdgesArray();
@@ -1926,11 +1958,12 @@ function DeleteEdge(edge_id){
     }
 
     var graph = the_evt_target_ownerDocument.getElementById(graph_id);
-    var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+    sizeGraphBBox(graph);
+    /*var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
     rect.setAttribute("width",graph.getBBox().width+10);
     rect.setAttribute("height",graph.getBBox().height+10);
     rect.setAttribute("x", graph.getBBox().x-10);
-    rect.setAttribute("y", graph.getBBox().y-10);
+    rect.setAttribute("y", graph.getBBox().y-10);*/
     //realignScaler(graph.getBBox().x + graph.getBBox().width + 10, graph.getBBox().y + graph.getBBox.height + 10);
     fillEdgesArray();
 }
@@ -1995,11 +2028,12 @@ function AddVertex(graph_and_coordinates, id){
     
         if(vert_layout[1].group.childNodes.item(x).nodeName == "g"){
             var graph = vert_layout[1].group.childNodes.item(k);
-            var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
-            rect.setAttribute("width",graph.getBBox().width+10);
-            rect.setAttribute("height",graph.getBBox().height+10);
-            rect.setAttribute("x", graph.getBBox().x-10);
-            rect.setAttribute("y", graph.getBBox().y-10);
+            sizeGraphBBox(graph);
+    /*var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+    rect.setAttribute("width",graph.getBBox().width+10);
+    rect.setAttribute("height",graph.getBBox().height+10);
+    rect.setAttribute("x", graph.getBBox().x-10);
+    rect.setAttribute("y", graph.getBBox().y-10);*/
             ////realignScaler(graph.getBBox().x + graph.getBBox().width + 10, graph.getBBox().y + graph.getBBox.height + 10);
             var translation1 = getTranslate(right_vert_layout.group.getAttribute("transform"));
             var translation2 = getTranslate(vert_layout.group.getAttribute("transform"));
@@ -2189,13 +2223,23 @@ function Scaler(points, width) {
 
     // Property that controls whether the scaler will alter the graph or not
  	this.scaler_active = false;    
+    this.points = points;
+    this.scaler_width = width;
  	
-    scaler_width = width;
- 	this.triang_scaler.setAttribute("points", points);
+    this.triang_scaler.setAttribute("points", points);
  	this.triang_scaler.setAttribute("cursor", "move");
  	this.triang_scaler.setAttribute("onmousedown", "click_scaler(evt)");
     this.triang_scaler.setAttribute("onmouseup", "deactivate_scaler(evt)");
     this.triang_scaler.setAttribute("onmousemove", "drag_scaler(evt)");
+}
+
+
+// Repositions the scaler to match the 
+function repositionScaler(x, y) {
+    var scaler_x = x + MAX_GBBOX_WIDTH - 10;
+    var scaler_y = y + MAX_GBBOX_HEIGHT - 10;
+    var points_val = String(scaler_x) + "," + String(scaler_y) + " " + String(scaler_x-20) + "," + String(scaler_y) + " " + String(scaler_x) + "," + String(scaler_y-20);
+    scaler.triang_scaler.setAttribute("points", points_val);
 }
 
 
@@ -2320,8 +2364,13 @@ function buildStateArray(graph) {
         var elem_array = new Array();
         elem_array.push(elem.tagName);
         var id = elem.getAttribute("id");
+
+        // Exclude scaler for positioning purposes
+        if (id === "triangle_scaler")
+            continue;
+
         elem_array.push(id);
-        
+
         if(the_evt_target_ownerDocument.getElementById(v_ano_id + id) != null){
             ano = the_evt_target_ownerDocument.getElementById(v_ano_id + id);
             elem_array.push(ano.firstChild.nodeValue);
@@ -2381,6 +2430,7 @@ function fillGraphStates() {
     StopAnimation(undefined);
 
     filling_states = false;
+    sizeGraphBBox(graph);
 }
 
 
@@ -2823,8 +2873,7 @@ function Initialize(evt) {
     vert_layout.group.setAttribute("transform", "translate(" + x_offset + " " + y_offset + ")");
     code.highlight_group.setAttribute("transform","translate(" + x_offset + " " + y_offset + ")");
 
-    var scaler_x;
- 	var scaler_y;
+    var scaler_y, scaler_x;
 
     //Make rectangles behind graphs, for intuitive iPad usage
     for(x in init_graphs){
@@ -2853,15 +2902,16 @@ function Initialize(evt) {
         the_evt_target_ownerDocument.documentElement.insertBefore(rect, the_evt_target_ownerDocument.documentElement.childNodes.item(0));
         scaler_x = graph.getBBox().x + graph.getBBox().width + 10;
         scaler_y = graph.getBBox().y + graph.getBBox().height + 10;
-    }
+    }   
     
     set_max_scale_factor();
     scale_to_fit();
-    
+
     var points_val = String(scaler_x) + "," + String(scaler_y) + " " + String(scaler_x-20) + "," + String(scaler_y) + " " + String(scaler_x) + "," + String(scaler_y-20);
     scaler = new Scaler(points_val, 20);
-    
+
     fillGraphStates();
+
     the_evt_target_ownerDocument.documentElement.setAttribute("width", 2*x_offset + vert_layout.group.getBBox().x + vert_layout.group.getBBox().width);
     the_evt_target_ownerDocument.documentElement.setAttribute("height", 2*y_offset + vert_layout.group.getBBox().y + vert_layout.group.getBBox().height);
     

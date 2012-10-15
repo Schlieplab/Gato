@@ -53,7 +53,7 @@ HTML_SKELETON = """
 <head >
 <style>
 html, body { margin:0; padding:0}
-embed {  overflow:scroll; position: absolute; width: 100%%; height: 100%%; background-color: #AAAAAA}
+embed {  overflow:scroll; position: absolute; width: 100%%; height: 100%%; background-color: #F5F5F5}
 </style>
 <meta http-equiv="content-type" content="application/xhtml+xml;charset=UTF-8" />
 </head>
