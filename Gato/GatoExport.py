@@ -1818,12 +1818,6 @@ function SetVertexFrameWidth(v, val) {
     element.setAttribute("stroke-width", val);
     var graph = the_evt_target_ownerDocument.getElementById(v).parentNode;
     sizeGraphBBox(graph);
-    /*var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
-    rect.setAttribute("width",graph.getBBox().width+10);
-    rect.setAttribute("height",graph.getBBox().height+10);
-    rect.setAttribute("x", graph.getBBox().x-10);
-    rect.setAttribute("y", graph.getBBox().y-10);*/
-    //realignScaler(graph.getBBox().x + graph.getBBox().width + 10, graph.getBBox().y + graph.getBBox.height + 10);
 }
 
 //Sets annotation of vertex v to annotation.  Annotation's color is specified
@@ -1858,12 +1852,6 @@ function SetVertexAnnotation(v, annotation, color) //removed 'self' parameter to
 
     var graph = the_evt_target_ownerDocument.getElementById(v).parentNode;
     sizeGraphBBox(graph);
-    /*var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
-    rect.setAttribute("width",graph.getBBox().width+10);
-    rect.setAttribute("height",graph.getBBox().height+10);
-    rect.setAttribute("x", graph.getBBox().x-10);
-    rect.setAttribute("y", graph.getBBox().y-10);*/
-    //realignScaler(graph.getBBox().x + graph.getBBox().width + 10, graph.getBBox().y + graph.getBBox.height + 10);
     }
 }
 
@@ -2002,12 +1990,6 @@ function AddEdge(edge_id){
 
         var graph = the_evt_target_ownerDocument.getElementById(edge_id).parentNode;
         sizeGraphBBox(graph);
-        /*var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
-        rect.setAttribute("width",graph.getBBox().width+10);
-        rect.setAttribute("height",graph.getBBox().height+10);
-        rect.setAttribute("x", graph.getBBox().x-10);
-        rect.setAttribute("y", graph.getBBox().y-10);*/
-        //realignScaler(graph.getBBox().x + graph.getBBox().width + 10, graph.getBBox().y + graph.getBBox.height + 10);
     }
     fillEdgesArray();
 }
@@ -2041,12 +2023,6 @@ function DeleteEdge(edge_id){
 
     var graph = the_evt_target_ownerDocument.getElementById(graph_id);
     sizeGraphBBox(graph);
-    /*var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
-    rect.setAttribute("width",graph.getBBox().width+10);
-    rect.setAttribute("height",graph.getBBox().height+10);
-    rect.setAttribute("x", graph.getBBox().x-10);
-    rect.setAttribute("y", graph.getBBox().y-10);*/
-    //realignScaler(graph.getBBox().x + graph.getBBox().width + 10, graph.getBBox().y + graph.getBBox.height + 10);
     fillEdgesArray();
 }
 
@@ -2111,12 +2087,6 @@ function AddVertex(graph_and_coordinates, id){
         if(vert_layout[1].group.childNodes.item(x).nodeName == "g"){
             var graph = vert_layout[1].group.childNodes.item(k);
             sizeGraphBBox(graph);
-    /*var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
-    rect.setAttribute("width",graph.getBBox().width+10);
-    rect.setAttribute("height",graph.getBBox().height+10);
-    rect.setAttribute("x", graph.getBBox().x-10);
-    rect.setAttribute("y", graph.getBBox().y-10);*/
-            ////realignScaler(graph.getBBox().x + graph.getBBox().width + 10, graph.getBBox().y + graph.getBBox.height + 10);
             var translation1 = getTranslate(right_vert_layout.group.getAttribute("transform"));
             var translation2 = getTranslate(vert_layout.group.getAttribute("transform"));
             var translation3 = getTranslate(graph.getAttribute("transform"));
