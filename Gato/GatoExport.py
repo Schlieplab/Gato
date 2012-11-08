@@ -133,7 +133,7 @@ var continue_evt;
 var scaler;            
 
 // Current scale factor of the graph
-var g_scale_factor = 1;
+var g_scale_factor = {"x":1, "y":1 };
 
 // Coordinates of mouse start when scaling
 var mouse_start = undefined;        
@@ -182,7 +182,14 @@ var filling_states;
 
 // Max width and height that the graph bounding box is throughout the animation
 var MAX_GBBOX_WIDTH = 0;
-var MAX_GBBOX_HEIGHT = 0;            
+var MAX_GBBOX_HEIGHT = 0;
+
+var deleted_elements;
+var added_elements;  
+
+var two_graph = false;      // True if it is a two-graph animation
+var init_height_g1;
+var init_transy_g2;         // The initial translate-y value for g2.  Used for scaling smoothly
 
 
 /**
@@ -381,6 +388,7 @@ function fillEdgesArray() {
     while (the_evt_target_ownerDocument.getElementById("g1_" + highestNode) != null)
         highestNode++;
     highestNode--;
+
     //See if it is a two graph algo also, have 2nd edges array declared just in case
     for (var i=0; i<=highestNode; i++) {
         for (var j=0; j<=highestNode; j++) {
@@ -1292,6 +1300,12 @@ function StartAnimation(evt){
             //console.log("refreshing graph state: " + state);
             jumpToStep(step);
         }
+
+        // If previous animation completed, then reset elements to beginning state
+        // Don't reset when the step is not 0 though(user can move playback bar then start animation)
+        if (state == "stopped" && step == 0) {
+            setGraphState(graph_states[0]);
+        }
     
         state = "running";
         action_panel.activateButton("stop_button", "StopAnimation(evt)");
@@ -1303,6 +1317,7 @@ function StartAnimation(evt){
         AnimateLoop();
     }
 }
+
 
 //Loop of animation.  Performs actions in animation array at specified intervals
 function AnimateLoop(){
@@ -1379,6 +1394,7 @@ function AnimateLoop(){
     
 }
 
+
 //Resumes execution of animation loop if paused by pressing step button
 function ContinueAnimation(evt){
     if(evt.target.getAttribute("id") == "continue_button"){
@@ -1392,6 +1408,7 @@ function ContinueAnimation(evt){
         }
     }
 }
+
 
 //Stops execution of animation loop and plays next animation on press of step button
 function StepAnimation(evt){
@@ -1466,6 +1483,7 @@ function StepAnimation(evt){
     }
 }
 
+
 //Stops animation and clears code highlights.  To resume animation, it must be restarted
 function StopAnimation(evt){
     
@@ -1494,6 +1512,7 @@ function StopAnimation(evt){
                 current_line = 0;
     }*/
 }
+
 
 //Inserts a breakpoint by creating a grey highlight
 function SetBreakpoint(evt){            
@@ -1668,6 +1687,7 @@ function SetVertexColor(v, color) {
     element.setAttribute("fill", color);
 }
 
+
 //Colors edge with id given by e
 function SetEdgeColor(e, color) {
     // NOTE: Gato signature SetEdgeColor(v, w, color)
@@ -1684,6 +1704,7 @@ function SetEdgeColor(e, color) {
     }
 }
 
+
 //Takes in an edge and switches the vertices to accomodate for directed graphs.
 //Usual form of edge is g1_(1, 2) or g2_(2, 1) etc.
 function switch_edge_vertices(e){
@@ -1696,6 +1717,7 @@ function switch_edge_vertices(e){
     var new_e = prefix + "(" + v2 + ", " + v1 + ")";
     return new_e;
 }
+
 
 //Sets color of all vertices of a given graph to a given color
 //If vertices != null, then only color the set of vertices specified by vertices
@@ -1724,13 +1746,16 @@ function SetAllVerticesColor(graph_id_and_color, vertices) {
     
 }
 
-//Add functionality for second graph
+
+// Sets all the edges of one of the graphs to color given.  sample param: "g1_#dd3333"
 function SetAllEdgesColor(graphColor) {
-    //Find all edges of graph
-    //Graph edges are labeled like g1_(v1, v2)-- and presumably as g2_(v1,v2) for second graph(test that assumption)
+    var graph = graphColor.substring(0, 2);
     graphColor = graphColor.substring(3);
-    for (var i=0; i<edges.length;i++) {
+
+    for (var i=0; i<edges.length; i++) {
         var id = edges[i].getAttribute("id");
+        if (id.substring(0, 2) !== graph)
+            continue;
         var element = the_evt_target_ownerDocument.getElementById(id);
         element.setAttribute("stroke", graphColor);
         element = the_evt_target_ownerDocument.getElementById(e_arrow_id + id);
@@ -1739,6 +1764,7 @@ function SetAllEdgesColor(graphColor) {
         }
     }
 }
+
 
 //Vertex blinks between black and current color
 function BlinkVertex(v, color) {
@@ -1754,6 +1780,7 @@ function BlinkVertex(v, color) {
     element.setAttribute("fill", "black");
     setTimeout(VertexBlinker, 3*timeout);
 }
+
 //Helper for BlinkVertex
 function VertexBlinker() {
     if (blinkcount %% 2 == 1) {
@@ -1788,6 +1815,7 @@ function BlinkEdge(e, color){
     setTimeout(EdgeBlinker, 3*timeout);
     
 }
+
 //Helper for BlinkEdge
 function EdgeBlinker(){
     var element2;
@@ -1811,6 +1839,7 @@ function EdgeBlinker(){
         blinking = false;
 }
 
+
 //Blink(self, list, color=None):
 //Sets the frame width of a vertex
 function SetVertexFrameWidth(v, val) {
@@ -1819,6 +1848,7 @@ function SetVertexFrameWidth(v, val) {
     var graph = the_evt_target_ownerDocument.getElementById(v).parentNode;
     sizeGraphBBox(graph);
 }
+
 
 //Sets annotation of vertex v to annotation.  Annotation's color is specified
 function SetVertexAnnotation(v, annotation, color) //removed 'self' parameter to because 'self' parameter was assigned value of v, v of annotation, and so on.
@@ -1855,6 +1885,7 @@ function SetVertexAnnotation(v, annotation, color) //removed 'self' parameter to
     }
 }
 
+
 //Line with specified id is highlighted.  Becomes current line of code.  Previous highlight is removed.
 function ShowActive(line_id){
     for(i = 0; i < code.line_llc.group.childNodes.length; i++){
@@ -1871,6 +1902,7 @@ function ShowActive(line_id){
         }
     }
 }
+
 
 //Directed or undirected added to graph.
 function AddEdge(edge_id){
@@ -1994,6 +2026,7 @@ function AddEdge(edge_id){
     fillEdgesArray();
 }
 
+
 //Deletes edge of corresponding id from graph
 function DeleteEdge(edge_id){
     var edge =  the_evt_target_ownerDocument.getElementById(edge_id);
@@ -2025,6 +2058,7 @@ function DeleteEdge(edge_id){
     sizeGraphBBox(graph);
     fillEdgesArray();
 }
+
 
 //Adds vertex of into specified graph and coordinates in graph.  Optional id argument may be given.
 function AddVertex(graph_and_coordinates, id){
@@ -2095,6 +2129,7 @@ function AddVertex(graph_and_coordinates, id){
     }
 }
 
+
 //function SetEdgeAnnotation(self,tail,head,annotation,color="black"):
 //def UpdateVertexLabel(self, v, blink=1, color=None):
 /**
@@ -2112,14 +2147,18 @@ function TouchDrag_SSlider(evt){
     Drag_SSlider(evt);
 }
 
+
 function TouchStart_SSlider(evt){
     evt.preventDefault();
     Click_SSlider(evt);
 }
+
+
 function TouchDeactivate_SSlider(evt){
     evt.preventDefault();
     Deactivate_SSlider(evt);
 }
+
 
 //iPad-specific graph translations
 function TouchDrag_Graph(evt){
@@ -2130,6 +2169,7 @@ function TouchDrag_Graph(evt){
     TranslateGraph(evt);
 }
 
+
 function TouchStart_Graph(evt){
     if(evt.touches == undefined || evt.touches.length != 1)
         return;
@@ -2137,12 +2177,14 @@ function TouchStart_Graph(evt){
     translate_buffer = [evt.touches[0].clientX, evt.touches[0].clientY];
 }
 
+
 function TouchDeactivate_Graph(evt){
     if(evt.touches == undefined || evt.touches.length != 1)
         return;
     evt.preventDefault();
     translate_buffer = [];
 }
+
 
 function TranslateGraph(evt){
     var graph = evt.target;
@@ -2176,6 +2218,7 @@ function TranslateGraph(evt){
     the_evt_target_ownerDocument.documentElement.setAttribute("height", 2*y_offset + vert_layout.group.getBBox().y + vert_layout.group.getBBox().height);
 }
 
+
 //iPad-specific functions for rotating and scaling graphs
 function GestureStart_TransformGraph(evt){      
     if(evt.touches != undefined)
@@ -2200,6 +2243,7 @@ function GestureStart_TransformGraph(evt){
     
 }
 
+
 function GestureChange_TransformGraph(evt){
     if(evt.touches != undefined)
         return;
@@ -2217,6 +2261,7 @@ function GestureChange_TransformGraph(evt){
 
     TransformGraph(graph, graph_bg, evt);
 }
+
 
 function GestureEnd_TransformGraph(evt){
     if(evt.touches != undefined)
@@ -2237,6 +2282,7 @@ function GestureEnd_TransformGraph(evt){
     graph.setAttribute("transform_buffer", graph.getAttribute("transform"));
     graph_bg.setAttribute("transform_buffer", graph_bg.getAttribute("transform"));
 }
+
 
 function TransformGraph(graph, graph_bg, evt){
     var scale = evt.scale;
@@ -2263,6 +2309,7 @@ function TransformGraph(graph, graph_bg, evt){
     the_evt_target_ownerDocument.documentElement.setAttribute("width", 2*x_offset + vert_layout.group.getBBox().x + vert_layout.group.getBBox().width);
     the_evt_target_ownerDocument.documentElement.setAttribute("height", 2*y_offset + vert_layout.group.getBBox().y + vert_layout.group.getBBox().height);
 }
+
 
 /*
 //
@@ -2300,7 +2347,7 @@ function repositionScaler(x, y) {
 function click_scaler(evt) {
     scaler.scaler_active = true;
     var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
-    scale_graph_width = graph.getBBox().width * g_scale_factor;
+    scale_graph_width = graph.getBBox().width * g_scale_factor.x;
     mouse_start = cursorPoint(evt, null);
 }
 
@@ -2323,14 +2370,32 @@ function drag_scaler(evt) {
     var graph_bg = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
     scaleGraph( graph, graph_bg, evt, false);
 }
+
+
+// Moves the second graph down in y direction to make room for the top graph scaling
+function slide_down_bottom() {
+    var graph_one = the_evt_target.getElementById(init_graphs[0].getAttribute("id"));
+    var new_height = init_height_g1 * g_scale_factor.y;
+    var diff = new_height - init_height_g1;
+
+    var graph_two = the_evt_target.getElementById(init_graphs[1].getAttribute("id"));
+    var trans = getTranslate(graph_two.getAttribute("transform"));
+    setTranslate(graph_two, trans[0], init_transy_g2.graph + diff);
+
+    // Move down the bounding box as well
+    var g2_bg = the_evt_target.getElementById("g2_bg");
+    var trans = getTranslate(g2_bg.getAttribute("transform"));
+    setTranslate(g2_bg, trans[0], init_transy_g2.bg + diff);
+}
+
  
  // Scales the graph and background.  If use_curr_sf is true then it uses the current
  // g_scale_factor, otherwise it computes one based on scaler position
 function scaleGraph(graph, graph_bg, evt, use_curr_sf) {
     
     if (use_curr_sf) {
-        setScale(graph, g_scale_factor, g_scale_factor);
-        setScale(graph_bg, g_scale_factor, g_scale_factor);
+        setScale(graph, g_scale_factor.x, g_scale_factor.y);
+        setScale(graph_bg, g_scale_factor.x, g_scale_factor.y);
         return;
     }
 
@@ -2339,7 +2404,10 @@ function scaleGraph(graph, graph_bg, evt, use_curr_sf) {
     if (max_scale_factor < 1)
         width_factor = max_scale_factor;
     
-    cursor_point = cursorPoint(evt, null);
+    cursor_point = cursorPoint(evt);
+
+    //console.log('Cursor_point: (' + cursor_point.x + ', ' + cursor_point.y + ')');
+    //console.log('Mouse_start: (' + mouse_start.x + ', ' + mouse_start.y + ')');
 
     var graph_width = graph.getBBox().width * width_factor;
     var cursor_delta = cursor_point.x - mouse_start.x;
@@ -2349,18 +2417,33 @@ function scaleGraph(graph, graph_bg, evt, use_curr_sf) {
     var new_width = scale_graph_width + cursor_delta;
     var temp_scale_factor = new_width / graph_width;
 
+    //console.log("temp_scale_factor: " + temp_scale_factor);
+    
+    //Scale factor used to compute size of graph
+   // var temp_scale_factor = (graph_width + cursor_delta)/graph_width;
+
     // If temp_scale_factor is too small then do not do the scaling
     if (temp_scale_factor < MIN_SCALE_FACTOR)
         return;
     
-    g_scale_factor = temp_scale_factor * width_factor;
-    
+    g_scale_factor.x = temp_scale_factor * width_factor;
+    g_scale_factor.y = temp_scale_factor * width_factor;
+
     //Limit scaling to the maximum scale_factor
-    if (g_scale_factor > max_scale_factor)
-        g_scale_factor = max_scale_factor;
+    if (g_scale_factor.x > max_scale_factor) {
+        g_scale_factor.x = max_scale_factor;
+        g_scale_factor.y = max_scale_factor;
+    }
+
+    if (two_graph === true) 
+            slide_down_bottom();
     
-    setScale(graph, g_scale_factor, g_scale_factor);
-    setScale(graph_bg, g_scale_factor, g_scale_factor);
+    for (x in init_graphs) {
+        var graph = the_evt_target.getElementById(init_graphs[x].getAttribute("id"));
+        var graph_bg = the_evt_target.getElementById(graph_bgs[x]);
+        setScale(graph, g_scale_factor.x, g_scale_factor.y);
+        setScale(graph_bg, g_scale_factor.x, g_scale_factor.y);
+    }
 }
 
 //Translate client coordinates to svg coordinates.  If given element then translates to coordinates
@@ -2368,7 +2451,7 @@ function scaleGraph(graph, graph_bg, evt, use_curr_sf) {
 function cursorPoint(evt, element){
     pt.x = evt.clientX; 
     pt.y = evt.clientY;
-    if (element === null)
+    if (element === null || element === undefined)
         return pt.matrixTransform(the_evt_target.getScreenCTM().inverse());
     else
         return pt.matrixTransform(element.getScreenCTM().inverse());
@@ -2390,6 +2473,7 @@ function realignScaler(scaler_x, scaler_y){
 */
 
 function GraphState(graph, step) {
+    // An array tuple of (state, elements_present_at_that_time)
     this.state = buildStateArray(graph);
     this.step = step;
 }
@@ -2401,7 +2485,15 @@ function GraphState(graph, step) {
 function buildStateArray(graph) {
 
     var graph_elems = graph.childNodes;
-    var state = new Array();
+
+    // The total state entity
+    var state_holder = new Array(); 
+
+    // The states of the elements that are present
+    var states = new Array();
+
+    // The elements that are present at that point in the animation(ie. haven't been deleted)
+    var elems_present = new Array();
     
     var i;
     //Start at one to avoid first, empty element
@@ -2416,13 +2508,13 @@ function buildStateArray(graph) {
         var elem_array = new Array();
         elem_array.push(elem.tagName);
         var id = elem.getAttribute("id");
-
-        // Exclude scaler for positioning purposes
-        if (id === "triangle_scaler")
-            continue;
+        
+        // Add to elems_present if not seen already
+        if (elems_present.indexOf("id") === -1)
+            elems_present.push(id);
 
         elem_array.push(id);
-
+        
         if(the_evt_target_ownerDocument.getElementById(v_ano_id + id) != null){
             ano = the_evt_target_ownerDocument.getElementById(v_ano_id + id);
             elem_array.push(ano.firstChild.nodeValue);
@@ -2439,81 +2531,246 @@ function buildStateArray(graph) {
                 elem_array.push(elem.getAttribute(attr));
             }
         }
-        state.push(elem_array);
+        states.push(elem_array);
     }
     
-    return state;
+    state_holder.push(states);
+    state_holder.push(elems_present);
+    //console.log(elems_present);
+    //console.log(elems_present.length);
+
+    return state_holder;
 }
+
 
 /* Model this off of AnimateLoop, except translate the graph off the screen before 
 doing the animations.  Save the graph state every STEP_INTERVAL commands, and in between
 there save the commands */
 function fillGraphStates() {
     
-    // Set filling_states to true to prevent blinking(causes a bug where color lingers after start)
     filling_states = true;
 
-    //Send the graph off the screen
-    var graph_id = init_graphs[0].getAttribute("id");
-    var graph = the_evt_target_ownerDocument.getElementById(graph_id);
-    
+    var graphs = new Array();  
+    for (g in init_graphs) 
+        graphs.push(the_evt_target.getElementById(init_graphs[g].getAttribute("id")));
+
+    // Keep track of added and deleted elements for restoration to initial state
+    deleted_elements = new Array();
+    added_elements = new Array();
+
     var numAnims = animation.length;
     for ( var step=0; step<numAnims; step++) {
-        if ( step%%STEP_INTERVAL === 0) 
-            graph_states.push(new GraphState(graph, step));
-        
+        if ( step %% STEP_INTERVAL === 0) {
+            if (two_graph)
+                graph_states.push(new Array(new GraphState(graphs[0], step), new GraphState(graphs[1], step)));
+            else
+                graph_states.push(new Array(new GraphState(graphs[0], step)));
+        }
         
         //Do the next command, special case for SetAllVerticesColor
         if(animation[step][1] == SetAllVerticesColor && animation[step].length > 3){
             var vertexArray = new Array();
-        for(i = 3; i < animation[step].length; i++){
-            vertexArray[i-3] = animation[step][i];
-        }
+            for(i = 3; i < animation[step].length; i++){
+                vertexArray[i-3] = animation[step][i];
+            }
             animation[step][1](animation[step][2],vertexArray);
         }else{
+            // If an edge is going to be deleted save it for later restoration
+            var graph_num = 1;
+
+            if (animation[step][1] == DeleteEdge) {
+                var add_ind = added_elements.indexOf(animation[step][2]);
+                
+                if (add_ind !== -1)
+                    delete added_elements(add_ind); 
+                else
+                    deleted_elements.push(animation[step][2]);
+                
+            } else if (animation[step][1] == AddEdge) {
+                var del_ind = deleted_elements.indexOf(animation[step][2]);
+                
+                // If the added element is in deleted_elements then just remove from deleted_elements.  Otherwise, add to added_elements
+                if (del_ind !== -1)
+                    delete deleted_elements[del_ind]; 
+                else
+                    added_elements.push(animation[step][2]);
+                
+            }
+
             animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
         }       
         //Need to realign components here??
         
     }
+
+    console.log(graph_states);
+
+    console.log("Deleted elements:");
+    console.log(deleted_elements);
+    console.log("Added elements:");
+    console.log(added_elements);
     
     //Restore graph back to original state
+    console.log("Setting graph state back to 0");
+    //reset_elements(deleted_elements, added_elements);
     setGraphState(graph_states[0]);
     StopAnimation(undefined);
 
     filling_states = false;
-    sizeGraphBBox(graph);
 }
 
 
+/* Sets the attributes of the graph to that of the given graph_state */
 /* Sets the attributes of the graph to that of the given graph_state */
 function setGraphState(graph_state) {
     
     if (graph_state === undefined)
         return;
+
+    //console.log("In setgrpahstate");
+   // console.log(graph_state);
+
+    // Keep track of elements found on graph.  
+    // The ones not found on graph that are in state_array must be added
+    var elements_found = new Array();
     
-    var state_array = graph_state.state;
-    
-    //Set attributes of elements one at a time
-    for ( var i=0; i<state_array.length; i++) {
-        id = state_array[i][1];
-        var elem = the_evt_target.getElementById(id);
-        
-        //Check for vertex annotation
-        if (state_array[i][2] != "") {
-            SetVertexAnnotation(id, state_array[i][2], undefined);
-        } else if (the_evt_target.getElementById(v_ano_id + id) != null)  {
-            var ano = the_evt_target.getElementById(v_ano_id + id);
-            ano.parentNode.removeChild(ano);
+    for (x in init_graphs) {
+        var graph = the_evt_target.getElementById(init_graphs[x].getAttribute("id"));
+        //var child = graph.firstChild;
+        var state_array = graph_state[x].state;
+
+        if (x == 1) {
+          //  console.log(graph);
+          //  console.log(state_array[1]);
         }
+
+        var temp = new Array(state_array[1].length);
+        for (var i=0; i<state_array[1].length; i++)
+            temp[i] = false;
         
-        for ( var j=3; j<state_array[i].length; j+=2) {
-            elem.setAttribute(state_array[i][j], state_array[i][j+1]);
+        elements_found.push(temp);
+        
+        var children = graph.childNodes;
+        var found = 0;
+        for (var i=0; i<children.length; i++) {
+            var child = children.item(i);
+            if (child.attributes == null) {
+                child = child.nextSibling;
+                continue;
+            }
+            
+            var child_id = child.getAttribute("id");
+
+            //console.log("Looking at " + child_id);
+            
+            var ind = state_array[1].indexOf(child_id);
+            
+            if (ind == -1) {
+                // The element on graph isn't in state array, get rid of it
+                var elem_type = is_edge_or_vert(child_id);
+                if (elem_type === 0)
+                    DeleteEdge(child_id);
+                else {
+                    //alert("We got a non-edge id: " + child_id);
+                    SetVertexAnnotation(1, "s", "black");
+                }
+            } else {
+                // The element on graph is in state array
+                found ++;
+                elements_found[x][ind] = true;
+            }
+            
+            child = child.nextSibling;
+            ind++;
+        }
+       // console.log("Found " + found);
+        /*while (child != null) {
+            if (child.attributes == null) {
+                child = child.nextSibling;
+                continue;
+            }
+            
+            var child_id = child.getAttribute("id");
+
+            console.log("Looking at " + child_id);
+            
+            var ind = state_array[1].indexOf(child_id);
+            
+            if (ind == -1) {
+                // The element on graph isn't in state array, get rid of it
+                var elem_type = is_edge_or_vert(child_id);
+                if (elem_type === 0)
+                    DeleteEdge(child_id);
+                else {
+                    //alert("We got a non-edge id: " + child_id);
+                    SetVertexAnnotation(1, "s", "black");
+                }
+            } else {
+                // The element on graph is in state array
+                elements_found[x][ind] = true;
+            }
+            
+            child = child.nextSibling;
+            ind++;
+        }*/
+       // console.log(elements_found[x]);
+        console.log("x = " + x);
+        
+        // Go over the elements that haven't been found and add them to the graph
+        for (var i=0; i<state_array[1].length; i++) {
+            //console.log("Looking an edge to add");
+            if (elements_found[x][i] == false) {
+                // The element in state_array wasn't found-- add it in
+                /*if (state_array[1][i] === "g2_(1, 3)")
+                    console.log("Here it is...");
+                */
+               // console.log("We didn't find " + state_array[1][i] + " on the graph");
+                var type = is_edge_or_vert(state_array[1][i]);
+                if (type === 0) {
+                  //  console.log("Adding edge: " + state_array[1][i]);
+                    AddEdge(state_array[1][i]);
+                    elements_found[x][ind] = true;
+                } else {
+                    //alert("We got a non-edge!! " + state_array[1][i]);
+                }
+            }
+        }
+    
+    }
+    
+
+    //
+    for (g in graph_state) {
+        var state_array = graph_state[g].state;
+
+        //Set attributes of elements one at a time
+        for ( var i=0; i<state_array[0].length; i++) {
+            id = state_array[0][i][1];
+            var elem = the_evt_target.getElementById(id);
+            if (elem === null) {
+                //console.log("Elem is null with id: " + id);
+                continue;
+            }
+            
+            //Check for vertex annotation
+            if (state_array[0][i][2] != "") {
+                SetVertexAnnotation(id, state_array[0][i][2], undefined);
+            } else if (the_evt_target.getElementById(v_ano_id + id) != null)  {
+                var ano = the_evt_target.getElementById(v_ano_id + id);
+                ano.parentNode.removeChild(ano);
+            }
+            
+            for ( var j=3; j<state_array[0][i].length; j+=2) {
+                elem.setAttribute(state_array[0][i][j], state_array[0][i][j+1]);
+            }
         }
     }
-    var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
-    var graph_bg = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
-    scaleGraph(graph, graph_bg, undefined, true);
+
+    for (x in init_graphs) {
+        var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
+        var graph_bg = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+        scaleGraph(graph, graph_bg, undefined, true);   
+    }
 }
 
 
@@ -2524,14 +2781,17 @@ function fillAttributeArray() {
                         "font-weight", "nodeValue", "points", "style", "blank", "dx");
 }
 
+
 function jumpToStep(n) {
     //graph state to which animations will be applied
     var base_state;     
     step = n;
+
+    console.log("Jumping to step " + n);
     
     //Find the graph_state to build off of
     for ( i in graph_states) {
-        if (graph_states[i].step > n) {
+        if (graph_states[i][0].step > n) {
             base_state = graph_states[i-1];
             break;
         }
@@ -2540,16 +2800,16 @@ function jumpToStep(n) {
         base_state = graph_states[graph_states.length-1];
     
     setGraphState(base_state);
-    
+        
     //Apply steps base_state.step -> n
-    for ( var i=base_state.step; i<n; i++) {
+    for ( var i=base_state[0].step; i<n; i++) {
     
         //Do the next command, special case for SetAllVerticesColor
         if(animation[i][1] == SetAllVerticesColor && animation[i].length > 3){
             var vertexArray = new Array();
             
-            for(var j = 3; j < animation[i].length; j++)
-                vertexArray[j-3] = animation[i][j];
+            for(i = 3; i < animation[i].length; i++)
+                vertexArray[i-3] = animation[i][i];
             
                 animation[i][1](animation[i][2],vertexArray);
         }else{
@@ -2757,6 +3017,7 @@ function getViewboxVals() {
 
 
 // Sets the maximum scale factor the graph can apply before going off the screen
+// Sets the maximum scale factor the graph can apply before going off the screen
 function set_max_scale_factor() {
     
     function max_factor_y(graph) {
@@ -2771,6 +3032,9 @@ function set_max_scale_factor() {
         var translate = translation1[1] + translation2[1] + translation3[1];
 
         var bottom_height = horiz_layout[1].group.getBBox().height + 30;    // Height of the bottom action bar
+        if (two_graph)
+            bottom_height += 10;
+
         var total_sans_height = y_offset + graph_y + translate + bottom_height;
 
         // Find how much larger the graph could be before the total becomes greater than the viewbox_y
@@ -2809,9 +3073,61 @@ function scale_to_fit() {
     var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
     var graph_bg = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
     if (max_scale_factor < 1) {
-        g_scale_factor = max_scale_factor;
+        g_scale_factor.x = max_scale_factor;
         scaleGraph(graph, graph_bg, undefined, true);
     }
+}
+
+function fill_initArrays() {
+    init_edges = new Array();
+    init_verts = new Array();
+
+    // Put in as many arrays as there are graphs
+    for (g in init_graphs) {
+        init_edges.push(new Array());
+        init_verts.push(new Array());
+    }
+
+    for (g in init_graphs) {
+        var child = the_evt_target.getElementById(init_graphs[g].getAttribute("id")).firstChild;
+
+        while (child != null) {
+            // Skip over textnodes and other such nonsense
+            if (child.attributes === null) {
+                child = child.nextSibling;
+                continue;
+            }
+
+            var id = child.getAttribute("id");
+            
+            var type = is_edge_or_vert(id);
+            
+            if (type === 0) {
+                // It's an edge
+                init_edges[g].push(id);
+            } else if (type === 1) {
+                // It's an edge
+                init_verts[g].push(id);
+            }
+
+            child = child.nextSibling;
+        }
+    }
+}
+
+// Returns -1 if neither, 0 for edge, 1 for vertex
+function is_edge_or_vert(id) {
+    var prefixes = new Array("g1", "g2");
+    if (prefixes.indexOf(id.substring(0,2)) != -1) {
+        if (id.charAt(3) === '(') {
+            // It's an edge    
+            return 0;
+        } else {
+            // It's a vertex
+            return 1;
+        }
+    }
+    return -1;
 }
 
 /**
@@ -2879,9 +3195,12 @@ function Initialize(evt) {
     var i = 1;
     var tree = the_evt_target_ownerDocument.getElementById("g" + i);
     while(tree != null){
-            init_graphs[i-1] = tree.cloneNode(true);
-            i++;
-            tree = the_evt_target_ownerDocument.getElementById("g" + i);
+        if (i === 2)
+            two_graph = true;
+
+        init_graphs[i-1] = tree.cloneNode(true);
+        i++;
+        tree = the_evt_target_ownerDocument.getElementById("g" + i);
     }
         
     //Create buttons
@@ -2927,11 +3246,17 @@ function Initialize(evt) {
 
     var scaler_y, scaler_x;
 
+    graph_bgs = new Array();
     //Make rectangles behind graphs, for intuitive iPad usage
     for(x in init_graphs){
         var rect = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
         var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
-        rect.setAttribute("id", graph.getAttribute("id") + "_bg");
+        var bg_id = graph.getAttribute("id") + "_bg";
+
+        graph_bgs.push(bg_id);
+        init_height_g1 = graph.getBBox().height;
+
+        rect.setAttribute("id", bg_id);
         rect.setAttribute("width",graph.getBBox().width+10);
         rect.setAttribute("height",graph.getBBox().height+10);
         rect.setAttribute("fill", "white");
@@ -2947,6 +3272,7 @@ function Initialize(evt) {
         rect.setAttribute("ontouchstart", "TouchStart_Graph(evt)");
         rect.setAttribute("ontouchmove", "TouchDrag_Graph(evt)");
         rect.setAttribute("ontouchend", "TouchDeactivate_Graph(evt)");
+
         var translation1 = getTranslate(right_vert_layout.group.getAttribute("transform"));
         var translation2 = getTranslate(vert_layout.group.getAttribute("transform"));
         var translation3 = getTranslate(graph.getAttribute("transform"));
@@ -2954,13 +3280,18 @@ function Initialize(evt) {
         the_evt_target_ownerDocument.documentElement.insertBefore(rect, the_evt_target_ownerDocument.documentElement.childNodes.item(0));
         scaler_x = graph.getBBox().x + graph.getBBox().width + 10;
         scaler_y = graph.getBBox().y + graph.getBBox().height + 10;
-    }   
+
+        if (x == 1) 
+            init_transy_g2 = {"graph":getTranslate(graph.getAttribute("transform"))[1], "bg":(translation1[1] + translation2[1] + translation3[1])};
+    } 
     
     set_max_scale_factor();
     scale_to_fit();
 
     var points_val = String(scaler_x) + "," + String(scaler_y) + " " + String(scaler_x-20) + "," + String(scaler_y) + " " + String(scaler_x) + "," + String(scaler_y-20);
     scaler = new Scaler(points_val, 20);
+
+    fill_initArrays();
 
     fillGraphStates();
 

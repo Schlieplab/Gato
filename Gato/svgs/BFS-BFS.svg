@@ -1672,6 +1672,7 @@ function BlinkVertex(v, color) {
     element.setAttribute("fill", "black");
     setTimeout(VertexBlinker, 3*timeout);
 }
+
 //Helper for BlinkVertex
 function VertexBlinker() {
     if (blinkcount % 2 == 1) {
