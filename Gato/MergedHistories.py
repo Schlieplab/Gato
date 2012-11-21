@@ -38,6 +38,7 @@
 
 import GatoGlobals
 import AnimationHistory
+import traceback
 
 g = GatoGlobals.AnimationParameters
 
@@ -49,6 +50,26 @@ class MergedHistories:
         self.animator1 = None
         self.animator2 = None
         self.auto_print = 0
+
+    def UpdateEdgeInfo(self, tail, head, info, animator, display):
+        if self.animator1 is None:
+            if display==1:
+                self.animator1 = animator
+        if self.animator2 is None:
+            if display==2:
+                self.animator2 = animator
+        animation = AnimationHistory.AnimationCommand(animator.UpdateEdgeInfo, (tail, head), (info,))
+        self.append(animation, display)
+
+    def UpdateGraphInfo(self, info, animator, display):
+        if self.animator1 is None:
+            if display==1:
+                self.animator1 = animator
+        if self.animator2 is None:
+            if display==2:
+                self.animator2 = animator
+        animation = AnimationHistory.AnimationCommand(animator.UpdateGraphInfo, (), (info,))
+        self.append(animation, display)
 
     def SetVertexColor(self, v, color, animator, display):
         if self.animator1 is None:
@@ -126,6 +147,7 @@ class MergedHistories:
         animation = AnimationHistory.AnimationCommand(animator.SetEdgeColor, (tail,head), (color,),
                                      undo_args=(animator.GetEdgeColor(tail,head),))
         animation.Do()
+        print animation
         self.append(animation, display)
        
     def BlinkVertex(self, v, animator, display, color=None):

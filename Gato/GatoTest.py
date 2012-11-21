@@ -346,7 +346,9 @@ instance = {'06-MaximalFlows/FordFulkerson.alg':['06-MaximalFlows/FordFulkerson6
    '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
    ],'02-GraphsNetworks/DFS-Recursive.alg':[
    '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
-   ],
+   ],'03-MinimalSpanningTrees/Kruskal.alg':[
+    '03-MinimalSpanningTrees/Kruskal4.cat'
+    ],
    '05-ShortestPaths/BellmanFord.alg':[
     '05-ShortestPaths/BellmanFordWC.cat'  #,'05-ShortestPaths/NegCircuit.cat'
     ]}
@@ -354,7 +356,9 @@ instance = {'06-MaximalFlows/FordFulkerson.alg':['06-MaximalFlows/FordFulkerson6
 svg_instance = {'06-MaximalFlows/FordFulkerson.alg':['06-MaximalFlows/FordFulkerson6.cat'],
      '02-GraphsNetworks/BFS.alg':[
    '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
-   ],'02-GraphsNetworks/DFS-Recursive.alg':[
+   ],'03-MinimalSpanningTrees/Kruskal.alg':[
+    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
+    ],'02-GraphsNetworks/DFS-Recursive.alg':[
    '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
    ],
    '05-ShortestPaths/BellmanFord.alg':[

@@ -91,11 +91,20 @@ onload="Initialize(evt)">
     </linearGradient>
 </defs>
 
+<filter id="dropshadow" height="130%%">
+  <feGaussianBlur in="SourceAlpha" stdDeviation="1"/> <!-- stdDeviation is how much to blur -->
+    <feOffset dx="2.5" dy="2.5" result="offsetblur"/> <!-- how much to offset -->
+    <feMerge> 
+      <feMergeNode/> <!-- this contains the offset blurred image -->
+      <feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->
+   </feMerge>
+</filter>
+
 <script type="text/ecmascript"><![CDATA[
 var step = 0;
 var v_ano_id = "va"; //ID prefix for vertex annotation
 var e_arrow_id = "ea"; //ID prefix for edge arrow
-var svgNS="http://www.w3.org/2000/svg";
+var svgNS = "http://www.w3.org/2000/svg";
 var the_evt_target;     
 var the_target;
 var the_evt_target_ownerDocument;
@@ -136,7 +145,7 @@ var scaler;
 var g_scale_factor = {"x":1, "y":1 };
 
 // Coordinates of mouse start when scaling
-var mouse_start = undefined;        
+var mouse_start;        
 
 // SVGPoint for converting browser space to svg space
 var pt;             
@@ -145,7 +154,7 @@ var pt;
 var STEP_INTERVAL = 200;
 
 // Array of GraphState objects representing the state of the graph at every STEP_INTERVAL
-var graph_states = new Array();      
+var graph_states = [];      
 
 // Array of attributes that are in use on the elements.  Check to make sure differnet graphs don't introduce new attributes.
 var attr_array;                     
@@ -167,15 +176,12 @@ var viewbox_y;
 // Minimum scale factor for the graph
 var MIN_SCALE_FACTOR = .2;          
 
-// Graph width(considering scaling) at the time of a mouse click on the scaler
-var scale_graph_width = undefined;  
-
 // Holds the bounding box maximum width and height, to which it will always be set
 var G_BBOX_WIDTH;   
 var G_BBOX_HEIGHT;
 
 // Graph width(considering scaling) at the time of a mouse click on the scaler
-var scale_graph_width = undefined;  
+var scale_graph_width;  
 
 // Boolean variable that is set to true when the graph states are being filled at the start of execution
 var filling_states;     
@@ -191,6 +197,10 @@ var two_graph = false;      // True if it is a two-graph animation
 var init_height_g1;
 var init_transy_g2;         // The initial translate-y value for g2.  Used for scaling smoothly
 
+
+var active_tt = {"tt":null, "rect":null, "text":null};       // The tooltip that is currently visible, or null if there isn't one
+var tt_padding = {"x":40, "y":20};                           // Padding constants for the tooltips
+var G_INFO_POS = {"height":40, "horiz_offset":50};           // Positioning constants for the graph info
 
 /**
 *
@@ -504,7 +514,7 @@ function HTB_insertLine(id, n){
     if(to_insert != null && to_insert.getAttribute("blank") != null && to_insert.getAttribute("blank") == "true"){ // Empty Text  Replace with Rectangle
         var new_rect = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
         var children = this.line_llc.group.childNodes;
-        for(i = 0; i < children.length; i++){
+        for (var i = 0; i < children.length; i++){
             if(children.item(i).getAttribute("blank") == "false"){
                 new_rect.setAttribute("x", children.item(i).getAttribute("x"));
                 new_rect.setAttribute("y", children.item(i).getAttribute("y"));
@@ -643,7 +653,7 @@ function LLC_insertComponent(id, n){
             }else{  
                 var children = this.group.childNodes;
                 this.group.insertBefore(new_c, children.item(n));
-                for(i = n+1; i < children.length; i++){
+                for (var i = n+1; i < children.length; i++){
                     bbox = children.item(i-1).getBBox();
                     translation = getTranslate(children.item(i-1).getAttribute("transform"));
                     if(this.layout == "horizontal"){
@@ -667,7 +677,7 @@ function LLC_insertComponent(id, n){
             if(old_index > n){
                 this.group.insertBefore(new_c, children.item(n));
                 
-                for(i = n; i <= old_index; i++){
+                for (var i = n; i <= old_index; i++){
                     if(i == 0){
                         setTranslate(children.item(i), 0, 0);
                     }else{
@@ -688,7 +698,7 @@ function LLC_insertComponent(id, n){
                 }else{  
                     this.group.insertBefore(new_c, children.item(n+1));
                 }
-                for(i = old_index; i <= n; i++){            
+                for (var i = old_index; i <= n; i++){            
                     if(i == 0){
                         setTranslate(children.item(i), 0, 0);
 
@@ -741,7 +751,7 @@ function LLC_deleteComponent(n){
 
     var removed_element = this.group.removeChild(this.group.childNodes.item(n));
     
-    for(i = n; i < children.length; i++){
+    for (var i = n; i < children.length; i++){
 
         if(i == 0){
 
@@ -817,7 +827,7 @@ function BP_deleteButton(n){
 function BP_deleteButtonById(id){
     var children = this.llc.group.childNodes;
     
-    for(i = 0; i < children.length; i++){
+    for (var i = 0; i < children.length; i++){
         if(children.item(i).getAttribute("id") == id){
             this.deleteButton(i);
             break;
@@ -829,7 +839,7 @@ function BP_deleteButtonById(id){
 //Activates button with corresponding id and assigns a specified action
 function BP_activateButton(id, action){
     var children = this.llc.group.childNodes;
-    for(i = 0; i < children.length; i++){
+    for (var i = 0; i < children.length; i++){
         if(children.item(i).getAttribute("id") == id){
             children.item(i).setAttribute("onclick", action);
             children.item(i).setAttribute("cursor", "pointer");
@@ -844,7 +854,7 @@ function BP_activateButton(id, action){
 function BP_deactivateButton(id){
     var children = this.llc.group.childNodes;
 
-    for(i = 0; i < children.length; i++){
+    for (var i = 0; i < children.length; i++){
         if(children.item(i).getAttribute("id") == id){
             children.item(i).setAttribute("onclick", "");
             children.item(i).setAttribute("cursor", "default");
@@ -911,7 +921,7 @@ function Slider(id, slider_width, thumb_height, offset, range, start_value, labe
     this.slider.appendChild(this.slider_thumb);
     
     //create labels below slider
-    for(i in labels){
+    for (var i in labels){
         var text = the_evt_target_ownerDocument.createElementNS(svgNS, "text");
         text.setAttribute("x", this.default_thickness/2 + i*(slider_width/(labels.length-1)));
         text.setAttribute("y", thumb_height+ font_size);
@@ -935,7 +945,7 @@ function Slider(id, slider_width, thumb_height, offset, range, start_value, labe
     header.appendChild(the_evt_target_ownerDocument.createTextNode(title));
     this.slider.appendChild(header);
         
-    for(i in actions){
+    for (var i in actions){
         this.slider.setAttribute(actions[i][0], actions[i][1]);
     }
     
@@ -1234,7 +1244,7 @@ function OD_position_dropdown() {
     this.y_trans = 10;
     //var x_trans = right_vert_layout.group.getBBox().x + right_vert_layout.group.getBBox().width;
     this.x_trans = (browser_width - 50)/screen_ctm.a;
-    var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
+    var graph = the_evt_target_ownerDocument.getElementById(init_graphs[0].getAttribute("id"));
     var translation1 = getTranslate(right_vert_layout.group.getAttribute("transform"));
     var translation2 = getTranslate(vert_layout.group.getAttribute("transform"));
     var translation3 = getTranslate(graph.getAttribute("transform"));
@@ -1248,7 +1258,7 @@ function OD_position_dropdown() {
 function OD_mouseover(evt) {
     var pieces = new Array(option_dropdown.rect, option_dropdown.triang);
     
-    for (i in pieces) 
+    for (var i in pieces) 
         pieces[i].setAttribute("opacity", .5);
 }
 
@@ -1257,7 +1267,7 @@ function OD_mouseover(evt) {
 function OD_mouseout(evt) {
     var pieces = new Array(option_dropdown.rect, option_dropdown.triang);
     
-    for (i in pieces) 
+    for (var i in pieces) 
         pieces[i].setAttribute("opacity", 1);
         
 }
@@ -1306,6 +1316,12 @@ function StartAnimation(evt){
         if (state == "stopped" && step == 0) {
             setGraphState(graph_states[0]);
         }
+
+        // Reposition scaler
+        for (var x in init_graphs) {
+            var graph = the_evt_target.getElementById(init_graphs[x].getAttribute("id"));
+            repositionScaler(graph.getBBox().x, graph.getBBox().y);
+        }   
     
         state = "running";
         action_panel.activateButton("stop_button", "StopAnimation(evt)");
@@ -1345,7 +1361,7 @@ function AnimateLoop(){
     //Special case for SetAllVertices Color
     if(animation[step][1] == SetAllVerticesColor && animation[step].length > 3){
         var vertexArray = new Array();
-        for(i = 3; i < animation[step].length; i++){
+        for (var i = 3; i < animation[step].length; i++){
             vertexArray[i-3] = animation[step][i];
         }
         animation[step][1](animation[step][2],vertexArray);
@@ -1432,7 +1448,7 @@ function StepAnimation(evt){
         if(animation[step][1] != ShowActive && step < animation.length){
             if(animation[step][1] == SetAllVerticesColor && animation[step].length > 3){
                 var vertexArray = new Array();
-                for(i = 3; i < animation[step].length; i++){
+                for (var i = 3; i < animation[step].length; i++){
                     vertexArray[i-3] = animation[step][i];
                 }
                 animation[step][1](animation[step][2],vertexArray);
@@ -1455,7 +1471,7 @@ function StepAnimation(evt){
         if(step < animation.length){
             if(animation[step][1] == SetAllVerticesColor && animation[step].length > 3){
                 var vertexArray = new Array();
-                for(i = 3; i < animation[step].length; i++){
+                for (var i = 3; i < animation[step].length; i++){
                     vertexArray[i-3] = animation[step][i];
                 }
                     animation[step][1](animation[step][2],vertexArray);
@@ -1498,6 +1514,12 @@ function StopAnimation(evt){
     current_line = 0;
     Refresh_MovieSlider(step);
     setGraphState(graph_states[0]);
+
+    // Reposition scaler
+    for (var x in init_graphs) {
+        var graph = the_evt_target.getElementById(init_graphs[x].getAttribute("id"));
+        repositionScaler(graph.getBBox().x, graph.getBBox().y);
+    }
     
     //StopAnimation only ever called from stop button, or at end of fillGraphStates
     /*if(evt.target.getAttribute("id") == "stop_button"){
@@ -1688,6 +1710,200 @@ function SetVertexColor(v, color) {
 }
 
 
+function AddToolTips() {
+    for (e in edges) {
+        var edge = the_evt_target.getElementById(edges[e].getAttribute("id"));
+        edge.setAttribute("onmouseover", "EdgeInfo_mouseover(evt)");
+        edge.setAttribute("cursor", "pointer");
+        edge.setAttribute("onmouseout", "EdgeInfo_mouseout(evt)");
+        var tt = new ToolTip(edge, "#AABAAA");
+    }
+}
+
+
+// Searches through the first 200 animations for the first set of UpdateEdgeInfo and UpdateGraphInfo commands and applies them
+// If it doesn't find them, it does nothing
+function loadInitialInfo() {
+    // UpdateEdgeInfo commands occur in blocks, so after an updateedgeinfo command is seen
+    // and then another command is seen, we know we are done
+    // UpdateGraphInfo commands are only seen once, in which case we are done
+
+    var update_edge_seen = 0;   // Set to 1 when command is seen, set to 2 when another command is seen afterwards
+    var update_graph_seen = 0;  // Set to 2 when all present graphs have been info'ed.  If two graphs, set to 1 when only 1 has been initialized
+    
+    for (var i=0; i<Math.min(200, animation.length); i++) {
+        var anim_cmd = animation[i][1];
+        if (update_edge_seen === 2 && update_graph_seen === 1) 
+            return;
+
+        if (update_edge_seen !== 2 && anim_cmd === UpdateEdgeInfo) {
+            UpdateEdgeInfo(animation[i][2], animation[i][3]);
+
+            if (update_edge_seen === 0)
+                update_edge_seen = 1;
+        } else if (update_graph_seen !== 2 && anim_cmd === UpdateGraphInfo) {
+            UpdateGraphInfo(animation[i][2], animation[i][3]);
+
+            if (!two_graph)
+                update_graph_seen = 2;
+            else if (update_graph_seen === 1) 
+                update_graph_seen = 2;
+            else
+                update_graph_seen = 1;
+
+            if (update_edge_seen === 1) 
+                update_edge_seen = 2;
+        } else {
+            if (update_edge_seen === 1)
+                update_edge_seen = 2;
+        }
+    }
+}
+
+
+function resetToolTips() {
+    for (e in edges) {
+        var tt_text = the_evt_target.getElementById(edges[e].getAttribute("id") + "_tt_text");
+        tt_text.removeChild(tt_text.firstChild);
+    }
+}
+
+function ToolTip(edge, color) {
+    //console.log("Adding tooltip for edge " + edge.getAttribute("id"));
+    this.tt_g = the_evt_target_ownerDocument.createElementNS(svgNS, "g");
+    this.tt_rect = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
+    this.tt_text = the_evt_target_ownerDocument.createElementNS(svgNS, "text");
+
+
+    this.tt_g.setAttribute("id", edge.getAttribute("id") + "_tt");
+    
+    var x1 = parseInt(edge.getAttribute("x1"), 10);
+    var x2 = parseInt(edge.getAttribute("x2"), 10);    
+    var y1 = parseInt(edge.getAttribute("y1"), 10);
+    var y2 = parseInt(edge.getAttribute("y2"), 10);
+    var x_val = (x1 + x2)/2 - 20;
+    var y_val = (y1 + y2)/2 - 10;
+
+    var textnode = the_evt_target_ownerDocument.createTextNode("Start animation to see edge information.");
+    this.tt_text.appendChild(textnode);
+    this.tt_text.setAttribute("text-anchor", "middle");
+    this.tt_text.setAttribute("id", edge.getAttribute("id") + "_tt_text");
+    this.tt_text.setAttribute("fill", "#334433");
+    this.tt_text.setAttribute("font-family", "Helvetica");
+    this.tt_text.setAttribute("x", x_val + 50);
+    this.tt_text.setAttribute("y", y_val + 25);
+    this.tt_text.setAttribute("opacity", .9);
+
+    this.tt_rect.setAttribute("width", this.tt_text.getBBox().width + tt_padding.x);
+    this.tt_rect.setAttribute("height", this.tt_text.getBBox().height + tt_padding.y);
+    this.tt_rect.setAttribute("id", edge.getAttribute("id") + "_tt_rect");
+    this.tt_rect.setAttribute("x", this.tt_text.getBBox().x);
+    this.tt_rect.setAttribute("y", this.tt_text.getBBox().y);
+    this.tt_rect.setAttribute("opacity", .7);
+    this.tt_rect.setAttribute("fill", color);
+    this.tt_rect.setAttribute("stroke", "#335533");
+    this.tt_rect.setAttribute("stroke-width", "5px");
+    this.tt_rect.setAttribute("rx", "5");
+    this.tt_rect.setAttribute("ry", "5");
+    
+    this.tt_g.setAttribute("visibility", "hidden");
+
+    this.tt_g.appendChild(this.tt_rect);
+    this.tt_g.appendChild(this.tt_text);
+
+    edge.parentNode.parentNode.appendChild(this.tt_g);
+}
+
+
+function UpdateEdgeInfo(edge, info) {
+    var text_element = the_evt_target_ownerDocument.getElementById(edge + "_tt_text");
+    var rect = the_evt_target_ownerDocument.getElementById(edge + "_tt_rect");
+    var textnode = the_evt_target_ownerDocument.createTextNode(info);
+    
+    rect.setAttribute("width", text_element.getBBox().width + tt_padding.x);
+    rect.setAttribute("height", text_element.getBBox().height + tt_padding.y);
+    rect.setAttribute("x", text_element.getBBox().x - tt_padding.x/2);
+    rect.setAttribute("y", text_element.getBBox().y - tt_padding.y/2);
+
+    text_element.removeChild(text_element.firstChild);
+    text_element.appendChild(textnode);
+}
+
+
+function EdgeInfo_mouseover(evt) {
+    var id = evt.target.getAttribute("id");
+    var tt = the_evt_target.getElementById(id + "_tt");
+    tt.setAttribute("visibility", "visible");
+
+    active_tt.tt = tt;
+    active_tt.rect = the_evt_target.getElementById(id + "_tt_rect");
+    active_tt.text = the_evt_target.getElementById(id + "_tt_text");
+}
+
+
+function EdgeInfo_mouseout(evt) {
+    var id = evt.target.getAttribute("id");
+    var tt = the_evt_target.getElementById(id + "_tt");
+    tt.setAttribute("visibility", "hidden");
+
+    active_tt.tt = null;
+    active_tt.rect = null;
+    active_tt.text = null;
+}
+
+
+// Has the tooltip follow the mouse
+function positionTooltip(evt) {
+    if (active_tt.tt === null) {
+        console.log("returning");
+        return;
+    }
+
+    var cursor_point = cursorPoint(evt, evt.target);
+    active_tt.text.setAttribute("y", cursor_point.y*g_scale_factor.y + 40);
+    active_tt.text.setAttribute("x", cursor_point.x*g_scale_factor.x - active_tt.text.getBBox().width/2 - tt_padding.x/2);
+    active_tt.rect.setAttribute("width", active_tt.text.getBBox().width + tt_padding.x);
+    active_tt.rect.setAttribute("height", active_tt.text.getBBox().height + tt_padding.y);
+    active_tt.rect.setAttribute("x", active_tt.text.getBBox().x - tt_padding.x/2);
+    active_tt.rect.setAttribute("y", active_tt.text.getBBox().y - tt_padding.y/2);
+
+    /* Don't think this is needed since tooltips are drawn to the left of the cursor */
+    // Check if the tooltip goes off the screen
+    var diff = active_tt.text.getBBox().x*g_scale_factor.x + active_tt.text.getBBox().width - viewbox_x;
+    console.log("diff = " + diff);
+    if (diff > 0) {
+        active_tt.text.setAttribute("x", active_tt.text.getAttribute("x") - diff/g_scale_factor.x);
+        active_tt.rect.setAttribute("x", active_tt.rect.getAttribute("x") - diff/g_scale_factor.x);
+    }
+}
+
+
+// Positions graph info at bottom left of graph.  Works for both graphs in 2-graph situation
+function positionGraphInfo() {
+    for (var x in init_graphs) {
+        var graph = the_evt_target.getElementById(init_graphs[x].getAttribute("id"));
+        var info = the_evt_target.getElementById(init_graphs[x].getAttribute("id") + "_()_info");
+        setTranslate(info, graph.getBBox().x + G_INFO_POS["horiz_offset"], graph.getBBox().y + graph.getBBox().height + G_INFO_POS["height"]);
+    }
+}
+
+
+function UpdateGraphInfo(graph_id, info) {
+
+    // If UpdateGraphInfo was called with the actual graph id then append the "_()"
+    if (graph_id.charAt(graph_id.length-1) !== ')')
+        graph_id = graph_id + "_()";
+
+    var text = the_evt_target.getElementById(graph_id + "_info");
+    
+    if (text.firstChild)
+        text.removeChild(text.firstChild);
+    var new_node = the_evt_target_ownerDocument.createTextNode(info);
+    text.appendChild(new_node);
+}
+
+
+
 //Colors edge with id given by e
 function SetEdgeColor(e, color) {
     // NOTE: Gato signature SetEdgeColor(v, w, color)
@@ -1728,7 +1944,7 @@ function SetAllVerticesColor(graph_id_and_color, vertices) {
     var children = the_evt_target_ownerDocument.getElementById(graph_id).childNodes;
 
     if(vertices != null){
-        for(i = 0; i < children.length; i++){
+        for (var i = 0; i < children.length; i++){
         for(j = 0; j < vertices.length; j++){
             if(children.item(i).nodeName == "circle" && children.item(i).getAttribute("id") == graph_id + "_" + vertices[j]){
                 children.item(i).setAttribute("fill", color);
@@ -1737,7 +1953,7 @@ function SetAllVerticesColor(graph_id_and_color, vertices) {
         }
     }
     }else{
-        for(i = 0; i < children.length; i++){
+        for (var i = 0; i < children.length; i++){
         if(children.item(i).nodeName == "circle"){
             children.item(i).setAttribute("fill", color);
         }
@@ -1845,6 +2061,13 @@ function EdgeBlinker(){
 function SetVertexFrameWidth(v, val) {
     var element = the_evt_target_ownerDocument.getElementById(v);
     element.setAttribute("stroke-width", val);
+
+    // Eliminate blur if increasing frame width, add back in if removing frame width
+    if (val === "0")
+        element.setAttribute("style", "filter:url(#dropshadow)");
+    else 
+        element.setAttribute("style", "");
+
     var graph = the_evt_target_ownerDocument.getElementById(v).parentNode;
     sizeGraphBBox(graph);
 }
@@ -1888,7 +2111,7 @@ function SetVertexAnnotation(v, annotation, color) //removed 'self' parameter to
 
 //Line with specified id is highlighted.  Becomes current line of code.  Previous highlight is removed.
 function ShowActive(line_id){
-    for(i = 0; i < code.line_llc.group.childNodes.length; i++){
+    for (var i = 0; i < code.line_llc.group.childNodes.length; i++){
         if(code.line_llc.group.childNodes.item(i).getAttribute("id") == line_id){
             code.removeHighlight(current_line-1);
             code.highlightLine(i);
@@ -2318,14 +2541,24 @@ function TransformGraph(graph, graph_bg, evt){
 //
 */
 function Scaler(points, width) {
-    this.triang_scaler = the_evt_target.getElementById("triangle_scaler");
+    this.triang_scaler = the_evt_target_ownerDocument.createElementNS(svgNS, "polygon");
+    this.triang_scaler.setAttribute("id", "triangle_scaler");
+    this.triang_scaler.setAttribute("points", points);
+    this.triang_scaler.setAttribute("style", "stroke:#660000; fill:#cc3333");
+    the_evt_target_ownerDocument.documentElement.appendChild(this.triang_scaler);
+
+    var graph;
+    if (two_graph)
+        graph = the_evt_target.getElementById(init_graphs[1].getAttribute("id"));
+    else 
+        graph = the_evt_target.getElementById(init_graphs[0].getAttribute("id"));
+
+    graph.appendChild(this.triang_scaler);
 
     // Property that controls whether the scaler will alter the graph or not
     this.scaler_active = false;    
-    this.points = points;
-    this.scaler_width = width;
+
     
-    this.triang_scaler.setAttribute("points", points);
     this.triang_scaler.setAttribute("cursor", "move");
     this.triang_scaler.setAttribute("onmousedown", "click_scaler(evt)");
     this.triang_scaler.setAttribute("onmouseup", "deactivate_scaler(evt)");
@@ -2346,7 +2579,7 @@ function repositionScaler(x, y) {
 // and sets mouse_start to the current cursor position
 function click_scaler(evt) {
     scaler.scaler_active = true;
-    var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
+    var graph = the_evt_target_ownerDocument.getElementById(init_graphs[0].getAttribute("id"));
     scale_graph_width = graph.getBBox().width * g_scale_factor.x;
     mouse_start = cursorPoint(evt, null);
 }
@@ -2366,7 +2599,7 @@ function drag_scaler(evt) {
     if (scaler.scaler_active === false)
         return;
         
-    var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
+    var graph = the_evt_target_ownerDocument.getElementById(init_graphs[0].getAttribute("id"));
     var graph_bg = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
     scaleGraph( graph, graph_bg, evt, false);
 }
@@ -2404,7 +2637,7 @@ function scaleGraph(graph, graph_bg, evt, use_curr_sf) {
     if (max_scale_factor < 1)
         width_factor = max_scale_factor;
     
-    cursor_point = cursorPoint(evt);
+    var cursor_point = cursorPoint(evt);
 
     //console.log('Cursor_point: (' + cursor_point.x + ', ' + cursor_point.y + ')');
     //console.log('Mouse_start: (' + mouse_start.x + ', ' + mouse_start.y + ')');
@@ -2438,7 +2671,7 @@ function scaleGraph(graph, graph_bg, evt, use_curr_sf) {
     if (two_graph === true) 
             slide_down_bottom();
     
-    for (x in init_graphs) {
+    for (var x in init_graphs) {
         var graph = the_evt_target.getElementById(init_graphs[x].getAttribute("id"));
         var graph_bg = the_evt_target.getElementById(graph_bgs[x]);
         setScale(graph, g_scale_factor.x, g_scale_factor.y);
@@ -2475,8 +2708,33 @@ function realignScaler(scaler_x, scaler_y){
 function GraphState(graph, step) {
     // An array tuple of (state, elements_present_at_that_time)
     this.state = buildStateArray(graph);
+    
+    // An array of tuples of the form (edge_id, edge_tooltip_text)
+    this.edge_info = buildEdgeInfoArray();
+    
+    var info = the_evt_target.getElementById(graph.getAttribute("id") + "_()_info");
+
+    // The graph info at this stage of the animation
+    this.graph_info = info.firstChild.nodeValue;
+    
+    this.graph = graph;
     this.step = step;
 }
+
+
+// Builds an array of tuples of form (edge_id, edge_tooltip_text) using the edges global array
+function buildEdgeInfoArray() {
+    var e_info = [];
+    for (var e in edges) {
+        var text_elem = the_evt_target.getElementById(edges[e].getAttribute("id") + "_tt_text");
+        var pair = [];
+        pair.push(edges[e].getAttribute("id"));
+        pair.push(text_elem.firstChild.nodeValue);
+        e_info.push(pair);
+    }
+    return e_info;
+}
+
 
 //Builds a state array representation of the graph
 //A state array is an array representing the state of the graph at any point during animation, and is of the form
@@ -2495,9 +2753,8 @@ function buildStateArray(graph) {
     // The elements that are present at that point in the animation(ie. haven't been deleted)
     var elems_present = new Array();
     
-    var i;
     //Start at one to avoid first, empty element
-    for ( i=0; i<graph_elems.length; i++) {
+    for (var i=0; i<graph_elems.length; i++) {
         var elem = graph_elems[i];
         
         //If the element doesn't have any attributes, continue.  For some reason elements are making it in here like [object Text] that have no significance(whitespace maybe?)
@@ -2551,8 +2808,12 @@ function fillGraphStates() {
     filling_states = true;
 
     var graphs = new Array();  
-    for (g in init_graphs) 
+    for (var g in init_graphs) {
         graphs.push(the_evt_target.getElementById(init_graphs[g].getAttribute("id")));
+
+        // Call once to get MAX_GBBOX values set, in case it isn't called during algo
+        sizeGraphBBox(graphs[g]);
+    }
 
     // Keep track of added and deleted elements for restoration to initial state
     deleted_elements = new Array();
@@ -2570,7 +2831,7 @@ function fillGraphStates() {
         //Do the next command, special case for SetAllVerticesColor
         if(animation[step][1] == SetAllVerticesColor && animation[step].length > 3){
             var vertexArray = new Array();
-            for(i = 3; i < animation[step].length; i++){
+            for (var i = 3; i < animation[step].length; i++){
                 vertexArray[i-3] = animation[step][i];
             }
             animation[step][1](animation[step][2],vertexArray);
@@ -2634,7 +2895,7 @@ function setGraphState(graph_state) {
     // The ones not found on graph that are in state_array must be added
     var elements_found = new Array();
     
-    for (x in init_graphs) {
+    for (var x in init_graphs) {
         var graph = the_evt_target.getElementById(init_graphs[x].getAttribute("id"));
         //var child = graph.firstChild;
         var state_array = graph_state[x].state;
@@ -2740,7 +3001,7 @@ function setGraphState(graph_state) {
     
 
     //
-    for (g in graph_state) {
+    for (var g in graph_state) {
         var state_array = graph_state[g].state;
 
         //Set attributes of elements one at a time
@@ -2764,9 +3025,15 @@ function setGraphState(graph_state) {
                 elem.setAttribute(state_array[0][i][j], state_array[0][i][j+1]);
             }
         }
+
+        // Update all the edge infos and graph info
+        var edge_infos = graph_state[g].edge_info;
+        for (var i=0; i<edge_infos.length; i++) 
+            UpdateEdgeInfo(edge_infos[i][0], edge_infos[i][1]);
+        UpdateGraphInfo(graph_state[g].graph.getAttribute("id"), graph_state[g].graph_info);
     }
 
-    for (x in init_graphs) {
+    for (var x in init_graphs) {
         var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
         var graph_bg = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
         scaleGraph(graph, graph_bg, undefined, true);   
@@ -2808,8 +3075,8 @@ function jumpToStep(n) {
         if(animation[i][1] == SetAllVerticesColor && animation[i].length > 3){
             var vertexArray = new Array();
             
-            for(i = 3; i < animation[i].length; i++)
-                vertexArray[i-3] = animation[i][i];
+            for(var j = 3; j < animation[i].length; j++)
+                vertexArray[j-3] = animation[i][j];
             
                 animation[i][1](animation[i][2],vertexArray);
         }else{
@@ -2872,7 +3139,7 @@ function MovieSlider(id, slider_width, thumb_height, offset, end_step, labels, t
     this.slider.appendChild(this.slider_thumb);
     
     //create labels below slider
-    for(i in labels){
+    for (var i in labels){
         var text = the_evt_target_ownerDocument.createElementNS(svgNS, "text");
         text.setAttribute("x", this.thumb_width/2 + i*(slider_width/(labels.length-1)));
         text.setAttribute("y", thumb_height+ font_size);
@@ -2895,7 +3162,7 @@ function MovieSlider(id, slider_width, thumb_height, offset, end_step, labels, t
     header.appendChild(the_evt_target_ownerDocument.createTextNode(title));
     this.slider.appendChild(header);
         
-    for(i in actions){
+    for (var i in actions){
         this.slider.setAttribute(actions[i][0], actions[i][1]);
     }
     
@@ -2995,16 +3262,10 @@ function addControlBoundingBox(color) {
 
 // Position the action_panel and movie_slider controls at the bottom-center of the screen
 function positionControls() {
-    var bbox = horiz_layout[1].group.getBBox();
-    var panel_width = screen_ctm.a * bbox.width;
-    
-    //TODO: Check if the value subtracted(75) is stable, or needs to be computed
-    //setTranslate(horiz_layout[1].group, ((browser_width - panel_width)/4)/screen_ctm.a, (browser_height - 40)/screen_ctm.d - screen_ctm.f/screen_ctm.d - y_offset);
-    //console.log('theoretical end of browser: ' + browser_height/screen_ctm.d 
-    //trans = horiz_layout[1].group.getBBox().y + horiz_layout[1].group.getBBox().height + getTranslate(vert_layout.group.getAttribute("transform"))[1] + getTranslate(horiz_layout[1].group.getAttribute("transform"))[1];   
-    trans = viewbox_y - horiz_layout[1].group.getBBox().height*2;
-    setTranslate(horiz_layout[1].group, 0, trans); 
-    
+    var bbox = the_evt_target.getElementById("controlBBox").getBBox();
+    var x_trans = (viewbox_x - bbox.width)/2 + bbox.x;
+    var y_trans = viewbox_y - horiz_layout[1].group.getBBox().height*2 + y_offset - 20;
+    setTranslate(horiz_layout[1].group, x_trans, y_trans); 
 }
 
 
@@ -3062,7 +3323,7 @@ function set_max_scale_factor() {
         return max_factor_x;
     }
 
-    var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
+    var graph = the_evt_target_ownerDocument.getElementById(init_graphs[0].getAttribute("id"));
     max_scale_factor = Math.min(max_factor_y(graph), max_factor_x(graph));
 }
 
@@ -3070,7 +3331,7 @@ function set_max_scale_factor() {
 // Scales the graph to fit the screen.  
 // Only really matters in cases where the graph is too large for the screen initially
 function scale_to_fit() {
-    var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
+    var graph = the_evt_target_ownerDocument.getElementById(init_graphs[0].getAttribute("id"));
     var graph_bg = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
     if (max_scale_factor < 1) {
         g_scale_factor.x = max_scale_factor;
@@ -3083,12 +3344,12 @@ function fill_initArrays() {
     init_verts = new Array();
 
     // Put in as many arrays as there are graphs
-    for (g in init_graphs) {
+    for (var g in init_graphs) {
         init_edges.push(new Array());
         init_verts.push(new Array());
     }
 
-    for (g in init_graphs) {
+    for (var g in init_graphs) {
         var child = the_evt_target.getElementById(init_graphs[g].getAttribute("id")).firstChild;
 
         while (child != null) {
@@ -3155,13 +3416,13 @@ function Initialize(evt) {
     
     pt = the_evt_target.createSVGPoint();       //Create a point for translating svg coords to mouse coords
     
-
     // Set global event handlers
     the_evt_target.addEventListener("mousemove", drag_scaler, false);
     the_evt_target.addEventListener("mouseup", deactivate_scaler, false);
     the_evt_target.addEventListener("mouseup", Deactivate_MovieSlider, false);
     the_evt_target.addEventListener("mousemove", Drag_MovieSlider, false);
-    
+    the_evt_target.addEventListener("mousemove", positionTooltip, false);
+
     //Create code layout
     code = new HighlightableTextBlock(20, 0, "code", 14, "vertical");
 
@@ -3181,13 +3442,14 @@ function Initialize(evt) {
 
     //Make code lines interactive
     var code_lines = code.line_llc.group.childNodes;
-    for(i = 0; i < code_lines.length; i++){
+    for (var i = 0; i < code_lines.length; i++){
             if(code_lines.item(i).nodeName == "text"){
                 code_lines.item(i).setAttribute("cursor", "pointer");
                 code_lines.item(i).setAttribute("onclick", "SetBreakpoint(evt)");
             }
     }
 
+    // Fill the array of all edges
     fillEdgesArray();
 
     //Clone initial graphs and keep references to them
@@ -3232,7 +3494,7 @@ function Initialize(evt) {
     
     speed_select.addBoundingBox("#8888AA");
 
-    for(x in init_graphs){
+    for (var x in init_graphs){
             right_vert_layout.insertComponent(init_graphs[x].getAttribute("id"), x);
     }
     
@@ -3247,15 +3509,18 @@ function Initialize(evt) {
     var scaler_y, scaler_x;
 
     graph_bgs = new Array();
+
     //Make rectangles behind graphs, for intuitive iPad usage
-    for(x in init_graphs){
+    for (var x in init_graphs){
         var rect = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
         var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
         var bg_id = graph.getAttribute("id") + "_bg";
 
+        // Keep track of the backgrounds in use(background being the bbox)
         graph_bgs.push(bg_id);
         init_height_g1 = graph.getBBox().height;
 
+        // Set attributes of graph background
         rect.setAttribute("id", bg_id);
         rect.setAttribute("width",graph.getBBox().width+10);
         rect.setAttribute("height",graph.getBBox().height+10);
@@ -3281,39 +3546,52 @@ function Initialize(evt) {
         scaler_x = graph.getBBox().x + graph.getBBox().width + 10;
         scaler_y = graph.getBBox().y + graph.getBBox().height + 10;
 
+        // If the second graph is being looked at, keep track of the initial translates associated with it
         if (x == 1) 
             init_transy_g2 = {"graph":getTranslate(graph.getAttribute("transform"))[1], "bg":(translation1[1] + translation2[1] + translation3[1])};
     } 
+
+    // Add tooltips and graphinfo
+    AddToolTips();
+    loadInitialInfo();
+    positionGraphInfo();
     
+    // Scale the components to fit the screen
     set_max_scale_factor();
     scale_to_fit();
 
+    // Create the scaler
     var points_val = String(scaler_x) + "," + String(scaler_y) + " " + String(scaler_x-20) + "," + String(scaler_y) + " " + String(scaler_x) + "," + String(scaler_y-20);
     scaler = new Scaler(points_val, 20);
 
+    // Initialize the array containing all original elements
     fill_initArrays();
 
+    // Initialize the array of graph states
     fillGraphStates();
+
+    // Reposition scaler
+    for (var x in init_graphs) {
+        var graph = the_evt_target.getElementById(init_graphs[x].getAttribute("id"));
+        repositionScaler(graph.getBBox().x, graph.getBBox().y);
+    }
 
     the_evt_target_ownerDocument.documentElement.setAttribute("width", 2*x_offset + vert_layout.group.getBBox().x + vert_layout.group.getBBox().width);
     the_evt_target_ownerDocument.documentElement.setAttribute("height", 2*y_offset + vert_layout.group.getBBox().y + vert_layout.group.getBBox().height);
     
+    // Set global vars
     browser_width = window.innerWidth;
     browser_height = window.innerHeight;
     
-    //Position action controls at bottom-center of the screen
+    // Position action controls at bottom-center of the screen
     screen_ctm = the_evt_target.getScreenCTM();
+
+    // Add bounding box to action controls, and then position them correctly
+    addControlBoundingBox("#8888aa");
     positionControls();
     
     //Create the option dropdown that will be positioned at top right of screen
     option_dropdown = new OptionDropdown('option_dropdown', 20, 35);
-   
-    //Add bounding box to action controls
-    addControlBoundingBox("#8888aa");
-    
-    console.log("innerwidth: " + window.innerWidth);
-    console.log("outerWidth: " + window.outerWidth);
-    
 }
 
 
@@ -3694,7 +3972,7 @@ def WriteGraphAsSVG(graphDisplay, file, idPrefix=''):
 
         #print x,y,r,col,fwe,stroke
         file.write('<circle id="%s" cx="%s" cy="%s" r="%s" fill="%s" stroke="%s"'\
-                   ' stroke-width="%s" />\n' % (idPrefix+str(v),x,y,r,col,stroke,fwe))
+                   ' stroke-width="%s" style="filter:url(#dropshadow)"/>\n' % (idPrefix+str(v),x,y,r,col,stroke,fwe))
 
         # Write Vertex Label
         col = graphDisplay.canvas.itemcget(graphDisplay.drawLabel[v], "fill")
@@ -3767,8 +4045,8 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
         file.write('<g id="g1" transform="translate(%d,%d)" type="%s" ongesturestart="GestureStart_TransformGraph(evt)" '\
                    'ongesturechange="GestureChange_TransformGraph(evt)" ongestureend="GestureEnd_TransformGraph(evt)" '\
                    'ontouchstart="TouchStart_Graph(evt)" ontouchmove="TouchDrag_Graph(evt)" ontouchend="TouchDeactivate_Graph(evt)">\n' % (200,0, graph_type))
+        file.write('<text id="g1_()_info" x="0" y="0" font-family="Helvetica" font-size="12">Starter Text</text>')
         WriteGraphAsSVG(graphDisplay, file, idPrefix='g1_')    
-        file.write('<polygon id="triangle_scaler" points="150,150  150,150  150,150" style="stroke:#660000; fill:#cc3333;"/>')
         file.write('</g>\n')
 
         if secondaryGraphDisplay:
@@ -3782,6 +4060,7 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
             file.write('<g id="g2" transform="translate(%d,%d)" type="%s" ongesturestart="GestureStart_TransformGraph(evt)" '\
                        'ongesturechange="GestureChange_TransformGraph(evt)" ongestureend="GestureEnd_TransformGraph(evt)" '\
                        'ontouchstart="TouchStart_Graph(evt)" ontouchmove="TouchDrag_Graph(evt)" ontouchend="TouchDeactivate_Graph(evt)">\n' % (200,bbg1['height'], graph_type))
+            file.write('<text id="g2_()_info" x="0" y="0" font-family="Helvetica" font-size="12">Starter Text</text>')
             WriteGraphAsSVG(secondaryGraphDisplay, file, idPrefix='g2_')    
             file.write('</g>\n')
         algowin.CommitStop()

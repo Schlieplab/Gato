@@ -1302,6 +1302,13 @@ class AlgorithmDebugger(bdb.Bdb):
         bdb.Bdb.__init__(self)
         self.doTrace = 0
         self.lastLine = -1
+        self.init_etext = None
+        self.init_etext2 = None
+        self.init_vtext = None
+        self.default_info = None
+        self.default_info2 = None
+        self.etext_change = 0
+        self.vtext_change = 0
         
     def dispatch_line(self, frame):
         """ *Internal* Only dispatch if we are in the algorithm file """
@@ -1438,8 +1445,8 @@ class AlgorithmDebugger(bdb.Bdb):
         else: exc_type_name = exc_type.__name__
         #log.debug("exc_type_name: %s" repr.repr(exc_value))
         self.interaction(frame, exc_traceback)
-        
-        
+      
+
     def interaction(self, frame, traceback):
         """ *Internal* This function does all the interaction with the user
             depending on self.GUI.mode
@@ -1447,7 +1454,95 @@ class AlgorithmDebugger(bdb.Bdb):
             - Step (self.GUI.mode == 2)
             - Quit (self.GUI.mode == 0)
             - Auto-run w/timer (self.GUI.mode == 1)"""
+
+        # Compute the number of changes to the edge and default graph info
+        informer = self.GUI.GUI.graphDisplay.graphInformer
+        secondaryInformer = None
+        edges = self.GUI.graph.edgeWeights[0].keys()    # list of tuples that are edges
+        secondaryEdges = None
+        #animation_history, secondaryGraphDisplay
+        history = self.GUI.animation_history
+        secondaryHistory = None
+
+        #print informer.DefaultInfo()
+
+        # Initialize default info, change it if it is changed
+        if self.default_info is None:
+            self.default_info = informer.DefaultInfo()
+            history.UpdateGraphInfo(self.default_info)
+        elif self.default_info != informer.DefaultInfo():
+            self.default_info = informer.DefaultInfo()
+            history.UpdateGraphInfo(self.default_info)
+
+        if self.GUI.GUI.secondaryGraphDisplay is not None:
+            secondaryHistory = self.GUI.GUI.secondaryGraphDisplay
+            secondaryInformer = self.GUI.GUI.secondaryGraphDisplay.graphInformer
+            secondaryEdges = self.GUI.GUI.secondaryGraphDisplay.drawEdges.label.keys()
+            if self.init_etext2 is None:
+                self.init_etext2 = {}
+                for e in secondaryEdges:
+                    self.init_etext2[e] = secondaryInformer.EdgeInfo(e[0], e[1])
         
+
+        # Construct self.init_etext
+        if self.init_etext is None:
+            self.init_etext = {}
+            for e in edges:
+                self.init_etext[e] = informer.EdgeInfo(e[0], e[1])
+                history.UpdateEdgeInfo(e[0], e[1], self.init_etext[e])
+        
+        # Check for changes from the current EdgeInfo
+        for e in edges:
+            if e not in self.init_etext:
+                self.etext_change += 1
+                self.init_etext[e] = informer.EdgeInfo(e[0], e[1])
+                history.UpdateEdgeInfo(e[0], e[1], self.init_etext[e])
+            else:
+                past_info = self.init_etext[e]
+                curr_info = informer.EdgeInfo(e[0], e[1])
+                if past_info != curr_info:
+                    self.init_etext[e] = curr_info
+                    history.UpdateEdgeInfo(e[0], e[1], self.init_etext[e])
+                    self.etext_change += 1
+        
+        for e in self.init_etext.keys():
+            if e not in edges:
+                del self.init_etext[e]
+                self.etext_change += 1
+
+
+        if secondaryInformer is not None:
+            if self.default_info2 is None:
+                self.default_info2 = secondaryInformer.DefaultInfo()
+                secondaryHistory.UpdateGraphInfo(self.default_info2)
+            elif self.default_info2 != secondaryInformer.DefaultInfo():
+                self.default_info2 = secondaryInformer.DefaultInfo()
+                secondaryHistory.UpdateGraphInfo(self.default_info2)
+        
+        #  Check for changes in the current EdgeInfo
+        if secondaryEdges is not None:
+            for e in secondaryEdges:
+                if e not in self.init_etext2:
+                    self.etext_change += 1
+                    self.init_etext2[e] = secondaryInformer.EdgeInfo(e[0], e[1])
+                    secondaryHistory.UpdateEdgeInfo(e[0], e[1], self.init_etext2[e])
+                else:
+                    past_info = self.init_etext2[e]
+                    curr_info = secondaryInformer.EdgeInfo(e[0], e[1])
+                    if past_info != curr_info:
+                        self.init_etext2[e] = curr_info
+                        secondaryHistory.UpdateEdgeInfo(e[0], e[1], self.init_etext2[e])
+                        self.etext_change += 1
+            
+            for e in self.init_etext2.keys():
+                if e not in secondaryEdges:
+                    del self.init_etext2[e]
+                    self.etext_change += 1
+
+        #print self.GUI.algoFileName + " " + str(self.etext_change)
+        
+
+
         self.setup(frame, traceback)
         # 
         #line = self.currentLine(frame)

@@ -669,7 +669,15 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
             self.canvas.itemconfig( self.drawLabel[v], fill=g.cLabelDefault)
         self.canvas.itemconfig( self.drawVertex[v], fill=color)
         self.update()
-        
+
+
+    # Empty function used to get updates in AnimationHistory
+    def UpdateEdgeInfo(self, tail, head, info):
+        pass
+
+    # Empty function used to get updates in AnimationHistory
+    def UpdateGraphInfo(self, info):
+        pass
         
     def GetVertexColor(self,v):
         """ Return the color of v """

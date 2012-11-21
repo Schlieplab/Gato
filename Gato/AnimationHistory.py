@@ -77,6 +77,13 @@ class AnimationCommand:
         return self.log_str()
 
     def log_str(self):
+        # Handle the two methods that only have strings for method attr
+        """if self.method == "UpdateGraphInfo":
+            return '%s("%s")' % (self.method, self.args[0])
+        if self.method == "UpdateEdgeInfo":
+            return '%s(%s, %s, "%s")' % (self.method, self.target[0], self.target[1], self.args[0])
+        """
+
         if len(self.target) == 1:
             t = self.target[0]
         else:
@@ -134,6 +141,16 @@ class AnimationHistory:
             print "We're in display 1"""
         AnimationHistory.merged = MergedHistories.MergedHistories()
         
+
+    def UpdateEdgeInfo(self, tail, head, info):
+        if self.auto_print == 1:
+            AnimationHistory.merged.auto_print = 1
+        AnimationHistory.merged.UpdateEdgeInfo(tail, head, info, self.animator, self.displayNum)
+
+    def UpdateGraphInfo(self, info):
+        if self.auto_print == 1:
+            AnimationHistory.merged.auto_print = 1
+        AnimationHistory.merged.UpdateGraphInfo(info, self.animator, self.displayNum)
 
         
     #========== Provide Undo/Redo for animation commands from GraphDisplay ======
