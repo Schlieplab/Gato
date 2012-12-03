@@ -1474,7 +1474,7 @@ class AlgorithmDebugger(bdb.Bdb):
             self.default_info = informer.DefaultInfo()
             history.UpdateGraphInfo(self.default_info)
 
-        if self.GUI.GUI.secondaryGraphDisplay is not None:
+        if self.GUI.GUI.secondaryGraphDisplay is not None and self.GUI.GUI.secondaryGraphDisplay.graphInformer is not None:
             secondaryHistory = self.GUI.GUI.secondaryGraphDisplay
             secondaryInformer = self.GUI.GUI.secondaryGraphDisplay.graphInformer
             secondaryEdges = self.GUI.GUI.secondaryGraphDisplay.drawEdges.label.keys()
@@ -1519,25 +1519,25 @@ class AlgorithmDebugger(bdb.Bdb):
                 self.default_info2 = secondaryInformer.DefaultInfo()
                 secondaryHistory.UpdateGraphInfo(self.default_info2)
         
-        #  Check for changes in the current EdgeInfo
-        if secondaryEdges is not None:
-            for e in secondaryEdges:
-                if e not in self.init_etext2:
-                    self.etext_change += 1
-                    self.init_etext2[e] = secondaryInformer.EdgeInfo(e[0], e[1])
-                    secondaryHistory.UpdateEdgeInfo(e[0], e[1], self.init_etext2[e])
-                else:
-                    past_info = self.init_etext2[e]
-                    curr_info = secondaryInformer.EdgeInfo(e[0], e[1])
-                    if past_info != curr_info:
-                        self.init_etext2[e] = curr_info
-                        secondaryHistory.UpdateEdgeInfo(e[0], e[1], self.init_etext2[e])
+            #  Check for changes in the current EdgeInfo
+            if secondaryEdges is not None:
+                for e in secondaryEdges:
+                    if e not in self.init_etext2:
                         self.etext_change += 1
-            
-            for e in self.init_etext2.keys():
-                if e not in secondaryEdges:
-                    del self.init_etext2[e]
-                    self.etext_change += 1
+                        self.init_etext2[e] = secondaryInformer.EdgeInfo(e[0], e[1])
+                        secondaryHistory.UpdateEdgeInfo(e[0], e[1], self.init_etext2[e])
+                    else:
+                        past_info = self.init_etext2[e]
+                        curr_info = secondaryInformer.EdgeInfo(e[0], e[1])
+                        if past_info != curr_info:
+                            self.init_etext2[e] = curr_info
+                            secondaryHistory.UpdateEdgeInfo(e[0], e[1], self.init_etext2[e])
+                            self.etext_change += 1
+                
+                for e in self.init_etext2.keys():
+                    if e not in secondaryEdges:
+                        del self.init_etext2[e]
+                        self.etext_change += 1
 
         #print self.GUI.algoFileName + " " + str(self.etext_change)
         

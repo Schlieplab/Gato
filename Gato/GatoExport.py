@@ -38,6 +38,7 @@
 import os
 import StringIO
 import tokenize
+import re
 from math import sqrt, pi, sin, cos, atan2, degrees, log10, floor
 
 # SVG Fileheader and JavaScript animation code
@@ -1711,7 +1712,7 @@ function SetVertexColor(v, color) {
 
 
 function AddToolTips() {
-    for (e in edges) {
+    for (var e in edges) {
         var edge = the_evt_target.getElementById(edges[e].getAttribute("id"));
         edge.setAttribute("onmouseover", "EdgeInfo_mouseover(evt)");
         edge.setAttribute("cursor", "pointer");
@@ -1762,7 +1763,7 @@ function loadInitialInfo() {
 
 
 function resetToolTips() {
-    for (e in edges) {
+    for (var e in edges) {
         var tt_text = the_evt_target.getElementById(edges[e].getAttribute("id") + "_tt_text");
         tt_text.removeChild(tt_text.firstChild);
     }
@@ -1816,18 +1817,9 @@ function ToolTip(edge, color) {
 
 
 function UpdateEdgeInfo(edge, info) {
-    var text_element = the_evt_target_ownerDocument.getElementById(edge + "_tt_text");
-    var rect = the_evt_target_ownerDocument.getElementById(edge + "_tt_rect");
-    var textnode = the_evt_target_ownerDocument.createTextNode(info);
-    
-    rect.setAttribute("width", text_element.getBBox().width + tt_padding.x);
-    rect.setAttribute("height", text_element.getBBox().height + tt_padding.y);
-    rect.setAttribute("x", text_element.getBBox().x - tt_padding.x/2);
-    rect.setAttribute("y", text_element.getBBox().y - tt_padding.y/2);
-
-    text_element.removeChild(text_element.firstChild);
-    text_element.appendChild(textnode);
+    var text_element = the_evt_target_ownerDocument.getElementById(edge + "_tt_text").firstChild.nodeValue = info;
 }
+
 
 
 function EdgeInfo_mouseover(evt) {
@@ -3992,8 +3984,17 @@ def WriteGraphAsSVG(graphDisplay, file, idPrefix=''):
                        'font-size="%s" font-style="normal">%s</text>\n' % (idPrefix+str(v),x+r+1,y+r+1,col,size,text))
     
         
+def ExportAlgoInfo(fileName, algorithm):
+    if not os.path.exists('./svgs/html/infos'):
+        os.makedirs('./svgs/html/infos')
 
-
+    file = open("./svgs/html/infos/%s" % os.path.basename(fileName).replace("svg", "html"), "w")
+    info = algorithm.About()
+    r = re.compile(r'colordef\s+color="[a-zA-z]+')
+    matches = r.findall(info)
+    colors = [s.split('"')[1] for s in matches]
+    info = re.sub(r'colordef\s+color="[a-zA-z]+">', lambda match: 'div style="height: 10px; width: 10px; display:inline; background-color:%s"></div>' % colors.pop(0), info, count=len(colors))
+    file.write(info)
 
 def ExportSVG(fileName, algowin, algorithm, graphDisplay,
               secondaryGraphDisplay=None,
@@ -4063,6 +4064,9 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
             file.write('<text id="g2_()_info" x="0" y="0" font-family="Helvetica" font-size="12">Starter Text</text>')
             WriteGraphAsSVG(secondaryGraphDisplay, file, idPrefix='g2_')    
             file.write('</g>\n')
+
+        ExportAlgoInfo(fileName, algorithm)
+
         algowin.CommitStop()
         # Write algorithm to SVG    
         source = algorithm.GetSource()
