@@ -3990,10 +3990,10 @@ def ExportAlgoInfo(fileName, algorithm):
 
     file = open("./svgs/html/infos/%s" % os.path.basename(fileName).replace("svg", "html"), "w")
     info = algorithm.About()
-    r = re.compile(r'colordef\s+color="[a-zA-z]+')
+    r = re.compile(r'colordef\s+color="[a-zA-z#]+')
     matches = r.findall(info)
     colors = [s.split('"')[1] for s in matches]
-    info = re.sub(r'colordef\s+color="[a-zA-z]+">', lambda match: 'div style="height: 10px; width: 10px; display:inline; background-color:%s"></div>' % colors.pop(0), info, count=len(colors))
+    info = re.sub(r'colordef\s+color="[a-zA-z#]+">', lambda match: 'div style="height: 10px; width: 10px; display:inline; background-color:%s"></div>' % colors.pop(0), info, count=len(colors))
     file.write(info)
 
 def ExportSVG(fileName, algowin, algorithm, graphDisplay,
