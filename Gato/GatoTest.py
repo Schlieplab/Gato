@@ -491,7 +491,7 @@ if __name__ == '__main__':
             os.makedirs('./svgs/src/')
 
         if svg:
-            app.ExportSVGAnimation('svgs/src/%s-%s.svg' %
+            app.ExportSVGAnimation('svgs/%s-%s.html' %
                                    (os.path.splitext(os.path.basename(case[0]))[0],
                                     os.path.splitext(os.path.basename(case[1]))[0])) 
             export_html_wrapper("%s-%s.svg" % (os.path.splitext(os.path.basename(case[0]))[0],

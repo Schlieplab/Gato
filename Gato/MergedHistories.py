@@ -147,7 +147,6 @@ class MergedHistories:
         animation = AnimationHistory.AnimationCommand(animator.SetEdgeColor, (tail,head), (color,),
                                      undo_args=(animator.GetEdgeColor(tail,head),))
         animation.Do()
-        print animation
         self.append(animation, display)
        
     def BlinkVertex(self, v, animator, display, color=None):

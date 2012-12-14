@@ -43,7 +43,22 @@ from math import sqrt, pi, sin, cos, atan2, degrees, log10, floor
 
 # SVG Fileheader and JavaScript animation code
 #
-animationhead = """<?xml version="1.0" encoding="utf-8"?>
+animationhead = """<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html style="border-width: 0px; margin: 0px; width: 100%%; height: 100%%" xmlns="http://www.w3.org/1999/xhtml">
+<head >
+    <link rel="stylesheet" type="text/css" href="%(lib_directory)s/subModal/subModal.css" />
+<script type="text/javascript" src="%(lib_directory)s/subModal/common.js"></script>
+<script type="text/javascript" src="%(lib_directory)s/subModal/subModal.js"></script>
+<style>
+html, body { margin:0; padding:0}
+embed {  overflow:scroll; position: absolute; width: 100%%; height: 100%%; background-color: #F5F5F5}
+</style>
+<meta http-equiv="content-type" content="application/xhtml+xml;charset=UTF-8" />
+</head>
+<body id="body" >
 <svg xmlns="http://www.w3.org/2000/svg"
 xmlns:xlink="http://www.w3.org/1999/xlink"
 style="position:absolute; width:100%%; height:100%%"
@@ -63,17 +78,27 @@ onload="Initialize(evt)">
     user-select: none;
     }
 ]]>
+
+  g#AlgoButtonGroup:hover{
+    opacity: 0.75;
+    cursor: pointer;
+  }
 </style>
 
 <defs>     
     <linearGradient id="slider_bar_lg" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="skyblue" ></stop>
-		<stop offset="1" stop-color="black"></stop>
+        <stop offset="0" stop-color="skyblue" ></stop>
+        <stop offset="1" stop-color="black"></stop>
+    </linearGradient>
+
+    <linearGradient id="algo_button_lg" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#4393c4"></stop>
+        <stop offset="1" stop-color="#53A3D4"></stop>
     </linearGradient>
     
     <linearGradient id="slider_thumb_lg" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="skyblue"></stop>
-		<stop offset="1" stop-color="black"></stop>
+        <stop offset="0" stop-color="skyblue"></stop>
+        <stop offset="1" stop-color="black"></stop>
     </linearGradient>
     
     <linearGradient id="code_box_lg" x1="0" y1="0" x2="0" y2="1">
@@ -116,9 +141,9 @@ var e_blinkcolor;
 var e_blinkcount;
 var code;    //HTB of code in a vertical layout
 var init_graphs;  //initial graphs used for restarting animation
-var edges;	//Array of all edges used for SetAllEdgesColor
+var edges;  //Array of all edges used for SetAllEdgesColor
 var action_panel;   //ButtonPanel object for start, step, continue, and stop buttons
-var speed_select;	//SpeedSelector object for controlling the speed
+var speed_select;   //SpeedSelector object for controlling the speed
 var state = null;  //tracks animation state ("running", "stopped", "stepping", "moving")
 var movie_slider;       //Slider that controls the point in time of the graph
 var timer;  //timer for AnimateLoop
@@ -250,7 +275,7 @@ function getTranslate(str){
 //Creates one if none exists.
 function setTranslate(component, x, y){
     var transformation = component.getAttribute("transform");
-    
+
     if(transformation != null){
         if(transformation.indexOf("translate") == -1){
             component.setAttribute("transform", transformation + " translate(" + x + " " + y + ")");
@@ -260,7 +285,6 @@ function setTranslate(component, x, y){
             trailer = trailer.slice(trailer.indexOf(")"));
         
             var newattr = header + "(" + x + " " + y + trailer;
-
             component.setAttribute("transform", newattr);
         }
 
@@ -333,7 +357,9 @@ function setScale(component, x, y){
 // or the MAX_GBBOX_WIDTH/HEIGHT variables if not filling_states
 // Additionally, it positions the scaler at the bottom right of the box
 function sizeGraphBBox(graph) {
-    var rect = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+    var rect = document.getElementById(graph.getAttribute("id") + "_bg");
+        if (rect === null)
+            console.log("here be da problem");
 
     // Set the size of the bounding box
     if (filling_states) {
@@ -361,14 +387,14 @@ function sizeGraphBBox(graph) {
 
 //Creates a textnode with the given text
 function createLabel(id, text) {
-    var label = the_evt_target_ownerDocument.createElementNS(svgNS, "text");
+    var label = document.createElementNS(svgNS, "text");
     label.setAttribute("id", id);
     label.setAttribute("x", 0);
     label.setAttribute("y", 14);
     label.setAttribute("font-size", "15px");
     var textNode = document.createTextNode(text);
     label.appendChild(textNode);
-    the_evt_target_ownerDocument.documentElement.appendChild(label);
+    the_evt_target_ownerDocument.appendChild(label);
     return label;
 }
 
@@ -396,14 +422,14 @@ function Orthogonal(dx, dy){
 function fillEdgesArray() {
     edges = new Array();
     var highestNode = 1;
-    while (the_evt_target_ownerDocument.getElementById("g1_" + highestNode) != null)
+    while (document.getElementById("g1_" + highestNode) != null)
         highestNode++;
     highestNode--;
 
     //See if it is a two graph algo also, have 2nd edges array declared just in case
     for (var i=0; i<=highestNode; i++) {
         for (var j=0; j<=highestNode; j++) {
-            var element = the_evt_target_ownerDocument.getElementById("g1_("+i+", "+j+")");
+            var element = document.getElementById("g1_("+i+", "+j+")");
             if (element != null) 
                 edges.push(element);
         }
@@ -438,7 +464,7 @@ function createArrowhead(vx, vy, wx, wy, stroke_width, id){
                 var tmpX = parseFloat(vx) + c*(parseFloat(wx) - parseFloat(vx));
                 var tmpY = parseFloat(vy) + c*(parseFloat(wy) - parseFloat(vy));
         
-        var arrowhead = the_evt_target_ownerDocument.createElementNS(svgNS, "polyline");
+        var arrowhead = document.createElementNS(svgNS, "polyline");
         arrowhead.setAttribute("points", p1[0] + " " + p1[1] + " " + p2[0] + " " + p2[1] + " " + p3[0] + " " + p3[1]);
         arrowhead.setAttribute("fill", "#EEEEEE");
         arrowhead.setAttribute("transform", "translate(" + tmpX + " " + (tmpY-a_width/2) + ") rotate(" + angle + " " + p1[0] + " " + a_width/2 + ")");
@@ -461,9 +487,9 @@ function createArrowhead(vx, vy, wx, wy, stroke_width, id){
 function HighlightableTextBlock(hp, vp, id, font_size, layout){
     this.line_llc = new LinearLayoutComponent(hp, vp, id, layout);
     this.line_llc.group.setAttribute("font-size", font_size);
-    this.highlight_group = the_evt_target_ownerDocument.createElementNS(svgNS,"g");
+    this.highlight_group = document.createElementNS(svgNS,"g");
     this.highlight_group.setAttribute("id", id + "_hg");
-    the_evt_target_ownerDocument.documentElement.insertBefore(this.highlight_group, this.line_llc.group);   
+    the_evt_target_ownerDocument.insertBefore(this.highlight_group, this.line_llc.group);
 }
 
 
@@ -474,20 +500,20 @@ function HTB_prototypeInit(){
     HighlightableTextBlock.prototype.deleteLine = HTB_deleteLine;
     HighlightableTextBlock.prototype.highlightLine = HTB_highlightLine;
     HighlightableTextBlock.prototype.removeHighlight = HTB_removeHighlight;
-    HighlightableTextBlock.prototype.addBoundingBox = HTB_addBoundingBox;
-    htb = the_evt_target_ownerDocument.getElementById("foo");
+    HighlightableTextBlock.prototype.addBoundingBoxAndAlgoButton = HTB_addBoundingBoxAndAlgoButton;
+    htb = document.getElementById("foo");
     htb.parentNode.removeChild(htb);
-    htb = the_evt_target_ownerDocument.getElementById("foo_hg");
+    htb = document.getElementById("foo_hg");
     htb.parentNode.removeChild(htb);
 }
 
 
 //Adds a rectangular box around the code section
-function HTB_addBoundingBox(color) {
+function HTB_addBoundingBoxAndAlgoButton(color) {
     var bbox = this.line_llc.group.getBBox();
     var line = this.line_llc.group.childNodes.item(0);
     var line_bbox = line.getBBox();
-    var rect = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
+    var rect = document.createElementNS(svgNS, "rect");
     var line_translation = getTranslate(this.line_llc.group.childNodes.item(0).getAttribute("transform"));
     var dx = line.getAttribute("dx");
     if(dx == null)
@@ -505,15 +531,55 @@ function HTB_addBoundingBox(color) {
     rect.setAttribute("stroke-width", "3px");
     rect.setAttribute("rx", 5);
     rect.setAttribute("ry", 5);
+    var button = addAlgoButton(line_bbox.x + line_translation[0] - this.line_llc.h_padding - dx, bbox.y - this.line_llc.v_padding - 5);
+
+    function addAlgoButton(x_pos, y_pos) {
+        var g = document.createElementNS(svgNS, "g");
+        var text = document.createElementNS(svgNS, "text");
+        var rect = document.createElementNS(svgNS, "rect");
+        console.log("x: " + x_pos);
+        console.log("y: " + y_pos);
+        g.setAttribute("id", "AlgoButtonGroup");
+        text.setAttribute("id", "AlgoButtonText");
+        rect.setAttribute("id", "AlgoButtonRect");
+
+        rect.setAttribute("width", 200);
+        rect.setAttribute("height", 3*y_offset/4 - 5);
+        rect.setAttribute("x", 15);
+        rect.setAttribute("y", -3*y_offset/4+5); 
+        //rect.setAttribute("x", x_offset + 10);
+        //rect.setAttribute("y", y_offset/4 + 4);
+        rect.setAttribute("fill", "url(#algo_button_lg)");
+        rect.setAttribute("stroke", "#dd8f22");
+        rect.setAttribute("stroke-width", "3px");
+        rect.setAttribute("rx", 5);
+        rect.setAttribute("ry", 5);
+        g.setAttribute("onmousedown", "ShowAlgoInfo(evt)");
+
+        text.setAttribute("font-family", "Helvetica");
+        text.setAttribute("fill", "#DDEEFF")
+        text.setAttribute("x", 40);
+        text.setAttribute("y", -7);
+        
+        text.appendChild(document.createTextNode("Show Algorithm Info!"));
+
+        g.appendChild(rect);
+        g.appendChild(text);
+        the_evt_target_ownerDocument.appendChild(g);
+        setTranslate(g, x_pos, y_pos);
+        return g;
+    }
+
     this.highlight_group.insertBefore(rect, this.highlight_group.firstChild);
+    this.highlight_group.insertBefore(button, this.highlight_group.firstChild);
 }
 
 
 //Insert line with respective into nth slot.  0-based indexing.  If line already exists in HTB, line is shifted to respective spot.
 function HTB_insertLine(id, n){
-    var to_insert = the_evt_target_ownerDocument.getElementById(id);
+    var to_insert = document.getElementById(id);
     if(to_insert != null && to_insert.getAttribute("blank") != null && to_insert.getAttribute("blank") == "true"){ // Empty Text  Replace with Rectangle
-        var new_rect = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
+        var new_rect = document.createElementNS(svgNS, "rect");
         var children = this.line_llc.group.childNodes;
         for (var i = 0; i < children.length; i++){
             if(children.item(i).getAttribute("blank") == "false"){
@@ -525,7 +591,7 @@ function HTB_insertLine(id, n){
                 new_rect.setAttribute("id", to_insert.getAttribute("id"));
                 new_rect.setAttribute("fill", "white");
                 new_rect.setAttribute("fill-opacity", 0);
-                the_evt_target_ownerDocument.documentElement.appendChild(new_rect);
+                the_evt_target_ownerDocument.appendChild(new_rect);
                 break;
             }
         }
@@ -544,7 +610,7 @@ function HTB_deleteLine(n){
 //highlight nth line, using 0-based indexing
 function HTB_highlightLine(n){
     if(n < this.line_llc.group.childNodes.length && n >= 0){
-        if(the_evt_target_ownerDocument.getElementById(this.line_llc.group.getAttribute("id") + "_hl" + (n+1)) == null){
+        if(document.getElementById(this.line_llc.group.getAttribute("id") + "_hl" + (n+1)) == null){
             var line = this.line_llc.group.childNodes.item(n);
             var htb_bbox = this.line_llc.group.getBBox();
             var line_bbox = line.getBBox();
@@ -564,7 +630,7 @@ function HTB_highlightLine(n){
                 dy = parseFloat(dy);
             }
 
-            var background = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
+            var background = document.createElementNS(svgNS, "rect");
             background.setAttribute("x", line_bbox.x + line_translation[0] - this.line_llc.h_padding - dx);
             background.setAttribute("y", line_bbox.y + line_translation[1] - this.line_llc.v_padding - dy);
             background.setAttribute("width", htb_bbox.width + 2*this.line_llc.h_padding);
@@ -582,7 +648,7 @@ function HTB_highlightLine(n){
 
 //Removes the highlight of the nth line, using 0-based indexing.
 function HTB_removeHighlight(n){
-    var hl = the_evt_target_ownerDocument.getElementById(this.line_llc.group.getAttribute("id") + "_hl" + (n+1));
+    var hl = document.getElementById(this.line_llc.group.getAttribute("id") + "_hl" + (n+1));
     if(hl != null){
         hl.parentNode.removeChild(hl);
     }
@@ -598,9 +664,9 @@ function LinearLayoutComponent(hp, vp, id, layout){
     this.id = id;           //ID of group that is abstracted by this HTB instance
     
     //Create new group element to place all lines of code
-    this.group = the_evt_target_ownerDocument.createElementNS(svgNS,"g");
+    this.group = document.createElementNS(svgNS,"g");
     this.group.setAttribute("id", id);
-    the_evt_target_ownerDocument.documentElement.appendChild(this.group);
+    the_evt_target_ownerDocument.appendChild(this.group);
     this.layout = layout;  //'horizontal' or 'vertical'
 }
 
@@ -618,7 +684,7 @@ function LLC_prototypeInit(){
 //Insert element of specified id into nth slot, using 0-based indexing.
 //If element is already in LLC, element is moved to nth slot
 function LLC_insertComponent(id, n){
-    var new_c = the_evt_target_ownerDocument.getElementById(id);
+    var new_c = document.getElementById(id);
     var padding = 0;
     if(this.layout == "horizontal"){
         padding = this.h_padding;
@@ -727,7 +793,7 @@ function LLC_resnapComponent(n){
     var child = children.item(n);
     child.parentNode.removeChild(child);
     
-    the_evt_target_ownerDocument.documentElement.appendChild(child);
+    the_evt_target_ownerDocument.appendChild(child);
     this.insertComponent(child.getAttribute("id"), n);
 }
 
@@ -802,15 +868,15 @@ function BP_prototypeInit(){
 //Parameters:  button id, shape (path), color, index in button panel, button action
 //Inserts button into specified and assigns specifieds action
 function BP_createButton(id, draw_path, color, index, action){  //Create button with corresponding id, text, and action into slot #index
-    if(the_evt_target_ownerDocument.getElementById(id) == null){
-        var button_group = the_evt_target_ownerDocument.createElementNS(svgNS, "path");
+    if(document.getElementById(id) == null){
+        var button_group = document.createElementNS(svgNS, "path");
         button_group.setAttribute("id", id);
         button_group.setAttribute("d", draw_path);
         button_group.setAttribute("fill", color);
         button_group.setAttribute("cursor", "pointer");
         button_group.setAttribute("onclick", action);
                 button_group.setAttribute("fill-opacity", 1);
-        the_evt_target_ownerDocument.documentElement.appendChild(button_group);
+        the_evt_target_ownerDocument.appendChild(button_group);
         this.llc.insertComponent(button_group.getAttribute("id"), index);
     }else{
         this.llc.insertComponent(id, index);
@@ -891,10 +957,10 @@ function Slider(id, slider_width, thumb_height, offset, range, start_value, labe
     this.default_thickness = 10;
     var font_size = 10;
     
-    this.slider = the_evt_target_ownerDocument.createElementNS(svgNS, "g"); 
+    this.slider = document.createElementNS(svgNS, "g"); 
     this.slider.setAttribute("id", id);
     
-    this.slider_bar = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
+    this.slider_bar = document.createElementNS(svgNS, "rect");
     this.slider_bar.setAttribute("width", slider_width);
     this.slider_bar.setAttribute("height", this.default_thickness);
     this.slider_bar.setAttribute("x", this.default_thickness/2);
@@ -908,8 +974,8 @@ function Slider(id, slider_width, thumb_height, offset, range, start_value, labe
     this.slider_bar.setAttribute("id", id + "_slider_bar");
     this.slider.appendChild(this.slider_bar);
     
-    this.slider_thumb = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
-    this.slider_thumb = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
+    this.slider_thumb = document.createElementNS(svgNS, "rect");
+    this.slider_thumb = document.createElementNS(svgNS, "rect");
     this.slider_thumb.setAttribute("width", this.default_thickness);
     this.slider_thumb.setAttribute("height", thumb_height);
     this.slider_thumb.setAttribute("rx", this.default_thickness/2);
@@ -923,34 +989,34 @@ function Slider(id, slider_width, thumb_height, offset, range, start_value, labe
     
     //create labels below slider
     for (var i in labels){
-        var text = the_evt_target_ownerDocument.createElementNS(svgNS, "text");
+        var text = document.createElementNS(svgNS, "text");
         text.setAttribute("x", this.default_thickness/2 + i*(slider_width/(labels.length-1)));
         text.setAttribute("y", thumb_height+ font_size);
         text.setAttribute("text-anchor","middle");
         text.setAttribute("font-size", font_size);
         text.setAttribute("font-family","Helvetica");
         text.setAttribute("font-style","normal");
-        text.appendChild(the_evt_target_ownerDocument.createTextNode(labels[i]));
+        text.appendChild(document.createTextNode(labels[i]));
         this.slider.appendChild(text);
     }
     
     //create slider title
     
-    var header = the_evt_target_ownerDocument.createElementNS(svgNS, "text");
+    var header = document.createElementNS(svgNS, "text");
     header.setAttribute("x", (this.default_thickness + slider_width)/2);
     header.setAttribute("y", 0);
     header.setAttribute("text-anchor","middle");
     header.setAttribute("font-size", font_size);
     header.setAttribute("font-family","Helvetica");
     header.setAttribute("font-style","normal");
-    header.appendChild(the_evt_target_ownerDocument.createTextNode(title));
+    header.appendChild(document.createTextNode(title));
     this.slider.appendChild(header);
         
     for (var i in actions){
         this.slider.setAttribute(actions[i][0], actions[i][1]);
     }
     
-    the_evt_target_ownerDocument.documentElement.appendChild(this.slider);
+    the_evt_target_ownerDocument.appendChild(this.slider);
 }
 
 /**
@@ -1068,7 +1134,7 @@ function SS_boxSelected(box) {
 var bbox = this.line_llc.group.getBBox();
     var line = this.line_llc.group.childNodes.item(0);
     var line_bbox = line.getBBox();
-    var rect = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
+    var rect = document.createElementNS(svgNS, "rect");
     var line_translation = getTranslate(this.line_llc.group.childNodes.item(0).getAttribute("transform"));
     var dx = line.getAttribute("dx");
     if(dx == null)
@@ -1091,7 +1157,7 @@ var bbox = this.line_llc.group.getBBox();
 function SS_addBoundingBox(color) {
     var this_bbox = this.llc.group.getBBox();
     var llc_bbox = left_vert_layout.group.getBBox();
-    var rect = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
+    var rect = document.createElementNS(svgNS, "rect");
     
     rect.setAttribute("id", "speedBox");
     rect.setAttribute("width", this_bbox.width + this.llc.h_padding*3);
@@ -1108,9 +1174,9 @@ function SS_addBoundingBox(color) {
 
 //Creates a speed selector box with the given parameters
 function createSpeedSelect(id, x, y, boxWidth, text, color) {
-    var group = the_evt_target_ownerDocument.createElementNS(svgNS, "g");
-    var rect = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
-    var label = the_evt_target_ownerDocument.createElementNS(svgNS, "text");
+    var group = document.createElementNS(svgNS, "g");
+    var rect = document.createElementNS(svgNS, "rect");
+    var label = document.createElementNS(svgNS, "text");
     
     group.setAttribute("id", id + "_g");
     
@@ -1136,7 +1202,7 @@ function createSpeedSelect(id, x, y, boxWidth, text, color) {
     group.appendChild(rect);
     group.appendChild(label);
     
-    the_evt_target_ownerDocument.documentElement.appendChild(group);
+    the_evt_target_ownerDocument.appendChild(group);
     return group;
 }
 
@@ -1174,15 +1240,15 @@ function OptionDropdown(id, height, width) {
     this.rect_fill = '#ffffff';
     this.rect_selected_fill = '#aaaaaa';
     
-    this.dropdown = the_evt_target_ownerDocument.createElementNS(svgNS, 'g');
+    this.dropdown = document.createElementNS(svgNS, 'g');
     this.dropdown.setAttribute("id", id);
     
-    this.button = the_evt_target_ownerDocument.createElementNS(svgNS, 'g');
+    this.button = document.createElementNS(svgNS, 'g');
     this.button.setAttribute('id', id + "_button");
     this.button.setAttribute("cursor", "pointer");
     this.dropdown.appendChild(this.button);
     
-    this.rect = the_evt_target_ownerDocument.createElementNS(svgNS, 'rect');
+    this.rect = document.createElementNS(svgNS, 'rect');
     this.rect.setAttribute('id', 'dropdown_rect');
     this.rect.setAttribute("width", this.width);
     this.rect.setAttribute("height", this.height);
@@ -1195,7 +1261,7 @@ function OptionDropdown(id, height, width) {
     this.rect.setAttribute('fill', this.rect_fill);
     this.button.appendChild(this.rect);
     
-    this.cog = the_evt_target_ownerDocument.createElementNS(svgNS, "image");
+    this.cog = document.createElementNS(svgNS, "image");
     this.cog.setAttribute("id", "dropdown_cog");
     this.cog.setAttributeNS('http://www.w3.org/1999/xlink','href', "cog.png");
     this.cog.setAttribute("x", 0);
@@ -1204,7 +1270,7 @@ function OptionDropdown(id, height, width) {
     this.cog.setAttribute('height', height);
     this.button.appendChild(this.cog);
     
-    this.triang = the_evt_target_ownerDocument.createElementNS(svgNS, "polygon");
+    this.triang = document.createElementNS(svgNS, "polygon");
     this.triang.setAttribute("id", "dropdown_triang");
     var x1 = width*2/3 + width/12 - 1;
     var x2 = width - 3;
@@ -1221,14 +1287,14 @@ function OptionDropdown(id, height, width) {
     this.dropdown.setAttribute("onmouseout", "OD_mouseout(evt)");
     this.button.setAttribute("onmousedown", "OD_mouseclick(evt)");
     
-    the_evt_target_ownerDocument.documentElement.appendChild(this.dropdown);
+    the_evt_target_ownerDocument.appendChild(this.dropdown);
 }
 
 
 // OptionDropdown initialization function
 function OD_build_dropdown() {
     
-    this.menu = the_evt_target_ownerDocument.createElementNS(svgNS, "g");
+    this.menu = document.createElementNS(svgNS, "g");
     
     var x_trans = -1*speed_select.llc.group.getBBox().width + speed_select.llc.h_padding*8;
     var y_trans = speed_select.llc.group.getBBox().height - speed_select.llc.v_padding*2;
@@ -1245,7 +1311,7 @@ function OD_position_dropdown() {
     this.y_trans = 10;
     //var x_trans = right_vert_layout.group.getBBox().x + right_vert_layout.group.getBBox().width;
     this.x_trans = (browser_width - 50)/screen_ctm.a;
-    var graph = the_evt_target_ownerDocument.getElementById(init_graphs[0].getAttribute("id"));
+    var graph = document.getElementById(init_graphs[0].getAttribute("id"));
     var translation1 = getTranslate(right_vert_layout.group.getAttribute("transform"));
     var translation2 = getTranslate(vert_layout.group.getAttribute("transform"));
     var translation3 = getTranslate(graph.getAttribute("transform"));
@@ -1373,13 +1439,13 @@ function AnimateLoop(){
     Refresh_MovieSlider(step);
     
     //Realign components
-    the_evt_target_ownerDocument.documentElement.setAttribute("width", 2*x_offset + vert_layout.group.getBBox().x + vert_layout.group.getBBox().width);
-    the_evt_target_ownerDocument.documentElement.setAttribute("height", 2*y_offset + vert_layout.group.getBBox().y + vert_layout.group.getBBox().height);
+    document.documentElement.setAttribute("width", 2*x_offset + vert_layout.group.getBBox().x + vert_layout.group.getBBox().width);
+    document.documentElement.setAttribute("height", 2*y_offset + vert_layout.group.getBBox().y + vert_layout.group.getBBox().height);
     
     //Check if steps remain
     if(step < animation.length) { //If steps remain
         
-        if(animation[step-1][1] == ShowActive && ( the_evt_target_ownerDocument.getElementById(code.line_llc.group.getAttribute("id") + "_bp" + animation[step-1][2].split("_")[1] + "_act") != null 
+        if(animation[step-1][1] == ShowActive && ( document.getElementById(code.line_llc.group.getAttribute("id") + "_bp" + animation[step-1][2].split("_")[1] + "_act") != null 
                 || step_pressed) ){ //If the line was a show_active and the line is a breakpoint or the step button was pressed, wait
                 
                 state = "waiting";
@@ -1462,8 +1528,8 @@ function StepAnimation(evt){
                         setTimeout(StepAnimation,1, evt);
                 return;
             }
-            the_evt_target_ownerDocument.documentElement.setAttribute("width", 2*x_offset + vert_layout.group.getBBox().x + vert_layout.group.getBBox().width);
-            the_evt_target_ownerDocument.documentElement.setAttribute("height", 2*y_offset + vert_layout.group.getBBox().y + vert_layout.group.getBBox().height);
+            document.documentElement.setAttribute("width", 2*x_offset + vert_layout.group.getBBox().x + vert_layout.group.getBBox().width);
+            document.documentElement.setAttribute("height", 2*y_offset + vert_layout.group.getBBox().y + vert_layout.group.getBBox().height);
             setTimeout(StepAnimation,1,evt);
             return;
         }
@@ -1480,8 +1546,8 @@ function StepAnimation(evt){
                 animation[step][1](animation[step][2],animation[step][3],animation[step][4]);
             }
             step = step + 1;
-            the_evt_target_ownerDocument.documentElement.setAttribute("width", 2*x_offset + vert_layout.group.getBBox().x + vert_layout.group.getBBox().width);
-            the_evt_target_ownerDocument.documentElement.setAttribute("height", 2*y_offset + vert_layout.group.getBBox().y + vert_layout.group.getBBox().height);
+            document.documentElement.setAttribute("width", 2*x_offset + vert_layout.group.getBBox().x + vert_layout.group.getBBox().width);
+            document.documentElement.setAttribute("height", 2*y_offset + vert_layout.group.getBBox().y + vert_layout.group.getBBox().height);
             state = "waiting";
             if(continue_pressed){
                 continue_pressed = false;
@@ -1556,12 +1622,12 @@ function SetBreakpoint(evt){
             line.setAttribute("onclick", "");
         }else return;
         console.log("new line id: " + id);
-        line = the_evt_target_ownerDocument.getElementById(id);
+        line = document.getElementById(id);
     }
 
     //put breakpoint functionality on highligt if it is over highlighted text
     var hl_num = line.getAttribute("id").split("_")[1];
-    var hl = the_evt_target_ownerDocument.getElementById("code_hl" + hl_num);
+    var hl = document.getElementById("code_hl" + hl_num);
     if(hl != null){
         hl.setAttribute("cursor", "pointer");
         hl.setAttribute("onclick", "RemoveBreakpoint(evt)");
@@ -1584,14 +1650,14 @@ function SetBreakpoint(evt){
             dy = parseFloat(dy);
     }
     
-    //var indicator = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
+    //var indicator = document.createElementNS(svgNS, "rect");
     //indicator.setAttribute("x", line_bbox.x + line_translation[0] - code.line_llc.h_padding - dx);
     //indicator.setAttribute("y", line_bbox.y + line_translation[1] - code.line_llc.v_padding - dy);
     //indicator.setAttribute("width", htb_bbox.width + 2*code.line_llc.h_padding);
     //indicator.setAttribute("height", line_bbox.height + 2*code.line_llc.v_padding);
     /*var y_start = line_bbox.y + line_translation[1] - code.line_llc.v_padding - dy + line_bbox.height/4;
     var x_start = -6;
-    var indicator = the_evt_target_ownerDocument.createElementNS(svgNS, "path");
+    var indicator = document.createElementNS(svgNS, "path");
     indicator.setAttribute("d", String("M" + x_start + " " + y_start + " L" + (x_start+8) + " " + y_start + " L" + (x_start+12) + " " + (y_start+4) + " L" + (x_start+8) + " " + (y_start+8) + " L" + x_start + " " + (y_start+8) + " L" + x_start + " " + y_start + " Z"));
     console.log(String("M" + x_start + " " + y_start + " L" + (x_start+10) + " " + y_start + " L" + x_start + " " + y_start + " Z"));
     //indicator.setAttribute("x", -8);
@@ -1643,7 +1709,7 @@ function AddBreakpoints(code) {
         }
         var y_start = line_bbox.y + line_translation[1] - code.line_llc.v_padding - dy + line_bbox.height/4;
         var x_start = -6;
-        var indicator = the_evt_target_ownerDocument.createElementNS(svgNS, "path");
+        var indicator = document.createElementNS(svgNS, "path");
         indicator.setAttribute("d", String("M" + x_start + " " + y_start + " L" + (x_start+8) + " " + y_start + " L" + (x_start+12) + " " + (y_start+4) + " L" + (x_start+8) + " " + (y_start+8) + " L" + x_start + " " + (y_start+8) + " L" + x_start + " " + y_start + " Z"));
         indicator.setAttribute("stroke", "blue");
         indicator.setAttribute("fill", "blue");
@@ -1674,7 +1740,7 @@ function RemoveBreakpoint(evt){
             line.setAttribute("onclick", "");
         }else return;
         console.log("searching id: " + id);
-        line = the_evt_target_ownerDocument.getElementById(id);
+        line = document.getElementById(id);
     }
     
     if(line.nodeName == "tspan"){
@@ -1682,7 +1748,7 @@ function RemoveBreakpoint(evt){
     }
     
     if(line.nodeName == "text"){
-        var background = the_evt_target_ownerDocument.getElementById(code.line_llc.group.getAttribute("id") + "_bp" + line.getAttribute("id").split("_")[1] + "_act");
+        var background = document.getElementById(code.line_llc.group.getAttribute("id") + "_bp" + line.getAttribute("id").split("_")[1] + "_act");
         if(background != null){
             //background.parentNode.removeChild(background);
             background.setAttribute("opacity", .15);
@@ -1706,7 +1772,7 @@ function RemoveBreakpoint(evt){
 */
 //Sets color of vertex with id given by v to specified color
 function SetVertexColor(v, color) {
-    element = the_evt_target_ownerDocument.getElementById(v);
+    element = document.getElementById(v);
     element.setAttribute("fill", color);
 }
 
@@ -1771,9 +1837,9 @@ function resetToolTips() {
 
 function ToolTip(edge, color) {
     //console.log("Adding tooltip for edge " + edge.getAttribute("id"));
-    this.tt_g = the_evt_target_ownerDocument.createElementNS(svgNS, "g");
-    this.tt_rect = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
-    this.tt_text = the_evt_target_ownerDocument.createElementNS(svgNS, "text");
+    this.tt_g = document.createElementNS(svgNS, "g");
+    this.tt_rect = document.createElementNS(svgNS, "rect");
+    this.tt_text = document.createElementNS(svgNS, "text");
 
 
     this.tt_g.setAttribute("id", edge.getAttribute("id") + "_tt");
@@ -1785,7 +1851,7 @@ function ToolTip(edge, color) {
     var x_val = (x1 + x2)/2 - 20;
     var y_val = (y1 + y2)/2 - 10;
 
-    var textnode = the_evt_target_ownerDocument.createTextNode("Start animation to see edge information.");
+    var textnode = document.createTextNode("Start animation to see edge information.");
     this.tt_text.appendChild(textnode);
     this.tt_text.setAttribute("text-anchor", "middle");
     this.tt_text.setAttribute("id", edge.getAttribute("id") + "_tt_text");
@@ -1817,7 +1883,7 @@ function ToolTip(edge, color) {
 
 
 function UpdateEdgeInfo(edge, info) {
-    var text_element = the_evt_target_ownerDocument.getElementById(edge + "_tt_text").firstChild.nodeValue = info;
+    var text_element = document.getElementById(edge + "_tt_text").firstChild.nodeValue = info;
 }
 
 
@@ -1890,7 +1956,7 @@ function UpdateGraphInfo(graph_id, info) {
     
     if (text.firstChild)
         text.removeChild(text.firstChild);
-    var new_node = the_evt_target_ownerDocument.createTextNode(info);
+    var new_node = document.createTextNode(info);
     text.appendChild(new_node);
 }
 
@@ -1899,14 +1965,14 @@ function UpdateGraphInfo(graph_id, info) {
 //Colors edge with id given by e
 function SetEdgeColor(e, color) {
     // NOTE: Gato signature SetEdgeColor(v, w, color)
-    element = the_evt_target_ownerDocument.getElementById(e);
+    element = document.getElementById(e);
     if (element == null) {
         e = switch_edge_vertices(e);
-        element = the_evt_target_ownerDocument.getElementById(e);
+        element = document.getElementById(e);
     }
     element.setAttribute("stroke", color);
     //added changes to color of arrowheads
-    element = the_evt_target_ownerDocument.getElementById(e_arrow_id + e);
+    element = document.getElementById(e_arrow_id + e);
     if(element != null){
         element.setAttribute("fill", color);
     }
@@ -1933,7 +1999,7 @@ function SetAllVerticesColor(graph_id_and_color, vertices) {
 
     var graph_id = graph_id_and_color.split("_")[0];
     var color = graph_id_and_color.split("_")[1];
-    var children = the_evt_target_ownerDocument.getElementById(graph_id).childNodes;
+    var children = document.getElementById(graph_id).childNodes;
 
     if(vertices != null){
         for (var i = 0; i < children.length; i++){
@@ -1964,9 +2030,9 @@ function SetAllEdgesColor(graphColor) {
         var id = edges[i].getAttribute("id");
         if (id.substring(0, 2) !== graph)
             continue;
-        var element = the_evt_target_ownerDocument.getElementById(id);
+        var element = document.getElementById(id);
         element.setAttribute("stroke", graphColor);
-        element = the_evt_target_ownerDocument.getElementById(e_arrow_id + id);
+        element = document.getElementById(e_arrow_id + id);
         if (element != null) {
             element.setAttribute("fill", graphColor);
         }
@@ -1982,7 +2048,7 @@ function BlinkVertex(v, color) {
         return;
 
     blinking = true;
-    element = the_evt_target_ownerDocument.getElementById(v);
+    element = document.getElementById(v);
     blinkcolor = element.getAttribute("fill")
     blinkcount = 3;
     element.setAttribute("fill", "black");
@@ -2012,11 +2078,11 @@ function BlinkEdge(e, color){
         return;
 
     blinking = true;
-    e_element = the_evt_target_ownerDocument.getElementById(e);
+    e_element = document.getElementById(e);
     e_blinkcolor = e_element.getAttribute("stroke");
     e_blinkcount = 3;
     e_element.setAttribute("stroke", "black");
-    var element2 = the_evt_target_ownerDocument.getElementById(e_arrow_id + e);
+    var element2 = document.getElementById(e_arrow_id + e);
     if(element2 != null){
         element2.setAttribute("fill", "black");
     }
@@ -2029,13 +2095,13 @@ function EdgeBlinker(){
     var element2;
     if (e_blinkcount %% 2 == 1) {
        e_element.setAttribute("stroke", "black");
-       element2 = the_evt_target_ownerDocument.getElementById(e_arrow_id + e_element.getAttribute("id"));
+       element2 = document.getElementById(e_arrow_id + e_element.getAttribute("id"));
        if(element2 != null){
            element2.setAttribute("fill", "black");
        }
     } else {
        e_element.setAttribute("stroke", e_blinkcolor);
-       element2 = the_evt_target_ownerDocument.getElementById(e_arrow_id + e_element.getAttribute("id"));
+       element2 = document.getElementById(e_arrow_id + e_element.getAttribute("id"));
        if(element2 != null){
            element2.setAttribute("fill", e_blinkcolor);
        }
@@ -2051,7 +2117,7 @@ function EdgeBlinker(){
 //Blink(self, list, color=None):
 //Sets the frame width of a vertex
 function SetVertexFrameWidth(v, val) {
-    var element = the_evt_target_ownerDocument.getElementById(v);
+    var element = document.getElementById(v);
     element.setAttribute("stroke-width", val);
 
     // Eliminate blur if increasing frame width, add back in if removing frame width
@@ -2060,7 +2126,7 @@ function SetVertexFrameWidth(v, val) {
     else 
         element.setAttribute("style", "");
 
-    var graph = the_evt_target_ownerDocument.getElementById(v).parentNode;
+    var graph = document.getElementById(v).parentNode;
     sizeGraphBBox(graph);
 }
 
@@ -2068,19 +2134,19 @@ function SetVertexFrameWidth(v, val) {
 //Sets annotation of vertex v to annotation.  Annotation's color is specified
 function SetVertexAnnotation(v, annotation, color) //removed 'self' parameter to because 'self' parameter was assigned value of v, v of annotation, and so on.
 {
-    element = the_evt_target_ownerDocument.getElementById(v);
+    element = document.getElementById(v);
     
     if(element != null){
         if(typeof color == "undefined")
         color = "black";        
         
-    if(the_evt_target_ownerDocument.getElementById(v_ano_id + v) != null){
-        ano = the_evt_target_ownerDocument.getElementById(v_ano_id + v);
+    if(document.getElementById(v_ano_id + v) != null){
+        ano = document.getElementById(v_ano_id + v);
         ano.parentNode.removeChild(ano);
     
     }
     
-    var newano = the_evt_target_ownerDocument.createElementNS(svgNS,"text");
+    var newano = document.createElementNS(svgNS,"text");
     x_pos = parseFloat(element.getAttribute("cx")) + parseFloat(element.getAttribute("r")) + 1;
     y_pos = parseFloat(element.getAttribute("cy")) + parseFloat(element.getAttribute("r")) + 1;
     newano.setAttribute("x", x_pos);
@@ -2092,10 +2158,10 @@ function SetVertexAnnotation(v, annotation, color) //removed 'self' parameter to
     newano.setAttribute("font-family","Helvetica");
     newano.setAttribute("font-style","normal");
     newano.setAttribute("font-weight","bold");
-    newano.appendChild(the_evt_target_ownerDocument.createTextNode(annotation));
+    newano.appendChild(document.createTextNode(annotation));
     element.parentNode.appendChild(newano);
 
-    var graph = the_evt_target_ownerDocument.getElementById(v).parentNode;
+    var graph = document.getElementById(v).parentNode;
     sizeGraphBBox(graph);
     }
 }
@@ -2108,8 +2174,8 @@ function ShowActive(line_id){
             code.removeHighlight(current_line-1);
             code.highlightLine(i);
             current_line = i+1;
-            if(the_evt_target_ownerDocument.getElementById("code_bp" + current_line) != null){
-                var hl = the_evt_target_ownerDocument.getElementById("code_hl" + current_line);
+            if(document.getElementById("code_bp" + current_line) != null){
+                var hl = document.getElementById("code_hl" + current_line);
                 hl.setAttribute("cursor", "pointer");
                 hl.setAttribute("onclick", "RemoveBreakpoint(evt)");
             }
@@ -2123,21 +2189,21 @@ function ShowActive(line_id){
 function AddEdge(edge_id){
     var graph_id = edge_id.split("_")[0];
     var vertices = edge_id.split("_")[1].match(/[^,\(\)\s]+/g);
-    var v = the_evt_target_ownerDocument.getElementById(graph_id + "_" + vertices[0]);
-    var w = the_evt_target_ownerDocument.getElementById(graph_id + "_" + vertices[1]);
+    var v = document.getElementById(graph_id + "_" + vertices[0]);
+    var w = document.getElementById(graph_id + "_" + vertices[1]);
     
     var vx = v.getAttribute("cx");
     var wx = w.getAttribute("cx");
     var vy = v.getAttribute("cy");
     var wy = w.getAttribute("cy");
     
-    if(v != null && w != null && the_evt_target_ownerDocument.getElementById(graph_id + "_(" + vertices[0] + ", " + vertices[1] + ")") == null){
-        var parent_graph = the_evt_target_ownerDocument.getElementById(graph_id);
+    if(v != null && w != null && document.getElementById(graph_id + "_(" + vertices[0] + ", " + vertices[1] + ")") == null){
+        var parent_graph = document.getElementById(graph_id);
         var arrowhead = null;
         var edge = null;
         
         if(parent_graph.getAttribute("type") == "directed"){
-            var reverse_edge = the_evt_target_ownerDocument.getElementById(graph_id + "_(" + vertices[1] + ", " + vertices[0] + ")");
+            var reverse_edge = document.getElementById(graph_id + "_(" + vertices[1] + ", " + vertices[0] + ")");
             if(reverse_edge != null){  //reverse edge exists.  Make this edge an arc.
                 //Another directed edge.  Great... Change existing edge to arc and add new arc
                 //Be sure to alter polylines as well.   
@@ -2175,7 +2241,7 @@ function AddEdge(edge_id){
                 tmpY = mY + c*(wy - mY);
                 
                 
-                edge = the_evt_target_ownerDocument.createElementNS(svgNS,"path");
+                edge = document.createElementNS(svgNS,"path");
                 edge.setAttribute("id", edge_id);
                 edge.setAttribute("stroke", "#EEEEEE");
                 edge.setAttribute("stroke-width", 4.0);
@@ -2188,14 +2254,14 @@ function AddEdge(edge_id){
                     
                     
                 if(reverse_edge.getAttribute("d") == null){
-                    reverse_edge.parentNode.removeChild(the_evt_target_ownerDocument.getElementById("ea" + reverse_edge.getAttribute("id")));
+                    reverse_edge.parentNode.removeChild(document.getElementById("ea" + reverse_edge.getAttribute("id")));
                     reverse_edge.parentNode.removeChild(reverse_edge);
                     AddEdge(reverse_edge.getAttribute("id"));
                 }
-                the_evt_target_ownerDocument.getElementById(reverse_edge.getAttribute("id")).setAttribute("stroke", reverse_edge.getAttribute("stroke"));
-                the_evt_target_ownerDocument.getElementById("ea" + reverse_edge.getAttribute("id")).setAttribute("fill", reverse_edge.getAttribute("stroke"));
+                document.getElementById(reverse_edge.getAttribute("id")).setAttribute("stroke", reverse_edge.getAttribute("stroke"));
+                document.getElementById("ea" + reverse_edge.getAttribute("id")).setAttribute("fill", reverse_edge.getAttribute("stroke"));
             }else{  //No reverse edge.  Just make a straight line
-                                edge = the_evt_target_ownerDocument.createElementNS(svgNS,"line");
+                                edge = document.createElementNS(svgNS,"line");
                                 edge.setAttribute("id", edge_id);
                                 edge.setAttribute("stroke", "#EEEEEE");
                                 edge.setAttribute("stroke-width", 4.0);
@@ -2221,7 +2287,7 @@ function AddEdge(edge_id){
                     parent_graph.insertBefore(arrowhead, parent_graph.childNodes.item(1));
             }
         }else{ //Undirected edge
-                        edge = the_evt_target_ownerDocument.createElementNS(svgNS,"line");
+                        edge = document.createElementNS(svgNS,"line");
                     edge.setAttribute("id", edge_id);
                     edge.setAttribute("stroke", "#EEEEEE");
                     edge.setAttribute("stroke-width", 4.0);
@@ -2235,7 +2301,7 @@ function AddEdge(edge_id){
                 parent_graph.insertBefore(arrowhead, parent_graph.childNodes.item(1));
         }
 
-        var graph = the_evt_target_ownerDocument.getElementById(edge_id).parentNode;
+        var graph = document.getElementById(edge_id).parentNode;
         sizeGraphBBox(graph);
     }
     fillEdgesArray();
@@ -2244,11 +2310,11 @@ function AddEdge(edge_id){
 
 //Deletes edge of corresponding id from graph
 function DeleteEdge(edge_id){
-    var edge =  the_evt_target_ownerDocument.getElementById(edge_id);
+    var edge =  document.getElementById(edge_id);
     if(edge != null){
         edge.parentNode.removeChild(edge);
     }
-    var arrowhead = the_evt_target_ownerDocument.getElementById("ea" + edge_id);
+    var arrowhead = document.getElementById("ea" + edge_id);
     
     if(arrowhead != null){
         arrowhead.parentNode.removeChild(arrowhead);
@@ -2256,20 +2322,20 @@ function DeleteEdge(edge_id){
 
     var graph_id = edge_id.split("_")[0];
     var vertices = edge_id.split("_")[1].match(/[^,\(\)\s]+/g);
-    var reverse_edge = the_evt_target_ownerDocument.getElementById(graph_id + "_(" + vertices[1] + ", " + vertices[0] + ")");
+    var reverse_edge = document.getElementById(graph_id + "_(" + vertices[1] + ", " + vertices[0] + ")");
     if(reverse_edge != null){
             DeleteEdge(reverse_edge.getAttribute("id"));
             AddEdge(reverse_edge.getAttribute("id"));
-            var new_edge = the_evt_target_ownerDocument.getElementById(reverse_edge.getAttribute("id"));
+            var new_edge = document.getElementById(reverse_edge.getAttribute("id"));
             new_edge.setAttribute("stroke", reverse_edge.getAttribute("stroke"));
             new_edge.setAttribute("stroke-width", reverse_edge.getAttribute("stroke-width"));
-            var arrowhead = the_evt_target_ownerDocument.getElementById("ea" + new_edge.getAttribute("id"));
+            var arrowhead = document.getElementById("ea" + new_edge.getAttribute("id"));
             if(arrowhead != null){
                 arrowhead.setAttribute("fill", new_edge.getAttribute("stroke"));
             }
     }
 
-    var graph = the_evt_target_ownerDocument.getElementById(graph_id);
+    var graph = document.getElementById(graph_id);
     sizeGraphBBox(graph);
     fillEdgesArray();
 }
@@ -2278,10 +2344,10 @@ function DeleteEdge(edge_id){
 //Adds vertex of into specified graph and coordinates in graph.  Optional id argument may be given.
 function AddVertex(graph_and_coordinates, id){
 
-    var graph = the_evt_target_ownerDocument.getElementById(graph_and_coordinates.split("_")[0]);
+    var graph = document.getElementById(graph_and_coordinates.split("_")[0]);
     var next_vertex = 1;
     while(true){
-        if(the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_" + next_vertex) == null){
+        if(document.getElementById(graph.getAttribute("id") + "_" + next_vertex) == null){
             break;
         }
         next_vertex++;
@@ -2290,7 +2356,7 @@ function AddVertex(graph_and_coordinates, id){
     
     var coords = graph_and_coordinates.split("(")[1].match(/[\d\.]+/g);
     
-    var new_vertex = the_evt_target_ownerDocument.createElementNS(svgNS,"circle");
+    var new_vertex = document.createElementNS(svgNS,"circle");
     new_vertex.setAttribute("cx", coords[0]);
     new_vertex.setAttribute("cy", coords[1]);
     new_vertex.setAttribute("r", default_vertex_radius);
@@ -2300,7 +2366,7 @@ function AddVertex(graph_and_coordinates, id){
 
     if(id != null){
         new_vertex.setAttribute("id", graph.getAttribute("id") + "_" + id);
-        if(the_evt_target_ownerDocument.getElementById(new_vertex.getAttribute("id")) != null)
+        if(document.getElementById(new_vertex.getAttribute("id")) != null)
             return;
     }else{
         new_vertex.setAttribute("id", graph.getAttribute("id") + "_" + next_vertex);
@@ -2309,7 +2375,7 @@ function AddVertex(graph_and_coordinates, id){
     graph.appendChild(new_vertex);
     
 
-    var new_label = the_evt_target_ownerDocument.createElementNS(svgNS,"text");
+    var new_label = document.createElementNS(svgNS,"text");
     new_label.setAttribute("x", coords[0]);
     new_label.setAttribute("y", parseFloat(coords[1]) + .33*parseFloat(new_vertex.getAttribute("r")));
     new_label.setAttribute("text-anchor", "middle");
@@ -2321,9 +2387,9 @@ function AddVertex(graph_and_coordinates, id){
     new_label.setAttribute("id", "vl" + new_vertex.getAttribute("id"));
 
     if(id != null){
-        new_label.appendChild(the_evt_target_ownerDocument.createTextNode(id));
+        new_label.appendChild(document.createTextNode(id));
     }else{
-        new_label.appendChild(the_evt_target_ownerDocument.createTextNode(next_vertex + ""));
+        new_label.appendChild(document.createTextNode(next_vertex + ""));
     }
     graph.appendChild(new_label);
 
@@ -2406,10 +2472,10 @@ function TranslateGraph(evt){
     var graph_bg = null;
     if(graph.nodeName == "rect"){
         graph_bg = graph;
-        graph = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id").split("_")[0]);
+        graph = document.getElementById(graph.getAttribute("id").split("_")[0]);
     }else{
         graph = graph.parentNode;
-        graph_bg = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+        graph_bg = document.getElementById(graph.getAttribute("id") + "_bg");
     }
     
     var x = evt.clientX;
@@ -2429,8 +2495,8 @@ function TranslateGraph(evt){
     translate_buffer[1] = y;
 
 
-    the_evt_target_ownerDocument.documentElement.setAttribute("width", 2*x_offset + vert_layout.group.getBBox().x + vert_layout.group.getBBox().width);
-    the_evt_target_ownerDocument.documentElement.setAttribute("height", 2*y_offset + vert_layout.group.getBBox().y + vert_layout.group.getBBox().height);
+    document.documentElement.setAttribute("width", 2*x_offset + vert_layout.group.getBBox().x + vert_layout.group.getBBox().width);
+    document.documentElement.setAttribute("height", 2*y_offset + vert_layout.group.getBBox().y + vert_layout.group.getBBox().height);
 }
 
 
@@ -2444,10 +2510,10 @@ function GestureStart_TransformGraph(evt){
     var graph_bg = null;
     if(graph.nodeName == "rect"){
         graph_bg = graph;
-        graph = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id").split("_")[0]);
+        graph = document.getElementById(graph.getAttribute("id").split("_")[0]);
     }else{
         graph = graph.parentNode;
-        graph_bg = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+        graph_bg = document.getElementById(graph.getAttribute("id") + "_bg");
     }
     
     
@@ -2468,10 +2534,10 @@ function GestureChange_TransformGraph(evt){
     var graph_bg = null;
     if(graph.nodeName == "rect"){
         graph_bg = graph;
-        graph = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id").split("_")[0]);
+        graph = document.getElementById(graph.getAttribute("id").split("_")[0]);
     }else{
         graph = graph.parentNode;
-        graph_bg = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+        graph_bg = document.getElementById(graph.getAttribute("id") + "_bg");
     }
 
     TransformGraph(graph, graph_bg, evt);
@@ -2488,10 +2554,10 @@ function GestureEnd_TransformGraph(evt){
     var graph_bg = null;
     if(graph.nodeName == "rect"){
         graph_bg = graph;
-        graph = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id").split("_")[0]);
+        graph = document.getElementById(graph.getAttribute("id").split("_")[0]);
     }else{
         graph = graph.parentNode;
-        graph_bg = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+        graph_bg = document.getElementById(graph.getAttribute("id") + "_bg");
     }
 
     graph.setAttribute("transform_buffer", graph.getAttribute("transform"));
@@ -2521,8 +2587,8 @@ function TransformGraph(graph, graph_bg, evt){
     setTranslate(graph, graph_translation[0] + gscf_width/2, graph_translation[1] + gscf_height/2);
     setTranslate(graph_bg, gbg_translation[0] + gbgscf_width/2, gbg_translation[1] + gbgscf_height/2);
     
-    the_evt_target_ownerDocument.documentElement.setAttribute("width", 2*x_offset + vert_layout.group.getBBox().x + vert_layout.group.getBBox().width);
-    the_evt_target_ownerDocument.documentElement.setAttribute("height", 2*y_offset + vert_layout.group.getBBox().y + vert_layout.group.getBBox().height);
+    document.documentElement.setAttribute("width", 2*x_offset + vert_layout.group.getBBox().x + vert_layout.group.getBBox().width);
+    document.documentElement.setAttribute("height", 2*y_offset + vert_layout.group.getBBox().y + vert_layout.group.getBBox().height);
 }
 
 
@@ -2533,11 +2599,11 @@ function TransformGraph(graph, graph_bg, evt){
 //
 */
 function Scaler(points, width) {
-    this.triang_scaler = the_evt_target_ownerDocument.createElementNS(svgNS, "polygon");
+    this.triang_scaler = document.createElementNS(svgNS, "polygon");
     this.triang_scaler.setAttribute("id", "triangle_scaler");
     this.triang_scaler.setAttribute("points", points);
     this.triang_scaler.setAttribute("style", "stroke:#660000; fill:#cc3333");
-    the_evt_target_ownerDocument.documentElement.appendChild(this.triang_scaler);
+    the_evt_target_ownerDocument.appendChild(this.triang_scaler);
 
     var graph;
     if (two_graph)
@@ -2571,7 +2637,7 @@ function repositionScaler(x, y) {
 // and sets mouse_start to the current cursor position
 function click_scaler(evt) {
     scaler.scaler_active = true;
-    var graph = the_evt_target_ownerDocument.getElementById(init_graphs[0].getAttribute("id"));
+    var graph = document.getElementById(init_graphs[0].getAttribute("id"));
     scale_graph_width = graph.getBBox().width * g_scale_factor.x;
     mouse_start = cursorPoint(evt, null);
 }
@@ -2591,8 +2657,8 @@ function drag_scaler(evt) {
     if (scaler.scaler_active === false)
         return;
         
-    var graph = the_evt_target_ownerDocument.getElementById(init_graphs[0].getAttribute("id"));
-    var graph_bg = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+    var graph = document.getElementById(init_graphs[0].getAttribute("id"));
+    var graph_bg = document.getElementById(graph.getAttribute("id") + "_bg");
     scaleGraph( graph, graph_bg, evt, false);
 }
 
@@ -2698,6 +2764,7 @@ function realignScaler(scaler_x, scaler_y){
 */
 
 function GraphState(graph, step) {
+    console.log("dafs");
     // An array tuple of (state, elements_present_at_that_time)
     this.state = buildStateArray(graph);
     
@@ -2764,8 +2831,8 @@ function buildStateArray(graph) {
 
         elem_array.push(id);
         
-        if(the_evt_target_ownerDocument.getElementById(v_ano_id + id) != null){
-            ano = the_evt_target_ownerDocument.getElementById(v_ano_id + id);
+        if(document.getElementById(v_ano_id + id) != null){
+            ano = document.getElementById(v_ano_id + id);
             elem_array.push(ano.firstChild.nodeValue);
         } else {
             elem_array.push("");
@@ -2806,6 +2873,8 @@ function fillGraphStates() {
         // Call once to get MAX_GBBOX values set, in case it isn't called during algo
         sizeGraphBBox(graphs[g]);
     }
+
+    console.log("and i'm here now");
 
     // Keep track of added and deleted elements for restoration to initial state
     deleted_elements = new Array();
@@ -3026,8 +3095,8 @@ function setGraphState(graph_state) {
     }
 
     for (var x in init_graphs) {
-        var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
-        var graph_bg = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+        var graph = document.getElementById(init_graphs[x].getAttribute("id"));
+        var graph_bg = document.getElementById(graph.getAttribute("id") + "_bg");
         scaleGraph(graph, graph_bg, undefined, true);   
     }
 }
@@ -3100,10 +3169,10 @@ function MovieSlider(id, slider_width, thumb_height, offset, end_step, labels, t
     this.thumb_width = 10;
     var font_size = 10;
     
-    this.slider = the_evt_target_ownerDocument.createElementNS(svgNS, 'g');
+    this.slider = document.createElementNS(svgNS, 'g');
     this.slider.setAttribute("id", id);
     
-    this.slider_bar = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
+    this.slider_bar = document.createElementNS(svgNS, "rect");
     this.slider_bar.setAttribute("width", slider_width);
     this.slider_bar.setAttribute("height", this.thumb_width);
     this.slider_bar.setAttribute("x", this.thumb_width/2);
@@ -3117,7 +3186,7 @@ function MovieSlider(id, slider_width, thumb_height, offset, end_step, labels, t
     this.slider_bar.setAttribute("id", id + "_slider_bar");
     this.slider.appendChild(this.slider_bar);
     
-    this.slider_thumb = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
+    this.slider_thumb = document.createElementNS(svgNS, "rect");
     this.slider_thumb.setAttribute("width", this.thumb_width);
     this.slider_thumb.setAttribute("height", thumb_height);
     this.slider_thumb.setAttribute("rx", this.thumb_width/2);
@@ -3132,33 +3201,33 @@ function MovieSlider(id, slider_width, thumb_height, offset, end_step, labels, t
     
     //create labels below slider
     for (var i in labels){
-        var text = the_evt_target_ownerDocument.createElementNS(svgNS, "text");
+        var text = document.createElementNS(svgNS, "text");
         text.setAttribute("x", this.thumb_width/2 + i*(slider_width/(labels.length-1)));
         text.setAttribute("y", thumb_height+ font_size);
         text.setAttribute("text-anchor","middle");
         text.setAttribute("font-size", font_size);
         text.setAttribute("font-family","Helvetica");
         text.setAttribute("font-style","normal");
-        text.appendChild(the_evt_target_ownerDocument.createTextNode(labels[i]));
+        text.appendChild(document.createTextNode(labels[i]));
         this.slider.appendChild(text);
     }
     
     //create slider title
-    var header = the_evt_target_ownerDocument.createElementNS(svgNS, "text");
+    var header = document.createElementNS(svgNS, "text");
     header.setAttribute("x", (this.thumb_width + slider_width)/2);
     header.setAttribute("y", 0);
     header.setAttribute("text-anchor","middle");
     header.setAttribute("font-size", font_size);
     header.setAttribute("font-family","Helvetica");
     header.setAttribute("font-style","normal");
-    header.appendChild(the_evt_target_ownerDocument.createTextNode(title));
+    header.appendChild(document.createTextNode(title));
     this.slider.appendChild(header);
         
     for (var i in actions){
         this.slider.setAttribute(actions[i][0], actions[i][1]);
     }
     
-    the_evt_target_ownerDocument.documentElement.appendChild(this.slider);
+    the_evt_target_ownerDocument.appendChild(this.slider);
 }
 
 
@@ -3235,7 +3304,7 @@ function Refresh_MovieSlider(step_num) {
 function addControlBoundingBox(color) {
     var llc_box = horiz_layout[1].group.getBBox();
     
-    var rect = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
+    var rect = document.createElementNS(svgNS, "rect");
     
     rect.setAttribute("id", "controlBBox");
     rect.setAttribute("width", llc_box.width + 20);
@@ -3315,7 +3384,7 @@ function set_max_scale_factor() {
         return max_factor_x;
     }
 
-    var graph = the_evt_target_ownerDocument.getElementById(init_graphs[0].getAttribute("id"));
+    var graph = document.getElementById(init_graphs[0].getAttribute("id"));
     max_scale_factor = Math.min(max_factor_y(graph), max_factor_x(graph));
 }
 
@@ -3323,8 +3392,8 @@ function set_max_scale_factor() {
 // Scales the graph to fit the screen.  
 // Only really matters in cases where the graph is too large for the screen initially
 function scale_to_fit() {
-    var graph = the_evt_target_ownerDocument.getElementById(init_graphs[0].getAttribute("id"));
-    var graph_bg = the_evt_target_ownerDocument.getElementById(graph.getAttribute("id") + "_bg");
+    var graph = document.getElementById(init_graphs[0].getAttribute("id"));
+    var graph_bg = document.getElementById(graph.getAttribute("id") + "_bg");
     if (max_scale_factor < 1) {
         g_scale_factor.x = max_scale_factor;
         scaleGraph(graph, graph_bg, undefined, true);
@@ -3383,6 +3452,17 @@ function is_edge_or_vert(id) {
     return -1;
 }
 
+
+function sendClick(evt) {
+    if (window.parent.beenClicked) 
+        window.parent.beenClicked();
+}
+
+
+function ShowAlgoInfo(evt) {
+    showPopWin('./infos/%(info_file)s', 5*window.innerWidth/8, 3*window.innerHeight/4, null);
+}
+
 /**
 *
 *
@@ -3392,17 +3472,24 @@ function is_edge_or_vert(id) {
 *
 */
 function Initialize(evt) {
+    initPopUp();
     the_evt = evt;
     the_evt_target = evt.target;
-    the_evt_target_ownerDocument = evt.target.ownerDocument;
-
+    the_evt_target_ownerDocument = evt.target;
+    console.log(window.parent);
+    console.log("Document:");
+    console.log(document);
+    console.log(document.documentElement);
+    console.log("the_evt_target:");
+    console.log(the_evt_target);
+    console.log("the_evt_target_ownerDocument:");
+    console.log(the_evt_target_ownerDocument);
     // Object Prototype initialization
     HTB_prototypeInit();
     LLC_prototypeInit();
     BP_prototypeInit();
     SS_prototypeInit();
     Option_prototypeInit();
-
     fillAttributeArray();   // Fills the array of attributes that svg elements may contain
     getViewboxVals();       // Set the viewbox_x and viewbox_y global vars
     
@@ -3414,13 +3501,15 @@ function Initialize(evt) {
     the_evt_target.addEventListener("mouseup", Deactivate_MovieSlider, false);
     the_evt_target.addEventListener("mousemove", Drag_MovieSlider, false);
     the_evt_target.addEventListener("mousemove", positionTooltip, false);
+    the_evt_target.addEventListener("mousemove", sendClick, false);
 
     //Create code layout
     code = new HighlightableTextBlock(20, 0, "code", 14, "vertical");
 
     // Insert lines of code into the HighlightableTextBlock
     var linenum = 1;
-    while(the_evt_target_ownerDocument.getElementById("l_" + linenum) != null){
+    console.log("here");
+    while(document.getElementById("l_" + linenum) != null){
         code.insertLine("l_" + linenum, linenum-1);
         linenum++;
     }
@@ -3428,7 +3517,7 @@ function Initialize(evt) {
     // Add transparent breakpoints
     AddBreakpoints(code);
 
-    code.addBoundingBox("#8888AA");
+    code.addBoundingBoxAndAlgoButton("#8888AA");
     
     speed_select = new SpeedSelector("speedSelect", 20, "blue", "red");
 
@@ -3442,19 +3531,20 @@ function Initialize(evt) {
     }
 
     // Fill the array of all edges
+    console.log("and here");
     fillEdgesArray();
-
+    console.log("here");
     //Clone initial graphs and keep references to them
     init_graphs = new Array();
     var i = 1;
-    var tree = the_evt_target_ownerDocument.getElementById("g" + i);
+    var tree = document.getElementById("g" + i);
     while(tree != null){
         if (i === 2)
             two_graph = true;
 
         init_graphs[i-1] = tree.cloneNode(true);
         i++;
-        tree = the_evt_target_ownerDocument.getElementById("g" + i);
+        tree = document.getElementById("g" + i);
     }
         
     //Create buttons
@@ -3467,7 +3557,7 @@ function Initialize(evt) {
     action_panel.deactivateButton("stop_button");
     action_panel.deactivateButton("step_button");
     
-    var graph = the_evt_target_ownerDocument.getElementById("g1");
+    var graph = document.getElementById("g1");
     movie_slider = new MovieSlider('movie_slider', 1300-x_offset-getTranslate(action_panel.llc.group.getAttribute("transform"))[0]-action_panel.llc.group.getBBox().width, 30, x_offset, animation.length, ["Start", "End"], "Scene", [['onmousedown', 'Click_MovieSlider(evt)']]);
 
     timeout = 200;
@@ -3504,8 +3594,8 @@ function Initialize(evt) {
 
     //Make rectangles behind graphs, for intuitive iPad usage
     for (var x in init_graphs){
-        var rect = the_evt_target_ownerDocument.createElementNS(svgNS, "rect");
-        var graph = the_evt_target_ownerDocument.getElementById(init_graphs[x].getAttribute("id"));
+        var rect = document.createElementNS(svgNS, "rect");
+        var graph = document.getElementById(init_graphs[x].getAttribute("id"));
         var bg_id = graph.getAttribute("id") + "_bg";
 
         // Keep track of the backgrounds in use(background being the bbox)
@@ -3534,7 +3624,9 @@ function Initialize(evt) {
         var translation2 = getTranslate(vert_layout.group.getAttribute("transform"));
         var translation3 = getTranslate(graph.getAttribute("transform"));
         setTranslate(rect, translation1[0] + translation2[0] + translation3[0], translation1[1] + translation2[1] + translation3[1]);
-        the_evt_target_ownerDocument.documentElement.insertBefore(rect, the_evt_target_ownerDocument.documentElement.childNodes.item(0));
+        console.log("Children:");
+        console.log(the_evt_target_ownerDocument.childNodes.item(0));
+        the_evt_target_ownerDocument.insertBefore(rect, the_evt_target_ownerDocument.childNodes.item(0));
         scaler_x = graph.getBBox().x + graph.getBBox().width + 10;
         scaler_y = graph.getBBox().y + graph.getBBox().height + 10;
 
@@ -3547,7 +3639,7 @@ function Initialize(evt) {
     AddToolTips();
     loadInitialInfo();
     positionGraphInfo();
-    
+
     // Scale the components to fit the screen
     set_max_scale_factor();
     scale_to_fit();
@@ -3568,8 +3660,8 @@ function Initialize(evt) {
         repositionScaler(graph.getBBox().x, graph.getBBox().y);
     }
 
-    the_evt_target_ownerDocument.documentElement.setAttribute("width", 2*x_offset + vert_layout.group.getBBox().x + vert_layout.group.getBBox().width);
-    the_evt_target_ownerDocument.documentElement.setAttribute("height", 2*y_offset + vert_layout.group.getBBox().y + vert_layout.group.getBBox().height);
+    document.documentElement.setAttribute("width", 2*x_offset + vert_layout.group.getBBox().x + vert_layout.group.getBBox().width);
+    document.documentElement.setAttribute("height", 2*y_offset + vert_layout.group.getBBox().y + vert_layout.group.getBBox().height);
     
     // Set global vars
     browser_width = window.innerWidth;
@@ -3585,7 +3677,6 @@ function Initialize(evt) {
     //Create the option dropdown that will be positioned at top right of screen
     option_dropdown = new OptionDropdown('option_dropdown', 20, 35);
 }
-
 
 
 var animation = Array(%(animation)s
@@ -3618,6 +3709,8 @@ viewbox="%(x)d %(y)d %(width)d %(height)d" width="30cm" height="30cm">
 
 footer = """
 </svg>
+</body>
+</html>
 """
 
 #Global constants for tokenEater
@@ -3993,7 +4086,7 @@ def ExportAlgoInfo(fileName, algorithm):
     r = re.compile(r'colordef\s+color="[a-zA-z#]+')
     matches = r.findall(info)
     colors = [s.split('"')[1] for s in matches]
-    info = re.sub(r'colordef\s+color="[a-zA-z#]+">', lambda match: 'div style="height: 10px; width: 10px; display:inline; background-color:%s"></div>' % colors.pop(0), info, count=len(colors))
+    info = re.sub(r'colordef\s+color="[a-zA-z#]+">', lambda match: 'div style="height: 10px; width: 10px; display:inline; background-color:%s">&nbsp&nbsp&nbsp&nbsp</div>&nbsp' % colors.pop(0), info, count=len(colors))
     file.write(info)
 
 def ExportSVG(fileName, algowin, algorithm, graphDisplay,
@@ -4020,13 +4113,13 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
         # Reload the graph and execute prolog so we can save the initial state
         # to SVG
         algorithm.Start(prologOnly=True)
-        
         file = open(fileName,'w')
         SVG_Animation = file
         # We need to change the coordinates and sizes of the SVG
         # to accomodate two graphs. How do we deal with various
         # browser window sizes???
-        vars = {'x':0,'y':0,'width':1400,'height':700}
+        info_file = fileName[fileName.rindex("/") + 1:]
+        vars = {'lib_directory': './libs', 'info_file': info_file, 'x':0,'y':0,'width':1400,'height':700}
 
         # Merge animation commands from the graph windows and the algo window
         vars['animation'] = ",\n".join(animation)
