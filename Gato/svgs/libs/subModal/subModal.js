@@ -42,6 +42,7 @@ function initPopUp() {
 	popmask.id = 'popupMask';
 	popmask.setAttribute("onclick", "hidePopWin(false)");
 	popcont = document.createElement('div');
+	popcont.setAttribute("opacity", 0.5);
 	popcont.id = 'popupContainer';
 	popcont.innerHTML = '' +
 		'<div id="popupInner">' +

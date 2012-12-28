@@ -87,8 +87,8 @@ onload="Initialize(evt)">
 
 <defs>     
     <linearGradient id="slider_bar_lg" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="skyblue" ></stop>
-        <stop offset="1" stop-color="black"></stop>
+        <stop offset="0" stop-color="#999999" ></stop>
+        <stop offset="1" stop-color="#AAAAAA"></stop>
     </linearGradient>
 
     <linearGradient id="algo_button_lg" x1="0" y1="0" x2="0" y2="1">
@@ -97,8 +97,8 @@ onload="Initialize(evt)">
     </linearGradient>
     
     <linearGradient id="slider_thumb_lg" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="skyblue"></stop>
-        <stop offset="1" stop-color="black"></stop>
+        <stop offset="0" stop-color="#EFEFEF" ></stop>
+        <stop offset="1" stop-color="#DEDEDE"></stop>
     </linearGradient>
     
     <linearGradient id="code_box_lg" x1="0" y1="0" x2="0" y2="1">
@@ -112,8 +112,8 @@ onload="Initialize(evt)">
     </linearGradient>
     
     <linearGradient id="control_box_lg" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#fcfcfc"></stop>
-        <stop offset="1" stop-color="#999999"></stop>
+        <stop offset="0" stop-color="#232323"></stop>
+        <stop offset="1" stop-color="#434343"></stop>
     </linearGradient>
 </defs>
 
@@ -227,6 +227,8 @@ var init_transy_g2;         // The initial translate-y value for g2.  Used for s
 var active_tt = {"tt":null, "rect":null, "text":null};       // The tooltip that is currently visible, or null if there isn't one
 var tt_padding = {"x":40, "y":20};                           // Padding constants for the tooltips
 var G_INFO_POS = {"height":40, "horiz_offset":50};           // Positioning constants for the graph info
+
+var last_line = 0;      // Last line number added to graph
 
 /**
 *
@@ -512,7 +514,6 @@ function HTB_prototypeInit(){
 function HTB_addBoundingBoxAndAlgoButton(color) {
     var bbox = this.line_llc.group.getBBox();
     var line = this.line_llc.group.childNodes.item(0);
-    var line_bbox = line.getBBox();
     var rect = document.createElementNS(svgNS, "rect");
     var line_translation = getTranslate(this.line_llc.group.childNodes.item(0).getAttribute("transform"));
     var dx = line.getAttribute("dx");
@@ -524,14 +525,17 @@ function HTB_addBoundingBoxAndAlgoButton(color) {
     rect.setAttribute("id", "codeBox");
     rect.setAttribute("width", bbox.width + this.line_llc.h_padding*2);
     rect.setAttribute("height", bbox.height + this.line_llc.v_padding*2 + 10);
-    rect.setAttribute("x", line_bbox.x + line_translation[0] - this.line_llc.h_padding - dx);
+    rect.setAttribute("x", bbox.x + line_translation[0] - this.line_llc.h_padding - dx);
     rect.setAttribute("y", bbox.y - this.line_llc.v_padding - 5);
     rect.setAttribute("fill", "url(#code_box_lg)");
     rect.setAttribute("stroke", color);
     rect.setAttribute("stroke-width", "3px");
     rect.setAttribute("rx", 5);
     rect.setAttribute("ry", 5);
-    var button = addAlgoButton(line_bbox.x + line_translation[0] - this.line_llc.h_padding - dx, bbox.y - this.line_llc.v_padding - 5);
+    var button = addAlgoButton(bbox.x + line_translation[0] - this.line_llc.h_padding - dx, bbox.y - this.line_llc.v_padding - 5);
+    
+    this.highlight_group.insertBefore(rect, this.highlight_group.firstChild);
+    this.highlight_group.insertBefore(button, this.highlight_group.firstChild);
 
     function addAlgoButton(x_pos, y_pos) {
         var g = document.createElementNS(svgNS, "g");
@@ -570,8 +574,6 @@ function HTB_addBoundingBoxAndAlgoButton(color) {
         return g;
     }
 
-    this.highlight_group.insertBefore(rect, this.highlight_group.firstChild);
-    this.highlight_group.insertBefore(button, this.highlight_group.firstChild);
 }
 
 
@@ -631,9 +633,9 @@ function HTB_highlightLine(n){
             }
 
             var background = document.createElementNS(svgNS, "rect");
-            background.setAttribute("x", line_bbox.x + line_translation[0] - this.line_llc.h_padding - dx);
+            background.setAttribute("x", line_bbox.x + line_translation[0] - this.line_llc.h_padding - dx + 2);
             background.setAttribute("y", line_bbox.y + line_translation[1] - this.line_llc.v_padding - dy);
-            background.setAttribute("width", htb_bbox.width + 2*this.line_llc.h_padding);
+            background.setAttribute("width", htb_bbox.width + 2*this.line_llc.h_padding - 24);
             background.setAttribute("height", line_bbox.height + 2*this.line_llc.v_padding);
             background.setAttribute("style", "opacity:.35");
             background.setAttribute("stroke", "blue");
@@ -658,6 +660,191 @@ function HTB_removeHighlight(n){
 //Layout for components
 //Lays out components linearly either 'horizontal' or 'vertical' as specified by layout
 //With hp pixels of horizontal padding and vp pixels of vertical padding
+function LinearLayoutComponent(hp, vp, id, layout){
+    this.h_padding = hp;  //Number of pixels padding the top and bottom of each line
+    this.v_padding = vp;  //Number of pixels padding the left and right of each line
+    this.id = id;           //ID of group that is abstracted by this HTB instance
+    
+    //Create new group element to place all lines of code
+    this.group = document.createElementNS(svgNS,"g");
+    this.group.setAttribute("id", id);
+    the_evt_target_ownerDocument.appendChild(this.group);
+    this.layout = layout;  //'horizontal' or 'vertical'
+}
+
+
+//Initializes prototype to call methods of the form object.function
+function LLC_prototypeInit(){
+    var llc = new LinearLayoutComponent(0,0,"foo","horizontal");
+    LinearLayoutComponent.prototype.insertComponent = LLC_insertComponent;
+    LinearLayoutComponent.prototype.deleteComponent = LLC_deleteComponent;
+    LinearLayoutComponent.prototype.resnapComponent = LLC_resnapComponent;
+    llc.group.parentNode.removeChild(llc.group);
+}
+
+
+//Insert element of specified id into nth slot, using 0-based indexing.
+//If element is already in LLC, element is moved to nth slot
+function LLC_insertComponent(id, n){
+    var new_c = document.getElementById(id);
+    var padding = 0;
+    if(this.layout == "horizontal"){
+        padding = this.h_padding;
+    }else{
+        padding = this.v_padding;
+    }
+    var bbox = null;
+    var translation = null;
+    var shift = 0;
+    
+    if(new_c != null){   //Component exists
+        if((new_c.parentNode != this.group) && (n <= this.group.childNodes.length) && (n >=0)){ //Component is not in group.  Insert and shift if necessary
+        
+            if(n == 0){ //inserting as first element
+                setTranslate(new_c, 0, 0);
+            }else{  //not inserting as first element
+                bbox = this.group.childNodes.item(n-1).getBBox();
+                //translation of previous element
+                translation = getTranslate(this.group.childNodes.item(n-1).getAttribute("transform"));
+                
+                if(this.layout == "horizontal"){
+                    shift = translation[0] + bbox.width + 2*padding;
+                    setTranslate(new_c, shift, 0);
+
+                }else{      
+                    shift = translation[1] + bbox.height + 2*padding;
+                    setTranslate(new_c, 0, shift);
+                }
+            }
+            
+            if(n == this.group.childNodes.length){
+                this.group.appendChild(new_c);
+            }else{  
+                var children = this.group.childNodes;
+                this.group.insertBefore(new_c, children.item(n));
+                for (var i = n+1; i < children.length; i++){
+                    bbox = children.item(i-1).getBBox();
+                    translation = getTranslate(children.item(i-1).getAttribute("transform"));
+                    if(this.layout == "horizontal"){
+                        shift = translation[0] + bbox.width + 2*padding;
+                        setTranslate(children.item(i), shift, 0);
+                    }else{      
+                        shift = translation[1] + bbox.height + 2*padding;
+                        setTranslate(children.item(i), 0, shift);
+                    }
+                    
+                }
+            }
+        }else if(n <= this.group.childNodes.length && (n >= 0)){ //Component is in group.  Move it and shift necessary lines
+            var children = this.group.childNodes;
+            var old_index = 0;
+            for(; old_index < children.length; old_index++){
+                if(children.item(old_index) === new_c){
+                    break;
+                }
+            }
+            if(old_index > n){
+                this.group.insertBefore(new_c, children.item(n));
+                
+                for (var i = n; i <= old_index; i++){
+                    if(i == 0){
+                        setTranslate(children.item(i), 0, 0);
+                    }else{
+                        bbox = children.item(i-1).getBBox();    
+                        translation = getTranslate(children.item(i-1).getAttribute("transform"));
+                        if(this.layout == "horizontal"){
+                            shift = translation[0] + bbox.width + 2*padding;
+                            setTranslate(children.item(i), shift, 0);
+                        }else{      
+                            shift = translation[1] + bbox.height + 2*padding;
+                            setTranslate(children.item(i), 0, shift);
+                        }
+                    }
+                }
+            }else if(old_index < n){
+                if(n == children.length){
+                    this.group.appendChild(new_c);
+                }else{  
+                    this.group.insertBefore(new_c, children.item(n+1));
+                }
+                for (var i = old_index; i <= n; i++){            
+                    if(i == 0){
+                        setTranslate(children.item(i), 0, 0);
+
+                    }else{
+                        bbox = children.item(i-1).getBBox();
+                        translation = getTranslate(children.item(i-1).getAttribute("transform"));
+                        if(this.layout == "horizontal"){
+                            shift = translation[0] + bbox.width + 2*padding;
+                            setTranslate(children.item(i), shift, 0);
+                        }else{      
+                            shift = translation[1] + bbox.height + 2*padding;
+                            setTranslate(children.item(i), 0, shift);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+//Refits the nth element, to fit according to specs
+function LLC_resnapComponent(n){
+    var children = this.group.childNodes;
+    var child = children.item(n);
+    child.parentNode.removeChild(child);
+    
+    the_evt_target_ownerDocument.appendChild(child);
+    this.insertComponent(child.getAttribute("id"), n);
+}
+
+
+//Deletes the nth element, using 0-based indexing, and refits components if necessary
+function LLC_deleteComponent(n){
+    var padding = 0;
+    var children = this.group.childNodes;
+    var bbox = null;
+    var translation = null;
+    var shift = 0;
+    
+    if(this.layout == "horizontal"){
+        padding = this.h_padding;
+    }else{
+        padding = this.v_padding;
+    }
+    
+    if(this.group.childNodes.length == 0){
+        return;
+    }   
+
+    var removed_element = this.group.removeChild(this.group.childNodes.item(n));
+    
+    for (var i = n; i < children.length; i++){
+
+        if(i == 0){
+
+            setTranslate(children.item(i), 0, 0);
+
+
+        }else{
+            bbox = children.item(i-1).getBBox();
+
+
+            translation = getTranslate(children.item(i-1).getAttribute("transform"));
+
+            if(this.layout == "horizontal"){
+                shift = translation[0] + bbox.width + 2*padding;
+                setTranslate(children.item(i), shift, 0);
+            }else{      
+                shift = translation[1] + bbox.height + 2*padding;
+
+                setTranslate(children.item(i), 0, shift);
+            }
+        }
+    }
+}
+
 function LinearLayoutComponent(hp, vp, id, layout){
     this.h_padding = hp;  //Number of pixels padding the top and bottom of each line
     this.v_padding = vp;  //Number of pixels padding the left and right of each line
@@ -925,7 +1112,7 @@ function BP_deactivateButton(id){
         if(children.item(i).getAttribute("id") == id){
             children.item(i).setAttribute("onclick", "");
             children.item(i).setAttribute("cursor", "default");
-            children.item(i).setAttribute("fill-opacity", "0.5");
+            children.item(i).setAttribute("fill-opacity", "0.47");
             break;
         }
     }
@@ -1232,6 +1419,7 @@ function OptionDropdown(id, height, width) {
     
     //Options to go in the dropdown menu
     this.options = new Array("This is an option");
+
     //g-element containing the actual dropdown menu
     this.menu = null;   
     //Array of g-elements containing a rect, and text element 
@@ -1259,15 +1447,15 @@ function OptionDropdown(id, height, width) {
     this.rect.setAttribute('stroke', '#cbcbcb');
     this.rect.setAttribute('stroke-width', '2px');
     this.rect.setAttribute('fill', this.rect_fill);
-    this.button.appendChild(this.rect);
+    //this.button.appendChild(this.rect);
     
     this.cog = document.createElementNS(svgNS, "image");
     this.cog.setAttribute("id", "dropdown_cog");
     this.cog.setAttributeNS('http://www.w3.org/1999/xlink','href', "cog.png");
     this.cog.setAttribute("x", 0);
     this.cog.setAttribute("y", 2);
-    this.cog.setAttribute('width', this.width*2/3 + this.width/12);
-    this.cog.setAttribute('height', height);
+    this.cog.setAttribute('width', (this.width*2/3 + this.width/12)*2);
+    this.cog.setAttribute('height', height*2);
     this.button.appendChild(this.cog);
     
     this.triang = document.createElementNS(svgNS, "polygon");
@@ -1277,9 +1465,9 @@ function OptionDropdown(id, height, width) {
     var x3 = (x1 + x2)/2;
     this.triang.setAttribute("points",  String(x1 + "," + height/2 + " " + x2 + "," + height/2 + " " + x3 + "," + (height-2)));
     this.triang.setAttribute("fill", "#888888");
-    this.button.appendChild(this.triang);
+    //this.button.appendChild(this.triang);
     
-    this.position_dropdown();
+    //this.position_dropdown();
     this.build_dropdown();
     
     //Put mouseover and mouseout effects here
@@ -1295,9 +1483,10 @@ function OptionDropdown(id, height, width) {
 function OD_build_dropdown() {
     
     this.menu = document.createElementNS(svgNS, "g");
+    this.menu.setAttribute("id", "OptionDropdown");
     
     var x_trans = -1*speed_select.llc.group.getBBox().width + speed_select.llc.h_padding*8;
-    var y_trans = speed_select.llc.group.getBBox().height - speed_select.llc.v_padding*2;
+    var y_trans = -3 * speed_select.llc.group.getBBox().height/4 + speed_select.llc.v_padding;
     setTranslate(speed_select.llc.group, x_trans, y_trans);
     
     this.menu.setAttribute("visibility", "hidden");
@@ -1650,28 +1839,6 @@ function SetBreakpoint(evt){
             dy = parseFloat(dy);
     }
     
-    //var indicator = document.createElementNS(svgNS, "rect");
-    //indicator.setAttribute("x", line_bbox.x + line_translation[0] - code.line_llc.h_padding - dx);
-    //indicator.setAttribute("y", line_bbox.y + line_translation[1] - code.line_llc.v_padding - dy);
-    //indicator.setAttribute("width", htb_bbox.width + 2*code.line_llc.h_padding);
-    //indicator.setAttribute("height", line_bbox.height + 2*code.line_llc.v_padding);
-    /*var y_start = line_bbox.y + line_translation[1] - code.line_llc.v_padding - dy + line_bbox.height/4;
-    var x_start = -6;
-    var indicator = document.createElementNS(svgNS, "path");
-    indicator.setAttribute("d", String("M" + x_start + " " + y_start + " L" + (x_start+8) + " " + y_start + " L" + (x_start+12) + " " + (y_start+4) + " L" + (x_start+8) + " " + (y_start+8) + " L" + x_start + " " + (y_start+8) + " L" + x_start + " " + y_start + " Z"));
-    console.log(String("M" + x_start + " " + y_start + " L" + (x_start+10) + " " + y_start + " L" + x_start + " " + y_start + " Z"));
-    //indicator.setAttribute("x", -8);
-    //indicator.setAttribute("y", line_bbox.y + line_translation[1] - code.line_llc.v_padding - dy + 2);
-    //indicator.setAttribute("width", 12);
-   // indicator.setAttribute("height", line_bbox.height + 2*code.line_llc.v_padding - 4);
-    indicator.setAttribute("stroke", "blue");
-    indicator.setAttribute("fill", "blue");
-    indicator.setAttribute("id", code.line_llc.group.getAttribute("id") + "_bp" + line.getAttribute("id").split("_")[1]);
-    indicator.setAttribute("transform", "translate(" + x_offset + " " + y_offset + ")");
-    indicator.setAttribute("onclick", "RemoveBreakpoint(evt)");
-    indicator.setAttribute("cursor", "pointer");*/
-    //code.highlight_group.parentNode.insertBefore(indicator, code.highlight_group);
-    //code.highlight_group.parentNode.appendChild(indicator);
     var indicator = the_evt_target.getElementById(code.line_llc.group.getAttribute("id") + "_bp" + line.getAttribute("id").split("_")[1]);
     var new_id = indicator.getAttribute("id") + "_act";
     indicator.setAttribute("id", new_id);
@@ -1693,8 +1860,10 @@ function AddBreakpoints(code) {
         }
         if (line.nodeName != "text")
             continue;
+
         var line_bbox = line.getBBox();
         var line_translation = getTranslate(line.getAttribute("transform"));
+
         var dx = line.getAttribute("dx");
         var dy = line.getAttribute("dy");
         if(dx == null){
@@ -1707,8 +1876,12 @@ function AddBreakpoints(code) {
         }else{
                 dy = parseFloat(dy);
         }
+
+        var text = document.createElementNS(svgNS, "text");
+        text.appendChild(document.createTextNode(++last_line));
+
         var y_start = line_bbox.y + line_translation[1] - code.line_llc.v_padding - dy + line_bbox.height/4;
-        var x_start = -6;
+        var x_start = code.line_llc.group.getBBox().x + 8;
         var indicator = document.createElementNS(svgNS, "path");
         indicator.setAttribute("d", String("M" + x_start + " " + y_start + " L" + (x_start+8) + " " + y_start + " L" + (x_start+12) + " " + (y_start+4) + " L" + (x_start+8) + " " + (y_start+8) + " L" + x_start + " " + (y_start+8) + " L" + x_start + " " + y_start + " Z"));
         indicator.setAttribute("stroke", "blue");
@@ -1718,6 +1891,13 @@ function AddBreakpoints(code) {
         indicator.setAttribute("onclick", "SetBreakpoint(evt)");
         indicator.setAttribute("cursor", "pointer");
         indicator.setAttribute("opacity", .15);
+        text.setAttribute("x", x_start - 24);
+        text.setAttribute("y", y_start);
+        text.setAttribute("font-family", "Courier New");
+        text.setAttribute("font-size", 14.0);
+        text.setAttribute("font-style", "normal");
+        setTranslate(text, x_offset, y_offset + line_bbox.height/2);
+        code.highlight_group.parentNode.appendChild(text);
         code.highlight_group.parentNode.appendChild(indicator);
     }
 }
@@ -3155,7 +3335,7 @@ function jumpToStep(n) {
 //
 */
 // Creates a simple slider that controls the position of the animation in the full "movie"
-function MovieSlider(id, slider_width, thumb_height, offset, end_step, labels, title, actions) {
+function MovieSlider(id, slider_width, thumb_height, offset, end_step, actions) {
 
     this.slider = null;
     this.slider_bar = null;
@@ -3177,11 +3357,11 @@ function MovieSlider(id, slider_width, thumb_height, offset, end_step, labels, t
     this.slider_bar.setAttribute("height", this.thumb_width);
     this.slider_bar.setAttribute("x", this.thumb_width/2);
     this.slider_bar.setAttribute("y",(thumb_height-this.thumb_width)/2);
-    this.slider_bar.setAttribute("rx", this.thumb_width/2);
-    this.slider_bar.setAttribute("ry", this.thumb_width/2);
-    this.slider_bar.setAttribute("stroke", "black");
+    //this.slider_bar.setAttribute("rx", this.thumb_width/2);
+    //this.slider_bar.setAttribute("ry", this.thumb_width/2);
+    //this.slider_bar.setAttribute("stroke", "black");
     this.slider_bar.setAttribute("fill", "url(#slider_bar_lg)");
-    this.slider_bar.setAttribute("stroke-width", 1);
+    //this.slider_bar.setAttribute("stroke-width", 1);
     this.slider_bar.setAttribute("cursor", "pointer");
     this.slider_bar.setAttribute("id", id + "_slider_bar");
     this.slider.appendChild(this.slider_bar);
@@ -3192,37 +3372,14 @@ function MovieSlider(id, slider_width, thumb_height, offset, end_step, labels, t
     this.slider_thumb.setAttribute("rx", this.thumb_width/2);
     this.slider_thumb.setAttribute("ry", this.thumb_width/2);
     this.slider_thumb.setAttribute("x", 0);
+    this.slider_thumb.setAttribute("y", 0);
     this.slider_thumb.setAttribute("stroke", "black");
     this.slider_thumb.setAttribute("fill", "url(#slider_thumb_lg)");
     this.slider_thumb.setAttribute("stroke-width", 1);
     this.slider_thumb.setAttribute("cursor", "pointer");
     this.slider_thumb.setAttribute("id", id + "_slider_thumb");
     this.slider.appendChild(this.slider_thumb);
-    
-    //create labels below slider
-    for (var i in labels){
-        var text = document.createElementNS(svgNS, "text");
-        text.setAttribute("x", this.thumb_width/2 + i*(slider_width/(labels.length-1)));
-        text.setAttribute("y", thumb_height+ font_size);
-        text.setAttribute("text-anchor","middle");
-        text.setAttribute("font-size", font_size);
-        text.setAttribute("font-family","Helvetica");
-        text.setAttribute("font-style","normal");
-        text.appendChild(document.createTextNode(labels[i]));
-        this.slider.appendChild(text);
-    }
-    
-    //create slider title
-    var header = document.createElementNS(svgNS, "text");
-    header.setAttribute("x", (this.thumb_width + slider_width)/2);
-    header.setAttribute("y", 0);
-    header.setAttribute("text-anchor","middle");
-    header.setAttribute("font-size", font_size);
-    header.setAttribute("font-family","Helvetica");
-    header.setAttribute("font-style","normal");
-    header.appendChild(document.createTextNode(title));
-    this.slider.appendChild(header);
-        
+            
     for (var i in actions){
         this.slider.setAttribute(actions[i][0], actions[i][1]);
     }
@@ -3307,15 +3464,17 @@ function addControlBoundingBox(color) {
     var rect = document.createElementNS(svgNS, "rect");
     
     rect.setAttribute("id", "controlBBox");
+    rect.setAttribute("opacity", .8);
     rect.setAttribute("width", llc_box.width + 20);
-    rect.setAttribute("height", llc_box.height + 10);
+    rect.setAttribute("height", llc_box.height + 10 - speed_select.llc.group.getBBox().height);
+    console.log("BBox_width = " + llc_box.width);
     rect.setAttribute("x", llc_box.x - 10);
-    rect.setAttribute("y", llc_box.y - 5);
+    rect.setAttribute("y", llc_box.y - 5 + speed_select.llc.group.getBBox().height);
     rect.setAttribute("rx", "4");
     rect.setAttribute("ry", "4");
     rect.setAttribute("fill", "url(#control_box_lg)");
     rect.setAttribute("stroke", color);
-    rect.setAttribute("stroke-width", "3px");
+    rect.setAttribute("stroke-width", "2px");
     
     horiz_layout[1].group.insertBefore(rect, action_panel.llc.group);
 }
@@ -3325,7 +3484,8 @@ function addControlBoundingBox(color) {
 function positionControls() {
     var bbox = the_evt_target.getElementById("controlBBox").getBBox();
     var x_trans = (viewbox_x - bbox.width)/2 + bbox.x;
-    var y_trans = viewbox_y - horiz_layout[1].group.getBBox().height*2 + y_offset - 20;
+    var y_trans = viewbox_y - (horiz_layout[1].group.getBBox().height - speed_select.llc.group.getBBox().height)*2;
+    console.log("Height: " + horiz_layout[1].group.getBBox().height*2);
     setTranslate(horiz_layout[1].group, x_trans, y_trans); 
 }
 
@@ -3460,7 +3620,7 @@ function sendClick(evt) {
 
 
 function ShowAlgoInfo(evt) {
-    showPopWin('./infos/%(info_file)s', 5*window.innerWidth/8, 3*window.innerHeight/4, null);
+    showPopWin('./infos/BFS-BFS.html', viewbox_x*5/8, viewbox_y*3/4, null);
 }
 
 /**
@@ -3549,16 +3709,16 @@ function Initialize(evt) {
         
     //Create buttons
     action_panel = new ButtonPanel(15, 2, "actions", "horizontal");
-    action_panel.createButton("start_button", "M0,0 0,40 30,20 Z", "blue", 0, "StartAnimation(evt)");
-    action_panel.createButton("step_button", "M0,0 0,40 30,20 Z M30,0 30,40 40,40 40,0 Z", "blue", 1, "StepAnimation(evt)");
-    action_panel.createButton("continue_button", "M0,0 0,40 10,40 10,0 Z M20,0 20,40 50,20 Z", "blue", 2, "ContinueAnimation(evt)");
-    action_panel.createButton("stop_button", "M0,0 0,40 40,40 40,0 Z", "blue", 3, "StopAnimation(evt)");
+    action_panel.createButton("start_button", "M0,0 0,40 30,20 Z", "#87afff", 0, "StartAnimation(evt)");
+    action_panel.createButton("step_button", "M0,0 0,40 30,20 Z M30,0 30,40 40,40 40,0 Z", "#87afff", 1, "StepAnimation(evt)");
+    action_panel.createButton("continue_button", "M0,0 0,40 10,40 10,0 Z M20,0 20,40 50,20 Z", "#87afff", 2, "ContinueAnimation(evt)");
+    action_panel.createButton("stop_button", "M0,0 0,40 40,40 40,0 Z", "#87afff", 3, "StopAnimation(evt)");
     action_panel.deactivateButton("continue_button");
     action_panel.deactivateButton("stop_button");
     action_panel.deactivateButton("step_button");
     
     var graph = document.getElementById("g1");
-    movie_slider = new MovieSlider('movie_slider', 1300-x_offset-getTranslate(action_panel.llc.group.getAttribute("transform"))[0]-action_panel.llc.group.getBBox().width, 30, x_offset, animation.length, ["Start", "End"], "Scene", [['onmousedown', 'Click_MovieSlider(evt)']]);
+    movie_slider = new MovieSlider('movie_slider', 1000-x_offset-getTranslate(action_panel.llc.group.getAttribute("transform"))[0]-action_panel.llc.group.getBBox().width, 30, x_offset, animation.length, [['onmousedown', 'Click_MovieSlider(evt)']]);
 
     timeout = 200;
 
@@ -3571,8 +3731,9 @@ function Initialize(evt) {
     right_vert_layout = new LinearLayoutComponent(20, 10, "right_vert_layout", "vertical");
     horiz_layout[1].insertComponent(action_panel.llc.group.getAttribute("id"), 0);
     horiz_layout[1].insertComponent('movie_slider', 1);
+   /// horiz_layout[1].insertComponent('speedSelect', 2);
     horiz_layout[0].insertComponent(left_vert_layout.group.getAttribute("id"), 0);
-    
+    console.log(the_evt_target_ownerDocument.getElementById("speedSelect").parentNode);
     
     speed_select.addBoundingBox("#8888AA");
 
@@ -3669,13 +3830,15 @@ function Initialize(evt) {
     
     // Position action controls at bottom-center of the screen
     screen_ctm = the_evt_target.getScreenCTM();
-
-    // Add bounding box to action controls, and then position them correctly
-    addControlBoundingBox("#8888aa");
-    positionControls();
     
     //Create the option dropdown that will be positioned at top right of screen
     option_dropdown = new OptionDropdown('option_dropdown', 20, 35);
+    horiz_layout[1].insertComponent('option_dropdown', 2);
+    console.log(the_evt_target.getElementById('option_dropdown').getAttribute("transform"));
+
+    // Add bounding box to action controls, and then position them correctly
+    addControlBoundingBox("#333333");
+    positionControls();
 }
 
 
@@ -3745,6 +3908,7 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
     global SVG_Animation
     global indent_stack
 
+    indent_const = 22
     #print("'%s'" % token + " of " + str((srow,scol)) + " , " + str((erow, ecol)) + " - type: " + str(type) + "line: " + str(line) + "len=" + str(len(token)))
     #print(prev)
     #print(indent_stack[len(indent_stack)-1])
@@ -3763,14 +3927,14 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
 
         if token in keywordsList:
             if (prev[1] == -1 or prev[1] == 5 or prev[1] == 4 or prev[1] == 54 or prev[1] == 6): #first word
-                SVG_Animation.write('<tspan font-weight="bold" dx="%d">%s</tspan>' % (7*indent_stack[len(indent_stack)-1], token))
+                SVG_Animation.write('<tspan font-weight="bold" dx="%d">%s</tspan>' % (7*indent_stack[len(indent_stack)-1] + indent_const, token))
             elif (prev[0] in specialList and (prev[0] != "]" and prev[0] != ")")):
                 SVG_Animation.write('<tspan font-weight="bold">%s</tspan>' % token)
             else:
                 SVG_Animation.write('<tspan font-weight="bold" dx="7">%s</tspan>' % token)
         else:
             if (prev[1] == -1 or prev[1] == 5 or prev[1] == 4 or prev[1] == 54 or prev[1] == 6): #first word
-                SVG_Animation.write('<tspan dx = "%d">%s</tspan>' % (7*indent_stack[len(indent_stack)-1], token))
+                SVG_Animation.write('<tspan dx = "%d">%s</tspan>' % (7*indent_stack[len(indent_stack)-1] + indent_const, token))
             elif (prev[0] in specialList and (prev[0] != "]" and prev[0] != ")")):
                 SVG_Animation.write('<tspan>%s</tspan>' % token)
             else:
@@ -3809,12 +3973,12 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
                 token = "&lt;>"
 
             if (prev[1] == -1 or prev[1] == 5 or prev[1] == 4 or prev[1] == 54 or prev[1] == 6): #first word
-                SVG_Animation.write('<tspan dx="%d">%s</tspan>' % (7*indent_stack[len(indent_stack)-1], token))
+                SVG_Animation.write('<tspan dx="%d">%s</tspan>' % (7*indent_stack[len(indent_stack)-1] + indent_const, token))
             else:
                 SVG_Animation.write('<tspan dx="7">%s</tspan>' % token)
         else:
             if (prev[1] == -1 or prev[1] == 5 or prev[1] == 4 or prev[1] == 54 or prev[1] == 6): #first word
-                SVG_Animation.write('<tspan dx="%d">%s</tspan>' % (7*indent_stack[len(indent_stack)-1], token))
+                SVG_Animation.write('<tspan dx="%d">%s</tspan>' % (7*indent_stack[len(indent_stack)-1] + indent_const, token))
             elif prev[0] in operatorsList:
                 SVG_Animation.write('<tspan dx="7">%s</tspan>' % token)
             else:
