@@ -423,17 +423,38 @@ function Orthogonal(dx, dy){
 //Fills the edges array with all the edges that are currently active on the graph
 function fillEdgesArray() {
     edges = new Array();
-    var highestNode = 1;
-    while (document.getElementById("g1_" + highestNode) != null)
-        highestNode++;
-    highestNode--;
+    edges.push(new Array());
+    if (two_graph) {
+        edges.push(new Array());
+    }
+
+    var highestNodeg1 = 1;
+    while (document.getElementById("g1_" + highestNodeg1) != null)
+        highestNodeg1++;
+    highestNodeg1--;
 
     //See if it is a two graph algo also, have 2nd edges array declared just in case
-    for (var i=0; i<=highestNode; i++) {
-        for (var j=0; j<=highestNode; j++) {
+    for (var i=0; i<=highestNodeg1; i++) {
+        for (var j=0; j<=highestNodeg1; j++) {
             var element = document.getElementById("g1_("+i+", "+j+")");
             if (element != null) 
-                edges.push(element);
+                edges[0].push(element);
+        }
+    }
+
+
+    if (two_graph) {
+        var highestNodeg2 = 1;
+        while (document.getElementById("g2_" + highestNodeg2) != null)
+            highestNodeg2++;
+        highestNodeg2--;
+        //See if it is a two graph algo also, have 2nd edges array declared just in case
+        for (var i=0; i<=highestNodeg2; i++) {
+            for (var j=0; j<=highestNodeg2; j++) {
+                var element = document.getElementById("g2_("+i+", "+j+")");
+                if (element != null) 
+                    edges[1].push(element);
+            }
         }
     }
 }
@@ -1957,13 +1978,33 @@ function SetVertexColor(v, color) {
 }
 
 
+function AddToolTip(edge_id) {
+    var edge = the_evt_target.getElementById(edge_id);
+    edge.setAttribute("onmouseover", "EdgeInfo_mouseover(evt)");
+    edge.setAttribute("cursor", "pointer");
+    edge.setAttribute("onmouseout", "EdgeInfo_mouseout(evt)");
+    var tt = new ToolTip(edge, "#AABAAA");
+}
+
+
+function removeToolTip(edge_id) {
+    var edge = the_evt_target.getElementById(edge_id + "_tt");
+    edge.parentNode.removeChild(edge);
+}
+
+
+
+// Change this name
 function AddToolTips() {
     for (var e in edges) {
-        var edge = the_evt_target.getElementById(edges[e].getAttribute("id"));
-        edge.setAttribute("onmouseover", "EdgeInfo_mouseover(evt)");
-        edge.setAttribute("cursor", "pointer");
-        edge.setAttribute("onmouseout", "EdgeInfo_mouseout(evt)");
-        var tt = new ToolTip(edge, "#AABAAA");
+        for (var i in edges[e]) {
+            console.log("Adding for " + edges[e][i].getAttribute("id"));
+            var edge = the_evt_target.getElementById(edges[e][i].getAttribute("id"));
+            edge.setAttribute("onmouseover", "EdgeInfo_mouseover(evt)");
+            edge.setAttribute("cursor", "pointer");
+            edge.setAttribute("onmouseout", "EdgeInfo_mouseout(evt)");
+            var tt = new ToolTip(edge, "#AABAAA");
+        }
     }
 }
 
@@ -2010,8 +2051,11 @@ function loadInitialInfo() {
 
 function resetToolTips() {
     for (var e in edges) {
-        var tt_text = the_evt_target.getElementById(edges[e].getAttribute("id") + "_tt_text");
-        tt_text.removeChild(tt_text.firstChild);
+        for (var i in edges[e]) {
+            var tt_text = the_evt_target.getElementById(edges[e][i].getAttribute("id") + "_tt_text");
+            console.log("Before thing");
+            tt_text.removeChild(tt_text.firstChild);
+        }
     }
 }
 
@@ -2204,10 +2248,11 @@ function SetAllVerticesColor(graph_id_and_color, vertices) {
 // Sets all the edges of one of the graphs to color given.  sample param: "g1_#dd3333"
 function SetAllEdgesColor(graphColor) {
     var graph = graphColor.substring(0, 2);
+    var edge_index = parseInt(graph.substring(1,2)) - 1;
     graphColor = graphColor.substring(3);
 
-    for (var i=0; i<edges.length; i++) {
-        var id = edges[i].getAttribute("id");
+    for (var i=0; i<edges[edge_index].length; i++) {
+        var id = edges[edge_index][i].getAttribute("id");
         if (id.substring(0, 2) !== graph)
             continue;
         var element = document.getElementById(id);
@@ -2484,6 +2529,7 @@ function AddEdge(edge_id){
         var graph = document.getElementById(edge_id).parentNode;
         sizeGraphBBox(graph);
     }
+    AddToolTip(edge_id);
     fillEdgesArray();
 }
 
@@ -2499,6 +2545,8 @@ function DeleteEdge(edge_id){
     if(arrowhead != null){
         arrowhead.parentNode.removeChild(arrowhead);
     }
+
+    removeToolTip(edge_id);
 
     var graph_id = edge_id.split("_")[0];
     var vertices = edge_id.split("_")[1].match(/[^,\(\)\s]+/g);
@@ -2965,11 +3013,22 @@ function GraphState(graph, step) {
 function buildEdgeInfoArray() {
     var e_info = [];
     for (var e in edges) {
-        var text_elem = the_evt_target.getElementById(edges[e].getAttribute("id") + "_tt_text");
-        var pair = [];
-        pair.push(edges[e].getAttribute("id"));
-        pair.push(text_elem.firstChild.nodeValue);
-        e_info.push(pair);
+        for (var i in edges[e]) {
+            var text_elem = the_evt_target.getElementById(edges[e][i].getAttribute("id") + "_tt_text");
+            var pair = [];
+            pair.push(edges[e][i].getAttribute("id"));
+            if (text_elem !== null)
+                pair.push(text_elem.firstChild.nodeValue);
+            else {
+
+                console.log(edges[e][i]);
+                console.log(text_elem);
+                pair.push(null);
+            }
+
+            e_info.push(pair);
+                
+        }
     }
     return e_info;
 }
@@ -3544,8 +3603,13 @@ function set_max_scale_factor() {
         return max_factor_x;
     }
 
-    var graph = document.getElementById(init_graphs[0].getAttribute("id"));
-    max_scale_factor = Math.min(max_factor_y(graph), max_factor_x(graph));
+
+    var curr_max = 999999;
+    for (var i in init_graphs) {    
+        var graph = document.getElementById(init_graphs[i].getAttribute("id"));
+        curr_max = Math.min(curr_max, Math.min(max_factor_y(graph), max_factor_x(graph)));
+    }
+    max_scale_factor = curr_max;
 }
 
 
@@ -3690,10 +3754,7 @@ function Initialize(evt) {
             }
     }
 
-    // Fill the array of all edges
-    console.log("and here");
-    fillEdgesArray();
-    console.log("here");
+    
     //Clone initial graphs and keep references to them
     init_graphs = new Array();
     var i = 1;
@@ -3707,6 +3768,9 @@ function Initialize(evt) {
         tree = document.getElementById("g" + i);
     }
         
+    // Fill the array of all edges
+    fillEdgesArray();
+
     //Create buttons
     action_panel = new ButtonPanel(15, 2, "actions", "horizontal");
     action_panel.createButton("start_button", "M0,0 0,40 30,20 Z", "#87afff", 0, "StartAnimation(evt)");
@@ -4105,8 +4169,8 @@ def WriteGraphAsSVG(graphDisplay, file, idPrefix=''):
         vx, vy, r = graphDisplay.VertexPositionAndRadius(v)
         if vy < min_y:
             min_y = vy
-			
-	# Subtract y_normalizer from all y-values to move closer to the top of the screen.  Give 18px padding
+            
+    # Subtract y_normalizer from all y-values to move closer to the top of the screen.  Give 18px padding
     y_normalizer = min_y - 18
     #y_normalizer = 0
     
