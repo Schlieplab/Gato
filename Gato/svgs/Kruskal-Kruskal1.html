@@ -3558,8 +3558,13 @@ function set_max_scale_factor() {
         return max_factor_x;
     }
 
-    var graph = document.getElementById(init_graphs[0].getAttribute("id"));
-    max_scale_factor = Math.min(max_factor_y(graph), max_factor_x(graph));
+
+    var curr_max = 999999;
+    for (var i in init_graphs) {    
+        var graph = document.getElementById(init_graphs[i].getAttribute("id"));
+        curr_max = Math.min(curr_max, Math.min(max_factor_y(graph), max_factor_x(graph)));
+    }
+    max_scale_factor = curr_max;
 }
 
 
@@ -3634,7 +3639,7 @@ function sendClick(evt) {
 
 
 function ShowAlgoInfo(evt) {
-    showPopWin('./infos/BFS-BFS.html', viewbox_x*5/8, viewbox_y*3/4, null);
+    showPopWin('./infos/Kruskal-Kruskal1.html', viewbox_x*5/8, viewbox_y*3/4, null);
 }
 
 /**
@@ -3861,12 +3866,12 @@ Array(3, SetVertexColor, "g1_2", "#00FF00"),
 Array(1, SetVertexColor, "g1_3", "#0000FF"),
 Array(1, SetVertexColor, "g1_4", "#009999"),
 Array(1, SetVertexColor, "g1_5", "#990099"),
-Array(1, SetVertexColor, "g1_6", "#999900"),
+Array(5, SetVertexColor, "g1_6", "#999900"),
 Array(1, SetVertexColor, "g1_7", "#996666"),
 Array(1, SetVertexColor, "g1_8", "#669966"),
-Array(1, SetVertexColor, "g1_9", "#666699"),
+Array(2, SetVertexColor, "g1_9", "#666699"),
 Array(1, SetVertexColor, "g1_10", "#0066CC"),
-Array(1, ShowActive, "l_1"),
+Array(2, ShowActive, "l_1"),
 Array(1, UpdateGraphInfo, "g1_()", "Component [1] has maximal weight: 0"),
 Array(1, UpdateEdgeInfo, "g1_(1, 2)", "Weight of edge (1,2): 112"),
 Array(1, UpdateEdgeInfo, "g1_(4, 10)", "Weight of edge (4,10): 112"),
@@ -3877,9 +3882,9 @@ Array(1, UpdateEdgeInfo, "g1_(4, 5)", "Weight of edge (4,5): 255"),
 Array(1, UpdateEdgeInfo, "g1_(2, 3)", "Weight of edge (2,3): 141"),
 Array(1, UpdateEdgeInfo, "g1_(3, 4)", "Weight of edge (3,4): 71"),
 Array(1, UpdateEdgeInfo, "g1_(5, 8)", "Weight of edge (5,8): 112"),
-Array(10, ShowActive, "l_3"),
+Array(11, ShowActive, "l_3"),
 Array(9, SetEdgeColor, "g1_(3, 4)", "yellow"),
-Array(1, ShowActive, "l_4"),
+Array(2, ShowActive, "l_4"),
 Array(9, SetEdgeColor, "g1_(3, 4)", "green"),
 Array(2, ShowActive, "l_5"),
 Array(9, SetAllVerticesColor, "g1_#0000FF", "4"),
@@ -3891,7 +3896,7 @@ Array(9, SetEdgeColor, "g1_(1, 2)", "yellow"),
 Array(2, ShowActive, "l_4"),
 Array(9, SetEdgeColor, "g1_(1, 2)", "green"),
 Array(2, ShowActive, "l_5"),
-Array(10, SetAllVerticesColor, "g1_#FF0000", "2"),
+Array(9, SetAllVerticesColor, "g1_#FF0000", "2"),
 Array(2, SetEdgeColor, "g1_(1, 2)", "#FF0000"),
 Array(3, ShowActive, "l_3"),
 Array(1, UpdateGraphInfo, "g1_()", "Component [1, 2] has maximal weight: 112"),
@@ -3915,9 +3920,9 @@ Array(2, SetEdgeColor, "g1_(5, 8)", "#990099"),
 Array(3, ShowActive, "l_3"),
 Array(1, UpdateEdgeInfo, "g1_(5, 8)", "Weight of edge (5,8): 112 - Weight of component: 112"),
 Array(9, SetEdgeColor, "g1_(6, 7)", "yellow"),
-Array(2, ShowActive, "l_4"),
+Array(6, ShowActive, "l_4"),
 Array(9, SetEdgeColor, "g1_(6, 7)", "green"),
-Array(1, ShowActive, "l_5"),
+Array(2, ShowActive, "l_5"),
 Array(9, SetAllVerticesColor, "g1_#999900", "7"),
 Array(2, SetEdgeColor, "g1_(6, 7)", "#999900"),
 Array(2, ShowActive, "l_3"),
@@ -3941,7 +3946,7 @@ Array(2, SetVertexColor, "g1_2", "#0000FF"),
 Array(2, SetEdgeColor, "g1_(2, 1)", "#0000FF"),
 Array(1, SetAllVerticesColor, "g1_#0000FF", "1", "2"),
 Array(4, SetEdgeColor, "g1_(2, 3)", "#0000FF"),
-Array(6, ShowActive, "l_3"),
+Array(3, ShowActive, "l_3"),
 Array(1, UpdateGraphInfo, "g1_()", "Component [3, 4, 10, ...] has maximal weight: 436"),
 Array(1, UpdateEdgeInfo, "g1_(1, 2)", "Weight of edge (1,2): 112 - Weight of component: 436"),
 Array(1, UpdateEdgeInfo, "g1_(4, 10)", "Weight of edge (4,10): 112 - Weight of component: 436"),
@@ -3952,8 +3957,8 @@ Array(2, ShowActive, "l_4"),
 Array(9, SetEdgeColor, "g1_(5, 6)", "green"),
 Array(2, ShowActive, "l_5"),
 Array(9, SetVertexColor, "g1_6", "#990099"),
-Array(1, SetVertexColor, "g1_7", "#990099"),
-Array(1, SetEdgeColor, "g1_(7, 6)", "#990099"),
+Array(2, SetVertexColor, "g1_7", "#990099"),
+Array(2, SetEdgeColor, "g1_(7, 6)", "#990099"),
 Array(1, SetAllVerticesColor, "g1_#990099", "6", "7"),
 Array(2, SetEdgeColor, "g1_(5, 6)", "#990099"),
 Array(3, ShowActive, "l_3"),
@@ -3976,8 +3981,8 @@ Array(1, SetEdgeColor, "g1_(6, 5)", "#0000FF"),
 Array(1, SetEdgeColor, "g1_(9, 8)", "#0000FF"),
 Array(1, SetEdgeColor, "g1_(7, 6)", "#0000FF"),
 Array(1, SetAllVerticesColor, "g1_#0000FF", "5", "8", "9", "6", "7"),
-Array(2, SetEdgeColor, "g1_(4, 5)", "#0000FF"),
-Array(2, ShowActive, "l_3"),
+Array(3, SetEdgeColor, "g1_(4, 5)", "#0000FF"),
+Array(3, ShowActive, "l_3"),
 Array(1, UpdateGraphInfo, "g1_()", "Weight of minimal spanning tree: 1168"),
 Array(1, UpdateEdgeInfo, "g1_(1, 2)", "Weight of edge (1,2): 112 - Weight of component: 1168"),
 Array(1, UpdateEdgeInfo, "g1_(4, 10)", "Weight of edge (4,10): 112 - Weight of component: 1168"),
