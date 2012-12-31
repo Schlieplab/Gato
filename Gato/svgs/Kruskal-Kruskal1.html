@@ -2014,6 +2014,7 @@ function resetToolTips() {
     }
 }
 
+
 function ToolTip(edge, color) {
     //console.log("Adding tooltip for edge " + edge.getAttribute("id"));
     this.tt_g = document.createElementNS(svgNS, "g");
@@ -2040,6 +2041,9 @@ function ToolTip(edge, color) {
     this.tt_text.setAttribute("y", y_val + 25);
     this.tt_text.setAttribute("opacity", .9);
 
+    this.tt_g.appendChild(this.tt_text);
+    edge.parentNode.parentNode.appendChild(this.tt_g);
+
     this.tt_rect.setAttribute("width", this.tt_text.getBBox().width + tt_padding.x);
     this.tt_rect.setAttribute("height", this.tt_text.getBBox().height + tt_padding.y);
     this.tt_rect.setAttribute("id", edge.getAttribute("id") + "_tt_rect");
@@ -2054,10 +2058,7 @@ function ToolTip(edge, color) {
     
     this.tt_g.setAttribute("visibility", "hidden");
 
-    this.tt_g.appendChild(this.tt_rect);
-    this.tt_g.appendChild(this.tt_text);
-
-    edge.parentNode.parentNode.appendChild(this.tt_g);
+    this.tt_g.insertBefore(this.tt_rect, this.tt_text);
 }
 
 
