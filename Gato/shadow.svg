@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+xmlns:xlink="http://www.w3.org/1999/xlink"
+xmlns:ev="http://www.w3.org/2001/xml-events" version="1.1" baseProfile="full"
+viewbox="0 0 649 753" width="30cm" height="30cm">
+<defs> 
+    <filter id="DropShadow" filterUnits="userSpaceOnUse">
+      <feGaussianBlur in="SourceAlpha" result="blur-out" stdDeviation="6" />
+      <feOffset in="blur-out" result="the-shadow" dx="5" dy="5" />
+      <feBlend in="SourceGraphic" in2="the-shadow" mode="normal" />
+    </filter>
+<filter id="MyFilter" filterUnits="userSpaceOnUse">
+  <desc>Produces a 3D lighting effect.</desc>
+  <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="blur"/>
+  <feOffset in="blur" dx="4" dy="4" result="offsetBlur"/>
+  <feSpecularLighting in="blur" surfaceScale="5" specularConstant=".75" 
+                      specularExponent="20" lighting-color="#bbbbbb" 
+                      result="specOut">
+    <fePointLight x="-5000" y="-10000" z="10000"/>
+  </feSpecularLighting>
+  <feComposite in="specOut" in2="SourceAlpha" operator="in" result="specOut"/>
+  <feComposite in="SourceGraphic" in2="specOut" operator="arithmetic" 
+               k1="0" k2="1" k3="1" k4="0" result="litPaint"/>
+  <feMerge>
+    <feMergeNode in="offsetBlur"/>
+    <feMergeNode in="litPaint"/>
+  </feMerge>
+</filter>
+</defs>
+<line id="(1, 5)" x1="57.0" y1="118.0" x2="129.0" y2="199.0" stroke="red" stroke-width="4.0" 
+	filter="url(#MyFilter)"/>
+<line id="(5, 2)" x1="129.0" y1="199.0" x2="240.0" y2="157.0" stroke="red" stroke-width="4.0" 
+	filter="url(#DropShadow)"/>
+<line id="(27, 1)" x1="143.0" y1="30.0" x2="57.0" y2="118.0" stroke="red" stroke-width="4.0" 
+	filter="url(#DropShadow)"/>
+<line id="(27, 2)" x1="143.0" y1="30.0" x2="240.0" y2="157.0" stroke="red" stroke-width="4.0" 
+	filter="url(#DropShadow)"/>
+<circle id="1" cx="57.0" cy="118.0" r="14.0" fill="#000099" stroke="black" stroke-width="0.0" 
+	filter="url(#DropShadow)"/>
+<text id="vl1" x="57.0" y="122.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" fonst-style="normal" font-weight="bold" >1</text>
+<circle id="2" cx="240.0" cy="157.0" r="14.0" fill="#000099" stroke="black" stroke-width="0.0" 
+	filter="url(#MyFilter)" />
+<text id="vl2" x="240.0" y="161.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" fonst-style="normal" font-weight="bold" >2</text>
+<circle id="5" cx="129.0" cy="199.0" r="14.0" fill="#000099" stroke="black" stroke-width="0.0"  
+	filter="url(#DropShadow)"/>
+<text id="vl5" x="129.0" y="203.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" fonst-style="normal" font-weight="bold" >5</text>
+<circle id="27" cx="143.0" cy="30.0" r="14.0" fill="#000099" stroke="black" stroke-width="0.0"  
+	filter="url(#DropShadow)"/>
+<text id="vl27" x="143.0" y="34.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" fonst-style="normal" font-weight="bold" >27</text>
+</svg>
