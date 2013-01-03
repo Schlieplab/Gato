@@ -137,8 +137,8 @@ class AlgoWin(Frame):
         self.makeMenuBar()
         self.makeAlgoTextWidget()
         self.makeToolBar()
-        self.master.title("Gato _VERSION_ - Algorithm")
-        self.master.iconname("Gato _VERSION_")
+        self.master.title("Gato %s - Algorithm" % gatoVersion)
+        self.master.iconname("Gato %s" % gatoVersion)
         
         self.algorithm = Algorithm()
         self.algorithm.SetGUI(self) # So that algorithm can call us
@@ -464,7 +464,7 @@ class AlgoWin(Frame):
             
             if self.algorithm.ReadyToStart():
                 self.buttonStart['state'] = NORMAL 
-            self.master.title("Gato _VERSION_- " + stripPath(file))
+            self.master.title("Gato %s - %s" % (gatoVersion,stripPath(file))
             
             if self.AboutAlgorithmDialog:
                 self.AboutAlgorithmDialog.Update(self.algorithm.About(),"About Algorithm")
