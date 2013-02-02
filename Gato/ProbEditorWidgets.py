@@ -766,7 +766,7 @@ class scale(Tkinter.Canvas):
         if scale_frac*factor<50:
             scale_frac*=2
             # XXX: the scaling needs some fine tuning
-        round_pos=-math.floor(math.log10(scale_frac))
+        round_pos=int(-math.floor(math.log10(scale_frac)))
         x_pos=0.0
         while x_pos<=max_value:
             pixel_x=start_x+x_pos*factor
