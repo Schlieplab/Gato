@@ -52,7 +52,7 @@ HTML_SKELETON = """
 <html style="border-width: 0px; margin: 0px; width: 100%%; height: 100%%" xmlns="http://www.w3.org/1999/xhtml">
 <head >
 <style>
-html, body { margin:0; padding:0}
+html, body { margin:0; padding:0; background-image: url('img/white_wall.png')}
 embed {  overflow:scroll; position: absolute; width: 100%%; height: 100%%; background-color: #F5F5F5}
 </style>
 <meta http-equiv="content-type" content="application/xhtml+xml;charset=UTF-8" />
@@ -138,8 +138,7 @@ def allInstances(exclude_algorithms=[], exclude_instances = {}):
 #
 # Testcases are all combinations of algorithm with all their
 # graphs.
-
-"""instance = {
+instance = {
     '02-GraphsNetworks/BFS-components.alg':[
     '02-GraphsNetworks/3Components.cat'
     ],
@@ -169,9 +168,9 @@ def allInstances(exclude_algorithms=[], exclude_instances = {}):
     ],
     # XXX Not sure whether it terminates: on a small instance it does
     # But since this is random this is not good for regression testing
-    #'03-MinimalSpanningTrees/MSTInteractive.alg':[
-    #'03-MinimalSpanningTrees/Kruskal3.cat'
-    #],
+    '03-MinimalSpanningTrees/MSTInteractive.alg':[
+    '03-MinimalSpanningTrees/Kruskal3.cat'
+    ],
     '03-MinimalSpanningTrees/MatroidDualKruskal.alg':[
     '03-MinimalSpanningTrees/Kruskal3.cat'    
     ],
@@ -211,9 +210,9 @@ def allInstances(exclude_algorithms=[], exclude_instances = {}):
     '07-MinimumCostFlows/CostScaling.alg':[
     '07-MinimumCostFlows/MCF4to1B.cat'
     ],
-  #  '07-MinimumCostFlows/NegativeCircuit.alg':[
-  #  '07-MinimumCostFlows/MCFCycle.cat'
-  #  ],
+    '07-MinimumCostFlows/NegativeCircuit.alg':[
+    '07-MinimumCostFlows/MCFCycle.cat'
+    ],
     '07-MinimumCostFlows/SuccessiveShortestPath.alg':[
     '07-MinimumCostFlows/MCF4to1B.cat'    
     ],
@@ -228,7 +227,21 @@ def allInstances(exclude_algorithms=[], exclude_instances = {}):
     ]
     }
 
-"""
+"""instance = {'02-GraphsNetworks/BFS-components.alg':[
+    '02-GraphsNetworks/3Components.cat'
+    ],
+    '05-ShortestPaths/TwoSources.alg':[
+    '05-ShortestPaths/ShortestPathsUndirected05.cat'    
+    ], 
+    '05-ShortestPaths/FindPath.alg':[
+    '05-ShortestPaths/ShortestPathsUndirected05.cat'
+    ],
+    '05-ShortestPaths/FindPathEuclid.alg':[
+    '05-ShortestPaths/ShortestPathsUndirected05.cat'
+    ],
+    }"""
+
+
 #instance = {'06-MaximalFlows/FordFulkerson.alg':[
 #    '06-MaximalFlows/FordFulkerson4.cat']}
 
@@ -245,7 +258,8 @@ def allInstances(exclude_algorithms=[], exclude_instances = {}):
 #    '06-MaximalFlows/FordFulkerson6.cat','06-MaximalFlows/FordFulkersonBad.cat'
 #    ]}
 
-"""svg_instance = {
+
+svg_instance = {
     '02-GraphsNetworks/BFS-components.alg':[
     '02-GraphsNetworks/BFS.cat', '02-GraphsNetworks/3Components.cat'
     ],
@@ -304,7 +318,7 @@ def allInstances(exclude_algorithms=[], exclude_instances = {}):
     '05-ShortestPaths/ShortestPathsUndirected06.cat'
     ],
     '05-ShortestPaths/NegativeCircuits.alg':[
-    '05-ShortestPaths/NegCircuit2.cat'
+    #'05-ShortestPaths/NegCircuit2.cat'
     ],
     '05-ShortestPaths/TwoSources.alg':[
     '05-ShortestPaths/ShortestPathsUndirected06.cat'
@@ -312,17 +326,17 @@ def allInstances(exclude_algorithms=[], exclude_instances = {}):
     '06-MaximalFlows/FordFulkerson.alg':[
     '06-MaximalFlows/FordFulkerson6.cat','06-MaximalFlows/FordFulkersonBad.cat'
     ],
-    '06-MaximalFlows/PreflowPush.alg':[
-    '06-MaximalFlows/PreflowPush5.cat', '06-MaximalFlows/PreflowPush6.cat'
+    #'06-MaximalFlows/PreflowPush.alg':[
+    #'06-MaximalFlows/PreflowPush5.cat', '06-MaximalFlows/PreflowPush6.cat'
+    #],
+    #'07-MinimumCostFlows/CostScaling.alg':[
+    #'07-MinimumCostFlows/MCF4to4A.cat', '07-MinimumCostFlows/MCFCycle.cat'
+    #],
+    '07-MinimumCostFlows/NegativeCircuit.alg':[
+    #'07-MinimumCostFlows/MCF4to4A.cat',
+    '05-ShortestPaths/NegCircuit2.cat',
+    '07-MinimumCostFlows/MCFCycle.cat'
     ],
-    '07-MinimumCostFlows/CostScaling.alg':[
-    '07-MinimumCostFlows/MCF4to4A.cat', '07-MinimumCostFlows/MCFCycle.cat'
-    ],
-    #'07-MinimumCostFlows/NegativeCircuit.alg':[
-  ##  '07-MinimumCostFlows/MCF4to4A.cat',
-   # '05-ShortestPaths/NegCircuit2.cat',
-   # '07-MinimumCostFlows/MCFCycle.cat'
-  #  ],
     '07-MinimumCostFlows/SuccessiveShortestPath.alg':[
     '07-MinimumCostFlows/MCF4to1A.cat', '07-MinimumCostFlows/MCFCycle.cat'
     ],
@@ -332,16 +346,46 @@ def allInstances(exclude_algorithms=[], exclude_instances = {}):
     ],
     '08-Matching/CardinalityMatching.alg':[
     '08-Matching/Edmonds1.cat', '08-Matching/Edmonds3.cat',
-    '08-Matching/Edmonds6.cat'
-                                           ]#,
-       #    '09-WeightedMatching/WeightedMatching.alg':[
-       #'09-WeightedMatching/bipmatch.cat', '09-WeightedMatching/var2zero.cat',
-       #'09-WeightedMatching/twotriangles.cat'
-       #]
+    '08-Matching/Edmonds6.cat'],
+    '09-WeightedMatching/WeightedMatching.alg':[
+       '09-WeightedMatching/bipmatch.cat', '09-WeightedMatching/var2zero.cat',
+       '09-WeightedMatching/twotriangles.cat'
+       ]
     }
-"""
-
-instance = {'06-MaximalFlows/FordFulkerson.alg':['06-MaximalFlows/FordFulkerson6.cat'],
+'''
+svg_instance = {
+    
+    '06-MaximalFlows/FordFulkerson.alg':[
+    '06-MaximalFlows/FordFulkerson6.cat','06-MaximalFlows/FordFulkersonBad.cat'
+    ],
+    #'06-MaximalFlows/PreflowPush.alg':[
+    #'06-MaximalFlows/PreflowPush5.cat', '06-MaximalFlows/PreflowPush6.cat'
+    #],
+    #'07-MinimumCostFlows/CostScaling.alg':[
+    #'07-MinimumCostFlows/MCF4to4A.cat', '07-MinimumCostFlows/MCFCycle.cat'
+    #],
+    '07-MinimumCostFlows/NegativeCircuit.alg':[
+    #'07-MinimumCostFlows/MCF4to4A.cat',
+    #'05-ShortestPaths/NegCircuit2.cat', This breaks it
+    '07-MinimumCostFlows/MCFCycle.cat'
+    ],
+    '07-MinimumCostFlows/SuccessiveShortestPath.alg':[
+    '07-MinimumCostFlows/MCF4to1A.cat', '07-MinimumCostFlows/MCFCycle.cat'
+    ],
+    '08-Matching/Bipartite.alg':[
+    '08-Matching/Bi003.cat', '08-Matching/Bi006.cat', '08-Matching/Bi008.cat',
+    '08-Matching/Bi009.cat', '08-Matching/Bi010.cat'
+    ],
+    '08-Matching/CardinalityMatching.alg':[
+    '08-Matching/Edmonds1.cat', '08-Matching/Edmonds3.cat',
+    '08-Matching/Edmonds6.cat'],
+    '09-WeightedMatching/WeightedMatching.alg':[
+       '09-WeightedMatching/bipmatch.cat', '09-WeightedMatching/var2zero.cat',
+       '09-WeightedMatching/twotriangles.cat'
+       ]
+       }
+'''
+"""instance = {'06-MaximalFlows/FordFulkerson.alg':['06-MaximalFlows/FordFulkerson6.cat'],
      '02-GraphsNetworks/BFS.alg':[
    '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
    ],'02-GraphsNetworks/DFS-Recursive.alg':[
@@ -351,9 +395,9 @@ instance = {'06-MaximalFlows/FordFulkerson.alg':['06-MaximalFlows/FordFulkerson6
     ],
    '05-ShortestPaths/BellmanFord.alg':[
     '05-ShortestPaths/BellmanFordWC.cat'  #,'05-ShortestPaths/NegCircuit.cat'
-    ]}
+    ]}"""
 
-svg_instance = {'06-MaximalFlows/FordFulkerson.alg':['06-MaximalFlows/FordFulkerson6.cat'],
+"""svg_instance = {'06-MaximalFlows/FordFulkerson.alg':['06-MaximalFlows/FordFulkerson6.cat'],
      '02-GraphsNetworks/BFS.alg':[
    '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
    ],'03-MinimalSpanningTrees/Kruskal.alg':[
@@ -364,6 +408,7 @@ svg_instance = {'06-MaximalFlows/FordFulkerson.alg':['06-MaximalFlows/FordFulker
    '05-ShortestPaths/BellmanFord.alg':[
     '05-ShortestPaths/BellmanFordWC.cat'  #,'05-ShortestPaths/NegCircuit.cat'
     ]}
+"""
 
 #------------------------------------------------------------------
 def usage():
