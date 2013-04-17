@@ -19,7 +19,7 @@ var gPopupContainer = null;
 var gPopFrame = null;
 var gReturnFunc;
 var gPopupIsShown = false;
-var gDefaultPage = "../src/libs/subModal/loading.html";
+var gDefaultPage = "./libs/subModal/loading.html";
 var gHideSelects = false;
 var gReturnVal = null;
 
@@ -40,7 +40,7 @@ function initPopUp() {
 	theBody = document.getElementsByTagName('BODY')[0];
 	popmask = document.createElement('div');
 	popmask.id = 'popupMask';
-	popmask.setAttribute("onclick", "hidePopWin(false)");
+	popmask.setAttribute("onclick", "hidePopWin(true)");
 	popcont = document.createElement('div');
 	popcont.setAttribute("opacity", 0.5);
 	popcont.id = 'popupContainer';
@@ -49,7 +49,7 @@ function initPopUp() {
 			'<div id="popupTitleBar">' +
 				'<div id="popupTitle"></div>' +
 				'<div id="popupControls">' +
-					'<img src="./libs/subModal/close.gif" onclick="hidePopWin(false);" id="popCloseBox" />' +
+					'<img src="./libs/subModal/close.gif" onclick="hidePopWin(true);" id="popCloseBox" />' +
 				'</div>' +
 			'</div>' +
 			'<iframe src="'+ gDefaultPage +'" style="width:100%;height:100%;background-color:transparent;" scrolling="auto" frameborder="0" allowtransparency="true" id="popupFrame" name="popupFrame" width="100%" height="100%"></iframe>' +
@@ -71,6 +71,10 @@ function initPopUp() {
 	// Add onclick handlers to 'a' elements of class submodal or submodal-width-height
 	var elms = document.getElementsByTagName('a');
 	for (i = 0; i < elms.length; i++) {
+		// Skip svg links
+		if (elms[i].className.animVal === "")
+			continue;
+
 		if (elms[i].className.indexOf("submodal") == 0) { 
 			// var onclick = 'function (){showPopWin(\''+elms[i].href+'\','+width+', '+height+', null);return false;};';
 			// elms[i].onclick = eval(onclick);

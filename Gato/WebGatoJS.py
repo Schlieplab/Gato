@@ -1248,7 +1248,7 @@ function OptionMenu(id, height, width, menu_items) {
 
     this.cog = document.createElementNS(svgNS, "image");
     this.cog.setAttribute("id", "dropdown_cog");
-    this.cog.setAttributeNS('http://www.w3.org/1999/xlink','href', "cog.png");
+    this.cog.setAttributeNS('http://www.w3.org/1999/xlink','href', "./img/cog.png");
     this.cog.setAttribute('width', (this.width*2/3 + this.width/12)*2);
     this.cog.setAttribute('height', height*1.5);
     this.cog.setAttribute("cursor", "pointer");
@@ -3437,7 +3437,7 @@ function sendClick(evt) {
 
 function ShowAlgoInfo(evt) {
     algo_info_active = true;
-    showPopWin('./infos/BFS-BFS.html', viewbox_x*1/2, viewbox_y*1/2, 
+    showPopWin('./infos/%(info_file)s', viewbox_x*1/2, viewbox_y*1/2, 
         function() { algo_info_active = false; }
         );
 }
