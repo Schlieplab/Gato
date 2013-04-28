@@ -2988,9 +2988,8 @@ function fillGraphStates() {
         
     }
     
-    setGraphState(graph_states[0]);
-    StopAnimation(undefined);
     filling_states = false;
+    StopAnimation(undefined);
 }
 
 
