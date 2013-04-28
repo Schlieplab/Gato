@@ -93,10 +93,6 @@ var the_evt_target;
 var the_target;
 var the_evt_target;
 var element;
-var blinkcolor;
-var blinkcount;
-var e_blinkcolor;
-var e_blinkcount;
 var code;    //HTB of code in a vertical layout
 var init_graphs;  //initial graphs used for restarting animation
 var edges;  //Array of all edges used for SetAllEdgesColor
@@ -105,7 +101,7 @@ var speed_select;   //SpeedSelector object for controlling the speed
 var state = null;  //tracks animation state ("running", "stopped", "stepping", "moving")
 var movie_slider;       //Slider that controls the point in time of the graph
 var timer;  //timer for AnimateLoop
-var timeout = 1000;  //Multiplicative factor for timeout
+var timeout = 200;  //Multiplicative factor for timeout
 var horiz_layout;  //horizontal LLC for visible elements
 var vert_layout;   //vertical LLC for visible elements
 var left_vert_layout;   //Layout for code and speed select
@@ -2021,7 +2017,7 @@ function UpdateGraphInfo(graph_id, info) {
 //Colors edge with id given by e
 function SetEdgeColor(e, color) {
     // NOTE: Gato signature SetEdgeColor(v, w, color)
-    element = document.getElementById(e);
+    var element = document.getElementById(e);
     if (element == null) {
         e = switch_edge_vertices(e);
         element = document.getElementById(e);
@@ -2099,56 +2095,63 @@ function SetAllEdgesColor(graphColor) {
 
 //Vertex blinks between black and current color
 function BlinkVertex(v, color) {
-
     // Return if doing the initial filling of graph states
-    if (filling_states)
+    if (filling_states || switching_states || movie_slider.thumb_active)
         return;
 
     blinking = true;
-    element = document.getElementById(v);
-    blinkcolor = element.getAttribute("fill")
-    blinkcount = 3;
+    var element = document.getElementById(v);
+    var blinkcolor = element.getAttribute("fill");
+    var blinkcount = 3;
     element.setAttribute("fill", "black");
-    setTimeout(VertexBlinker, 3*timeout);
+    setTimeout(function() {
+        if (blinkcolor === 'black')
+            console.log(v);
+        VertexBlinker(element, blinkcolor, blinkcount);
+    }, 3*timeout);
 }
 
 //Helper for BlinkVertex
-function VertexBlinker() {
+function VertexBlinker(element, blinkcolor, blinkcount) {
     if (blinkcount % 2 == 1) {
        element.setAttribute("fill", "black"); 
     } else {
        element.setAttribute("fill", blinkcolor); 
     }
     blinkcount = blinkcount - 1;
-    if (blinkcount >= 0)
-       setTimeout(VertexBlinker, 3*timeout);
-    else
+    if (blinkcount >= 0) {
+       setTimeout(function() {
+            VertexBlinker(element, blinkcolor, blinkcount)
+        }, 3*timeout);
+    } else {
         blinking = false;
+    }
 }
 
 
 //Edge blinks between black and current color
 function BlinkEdge(e, color){
-
     // Return if doing the initial filling of graph states
-    if (filling_states)
+    if (filling_states || switching_states || movie_slider.thumb_active)
         return;
 
     blinking = true;
-    e_element = document.getElementById(e);
-    e_blinkcolor = e_element.getAttribute("stroke");
-    e_blinkcount = 3;
+    var e_element = document.getElementById(e);
+    var e_blinkcolor = e_element.getAttribute("stroke");
+    var e_blinkcount = 3;
     e_element.setAttribute("stroke", "black");
     var element2 = document.getElementById(e_arrow_id + e);
     if(element2 != null){
         element2.setAttribute("fill", "black");
     }
-    setTimeout(EdgeBlinker, 3*timeout);
+    setTimeout(function() {
+        EdgeBlinker(e_element, e_blinkcolor, e_blinkcount);
+    }, 3*timeout);
     
 }
 
 //Helper for BlinkEdge
-function EdgeBlinker(){
+function EdgeBlinker(e_element, e_blinkcolor, e_blinkcount){
     var element2;
     if (e_blinkcount % 2 == 1) {
        e_element.setAttribute("stroke", "black");
@@ -2164,10 +2167,13 @@ function EdgeBlinker(){
        }
     }
     e_blinkcount = e_blinkcount - 1;
-    if (e_blinkcount >= 0)
-       setTimeout(EdgeBlinker, 3*timeout);
-    else
+    if (e_blinkcount >= 0) {
+       setTimeout(function() {
+            EdgeBlinker(e_element);
+        }, 3*timeout);
+    } else {
         blinking = false;
+    }
 }
 
 
@@ -3702,7 +3708,7 @@ Array(1, UpdateEdgeInfo, "g1_(5, 8)", "Weight of edge (5,8): 112"),
 Array(9, SetEdgeColor, "g1_(1, 2)", "green"),
 Array(1, BlinkEdge, "g1_(1, 2)", "None"),
 Array(1, ShowActive, "l_5"),
-Array(10, ShowActive, "l_6"),
+Array(9, ShowActive, "l_6"),
 Array(9, SetAllVerticesColor, "g1_#FF0000", "2"),
 Array(2, SetEdgeColor, "g1_(1, 2)", "#FF0000"),
 Array(3, ShowActive, "l_1"),
@@ -3710,12 +3716,12 @@ Array(1, UpdateGraphInfo, "g1_()", "Component [1, 2] has maximal weight: 112 - M
 Array(1, UpdateEdgeInfo, "g1_(1, 2)", "Weight of edge (1,2): 112 - Weight of component: 112"),
 Array(9, ShowActive, "l_3"),
 Array(9, SetEdgeColor, "g1_(2, 3)", "green"),
-Array(1, BlinkEdge, "g1_(2, 3)", "None"),
+Array(2, BlinkEdge, "g1_(2, 3)", "None"),
 Array(1, ShowActive, "l_5"),
 Array(10, ShowActive, "l_6"),
 Array(9, SetAllVerticesColor, "g1_#FF0000", "3"),
-Array(3, SetEdgeColor, "g1_(2, 3)", "#FF0000"),
-Array(3, ShowActive, "l_1"),
+Array(2, SetEdgeColor, "g1_(2, 3)", "#FF0000"),
+Array(4, ShowActive, "l_1"),
 Array(1, UpdateGraphInfo, "g1_()", "Component [1, 2, 3] has maximal weight: 253 - MST weight is 1168"),
 Array(1, UpdateEdgeInfo, "g1_(1, 2)", "Weight of edge (1,2): 112 - Weight of component: 253"),
 Array(1, UpdateEdgeInfo, "g1_(2, 3)", "Weight of edge (2,3): 141 - Weight of component: 253"),
@@ -3725,7 +3731,7 @@ Array(1, BlinkEdge, "g1_(3, 4)", "None"),
 Array(1, ShowActive, "l_5"),
 Array(10, ShowActive, "l_6"),
 Array(9, SetAllVerticesColor, "g1_#FF0000", "4"),
-Array(2, SetEdgeColor, "g1_(3, 4)", "#FF0000"),
+Array(3, SetEdgeColor, "g1_(3, 4)", "#FF0000"),
 Array(3, ShowActive, "l_1"),
 Array(1, UpdateGraphInfo, "g1_()", "Component [1, 2, 3, 4] has maximal weight: 324 - MST weight is 1168"),
 Array(1, UpdateEdgeInfo, "g1_(1, 2)", "Weight of edge (1,2): 112 - Weight of component: 324"),
@@ -3812,7 +3818,7 @@ Array(1, BlinkEdge, "g1_(8, 9)", "None"),
 Array(1, ShowActive, "l_5"),
 Array(10, ShowActive, "l_6"),
 Array(9, SetAllVerticesColor, "g1_#FF0000", "9"),
-Array(6, SetEdgeColor, "g1_(8, 9)", "#FF0000"),
+Array(3, SetEdgeColor, "g1_(8, 9)", "#FF0000"),
 Array(3, ShowActive, "l_1"),
 Array(1, UpdateGraphInfo, "g1_()", "Weight of spanning tree: 1168 - MST weight is: 1168"),
 Array(1, UpdateEdgeInfo, "g1_(1, 2)", "Weight of edge (1,2): 112 - Weight of component: 1168"),

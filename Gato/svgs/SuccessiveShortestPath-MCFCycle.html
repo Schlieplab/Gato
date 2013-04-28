@@ -93,10 +93,6 @@ var the_evt_target;
 var the_target;
 var the_evt_target;
 var element;
-var blinkcolor;
-var blinkcount;
-var e_blinkcolor;
-var e_blinkcount;
 var code;    //HTB of code in a vertical layout
 var init_graphs;  //initial graphs used for restarting animation
 var edges;  //Array of all edges used for SetAllEdgesColor
@@ -105,7 +101,7 @@ var speed_select;   //SpeedSelector object for controlling the speed
 var state = null;  //tracks animation state ("running", "stopped", "stepping", "moving")
 var movie_slider;       //Slider that controls the point in time of the graph
 var timer;  //timer for AnimateLoop
-var timeout = 1000;  //Multiplicative factor for timeout
+var timeout = 200;  //Multiplicative factor for timeout
 var horiz_layout;  //horizontal LLC for visible elements
 var vert_layout;   //vertical LLC for visible elements
 var left_vert_layout;   //Layout for code and speed select
@@ -2021,7 +2017,7 @@ function UpdateGraphInfo(graph_id, info) {
 //Colors edge with id given by e
 function SetEdgeColor(e, color) {
     // NOTE: Gato signature SetEdgeColor(v, w, color)
-    element = document.getElementById(e);
+    var element = document.getElementById(e);
     if (element == null) {
         e = switch_edge_vertices(e);
         element = document.getElementById(e);
@@ -2099,56 +2095,63 @@ function SetAllEdgesColor(graphColor) {
 
 //Vertex blinks between black and current color
 function BlinkVertex(v, color) {
-
     // Return if doing the initial filling of graph states
-    if (filling_states)
+    if (filling_states || switching_states || movie_slider.thumb_active)
         return;
 
     blinking = true;
-    element = document.getElementById(v);
-    blinkcolor = element.getAttribute("fill")
-    blinkcount = 3;
+    var element = document.getElementById(v);
+    var blinkcolor = element.getAttribute("fill");
+    var blinkcount = 3;
     element.setAttribute("fill", "black");
-    setTimeout(VertexBlinker, 3*timeout);
+    setTimeout(function() {
+        if (blinkcolor === 'black')
+            console.log(v);
+        VertexBlinker(element, blinkcolor, blinkcount);
+    }, 3*timeout);
 }
 
 //Helper for BlinkVertex
-function VertexBlinker() {
+function VertexBlinker(element, blinkcolor, blinkcount) {
     if (blinkcount % 2 == 1) {
        element.setAttribute("fill", "black"); 
     } else {
        element.setAttribute("fill", blinkcolor); 
     }
     blinkcount = blinkcount - 1;
-    if (blinkcount >= 0)
-       setTimeout(VertexBlinker, 3*timeout);
-    else
+    if (blinkcount >= 0) {
+       setTimeout(function() {
+            VertexBlinker(element, blinkcolor, blinkcount)
+        }, 3*timeout);
+    } else {
         blinking = false;
+    }
 }
 
 
 //Edge blinks between black and current color
 function BlinkEdge(e, color){
-
     // Return if doing the initial filling of graph states
-    if (filling_states)
+    if (filling_states || switching_states || movie_slider.thumb_active)
         return;
 
     blinking = true;
-    e_element = document.getElementById(e);
-    e_blinkcolor = e_element.getAttribute("stroke");
-    e_blinkcount = 3;
+    var e_element = document.getElementById(e);
+    var e_blinkcolor = e_element.getAttribute("stroke");
+    var e_blinkcount = 3;
     e_element.setAttribute("stroke", "black");
     var element2 = document.getElementById(e_arrow_id + e);
     if(element2 != null){
         element2.setAttribute("fill", "black");
     }
-    setTimeout(EdgeBlinker, 3*timeout);
+    setTimeout(function() {
+        EdgeBlinker(e_element, e_blinkcolor, e_blinkcount);
+    }, 3*timeout);
     
 }
 
 //Helper for BlinkEdge
-function EdgeBlinker(){
+function EdgeBlinker(e_element, e_blinkcolor, e_blinkcount){
     var element2;
     if (e_blinkcount % 2 == 1) {
        e_element.setAttribute("stroke", "black");
@@ -2164,10 +2167,13 @@ function EdgeBlinker(){
        }
     }
     e_blinkcount = e_blinkcount - 1;
-    if (e_blinkcount >= 0)
-       setTimeout(EdgeBlinker, 3*timeout);
-    else
+    if (e_blinkcount >= 0) {
+       setTimeout(function() {
+            EdgeBlinker(e_element);
+        }, 3*timeout);
+    } else {
         blinking = false;
+    }
 }
 
 
@@ -3678,23 +3684,23 @@ function Initialize(evt) {
 }
 
 var animation = Array(Array(1, SetAllVerticesColor, "g1_grey"),
-Array(2, SetAllVerticesColor, "g2_grey"),
+Array(1, SetAllVerticesColor, "g2_grey"),
 Array(2, SetVertexAnnotation, "g2_1", "0"),
-Array(4, SetVertexColor, "g1_1", "green"),
-Array(12, SetVertexAnnotation, "g1_1", "1"),
-Array(7, SetVertexAnnotation, "g2_2", "0"),
-Array(7, SetVertexAnnotation, "g2_3", "0"),
+Array(6, SetVertexColor, "g1_1", "green"),
+Array(6, SetVertexAnnotation, "g1_1", "1"),
+Array(4, SetVertexAnnotation, "g2_2", "0"),
+Array(4, SetVertexAnnotation, "g2_3", "0"),
 Array(3, SetVertexColor, "g1_3", "red"),
-Array(2, SetVertexAnnotation, "g1_3", "-1"),
-Array(3, SetVertexAnnotation, "g2_4", "0"),
+Array(9, SetVertexAnnotation, "g1_3", "-1"),
+Array(7, SetVertexAnnotation, "g2_4", "0"),
 Array(3, SetEdgeColor, "g2_(1, 2)", "red"),
 Array(2, SetEdgeColor, "g2_(1, 4)", "red"),
 Array(1, SetEdgeColor, "g2_(2, 3)", "red"),
 Array(1, SetEdgeColor, "g2_(4, 3)", "red"),
-Array(1, ShowActive, "l_1"),
+Array(2, ShowActive, "l_1"),
 Array(1, UpdateEdgeInfo, "g1_(1, 2)", "Edge (1,2) - flow: 0 of 94"),
 Array(1, UpdateEdgeInfo, "g1_(2, 3)", "Edge (2,3) - flow: 0 of 127"),
-Array(1, UpdateEdgeInfo, "g1_(1, 4)", "Edge (1,4) - flow: 0 of 123"),
+Array(2, UpdateEdgeInfo, "g1_(1, 4)", "Edge (1,4) - flow: 0 of 123"),
 Array(1, UpdateEdgeInfo, "g1_(4, 3)", "Edge (4,3) - flow: 0 of 104"),
 Array(1, UpdateGraphInfo, "g2_()", ""),
 Array(1, UpdateEdgeInfo, "g2_(1, 2)", "Edge (1,2) - residual capacity: 94 - cost: 2 - reduced cost: 2"),
@@ -3709,8 +3715,8 @@ Array(9, ShowActive, "l_2"),
 Array(9, ShowActive, "l_3"),
 Array(9, SetVertexColor, "g2_3", "red"),
 Array(2, ShowActive, "l_1"),
-Array(9, ShowActive, "l_2"),
-Array(9, ShowActive, "l_1"),
+Array(10, ShowActive, "l_2"),
+Array(10, ShowActive, "l_1"),
 Array(10, ShowActive, "l_5"),
 Array(9, ShowActive, "l_6"),
 Array(9, SetVertexColor, "g2_3", "grey"),
@@ -3722,23 +3728,23 @@ Array(2, SetVertexColor, "g2_3", "blue"),
 Array(2, SetEdgeColor, "g2_(4, 3)", "blue"),
 Array(2, SetVertexColor, "g2_1", "blue"),
 Array(2, SetEdgeColor, "g2_(1, 4)", "blue"),
-Array(2, ShowActive, "l_9"),
+Array(3, ShowActive, "l_9"),
 Array(9, SetEdgeColor, "g2_(4, 3)", "yellow"),
 Array(3, ShowActive, "l_10"),
 Array(1, UpdateGraphInfo, "g2_()", "delta = 1"),
 Array(9, SetVertexColor, "g2_4", "red"),
 Array(1, SetVertexColor, "g2_3", "gray"),
-Array(1, SetEdgeColor, "g1_(4, 3)", "#9999FF"),
+Array(2, SetEdgeColor, "g1_(4, 3)", "#9999FF"),
 Array(8, AddEdge, "g2_(3, 4)"),
 Array(2, SetEdgeColor, "g2_(4, 3)", "red"),
-Array(1, SetEdgeColor, "g2_(3, 4)", "green"),
+Array(2, SetEdgeColor, "g2_(3, 4)", "green"),
 Array(1, SetVertexColor, "g2_1", "gray"),
 Array(1, SetVertexColor, "g2_4", "gray"),
 Array(1, SetEdgeColor, "g1_(1, 4)", "#9999FF"),
-Array(7, AddEdge, "g2_(4, 1)"),
-Array(1, SetEdgeColor, "g2_(1, 4)", "red"),
+Array(9, AddEdge, "g2_(4, 1)"),
+Array(2, SetEdgeColor, "g2_(1, 4)", "red"),
 Array(1, SetEdgeColor, "g2_(4, 1)", "green"),
-Array(1, ShowActive, "l_11"),
+Array(2, ShowActive, "l_11"),
 Array(1, UpdateEdgeInfo, "g1_(1, 4)", "Edge (1,4) - flow: 1 of 123"),
 Array(1, UpdateEdgeInfo, "g1_(4, 3)", "Edge (4,3) - flow: 1 of 104"),
 Array(1, UpdateEdgeInfo, "g2_(4, 1)", "Edge (4,1) - residual capacity: 1 - cost: -1 - reduced cost: -1"),
@@ -3746,9 +3752,9 @@ Array(1, UpdateEdgeInfo, "g2_(1, 4)", "Edge (1,4) - residual capacity: 122 - cos
 Array(1, UpdateEdgeInfo, "g2_(4, 3)", "Edge (4,3) - residual capacity: 103 - cost: 1 - reduced cost: 1"),
 Array(1, UpdateEdgeInfo, "g2_(3, 4)", "Edge (3,4) - residual capacity: 1 - cost: -1 - reduced cost: -1"),
 Array(8, SetVertexAnnotation, "g2_1", "0"),
-Array(4, SetVertexAnnotation, "g2_2", "2"),
+Array(8, SetVertexAnnotation, "g2_2", "2"),
 Array(7, SetVertexAnnotation, "g2_3", "2"),
-Array(3, SetVertexAnnotation, "g2_4", "1"),
+Array(8, SetVertexAnnotation, "g2_4", "1"),
 Array(4, SetEdgeColor, "g2_(1, 2)", "grey"),
 Array(1, SetEdgeColor, "g2_(1, 4)", "grey"),
 Array(1, SetEdgeColor, "g2_(2, 3)", "red"),

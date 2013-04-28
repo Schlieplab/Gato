@@ -93,10 +93,6 @@ var the_evt_target;
 var the_target;
 var the_evt_target;
 var element;
-var blinkcolor;
-var blinkcount;
-var e_blinkcolor;
-var e_blinkcount;
 var code;    //HTB of code in a vertical layout
 var init_graphs;  //initial graphs used for restarting animation
 var edges;  //Array of all edges used for SetAllEdgesColor
@@ -105,7 +101,7 @@ var speed_select;   //SpeedSelector object for controlling the speed
 var state = null;  //tracks animation state ("running", "stopped", "stepping", "moving")
 var movie_slider;       //Slider that controls the point in time of the graph
 var timer;  //timer for AnimateLoop
-var timeout = 1000;  //Multiplicative factor for timeout
+var timeout = 200;  //Multiplicative factor for timeout
 var horiz_layout;  //horizontal LLC for visible elements
 var vert_layout;   //vertical LLC for visible elements
 var left_vert_layout;   //Layout for code and speed select
@@ -2021,7 +2017,7 @@ function UpdateGraphInfo(graph_id, info) {
 //Colors edge with id given by e
 function SetEdgeColor(e, color) {
     // NOTE: Gato signature SetEdgeColor(v, w, color)
-    element = document.getElementById(e);
+    var element = document.getElementById(e);
     if (element == null) {
         e = switch_edge_vertices(e);
         element = document.getElementById(e);
@@ -2099,56 +2095,63 @@ function SetAllEdgesColor(graphColor) {
 
 //Vertex blinks between black and current color
 function BlinkVertex(v, color) {
-
     // Return if doing the initial filling of graph states
-    if (filling_states)
+    if (filling_states || switching_states || movie_slider.thumb_active)
         return;
 
     blinking = true;
-    element = document.getElementById(v);
-    blinkcolor = element.getAttribute("fill")
-    blinkcount = 3;
+    var element = document.getElementById(v);
+    var blinkcolor = element.getAttribute("fill");
+    var blinkcount = 3;
     element.setAttribute("fill", "black");
-    setTimeout(VertexBlinker, 3*timeout);
+    setTimeout(function() {
+        if (blinkcolor === 'black')
+            console.log(v);
+        VertexBlinker(element, blinkcolor, blinkcount);
+    }, 3*timeout);
 }
 
 //Helper for BlinkVertex
-function VertexBlinker() {
+function VertexBlinker(element, blinkcolor, blinkcount) {
     if (blinkcount % 2 == 1) {
        element.setAttribute("fill", "black"); 
     } else {
        element.setAttribute("fill", blinkcolor); 
     }
     blinkcount = blinkcount - 1;
-    if (blinkcount >= 0)
-       setTimeout(VertexBlinker, 3*timeout);
-    else
+    if (blinkcount >= 0) {
+       setTimeout(function() {
+            VertexBlinker(element, blinkcolor, blinkcount)
+        }, 3*timeout);
+    } else {
         blinking = false;
+    }
 }
 
 
 //Edge blinks between black and current color
 function BlinkEdge(e, color){
-
     // Return if doing the initial filling of graph states
-    if (filling_states)
+    if (filling_states || switching_states || movie_slider.thumb_active)
         return;
 
     blinking = true;
-    e_element = document.getElementById(e);
-    e_blinkcolor = e_element.getAttribute("stroke");
-    e_blinkcount = 3;
+    var e_element = document.getElementById(e);
+    var e_blinkcolor = e_element.getAttribute("stroke");
+    var e_blinkcount = 3;
     e_element.setAttribute("stroke", "black");
     var element2 = document.getElementById(e_arrow_id + e);
     if(element2 != null){
         element2.setAttribute("fill", "black");
     }
-    setTimeout(EdgeBlinker, 3*timeout);
+    setTimeout(function() {
+        EdgeBlinker(e_element, e_blinkcolor, e_blinkcount);
+    }, 3*timeout);
     
 }
 
 //Helper for BlinkEdge
-function EdgeBlinker(){
+function EdgeBlinker(e_element, e_blinkcolor, e_blinkcount){
     var element2;
     if (e_blinkcount % 2 == 1) {
        e_element.setAttribute("stroke", "black");
@@ -2164,10 +2167,13 @@ function EdgeBlinker(){
        }
     }
     e_blinkcount = e_blinkcount - 1;
-    if (e_blinkcount >= 0)
-       setTimeout(EdgeBlinker, 3*timeout);
-    else
+    if (e_blinkcount >= 0) {
+       setTimeout(function() {
+            EdgeBlinker(e_element);
+        }, 3*timeout);
+    } else {
         blinking = false;
+    }
 }
 
 
@@ -3678,7 +3684,7 @@ function Initialize(evt) {
 }
 
 var animation = Array(Array(1, SetAllVerticesColor, "g1_#EEEEEE"),
-Array(7, SetVertexAnnotation, "g1_1", "s"),
+Array(4, SetVertexAnnotation, "g1_1", "s"),
 Array(8, ShowActive, "l_2"),
 Array(1, UpdateGraphInfo, "g1_()", "Tree has 0 vertices and weight  0.00"),
 Array(1, UpdateEdgeInfo, "g1_(4, 4)", "Edge (4,4) weight: 9999999"),
@@ -3720,11 +3726,11 @@ Array(1, UpdateEdgeInfo, "g1_(15, 15)", "Edge (15,15) weight: 9999999"),
 Array(1, UpdateEdgeInfo, "g1_(8, 8)", "Edge (8,8) weight: 9999999"),
 Array(1, UpdateEdgeInfo, "g1_(4, 3)", "Edge (4,3) weight: 78"),
 Array(1, UpdateEdgeInfo, "g1_(2, 4)", "Edge (2,4) weight: 118"),
-Array(8, SetVertexFrameWidth, "g1_1", "6"),
+Array(9, SetVertexFrameWidth, "g1_1", "6"),
 Array(2, SetEdgeColor, "g1_(1, 2)", "yellow"),
 Array(2, ShowActive, "l_3"),
 Array(9, SetVertexColor, "g1_1", "blue"),
-Array(2, SetVertexColor, "g1_2", "blue"),
+Array(8, SetVertexColor, "g1_2", "blue"),
 Array(2, SetEdgeColor, "g1_(1, 2)", "blue"),
 Array(3, ShowActive, "l_4"),
 Array(10, ShowActive, "l_2"),
@@ -3740,7 +3746,7 @@ Array(10, ShowActive, "l_7"),
 Array(9, SetEdgeColor, "g1_(1, 2)", "green"),
 Array(2, ShowActive, "l_8"),
 Array(9, SetEdgeColor, "g1_(1, 2)", "black"),
-Array(1, ShowActive, "l_9"),
+Array(2, ShowActive, "l_9"),
 Array(9, SetVertexColor, "g1_1", "red"),
 Array(2, SetVertexColor, "g1_2", "red"),
 Array(2, SetEdgeColor, "g1_(1, 2)", "red"),
@@ -3750,7 +3756,7 @@ Array(9, SetVertexFrameWidth, "g1_2", "6"),
 Array(2, SetEdgeColor, "g1_(1, 2)", "yellow"),
 Array(2, ShowActive, "l_12"),
 Array(10, ShowActive, "l_13"),
-Array(10, ShowActive, "l_11"),
+Array(12, ShowActive, "l_11"),
 Array(9, SetEdgeColor, "g1_(1, 2)", "red"),
 Array(1, SetEdgeColor, "g1_(3, 2)", "yellow"),
 Array(2, ShowActive, "l_12"),
@@ -3775,7 +3781,7 @@ Array(2, ShowActive, "l_12"),
 Array(10, ShowActive, "l_11"),
 Array(9, SetEdgeColor, "g1_(2, 5)", "grey"),
 Array(1, SetVertexFrameWidth, "g1_2", "0"),
-Array(3, ShowActive, "l_6"),
+Array(2, ShowActive, "l_6"),
 Array(10, ShowActive, "l_7"),
 Array(9, SetEdgeColor, "g1_(2, 4)", "green"),
 Array(2, ShowActive, "l_8"),
@@ -3795,7 +3801,7 @@ Array(2, ShowActive, "l_12"),
 Array(10, ShowActive, "l_13"),
 Array(10, ShowActive, "l_14"),
 Array(9, SetEdgeColor, "g1_(1, 5)", "black"),
-Array(2, ShowActive, "l_15"),
+Array(1, ShowActive, "l_15"),
 Array(9, SetEdgeColor, "g1_(5, 4)", "blue"),
 Array(4, ShowActive, "l_16"),
 Array(10, ShowActive, "l_11"),
@@ -3820,7 +3826,7 @@ Array(10, ShowActive, "l_11"),
 Array(9, SetEdgeColor, "g1_(4, 9)", "yellow"),
 Array(2, ShowActive, "l_12"),
 Array(10, ShowActive, "l_13"),
-Array(9, ShowActive, "l_14"),
+Array(10, ShowActive, "l_14"),
 Array(10, ShowActive, "l_15"),
 Array(9, SetVertexColor, "g1_9", "blue"),
 Array(2, SetEdgeColor, "g1_(4, 9)", "blue"),
@@ -3840,7 +3846,7 @@ Array(1, UpdateGraphInfo, "g1_()", "Tree has 4 vertices and weight 259.00"),
 Array(9, SetVertexFrameWidth, "g1_9", "6"),
 Array(2, SetEdgeColor, "g1_(3, 9)", "yellow"),
 Array(2, ShowActive, "l_12"),
-Array(11, ShowActive, "l_13"),
+Array(10, ShowActive, "l_13"),
 Array(10, ShowActive, "l_14"),
 Array(9, SetEdgeColor, "g1_(4, 3)", "black"),
 Array(2, ShowActive, "l_15"),
@@ -3857,7 +3863,7 @@ Array(2, ShowActive, "l_12"),
 Array(10, ShowActive, "l_13"),
 Array(10, ShowActive, "l_14"),
 Array(9, SetEdgeColor, "g1_(4, 8)", "black"),
-Array(2, ShowActive, "l_15"),
+Array(1, ShowActive, "l_15"),
 Array(9, SetEdgeColor, "g1_(8, 9)", "blue"),
 Array(3, ShowActive, "l_16"),
 Array(10, ShowActive, "l_11"),
@@ -3904,9 +3910,9 @@ Array(1, SetVertexFrameWidth, "g1_8", "0"),
 Array(2, ShowActive, "l_6"),
 Array(10, ShowActive, "l_7"),
 Array(9, SetEdgeColor, "g1_(9, 6)", "green"),
-Array(2, ShowActive, "l_8"),
+Array(7, ShowActive, "l_8"),
 Array(9, SetEdgeColor, "g1_(9, 6)", "black"),
-Array(2, ShowActive, "l_9"),
+Array(1, ShowActive, "l_9"),
 Array(9, SetVertexColor, "g1_6", "red"),
 Array(2, SetEdgeColor, "g1_(9, 6)", "red"),
 Array(3, ShowActive, "l_11"),
@@ -3919,7 +3925,7 @@ Array(10, ShowActive, "l_14"),
 Array(9, SetEdgeColor, "g1_(9, 7)", "black"),
 Array(2, ShowActive, "l_15"),
 Array(9, SetEdgeColor, "g1_(7, 6)", "blue"),
-Array(3, ShowActive, "l_16"),
+Array(4, ShowActive, "l_16"),
 Array(10, ShowActive, "l_11"),
 Array(9, SetEdgeColor, "g1_(9, 6)", "yellow"),
 Array(2, ShowActive, "l_12"),
@@ -3948,12 +3954,12 @@ Array(2, SetEdgeColor, "g1_(6, 15)", "blue"),
 Array(3, ShowActive, "l_16"),
 Array(10, ShowActive, "l_11"),
 Array(9, SetVertexFrameWidth, "g1_6", "0"),
-Array(3, ShowActive, "l_6"),
+Array(2, ShowActive, "l_6"),
 Array(10, ShowActive, "l_7"),
 Array(9, SetEdgeColor, "g1_(7, 6)", "green"),
 Array(2, ShowActive, "l_8"),
 Array(9, SetEdgeColor, "g1_(7, 6)", "black"),
-Array(2, ShowActive, "l_9"),
+Array(1, ShowActive, "l_9"),
 Array(9, SetVertexColor, "g1_7", "red"),
 Array(2, SetEdgeColor, "g1_(7, 6)", "red"),
 Array(3, ShowActive, "l_11"),
@@ -3969,7 +3975,7 @@ Array(10, ShowActive, "l_13"),
 Array(10, ShowActive, "l_11"),
 Array(9, SetEdgeColor, "g1_(7, 6)", "red"),
 Array(1, SetVertexFrameWidth, "g1_7", "0"),
-Array(2, ShowActive, "l_6"),
+Array(3, ShowActive, "l_6"),
 Array(10, ShowActive, "l_7"),
 Array(9, SetEdgeColor, "g1_(3, 9)", "green"),
 Array(2, ShowActive, "l_8"),
@@ -4001,7 +4007,7 @@ Array(1, SetEdgeColor, "g1_(3, 9)", "yellow"),
 Array(2, ShowActive, "l_12"),
 Array(10, ShowActive, "l_11"),
 Array(9, SetEdgeColor, "g1_(3, 9)", "red"),
-Array(7, SetVertexFrameWidth, "g1_3", "0"),
+Array(1, SetVertexFrameWidth, "g1_3", "0"),
 Array(3, ShowActive, "l_6"),
 Array(10, ShowActive, "l_7"),
 Array(9, SetEdgeColor, "g1_(6, 10)", "green"),
@@ -4022,7 +4028,7 @@ Array(2, ShowActive, "l_12"),
 Array(10, ShowActive, "l_11"),
 Array(9, SetEdgeColor, "g1_(6, 10)", "red"),
 Array(1, SetEdgeColor, "g1_(10, 11)", "yellow"),
-Array(3, ShowActive, "l_12"),
+Array(2, ShowActive, "l_12"),
 Array(10, ShowActive, "l_13"),
 Array(10, ShowActive, "l_14"),
 Array(10, ShowActive, "l_15"),
@@ -4031,7 +4037,7 @@ Array(2, SetEdgeColor, "g1_(10, 11)", "blue"),
 Array(3, ShowActive, "l_16"),
 Array(10, ShowActive, "l_11"),
 Array(9, SetVertexFrameWidth, "g1_10", "0"),
-Array(3, ShowActive, "l_6"),
+Array(2, ShowActive, "l_6"),
 Array(10, ShowActive, "l_7"),
 Array(9, SetEdgeColor, "g1_(10, 11)", "green"),
 Array(2, ShowActive, "l_8"),
@@ -4042,7 +4048,7 @@ Array(2, SetEdgeColor, "g1_(10, 11)", "red"),
 Array(3, ShowActive, "l_11"),
 Array(1, UpdateGraphInfo, "g1_()", "Tree has 10 vertices and weight 614.00"),
 Array(9, SetVertexFrameWidth, "g1_11", "6"),
-Array(1, SetEdgeColor, "g1_(10, 11)", "yellow"),
+Array(2, SetEdgeColor, "g1_(10, 11)", "yellow"),
 Array(2, ShowActive, "l_12"),
 Array(10, ShowActive, "l_11"),
 Array(9, SetEdgeColor, "g1_(10, 11)", "red"),
@@ -4082,10 +4088,10 @@ Array(10, ShowActive, "l_13"),
 Array(10, ShowActive, "l_11"),
 Array(9, SetEdgeColor, "g1_(5, 4)", "red"),
 Array(1, SetVertexFrameWidth, "g1_5", "0"),
-Array(2, ShowActive, "l_6"),
-Array(12, ShowActive, "l_7"),
+Array(3, ShowActive, "l_6"),
+Array(10, ShowActive, "l_7"),
 Array(9, SetEdgeColor, "g1_(11, 12)", "green"),
-Array(3, ShowActive, "l_8"),
+Array(2, ShowActive, "l_8"),
 Array(9, SetEdgeColor, "g1_(11, 12)", "black"),
 Array(2, ShowActive, "l_9"),
 Array(9, SetVertexColor, "g1_12", "red"),
@@ -4098,7 +4104,7 @@ Array(2, ShowActive, "l_12"),
 Array(10, ShowActive, "l_11"),
 Array(9, SetEdgeColor, "g1_(11, 12)", "red"),
 Array(1, SetEdgeColor, "g1_(12, 13)", "yellow"),
-Array(2, ShowActive, "l_12"),
+Array(1, ShowActive, "l_12"),
 Array(10, ShowActive, "l_13"),
 Array(10, ShowActive, "l_14"),
 Array(10, ShowActive, "l_15"),
@@ -4139,7 +4145,7 @@ Array(9, SetVertexFrameWidth, "g1_13", "0"),
 Array(2, ShowActive, "l_6"),
 Array(10, ShowActive, "l_7"),
 Array(9, SetEdgeColor, "g1_(14, 13)", "green"),
-Array(2, ShowActive, "l_8"),
+Array(1, ShowActive, "l_8"),
 Array(9, SetEdgeColor, "g1_(14, 13)", "black"),
 Array(1, ShowActive, "l_9"),
 Array(9, SetVertexColor, "g1_14", "red"),
@@ -4158,7 +4164,7 @@ Array(10, ShowActive, "l_11"),
 Array(9, SetEdgeColor, "g1_(14, 13)", "red"),
 Array(1, SetVertexFrameWidth, "g1_14", "0"),
 Array(2, ShowActive, "l_6"),
-Array(11, ShowActive, "l_7"),
+Array(10, ShowActive, "l_7"),
 Array(9, SetEdgeColor, "g1_(6, 15)", "green"),
 Array(2, ShowActive, "l_8"),
 Array(9, SetEdgeColor, "g1_(6, 15)", "black"),
@@ -4177,7 +4183,7 @@ Array(2, ShowActive, "l_12"),
 Array(10, ShowActive, "l_11"),
 Array(9, SetEdgeColor, "g1_(12, 15)", "grey"),
 Array(1, SetEdgeColor, "g1_(15, 14)", "yellow"),
-Array(1, ShowActive, "l_12"),
+Array(2, ShowActive, "l_12"),
 Array(10, ShowActive, "l_11"),
 Array(9, SetEdgeColor, "g1_(15, 14)", "grey"),
 Array(1, SetVertexFrameWidth, "g1_15", "0"),

@@ -93,10 +93,6 @@ var the_evt_target;
 var the_target;
 var the_evt_target;
 var element;
-var blinkcolor;
-var blinkcount;
-var e_blinkcolor;
-var e_blinkcount;
 var code;    //HTB of code in a vertical layout
 var init_graphs;  //initial graphs used for restarting animation
 var edges;  //Array of all edges used for SetAllEdgesColor
@@ -105,7 +101,7 @@ var speed_select;   //SpeedSelector object for controlling the speed
 var state = null;  //tracks animation state ("running", "stopped", "stepping", "moving")
 var movie_slider;       //Slider that controls the point in time of the graph
 var timer;  //timer for AnimateLoop
-var timeout = 1000;  //Multiplicative factor for timeout
+var timeout = 200;  //Multiplicative factor for timeout
 var horiz_layout;  //horizontal LLC for visible elements
 var vert_layout;   //vertical LLC for visible elements
 var left_vert_layout;   //Layout for code and speed select
@@ -2021,7 +2017,7 @@ function UpdateGraphInfo(graph_id, info) {
 //Colors edge with id given by e
 function SetEdgeColor(e, color) {
     // NOTE: Gato signature SetEdgeColor(v, w, color)
-    element = document.getElementById(e);
+    var element = document.getElementById(e);
     if (element == null) {
         e = switch_edge_vertices(e);
         element = document.getElementById(e);
@@ -2099,56 +2095,63 @@ function SetAllEdgesColor(graphColor) {
 
 //Vertex blinks between black and current color
 function BlinkVertex(v, color) {
-
     // Return if doing the initial filling of graph states
-    if (filling_states)
+    if (filling_states || switching_states || movie_slider.thumb_active)
         return;
 
     blinking = true;
-    element = document.getElementById(v);
-    blinkcolor = element.getAttribute("fill")
-    blinkcount = 3;
+    var element = document.getElementById(v);
+    var blinkcolor = element.getAttribute("fill");
+    var blinkcount = 3;
     element.setAttribute("fill", "black");
-    setTimeout(VertexBlinker, 3*timeout);
+    setTimeout(function() {
+        if (blinkcolor === 'black')
+            console.log(v);
+        VertexBlinker(element, blinkcolor, blinkcount);
+    }, 3*timeout);
 }
 
 //Helper for BlinkVertex
-function VertexBlinker() {
+function VertexBlinker(element, blinkcolor, blinkcount) {
     if (blinkcount % 2 == 1) {
        element.setAttribute("fill", "black"); 
     } else {
        element.setAttribute("fill", blinkcolor); 
     }
     blinkcount = blinkcount - 1;
-    if (blinkcount >= 0)
-       setTimeout(VertexBlinker, 3*timeout);
-    else
+    if (blinkcount >= 0) {
+       setTimeout(function() {
+            VertexBlinker(element, blinkcolor, blinkcount)
+        }, 3*timeout);
+    } else {
         blinking = false;
+    }
 }
 
 
 //Edge blinks between black and current color
 function BlinkEdge(e, color){
-
     // Return if doing the initial filling of graph states
-    if (filling_states)
+    if (filling_states || switching_states || movie_slider.thumb_active)
         return;
 
     blinking = true;
-    e_element = document.getElementById(e);
-    e_blinkcolor = e_element.getAttribute("stroke");
-    e_blinkcount = 3;
+    var e_element = document.getElementById(e);
+    var e_blinkcolor = e_element.getAttribute("stroke");
+    var e_blinkcount = 3;
     e_element.setAttribute("stroke", "black");
     var element2 = document.getElementById(e_arrow_id + e);
     if(element2 != null){
         element2.setAttribute("fill", "black");
     }
-    setTimeout(EdgeBlinker, 3*timeout);
+    setTimeout(function() {
+        EdgeBlinker(e_element, e_blinkcolor, e_blinkcount);
+    }, 3*timeout);
     
 }
 
 //Helper for BlinkEdge
-function EdgeBlinker(){
+function EdgeBlinker(e_element, e_blinkcolor, e_blinkcount){
     var element2;
     if (e_blinkcount % 2 == 1) {
        e_element.setAttribute("stroke", "black");
@@ -2164,10 +2167,13 @@ function EdgeBlinker(){
        }
     }
     e_blinkcount = e_blinkcount - 1;
-    if (e_blinkcount >= 0)
-       setTimeout(EdgeBlinker, 3*timeout);
-    else
+    if (e_blinkcount >= 0) {
+       setTimeout(function() {
+            EdgeBlinker(e_element);
+        }, 3*timeout);
+    } else {
         blinking = false;
+    }
 }
 
 
@@ -3678,14 +3684,14 @@ function Initialize(evt) {
 }
 
 var animation = Array(Array(1, SetVertexColor, "g1_1", "#FF0000"),
-Array(1, SetVertexColor, "g1_2", "#00FF00"),
+Array(2, SetVertexColor, "g1_2", "#00FF00"),
 Array(2, SetVertexColor, "g1_3", "#0000FF"),
-Array(1, SetVertexColor, "g1_4", "#009999"),
+Array(2, SetVertexColor, "g1_4", "#009999"),
 Array(1, SetVertexColor, "g1_5", "#990099"),
 Array(1, SetVertexColor, "g1_6", "#999900"),
 Array(1, SetVertexColor, "g1_7", "#996666"),
 Array(1, SetVertexColor, "g1_8", "#669966"),
-Array(2, SetVertexColor, "g1_9", "#666699"),
+Array(1, SetVertexColor, "g1_9", "#666699"),
 Array(1, SetVertexColor, "g1_10", "#0066CC"),
 Array(1, SetVertexColor, "g1_11", "#6600CC"),
 Array(1, SetVertexColor, "g1_12", "#66CC00"),
@@ -3732,7 +3738,7 @@ Array(1, UpdateEdgeInfo, "g1_(1, 2)", "Weight of edge (1,2): 99 - Weight of comp
 Array(10, ShowActive, "l_3"),
 Array(10, SetEdgeColor, "g1_(1, 5)", "green"),
 Array(1, BlinkEdge, "g1_(1, 5)", "None"),
-Array(2, ShowActive, "l_5"),
+Array(1, ShowActive, "l_5"),
 Array(11, ShowActive, "l_6"),
 Array(10, SetAllVerticesColor, "g1_#FF0000", "5"),
 Array(3, SetEdgeColor, "g1_(1, 5)", "#FF0000"),
@@ -3747,7 +3753,7 @@ Array(1, ShowActive, "l_5"),
 Array(11, ShowActive, "l_6"),
 Array(10, SetAllVerticesColor, "g1_#FF0000", "4"),
 Array(3, SetEdgeColor, "g1_(2, 4)", "#FF0000"),
-Array(4, ShowActive, "l_1"),
+Array(3, ShowActive, "l_1"),
 Array(1, UpdateGraphInfo, "g1_()", "Component [1, 2, 5, 4] has maximal weight: 360 - MST weight is 1263"),
 Array(1, UpdateEdgeInfo, "g1_(1, 2)", "Weight of edge (1,2): 99 - Weight of component: 360"),
 Array(1, UpdateEdgeInfo, "g1_(1, 5)", "Weight of edge (1,5): 143 - Weight of component: 360"),
@@ -3765,11 +3771,11 @@ Array(1, UpdateEdgeInfo, "g1_(1, 2)", "Weight of edge (1,2): 99 - Weight of comp
 Array(1, UpdateEdgeInfo, "g1_(1, 5)", "Weight of edge (1,5): 143 - Weight of component: 512"),
 Array(1, UpdateEdgeInfo, "g1_(2, 4)", "Weight of edge (2,4): 118 - Weight of component: 512"),
 Array(9, SetVertexColor, "g1_1", "yellow"),
-Array(2, SetVertexColor, "g1_5", "yellow"),
+Array(3, SetVertexColor, "g1_5", "yellow"),
 Array(2, SetEdgeColor, "g1_(1, 5)", "yellow"),
 Array(2, SetVertexColor, "g1_2", "yellow"),
 Array(2, SetEdgeColor, "g1_(1, 2)", "yellow"),
-Array(2, SetEdgeColor, "g1_(2, 5)", "yellow"),
+Array(3, SetEdgeColor, "g1_(2, 5)", "yellow"),
 Array(3, ShowActive, "l_11"),
 Array(1, UpdateEdgeInfo, "g1_(2, 5)", "Weight of edge (2,5): 152"),
 Array(1, UpdateEdgeInfo, "g1_(1, 2)", "Weight of edge (1,2): 99"),
@@ -3808,7 +3814,7 @@ Array(1, UpdateEdgeInfo, "g1_(2, 4)", "Weight of edge (2,4): 118 - Weight of com
 Array(9, ShowActive, "l_3"),
 Array(10, SetEdgeColor, "g1_(3, 10)", "green"),
 Array(1, BlinkEdge, "g1_(3, 10)", "None"),
-Array(1, ShowActive, "l_5"),
+Array(2, ShowActive, "l_5"),
 Array(11, ShowActive, "l_6"),
 Array(10, SetAllVerticesColor, "g1_#FF0000", "10"),
 Array(3, SetEdgeColor, "g1_(3, 10)", "#FF0000"),
@@ -3822,10 +3828,10 @@ Array(1, UpdateEdgeInfo, "g1_(2, 4)", "Weight of edge (2,4): 118 - Weight of com
 Array(9, ShowActive, "l_3"),
 Array(10, SetEdgeColor, "g1_(3, 9)", "green"),
 Array(1, BlinkEdge, "g1_(3, 9)", "None"),
-Array(2, ShowActive, "l_5"),
+Array(1, ShowActive, "l_5"),
 Array(11, ShowActive, "l_6"),
 Array(10, SetAllVerticesColor, "g1_#FF0000", "9"),
-Array(4, SetEdgeColor, "g1_(3, 9)", "#FF0000"),
+Array(3, SetEdgeColor, "g1_(3, 9)", "#FF0000"),
 Array(3, ShowActive, "l_1"),
 Array(1, UpdateGraphInfo, "g1_()", "Component [1,2,5,...] has maximal weight: 657 - MST weight is 1263"),
 Array(1, UpdateEdgeInfo, "g1_(3, 2)", "Weight of edge (3,2): 148 - Weight of component: 657"),
@@ -3840,7 +3846,7 @@ Array(1, BlinkEdge, "g1_(4, 3)", "None"),
 Array(1, ShowActive, "l_5"),
 Array(11, ShowActive, "l_8"),
 Array(10, SetEdgeColor, "g1_(4, 3)", "#FF0000"),
-Array(3, ShowActive, "l_9"),
+Array(4, ShowActive, "l_9"),
 Array(1, UpdateGraphInfo, "g1_()", "Component [1,2,5,...] has maximal weight: 735 - MST weight is 1263"),
 Array(1, UpdateEdgeInfo, "g1_(3, 2)", "Weight of edge (3,2): 148 - Weight of component: 735"),
 Array(1, UpdateEdgeInfo, "g1_(3, 10)", "Weight of edge (3,10): 89 - Weight of component: 735"),
@@ -3854,8 +3860,8 @@ Array(2, SetVertexColor, "g1_2", "yellow"),
 Array(2, SetEdgeColor, "g1_(3, 2)", "yellow"),
 Array(2, SetVertexColor, "g1_4", "yellow"),
 Array(2, SetEdgeColor, "g1_(2, 4)", "yellow"),
-Array(2, SetEdgeColor, "g1_(4, 3)", "yellow"),
-Array(3, ShowActive, "l_11"),
+Array(3, SetEdgeColor, "g1_(4, 3)", "yellow"),
+Array(4, ShowActive, "l_11"),
 Array(1, UpdateEdgeInfo, "g1_(3, 2)", "Weight of edge (3,2): 148"),
 Array(1, UpdateEdgeInfo, "g1_(4, 3)", "Weight of edge (4,3): 78"),
 Array(1, UpdateEdgeInfo, "g1_(2, 4)", "Weight of edge (2,4): 118"),
@@ -3883,7 +3889,7 @@ Array(1, UpdateEdgeInfo, "g1_(2, 4)", "Weight of edge (2,4): 118 - Weight of com
 Array(9, ShowActive, "l_3"),
 Array(10, SetEdgeColor, "g1_(4, 8)", "green"),
 Array(1, BlinkEdge, "g1_(4, 8)", "None"),
-Array(1, ShowActive, "l_5"),
+Array(2, ShowActive, "l_5"),
 Array(11, ShowActive, "l_6"),
 Array(10, SetAllVerticesColor, "g1_#FF0000", "8"),
 Array(6, SetEdgeColor, "g1_(4, 8)", "#FF0000"),
@@ -3900,9 +3906,9 @@ Array(9, ShowActive, "l_3"),
 Array(10, SetEdgeColor, "g1_(4, 9)", "green"),
 Array(1, BlinkEdge, "g1_(4, 9)", "None"),
 Array(1, ShowActive, "l_5"),
-Array(12, ShowActive, "l_8"),
+Array(11, ShowActive, "l_8"),
 Array(10, SetEdgeColor, "g1_(4, 9)", "#FF0000"),
-Array(3, ShowActive, "l_9"),
+Array(4, ShowActive, "l_9"),
 Array(1, UpdateGraphInfo, "g1_()", "Component [1,2,5,...] has maximal weight: 678 - MST weight is 1263"),
 Array(1, UpdateEdgeInfo, "g1_(4, 8)", "Weight of edge (4,8): 49 - Weight of component: 678"),
 Array(1, UpdateEdgeInfo, "g1_(3, 10)", "Weight of edge (3,10): 89 - Weight of component: 678"),
@@ -3913,12 +3919,12 @@ Array(1, UpdateEdgeInfo, "g1_(3, 9)", "Weight of edge (3,9): 60 - Weight of comp
 Array(1, UpdateEdgeInfo, "g1_(4, 3)", "Weight of edge (4,3): 78 - Weight of component: 678"),
 Array(1, UpdateEdgeInfo, "g1_(2, 4)", "Weight of edge (2,4): 118 - Weight of component: 678"),
 Array(9, SetVertexColor, "g1_3", "yellow"),
-Array(2, SetVertexColor, "g1_9", "yellow"),
+Array(3, SetVertexColor, "g1_9", "yellow"),
 Array(2, SetEdgeColor, "g1_(3, 9)", "yellow"),
-Array(2, SetVertexColor, "g1_4", "yellow"),
+Array(3, SetVertexColor, "g1_4", "yellow"),
 Array(2, SetEdgeColor, "g1_(4, 3)", "yellow"),
 Array(3, SetEdgeColor, "g1_(4, 9)", "yellow"),
-Array(4, ShowActive, "l_11"),
+Array(3, ShowActive, "l_11"),
 Array(1, UpdateEdgeInfo, "g1_(4, 9)", "Weight of edge (4,9): 42"),
 Array(1, UpdateEdgeInfo, "g1_(3, 9)", "Weight of edge (3,9): 60"),
 Array(1, UpdateEdgeInfo, "g1_(4, 3)", "Weight of edge (4,3): 78"),
@@ -3927,8 +3933,8 @@ Array(10, SetEdgeColor, "g1_(4, 3)", "red"),
 Array(1, BlinkEdge, "g1_(4, 3)", "None"),
 Array(1, ShowActive, "l_13"),
 Array(10, SetEdgeColor, "g1_(4, 3)", "black"),
-Array(2, SetEdgeColor, "g1_(4, 3)", "black"),
-Array(2, SetEdgeColor, "g1_(4, 3)", "#EEEEEE"),
+Array(1, SetEdgeColor, "g1_(4, 3)", "black"),
+Array(1, SetEdgeColor, "g1_(4, 3)", "#EEEEEE"),
 Array(1, SetEdgeColor, "g1_(3, 9)", "#FF0000"),
 Array(1, SetVertexColor, "g1_3", "#FF0000"),
 Array(1, SetVertexColor, "g1_9", "#FF0000"),
@@ -4004,7 +4010,7 @@ Array(1, BlinkEdge, "g1_(6, 3)", "None"),
 Array(1, ShowActive, "l_5"),
 Array(11, ShowActive, "l_6"),
 Array(10, SetAllVerticesColor, "g1_#FF0000", "6"),
-Array(3, SetEdgeColor, "g1_(6, 3)", "#FF0000"),
+Array(4, SetEdgeColor, "g1_(6, 3)", "#FF0000"),
 Array(3, ShowActive, "l_1"),
 Array(1, UpdateGraphInfo, "g1_()", "Component [1,2,5,...] has maximal weight: 623 - MST weight is 1263"),
 Array(1, UpdateEdgeInfo, "g1_(4, 8)", "Weight of edge (4,8): 49 - Weight of component: 623"),
@@ -4037,14 +4043,14 @@ Array(3, SetVertexColor, "g1_10", "yellow"),
 Array(2, SetEdgeColor, "g1_(3, 10)", "yellow"),
 Array(2, SetVertexColor, "g1_6", "yellow"),
 Array(2, SetEdgeColor, "g1_(6, 3)", "yellow"),
-Array(2, SetEdgeColor, "g1_(6, 10)", "yellow"),
+Array(3, SetEdgeColor, "g1_(6, 10)", "yellow"),
 Array(3, ShowActive, "l_11"),
 Array(1, UpdateEdgeInfo, "g1_(3, 10)", "Weight of edge (3,10): 89"),
 Array(1, UpdateEdgeInfo, "g1_(6, 10)", "Weight of edge (6,10): 69"),
 Array(1, UpdateEdgeInfo, "g1_(6, 3)", "Weight of edge (6,3): 69"),
 Array(10, ShowActive, "l_12"),
 Array(10, SetEdgeColor, "g1_(3, 10)", "red"),
-Array(1, BlinkEdge, "g1_(3, 10)", "None"),
+Array(4, BlinkEdge, "g1_(3, 10)", "None"),
 Array(1, ShowActive, "l_13"),
 Array(10, SetEdgeColor, "g1_(3, 10)", "black"),
 Array(1, SetEdgeColor, "g1_(3, 10)", "black"),
@@ -4105,10 +4111,10 @@ Array(1, UpdateEdgeInfo, "g1_(2, 4)", "Weight of edge (2,4): 118 - Weight of com
 Array(9, ShowActive, "l_3"),
 Array(10, SetEdgeColor, "g1_(8, 9)", "green"),
 Array(1, BlinkEdge, "g1_(8, 9)", "None"),
-Array(1, ShowActive, "l_5"),
+Array(2, ShowActive, "l_5"),
 Array(11, ShowActive, "l_8"),
 Array(10, SetEdgeColor, "g1_(8, 9)", "#FF0000"),
-Array(3, ShowActive, "l_9"),
+Array(4, ShowActive, "l_9"),
 Array(1, UpdateGraphInfo, "g1_()", "Component [1,2,5,...] has maximal weight: 865 - MST weight is 1263"),
 Array(1, UpdateEdgeInfo, "g1_(4, 8)", "Weight of edge (4,8): 49 - Weight of component: 865"),
 Array(1, UpdateEdgeInfo, "g1_(8, 9)", "Weight of edge (8,9): 45 - Weight of component: 865"),
@@ -4122,7 +4128,7 @@ Array(1, UpdateEdgeInfo, "g1_(5, 4)", "Weight of edge (5,4): 97 - Weight of comp
 Array(1, UpdateEdgeInfo, "g1_(3, 9)", "Weight of edge (3,9): 60 - Weight of component: 865"),
 Array(1, UpdateEdgeInfo, "g1_(2, 4)", "Weight of edge (2,4): 118 - Weight of component: 865"),
 Array(9, SetVertexColor, "g1_4", "yellow"),
-Array(2, SetVertexColor, "g1_9", "yellow"),
+Array(3, SetVertexColor, "g1_9", "yellow"),
 Array(2, SetEdgeColor, "g1_(4, 9)", "yellow"),
 Array(2, SetVertexColor, "g1_8", "yellow"),
 Array(2, SetEdgeColor, "g1_(4, 8)", "yellow"),
@@ -4159,7 +4165,7 @@ Array(1, UpdateEdgeInfo, "g1_(2, 4)", "Weight of edge (2,4): 118 - Weight of com
 Array(9, ShowActive, "l_3"),
 Array(10, SetEdgeColor, "g1_(9, 7)", "green"),
 Array(1, BlinkEdge, "g1_(9, 7)", "None"),
-Array(2, ShowActive, "l_5"),
+Array(1, ShowActive, "l_5"),
 Array(11, ShowActive, "l_8"),
 Array(10, SetEdgeColor, "g1_(9, 7)", "#FF0000"),
 Array(3, ShowActive, "l_9"),
@@ -4178,9 +4184,9 @@ Array(1, UpdateEdgeInfo, "g1_(2, 4)", "Weight of edge (2,4): 118 - Weight of com
 Array(9, SetVertexColor, "g1_6", "yellow"),
 Array(3, SetVertexColor, "g1_3", "yellow"),
 Array(2, SetEdgeColor, "g1_(6, 3)", "yellow"),
-Array(2, SetVertexColor, "g1_9", "yellow"),
+Array(3, SetVertexColor, "g1_9", "yellow"),
 Array(2, SetEdgeColor, "g1_(3, 9)", "yellow"),
-Array(2, SetVertexColor, "g1_7", "yellow"),
+Array(3, SetVertexColor, "g1_7", "yellow"),
 Array(2, SetEdgeColor, "g1_(7, 6)", "yellow"),
 Array(2, SetEdgeColor, "g1_(9, 7)", "yellow"),
 Array(3, ShowActive, "l_11"),
@@ -4188,7 +4194,7 @@ Array(1, UpdateEdgeInfo, "g1_(7, 6)", "Weight of edge (7,6): 47"),
 Array(1, UpdateEdgeInfo, "g1_(6, 3)", "Weight of edge (6,3): 69"),
 Array(1, UpdateEdgeInfo, "g1_(9, 7)", "Weight of edge (9,7): 57"),
 Array(1, UpdateEdgeInfo, "g1_(3, 9)", "Weight of edge (3,9): 60"),
-Array(9, ShowActive, "l_12"),
+Array(10, ShowActive, "l_12"),
 Array(10, SetEdgeColor, "g1_(6, 3)", "red"),
 Array(1, BlinkEdge, "g1_(6, 3)", "None"),
 Array(1, ShowActive, "l_13"),
@@ -4219,7 +4225,7 @@ Array(1, UpdateEdgeInfo, "g1_(2, 4)", "Weight of edge (2,4): 118 - Weight of com
 Array(9, ShowActive, "l_3"),
 Array(10, SetEdgeColor, "g1_(9, 6)", "green"),
 Array(1, BlinkEdge, "g1_(9, 6)", "None"),
-Array(1, ShowActive, "l_5"),
+Array(2, ShowActive, "l_5"),
 Array(11, ShowActive, "l_8"),
 Array(10, SetEdgeColor, "g1_(9, 6)", "#FF0000"),
 Array(3, ShowActive, "l_9"),
@@ -4236,7 +4242,7 @@ Array(1, UpdateEdgeInfo, "g1_(3, 9)", "Weight of edge (3,9): 60 - Weight of comp
 Array(1, UpdateEdgeInfo, "g1_(9, 6)", "Weight of edge (9,6): 48 - Weight of component: 852"),
 Array(1, UpdateEdgeInfo, "g1_(2, 4)", "Weight of edge (2,4): 118 - Weight of component: 852"),
 Array(9, SetVertexColor, "g1_7", "yellow"),
-Array(2, SetVertexColor, "g1_6", "yellow"),
+Array(3, SetVertexColor, "g1_6", "yellow"),
 Array(2, SetEdgeColor, "g1_(7, 6)", "yellow"),
 Array(2, SetVertexColor, "g1_9", "yellow"),
 Array(2, SetEdgeColor, "g1_(9, 7)", "yellow"),
@@ -4245,7 +4251,7 @@ Array(3, ShowActive, "l_11"),
 Array(1, UpdateEdgeInfo, "g1_(7, 6)", "Weight of edge (7,6): 47"),
 Array(1, UpdateEdgeInfo, "g1_(9, 7)", "Weight of edge (9,7): 57"),
 Array(1, UpdateEdgeInfo, "g1_(9, 6)", "Weight of edge (9,6): 48"),
-Array(9, ShowActive, "l_12"),
+Array(10, ShowActive, "l_12"),
 Array(10, SetEdgeColor, "g1_(9, 7)", "red"),
 Array(1, BlinkEdge, "g1_(9, 7)", "None"),
 Array(1, ShowActive, "l_13"),
@@ -4273,10 +4279,10 @@ Array(1, UpdateEdgeInfo, "g1_(2, 4)", "Weight of edge (2,4): 118 - Weight of com
 Array(9, ShowActive, "l_3"),
 Array(10, SetEdgeColor, "g1_(10, 11)", "green"),
 Array(1, BlinkEdge, "g1_(10, 11)", "None"),
-Array(2, ShowActive, "l_5"),
+Array(1, ShowActive, "l_5"),
 Array(11, ShowActive, "l_6"),
 Array(10, SetAllVerticesColor, "g1_#FF0000", "11"),
-Array(8, SetEdgeColor, "g1_(10, 11)", "#FF0000"),
+Array(6, SetEdgeColor, "g1_(10, 11)", "#FF0000"),
 Array(3, ShowActive, "l_1"),
 Array(1, UpdateGraphInfo, "g1_()", "Component [1,2,5,...] has maximal weight: 881 - MST weight is 1263"),
 Array(1, UpdateEdgeInfo, "g1_(10, 11)", "Weight of edge (10,11): 86 - Weight of component: 881"),
@@ -4291,12 +4297,12 @@ Array(1, UpdateEdgeInfo, "g1_(3, 9)", "Weight of edge (3,9): 60 - Weight of comp
 Array(1, UpdateEdgeInfo, "g1_(9, 6)", "Weight of edge (9,6): 48 - Weight of component: 881"),
 Array(1, UpdateEdgeInfo, "g1_(2, 4)", "Weight of edge (2,4): 118 - Weight of component: 881"),
 Array(9, ShowActive, "l_3"),
-Array(9, SetEdgeColor, "g1_(11, 12)", "green"),
+Array(10, SetEdgeColor, "g1_(11, 12)", "green"),
 Array(1, BlinkEdge, "g1_(11, 12)", "None"),
 Array(2, ShowActive, "l_5"),
-Array(10, ShowActive, "l_6"),
-Array(9, SetAllVerticesColor, "g1_#FF0000", "12"),
-Array(5, SetEdgeColor, "g1_(11, 12)", "#FF0000"),
+Array(11, ShowActive, "l_6"),
+Array(10, SetAllVerticesColor, "g1_#FF0000", "12"),
+Array(4, SetEdgeColor, "g1_(11, 12)", "#FF0000"),
 Array(3, ShowActive, "l_1"),
 Array(1, UpdateGraphInfo, "g1_()", "Component [1,2,5,...] has maximal weight: 1007 - MST weight is 1263"),
 Array(1, UpdateEdgeInfo, "g1_(10, 11)", "Weight of edge (10,11): 86 - Weight of component: 1007"),
@@ -4311,14 +4317,14 @@ Array(1, UpdateEdgeInfo, "g1_(5, 4)", "Weight of edge (5,4): 97 - Weight of comp
 Array(1, UpdateEdgeInfo, "g1_(3, 9)", "Weight of edge (3,9): 60 - Weight of component: 1007"),
 Array(1, UpdateEdgeInfo, "g1_(9, 6)", "Weight of edge (9,6): 48 - Weight of component: 1007"),
 Array(1, UpdateEdgeInfo, "g1_(2, 4)", "Weight of edge (2,4): 118 - Weight of component: 1007"),
-Array(10, ShowActive, "l_3"),
+Array(9, ShowActive, "l_3"),
 Array(10, SetEdgeColor, "g1_(12, 13)", "green"),
 Array(1, BlinkEdge, "g1_(12, 13)", "None"),
-Array(2, ShowActive, "l_5"),
+Array(1, ShowActive, "l_5"),
 Array(11, ShowActive, "l_6"),
 Array(10, SetAllVerticesColor, "g1_#FF0000", "13"),
 Array(4, SetEdgeColor, "g1_(12, 13)", "#FF0000"),
-Array(3, ShowActive, "l_1"),
+Array(2, ShowActive, "l_1"),
 Array(1, UpdateGraphInfo, "g1_()", "Component [1,2,5,...] has maximal weight: 1146 - MST weight is 1263"),
 Array(1, UpdateEdgeInfo, "g1_(10, 11)", "Weight of edge (10,11): 86 - Weight of component: 1146"),
 Array(1, UpdateEdgeInfo, "g1_(8, 9)", "Weight of edge (8,9): 45 - Weight of component: 1146"),
@@ -4333,11 +4339,11 @@ Array(1, UpdateEdgeInfo, "g1_(5, 4)", "Weight of edge (5,4): 97 - Weight of comp
 Array(1, UpdateEdgeInfo, "g1_(3, 9)", "Weight of edge (3,9): 60 - Weight of component: 1146"),
 Array(1, UpdateEdgeInfo, "g1_(9, 6)", "Weight of edge (9,6): 48 - Weight of component: 1146"),
 Array(1, UpdateEdgeInfo, "g1_(2, 4)", "Weight of edge (2,4): 118 - Weight of component: 1146"),
-Array(14, ShowActive, "l_3"),
-Array(9, SetEdgeColor, "g1_(12, 15)", "green"),
+Array(9, ShowActive, "l_3"),
+Array(10, SetEdgeColor, "g1_(12, 15)", "green"),
 Array(2, BlinkEdge, "g1_(12, 15)", "None"),
 Array(1, ShowActive, "l_5"),
-Array(10, ShowActive, "l_8"),
+Array(11, ShowActive, "l_8"),
 Array(10, SetEdgeColor, "g1_(12, 15)", "#FF0000"),
 Array(4, ShowActive, "l_9"),
 Array(1, UpdateGraphInfo, "g1_()", "Component [1,2,5,...] has maximal weight: 1343 - MST weight is 1263"),
@@ -4357,8 +4363,8 @@ Array(1, UpdateEdgeInfo, "g1_(12, 15)", "Weight of edge (12,15): 197 - Weight of
 Array(1, UpdateEdgeInfo, "g1_(2, 4)", "Weight of edge (2,4): 118 - Weight of component: 1343"),
 Array(9, SetVertexColor, "g1_10", "yellow"),
 Array(2, SetVertexColor, "g1_11", "yellow"),
-Array(1, SetEdgeColor, "g1_(10, 11)", "yellow"),
-Array(1, SetVertexColor, "g1_12", "yellow"),
+Array(2, SetEdgeColor, "g1_(10, 11)", "yellow"),
+Array(2, SetVertexColor, "g1_12", "yellow"),
 Array(1, SetEdgeColor, "g1_(11, 12)", "yellow"),
 Array(2, SetVertexColor, "g1_6", "yellow"),
 Array(2, SetEdgeColor, "g1_(6, 10)", "yellow"),
@@ -4390,7 +4396,7 @@ Array(1, SetVertexColor, "g1_10", "#FF0000"),
 Array(1, SetEdgeColor, "g1_(6, 15)", "#FF0000"),
 Array(1, SetVertexColor, "g1_6", "#FF0000"),
 Array(1, SetVertexColor, "g1_15", "#FF0000"),
-Array(1, ShowActive, "l_1"),
+Array(2, ShowActive, "l_1"),
 Array(1, UpdateGraphInfo, "g1_()", "Component [1,2,5,...] has maximal weight: 1146 - MST weight is 1263"),
 Array(1, UpdateEdgeInfo, "g1_(10, 11)", "Weight of edge (10,11): 86 - Weight of component: 1146"),
 Array(1, UpdateEdgeInfo, "g1_(8, 9)", "Weight of edge (8,9): 45 - Weight of component: 1146"),
@@ -4432,9 +4438,9 @@ Array(9, ShowActive, "l_3"),
 Array(10, SetEdgeColor, "g1_(15, 14)", "green"),
 Array(1, BlinkEdge, "g1_(15, 14)", "None"),
 Array(1, ShowActive, "l_5"),
-Array(11, ShowActive, "l_8"),
-Array(10, SetEdgeColor, "g1_(15, 14)", "#FF0000"),
-Array(3, ShowActive, "l_9"),
+Array(10, ShowActive, "l_8"),
+Array(9, SetEdgeColor, "g1_(15, 14)", "#FF0000"),
+Array(2, ShowActive, "l_9"),
 Array(1, UpdateGraphInfo, "g1_()", "Weight of spanning tree: 1453 - MST weight is: 1263"),
 Array(1, UpdateEdgeInfo, "g1_(10, 11)", "Weight of edge (10,11): 86 - Weight of component: 1453"),
 Array(1, UpdateEdgeInfo, "g1_(14, 13)", "Weight of edge (14,13): 117 - Weight of component: 1453"),
@@ -4452,20 +4458,20 @@ Array(1, UpdateEdgeInfo, "g1_(15, 14)", "Weight of edge (15,14): 190 - Weight of
 Array(1, UpdateEdgeInfo, "g1_(9, 6)", "Weight of edge (9,6): 48 - Weight of component: 1453"),
 Array(1, UpdateEdgeInfo, "g1_(2, 4)", "Weight of edge (2,4): 118 - Weight of component: 1453"),
 Array(9, SetVertexColor, "g1_6", "yellow"),
-Array(3, SetVertexColor, "g1_10", "yellow"),
-Array(2, SetEdgeColor, "g1_(6, 10)", "yellow"),
-Array(2, SetVertexColor, "g1_15", "yellow"),
-Array(2, SetEdgeColor, "g1_(6, 15)", "yellow"),
-Array(2, SetVertexColor, "g1_11", "yellow"),
-Array(2, SetEdgeColor, "g1_(10, 11)", "yellow"),
-Array(2, SetVertexColor, "g1_12", "yellow"),
-Array(2, SetEdgeColor, "g1_(11, 12)", "yellow"),
-Array(2, SetVertexColor, "g1_13", "yellow"),
+Array(1, SetVertexColor, "g1_10", "yellow"),
+Array(1, SetEdgeColor, "g1_(6, 10)", "yellow"),
+Array(1, SetVertexColor, "g1_15", "yellow"),
+Array(1, SetEdgeColor, "g1_(6, 15)", "yellow"),
+Array(1, SetVertexColor, "g1_11", "yellow"),
+Array(1, SetEdgeColor, "g1_(10, 11)", "yellow"),
+Array(1, SetVertexColor, "g1_12", "yellow"),
+Array(1, SetEdgeColor, "g1_(11, 12)", "yellow"),
+Array(1, SetVertexColor, "g1_13", "yellow"),
 Array(1, SetEdgeColor, "g1_(12, 13)", "yellow"),
 Array(1, SetVertexColor, "g1_14", "yellow"),
 Array(1, SetEdgeColor, "g1_(14, 13)", "yellow"),
 Array(1, SetEdgeColor, "g1_(15, 14)", "yellow"),
-Array(3, ShowActive, "l_11"),
+Array(1, ShowActive, "l_11"),
 Array(1, UpdateEdgeInfo, "g1_(10, 11)", "Weight of edge (10,11): 86"),
 Array(1, UpdateEdgeInfo, "g1_(14, 13)", "Weight of edge (14,13): 117"),
 Array(1, UpdateEdgeInfo, "g1_(12, 13)", "Weight of edge (12,13): 139"),
@@ -4474,7 +4480,7 @@ Array(1, UpdateEdgeInfo, "g1_(6, 10)", "Weight of edge (6,10): 69"),
 Array(1, UpdateEdgeInfo, "g1_(6, 15)", "Weight of edge (6,15): 170"),
 Array(1, UpdateEdgeInfo, "g1_(15, 14)", "Weight of edge (15,14): 190"),
 Array(9, ShowActive, "l_12"),
-Array(10, SetEdgeColor, "g1_(15, 14)", "red"),
+Array(9, SetEdgeColor, "g1_(15, 14)", "red"),
 Array(1, BlinkEdge, "g1_(15, 14)", "None"),
 Array(1, ShowActive, "l_13"),
 Array(10, SetEdgeColor, "g1_(15, 14)", "black"),
