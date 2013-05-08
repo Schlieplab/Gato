@@ -1,13 +1,14 @@
-for v in Vertices:
-    visited[v] = 0	
-	
 root = PickVertex()
-visited[root] = 1	
 Q.Append(root)
+pred[root] = root
+step = 1
 
 while Q.IsNotEmpty():
     v = Q.Top()
+    label[v] = step
+    step = step + 1
     for w in Neighborhood(v):
-	if visited[w] == 0:
-	    visited[w] = 1
-	    Q.Append(w)
+        if not pred[w]:
+            Q.Append(w)
+            pred[w] = v
+                

@@ -464,8 +464,7 @@ class AlgoWin(Frame):
             
             if self.algorithm.ReadyToStart():
                 self.buttonStart['state'] = NORMAL 
-            self.master.title("Gato %s - %s" % (gatoVersion,stripPath(file))
-            
+            self.master.title("Gato %s - %s" % (gatoVersion,stripPath(file)))
             if self.AboutAlgorithmDialog:
                 self.AboutAlgorithmDialog.Update(self.algorithm.About(),"About Algorithm")
                 

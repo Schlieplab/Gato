@@ -1,63 +1,113 @@
 ################################################################################
 #
-#       This is part of Gato (Graph Algorithm Toolbox) 
-#       You can find more information at 
-#       http://gato.sf.net
+#       This is part of CATBox (Combinatorial Algorithm Toolbox)
+#       version 1.1 from 4/10/2011. You can find more information at
+#       http://schliep.org/CATBox/
 #
 #	file:   BFS.pro
-#	author: Alexander Schliep (alexander@schliep.org)
+#	author: Torsten Pattberg (torsten.pattberg@klf.de)
+#               Alexander Schliep (alexander@schliep.org)
 #
-#       Copyright (C) 1998-2006, Alexander Schliep, Winfried Hochstaettler and 
-#       Copyright 1998-2001 ZAIK/ZPR, Universitaet zu Koeln
-#                                   
-#       Contact: alexander@schliep.org, winfried.hochstaettler@fernuni-hagen.de             
+#       Copyright (C) 1998-2011, Winfried Hochstaettler and Alexander Schliep.
+#	(C) 2010 Springer Verlag.
+#       
+#	This is part of the Springer textbook "CATBox - an interactive course in 
+#       discrete optimization".
 #
-#       Information: http://gato.sf.net
+#       All rights reserved. Do not distribute without written permission. 
 #
-#       This library is free software; you can redistribute it and/or
-#       modify it under the terms of the GNU Library General Public
-#       License as published by the Free Software Foundation; either
-#       version 2 of the License, or (at your option) any later version.
+
+
+
+
 #
-#       This library is distributed in the hope that it will be useful,
-#       but WITHOUT ANY WARRANTY; without even the implied warranty of
-#       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-#       Library General Public License for more details.
-#
-#       You should have received a copy of the GNU Library General Public
-#       License along with this library; if not, write to the Free
-#       Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
-#
-#
-#       This file has version _FILE_REVISION_ from _FILE_DATE_
+#       This file is version $Revision$
+#                       from $Date$
+#             last change by $Author$.
 #
 #
 ################################################################################
 
 # Options ----------------------------------------------------------------------
-#breakpoints = [9]
-#interactive = [4]
+breakpoints = [6]
+interactive = [1]
 graphDisplays = 1
-about = """<HTML>
+about = """
+<HTML>
 <HEAD>
-<TITLE>Breadth-First-Search</TITLE>
+<TITLE>Breadth-First-Search (BFS) Traversal</TITLE>
 </HEAD>
 <BODY>
 
-This algorithm traverses a graph in breadth-first
-order.
+<H1>Breadth-First-Search (BFS) Traversal</H1>
+
+This algorithm traverses a graph in breadth-first order and visualizes
+the predecessor tree being built and the BFS vertex labels. See
+Chapter 2 in the CATBox book.
+
+<H3>Visualization</H3>
+
+<H5>Vertex Colors</H5>
+<dl>
+<dt><colordef color="#EEEEEE"></dt> <dd>Initial color for vertices that
+have neither been <em>visited</em> nor <em>processed</em>.</dd>
+
+<dt><colordef color="blue"></dt> <dd>Vertices which have been
+<em>visited</em> as a neighbor while <em>processing</em> the
+<em>active</em> vertex.</dd>
+
+<dt><colordef color="red"></dt> <dd>Vertices of this color have been <em>processed</em>; i.e.,
+their neighbors have been explored.</dd>
+
+<dt><colordef color="black"></dt> <dd>The vertex being <em>processed</em> is
+displayed with a wide outline in this color.</dd>
+
+</dl>
+
+
+<H5>Edge Colors</H5>
+<dl>
+<dt><colordef color="#EEEEEE"></dt> <dd>Initial color for edges. Edges
+of this color have not been <em>traversed</em> yet.</dd>
+
+<dt><colordef color="yellow"></dt> <dd>Color of the edge being <em>traversed</em>.</dd>
+
+<dt><colordef color="red"></dt> <dd>Traversed edges displayed in the color are
+part of the BFS tree.</dd>
+
+<dt><colordef color="grey"></dt> <dd>Color of edges traversed
+which are not part of the BFS tree.</dd>
+
+
+</dl>
+
+<H5>Further elements</H5> <dl> <dt><colordef color="black"></dt>
+<dd>The BFS label assigned to visited vertices is displayed in this color.</dd> </dl>
 
 </BODY></HTML>
 """
 #--------------------------------------------------------------------------------
-#self.NeededProperties({'Simple':0, 'Undirected':1})
 
-pickCallback = lambda v, a=A: A.SetVertexAnnotation(v,"source")
-PickVertex   = lambda f=pickCallback: self.PickVertex(1,None,f)
-Neighborhood = lambda v,a=A,g=G: AnimatedNeighborhood(a,g,v)
-Vertices     = G.vertices          
-visited      = AnimatedVertexLabeling(A)    
-Q            = AnimatedVertexQueue(A)
+PickVertex   = lambda : self.PickVertex(1,None)
+label        = VisibleVertexLabeling(A)
+pred         = AnimatedPredecessor(A)
+Neighborhood = lambda v,a=A,g=G: AnimatedNeighborhood(a,g,v,["red"])
+Q            = AnimatedVertexQueue(A,"blue","red")
 
-# End-of BFS.pro
+class MyGraphInformer(GraphInformer):
+
+    def VertexInfo(self,v):
+	if label[v]:
+	    return "Vertex %d - label %d - pred %d"%(v,label[v],pred[v])
+	elif v in Q.contents:
+            return "Vertex %d - Queue position %d"%(v,Q.contents.index(v)+1)
+	else:
+            return "Vertex %d - not visited yet"%v
+        return
+
+A.SetAllVerticesColor("#EEEEEE")
+for v in G.vertices:
+    label[v] = None
+    pred[v]  = None
+
+A.RegisterGraphInformer(MyGraphInformer(G))

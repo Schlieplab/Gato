@@ -30,6 +30,7 @@ HMMXML.py
 LGPL.txt
 MANIFEST.in
 MapEditor.py
+MergedHistories.py
 ObjectGraph.py
 ObjectGred.py
 PlanarEmbedding.py
@@ -46,7 +47,6 @@ linecacheCopy.py
 sample.cat
 setup-mac-gato.py
 setup-mac-gred.py
-setup-mac.py
 setup.py
 scripts/Gato
 scripts/Gred

@@ -1,14 +1,14 @@
-for v in Vertices:
-    visited[v] = 0	
-	
 root = PickVertex()
-visited[root] = 1	
 S.Push(root)
+pred[root] = root
+step = 1
 
 while S.IsNotEmpty():
     v = S.Pop()
-    for w in Neighborhood(v):
-	if visited[w] == 0:
-	    visited[w] = 1
-	    S.Push(w)
-
+    if not label[v]:
+        label[v] = step
+        step += 1
+        for w in Neighborhood(v):
+            if not label[w]:
+                S.Push(w)
+                pred[w] = v

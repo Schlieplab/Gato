@@ -942,7 +942,7 @@ class pie_chart(Tkinter.Canvas,flyout_decoration):
             key='other'
         value=abs(float(self.itemcget(sector,'extent')))/360.0*self.ProbDict.sum
         l10_value=-math.floor(math.log10(value))
-        info='%s: %s'%(key,str(round(value,l10_value+3)))
+        info='%s: %s'%(key,str(round(value,int(l10_value+3))))
         return info
         
     def anchor(self,angle,angle_base):
