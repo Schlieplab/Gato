@@ -5,7 +5,7 @@
 #	file:   ObjectGraph.py
 #	author: Alexander Schliep (alexander@schliep.org)
 #
-#       Copyright (C) 2006, Alexander Schliep
+#       Copyright (C) 2013-2013 Alexander Schliep, Winfried Hochstaettler
 #                                   
 #       Contact: alexander@schliep.org             
 #
