@@ -257,12 +257,6 @@ class MergedHistories:
         print "Function tried to be called: ", arg
         raise AttributeError('Specified function of MergedHistories does not exist.')
             
-    #What does this do?        
-    def caller(self, *args, **keywords):
-        # XXX This is broken with kw arguments
-        #return apply(self.method,args)
-        return self.method(*args, **keywords)
-        
     def Undo(self):
         """ Undo last command if there is one and if it can be undone """
         if self.history_index == None: # Have never undone anything

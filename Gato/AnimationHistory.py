@@ -234,19 +234,11 @@ class AnimationHistory:
         # in self.animator method calls should fail. NOT sure about
         # this
         tmp = getattr(self.animator,arg)
-        #print "###AnimationHistory.__getattr__ ", arg
         if callable(tmp):
-            self.methodName = arg
-            self.method = tmp
-            return getattr(self,'caller')
+            return tmp
         else:
             return self.animator.__dict__[arg]
             
-    def caller(self, *args, **keywords):
-        # XXX This is broken with kw arguments
-        #return apply(self.method,args)
-        return self.method(*args, **keywords)
-        
     #========== AnimationHistory methods =======================================
     def Undo(self):
         """ Undo last command if there is one and if it can be undone """
