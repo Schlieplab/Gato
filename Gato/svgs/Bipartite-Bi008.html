@@ -2884,7 +2884,7 @@ function buildStateArray(graph) {
         var elem = graph_elems[i];
         
         //If the element doesn't have any attributes, continue.  For some reason elements are making it in here like [object Text] that have no significance(whitespace maybe?)
-        if (elem.attributes === null)
+        if (!shouldIncludeElement(elem))
             continue;
         var attributes = elem.attributes;
         
@@ -3410,7 +3410,7 @@ function fill_initArrays() {
 
         while (child != null) {
             // Skip over textnodes and other such nonsense
-            if (child.attributes === null) {
+            if (!shouldIncludeElement(child)) {
                 child = child.nextSibling;
                 continue;
             }
@@ -3469,6 +3469,15 @@ function get_total_animation_time() {
     }
     return sum;
 }
+
+// Tests whether we should include an element in the state array
+function shouldIncludeElement(elem) {
+    if (elem.attributes !== null && elem.nodeName !== "#text") {
+        return true;
+    }
+    return false;
+}
+
 
 /**
 *
@@ -3683,83 +3692,83 @@ function Initialize(evt) {
 }
 
 var animation = Array(Array(1, SetVertexColor, "g1_1", "#ff9999"),
-Array(12, SetVertexColor, "g1_2", "#ff9999"),
-Array(1, SetVertexColor, "g1_3", "#ff9999"),
-Array(1, SetVertexColor, "g1_4", "#ff9999"),
-Array(3, ShowActive, "l_1"),
+Array(34, SetVertexColor, "g1_2", "#ff9999"),
+Array(2, SetVertexColor, "g1_3", "#ff9999"),
+Array(2, SetVertexColor, "g1_4", "#ff9999"),
+Array(10, ShowActive, "l_1"),
 Array(1, UpdateEdgeInfo, "g1_(3, 1)", "Edge (3,1) is not a matching edge"),
 Array(1, UpdateEdgeInfo, "g1_(2, 4)", "Edge (2,4) is not a matching edge"),
 Array(1, UpdateEdgeInfo, "g1_(4, 3)", "Edge (4,3) is not a matching edge"),
-Array(9, ShowActive, "l_21"),
-Array(9, ShowActive, "l_30"),
-Array(11, ShowActive, "l_41"),
+Array(26, ShowActive, "l_21"),
+Array(13, ShowActive, "l_30"),
+Array(23, ShowActive, "l_41"),
 Array(9, SetVertexColor, "g1_1", "#99ff99"),
+Array(5, SetVertexColor, "g1_3", "#ff9999"),
+Array(3, SetVertexColor, "g1_2", "#ff9999"),
+Array(3, SetVertexColor, "g1_4", "#99ff99"),
+Array(15, ShowActive, "l_42"),
+Array(14, ShowActive, "l_43"),
+Array(17, ShowActive, "l_44"),
+Array(9, SetVertexColor, "g1_1", "#99ff99"),
+Array(2, SetVertexColor, "g1_2", "#ff9999"),
 Array(2, SetVertexColor, "g1_3", "#ff9999"),
-Array(1, SetVertexColor, "g1_2", "#ff9999"),
-Array(1, SetVertexColor, "g1_4", "#99ff99"),
-Array(3, ShowActive, "l_42"),
-Array(10, ShowActive, "l_43"),
-Array(10, ShowActive, "l_44"),
-Array(9, SetVertexColor, "g1_1", "#99ff99"),
-Array(1, SetVertexColor, "g1_2", "#ff9999"),
-Array(1, SetVertexColor, "g1_3", "#ff9999"),
-Array(1, SetVertexColor, "g1_4", "#99ff99"),
-Array(1, SetAllEdgesColor, "g1_black"),
-Array(4, SetVertexColor, "g1_1", "#00cc00"),
-Array(1, SetVertexColor, "g1_1", "#00cc00"),
-Array(1, SetVertexColor, "g1_4", "#00cc00"),
-Array(1, SetVertexColor, "g1_4", "#00cc00"),
-Array(1, SetVertexColor, "g1_1", "#00cc00"),
-Array(1, SetVertexFrameWidth, "g1_1", "6"),
-Array(1, SetVertexFrameWidth, "g1_1", "6"),
-Array(1, SetEdgeColor, "g1_(3, 1)", "yellow"),
-Array(1, SetVertexColor, "g1_3", "red"),
-Array(1, SetEdgeColor, "g1_(3, 1)", "#ccccff"),
-Array(3, ShowActive, "l_45"),
-Array(10, ShowActive, "l_46"),
+Array(2, SetVertexColor, "g1_4", "#99ff99"),
+Array(2, SetAllEdgesColor, "g1_black"),
+Array(12, SetVertexColor, "g1_1", "#00cc00"),
+Array(3, SetVertexColor, "g1_1", "#00cc00"),
+Array(2, SetVertexColor, "g1_4", "#00cc00"),
+Array(2, SetVertexColor, "g1_4", "#00cc00"),
+Array(2, SetVertexColor, "g1_1", "#00cc00"),
+Array(4, SetVertexFrameWidth, "g1_1", "6"),
+Array(4, SetVertexFrameWidth, "g1_1", "6"),
+Array(4, SetEdgeColor, "g1_(3, 1)", "yellow"),
+Array(5, SetVertexColor, "g1_3", "red"),
+Array(2, SetEdgeColor, "g1_(3, 1)", "#ccccff"),
+Array(12, ShowActive, "l_45"),
+Array(14, ShowActive, "l_46"),
 Array(9, SetVertexColor, "g1_3", "blue"),
-Array(2, SetVertexColor, "g1_1", "blue"),
-Array(2, SetEdgeColor, "g1_(3, 1)", "blue"),
-Array(3, ShowActive, "l_43"),
+Array(7, SetVertexColor, "g1_1", "blue"),
+Array(4, SetEdgeColor, "g1_(3, 1)", "blue"),
+Array(13, ShowActive, "l_43"),
 Array(1, UpdateEdgeInfo, "g1_(3, 1)", "Edge (3,1) is a matching edge"),
-Array(9, ShowActive, "l_44"),
+Array(16, ShowActive, "l_44"),
 Array(9, SetVertexColor, "g1_4", "#00cc00"),
-Array(1, SetVertexFrameWidth, "g1_1", "0"),
-Array(1, SetVertexColor, "g1_1", "#99ff99"),
-Array(1, SetVertexColor, "g1_2", "#ff9999"),
-Array(1, SetVertexColor, "g1_3", "#ff9999"),
-Array(1, SetVertexColor, "g1_4", "#99ff99"),
-Array(1, SetAllEdgesColor, "g1_black"),
+Array(5, SetVertexFrameWidth, "g1_1", "0"),
+Array(4, SetVertexColor, "g1_1", "#99ff99"),
+Array(3, SetVertexColor, "g1_2", "#ff9999"),
+Array(2, SetVertexColor, "g1_3", "#ff9999"),
+Array(2, SetVertexColor, "g1_4", "#99ff99"),
+Array(5, SetAllEdgesColor, "g1_black"),
+Array(7, SetVertexColor, "g1_4", "#00cc00"),
 Array(3, SetVertexColor, "g1_4", "#00cc00"),
-Array(1, SetVertexColor, "g1_4", "#00cc00"),
-Array(1, SetVertexColor, "g1_4", "#00cc00"),
-Array(1, SetVertexFrameWidth, "g1_4", "6"),
-Array(1, SetVertexFrameWidth, "g1_4", "6"),
-Array(1, SetEdgeColor, "g1_(2, 4)", "yellow"),
-Array(1, SetVertexColor, "g1_2", "red"),
-Array(1, SetEdgeColor, "g1_(2, 4)", "#ccccff"),
-Array(2, ShowActive, "l_45"),
-Array(9, ShowActive, "l_46"),
+Array(2, SetVertexColor, "g1_4", "#00cc00"),
+Array(4, SetVertexFrameWidth, "g1_4", "6"),
+Array(4, SetVertexFrameWidth, "g1_4", "6"),
+Array(7, SetEdgeColor, "g1_(2, 4)", "yellow"),
+Array(3, SetVertexColor, "g1_2", "red"),
+Array(2, SetEdgeColor, "g1_(2, 4)", "#ccccff"),
+Array(11, ShowActive, "l_45"),
+Array(12, ShowActive, "l_46"),
 Array(9, SetVertexColor, "g1_2", "blue"),
-Array(2, SetVertexColor, "g1_4", "blue"),
-Array(2, SetEdgeColor, "g1_(2, 4)", "blue"),
-Array(3, ShowActive, "l_43"),
+Array(7, SetVertexColor, "g1_4", "blue"),
+Array(4, SetEdgeColor, "g1_(2, 4)", "blue"),
+Array(13, ShowActive, "l_43"),
 Array(1, UpdateEdgeInfo, "g1_(2, 4)", "Edge (2,4) is a matching edge"),
-Array(9, ShowActive, "l_44"),
+Array(16, ShowActive, "l_44"),
 Array(9, SetVertexFrameWidth, "g1_4", "0"),
-Array(1, SetVertexColor, "g1_1", "#99ff99"),
-Array(1, SetVertexColor, "g1_2", "#ff9999"),
-Array(1, SetVertexColor, "g1_3", "#ff9999"),
-Array(1, SetVertexColor, "g1_4", "#99ff99"),
-Array(1, SetAllEdgesColor, "g1_black"),
-Array(3, ShowActive, "l_45"),
-Array(10, ShowActive, "l_48"),
-Array(9, ShowActive, "l_43"),
-Array(10, ShowActive, "l_50"),
+Array(7, SetVertexColor, "g1_1", "#99ff99"),
+Array(2, SetVertexColor, "g1_2", "#ff9999"),
+Array(2, SetVertexColor, "g1_3", "#ff9999"),
+Array(2, SetVertexColor, "g1_4", "#99ff99"),
+Array(2, SetAllEdgesColor, "g1_black"),
+Array(10, ShowActive, "l_45"),
+Array(17, ShowActive, "l_48"),
+Array(13, ShowActive, "l_43"),
+Array(18, ShowActive, "l_50"),
 Array(9, SetVertexFrameWidth, "g1_1", "6"),
-Array(2, SetVertexFrameWidth, "g1_4", "6"),
-Array(1, SetVertexFrameWidth, "g1_3", "2"),
-Array(2, SetVertexFrameWidth, "g1_2", "2")
+Array(4, SetVertexFrameWidth, "g1_4", "6"),
+Array(3, SetVertexFrameWidth, "g1_3", "2"),
+Array(4, SetVertexFrameWidth, "g1_2", "2")
 );
 
 ]]></script>

@@ -1453,8 +1453,8 @@ class AlgorithmDebugger(bdb.Bdb):
         
             - Step (self.GUI.mode == 2)
             - Quit (self.GUI.mode == 0)
-            - Auto-run w/timer (self.GUI.mode == 1)"""
-
+            - Auto-run w/timer (self.GUI.mode == 1)
+        """
         # Compute the number of changes to the edge and default graph info
         informer = self.GUI.GUI.graphDisplay.graphInformer
         secondaryInformer = None
@@ -1463,8 +1463,6 @@ class AlgorithmDebugger(bdb.Bdb):
         #animation_history, secondaryGraphDisplay
         history = self.GUI.animation_history
         secondaryHistory = None
-
-        #print informer.DefaultInfo()
 
         # Initialize default info, change it if it is changed
         if self.default_info is None:
@@ -1483,7 +1481,6 @@ class AlgorithmDebugger(bdb.Bdb):
                 for e in secondaryEdges:
                     self.init_etext2[e] = secondaryInformer.EdgeInfo(e[0], e[1])
         
-
         # Construct self.init_etext
         if self.init_etext is None:
             self.init_etext = {}
@@ -1538,11 +1535,8 @@ class AlgorithmDebugger(bdb.Bdb):
                     if e not in secondaryEdges:
                         del self.init_etext2[e]
                         self.etext_change += 1
-
-        #print self.GUI.algoFileName + " " + str(self.etext_change)
         
-
-
+    
         self.setup(frame, traceback)
         # 
         #line = self.currentLine(frame)

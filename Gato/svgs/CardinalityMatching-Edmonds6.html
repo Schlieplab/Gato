@@ -2884,7 +2884,7 @@ function buildStateArray(graph) {
         var elem = graph_elems[i];
         
         //If the element doesn't have any attributes, continue.  For some reason elements are making it in here like [object Text] that have no significance(whitespace maybe?)
-        if (elem.attributes === null)
+        if (!shouldIncludeElement(elem))
             continue;
         var attributes = elem.attributes;
         
@@ -3410,7 +3410,7 @@ function fill_initArrays() {
 
         while (child != null) {
             // Skip over textnodes and other such nonsense
-            if (child.attributes === null) {
+            if (!shouldIncludeElement(child)) {
                 child = child.nextSibling;
                 continue;
             }
@@ -3469,6 +3469,15 @@ function get_total_animation_time() {
     }
     return sum;
 }
+
+// Tests whether we should include an element in the state array
+function shouldIncludeElement(elem) {
+    if (elem.attributes !== null && elem.nodeName !== "#text") {
+        return true;
+    }
+    return false;
+}
+
 
 /**
 *
@@ -3683,8 +3692,8 @@ function Initialize(evt) {
 }
 
 var animation = Array(Array(1, SetAllVerticesColor, "g1_grey"),
-Array(1, SetAllVerticesColor, "g2_grey"),
-Array(3, ShowActive, "l_1"),
+Array(15, SetAllVerticesColor, "g2_grey"),
+Array(30, ShowActive, "l_1"),
 Array(1, UpdateEdgeInfo, "g1_(21, 14)", "Edge (21,14) weight: 112"),
 Array(1, UpdateEdgeInfo, "g1_(4, 7)", "Edge (4,7) weight: 112"),
 Array(1, UpdateEdgeInfo, "g1_(6, 9)", "Edge (6,9) weight: 112"),
