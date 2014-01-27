@@ -280,11 +280,15 @@ def WriteGraphAsSVG(graphDisplay, file, idPrefix=''):
         vx, vy, r = graphDisplay.VertexPositionAndRadius(v)
         if vy < min_y:
             min_y = vy
-            
-    # Subtract y_normalizer from all y-values to move closer to the top of the screen.  Give 18px padding
-    y_normalizer = min_y - 18
-    #y_normalizer = 0
-    
+
+    # x_add and y_add will be added to the position of edges, to get everything to 0     
+    y_add = 500000
+    x_add = 500000
+    for v, w in graphDisplay.G.Edges():
+        vx,vy,r = graphDisplay.VertexPositionAndRadius(v)
+        x_add = min(vx, x_add)
+        y_add = min(vy, y_add)
+
     # Write Edges
     for v,w in graphDisplay.G.Edges():
         vx,vy,r = graphDisplay.VertexPositionAndRadius(v)
@@ -292,8 +296,10 @@ def WriteGraphAsSVG(graphDisplay, file, idPrefix=''):
         col = graphDisplay.GetEdgeColor(v,w)
         width = graphDisplay.GetEdgeWidth(v,w)
         
-        vy = vy - y_normalizer
-        wy = wy - y_normalizer
+        vy = vy - y_add
+        wy = wy - y_add
+        vx = vx - x_add
+        wx = wx - x_add
         
         if graphDisplay.G.directed == 0:
             file.write('<line id="%s" x1="%s" y1="%s" x2="%s" y2="%s" stroke="%s"'\
@@ -318,7 +324,7 @@ def WriteGraphAsSVG(graphDisplay, file, idPrefix=''):
             y2e -= y_normalizer
 
             if graphDisplay.G.QEdge(w,v): # Directed edges both ways
-                file.write('<line id="%s" x1="%s" y1="%s" x2="%s" y2="%s" stroke="%s"'\
+                file.write('<line id="%s" class="edge" x1="%s" y1="%s" x2="%s" y2="%s" stroke="%s"'\
                            ' stroke-width="%s"/>\n' % (idPrefix+str((v,w)),x1e,y1e,x2e,y2e,col,width))
             else: # Just one directed edge
                 # XXX How to color arrowhead?
@@ -343,7 +349,7 @@ def WriteGraphAsSVG(graphDisplay, file, idPrefix=''):
                     cy -= y_normalizer
                     if(cx == wx and cy == wy):
                         angle = atan2(int(float(wy))-int(float(vy)), int(float(wx))-int(float(vx)))
-                        file.write('<line id="%s" x1="%s" y1="%s" x2="%f" y2="%f" stroke="%s"'\
+                        file.write('<line id="%s" class="edge" x1="%s" y1="%s" x2="%f" y2="%f" stroke="%s"'\
                                ' stroke-width="%s" />\n' % (idPrefix+str((v,w)),vx,vy,tmpX,tmpY,
                                                             col,width))
                         break
@@ -360,7 +366,7 @@ def WriteGraphAsSVG(graphDisplay, file, idPrefix=''):
                 c = (l-2*graphDisplay.zVertexRadius)/l
                 tmpX = float(vx) + c*(float(wx) - float(vx))
                 tmpY = float(vy) + c*(float(wy) - float(vy))
-                file.write('<polyline id="ea%s" points="%f %f %f %f %s %f" fill="%s" transform="translate(%f,%f)'\
+                file.write('<polyline id="ea%s" class="arrowhead" points="%f %f %f %f %s %f" fill="%s" transform="translate(%f,%f)'\
                            ' rotate(%f %f %f)" />\n' % (idPrefix+str((v,w)), p1[0], p1[1], p2[0], p2[1], p3[0], p3[1],
                                                         col, tmpX, tmpY - a_width/2, angle, p1[0], a_width/2))
 
@@ -377,7 +383,7 @@ def WriteGraphAsSVG(graphDisplay, file, idPrefix=''):
             offset = 0.33 * size
             col = 'black'
             if text != "":
-                file.write('<text id="ea%s" x="%s" y="%s" text-anchor="center" '\
+                file.write('<text id="ea%s" class="edge_annotation" x="%s" y="%s" text-anchor="center" '\
                            'fill="%s" font-family="Helvetica" '\
                            'font-size="%s" font-style="normal">%s</text>\n' % (idPrefix+str(xe),
                                                                                ye+offset,col,size,text))
@@ -386,7 +392,8 @@ def WriteGraphAsSVG(graphDisplay, file, idPrefix=''):
     for v in graphDisplay.G.Vertices():
         x,y,r = graphDisplay.VertexPositionAndRadius(v)
         
-        y = y - y_normalizer
+        y = y - y_add
+        x = x - x_add
         
         # Write Vertex
         col = graphDisplay.GetVertexColor(v)
@@ -395,7 +402,7 @@ def WriteGraphAsSVG(graphDisplay, file, idPrefix=''):
         stroke = graphDisplay.GetVertexFrameColor(v)
 
         #print x,y,r,col,fwe,stroke
-        file.write('<circle id="%s" cx="%s" cy="%s" r="%s" fill="%s" stroke="%s"'\
+        file.write('<circle id="%s" class="vertex" cx="%s" cy="%s" r="%s" fill="%s" stroke="%s"'\
                    ' stroke-width="%s" style="filter:url(#dropshadow)"/>\n' % (idPrefix+str(v),x,y,r,col,stroke,fwe))
 
         # Write Vertex Label
@@ -482,9 +489,9 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
                 graph_type = "undirected"
         else:
                 graph_type = "directed"
-        file.write('<g id="g1" transform="translate(%d,%d)" type="%s" ongesturestart="GestureStart_TransformGraph(evt)" '\
+        file.write('<g id="g1" type="%s" ongesturestart="GestureStart_TransformGraph(evt)" '\
                    'ongesturechange="GestureChange_TransformGraph(evt)" ongestureend="GestureEnd_TransformGraph(evt)" '\
-                   'ontouchstart="TouchStart_Graph(evt)" ontouchmove="TouchDrag_Graph(evt)" ontouchend="TouchDeactivate_Graph(evt)">\n' % (200,0, graph_type))
+                   'ontouchstart="TouchStart_Graph(evt)" ontouchmove="TouchDrag_Graph(evt)" ontouchend="TouchDeactivate_Graph(evt)">\n' % (graph_type))
         file.write('<text id="g1_()_info" x="0" y="0" font-family="Helvetica" font-size="12"></text>')
         WriteGraphAsSVG(graphDisplay, file, idPrefix='g1_')    
         file.write('</g>\n')
@@ -497,9 +504,9 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
                 graph_type = "undirected"
             else:
                 graph_type = "directed"
-            file.write('<g id="g2" transform="translate(%d,%d)" type="%s" ongesturestart="GestureStart_TransformGraph(evt)" '\
+            file.write('<g id="g2" type="%s" ongesturestart="GestureStart_TransformGraph(evt)" '\
                        'ongesturechange="GestureChange_TransformGraph(evt)" ongestureend="GestureEnd_TransformGraph(evt)" '\
-                       'ontouchstart="TouchStart_Graph(evt)" ontouchmove="TouchDrag_Graph(evt)" ontouchend="TouchDeactivate_Graph(evt)">\n' % (200,bbg1['height'], graph_type))
+                       'ontouchstart="TouchStart_Graph(evt)" ontouchmove="TouchDrag_Graph(evt)" ontouchend="TouchDeactivate_Graph(evt)">\n' % (graph_type))
             file.write('<text id="g2_()_info" x="0" y="0" font-family="Helvetica" font-size="12"></text>')
             WriteGraphAsSVG(secondaryGraphDisplay, file, idPrefix='g2_')    
             file.write('</g>\n')

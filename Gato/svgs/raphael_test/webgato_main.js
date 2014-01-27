@@ -1,3 +1,9 @@
+/*
+TODO: Change the coordinates of the graph frame to start at 0,0 instead of having negative coordinates.  This will make scaling work
+
+*/
+
+
 var snap = Snap("svg");
 var g = {}; // globals
 
@@ -8,7 +14,7 @@ function add_snap_vars(obj) {
         for (var i=0; i<v.length; i++) {
             vertices[v[i].attr('id')] = v[i]
         }
-        var e = snap.selectAll('g#g' + graph_num + ' .graph_edge');
+        var e = snap.selectAll('g#g' + graph_num + ' .edge');
         for (var i=0; i<e.length; i++) {
             edges[e[i].attr('id')] = e[i]
         }
@@ -37,24 +43,100 @@ function fill_global() {
 		// Animation variables
 		step_ms: 5,		// Time in ms of a single step
 
-		// Constants
+		// Global 
 		cont_width: cont_width,
 		cont_height: cont_height,
+        padding: Math.min(Math.ceil(cont_width*.02), Math.ceil(cont_height)*.02),
+		
+		// Code Box
 		line_padding: 16,
 		code_box_padding: 6,
 		breakpoint_width: 16,
 		line_number_width: 16,
-        padding: Math.min(Math.ceil(cont_width*.02), Math.ceil(cont_height)*.02),
+		
+		// Graph 
+		vertex_r: parseInt(snap.select('g#g1 .vertex').attr('r')),
+        frame_padding: 8,
+        g1_container: snap.group().attr({'id': 'g1_container'}),
+        g2_container: snap.group().attr({'id': 'g2_container'}),
+        graph_frame_stroke_width: 1,
+
+        // General
         num_graphs: 2,
     	arrow_id_prefix: 'ea',
 	});
     add_snap_vars(g);
 }
 
+function Scaler() {
+	this.mousedown = function(evt) {
+		g.scaler.scaling = true;
+		g.scaler.start_mouse = [parseInt(evt.x), parseInt(evt.y)];
+	}
+	this.mouseup = function(evt) {
+		g.scaler.scaling = false;
+	}
+	this.do_scale = function(evt) {
+		var dx = parseInt(evt.x) - g.scaler.start_mouse[0];
+		var dy = parseInt(evt.y) - g.scaler.start_mouse[1];
+		console.log(dx);
+		console.log(dy);
+
+		var graph_bbox = g.g1.getBBox();
+		var curr_width = graph_bbox.width;
+		var new_width = curr_width + dx;
+		console.log(new_width);
+		var scale_factor = new_width / curr_width;
+		g.scaler.curr_scale = scale_factor;
+		g.g1_scale = 's' + g.scaler.curr_scale + ',0,0';
+		var trans = 't' + g.g1_container_translate[0] + ',' + g.g1_container_translate[1] + g.g1_scale;
+		g.g1_container.transform(trans);
+	}
+
+	var bbox = g.g1_container.getBBox();
+	this.scaling = false;
+	this.width = 10;
+	this.height = 10;
+	this.x = bbox.width - this.width;
+	this.y = bbox.height + g.frame_padding - this.height;
+
+	this.elem = snap.polygon([this.x, this.y, this.x+this.width, this.y, this.x+this.width, this.y-this.height, this.x, this.y]).attr({
+		'fill': '#000',
+		'stroke': '#000'
+	}).mousedown(this.mousedown).
+	mouseup(this.mouseup);
+}
+
+function add_scaler() {
+	g.scaler = new Scaler();
+	g.g1_container.append(g.scaler.elem);
+}
+
+function add_graph_frame() {
+	g.g1_container.append(g.g1);
+	g.g2_container.append(g.g2);
+
+	var graph_bbox = g.g1.getBBox();
+	var pad = g.vertex_r + g.frame_padding;
+	var frame = snap.rect(0, 0, graph_bbox.width+pad, graph_bbox.height+pad).attr({
+		fill: '#fff',
+		stroke: '#ccc',
+		strokeWidth: g.graph_frame_stroke_width,
+		strokeDasharray: '5,2',
+	});
+	
+	g.g1_container.prepend(frame);
+}
+
 function position_graph() {
-	g.g1.transform('t' + (g.code_box_width + g.padding) + ',' + g.padding);
-    //console.log(get_translate(snap.select('g#g1')));
-    //set_translate(snap.select('g#g1'), 200, 300);
+	var cont_x_trans = g.code_box_width + g.padding*2 + g.frame_padding + g.vertex_r;
+	var cont_y_trans = g.padding + g.graph_frame_stroke_width;
+	var x_trans = g.frame_padding + g.vertex_r;
+	var y_trans = x_trans;
+	g.g1_container_translate = [cont_x_trans, cont_y_trans];
+	g.g1_translate = [x_trans, y_trans];
+	g.g1_container.transform('t' + g.g1_container_translate[0] + ',' + g.g1_container_translate[1]);
+	g.g1.transform('t' + (g.g1_translate[0]) + ',' + g.g1_translate[1]);
 }
 
 function get_line_arrow(x_start, y_start) {
@@ -89,6 +171,19 @@ function format_code_lines() {
     });
     g.line_g.prepend(g.code_box);
     g.line_g.transform('t' + g.padding + ',' + g.padding);
+
+}
+
+function global_mouseup(evt) {
+	if (g.scaler.scaling === true) {
+		g.scaler.mouseup(evt);
+	}
+}
+
+function global_mousemove(evt) {
+	if (g.scaler.scaling === true) {
+		g.scaler.do_scale(evt);
+	}
 }
 
 function init() {
@@ -101,10 +196,15 @@ function init() {
 		})(i);
 	}};
     // Set globals and size of base_container
+    snap.mouseup(global_mouseup);
+    snap.mousemove(global_mousemove);
+
     fill_global();
     $('#base_container').css({'width': g.cont_width, 'height': g.cont_height});
     format_code_lines();
+    add_graph_frame();
     position_graph();
+    add_scaler();
     //run();
 }
 

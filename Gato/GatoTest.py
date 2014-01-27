@@ -227,38 +227,6 @@ instance = {
     ]
     }
 
-"""instance = {'02-GraphsNetworks/BFS-components.alg':[
-    '02-GraphsNetworks/3Components.cat'
-    ],
-    '05-ShortestPaths/TwoSources.alg':[
-    '05-ShortestPaths/ShortestPathsUndirected05.cat'    
-    ], 
-    '05-ShortestPaths/FindPath.alg':[
-    '05-ShortestPaths/ShortestPathsUndirected05.cat'
-    ],
-    '05-ShortestPaths/FindPathEuclid.alg':[
-    '05-ShortestPaths/ShortestPathsUndirected05.cat'
-    ],
-    }"""
-
-
-#instance = {'06-MaximalFlows/FordFulkerson.alg':[
-#    '06-MaximalFlows/FordFulkerson4.cat']}
-
-# svg_instance is a dictionary where the keys are 
-# algorithms and their value is a list of graphs
-# they will work on.
-#
-# Testcases are all combinations of algorithm with all their
-# graphs.
-#TODO:  Comment out PrimalDualKruskal, MatroidDualKruskal, WeightedMatching
-#Rerun and check 
-
-#svg_instance = {'06-MaximalFlows/FordFulkerson.alg':[
-#    '06-MaximalFlows/FordFulkerson6.cat','06-MaximalFlows/FordFulkersonBad.cat'
-#    ]}
-
-
 svg_instance = {
     '02-GraphsNetworks/BFS-components.alg':[
     '02-GraphsNetworks/BFS.cat', '02-GraphsNetworks/3Components.cat'
@@ -352,63 +320,13 @@ svg_instance = {
        '09-WeightedMatching/twotriangles.cat'
        ]
     }
-'''
-svg_instance = {
-    
-    '06-MaximalFlows/FordFulkerson.alg':[
-    '06-MaximalFlows/FordFulkerson6.cat','06-MaximalFlows/FordFulkersonBad.cat'
-    ],
-    #'06-MaximalFlows/PreflowPush.alg':[
-    #'06-MaximalFlows/PreflowPush5.cat', '06-MaximalFlows/PreflowPush6.cat'
-    #],
-    #'07-MinimumCostFlows/CostScaling.alg':[
-    #'07-MinimumCostFlows/MCF4to4A.cat', '07-MinimumCostFlows/MCFCycle.cat'
-    #],
-    '07-MinimumCostFlows/NegativeCircuit.alg':[
-    #'07-MinimumCostFlows/MCF4to4A.cat',
-    #'05-ShortestPaths/NegCircuit2.cat', This breaks it
-    '07-MinimumCostFlows/MCFCycle.cat'
-    ],
-    '07-MinimumCostFlows/SuccessiveShortestPath.alg':[
-    '07-MinimumCostFlows/MCF4to1A.cat', '07-MinimumCostFlows/MCFCycle.cat'
-    ],
-    '08-Matching/Bipartite.alg':[
-    '08-Matching/Bi003.cat', '08-Matching/Bi006.cat', '08-Matching/Bi008.cat',
-    '08-Matching/Bi009.cat', '08-Matching/Bi010.cat'
-    ],
-    '08-Matching/CardinalityMatching.alg':[
-    '08-Matching/Edmonds1.cat', '08-Matching/Edmonds3.cat',
-    '08-Matching/Edmonds6.cat'],
-    '09-WeightedMatching/WeightedMatching.alg':[
-       '09-WeightedMatching/bipmatch.cat', '09-WeightedMatching/var2zero.cat',
-       '09-WeightedMatching/twotriangles.cat'
-       ]
-       }
-'''
-"""instance = {'06-MaximalFlows/FordFulkerson.alg':['06-MaximalFlows/FordFulkerson6.cat'],
-     '02-GraphsNetworks/BFS.alg':[
-   '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
-   ],'02-GraphsNetworks/DFS-Recursive.alg':[
-   '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
-   ],'03-MinimalSpanningTrees/Kruskal.alg':[
-    '03-MinimalSpanningTrees/Kruskal4.cat'
-    ],
-   '05-ShortestPaths/BellmanFord.alg':[
-    '05-ShortestPaths/BellmanFordWC.cat'  #,'05-ShortestPaths/NegCircuit.cat'
-    ]}"""
 
-"""svg_instance = {'06-MaximalFlows/FordFulkerson.alg':['06-MaximalFlows/FordFulkerson6.cat'],
-     '02-GraphsNetworks/BFS.alg':[
-   '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
-   ],'03-MinimalSpanningTrees/Kruskal.alg':[
-    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
-    ],'02-GraphsNetworks/DFS-Recursive.alg':[
-   '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
-   ],
-   '05-ShortestPaths/BellmanFord.alg':[
-    '05-ShortestPaths/BellmanFordWC.cat'  #,'05-ShortestPaths/NegCircuit.cat'
-    ]}
-"""
+svg_instance = {
+    '02-GraphsNetworks/BFS.alg':[
+    '02-GraphsNetworks/BFS.cat'
+   ]
+}
+
 
 #------------------------------------------------------------------
 def usage():
