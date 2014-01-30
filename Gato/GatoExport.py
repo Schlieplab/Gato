@@ -302,7 +302,7 @@ def WriteGraphAsSVG(graphDisplay, file, idPrefix=''):
         wx = wx - x_add
         
         if graphDisplay.G.directed == 0:
-            file.write('<line id="%s" x1="%s" y1="%s" x2="%s" y2="%s" stroke="%s"'\
+            file.write('<line id="%s" class="edge" x1="%s" y1="%s" x2="%s" y2="%s" stroke="%s"'\
                        ' stroke-width="%s"/>\n' % (idPrefix+str((v,w)),vx,vy,wx,wy,col,width))
         else:
             # AAARGH. SVG has a retarded way of dealing with arrowheads 

@@ -1,3 +1,4 @@
+
 function get_translate(elem) {
     var trans = document.getElementById(elem.attr('id')).getAttribute('transform');
     var l_paren_split = trans.split('(');

@@ -1,15 +1,10 @@
-/*
-TODO: Change the coordinates of the graph frame to start at 0,0 instead of having negative coordinates.  This will make scaling work
-
-*/
-
-
 var snap = Snap("svg");
 var g = {}; // globals
 
-function add_snap_vars(obj) {
+
+function add_snap_vars() {
     var vertices = {}, edges = {}, edge_arrows = {}, code_lines = {};
-    for (var graph_num=0; graph_num<obj.num_graphs; graph_num++) {
+    for (var graph_num=0; graph_num<g.num_graphs; graph_num++) {
         var v = snap.selectAll('g#g' + graph_num + ' .vertex');
         for (var i=0; i<v.length; i++) {
             vertices[v[i].attr('id')] = v[i]
@@ -27,27 +22,35 @@ function add_snap_vars(obj) {
             code_lines[lines[i].attr('id')] = lines[i];
         }
     }
-    obj['vertices'] = vertices;
-    obj['edges'] = edges;
-    obj['edge_arrows'] = edge_arrows;
-    obj['code_lines'] = code_lines;
-    obj['g1'] = snap.select('g#g1');
-    obj['g2'] = snap.select('g#g2');
+    g['vertices'] = vertices;
+    g['edges'] = edges;
+    g['edge_arrows'] = edge_arrows;
+    g['code_lines'] = code_lines;
+    g['g1'] = snap.select('g#g1');
+    g['g2'] = snap.select('g#g2');
+}
+
+function extend(a, b) {
+	for (var key in b) {
+		a[key] = b[key];
+	}
 }
 
 function fill_global() {
-	var cont_width = $(window).width();
-	var cont_height = $(window).height();
-
-	$.extend(g, {
+	//$.extend(g, {
+	var cont_width = window.innerWidth;
+	var cont_height = window.innerHeight;
+	extend(g, {
 		// Animation variables
 		step_ms: 5,		// Time in ms of a single step
+		running: false,
 
 		// Global 
 		cont_width: cont_width,
 		cont_height: cont_height,
         padding: Math.min(Math.ceil(cont_width*.02), Math.ceil(cont_height)*.02),
-		
+		min_scale_factor: .1,
+
 		// Code Box
 		line_padding: 16,
 		code_box_padding: 6,
@@ -65,113 +68,8 @@ function fill_global() {
         num_graphs: 2,
     	arrow_id_prefix: 'ea',
 	});
-    add_snap_vars(g);
-}
 
-function Scaler() {
-	this.mousedown = function(evt) {
-		g.scaler.scaling = true;
-		g.scaler.start_mouse = [parseInt(evt.x), parseInt(evt.y)];
-	}
-	this.mouseup = function(evt) {
-		g.scaler.scaling = false;
-	}
-	this.do_scale = function(evt) {
-		var dx = parseInt(evt.x) - g.scaler.start_mouse[0];
-		var dy = parseInt(evt.y) - g.scaler.start_mouse[1];
-		console.log(dx);
-		console.log(dy);
-
-		var graph_bbox = g.g1.getBBox();
-		var curr_width = graph_bbox.width;
-		var new_width = curr_width + dx;
-		console.log(new_width);
-		var scale_factor = new_width / curr_width;
-		g.scaler.curr_scale = scale_factor;
-		g.g1_scale = 's' + g.scaler.curr_scale + ',0,0';
-		var trans = 't' + g.g1_container_translate[0] + ',' + g.g1_container_translate[1] + g.g1_scale;
-		g.g1_container.transform(trans);
-	}
-
-	var bbox = g.g1_container.getBBox();
-	this.scaling = false;
-	this.width = 10;
-	this.height = 10;
-	this.x = bbox.width - this.width;
-	this.y = bbox.height + g.frame_padding - this.height;
-
-	this.elem = snap.polygon([this.x, this.y, this.x+this.width, this.y, this.x+this.width, this.y-this.height, this.x, this.y]).attr({
-		'fill': '#000',
-		'stroke': '#000'
-	}).mousedown(this.mousedown).
-	mouseup(this.mouseup);
-}
-
-function add_scaler() {
-	g.scaler = new Scaler();
-	g.g1_container.append(g.scaler.elem);
-}
-
-function add_graph_frame() {
-	g.g1_container.append(g.g1);
-	g.g2_container.append(g.g2);
-
-	var graph_bbox = g.g1.getBBox();
-	var pad = g.vertex_r + g.frame_padding;
-	var frame = snap.rect(0, 0, graph_bbox.width+pad, graph_bbox.height+pad).attr({
-		fill: '#fff',
-		stroke: '#ccc',
-		strokeWidth: g.graph_frame_stroke_width,
-		strokeDasharray: '5,2',
-	});
-	
-	g.g1_container.prepend(frame);
-}
-
-function position_graph() {
-	var cont_x_trans = g.code_box_width + g.padding*2 + g.frame_padding + g.vertex_r;
-	var cont_y_trans = g.padding + g.graph_frame_stroke_width;
-	var x_trans = g.frame_padding + g.vertex_r;
-	var y_trans = x_trans;
-	g.g1_container_translate = [cont_x_trans, cont_y_trans];
-	g.g1_translate = [x_trans, y_trans];
-	g.g1_container.transform('t' + g.g1_container_translate[0] + ',' + g.g1_container_translate[1]);
-	g.g1.transform('t' + (g.g1_translate[0]) + ',' + g.g1_translate[1]);
-}
-
-function get_line_arrow(x_start, y_start) {
-    return snap.path(String("M" + x_start + " " + y_start + " L" + (x_start+8) + " " + y_start + " L" + (x_start+12) + " " + (y_start+4) + " L" + (x_start+8) + " " + (y_start+8) + " L" + x_start + " " + (y_start+8) + " L" + x_start + " " + y_start + " Z"));
-}
-
-function format_code_lines() {
-    // Set y of codelines to separate them.  Add to group.  Find widest for framing box
-    var curr_y = g.line_padding;
-    var widest = 0;
-    g.line_g = snap.group();
-    for (var key in g.code_lines) {
-        var curr_line = g.code_lines[key];
-        g.line_g.append(curr_line);
-        curr_line.attr({'y': curr_y, 'x': g.code_box_padding + g.breakpoint_width + g.line_number_width});
-        curr_y += g.line_padding;
-        
-        var bbox = curr_line.getBBox();
-        var width = bbox.width + bbox.x;
-        if (width > widest) {
-            widest = width;
-        }
-    }
-
-    // Add a framing box
-    g.code_box_width =  widest+g.code_box_padding;
-    g.code_box_height = curr_y+g.code_box_padding*2;
-    g.code_box = snap.rect(0, 0, g.code_box_width, g.code_box_height, 5, 5).attr({
-        fill: '#aaaaaa',
-        stroke: '#333333',
-        strokeWidth: 2,
-    });
-    g.line_g.prepend(g.code_box);
-    g.line_g.transform('t' + g.padding + ',' + g.padding);
-
+    add_snap_vars();
 }
 
 function global_mouseup(evt) {
@@ -186,25 +84,39 @@ function global_mousemove(evt) {
 	}
 }
 
+function global_drag(evt) {
+	if (g.scaler.scaling === true) {
+		g.scaler.mouseup(evt);
+	}
+}
+
 function init() {
 	var run = function() {
-    for (var i=0; i<animation.length; i++) {
-		(function (index) {
-			setTimeout(function() {
-				animation[index][1](animation[index][2], animation[index][3]);
-			}, g.step_ms*i);
+	    for (var i=0; i<animation.length; i++) {
+			(function (index) {
+				setTimeout(function() {
+					animation[index][1](animation[index][2], animation[index][3]);
+				}, g.step_ms*i);
 		})(i);
 	}};
-    // Set globals and size of base_container
+    // Add global event handlers
     snap.mouseup(global_mouseup);
     snap.mousemove(global_mousemove);
+    snap.drag(function(){}, function(){}, global_drag)
 
+    // Set globals and size of base_container
     fill_global();
-    $('#base_container').css({'width': g.cont_width, 'height': g.cont_height});
+    document.getElementById('base_container').setAttribute('style', 'width: ' + g.cont_width + '; height: ' + g.cont_height);
+    //$('#base_container').css({'width': g.cont_width, 'height': g.cont_height});
+    
+    // Initialize graphical elements
     format_code_lines();
     add_graph_frame();
     position_graph();
     add_scaler();
+    g.playback_bar = new PlaybackBar();
+
+    g.initial_graph_width = g.g1_container.getBBox().width;
     //run();
 }
 

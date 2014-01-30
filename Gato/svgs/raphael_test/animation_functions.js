@@ -1,3 +1,14 @@
+function start_animation() {
+	g.running = true;
+	for (var i=0; i<animation.length; i++) {	
+		(function (index) {
+			setTimeout(function() {
+				animation[index][1](animation[index][2], animation[index][3]);
+			}, g.step_ms*i);
+		})(i);
+	}
+}
+
 /** Sets the vertex given by vertex_id to color */
 function SetVertexColor(vertex_id, color) {
 	g.vertices[vertex_id].attr('fill', color);
