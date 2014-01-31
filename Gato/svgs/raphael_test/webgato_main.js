@@ -9,7 +9,7 @@ var g = {}; // globals
 
 
 function add_snap_vars() {
-	g.graph_elem_types = ['vertices', 'edges', 'code_lines', 'edge_arrows'];
+	g.graph_elem_types = ['vertices', 'edges', 'code_lines', 'edge_arrows', 'highlight_boxes'];
 	g.graph_elem_ids = ['vertex', 'edge', 'code_line', 'arrowhead'];
 	// TODO: update this code to be mroe generic
 
@@ -56,12 +56,6 @@ function fill_global() {
 		cont_height: cont_height,
         padding: Math.min(Math.ceil(cont_width*.02), Math.ceil(cont_height)*.02),
 
-		// Code Box
-		line_padding: 16,
-		code_box_padding: 6,
-		breakpoint_width: 16,
-		line_number_width: 16,
-		
 		// Graph 
 		vertex_r: parseInt(snap.select('g#g1 .vertex').attr('r')),
         frame_padding: 8,
@@ -130,7 +124,7 @@ function init() {
     
     // Initialize graphical elements
     g.playback_bar = new PlaybackBar();
-    format_code_lines();
+    g.code_box = new CodeBox();
     add_graph_frame();
     position_graph();
     add_scaler();

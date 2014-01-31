@@ -364,7 +364,7 @@ function SetVertexAnnotation(v, annotation, color) //removed 'this' parameter to
 
 //Line with specified id is highlighted.  Becomes current line of code.  Previous highlight is removed.
 function ShowActive(line_id){
-    
+ 	g.code_box.highlight_line(line_id);
 }
 
 

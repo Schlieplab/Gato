@@ -89,7 +89,7 @@ function add_graph_frame() {
 }
 
 function position_graph() {
-	var cont_x_trans = g.code_box_width + g.padding*2;
+	var cont_x_trans = g.code_box.width + g.padding*2;
 	var cont_y_trans = g.padding + g.graph_frame_stroke_width;
 	var x_trans = g.frame_padding + g.vertex_r;
 	var y_trans = x_trans;
@@ -98,37 +98,6 @@ function position_graph() {
 	g.g1_container.transform('t' + g.g1_container_translate[0] + ',' + g.g1_container_translate[1]);
 	g.g1.transform('t' + (g.g1_translate[0]) + ',' + g.g1_translate[1]);
 }
-
-function format_code_lines() {
-    // Set y of codelines to separate them.  Add to group.  Find widest for framing box
-    var curr_y = g.line_padding;
-    var widest = 0;
-    g.line_g = snap.group();
-    for (var key in g.code_lines) {
-        var curr_line = g.code_lines[key];
-        g.line_g.append(curr_line);
-        curr_line.attr({'y': curr_y, 'x': g.code_box_padding + g.breakpoint_width + g.line_number_width});
-        curr_y += g.line_padding;
-        
-        var bbox = curr_line.getBBox();
-        var width = bbox.width + bbox.x;
-        if (width > widest) {
-            widest = width;
-        }
-    }
-
-    // Add a framing box
-    g.code_box_width =  widest+g.code_box_padding;
-    g.code_box_height = curr_y+g.code_box_padding*2;
-    g.code_box = snap.rect(0, 0, g.code_box_width, g.code_box_height, 5, 5).attr({
-        fill: '#aaaaaa',
-        stroke: '#333333',
-        strokeWidth: 2,
-    });
-    g.line_g.prepend(g.code_box);
-    g.line_g.transform('t' + g.padding + ',' + g.padding);
-}
-
 
 
 function PlaybackBar() {
@@ -279,3 +248,64 @@ function Button(click_handler, path_str, active, translate) {
 	}
 }
 
+
+
+function CodeBox() {
+	this.highlight_line = function(line_id) {
+		var line = g.code_lines[line_id];
+		this.highlight_box.attr({'opacity': this.highlight_box_opacity});
+		this.highlight_box.transform('t0,' + (line.getBBox().y - this.highlight_box_padding.y));
+	}
+	this.remove_highlighting = function() {
+		this.highlight_box.attr({'opacity': 0});
+	}
+
+	this.line_padding = 18;
+	this.padding = 6;
+	this.breakpoint_width = 16;
+	this.line_number_width = 16;
+	this.line_x = this.padding + this.breakpoint_width + this.line_number_width;
+	
+	// Set y of codelines to separate them.  Add to group.  Find widest for framing box
+    var curr_y = this.line_padding;
+    var min_bbox_x = 99999;
+    this.widest_line = 0;
+    this.g = snap.group();
+    for (var key in g.code_lines) {
+        var curr_line = g.code_lines[key];
+        this.g.append(curr_line);
+        curr_line.attr({'y': curr_y, 'x': this.line_x});
+        curr_y += this.line_padding;
+        
+        var bbox = curr_line.getBBox();
+        var width = bbox.width + bbox.x;
+        min_bbox_x = Math.min(min_bbox_x, bbox.x);
+        this.widest_line = Math.max(width, this.widest_line);
+    }
+
+    // Add a framing box
+    this.width =  this.widest_line + this.padding;
+    this.height = curr_y + this.padding*2;
+    this.frame = snap.rect(0, 0, this.width, this.height, 5, 5).attr({
+        fill: '#aaaaaa',
+        stroke: '#333333',
+        strokeWidth: 2,
+    });
+    this.g.prepend(this.frame);
+
+    // Add a highlight box 
+    this.highlight_box_padding = {x: 5, y: 2};
+    this.highlight_box_opacity = .35;
+    this.highlight_box = snap.rect(this.line_x - this.highlight_box_padding.x, 0, this.widest_line - min_bbox_x + this.highlight_box_padding.x, this.line_padding + this.highlight_box_padding.y*2).attr({
+    	'id': 'highlight_box',
+    	'fill': 'yellow',
+    	'stroke': 'blue',
+    	'stroke-width': 1,
+    	'opacity': .35
+    });
+    g.highlight_boxes = {'highlight_box': this.highlight_box};
+    this.g.append(this.highlight_box);
+    this.remove_highlighting();
+    
+    this.g.transform('t' + g.padding + ',' + g.padding);
+}
