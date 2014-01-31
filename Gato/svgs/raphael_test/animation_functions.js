@@ -18,6 +18,7 @@ function Animation() {
 			return;
 		}
 
+		g.slider.go_to_step(this.step_num);
 		var anim = anim_array[this.step_num];
 		this.do_command(anim);
 		this.step_num ++;
@@ -96,6 +97,7 @@ function Animation() {
 		}
 		this.step_num = state.step_num;
 		this.animate_until(n);
+		g.slider.go_to_step(n);
 	}
 
 	/*
@@ -184,21 +186,32 @@ function Slider(width, height) {
 		this.mouseup(evt);
 	}
 	this.mousemove = function(evt) {
-		//console.log('')	
+		var step = 0;		
 		var new_x = this.start_cursor_x + parseInt(evt.x) - g.slider.start_mouse_x;
 		if (new_x > this.cursor_max_x) {
 			new_x = this.cursor_max_x;
+			step = anim_array.length - 1;
 		} else if (new_x < this.cursor_min_x) {
 			new_x = this.cursor_min_x;
+			step = 0;
+		} else {
+			step = parseInt(new_x / this.step_width) + 1;
 		}
 		this.cursor.attr({'x': new_x});
+		g.animation.jump_to_step(step);
 	}
 	this.mouseup = function(evt) {
 		this.sliding = false;
 	}
+
+	this.go_to_step = function(n) {
+		this.cursor.attr({'x': n*this.step_width});
+	}
+
 	this.sliding = false;
 	this.width = width;
 	this.height = height;
+	this.step_width = this.width / anim_array.length;
 	this.g = snap.group();
 
 	this.track_width = this.width;
