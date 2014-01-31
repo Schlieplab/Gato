@@ -25,6 +25,15 @@ function Animation() {
 		this.scheduled_animation = setTimeout(function() {self.animator()}, anim[0]*this.step_ms);
 	}
 
+	/* Animator that executes animation commands until 
+	the given index with no timeout in between commands */
+	this.animate_until = function(stop_at_ind) {
+		for (var i=this.step_num; i<stop_at_ind; i++) {
+			this.do_command(anim_array[i]);
+			this.step_num ++;
+		}
+	}
+
 	this.start = function() {
 		if (this.state !== 'stopped') {
 			return;
@@ -57,18 +66,97 @@ function Animation() {
 		}
 	}
 
-	this.construct_graph_states = function() {
+	this.jump_to_step = function(n) {
+		var state_ind = parseInt(n/this.state_interval);
+		var state = this.graph_states[state_ind];
+		for (var i=0; i<g.graph_elem_types.length; i++) {
+			var elem_type = g.graph_elem_types[i];
+			var elem_state = state[elem_type];
+			for (var id in elem_state) {
+				var elem = snap.select('#' + id);
+				if (elem == null) {
+					// We need to create the element
+					// Call the appropriate snap function and add the leement
+					// elem = snap.
+				}
+				for (var attr in elem_state[id]) {
+					var params = {};
+					params[attr] = elem_state[id][attr];
+					elem.attr(params);
+				}
+			}
 
+			// Remove any elements that shouldn't be in global values
+			var global_elem_state = g[elem_type];
+			for (var id in global_elem_state) {
+				if (!(id in elem_state)) {
+					// Delete the element g[global_elem_state]][id]
+				}
+			}
+		}
+		this.step_num = state.step_num;
+		this.animate_until(n);
 	}
 
+	/*
+		Builds the Graph State array to use for playback
+	*/
+	this.construct_graph_states = function() {
+		function collect_attr(elem) {
+			var our_attr = {};
+			var attributes = elem.node.attributes;
+			for (var i=0; i<attributes.length; i++) {
+				var attr = attributes[i];
+				our_attr[attr.name] = attr.value;
+			}
+			return our_attr;	
+		}
+		
+		function construct_state(step_num) {
+			// TODO: This will need to be changed for two graph operation
+			var state = {'step_num': step_num};
+			for (var i=0; i<g.graph_elem_types.length; i++) {
+				var elem_type = g.graph_elem_types[i];
+				var elem_obj = g[elem_type];
+				state[elem_type] = {};
+				for (var key in elem_obj) {
+					state[elem_type][key] = collect_attr(elem_obj[key]);
+				}
+			}
+			return state;
+		}
+		
+		var states = [];
+		console.log(anim_array.length);
+		for (var i=0; i<anim_array.length; i++) {
+			if (i % this.state_interval === 0) {
+				states.push(construct_state(i))
+			}
+			this.do_command(anim_array[i]);
+		}
+
+		this.graph_states = states;
+		this.jump_to_step(0);
+	}
+
+
+
 	this.initialize_variables = function() {
+		// State of animation		
 		this.states = ['animating', 'stopped', 'stepping'];
 		this.state = 'stopped';
+		
+		// Our step interval in milliseconds
 		this.step_ms = 1;
+		
+		// Current step in the animation
 		this.step_num = 0;
 
+		// How many steps we take between each saved graph state
+		this.state_interval = 200; 
+
 		// TODO: Do graph states
-		this.graph_states = []
+		this.construct_graph_states();
 	}
 	this.initialize_variables();
 }
@@ -159,13 +247,12 @@ function UpdateGraphInfo(graph_id, info) {
 	not found we will try g1_(4, 5)
 */
 function SetEdgeColor(edge_id, color) {
-	console.log(edge_id);
 	function switch_edge_vertices() {
 	    // Switches the edge_id vertices.  ie. g1_(5, 4) in --> g1_(4, 5) out
 	    // TODO: Test me
 	    var re = /\d+/g;
 	    var matches = edge_id.match(re);
-	    return "g" + matches[0] + "_(" + matches[1] + ", " + matches[2] + ")";
+	    return "g" + matches[0] + "_" + matches[1] + "-" + matches[2];
 	}
 	var edge = g.edges[edge_id];
 	if (edge === null) {

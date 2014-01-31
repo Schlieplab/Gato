@@ -228,6 +228,8 @@ def collectAnimations(histories, prefixes):
         duration = max(1,int(round((cmd[0] - currentTime) * 1000, 0)))
         currentTime = cmd[0]
         mergedCmds[i][0] = str(duration)
+        for j in xrange(2, len(mergedCmds[i])):
+            mergedCmds[i][j] = mergedCmds[i][j].replace(' ', '').replace('(', '').replace(')', '').replace(',', '-')
     return ["Array(" + ", ".join(cmd) + ")" for cmd in mergedCmds]
 
 def boundingBox(graphDisplay, resultForEmptyCanvas=None):
@@ -301,9 +303,10 @@ def WriteGraphAsSVG(graphDisplay, file, idPrefix=''):
         vx = vx - x_add
         wx = wx - x_add
         
+        edge_id = idPrefix + '{}-{}'.format(v, w)
         if graphDisplay.G.directed == 0:
             file.write('<line id="%s" class="edge" x1="%s" y1="%s" x2="%s" y2="%s" stroke="%s"'\
-                       ' stroke-width="%s"/>\n' % (idPrefix+str((v,w)),vx,vy,wx,wy,col,width))
+                       ' stroke-width="%s"/>\n' % (edge_id, vx, vy, wx, wy, col, width))
         else:
             # AAARGH. SVG has a retarded way of dealing with arrowheads 
             # It is a known bug in SVG 1.1 that the color of the arrowhead is not inherited
@@ -325,7 +328,7 @@ def WriteGraphAsSVG(graphDisplay, file, idPrefix=''):
 
             if graphDisplay.G.QEdge(w,v): # Directed edges both ways
                 file.write('<line id="%s" class="edge" x1="%s" y1="%s" x2="%s" y2="%s" stroke="%s"'\
-                           ' stroke-width="%s"/>\n' % (idPrefix+str((v,w)),x1e,y1e,x2e,y2e,col,width))
+                           ' stroke-width="%s"/>\n' % (edge_id, x1e, y1e, x2e, y2e, col, width))
             else: # Just one directed edge
                 # XXX How to color arrowhead?
                 l = sqrt((float(wx)-float(vx))**2 + (float(wy)-float(vy))**2)
@@ -350,8 +353,8 @@ def WriteGraphAsSVG(graphDisplay, file, idPrefix=''):
                     if(cx == wx and cy == wy):
                         angle = atan2(int(float(wy))-int(float(vy)), int(float(wx))-int(float(vx)))
                         file.write('<line id="%s" class="edge" x1="%s" y1="%s" x2="%f" y2="%f" stroke="%s"'\
-                               ' stroke-width="%s" />\n' % (idPrefix+str((v,w)),vx,vy,tmpX,tmpY,
-                                                            col,width))
+                               ' stroke-width="%s" />\n' % (edge_id, vx, vy, tmpX, tmpY,
+                                                            col, width))
                         break
 
                 #Temporary settings for size of polyline arrowhead
@@ -366,8 +369,8 @@ def WriteGraphAsSVG(graphDisplay, file, idPrefix=''):
                 c = (l-2*graphDisplay.zVertexRadius)/l
                 tmpX = float(vx) + c*(float(wx) - float(vx))
                 tmpY = float(vy) + c*(float(wy) - float(vy))
-                file.write('<polyline id="ea%s" class="arrowhead" points="%f %f %f %f %s %f" fill="%s" transform="translate(%f,%f)'\
-                           ' rotate(%f %f %f)" />\n' % (idPrefix+str((v,w)), p1[0], p1[1], p2[0], p2[1], p3[0], p3[1],
+                file.write('<polyline id="%s" class="arrowhead" points="%f %f %f %f %s %f" fill="%s" transform="translate(%f,%f)'\
+                           ' rotate(%f %f %f)" />\n' % ('ea' + edge_id, p1[0], p1[1], p2[0], p2[1], p3[0], p3[1],
                                                         col, tmpX, tmpY - a_width/2, angle, p1[0], a_width/2))
 
 

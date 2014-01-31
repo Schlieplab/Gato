@@ -3691,7 +3691,7 @@ function Initialize(evt) {
     option_menu.translate_dropdown();
 }
 
-var animation = Array(%(animation)s
+var anim_array = Array(%(animation)s
 );
 
 ]]></script>
