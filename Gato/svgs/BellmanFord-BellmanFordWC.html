@@ -1466,6 +1466,7 @@ function AnimateLoop(){
         }else{
             //Otherwise, execute the next command
             var duration = animation[step][0] * timeout;
+            console.log("Scheduling in " + duration);
             timer = setTimeout(AnimateLoop, duration);
         }
         

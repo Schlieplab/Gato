@@ -18,7 +18,7 @@ function add_snap_vars() {
             edge_arrows[ea[i].attr('id')] = edge_arrows[i]
         }
         var lines = snap.selectAll('.code_line');
-        for (var i=0; i<lines.length; i++) {
+        for (var i=0; i<lines.length; i++) { 
             code_lines[lines[i].attr('id')] = lines[i];
         }
     }
@@ -42,7 +42,6 @@ function fill_global() {
 	var cont_height = window.innerHeight;
 	extend(g, {
 		// Animation variables
-		step_ms: 5,		// Time in ms of a single step
 		running: false,
 
 		// Global 
@@ -66,6 +65,9 @@ function fill_global() {
         // General
         num_graphs: 2,
     	arrow_id_prefix: 'ea',
+
+    	// animation
+    	animation: new Animation(),
 	});
 
     add_snap_vars();
@@ -101,7 +103,7 @@ function init() {
 			(function (index) {
 				setTimeout(function() {
 					animation[index][1](animation[index][2], animation[index][3]);
-				}, g.step_ms*i);
+				}, g.animation.step_ms*i);
 		})(i);
 	}};
     // Add global event handlers
@@ -112,7 +114,6 @@ function init() {
     // Set globals and size of base_container
     fill_global();
     document.getElementById('base_container').setAttribute('style', 'width: ' + g.cont_width + '; height: ' + g.cont_height);
-    //$('#base_container').css({'width': g.cont_width, 'height': g.cont_height});
     
     // Initialize graphical elements
     g.playback_bar = new PlaybackBar();
@@ -120,13 +121,15 @@ function init() {
     add_graph_frame();
     position_graph();
     add_scaler();
-
-
     save_initial_graph_dimensions();
+
+    // Build the GraphState array
+ 
     //run();
 }
 
-var animation = Array(Array(1, SetAllVerticesColor, "g1_#EEEEEE"),
+// TODO: Change my name in GatoExport
+var anim_array = Array(Array(1, SetAllVerticesColor, "g1_#EEEEEE"),
 	Array(7, SetVertexAnnotation, "g1_1", "None"),
 	Array(11, SetVertexAnnotation, "g1_2", "None"),
 	Array(7, SetVertexAnnotation, "g1_3", "None"),

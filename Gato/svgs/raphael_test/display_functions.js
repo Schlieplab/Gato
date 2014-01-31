@@ -57,7 +57,7 @@ function Scaler() {
 	this.elem = snap.polygon([this.x, this.y, this.x+this.width, this.y, this.x+this.width, this.y-this.height, this.x, this.y]).attr({
 		'fill': '#000',
 		'stroke': '#000',
-		'cursor': 'pointer'
+		'cursor': 'move'
 	}).mousedown(this.mousedown).
 	mouseup(this.mouseup);
 }
@@ -124,6 +124,8 @@ function format_code_lines() {
     g.line_g.transform('t' + g.padding + ',' + g.padding);
 }
 
+
+
 function PlaybackBar() {
 	this.g = snap.group();
 	this.width = g.cont_width * 3/4 - g.padding*2;
@@ -154,12 +156,32 @@ function start_click(evt) {
 	var buttons = g.button_panel.buttons;
 	if (buttons.start.active) {
 		g.button_panel.set_buttons_state('animating');
-		start_animation();
+		g.animation.start();
 	}
 }
 
 function step_click(evt) {
-	// TODO: fill me in
+	var buttons = g.button_panel.buttons;
+	if (buttons.step.active) {
+		g.button_panel.set_buttons_state('stepping');
+		g.animation.step();
+	}
+}
+
+function continue_click(evt) {
+	var buttons = g.button_panel.buttons;
+	if (buttons.continue.active) {
+		g.button_panel.set_buttons_state('animating');
+		g.animation.continue();
+	}
+}
+
+function stop_click(evt) {
+	var buttons = g.button_panel.buttons;
+	if (buttons.stop.active) {
+		g.button_panel.set_buttons_state('stopped');
+		g.animation.stop();
+	}
 }
 
 function ButtonPanel() {
@@ -170,7 +192,10 @@ function ButtonPanel() {
 	this.g.append(this.buttons['start'].button);
 	this.buttons['step'] = new Button(step_click, 'M0,0 0,30 20,15 Z M20,0 20,30 30,30 30,0 Z', false, [50,0]);
 	this.g.append(this.buttons['step'].button);
-
+	this.buttons['continue'] = new Button(continue_click, 'M0,0 0,30 10,30 10,0 Z M15,0 15,30 35,15 Z', false, [110,0]);
+	this.g.append(this.buttons['continue'].button);
+	this.buttons['stop'] = new Button(stop_click, 'M0,0 0,30 30,30 30,0 Z', false, [175,0]);
+	this.g.append(this.buttons['stop'].button);
 
 	/*this.start_button = snap.path('M0,0 0,30 20,15 Z').attr(this.active_attr);
 	
