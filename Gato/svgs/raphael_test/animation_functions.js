@@ -18,12 +18,19 @@ function Animation() {
 			return;
 		}
 
-		g.slider.go_to_step(this.step_num);
-		var anim = anim_array[this.step_num];
-		this.do_command(anim);
-		this.step_num ++;
-		var self = this;
-		this.scheduled_animation = setTimeout(function() {self.animator()}, anim[0]*this.step_ms);
+		var last_anim = anim_array[this.step_num-1];
+		if (last_anim != null && last_anim[1] === ShowActive && g.code_box.is_line_breakpoint_active(last_anim[2])) {
+			// We're at a breakpoint
+			this.state = 'waiting';
+			g.button_panel.set_buttons_state('waiting');
+		} else {
+			var anim = anim_array[this.step_num];
+			g.slider.go_to_step(this.step_num);
+			this.do_command(anim);
+			this.step_num ++;
+			var self = this;
+			this.scheduled_animation = setTimeout(function() {self.animator()}, anim[0]*this.step_ms);
+		}
 	}
 
 	/* Animator that executes animation commands until 
@@ -47,19 +54,25 @@ function Animation() {
 		if (this.state === 'animating' || this.state === 'stopped') {
 			this.state = 'stopped';
 			clearTimeout(this.scheduled_animation);
+			this.jump_to_step(0);
 		}
 	}
 	
 	this.continue = function() {
-		if (this.state !== 'stepping') {
+		if (this.state !== 'stepping' && this.state !== 'waiting') {
 			return;
+		}
+		if (this.state === 'waiting') {
+			// Get past the blocking command
+			this.do_command(anim_array[this.step_num]);
+			this.step_num ++;
 		}
 		this.state = 'animating';
 		this.animator();
 	}
 
 	this.step = function() {
-		if (this.state === 'animating' || this.state === 'stepping') {
+		if (this.state === 'animating' || this.state === 'stepping' || this.state === 'waiting') {
 			this.state = 'stepping';
 			clearTimeout(this.scheduled_animation);
 			this.do_command(anim_array[this.step_num]);
@@ -145,7 +158,7 @@ function Animation() {
 
 	this.initialize_variables = function() {
 		// State of animation		
-		this.states = ['animating', 'stopped', 'stepping'];
+		this.states = ['animating', 'stopped', 'stepping', 'waiting'];
 		this.state = 'stopped';
 		
 		// Our step interval in milliseconds
@@ -332,11 +345,11 @@ function BlinkVertex(vertex_id, color) {
 
 /** Blinks the given edge between black and current color 3 times */
 function BlinkEdge(edge_id, color){
-    var edge = document.getElementById(edge_id);
-    var curr_color = edge.getAttribute('stroke');
+	var edge = g.edges[edge_id];
+    var curr_color = edge.attr('stroke');
     for (var i=0; i<6; i+=2) {
-    	setTimeout(function() { edge.setAttribute('stroke',  'black'); }, g.step_ms*(i));
-    	setTimeout(function() { edge.setAttribute('stroke', curr_color); }, g.step_ms*(i+1));
+    	setTimeout(function() { edge.attr({'stroke':  'black'}); }, g.step_ms*(i));
+    	setTimeout(function() { edge.attr({'stroke': curr_color}); }, g.step_ms*(i+1));
     }
 }
 

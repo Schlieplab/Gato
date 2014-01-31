@@ -1707,6 +1707,7 @@ function AddBreakpoints(code) {
         var x_start = code.line_llc.group.getBBox().x + 8;
         var indicator = document.createElementNS(svgNS, "path");
         indicator.setAttribute("d", String("M" + x_start + " " + y_start + " L" + (x_start+8) + " " + y_start + " L" + (x_start+12) + " " + (y_start+4) + " L" + (x_start+8) + " " + (y_start+8) + " L" + x_start + " " + (y_start+8) + " L" + x_start + " " + y_start + " Z"));
+        console.log(String("M" + x_start + " " + y_start + " L" + (x_start+8) + " " + y_start + " L" + (x_start+12) + " " + (y_start+4) + " L" + (x_start+8) + " " + (y_start+8) + " L" + x_start + " " + (y_start+8) + " L" + x_start + " " + y_start + " Z"))
         indicator.setAttribute("stroke", "blue");
         indicator.setAttribute("fill", "blue");
         indicator.setAttribute("id", code.line_llc.group.getAttribute("id") + "_bp" + line.getAttribute("id").split("_")[1]);

@@ -203,6 +203,7 @@ function ButtonPanel() {
 		'animating': {'step': true, 'stop': true},
 		'stopped': {'start': true},
 		'stepping': {'step': true, 'continue': true, 'stop': true},
+		'waiting': {'step': true, 'continue': true, 'stop': true},
 	}
 	this.set_buttons_state = function(button_state) {
 		for (var type in this.buttons) {
@@ -249,6 +250,32 @@ function Button(click_handler, path_str, active, translate) {
 }
 
 
+function BreakPoint(width, height) {
+	this.click = function() {
+		if (this.active === true) {
+			this.active = false;
+			this.button.attr({'opacity': this.inactive_opacity});
+		} else {
+			this.active = true;
+			this.button.attr({'opacity': this.active_opacity});
+		}
+	}
+	this.g = snap.group();
+	this.active = false;
+	this.active_opacity = 1;
+	this.inactive_opacity = .5;
+	var self = this;	
+
+	var path_str = 'M0 0 L8 0 L12 4 L8 8 L0 8 L0 0 Z';
+	this.button = snap.path(path_str).attr({
+		'fill': 'blue',
+		'opacity': this.inactive_opacity,
+	}).click(function() {
+		self.click();
+	});
+	this.g.append(this.button);
+}
+
 
 function CodeBox() {
 	this.highlight_line = function(line_id) {
@@ -259,11 +286,40 @@ function CodeBox() {
 	this.remove_highlighting = function() {
 		this.highlight_box.attr({'opacity': 0});
 	}
+	this.add_line_numbers = function() {
+		for (var key in g.code_lines) {
+			var line = g.code_lines[key];
+			var line_num = key.split('_')[1];
+			var x = this.padding;
+			var y = g.code_lines[key].attr('y');
+			var elem = snap.text(x, y, line_num).attr({
+				'font-family': 'Courier New',
+				'font-size': 14
+			});
+			this.g.append(elem);
+		}
+	}
+	this.add_break_points = function() {
+		this.breakpoints = {};
+		for (var key in g.code_lines) {
+			var line = g.code_lines[key];
+			var line_num = key.split('_')[1];
+			this.breakpoints[key] = new BreakPoint(this.breakpoint_width);
+			this.g.append(this.breakpoints[key].g);
+
+			var trans_x = parseInt(line.attr('x')) - 2 - this.breakpoints[key].g.getBBox().width;
+			var trans_y = parseInt(line.attr('y')) - line.getBBox().height/2;
+			this.breakpoints[key].g.transform('t' + trans_x + ',' + trans_y);
+		}
+	}
+	this.is_line_breakpoint_active = function(line_id) {
+		return this.breakpoints[line_id].active;
+	}
 
 	this.line_padding = 18;
 	this.padding = 6;
 	this.breakpoint_width = 16;
-	this.line_number_width = 16;
+	this.line_number_width = 24;
 	this.line_x = this.padding + this.breakpoint_width + this.line_number_width;
 	
 	// Set y of codelines to separate them.  Add to group.  Find widest for framing box
@@ -306,6 +362,10 @@ function CodeBox() {
     g.highlight_boxes = {'highlight_box': this.highlight_box};
     this.g.append(this.highlight_box);
     this.remove_highlighting();
+
+    // Add line numbers and breakpoints
+    this.add_line_numbers();
+    this.add_break_points();
     
     this.g.transform('t' + g.padding + ',' + g.padding);
 }
