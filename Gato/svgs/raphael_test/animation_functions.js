@@ -84,18 +84,54 @@ function start_animation() {
 	}
 }
 
-function step_animation() {
 
+function Slider(width, height) {
+	this.mousedown = function(evt) {
+		console.log('clicked');
+		g.slider.sliding = true;
+		g.slider.start_cursor_x = parseInt(g.slider.cursor.attr('x'));
+		g.slider.start_mouse_x = parseInt(evt.x);
+	}
+	this.drag = function(evt) {
+		this.mouseup(evt);
+	}
+	this.mousemove = function(evt) {
+		//console.log('')	
+		var new_x = this.start_cursor_x + parseInt(evt.x) - g.slider.start_mouse_x;
+		if (new_x > this.cursor_max_x) {
+			new_x = this.cursor_max_x;
+		} else if (new_x < this.cursor_min_x) {
+			new_x = this.cursor_min_x;
+		}
+		this.cursor.attr({'x': new_x});
+	}
+	this.mouseup = function(evt) {
+		this.sliding = false;
+	}
+	this.sliding = false;
+	this.width = width;
+	this.height = height;
+	this.g = snap.group();
+
+	this.track_width = this.width;
+	this.track_height = 8;
+	this.track_y = this.height/2-this.track_height/2;
+	this.track = snap.rect(0, this.track_y, this.width, this.track_height, 2, 2).attr({
+		'fill': '#AAA'
+	});
+	this.g.append(this.track);
+
+	this.cursor_height = this.height;
+	this.cursor_width = 10;
+	this.cursor = snap.rect(0, 0, this.cursor_width, this.cursor_height, 6, 6).attr({
+		'fill': '#eee',
+		'stroke': '#111',
+		'stroke-width': 1
+	}).mousedown(this.mousedown);
+	this.cursor_max_x = this.width - this.cursor_width;
+	this.cursor_min_x = 0;
+	this.g.append(this.cursor);
 }
-
-function continue_animation() {
-
-}
-
-function stop_animation() {
-
-}
-
 
 
 /**

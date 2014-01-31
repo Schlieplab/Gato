@@ -83,17 +83,26 @@ function global_mouseup(evt) {
 	if (g.scaler.scaling === true) {
 		g.scaler.mouseup(evt);
 	}
+	if (g.slider.sliding === true) {
+		g.slider.mouseup(evt);
+	}
 }
 
 function global_mousemove(evt) {
 	if (g.scaler.scaling === true) {
-		g.scaler.do_scale(evt);
+		g.scaler.mousemove(evt);
+	}
+	if (g.slider.sliding === true) {
+		g.slider.mousemove(evt);
 	}
 }
 
 function global_drag(evt) {
 	if (g.scaler.scaling === true) {
-		g.scaler.mouseup(evt);
+		g.scaler.drag(evt);
+	}
+	if (g.slider.sliding === true) {
+		g.slider.drag(evt);
 	}
 }
 

@@ -27,8 +27,14 @@ function Scaler() {
 		g.scaler.start_width = bbox.width;
 		g.scaler.start_mouse = {'x': parseInt(evt.x), 'y': parseInt(evt.y)};
 	}
+	this.drag = function(evt) {
+		this.mouseup(evt);
+	}
 	this.mouseup = function(evt) {
 		g.scaler.scaling = false;
+	}
+	this.mousemove = function(evt) {
+		this.do_scale(evt);
 	}
 	this.do_scale = function(evt) {
 		var dx = parseInt(evt.x) - g.scaler.start_mouse.x;
@@ -58,8 +64,7 @@ function Scaler() {
 		'fill': '#000',
 		'stroke': '#000',
 		'cursor': 'move'
-	}).mousedown(this.mousedown).
-	mouseup(this.mouseup);
+	}).mousedown(this.mousedown);
 }
 
 function add_scaler() {
@@ -147,6 +152,17 @@ function PlaybackBar() {
 	g.button_panel.g.transform('t' + this.padding_x + ',' + this.padding_y);
 	this.g.append(g.button_panel.g);
 
+	// Implement me
+	// g.control_panel = new ControlPanel();
+	g.control_panel = {'width': 100}
+
+	this.slider_width = this.width - this.padding_x*4 - g.button_panel.width - g.control_panel.width;
+	this.slider_height = this.height - this.padding_y*2;
+	g.slider = new Slider(this.slider_width, this.slider_height);
+	var slider_x_trans = g.button_panel.width + this.padding_x*2;
+	g.slider.g.transform('t' + slider_x_trans + ',' + this.padding_y)
+	this.g.append(g.slider.g);
+
 	this.x_translate = g.cont_width/8+g.padding;
 	this.y_translate = g.cont_height - this.height - g.padding;
 	this.g.transform('t' + this.x_translate + ',' + this.y_translate);
@@ -186,6 +202,7 @@ function stop_click(evt) {
 
 function ButtonPanel() {
 	this.g = snap.group();
+	this.width = 205;
 
 	this.buttons = {};
 	this.buttons['start'] = new Button(start_click, 'M0,0 0,30 20,15 Z', true, [0,0]);
