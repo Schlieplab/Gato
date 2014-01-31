@@ -1,17 +1,30 @@
 function Scaler() {
-	function scaled_to_max() {
+	this.set_max_and_min_dimensions_of_graph_container = function () {
+		/*
+		function scaled_to_max() {
+			var bbox = g.g1_container.getBBox();
+			var playback_bbox = g.playback_bar.g.getBBox();
+			if (bbox.y + bbox.height + g.padding > playback_bbox.y) {
+				return true;
+			}
+			return false;
+		}
+		*/
 		var bbox = g.g1_container.getBBox();
 		var playback_bbox = g.playback_bar.g.getBBox();
-		if (bbox.y + bbox.height + g.padding > playback_bbox.y) {
-			return true;
-		}
-		return false;
+		var max_height = playback_bbox.y - g.padding - bbox.y;
+		var max_width = g.cont_width - g.padding - bbox.x;
+		var max_scale_factor_y = max_height / bbox.height;
+		var max_scale_factor_x = max_width / bbox.width;
+		this.max_scale_factor = Math.min(max_scale_factor_x, max_scale_factor_y);
+		this.min_scale_factor = .3;
+		console.log('Max: ' + this.max_scale_factor);
+		console.log('Min: ' + this.min_scale_factor)
 	}
-
 	this.mousedown = function(evt) {
 		g.scaler.scaling = true;
-		g.scaler.start_width = g.g1_container.getBBox().width;
-		console.log(g.scaler.start_width);
+		var bbox = g.g1_container.getBBox();
+		g.scaler.start_width = bbox.width;
 		g.scaler.start_mouse = {'x': parseInt(evt.x), 'y': parseInt(evt.y)};
 	}
 	this.mouseup = function(evt) {
@@ -19,21 +32,17 @@ function Scaler() {
 	}
 	this.do_scale = function(evt) {
 		var dx = parseInt(evt.x) - g.scaler.start_mouse.x;
-		var dy = parseInt(evt.y) - g.scaler.start_mouse.y;
-
 		var new_width = g.scaler.start_width + dx;
 		var scale_factor = new_width / g.initial_graph_width;
-		if (scale_factor < g.min_scale_factor) {
-			return;
+		if (scale_factor > this.max_scale_factor) {
+			scale_factor = this.max_scale_factor;
+		} else if (scale_factor < this.min_scale_factor) {
+			scale_factor = this.min_scale_factor;
 		}
-
-		if (scale_factor < g.scaler.curr_scale || !scaled_to_max()) {
-			console.log("Curr scale is " + g.scaler.curr_scale + '. Moving to ' + scale_factor);
-			g.scaler.curr_scale = scale_factor;
-			g.g1_scale = 's' + g.scaler.curr_scale + ',0,0';
-			var trans = 't' + g.g1_container_translate[0] + ',' + g.g1_container_translate[1] + g.g1_scale;
-			g.g1_container.transform(trans);
-		}
+		g.scaler.curr_scale = scale_factor;
+		g.g1_scale = 's' + g.scaler.curr_scale + ',0,0';
+		var trans = 't' + g.g1_container_translate[0] + ',' + g.g1_container_translate[1] + g.g1_scale;
+		g.g1_container.transform(trans);
 	}
 
 	var bbox = g.g1_container.getBBox();
@@ -43,6 +52,7 @@ function Scaler() {
 	this.height = 10;
 	this.x = bbox.width - this.width;
 	this.y = bbox.height + g.frame_padding - this.height;
+	this.set_max_and_min_dimensions_of_graph_container();
 
 	this.elem = snap.polygon([this.x, this.y, this.x+this.width, this.y, this.x+this.width, this.y-this.height, this.x, this.y]).attr({
 		'fill': '#000',

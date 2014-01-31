@@ -49,7 +49,6 @@ function fill_global() {
 		cont_width: cont_width,
 		cont_height: cont_height,
         padding: Math.min(Math.ceil(cont_width*.02), Math.ceil(cont_height)*.02),
-		min_scale_factor: .1,
 
 		// Code Box
 		line_padding: 16,
@@ -70,6 +69,12 @@ function fill_global() {
 	});
 
     add_snap_vars();
+}
+
+function save_initial_graph_dimensions() {
+    var bbox = g.g1_container.getBBox();
+    g.initial_graph_width = bbox.width;
+    g.initial_graph_height = bbox.height;
 }
 
 function global_mouseup(evt) {
@@ -110,13 +115,14 @@ function init() {
     //$('#base_container').css({'width': g.cont_width, 'height': g.cont_height});
     
     // Initialize graphical elements
+    g.playback_bar = new PlaybackBar();
     format_code_lines();
     add_graph_frame();
     position_graph();
     add_scaler();
-    g.playback_bar = new PlaybackBar();
 
-    g.initial_graph_width = g.g1_container.getBBox().width;
+
+    save_initial_graph_dimensions();
     //run();
 }
 
