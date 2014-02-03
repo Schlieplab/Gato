@@ -204,6 +204,7 @@ function ButtonPanel() {
 		'stopped': {'start': true},
 		'stepping': {'step': true, 'continue': true, 'stop': true},
 		'waiting': {'step': true, 'continue': true, 'stop': true},
+		'done': {'start': true},
 	}
 	this.set_buttons_state = function(button_state) {
 		for (var type in this.buttons) {
@@ -307,7 +308,7 @@ function CodeBox() {
 			this.breakpoints[key] = new BreakPoint(this.breakpoint_width);
 			this.g.append(this.breakpoints[key].g);
 
-			var trans_x = parseInt(line.attr('x')) - 2 - this.breakpoints[key].g.getBBox().width;
+			var trans_x = this.line_number_width + this.padding*2;
 			var trans_y = parseInt(line.attr('y')) - line.getBBox().height/2;
 			this.breakpoints[key].g.transform('t' + trans_x + ',' + trans_y);
 		}
@@ -319,8 +320,8 @@ function CodeBox() {
 	this.line_padding = 18;
 	this.padding = 6;
 	this.breakpoint_width = 16;
-	this.line_number_width = 24;
-	this.line_x = this.padding + this.breakpoint_width + this.line_number_width;
+	this.line_number_width = 16;
+	this.line_x = this.padding*3 + this.breakpoint_width + this.line_number_width;
 	
 	// Set y of codelines to separate them.  Add to group.  Find widest for framing box
     var curr_y = this.line_padding;
@@ -350,9 +351,9 @@ function CodeBox() {
     this.g.prepend(this.frame);
 
     // Add a highlight box 
-    this.highlight_box_padding = {x: 5, y: 2};
+    this.highlight_box_padding = {x: 8, y: 2};
     this.highlight_box_opacity = .35;
-    this.highlight_box = snap.rect(this.line_x - this.highlight_box_padding.x, 0, this.widest_line - min_bbox_x + this.highlight_box_padding.x, this.line_padding + this.highlight_box_padding.y*2).attr({
+    this.highlight_box = snap.rect(this.line_x - this.highlight_box_padding.x/2, 0, this.widest_line - min_bbox_x + this.highlight_box_padding.x, this.line_padding + this.highlight_box_padding.y*2).attr({
     	'id': 'highlight_box',
     	'fill': 'yellow',
     	'stroke': 'blue',

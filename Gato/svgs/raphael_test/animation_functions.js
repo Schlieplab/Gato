@@ -13,8 +13,9 @@ function Animation() {
 			return;
 		}
 		if (this.step_num >= anim_array.length) {
-			this.state = 'stopped';
-			g.button_panel.set_buttons_state('stopped');
+			console.log("Setting state to done");
+			this.state = 'done';
+			g.button_panel.set_buttons_state('done');
 			return;
 		}
 
@@ -43,17 +44,24 @@ function Animation() {
 	}
 
 	this.start = function() {
-		if (this.state !== 'stopped') {
-			return;
+		if (this.state === 'stopped' || this.state === 'done') {
+			if (this.state === 'done') {
+				// If we are done then reset the animation
+				this.step_num = 0;
+				this.jump_to_step(this.step_num);
+			}
+
+			console.log('starting the animation');
+			this.state = 'animating';
+			this.animator();
 		}
-		this.state = 'animating';
-		this.animator();
 	}
 
 	this.stop = function() {
 		if (this.state === 'animating' || this.state === 'stopped') {
 			this.state = 'stopped';
 			clearTimeout(this.scheduled_animation);
+			this.step_num = 0;
 			this.jump_to_step(0);
 		}
 	}
@@ -158,7 +166,7 @@ function Animation() {
 
 	this.initialize_variables = function() {
 		// State of animation		
-		this.states = ['animating', 'stopped', 'stepping', 'waiting'];
+		this.states = ['animating', 'stopped', 'stepping', 'waiting', 'done'];
 		this.state = 'stopped';
 		
 		// Our step interval in milliseconds
@@ -176,30 +184,32 @@ function Animation() {
 	this.initialize_variables();
 }
 
-function start_animation() {
-	g.running = true;
-	for (var i=0; i<animation.length; i++) {	
-		(function (index) {
-			setTimeout(function() {
-				animation[index][1](animation[index][2], animation[index][3]);
-			}, g.step_ms*i);
-		})(i);
-	}
-}
-
-
 function Slider(width, height) {
-	this.mousedown = function(evt) {
-		console.log('clicked');
+	this.track_click = function(evt) {
+		var self = g.slider;
+		var new_x = evt.x - self.cursor.transform().globalMatrix.e - parseInt(self.cursor.attr('width'))/2;
+		if (new_x < 0) {
+			new_x = 0;
+		} else if (new_x > self.cursor_max_x) {
+			new_x = self.cursor_max_x;
+		}
+		console.log("new x is " + new_x);
+		self.cursor.attr({'x': new_x});
+		var step = parseInt(new_x / self.step_width);
+		console.log("step width: " + self.step_width);
+		g.animation.jump_to_step(step);
+		console.log(step);
+	}
+	this.cursor_mousedown = function(evt) {
 		g.slider.sliding = true;
 		g.slider.start_cursor_x = parseInt(g.slider.cursor.attr('x'));
 		g.slider.start_mouse_x = parseInt(evt.x);
 	}
-	this.drag = function(evt) {
+	this.cursor_drag = function(evt) {
 		this.mouseup(evt);
 	}
-	this.mousemove = function(evt) {
-		var step = 0;		
+	this.cursor_mousemove = function(evt) {
+		var step = 0;
 		var new_x = this.start_cursor_x + parseInt(evt.x) - g.slider.start_mouse_x;
 		if (new_x > this.cursor_max_x) {
 			new_x = this.cursor_max_x;
@@ -213,7 +223,7 @@ function Slider(width, height) {
 		this.cursor.attr({'x': new_x});
 		g.animation.jump_to_step(step);
 	}
-	this.mouseup = function(evt) {
+	this.cursor_mouseup = function(evt) {
 		this.sliding = false;
 	}
 
@@ -224,7 +234,6 @@ function Slider(width, height) {
 	this.sliding = false;
 	this.width = width;
 	this.height = height;
-	this.step_width = this.width / anim_array.length;
 	this.g = snap.group();
 
 	this.track_width = this.width;
@@ -232,7 +241,7 @@ function Slider(width, height) {
 	this.track_y = this.height/2-this.track_height/2;
 	this.track = snap.rect(0, this.track_y, this.width, this.track_height, 2, 2).attr({
 		'fill': '#AAA'
-	});
+	}).click(this.track_click);
 	this.g.append(this.track);
 
 	this.cursor_height = this.height;
@@ -241,9 +250,10 @@ function Slider(width, height) {
 		'fill': '#eee',
 		'stroke': '#111',
 		'stroke-width': 1
-	}).mousedown(this.mousedown);
+	}).mousedown(this.cursor_mousedown);
 	this.cursor_max_x = this.width - this.cursor_width;
 	this.cursor_min_x = 0;
+	this.step_width = this.cursor_max_x / anim_array.length;
 	this.g.append(this.cursor);
 }
 

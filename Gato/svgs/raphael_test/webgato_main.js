@@ -78,12 +78,12 @@ function save_initial_graph_dimensions() {
 }
 
 function global_mouseup(evt) {
-	if (g.scaler.scaling === true) {
-		g.scaler.mouseup(evt);
-	}
-	if (g.slider.sliding === true) {
-		g.slider.mouseup(evt);
-	}
+    if (g.scaler.scaling === true) {
+        g.scaler.mouseup(evt);
+    }
+    if (g.slider.sliding === true) {
+        g.slider.cursor_mouseup(evt);
+    }
 }
 
 function global_mousemove(evt) {
@@ -91,7 +91,7 @@ function global_mousemove(evt) {
 		g.scaler.mousemove(evt);
 	}
 	if (g.slider.sliding === true) {
-		g.slider.mousemove(evt);
+		g.slider.cursor_mousemove(evt);
 	}
 }
 
@@ -100,7 +100,7 @@ function global_drag(evt) {
 		g.scaler.drag(evt);
 	}
 	if (g.slider.sliding === true) {
-		g.slider.drag(evt);
+		g.slider.cursor_drag(evt);
 	}
 }
 

@@ -1,3 +1,13 @@
+//Translate client coordinates to svg coordinates.  If given element then translates to coordinates
+//in that elements coordinate system
+function cursorPoint(evt, element){
+    pt = {x: evt.clientX, y: evt.clientY};
+    if (element === null || element === undefined)
+        return pt.matrixTransform(document.getScreenCTM().inverse());
+    else
+        return pt.matrixTransform(document.getScreenCTM().inverse());
+}
+
 
 function get_translate(elem) {
     var trans = document.getElementById(elem.attr('id')).getAttribute('transform');
