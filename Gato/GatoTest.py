@@ -324,7 +324,10 @@ svg_instance = {
 svg_instance = {
     '02-GraphsNetworks/BFS.alg':[
     '02-GraphsNetworks/BFS.cat'
-   ]
+   ],
+   '05-ShortestPaths/BellmanFord.alg':[
+    '05-ShortestPaths/BellmanFordWC.cat',
+    ],
 }
 
 

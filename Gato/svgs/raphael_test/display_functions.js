@@ -1,15 +1,5 @@
 function Scaler() {
 	this.set_max_and_min_dimensions_of_graph_container = function () {
-		/*
-		function scaled_to_max() {
-			var bbox = g.g1_container.getBBox();
-			var playback_bbox = g.playback_bar.g.getBBox();
-			if (bbox.y + bbox.height + g.padding > playback_bbox.y) {
-				return true;
-			}
-			return false;
-		}
-		*/
 		var bbox = g.g1_container.getBBox();
 		var playback_bbox = g.playback_bar.g.getBBox();
 		var max_height = playback_bbox.y - g.padding - bbox.y;
@@ -251,7 +241,7 @@ function Button(click_handler, path_str, active, translate) {
 }
 
 
-function BreakPoint(width, height) {
+function BreakPoint(width, breakpoint_num) {
 	this.click = function() {
 		if (this.active === true) {
 			this.active = false;
@@ -269,6 +259,7 @@ function BreakPoint(width, height) {
 
 	var path_str = 'M0 0 L8 0 L12 4 L8 8 L0 8 L0 0 Z';
 	this.button = snap.path(path_str).attr({
+		'id': 'breakpoint_' + breakpoint_num,
 		'fill': 'blue',
 		'opacity': this.inactive_opacity,
 	}).click(function() {
@@ -280,11 +271,20 @@ function BreakPoint(width, height) {
 
 function CodeBox() {
 	this.highlight_line = function(line_id) {
-		var line = g.code_lines[line_id];
+		if (this.line_bboxes === undefined) {
+			// We cache the line bboxes so we make less getBBox() calls
+			this.line_bboxes = {};
+		}
+		var line_bbox = this.line_bboxes[line_id];
+		if (line_bbox == null) {
+			var line = g.code_lines[line_id];
+			line_bbox = line.getBBox();
+			this.line_bboxes[line_id] = line_bbox;
+		}
 		this.highlight_box.attr({'opacity': this.highlight_box_opacity});
-		this.highlight_box.transform('t0,' + (line.getBBox().y - this.highlight_box_padding.y));
+		this.highlight_box.transform('t0,' + (line_bbox.y - this.highlight_box_padding.y));
 	}
-	this.remove_highlighting = function() {
+	this.remove_highlighting = function() 	{
 		this.highlight_box.attr({'opacity': 0});
 	}
 	this.add_line_numbers = function() {
@@ -305,7 +305,7 @@ function CodeBox() {
 		for (var key in g.code_lines) {
 			var line = g.code_lines[key];
 			var line_num = key.split('_')[1];
-			this.breakpoints[key] = new BreakPoint(this.breakpoint_width);
+			this.breakpoints[key] = new BreakPoint(this.breakpoint_width, line_num);
 			this.g.append(this.breakpoints[key].g);
 
 			var trans_x = this.line_number_width + this.padding*2;

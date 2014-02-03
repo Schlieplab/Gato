@@ -176,7 +176,7 @@ function Animation() {
 		this.step_num = 0;
 
 		// How many steps we take between each saved graph state
-		this.state_interval = 200; 
+		this.state_interval = 500; 
 
 		// TODO: Do graph states
 		this.construct_graph_states();
@@ -186,6 +186,9 @@ function Animation() {
 
 function Slider(width, height) {
 	this.track_click = function(evt) {
+		/*	Triggers when the slider track is clicked.  Moves the cursor to the position of the
+			mouse cursor on the track, and jumps to the corresponding step in animation
+		*/
 		var self = g.slider;
 		var new_x = evt.x - self.cursor.transform().globalMatrix.e - parseInt(self.cursor.attr('width'))/2;
 		if (new_x < 0) {
@@ -201,6 +204,9 @@ function Slider(width, height) {
 		console.log(step);
 	}
 	this.cursor_mousedown = function(evt) {
+		/*	Triggers when cursor is mousedowned.  Begins sliding process by 
+			recording initial cursor and mouse positions
+		*/
 		g.slider.sliding = true;
 		g.slider.start_cursor_x = parseInt(g.slider.cursor.attr('x'));
 		g.slider.start_mouse_x = parseInt(evt.x);
@@ -209,6 +215,10 @@ function Slider(width, height) {
 		this.mouseup(evt);
 	}
 	this.cursor_mousemove = function(evt) {
+		/*	This does the actual moving of the cursor.  Using the cursor and mouse positions
+			at mousedown event this computes the new position of the cursor, and moves
+			the animation to the corresponding step.
+		*/
 		var step = 0;
 		var new_x = this.start_cursor_x + parseInt(evt.x) - g.slider.start_mouse_x;
 		if (new_x > this.cursor_max_x) {
@@ -224,37 +234,44 @@ function Slider(width, height) {
 		g.animation.jump_to_step(step);
 	}
 	this.cursor_mouseup = function(evt) {
+		/* Ends cursor sliding behavior */
 		this.sliding = false;
 	}
-
 	this.go_to_step = function(n) {
+		/* Positions the cursor at the position corresponding to step number n */
 		this.cursor.attr({'x': n*this.step_width});
 	}
 
-	this.sliding = false;
-	this.width = width;
-	this.height = height;
-	this.g = snap.group();
+	this.init = function () {
+		this.sliding = false;
+		this.width = width;
+		this.height = height;
+		this.g = snap.group();
 
-	this.track_width = this.width;
-	this.track_height = 8;
-	this.track_y = this.height/2-this.track_height/2;
-	this.track = snap.rect(0, this.track_y, this.width, this.track_height, 2, 2).attr({
-		'fill': '#AAA'
-	}).click(this.track_click);
-	this.g.append(this.track);
+		// Construct the slider track
+		this.track_width = this.width;
+		this.track_height = 8;
+		this.track_y = this.height/2-this.track_height/2;
+		this.track = snap.rect(0, this.track_y, this.width, this.track_height, 2, 2).attr({
+			'fill': '#AAA'
+		}).click(this.track_click);
+		this.g.append(this.track);
 
-	this.cursor_height = this.height;
-	this.cursor_width = 10;
-	this.cursor = snap.rect(0, 0, this.cursor_width, this.cursor_height, 6, 6).attr({
-		'fill': '#eee',
-		'stroke': '#111',
-		'stroke-width': 1
-	}).mousedown(this.cursor_mousedown);
-	this.cursor_max_x = this.width - this.cursor_width;
-	this.cursor_min_x = 0;
-	this.step_width = this.cursor_max_x / anim_array.length;
-	this.g.append(this.cursor);
+		// Construct the cursor
+		this.cursor_height = this.height;
+		this.cursor_width = 10;
+		this.cursor = snap.rect(0, 0, this.cursor_width, this.cursor_height, 6, 6).attr({
+			'fill': '#eee',
+			'stroke': '#111',
+			'stroke-width': 1
+		}).mousedown(this.cursor_mousedown);
+		this.cursor_max_x = this.width - this.cursor_width;
+		this.cursor_min_x = 0;
+		this.step_width = this.cursor_max_x / anim_array.length;
+		this.g.append(this.cursor);
+	}
+	
+	this.init();
 }
 
 

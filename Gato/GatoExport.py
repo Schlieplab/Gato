@@ -97,7 +97,7 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
     elif (type == 1): #Word.  Potential keyword.  Must check keywordsList
         if begun_line == False:
             begun_line = True
-            SVG_Animation.write('<text blank = "false" id="%s" x="10" y="10" dx="%d" text-anchor="start" '\
+            SVG_Animation.write('<text blank = "false" id="%s" class="code_line" x="10" y="10" dx="%d" text-anchor="start" '\
                        'fill="black" font-family="Courier New" font-size="14.0" font-style="normal">' % ("l_" + str(line_count), 7*indent_stack[len(indent_stack)-1]))
 
         if token in keywordsList:
@@ -134,7 +134,7 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
     elif (type == 51): #Operators and punctuation
         if begun_line == False:
             begun_line = True
-            SVG_Animation.write('<text blank = "false" id="%s" x="10" y="10" dx="%d" text-anchor="start" '\
+            SVG_Animation.write('<text blank = "false" id="%s" class="code_line" x="10" y="10" dx="%d" text-anchor="start" '\
                        'fill="black" font-family="Courier New" font-size="14.0" font-style="normal">' % ("l_" + str(line_count), 7*indent_stack[len(indent_stack)-1]))
 
         if token in operatorsList:
@@ -161,7 +161,7 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
     elif (type == 53): #Comment
         if begun_line == False:
             begun_line = True
-            SVG_Animation.write('<text blank = "false" id="%s" x="10" y="10" dx="%d" text-anchor="start" '\
+            SVG_Animation.write('<text blank = "false" id="%s" class="code_line" x="10" y="10" dx="%d" text-anchor="start" '\
                        'fill="black" font-family="Courier New" font-size="14.0" font-style="normal">' % ("l_" + str(line_count), 7*indent_stack[len(indent_stack)-1]))
 
         if (prev[0] in specialList and (prev[0] != "]" and prev[0] != ")")):
@@ -169,14 +169,14 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
         else:
             SVG_Animation.write('<tspan dx="7">%s</tspan>' % token)
     elif (type == 54): #Empty line with newline
-        SVG_Animation.write('<text blank = "true" id="%s" x="10" y="10" dx="%d" text-anchor="start" '\
+        SVG_Animation.write('<text blank = "true" id="%s" class="code_line" x="10" y="10" dx="%d" text-anchor="start" '\
                        'fill="black" font-family="Courier New" font-size="14.0" font-style="normal"></text>\n' % ("l_" + str(line_count), 7*indent_stack[len(indent_stack)-1]))
         line_begun = False
         line_count += 1
     else:
         if begun_line == False:
             begun_line = True
-            SVG_Animation.write('<text blank = "false" id="%s" x="10" y="10" dx="%d" text-anchor="start" '\
+            SVG_Animation.write('<text blank = "false" id="%s" class="code_line" x="10" y="10" dx="%d" text-anchor="start" '\
                        'fill="black" font-family="Courier New" font-size="14.0" font-style="normal">' % ("l_" + str(line_count), 7*indent_stack[len(indent_stack)-1]))
 
         if (prev[0] in specialList and (prev[0] != "]" and prev[0] != ")")):
