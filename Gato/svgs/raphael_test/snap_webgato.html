@@ -92,17 +92,18 @@
 <text blank = "false" id="l_1" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal">root = PickVertex()</text>
 <text blank = "false" id="l_2" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal">Q.Append(root)</text>
 <text blank = "false" id="l_3" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal">pred[root] = root</text>
-<text blank = "false" id="l_4" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal">step = 1</text>
-<text blank = "true" id="l_5" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal"></text>
+<text blank = "false" id="l_4" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal">step =1</text>
+<text blank = "true" id="l_5" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal"></text>
 <text blank = "false" id="l_6" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal"><tspan font-weight="bold">while</tspan> Q.IsNotEmpty():</text>
 <text blank = "false" id="l_7" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal">v = Q.Top()</text>
 <text blank = "false" id="l_8" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal">label[v] = step</text>
-<text blank = "false" id="l_9" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal">step = step + 1</text>
-<text blank = "false" id="l_10" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal"><tspan font-weight="bold">for</tspan> w <tspan font-weight="bold">in</tspan> Neighborhood(v):</text>
-<text blank = "false" id="l_11" class="code_line" x="0" y="0" dx="56" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal"><tspan font-weight="bold">if not</tspan> pred[w]:</text>
-<text blank = "false" id="l_12" class="code_line" x="0" y="0" dx="84" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal">Q.append(w)</text>
+<text blank = "false" id="l_9" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal">step = step +1</text>
+<text blank = "false" id="l_10" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal"><tspan font-weight="bold">for</tspan> w<tspan font-weight="bold"> in</tspan> Neighborhood(v):</text>
+<text blank = "false" id="l_11" class="code_line" x="0" y="0" dx="56" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal"><tspan font-weight="bold">if</tspan><tspan font-weight="bold"> not</tspan> pred[w]:</text>
+<text blank = "false" id="l_12" class="code_line" x="0" y="0" dx="84" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal">Q.Append(w)</text>
 <text blank = "false" id="l_13" class="code_line" x="0" y="0" dx="84" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal">pred[w] = v</text>
-<text blank = "true" id="l_14" x="0" y="0" dx="84" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal"></text>
+<text blank = "true" id="l_14" class="code_line" x="0" y="0" dx="84" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal"></text>
+
 
 
 </svg>

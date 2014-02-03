@@ -290,6 +290,9 @@ function CodeBox() {
 	this.add_line_numbers = function() {
 		for (var key in g.code_lines) {
 			var line = g.code_lines[key];
+			if (line['whitespace'] === true) {
+				continue;
+			}
 			var line_num = key.split('_')[1];
 			var x = this.padding;
 			var y = g.code_lines[key].attr('y');
@@ -304,6 +307,10 @@ function CodeBox() {
 		this.breakpoints = {};
 		for (var key in g.code_lines) {
 			var line = g.code_lines[key];
+			console.log(line['whitespace']);
+			if (line['whitespace'] === true) {
+				continue;
+			}
 			var line_num = key.split('_')[1];
 			this.breakpoints[key] = new BreakPoint(this.breakpoint_width, line_num);
 			this.g.append(this.breakpoints[key].g);
@@ -334,10 +341,13 @@ function CodeBox() {
         curr_line.attr({'y': curr_y, 'x': this.line_x});
         curr_y += this.line_padding;
         
-        var bbox = curr_line.getBBox();
-        var width = bbox.width + bbox.x;
-        min_bbox_x = Math.min(min_bbox_x, bbox.x);
-        this.widest_line = Math.max(width, this.widest_line);
+        if (curr_line['whitespace'] === false) {
+        	// Don't consider whitespace in size calculation
+	        var bbox = curr_line.getBBox();
+	        var width = bbox.width + bbox.x;
+	        min_bbox_x = Math.min(min_bbox_x, bbox.x);
+	        this.widest_line = Math.max(width, this.widest_line);
+        }
     }
 
     // Add a framing box
@@ -353,6 +363,8 @@ function CodeBox() {
     // Add a highlight box 
     this.highlight_box_padding = {x: 8, y: 2};
     this.highlight_box_opacity = .35;
+    console.log(this.widest_line);
+    console.log(min_bbox_x);
     this.highlight_box = snap.rect(this.line_x - this.highlight_box_padding.x/2, 0, this.widest_line - min_bbox_x + this.highlight_box_padding.x, this.line_padding + this.highlight_box_padding.y*2).attr({
     	'id': 'highlight_box',
     	'fill': 'yellow',

@@ -97,23 +97,24 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
     elif (type == 1): #Word.  Potential keyword.  Must check keywordsList
         if begun_line == False:
             begun_line = True
-            SVG_Animation.write('<text blank = "false" id="%s" class="code_line" x="10" y="10" dx="%d" text-anchor="start" '\
+            SVG_Animation.write('<text blank = "false" id="%s" class="code_line" x="0" y="0" dx="%d" text-anchor="start" '\
                        'fill="black" font-family="Courier New" font-size="14.0" font-style="normal">' % ("l_" + str(line_count), 7*indent_stack[len(indent_stack)-1]))
 
         if token in keywordsList:
             if (prev[1] == -1 or prev[1] == 5 or prev[1] == 4 or prev[1] == 54 or prev[1] == 6): #first word
-                SVG_Animation.write('<tspan font-weight="bold" dx="%d">%s</tspan>' % (7*indent_stack[len(indent_stack)-1] + indent_const, token))
+                SVG_Animation.write('<tspan font-weight="bold">%s</tspan>' % (token))
             elif (prev[0] in specialList and (prev[0] != "]" and prev[0] != ")")):
                 SVG_Animation.write('<tspan font-weight="bold">%s</tspan>' % token)
             else:
-                SVG_Animation.write('<tspan font-weight="bold" dx="7">%s</tspan>' % token)
+                SVG_Animation.write('<tspan font-weight="bold"> %s</tspan>' % token)
         else:
             if (prev[1] == -1 or prev[1] == 5 or prev[1] == 4 or prev[1] == 54 or prev[1] == 6): #first word
-                SVG_Animation.write('<tspan dx = "%d">%s</tspan>' % (7*indent_stack[len(indent_stack)-1] + indent_const, token))
+                SVG_Animation.write('%s' % (token))
             elif (prev[0] in specialList and (prev[0] != "]" and prev[0] != ")")):
-                SVG_Animation.write('<tspan>%s</tspan>' % token)
+                SVG_Animation.write('%s' % token)
             else:
-                SVG_Animation.write('<tspan dx="7">%s</tspan>' % token)
+                SVG_Animation.write(' %s' % token)
+        print "Write something at 117"
     elif (type == 4): #Newline on nonempty line
         SVG_Animation.write('</text>\n')
         begun_line = False
@@ -134,7 +135,7 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
     elif (type == 51): #Operators and punctuation
         if begun_line == False:
             begun_line = True
-            SVG_Animation.write('<text blank = "false" id="%s" class="code_line" x="10" y="10" dx="%d" text-anchor="start" '\
+            SVG_Animation.write('<text blank = "false" id="%s" class="code_line" x="0" y="0" dx="%d" text-anchor="start" '\
                        'fill="black" font-family="Courier New" font-size="14.0" font-style="normal">' % ("l_" + str(line_count), 7*indent_stack[len(indent_stack)-1]))
 
         if token in operatorsList:
@@ -148,43 +149,45 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
                 token = "&lt;>"
 
             if (prev[1] == -1 or prev[1] == 5 or prev[1] == 4 or prev[1] == 54 or prev[1] == 6): #first word
-                SVG_Animation.write('<tspan dx="%d">%s</tspan>' % (7*indent_stack[len(indent_stack)-1] + indent_const, token))
+                SVG_Animation.write('%s' % (token))
             else:
-                SVG_Animation.write('<tspan dx="7">%s</tspan>' % token)
+                SVG_Animation.write(' %s' % token)
         else:
             if (prev[1] == -1 or prev[1] == 5 or prev[1] == 4 or prev[1] == 54 or prev[1] == 6): #first word
-                SVG_Animation.write('<tspan dx="%d">%s</tspan>' % (7*indent_stack[len(indent_stack)-1] + indent_const, token))
+                SVG_Animation.write('%s' % (token))
             elif prev[0] in operatorsList:
-                SVG_Animation.write('<tspan dx="7">%s</tspan>' % token)
+                SVG_Animation.write('%s' % token)
             else:
-                SVG_Animation.write('<tspan>%s</tspan>' % token)
+                SVG_Animation.write('%s' % token)
+        print prev  
+        print "writing '%s'" % token
     elif (type == 53): #Comment
         if begun_line == False:
             begun_line = True
-            SVG_Animation.write('<text blank = "false" id="%s" class="code_line" x="10" y="10" dx="%d" text-anchor="start" '\
+            SVG_Animation.write('<text blank = "false" id="%s" class="code_line" x="0" y="0" dx="%d" text-anchor="start" '\
                        'fill="black" font-family="Courier New" font-size="14.0" font-style="normal">' % ("l_" + str(line_count), 7*indent_stack[len(indent_stack)-1]))
 
         if (prev[0] in specialList and (prev[0] != "]" and prev[0] != ")")):
-            SVG_Animation.write('<tspan>%s</tspan>' % token)
+            SVG_Animation.write('%s' % token)
         else:
-            SVG_Animation.write('<tspan dx="7">%s</tspan>' % token)
+            SVG_Animation.write('%s' % token)
+        print "wrote at 174"
     elif (type == 54): #Empty line with newline
-        SVG_Animation.write('<text blank = "true" id="%s" class="code_line" x="10" y="10" dx="%d" text-anchor="start" '\
+        SVG_Animation.write('<text blank = "true" id="%s" x="0" y="0" dx="%d" text-anchor="start" '\
                        'fill="black" font-family="Courier New" font-size="14.0" font-style="normal"></text>\n' % ("l_" + str(line_count), 7*indent_stack[len(indent_stack)-1]))
         line_begun = False
         line_count += 1
     else:
         if begun_line == False:
             begun_line = True
-            SVG_Animation.write('<text blank = "false" id="%s" class="code_line" x="10" y="10" dx="%d" text-anchor="start" '\
+            SVG_Animation.write('<text blank = "false" id="%s" class="code_line" x="0" y="0" dx="%d" text-anchor="start" '\
                        'fill="black" font-family="Courier New" font-size="14.0" font-style="normal">' % ("l_" + str(line_count), 7*indent_stack[len(indent_stack)-1]))
 
         if (prev[0] in specialList and (prev[0] != "]" and prev[0] != ")")):
-            SVG_Animation.write('<tspan>%s</tspan>' % token)
+            SVG_Animation.write('%s' % token)
         else:
-            SVG_Animation.write('<tspan dx="7">%s</tspan>' % token)
-                
-    
+            SVG_Animation.write('%s' % token)
+        print "wrote at 190"
     if type != 0:
         prev[0] = token
         prev[1] = type

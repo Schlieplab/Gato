@@ -30,6 +30,9 @@ function add_snap_vars() {
         var lines = snap.selectAll('.code_line');
         for (var i=0; i<lines.length; i++) { 
             code_lines[lines[i].attr('id')] = lines[i];
+            // Mark it if the codeline is just whitespace
+            var text = lines[i].attr('text');
+            lines[i]['whitespace'] = text.length === 0;
         }
     }
     g['vertices'] = vertices;
@@ -137,7 +140,7 @@ function init() {
 }
 
 // TODO: Change my name in GatoExport
-/*var anim_array = Array(Array(1, SetAllVerticesColor, "g1_#EEEEEE"),
+var anim_array = Array(Array(1, SetAllVerticesColor, "g1_#EEEEEE"),
 Array(2, SetVertexAnnotation, "g1_1", "None"),
 Array(2, SetVertexAnnotation, "g1_2", "None"),
 Array(2, SetVertexAnnotation, "g1_3", "None"),
@@ -592,9 +595,9 @@ Array(8, SetEdgeColor, "g1_12-14", "grey"),
 Array(1, SetVertexFrameWidth, "g1_14", "0"),
 Array(1, ShowActive, "l_6")
 );
-*/
 
 
+/*
 var anim_array = Array(Array(1, SetAllVerticesColor, "g1_#EEEEEE"),
 Array(3, ShowActive, "l_1"),
 Array(1, UpdateEdgeInfo, "g1_2-29", "Edge2-29length:650"),
@@ -6053,6 +6056,6 @@ Array(1, SetVertexFrameWidth, "g1_39", "0"),
 Array(2, ShowActive, "l_6")
 );
 
-
+*/
 
 init();
