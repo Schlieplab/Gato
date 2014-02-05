@@ -17,15 +17,17 @@ function add_snap_vars() {
     for (var graph_num=0; graph_num<g.num_graphs; graph_num++) {
         var v = snap.selectAll('g#g' + graph_num + ' .vertex');
         for (var i=0; i<v.length; i++) {
-            vertices[v[i].attr('id')] = v[i]
+            vertices[v[i].attr('id')] = v[i];
         }
         var e = snap.selectAll('g#g' + graph_num + ' .edge');
         for (var i=0; i<e.length; i++) {
-            edges[e[i].attr('id')] = e[i]
+            edges[e[i].attr('id')] = e[i];
         }
         var ea = snap.selectAll('g#g' + graph_num + ' .arrowhead');
         for (var i=0; i<ea.length; i++) {
-            edge_arrows[ea[i].attr('id')] = edge_arrows[i]
+            edge_arrows[ea[i].attr('id')] = ea[i];
+            console.log(ea[i].attr('id'));
+            console.log(edge_arrows);
         }
         var lines = snap.selectAll('.code_line');
         for (var i=0; i<lines.length; i++) { 

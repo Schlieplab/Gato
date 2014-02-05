@@ -140,9 +140,11 @@ function Animation() {
 			var state = {'step_num': step_num};
 			for (var i=0; i<g.graph_elem_types.length; i++) {
 				var elem_type = g.graph_elem_types[i];
+				console.log(elem_type);
 				var elem_obj = g[elem_type];
 				state[elem_type] = {};
 				for (var key in elem_obj) {
+					console.log(key);
 					state[elem_type][key] = collect_attr(elem_obj[key]);
 				}
 			}
@@ -179,7 +181,7 @@ function Animation() {
 		this.state_interval = 500; 
 
 		// TODO: Do graph states
-		this.construct_graph_states();
+		//this.construct_graph_states();
 	}
 	this.initialize_variables();
 }
@@ -279,12 +281,12 @@ function Slider(width, height) {
 *
 *	Graph Modifying Functions
 *
-* /
-
+*/
 
 /** Sets the vertex given by vertex_id to color */
 function SetVertexColor(vertex_id, color) {
-	g.vertices[vertex_id].attr('fill', color);
+	console.log(vertex_id);
+	g.vertices[graph_num_from_id(vertex_id)][vertex_id].attr('fill', color);
 }
 
 function UpdateEdgeInfo(edge_id, info) {
@@ -305,16 +307,20 @@ function SetEdgeColor(edge_id, color) {
 	    // TODO: Test me
 	    var re = /\d+/g;
 	    var matches = edge_id.match(re);
-	    return "g" + matches[0] + "_" + matches[1] + "-" + matches[2];
+	    console.log(matches);
+	    return "g" + matches[0] + "_" + matches[2] + "-" + matches[1];
 	}
-	var edge = g.edges[edge_id];
-	if (edge === null) {
+	var graph_num = graph_num_from_id(edge_id);
+	var edge = g.edges[graph_num][edge_id];
+	if (edge == null) {
+		console.log('switched from ' + edge_id);
 		edge_id = switch_edge_vertices();
-		edge = g.edges[edge_id];
+		console.log('switched to ' + edge_id);
+		edge = g.edges[graph_num][edge_id];
 	}
 	edge.attr({'stroke': color});
     
-    var edge_arrow = g.edge_arrows[(g.arrow_id_prefix + edge_id)];
+    var edge_arrow = g.edge_arrows[graph_num][(g.arrow_id_prefix + edge_id)];
     if (edge_arrow !== undefined) {
     	edge_arrow.attr({'fill': color});
     }
@@ -329,16 +335,18 @@ function SetAllVerticesColor() {
 	var vertices = arguments[1];
 	// TODO: Modify this to use variable length args instead of vertices 
 	var split = graph_id_and_color.split('_');
+	var graph_num = graph_num_from_id(graph_id_and_color);
 	var graph_id = split[0];
 	var color = split[1];
 
 	if (vertices == null) {
-		for (var key in g.vertices) {
-			g.vertices[key].attr({'fill': color});
+		for (var key in g.vertices[graph_num]) {
+			g.vertices[graph_num][key].attr({'fill': color});
 		}
 	} else {
 		for (var i=0; i<vertices.length; i++) {
-			g.vertices[vertices[i]].attr({'fill': color});
+			var graph_num = graph_num_from_id(vertices[i]);
+			g.vertices[graph_num][vertices[i]].attr({'fill': color});
 		}
 	}
 }
@@ -347,10 +355,10 @@ function SetAllVerticesColor() {
 /** Sets all edges of given graph to color.  param is of form: "g1_#dd3333" */
 function SetAllEdgesColor(graph_id_and_color) {
     var split = graph_id_and_color.split('_');
-    var graph = split[0];
+    var graph_num = graph_num_from_id(graph_id_and_color);
     var color = split[1];
-    var graph_edges = g.edges[graph];
-    var edge_arrows = g.edge_arrows[graph];
+    var graph_edges = g.edges[graph_num];
+    var edge_arrows = g.edge_arrows[graph_num];
     for (var i=0; i<graph_edges.length; i++) {
     	graph_edges[i].attr({'stroke': color});
     	if (edge_arrows.length > i) {
@@ -362,7 +370,7 @@ function SetAllEdgesColor(graph_id_and_color) {
 
 /** Blinks the given vertex between black and current color 3 times */
 function BlinkVertex(vertex_id, color) {
-	var vertex = g.vertices[vertex_id];
+	var vertex = g.vertices[graph_num_from_id(vertex_id)][vertex_id];
     var curr_color = vertex.attr('fill');
     for (var i=0; i<6; i+=2) {
     	setTimeout(function() { vertex.attr({'fill': 'black'}); }, g.step_ms*(i));
@@ -372,7 +380,7 @@ function BlinkVertex(vertex_id, color) {
 
 /** Blinks the given edge between black and current color 3 times */
 function BlinkEdge(edge_id, color){
-	var edge = g.edges[edge_id];
+	var edge = g.edges[graph_num_from_id(edge_id)][edge_id];
     var curr_color = edge.attr('stroke');
     for (var i=0; i<6; i+=2) {
     	setTimeout(function() { edge.attr({'stroke':  'black'}); }, g.step_ms*(i));
@@ -384,7 +392,7 @@ function BlinkEdge(edge_id, color){
 //Sets the frame width of a vertex
 function SetVertexFrameWidth(vertex_id, val) {
 	// Take away dropshadow
-    var vertex = g.vertices[vertex_id];
+    var vertex = g.vertices[graph_num_from_id(vertex_id)][vertex_id];
 	if (val !== '0') {
         vertex.attr({"style": ""});
 	}
@@ -407,15 +415,181 @@ function ShowActive(line_id){
  	g.code_box.highlight_line(line_id);
 }
 
+//Creates an arrowhead on a line starting at (vx,vy) and ending at (wx,wy) and parallel to it
+//Arrowhead with given id touches the outide of a vertex with cx=wx and xy=wy
+function createArrowhead(vx, vy, wx, wy, stroke_width, id){
+    var len = Math.sqrt(Math.pow(parseFloat(wx)-parseFloat(vx),2) + Math.pow(parseFloat(wy)-parseFloat(vy), 2));
+    if (len < .001) {
+        len = .001;
+    }
+                
+    var a_width = (1 + 1.5/(1*Math.pow(Math.log(parseFloat(stroke_width))/Math.log(10), 6)));
+    if(a_width > 5.0) {
+        a_width = 5.0;
+    }
+    var cr = g.vertex_r;
+    a_width = a_width * parseFloat(stroke_width);
+
+    var p1 = [0,0];
+    var p2 = [0, a_width];
+    var p3 = [cr, a_width/2];
+    var angle = (Math.atan2(parseInt(wy)-parseInt(vy), parseInt(wx)-parseInt(vx))) * 180/Math.PI;
+    var c = (len-2*g.vertex_r)/len;
+    var tmpX = parseFloat(vx) + c*(parseFloat(wx) - parseFloat(vx));
+    var tmpY = parseFloat(vy) + c*(parseFloat(wy) - parseFloat(vy));
+    
+    var arrowhead = snap.polyline(p1[0], p1[1], p2[0], p2[1], p3[0], p3[1]).attr({
+    	'fill': '#EEEEEE', // Make this a setting
+    	'id': id
+    }).transform('t' + tmpX + ',' + (tmpY-a_width/2) + 'r' + angle + ',' + p1[0] + ',' + (a_width/2));
+    return arrowhead;
+}
 
 //Directed or undirected added to graph.
 function AddEdge(edge_id){
+	var graph_num = graph_num_from_id(edge_id);
+    var graph_id = edge_id.split("_")[0];
+    var vertices = edge_id.split("_")[1].match(/\d+/g);
+    var v = g.vertices[graph_num][graph_id + '_' + vertices[0]];
+    var w = g.vertices[graph_num][graph_id + '_' + vertices[1]];
     
+    var vx = v.attr("cx");
+    var wx = w.attr("cx");
+    var vy = v.attr("cy");
+    var wy = w.attr("cy");
+    if (v == null || w == null || g.edges[graph_num][graph_id + '_' + vertices[0] + '-' + vertices[1]] != null) {
+    	// Exit if one of the vertices is null or the edge already exists
+    	return;
+    }
+
+    var parent_graph = g.graphs[graph_num];
+    var edge = null;
+    var arrowhead = null;
+    if (parent_graph.attr("type") == "directed") {
+        var reverse_edge = g.edges[graph_num][graph_id + "_" + vertices[1] + "-" + vertices[0]];
+        console.log(graph_id + "_" + vertices[1] + "-" + vertices[0]);
+        console.log(reverse_edge);
+        if (reverse_edge != null) {  
+        	console.log('meh');
+        	// reverse edge exists.  Make this edge an arc.
+            // Another directed edge.  Great... Change existing edge to arc and add new arc
+            // Be sure to alter polylines as well.   
+            var len = Math.sqrt(Math.pow((parseFloat(vx)-parseFloat(wx)),2) + Math.pow((parseFloat(vy)-parseFloat(wy)),2));
+            if (len < 0.001) {
+                len = 0.001;
+            }
+            var c = (len - g.vertex_r)/len - 0.001;
+            var tmpX = parseFloat(vx) + c * (parseFloat(wx) - parseFloat(vx));
+            var tmpY = parseFloat(vy) + c * (parseFloat(wy) - parseFloat(vy));
+            var orthogonal = Orthogonal((parseFloat(wx)-parseFloat(vx)),(parseFloat(wy)-parseFloat(vy)));
+            var mX = orthogonal[0];
+            var mY = orthogonal[1];
+            c = 1.5*g.vertex_r + len/25;
+            mX = parseFloat(vx) + .5 * (parseFloat(wx) - parseFloat(vx)) + c * mX
+            mY = parseFloat(vy) + .5 * (parseFloat(wy) - parseFloat(vy)) + c * mY
+            arrowhead = createArrowhead(mX, mY, wx, wy, 4.0, "ea" + edge_id);
+            
+            len = Math.sqrt(Math.pow(wx-mX,2) + Math.pow(wy-mY,2));
+            if (len < .001) {
+                len = .001;
+            }
+            
+            c = (len-2*g.vertex_r)/len + .01;
+            tmpX = mX + c*(wx - mX);
+            tmpY = mY + c*(wy - mY);
+            
+            var path_str = "M " + vx + "," + vy +" Q "+ mX +"," + mY + " " + tmpX + "," + tmpY;
+            console.log(path_str);
+            edge = snap.path(path_str).attr({
+            	'id': edge_id,
+            	'stroke': '#EEEEEE', // Make this a setting
+            	'stroke-width': 4.0, // Make this a setting
+            	'fill': 'none',
+            });
+    
+            if (arrowhead != null) {
+                parent_graph.prepend(arrowhead);
+            }
+            parent_graph.prepend(edge);
+            g.edges[graph_num][edge.attr('id')] = edge;
+		    if (arrowhead != null) {
+		    	g.edge_arrows[graph_num][arrowhead.attr('id')] = arrowhead;
+		    }
+                
+            if(reverse_edge.attr("d") == null){
+                var reverse_edge_id = reverse_edge.attr('id');
+                var arrowhead_id = 'ea' + reverse_edge.attr('id');
+                g.edge_arrows[graph_num][arrowhead_id].remove();
+                delete g.edge_arrows[graph_num][arrowhead_id];
+                g.edges[graph_num][reverse_edge_id].remove();
+                delete g.edges[graph_num][reverse_edge_id];
+                AddEdge(reverse_edge_id);
+            }
+        }else{  
+        	// No reverse edge.  Just make a straight line
+            var len = Math.sqrt(Math.pow((parseFloat(wx)-parseFloat(vx)),2) + Math.pow((parseFloat(wy)-parseFloat(vy)),2));
+            if (len < .001) {
+                len = .001;
+            }
+            /* What does this math do compared to wx and wy? */
+            var c = (len - 2*g.vertex_r) / len + .01;
+            var tmpX = parseFloat(vx) + c*(parseFloat(wx) - parseFloat(vx));
+            var tmpY = parseFloat(vy) + c*(parseFloat(wy) - parseFloat(vy));
+            edge = snap.line(vx, vy, tmpX, tmpY).attr({
+            	'id': edge_id,
+            	'stroke': '#EEEEEE', // Make this a setting
+            	'stroke-width': 4.0, // Make this a setting
+            });
+            arrowhead = createArrowhead(vx, vy, wx, wy, 4.0, "ea" + edge_id);   
+            if (arrowhead != null) {
+                parent_graph.prepend(arrowhead);
+            }
+            parent_graph.prepend(edge);
+            g.edges[graph_num][edge.attr('id')] = edge;
+			if (arrowhead != null) {
+				g.edge_arrows[graph_num][arrowhead.attr('id')] = arrowhead;
+			}
+        }
+    }else{ 
+    	//Undirected edge
+    	edge = snap.line(vx, vy, wx, wy).attr({
+    		'id': edge_id,
+    		'stroke': '#EEEEEE', // Make this a setting
+    		'stroke-width': 4.0, // Make this a setting
+    	});
+        parent_graph.prepend(edge);
+    	g.edges[graph_num][edge.attr('id')] = edge;
+    }
+
+    return [edge, arrowhead];
 }
 
 //Deletes edge of corresponding id from graph
 function DeleteEdge(edge_id){
+	var graph_num = graph_num_from_id(edge_id);
+	var graph_id = edge_id.substring(0,2);
+	var vertices = edge_id.split("_")[1].match(/\d+/g);
+	g.edges[graph_num][edge_id].remove();
+	delete g.edges[graph_num][edge_id];
+	var arrowhead_id = 'ea' + edge_id;
+	if (arrowhead_id in g.edge_arrows[graph_num]) {
+		g.edge_arrows[graph_num][arrowhead_id].remove();
+		delete g.edge_arrows[graph_num][arrowhead_id];
+	}
 
+	var reverse_edge_id = graph_id + "_" + vertices[1] + "-" + vertices[0];
+    var reverse_edge = g.edges[graph_num][reverse_edge_id];
+    if (reverse_edge != null) {
+    	// The reverse edge needs to go from arc to straight
+    	var reverse_arrow = g.edge_arrows[graph_num]['ea' + reverse_edge_id];
+    	var arrow_fill = reverse_arrow.attr('fill');
+    	var stroke = reverse_edge.attr('stroke');
+    	var stroke_width = reverse_edge.attr('stroke-width');
+    	DeleteEdge(reverse_edge.attr('id'));
+    	edge_and_arrow = AddEdge(reverse_edge.attr('id'));
+    	edge_and_arrow[0].attr({'stroke': stroke, 'stroke-width': stroke_width});
+    	edge_and_arrow[1].attr({'fill': arrow_fill});
+    }
 }
 
 //Adds vertex of into specified graph and coordinates in graph.  Optional id argument may be given.

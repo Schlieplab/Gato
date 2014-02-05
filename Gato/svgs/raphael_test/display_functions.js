@@ -1,6 +1,6 @@
 function Scaler() {
 	this.set_max_and_min_dimensions_of_graph_container = function () {
-		var bbox = g.g1_container.getBBox();
+		var bbox = g.graph_containers[0].getBBox();
 		var playback_bbox = g.playback_bar.g.getBBox();
 		var max_height = playback_bbox.y - g.padding - bbox.y;
 		var max_width = g.cont_width - g.padding - bbox.x;
@@ -41,7 +41,7 @@ function Scaler() {
 		g.g1_container.transform(trans);
 	}
 
-	var bbox = g.g1_container.getBBox();
+	var bbox = g.graph_containers[0].getBBox();
 	this.scaling = false;
 	this.curr_scale = 1;
 	this.width = 10;
@@ -59,34 +59,47 @@ function Scaler() {
 
 function add_scaler() {
 	g.scaler = new Scaler();
-	g.g1_container.append(g.scaler.elem);
+	g.graph_containers[1].append(g.scaler.elem);
 }
 
 function add_graph_frame() {
-	g.g1_container.append(g.g1);
-	g.g2_container.append(g.g2);
+	g.graph_containers[0].append(g.graphs[0]);
+	g.graph_containers[1].append(g.graphs[1]);
 
-	var graph_bbox = g.g1.getBBox();
-	var pad = g.vertex_r + g.frame_padding;
-	var frame = snap.rect(0, 0, graph_bbox.width+pad, graph_bbox.height+pad).attr({
-		fill: '#fff',
-		stroke: '#ccc',
-		strokeWidth: g.graph_frame_stroke_width,
-		strokeDasharray: '5,2',
-	});
-	
-	g.g1_container.prepend(frame);
+	for (var i=0; i<g.num_graphs; i++) {
+		var graph_bbox = g.graphs[i].getBBox();
+		var pad = g.vertex_r + g.frame_padding;
+		var frame = snap.rect(0, 0, graph_bbox.width+pad, graph_bbox.height+pad).attr({
+			fill: '#fff',
+			stroke: '#ccc',
+			strokeWidth: g.graph_frame_stroke_width,
+			strokeDasharray: '5,2',
+		});
+		
+		g.graph_containers[i].prepend(frame);
+	}
 }
 
 function position_graph() {
-	var cont_x_trans = g.code_box.width + g.padding*2;
-	var cont_y_trans = g.padding + g.graph_frame_stroke_width;
-	var x_trans = g.frame_padding + g.vertex_r;
-	var y_trans = x_trans;
-	g.g1_container_translate = [cont_x_trans, cont_y_trans];
-	g.g1_translate = [x_trans, y_trans];
-	g.g1_container.transform('t' + g.g1_container_translate[0] + ',' + g.g1_container_translate[1]);
-	g.g1.transform('t' + (g.g1_translate[0]) + ',' + g.g1_translate[1]);
+	/*
+		LEFT OFF HERE TRYING TO POSITION THE GRAPHS
+	*/
+	var x_trans = g.code_box.width + g.padding*2;
+	g.container_translate = [{x: x_trans}, {x: x_trans}];
+	g.graph_translate = [{x: g.frame_padding + g.vertex_r, y: g.frame_padding + g.vertex_r},
+		{x: g.frame_padding + g.vertex_r, y: g.frame_padding + g.vertex_r}];
+	for (var i=0; i<g.num_graphs; i++) {
+		var this_translate = g.container_translate[i];
+		if (i === 0) {
+			this_translate.y = g.padding + g.graph_frame_stroke_width;
+		} else {
+			this_translate.y = g.container_translate[0].y + g.graph_containers[0].getBBox().height;
+		}
+		var this_container = g.graph_containers[i];
+		var this_graph = g.graphs[i];
+		this_container.transform('t' + this_translate.x + ',' + this_translate.y);
+		this_graph.transform('t' + g.graph_translate[i]['x'] + ',' + g.graph_translate[i]['y']);	
+	}
 }
 
 
@@ -278,6 +291,7 @@ function CodeBox() {
 		var line_bbox = this.line_bboxes[line_id];
 		if (line_bbox == null) {
 			var line = g.code_lines[line_id];
+			console.log(line_id);
 			line_bbox = line.getBBox();
 			this.line_bboxes[line_id] = line_bbox;
 		}
@@ -307,7 +321,6 @@ function CodeBox() {
 		this.breakpoints = {};
 		for (var key in g.code_lines) {
 			var line = g.code_lines[key];
-			console.log(line['whitespace']);
 			if (line['whitespace'] === true) {
 				continue;
 			}
@@ -363,8 +376,6 @@ function CodeBox() {
     // Add a highlight box 
     this.highlight_box_padding = {x: 8, y: 2};
     this.highlight_box_opacity = .35;
-    console.log(this.widest_line);
-    console.log(min_bbox_x);
     this.highlight_box = snap.rect(this.line_x - this.highlight_box_padding.x/2, 0, this.widest_line - min_bbox_x + this.highlight_box_padding.x, this.line_padding + this.highlight_box_padding.y*2).attr({
     	'id': 'highlight_box',
     	'fill': 'yellow',

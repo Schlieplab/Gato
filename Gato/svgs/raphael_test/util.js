@@ -1,3 +1,26 @@
+function graph_num_from_id (id) {
+    return parseInt(id.substring(1,2)) - 1;
+}
+
+//Return a 2-index array [v1,v2] which has an angle of
+//90 degrees clockwise to the vector (dx,dy)
+function Orthogonal(dx, dy){
+
+    var u1 = dx;
+    var u2 = dy;
+    
+    var length = Math.sqrt(Math.pow(u1,2) + Math.pow(u2,2));
+    
+    if(length < 0.001){
+        length = 0.001;
+    }
+    
+    u1 /= length;
+    u2 /= length;
+    return [-1*u2, u1];
+}
+
+
 //Translate client coordinates to svg coordinates.  If given element then translates to coordinates
 //in that elements coordinate system
 function cursorPoint(evt, element){
