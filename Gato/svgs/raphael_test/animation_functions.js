@@ -13,7 +13,6 @@ function Animation() {
 			return;
 		}
 		if (this.step_num >= anim_array.length) {
-			console.log("Setting state to done");
 			this.state = 'done';
 			g.button_panel.set_buttons_state('done');
 			return;
@@ -51,7 +50,6 @@ function Animation() {
 				this.jump_to_step(this.step_num);
 			}
 
-			console.log('starting the animation');
 			this.state = 'animating';
 			this.animator();
 		}
@@ -93,28 +91,41 @@ function Animation() {
 		var state = this.graph_states[state_ind];
 		for (var i=0; i<g.graph_elem_types.length; i++) {
 			var elem_type = g.graph_elem_types[i];
-			var elem_state = state[elem_type];
-			for (var id in elem_state) {
-				var elem = snap.select('#' + id);
-				if (elem == null) {
-					// We need to create the element
-					// Call the appropriate snap function and add the leement
-					// elem = snap.
+			for (var g_num=0; g_num<g.num_graphs; g_num++) {
+				var elem_state = state[elem_type][g_num];
+				for (var id in elem_state) {
+					var elem = snap.select('#' + id);
+					if (elem == null) {
+						// We need to create the element
+						if (elem_type === 'edges') {
+							elem = AddEdge(id)[0]; // Operate on the arrowhead too...
+						} else if (elem_type === 'vertices') {
+							AddVertex(id);
+						}
+					}
+					for (var attr in elem_state[id]) {
+						var params = {};
+						params[attr] = elem_state[id][attr];
+						elem.attr(params);
+					}
 				}
-				for (var attr in elem_state[id]) {
-					var params = {};
-					params[attr] = elem_state[id][attr];
-					elem.attr(params);
+				// Remove any elements that shouldn't be in global values
+				var global_elem_state = g[elem_type][g_num];
+				if (g_num == 0 && elem_type == 'edges') {
+					console.log(elem_type);
+					console.log(global_elem_state);
+					console.log(elem_state);
+				}
+				for (var id in global_elem_state) {
+					if (!(id in elem_state)) {
+						if (elem_type === 'edges') {
+							console.log(id);
+							DeleteEdge(id);
+						} 
+					}
 				}
 			}
 
-			// Remove any elements that shouldn't be in global values
-			var global_elem_state = g[elem_type];
-			for (var id in global_elem_state) {
-				if (!(id in elem_state)) {
-					// Delete the element g[global_elem_state]][id]
-				}
-			}
 		}
 		this.step_num = state.step_num;
 		this.animate_until(n);
@@ -140,12 +151,15 @@ function Animation() {
 			var state = {'step_num': step_num};
 			for (var i=0; i<g.graph_elem_types.length; i++) {
 				var elem_type = g.graph_elem_types[i];
-				console.log(elem_type);
-				var elem_obj = g[elem_type];
-				state[elem_type] = {};
-				for (var key in elem_obj) {
-					console.log(key);
-					state[elem_type][key] = collect_attr(elem_obj[key]);
+				//console.log(elem_type);
+				state[elem_type] = [];
+				for (var g_num=0; g_num<g.num_graphs; g_num++) {
+					var elem_obj = g[elem_type][g_num];
+					state[elem_type].push({});
+					for (var key in elem_obj) {
+						//console.log(key);
+						state[elem_type][g_num][key] = collect_attr(elem_obj[key]);
+					}
 				}
 			}
 			return state;
@@ -181,7 +195,7 @@ function Animation() {
 		this.state_interval = 500; 
 
 		// TODO: Do graph states
-		//this.construct_graph_states();
+		this.construct_graph_states();
 	}
 	this.initialize_variables();
 }
@@ -198,12 +212,9 @@ function Slider(width, height) {
 		} else if (new_x > self.cursor_max_x) {
 			new_x = self.cursor_max_x;
 		}
-		console.log("new x is " + new_x);
 		self.cursor.attr({'x': new_x});
 		var step = parseInt(new_x / self.step_width);
-		console.log("step width: " + self.step_width);
 		g.animation.jump_to_step(step);
-		console.log(step);
 	}
 	this.cursor_mousedown = function(evt) {
 		/*	Triggers when cursor is mousedowned.  Begins sliding process by 
@@ -285,7 +296,6 @@ function Slider(width, height) {
 
 /** Sets the vertex given by vertex_id to color */
 function SetVertexColor(vertex_id, color) {
-	console.log(vertex_id);
 	g.vertices[graph_num_from_id(vertex_id)][vertex_id].attr('fill', color);
 }
 
@@ -307,15 +317,12 @@ function SetEdgeColor(edge_id, color) {
 	    // TODO: Test me
 	    var re = /\d+/g;
 	    var matches = edge_id.match(re);
-	    console.log(matches);
 	    return "g" + matches[0] + "_" + matches[2] + "-" + matches[1];
 	}
 	var graph_num = graph_num_from_id(edge_id);
 	var edge = g.edges[graph_num][edge_id];
 	if (edge == null) {
-		console.log('switched from ' + edge_id);
 		edge_id = switch_edge_vertices();
-		console.log('switched to ' + edge_id);
 		edge = g.edges[graph_num][edge_id];
 	}
 	edge.attr({'stroke': color});
@@ -467,10 +474,7 @@ function AddEdge(edge_id){
     var arrowhead = null;
     if (parent_graph.attr("type") == "directed") {
         var reverse_edge = g.edges[graph_num][graph_id + "_" + vertices[1] + "-" + vertices[0]];
-        console.log(graph_id + "_" + vertices[1] + "-" + vertices[0]);
-        console.log(reverse_edge);
         if (reverse_edge != null) {  
-        	console.log('meh');
         	// reverse edge exists.  Make this edge an arc.
             // Another directed edge.  Great... Change existing edge to arc and add new arc
             // Be sure to alter polylines as well.   
@@ -499,7 +503,6 @@ function AddEdge(edge_id){
             tmpY = mY + c*(wy - mY);
             
             var path_str = "M " + vx + "," + vy +" Q "+ mX +"," + mY + " " + tmpX + "," + tmpY;
-            console.log(path_str);
             edge = snap.path(path_str).attr({
             	'id': edge_id,
             	'stroke': '#EEEEEE', // Make this a setting

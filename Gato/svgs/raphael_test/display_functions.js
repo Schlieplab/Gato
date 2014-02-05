@@ -8,8 +8,6 @@ function Scaler() {
 		var max_scale_factor_x = max_width / bbox.width;
 		this.max_scale_factor = Math.min(max_scale_factor_x, max_scale_factor_y);
 		this.min_scale_factor = .3;
-		console.log('Max: ' + this.max_scale_factor);
-		console.log('Min: ' + this.min_scale_factor)
 	}
 	this.mousedown = function(evt) {
 		g.scaler.scaling = true;
@@ -291,7 +289,6 @@ function CodeBox() {
 		var line_bbox = this.line_bboxes[line_id];
 		if (line_bbox == null) {
 			var line = g.code_lines[line_id];
-			console.log(line_id);
 			line_bbox = line.getBBox();
 			this.line_bboxes[line_id] = line_bbox;
 		}
