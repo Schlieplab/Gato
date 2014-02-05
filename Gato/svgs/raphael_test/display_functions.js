@@ -1,6 +1,6 @@
 function Scaler() {
 	this.set_max_and_min_dimensions_of_graph_container = function () {
-		var bbox = g.graph_containers[0].getBBox();
+		var bbox = g.master_graph_container.getBBox();
 		var playback_bbox = g.playback_bar.g.getBBox();
 		var max_height = playback_bbox.y - g.padding - bbox.y;
 		var max_width = g.cont_width - g.padding - bbox.x;
@@ -11,7 +11,7 @@ function Scaler() {
 	}
 	this.mousedown = function(evt) {
 		g.scaler.scaling = true;
-		var bbox = g.g1_container.getBBox();
+		var bbox = g.master_graph_container.getBBox();
 		g.scaler.start_width = bbox.width;
 		g.scaler.start_mouse = {'x': parseInt(evt.x), 'y': parseInt(evt.y)};
 	}
@@ -34,18 +34,39 @@ function Scaler() {
 			scale_factor = this.min_scale_factor;
 		}
 		g.scaler.curr_scale = scale_factor;
-		g.g1_scale = 's' + g.scaler.curr_scale + ',0,0';
-		var trans = 't' + g.g1_container_translate[0] + ',' + g.g1_container_translate[1] + g.g1_scale;
-		g.g1_container.transform(trans);
+
+		// Scale the master graph, and change the translations of the graph containers to account for new scaling
+		g.master_graph_container.transform('s' + g.scaler.curr_scale + ',0,0');
+
+		for (var i=0; i<g.graph_containers.length; i++) {
+			var g_cont = g.graph_containers[i];
+			var x_trans = g.init_container_translate[i]['x']/g.scaler.curr_scale;
+			var y_trans = 0;
+			if (i == 0) {
+				y_trans = g.init_container_translate[i]['y']/g.scaler.curr_scale;
+			} else {
+				y_trans = g.graph_containers[0].getBBox().y2;
+			}
+			g_cont.transform('t' + x_trans + ',' + y_trans);
+
+			//g_cont.transform('t' + g_cont.transform()['string'] + 's' + (1/g.scaler.curr_scale));
+			console.log(g_cont.transform());
+		}
+		/*console.log(g.container_translate);
+		var trans = 't' + g.container_translate[0]['x'] + ',' + g.container_translate[0]['y'] + g.g1_scale;
+		//var trans = g.g1_scale;
+		*/
 	}
 
-	var bbox = g.graph_containers[0].getBBox();
+	var bbox = g.graph_containers[g.num_graphs-1].getBBox();
 	this.scaling = false;
 	this.curr_scale = 1;
 	this.width = 10;
 	this.height = 10;
 	this.x = bbox.width - this.width;
 	this.y = bbox.height + g.frame_padding - this.height;
+	console.log(this.x);
+	console.log(this.y);
 	this.set_max_and_min_dimensions_of_graph_container();
 
 	this.elem = snap.polygon([this.x, this.y, this.x+this.width, this.y, this.x+this.width, this.y-this.height, this.x, this.y]).attr({
@@ -57,7 +78,7 @@ function Scaler() {
 
 function add_scaler() {
 	g.scaler = new Scaler();
-	g.graph_containers[1].append(g.scaler.elem);
+	g.graph_containers[g.num_graphs-1].append(g.scaler.elem);
 }
 
 function add_graph_frame() {
@@ -83,15 +104,15 @@ function position_graph() {
 		LEFT OFF HERE TRYING TO POSITION THE GRAPHS
 	*/
 	var x_trans = g.code_box.width + g.padding*2;
-	g.container_translate = [{x: x_trans}, {x: x_trans}];
+	g.init_container_translate = [{x: x_trans}, {x: x_trans}];
 	g.graph_translate = [{x: g.frame_padding + g.vertex_r, y: g.frame_padding + g.vertex_r},
 		{x: g.frame_padding + g.vertex_r, y: g.frame_padding + g.vertex_r}];
 	for (var i=0; i<g.num_graphs; i++) {
-		var this_translate = g.container_translate[i];
+		var this_translate = g.init_container_translate[i];
 		if (i === 0) {
 			this_translate.y = g.padding + g.graph_frame_stroke_width;
 		} else {
-			this_translate.y = g.container_translate[0].y + g.graph_containers[0].getBBox().height;
+			this_translate.y = g.init_container_translate[0].y + g.graph_containers[0].getBBox().height;
 		}
 		var this_container = g.graph_containers[i];
 		var this_graph = g.graphs[i];

@@ -17,7 +17,7 @@ function add_snap_vars() {
 		edges: [{}, {}],
 		edge_arrows: [{}, {}],
 		graphs: []
-	})
+	});
     var vertices = {}, edges = {}, edge_arrows = {}, code_lines = {};
     for (var graph_num=0; graph_num<g.num_graphs; graph_num++) {
         
@@ -80,12 +80,16 @@ function fill_global() {
 	} else {
 		g.num_graphs = 1;
 	}
+    g.master_graph_container = snap.group();
+    for (var i=0; i<g.graph_containers.length; i++) {
+        g.master_graph_container.append(g.graph_containers[i]);
+    }
 
     add_snap_vars();
 }
 
 function save_initial_graph_dimensions() {
-    var bbox = g.graph_containers[0].getBBox();
+    var bbox = g.master_graph_container.getBBox();
     g.initial_graph_width = bbox.width;
     g.initial_graph_height = bbox.height;
 }

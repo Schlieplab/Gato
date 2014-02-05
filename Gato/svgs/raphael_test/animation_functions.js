@@ -111,15 +111,9 @@ function Animation() {
 				}
 				// Remove any elements that shouldn't be in global values
 				var global_elem_state = g[elem_type][g_num];
-				if (g_num == 0 && elem_type == 'edges') {
-					console.log(elem_type);
-					console.log(global_elem_state);
-					console.log(elem_state);
-				}
 				for (var id in global_elem_state) {
 					if (!(id in elem_state)) {
 						if (elem_type === 'edges') {
-							console.log(id);
 							DeleteEdge(id);
 						} 
 					}
@@ -166,7 +160,6 @@ function Animation() {
 		}
 		
 		var states = [];
-		console.log(anim_array.length);
 		for (var i=0; i<anim_array.length; i++) {
 			if (i % this.state_interval === 0) {
 				states.push(construct_state(i))
