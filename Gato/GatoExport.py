@@ -208,6 +208,8 @@ def cmd_as_javascript(cmd, idPrefix=''):
         for v in cmd.kwargs['vertices']:
             result.append(quote(v))
     
+    if 'UpdateEdgeInfo' in result:
+        print result
     return result
     
 
@@ -227,6 +229,8 @@ def collectAnimations(histories, prefixes):
         currentTime = cmd[0]
         mergedCmds[i][0] = str(duration)
         for j in xrange(2, len(mergedCmds[i])):
+            if mergedCmds[i][1] == 'UpdateEdgeInfo' and j == 3:
+                continue
             mergedCmds[i][j] = mergedCmds[i][j].replace(' ', '').replace('(', '').replace(')', '').replace(',', '-')
     return ["Array(" + ", ".join(cmd) + ")" for cmd in mergedCmds]
 

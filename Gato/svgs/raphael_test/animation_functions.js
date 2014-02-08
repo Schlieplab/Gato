@@ -275,7 +275,8 @@ function Slider(width, height) {
 		this.track_height = 8;
 		this.track_y = this.height/2-this.track_height/2;
 		this.track = snap.rect(0, this.track_y, this.width, this.track_height, 2, 2).attr({
-			'fill': '#AAA'
+			'fill': '#AAA',
+			'cursor': 'pointer'
 		}).click(this.track_click);
 		this.g.append(this.track);
 
@@ -285,7 +286,8 @@ function Slider(width, height) {
 		this.cursor = snap.rect(0, 0, this.cursor_width, this.cursor_height, 6, 6).attr({
 			'fill': '#eee',
 			'stroke': '#111',
-			'stroke-width': 1
+			'stroke-width': 1,
+			'cursor': 'pointer'
 		}).mousedown(this.cursor_mousedown);
 		this.cursor_max_x = this.width - this.cursor_width;
 		this.cursor_min_x = 0;
@@ -309,7 +311,9 @@ function SetVertexColor(vertex_id, color) {
 }
 
 function UpdateEdgeInfo(edge_id, info) {
-
+	var graph_num = parseInt(edge_id.substring(1,2));
+	var tooltip_id = edge_id + '_tooltip';
+	var tooltip = g.tooltip_objects[edge_id + '_tooltip'].change_text(info);
 }
 
 function UpdateGraphInfo(graph_id, info) {
@@ -519,6 +523,7 @@ function AddEdge(edge_id){
             	'stroke': g.edge_color,
             	'stroke-width': g.edge_width,
             	'fill': 'none',
+            	'class': 'edge'
             });
     
             if (arrowhead != null) {
@@ -529,6 +534,7 @@ function AddEdge(edge_id){
 		    if (arrowhead != null) {
 		    	g.edge_arrows[graph_num][arrowhead.attr('id')] = arrowhead;
 		    }
+		    add_tooltip(edge);
                 
             if(reverse_edge.attr("d") == null){
                 var reverse_edge_id = reverse_edge.attr('id');
@@ -552,7 +558,8 @@ function AddEdge(edge_id){
             edge = snap.line(vx, vy, tmpX, tmpY).attr({
             	'id': edge_id,
             	'stroke': g.edge_color,
-            	'stroke-width': g.edge_iwdth,
+            	'stroke-width': g.edge_width,
+            	'class': 'edge'
             });
             arrowhead = createArrowhead(vx, vy, wx, wy, g.edge_width, "ea" + edge_id);   
             if (arrowhead != null) {
@@ -563,16 +570,19 @@ function AddEdge(edge_id){
 			if (arrowhead != null) {
 				g.edge_arrows[graph_num][arrowhead.attr('id')] = arrowhead;
 			}
+			add_tooltip(edge);
         }
     }else{ 
     	//Undirected edge
     	edge = snap.line(vx, vy, wx, wy).attr({
     		'id': edge_id,
-    		'stroke': g.edge_color, // Make this a setting
-    		'stroke-width': 4, // Make this a setting
+    		'stroke': g.edge_color,
+    		'stroke-width': g.edge_width,
+    		'class': 'edge'
     	});
         parent_graph.prepend(edge);
     	g.edges[graph_num][edge.attr('id')] = edge;
+    	add_tooltip(edge);
     }
 
     return [edge, arrowhead];

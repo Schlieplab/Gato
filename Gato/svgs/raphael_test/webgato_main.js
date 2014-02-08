@@ -1,5 +1,5 @@
 /*
-	WISHLIST:
+    WISHLIST:
 1) Back-step button
 
 */
@@ -7,77 +7,121 @@
 var snap = Snap("svg");
 var g = {}; // globals
 
+if (!Object.prototype.watch) {
+    Object.defineProperty(Object.prototype, "watch", {
+          enumerable: false
+        , configurable: true
+        , writable: false
+        , value: function (prop, handler) {
+            var
+              oldval = this[prop]
+            , newval = oldval
+            , getter = function () {
+                return newval;
+            }
+            , setter = function (val) {
+                oldval = newval;
+                return newval = handler.call(this, prop, oldval, val);
+            }
+            ;
+            
+            if (delete this[prop]) { // can't watch constants
+                Object.defineProperty(this, prop, {
+                      get: getter
+                    , set: setter
+                    , enumerable: true
+                    , configurable: true
+                });
+            }
+        }
+    });
+}
+ 
 
 function add_snap_vars() {
-	g.graph_elem_types = ['vertices', 'edges', 'code_lines', 'edge_arrows', 'highlight_boxes'];
-	g.graph_elem_ids = ['vertex', 'edge', 'code_line', 'arrowhead'];
-	// TODO: update this code to be mroe generic
-
+    g.graph_elem_types = ['vertices', 'edges', 'code_lines', 'edge_arrows', 'highlight_boxes'];
+    g.graph_elem_ids = ['vertex', 'edge', 'code_line', 'arrowhead'];
+    // TODO: update this code to be mroe generic
+    extend(g, {
+        vertices: [{}, {}],
+        edges: [{}, {}],
+        edge_arrows: [{}, {}],
+        graphs: []
+    });
     var vertices = {}, edges = {}, edge_arrows = {}, code_lines = {};
     for (var graph_num=0; graph_num<g.num_graphs; graph_num++) {
-        var v = snap.selectAll('g#g' + graph_num + ' .vertex');
+        
+        var v = snap.selectAll('g#g' + (graph_num+1) + ' .vertex');
         for (var i=0; i<v.length; i++) {
-            vertices[v[i].attr('id')] = v[i];
+            g.vertices[graph_num][v[i].attr('id')] = v[i];
         }
-        var e = snap.selectAll('g#g' + graph_num + ' .edge');
+        var e = snap.selectAll('g#g' + (graph_num+1) + ' .edge');
         for (var i=0; i<e.length; i++) {
-            edges[e[i].attr('id')] = e[i];
+            g.edges[graph_num][e[i].attr('id')] = e[i];
         }
-        var ea = snap.selectAll('g#g' + graph_num + ' .arrowhead');
+        var ea = snap.selectAll('g#g' + (graph_num+1) + ' .arrowhead');
         for (var i=0; i<ea.length; i++) {
-            edge_arrows[ea[i].attr('id')] = ea[i];
-            console.log(ea[i].attr('id'));
-            console.log(edge_arrows);
-        }
-        var lines = snap.selectAll('.code_line');
-        for (var i=0; i<lines.length; i++) { 
-            code_lines[lines[i].attr('id')] = lines[i];
-            // Mark it if the codeline is just whitespace
-            var text = lines[i].attr('text');
-            lines[i]['whitespace'] = text.length === 0;
+            g.edge_arrows[graph_num][ea[i].attr('id')] = ea[i];
         }
     }
-    g['vertices'] = vertices;
-    g['edges'] = edges;
-    g['edge_arrows'] = edge_arrows;
-    g['code_lines'] = code_lines;
-    g['g1'] = snap.select('g#g1');
-    g['g2'] = snap.select('g#g2');
+    var lines = snap.selectAll('.code_line');
+    g.code_lines = {};
+    for (var i=0; i<lines.length; i++) { 
+        g.code_lines[lines[i].attr('id')] = lines[i];
+        // Mark it if the codeline is just whitespace
+        var text = lines[i].attr('text');
+        lines[i]['whitespace'] = text.length === 0;
+    }
+    g['graphs'].push(snap.select('g#g1'));
+    var g2 = snap.select('g#g2');
+    if (g2 != null) {
+        g['graphs'].push(g2);
+    }
 }
 
 function extend(a, b) {
-	for (var key in b) {
-		a[key] = b[key];
-	}
+    for (var key in b) {
+        a[key] = b[key];
+    }
 }
 
 function fill_global() {
-	//$.extend(g, {
-	var cont_width = window.innerWidth;
-	var cont_height = window.innerHeight;
-	extend(g, {
-		// Global 
-		cont_width: cont_width,
-		cont_height: cont_height,
+    //$.extend(g, {
+    var cont_width = window.innerWidth;
+    var cont_height = window.innerHeight;
+    extend(g, {
+        // Global 
+        cont_width: cont_width,
+        cont_height: cont_height,
         padding: Math.min(Math.ceil(cont_width*.02), Math.ceil(cont_height)*.02),
 
-		// Graph 
-		vertex_r: parseInt(snap.select('g#g1 .vertex').attr('r')),
+        // Graph 
+        vertex_r: parseInt(snap.select('g#g1 .vertex').attr('r')),
         frame_padding: 8,
-        g1_container: snap.group().attr({'id': 'g1_container'}),
-        g2_container: snap.group().attr({'id': 'g2_container'}),
+        graph_containers: [snap.group().attr({'id': 'g1_container'}),
+            snap.group().attr({'id': 'g2_container'})],
         graph_frame_stroke_width: 1,
+        edge_width: 4,
+        edge_color: '#EEEEEE',
 
         // General
-        num_graphs: 2,
-    	arrow_id_prefix: 'ea',
-	});
+        arrow_id_prefix: 'ea',
+    });
+    if (snap.select('g#g2') != null) {
+        g.num_graphs = 2;
+    } else {
+        g.num_graphs = 1;
+    }
+    g.master_graph_container = snap.group();
+    for (var i=0; i<g.graph_containers.length; i++) {
+        g.master_graph_container.append(g.graph_containers[i]);
+    }
 
     add_snap_vars();
 }
 
 function save_initial_graph_dimensions() {
-    var bbox = g.g1_container.getBBox();
+    var bbox = g.master_graph_container.getBBox();
     g.initial_graph_width = bbox.width;
     g.initial_graph_height = bbox.height;
 }
@@ -92,32 +136,24 @@ function global_mouseup(evt) {
 }
 
 function global_mousemove(evt) {
-	if (g.scaler.scaling === true) {
-		g.scaler.mousemove(evt);
-	}
-	if (g.slider.sliding === true) {
-		g.slider.cursor_mousemove(evt);
-	}
+    if (g.scaler.scaling === true) {
+        g.scaler.mousemove(evt);
+    }
+    if (g.slider.sliding === true) {
+        g.slider.cursor_mousemove(evt);
+    }
 }
 
 function global_drag(evt) {
-	if (g.scaler.scaling === true) {
-		g.scaler.drag(evt);
-	}
-	if (g.slider.sliding === true) {
-		g.slider.cursor_drag(evt);
-	}
+    if (g.scaler.scaling === true) {
+        g.scaler.drag(evt);
+    }
+    if (g.slider.sliding === true) {
+        g.slider.cursor_drag(evt);
+    }
 }
 
 function init() {
-	var run = function() {
-	    for (var i=0; i<animation.length; i++) {
-			(function (index) {
-				setTimeout(function() {
-					animation[index][1](animation[index][2], animation[index][3]);
-				}, g.animation.step_ms*i);
-		})(i);
-	}};
     // Add global event handlers
     snap.mouseup(global_mouseup);
     snap.mousemove(global_mousemove);
@@ -126,7 +162,8 @@ function init() {
     // Set globals and size of base_container
     fill_global();
     document.getElementById('base_container').setAttribute('style', 'width: ' + g.cont_width + '; height: ' + g.cont_height);
-    
+    document.getElementById('svg').setAttribute('style', 'width: ' + g.cont_width + 'px; height: ' + g.cont_height + 'px');
+    console.log("setting container to height: " + g.cont_height);
     // Initialize graphical elements
     g.playback_bar = new PlaybackBar();
     g.code_box = new CodeBox();
@@ -137,8 +174,6 @@ function init() {
 
     // Build the GraphState array
     g.animation = new Animation();
- 	
-    //run();
 }
 
 // TODO: Change my name in GatoExport

@@ -1,3 +1,14 @@
+function get_id(node) {
+    var attributes = node.attributes;
+    for (var attr in attributes) {
+        var a = attributes[attr];
+        if (a.name === 'id') {
+            return a.value;
+        }
+    }
+    return null;
+}
+
 function graph_num_from_id (id) {
     return parseInt(id.substring(1,2)) - 1;
 }

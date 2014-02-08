@@ -101,6 +101,102 @@ function add_scaler() {
 	g.graph_containers[g.num_graphs-1].append(g.scaler.elem);
 }
 
+function ToolTip(edge) {
+	this.mouseover = function(evt) {
+		// Move the tooltip to the cursor and make visible
+		this.g.attr({'visibility': 'visible'});
+		this.mousemove(evt);
+	};
+	this.mousemove = function(evt) {
+		var x_trans = evt.clientX - this.frame_width;
+		var y_trans = evt.clientY + this.frame_height/2;
+		this.g.transform('t' + x_trans + ',' + y_trans);
+	};
+
+	this.mouseout = function(evt) {
+		this.g.attr({'visibility': 'hidden'});
+	};
+
+	this.change_text = function(text) {
+		this.text_elem.node.innerHTML = text;
+		var text_bbox = this.text_elem.getBBox();
+		this.frame_width = text_bbox.width + this.frame_padding_x;
+		this.frame_height = text_bbox.height*2 + 5;
+		this.frame.attr({'width': this.frame_width, 'height': this.frame_height});
+	};
+
+
+	this.id = edge.attr('id') + '_tooltip';
+	this.g = snap.group().attr({
+		'id': this.id,
+	});
+	this.edge = edge;
+
+	// Build the tooltip
+	this.text_content = 'Run animation to see edge info';
+	this.text_elem = snap.text(0, 0, this.text_content);
+	this.g.append(this.text_elem);
+
+	var text_bbox = this.text_elem.getBBox();
+	this.frame_padding_x = 20;
+	this.frame_width = text_bbox.width + this.frame_padding_x;
+	this.frame_height = text_bbox.height*2 + 5;
+	this.frame = snap.rect(-1 * this.frame_padding_x/2, text_bbox.height* -1.5, this.frame_width, this.frame_height, 4, 4).attr({
+		'fill': '#AABBAA',
+		'stroke': '#556655',
+		'stroke-width': 2
+	});
+	this.g.prepend(this.frame);
+
+	this.g.attr({'visibility': 'hidden'});
+
+	// Set the edge mouseover
+	edge.hover(
+		function (evt) {
+			var edge_id = get_id(evt.srcElement);
+			var tooltip = g.tooltip_objects[edge_id + '_tooltip'];
+			tooltip.mouseover(evt);
+		},
+		function (evt) {
+			var edge_id = get_id(evt.srcElement);
+			console.log("looking for " + edge_id + '_tooltip');
+			var tooltip = g.tooltip_objects[edge_id + '_tooltip'];
+			tooltip.mouseout(evt);
+		}
+	);
+	edge.mousemove(function (evt) {
+		var edge_id = get_id(evt.srcElement);
+		var tooltip = g.tooltip_objects[edge_id + '_tooltip'];
+		tooltip.mousemove(evt);
+	});
+}
+
+function add_tooltips() {
+	// Put these in the add_global variables function with a description to improve maintainability
+	g.tooltips = [];
+	g.tooltip_objects = {};
+
+	for (var g_num=0; g_num<g.num_graphs; g_num++) {
+		g.tooltips.push({});
+		var edges = g.edges[g_num];
+
+		for (var key in edges) {
+			var tooltip = new ToolTip(edges[key]);
+			g.tooltip_objects[tooltip.id] = tooltip;
+			g.tooltips[g_num][tooltip.id] = tooltip.text_elem;
+		}
+	}
+}
+
+function add_tooltip(edge) {
+	var edge_id = edge.attr('id');
+	var graph_num = parseInt(edge_id.substring(1,2));
+	var tooltip = new ToolTip(edge);
+	g.tooltip_objects[tooltip.id] = tooltip;
+	g.tooltips[graph_num-1][tooltip.id] = tooltip.text_elem;
+}
+
+
 function add_graph_frame() {
 	g.graph_containers[0].append(g.graphs[0]);
 	g.graph_containers[1].append(g.graphs[1]);
@@ -225,22 +321,6 @@ function ButtonPanel() {
 	this.buttons['stop'] = new Button(stop_click, 'M0,0 0,30 30,30 30,0 Z', false, [175,0]);
 	this.g.append(this.buttons['stop'].button);
 
-	/*this.start_button = snap.path('M0,0 0,30 20,15 Z').attr(this.active_attr);
-	
-	this.step_button = snap.path('M0,0 0,30 20,15 Z M20,0 20,30 30,30 30,0 Z').attr(this.inactive_attr);
-	this.step_button.transform('t50');
-	this.g.append(this.step_button);
-
-	this.continue_button = snap.path('M0,0 0,30 10,30 10,0 Z M15,0 15,30 35,15 Z').attr(this.inactive_attr);
-	this.continue_button.transform('t110');
-	this.g.append(this.continue_button);
-
-	this.stop_button = snap.path('M0,0 0,30 30,30 30,0 Z').attr(this.inactive_attr);
-	this.stop_button.transform('t175');
-	this.g.append(this.stop_button);
-	*/
-
-
 	this.button_states = {
 		'animating': {'step': true, 'stop': true},
 		'stopped': {'start': true},
@@ -314,6 +394,7 @@ function BreakPoint(width, breakpoint_num) {
 		'id': 'breakpoint_' + breakpoint_num,
 		'fill': 'blue',
 		'opacity': this.inactive_opacity,
+		'cursor': 'pointer'
 	}).click(function() {
 		self.click();
 	});
