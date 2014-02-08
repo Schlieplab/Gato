@@ -7,6 +7,36 @@
 var snap = Snap("svg");
 var g = {}; // globals
 
+if (!Object.prototype.watch) {
+    Object.defineProperty(Object.prototype, "watch", {
+          enumerable: false
+        , configurable: true
+        , writable: false
+        , value: function (prop, handler) {
+            var
+              oldval = this[prop]
+            , newval = oldval
+            , getter = function () {
+                return newval;
+            }
+            , setter = function (val) {
+                oldval = newval;
+                return newval = handler.call(this, prop, oldval, val);
+            }
+            ;
+            
+            if (delete this[prop]) { // can't watch constants
+                Object.defineProperty(this, prop, {
+                      get: getter
+                    , set: setter
+                    , enumerable: true
+                    , configurable: true
+                });
+            }
+        }
+    });
+}
+ 
 
 function add_snap_vars() {
 	g.graph_elem_types = ['vertices', 'edges', 'code_lines', 'edge_arrows', 'highlight_boxes'];
@@ -71,6 +101,8 @@ function fill_global() {
         graph_containers: [snap.group().attr({'id': 'g1_container'}),
         	snap.group().attr({'id': 'g2_container'})],
         graph_frame_stroke_width: 1,
+        edge_width: 4,
+        edge_color: '#EEEEEE',
 
         // General
     	arrow_id_prefix: 'ea',

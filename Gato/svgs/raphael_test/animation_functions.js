@@ -36,6 +36,7 @@ function Animation() {
 	/* Animator that executes animation commands until 
 	the given index with no timeout in between commands */
 	this.animate_until = function(stop_at_ind) {
+		console.log(this.step_num);
 		for (var i=this.step_num; i<stop_at_ind; i++) {
 			this.do_command(anim_array[i]);
 			this.step_num ++;
@@ -89,26 +90,41 @@ function Animation() {
 	this.jump_to_step = function(n) {
 		var state_ind = parseInt(n/this.state_interval);
 		var state = this.graph_states[state_ind];
+
+		// Iterate over the graph element types, and the graphs
 		for (var i=0; i<g.graph_elem_types.length; i++) {
 			var elem_type = g.graph_elem_types[i];
 			for (var g_num=0; g_num<g.num_graphs; g_num++) {
+				
+				// For each graph and type retrieve the state object
 				var elem_state = state[elem_type][g_num];
 				for (var id in elem_state) {
 					var elem = snap.select('#' + id);
 					if (elem == null) {
 						// We need to create the element
 						if (elem_type === 'edges') {
-							elem = AddEdge(id)[0]; // Operate on the arrowhead too...
+							elem = AddEdge(id)[0]; //todo:   Operate on the arrowhead too...
 						} else if (elem_type === 'vertices') {
 							AddVertex(id);
 						}
 					}
+
+					// Apply the attributes to the element. 
+					if ('style' in elem_state[id]) {
+						// If style is present apply it first.  It will overwrite stroke-width
+						elem.attr({'style': elem_state[id]['style']})
+					}
 					for (var attr in elem_state[id]) {
+						if (attr === 'style') {
+							// Skip style since we set it above
+							continue;
+						}
 						var params = {};
 						params[attr] = elem_state[id][attr];
 						elem.attr(params);
 					}
 				}
+
 				// Remove any elements that shouldn't be in global values
 				var global_elem_state = g[elem_type][g_num];
 				for (var id in global_elem_state) {
@@ -118,6 +134,7 @@ function Animation() {
 						} 
 					}
 				}
+
 			}
 
 		}
@@ -317,7 +334,7 @@ function SetEdgeColor(edge_id, color) {
 		edge_id = switch_edge_vertices();
 		edge = g.edges[graph_num][edge_id];
 	}
-	edge.attr({'stroke': color});
+	edge.attr({'stroke': color});	// For some reason if we don't set stroke-width it will go to 1 
     
     var edge_arrow = g.edge_arrows[graph_num][(g.arrow_id_prefix + edge_id)];
     if (edge_arrow !== undefined) {
@@ -360,7 +377,7 @@ function SetAllEdgesColor(graph_id_and_color) {
     var edge_arrows = g.edge_arrows[graph_num];
     //console.log(graph_edges);
     for (var key in graph_edges) {
-    	graph_edges[key].attr({'stroke': color});
+    	graph_edges[key].attr({'stroke': color}); // For some reason if we don't set stroke-width it will go to 1 
     	var arrowhead_id = 'ea' + key;
     	if (arrowhead_id in edge_arrows) {
     		edge_arrows[arrowhead_id].attr({'fill': color});
@@ -384,8 +401,8 @@ function BlinkEdge(edge_id, color){
 	var edge = g.edges[graph_num_from_id(edge_id)][edge_id];
     var curr_color = edge.attr('stroke');
     for (var i=0; i<6; i+=2) {
-    	setTimeout(function() { edge.attr({'stroke':  'black'}); }, g.step_ms*(i));
-    	setTimeout(function() { edge.attr({'stroke': curr_color}); }, g.step_ms*(i+1));
+    	setTimeout(function() { edge.attr({'stroke':  'black', 'stroke-width': g.edge_width}); }, g.step_ms*(i));
+    	setTimeout(function() { edge.attr({'stroke': curr_color, 'stroke-width': g.edge_width}); }, g.step_ms*(i+1));
     }
 }
 
@@ -440,7 +457,7 @@ function createArrowhead(vx, vy, wx, wy, stroke_width, id){
     var tmpY = parseFloat(vy) + c*(parseFloat(wy) - parseFloat(vy));
     
     var arrowhead = snap.polyline(p1[0], p1[1], p2[0], p2[1], p3[0], p3[1]).attr({
-    	'fill': '#EEEEEE', // Make this a setting
+    	'fill': g.edge_color,
     	'id': id
     }).transform('t' + tmpX + ',' + (tmpY-a_width/2) + 'r' + angle + ',' + p1[0] + ',' + (a_width/2));
     return arrowhead;
@@ -485,7 +502,7 @@ function AddEdge(edge_id){
             c = 1.5*g.vertex_r + len/25;
             mX = parseFloat(vx) + .5 * (parseFloat(wx) - parseFloat(vx)) + c * mX
             mY = parseFloat(vy) + .5 * (parseFloat(wy) - parseFloat(vy)) + c * mY
-            arrowhead = createArrowhead(mX, mY, wx, wy, 4.0, "ea" + edge_id);
+            arrowhead = createArrowhead(mX, mY, wx, wy, g.edge_width, "ea" + edge_id);
             
             len = Math.sqrt(Math.pow(wx-mX,2) + Math.pow(wy-mY,2));
             if (len < .001) {
@@ -499,8 +516,8 @@ function AddEdge(edge_id){
             var path_str = "M " + vx + "," + vy +" Q "+ mX +"," + mY + " " + tmpX + "," + tmpY;
             edge = snap.path(path_str).attr({
             	'id': edge_id,
-            	'stroke': '#EEEEEE', // Make this a setting
-            	'stroke-width': 4.0, // Make this a setting
+            	'stroke': g.edge_color,
+            	'stroke-width': g.edge_width,
             	'fill': 'none',
             });
     
@@ -534,10 +551,10 @@ function AddEdge(edge_id){
             var tmpY = parseFloat(vy) + c*(parseFloat(wy) - parseFloat(vy));
             edge = snap.line(vx, vy, tmpX, tmpY).attr({
             	'id': edge_id,
-            	'stroke': '#EEEEEE', // Make this a setting
-            	'stroke-width': 4.0, // Make this a setting
+            	'stroke': g.edge_color,
+            	'stroke-width': g.edge_iwdth,
             });
-            arrowhead = createArrowhead(vx, vy, wx, wy, 4.0, "ea" + edge_id);   
+            arrowhead = createArrowhead(vx, vy, wx, wy, g.edge_width, "ea" + edge_id);   
             if (arrowhead != null) {
                 parent_graph.prepend(arrowhead);
             }
@@ -551,8 +568,8 @@ function AddEdge(edge_id){
     	//Undirected edge
     	edge = snap.line(vx, vy, wx, wy).attr({
     		'id': edge_id,
-    		'stroke': '#EEEEEE', // Make this a setting
-    		'stroke-width': 4.0, // Make this a setting
+    		'stroke': g.edge_color, // Make this a setting
+    		'stroke-width': 4, // Make this a setting
     	});
         parent_graph.prepend(edge);
     	g.edges[graph_num][edge.attr('id')] = edge;
