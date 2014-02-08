@@ -1,65 +1,85 @@
 function Scaler() {
 	this.set_max_and_min_dimensions_of_graph_container = function () {
-		var bbox = g.master_graph_container.getBBox();
-		var playback_bbox = g.playback_bar.g.getBBox();
-		var max_height = playback_bbox.y - g.padding - bbox.y;
-		var max_width = g.cont_width - g.padding - bbox.x;
-		var max_scale_factor_y = max_height / bbox.height;
-		var max_scale_factor_x = max_width / bbox.width;
+		var bbox = g.master_graph_container.getBBox(),
+			playback_bbox = g.playback_bar.g.getBBox();
+		var max_height = playback_bbox.y - g.padding - bbox.y,
+			max_width = g.cont_width - g.padding - bbox.x,
+			min_height = 50,
+			min_width = 50;
+		var max_scale_factor_y = max_height / bbox.height,
+			max_scale_factor_x = max_width / bbox.width;
+		
 		this.max_scale_factor = Math.min(max_scale_factor_x, max_scale_factor_y);
 		this.min_scale_factor = .3;
-	}
+		
+		// If the graph started too large or small then scale it appropriately
+		if (this.curr_scale > this.max_scale_factor) {
+			this.initial_scale = this.max_scale_factor;
+			this.curr_scale = this.max_scale_factor;
+			this.scale_graphs(this.curr_scale);
+		} else if (this.curr_scale < this.min_scale_factor) {
+			this.initial_scale = this.min_scale_factor;
+			this.curr_scale = this.min_scale_factor;
+			this._scale_graphs(this.curr_scale);
+		}
+	};
 	this.mousedown = function(evt) {
 		g.scaler.scaling = true;
+		
 		var bbox = g.master_graph_container.getBBox();
-		g.scaler.start_width = bbox.width;
+		g.scaler.start_width = bbox.width * g.scaler.initial_scale;
 		g.scaler.start_mouse = {'x': parseInt(evt.x), 'y': parseInt(evt.y)};
-	}
+	};
 	this.drag = function(evt) {
 		this.mouseup(evt);
-	}
+	};
 	this.mouseup = function(evt) {
 		g.scaler.scaling = false;
-	}
+	};
 	this.mousemove = function(evt) {
 		this.do_scale(evt);
-	}
+	};
+	this.scale_graphs = function(scale_factor) {
+		/* Scales the graph to the scale factor passed in, or current scale factor.  Accomodates for translation changes */
+		if (scale_factor == null) {
+			scale_factor = g.scaler.curr_scale;
+			console.log(g.scaler);
+		}
+		g.master_graph_container.transform('s' + scale_factor + ',0,0');
+		console.log("Scaled down to " + scale_factor);
+		for (var i=0; i<g.graph_containers.length; i++) {
+			var g_cont = g.graph_containers[i],
+				x_trans = g.init_container_translate[i]['x']/scale_factor,
+				y_trans = 0;
+			if (i == 0) {
+				y_trans = g.init_container_translate[i]['y']/scale_factor;
+			} else {
+				y_trans = g.graph_containers[0].getBBox().y2;
+			}
+			g_cont.transform('t' + x_trans + ',' + y_trans);
+		}
+	};
 	this.do_scale = function(evt) {
 		var dx = parseInt(evt.x) - g.scaler.start_mouse.x;
 		var new_width = g.scaler.start_width + dx;
+		console.log('new width: ' + new_width);
 		var scale_factor = new_width / g.initial_graph_width;
+
+		console.log(scale_factor);
+
 		if (scale_factor > this.max_scale_factor) {
 			scale_factor = this.max_scale_factor;
 		} else if (scale_factor < this.min_scale_factor) {
 			scale_factor = this.min_scale_factor;
 		}
+
 		g.scaler.curr_scale = scale_factor;
-
-		// Scale the master graph, and change the translations of the graph containers to account for new scaling
-		g.master_graph_container.transform('s' + g.scaler.curr_scale + ',0,0');
-
-		for (var i=0; i<g.graph_containers.length; i++) {
-			var g_cont = g.graph_containers[i];
-			var x_trans = g.init_container_translate[i]['x']/g.scaler.curr_scale;
-			var y_trans = 0;
-			if (i == 0) {
-				y_trans = g.init_container_translate[i]['y']/g.scaler.curr_scale;
-			} else {
-				y_trans = g.graph_containers[0].getBBox().y2;
-			}
-			g_cont.transform('t' + x_trans + ',' + y_trans);
-
-			//g_cont.transform('t' + g_cont.transform()['string'] + 's' + (1/g.scaler.curr_scale));
-			console.log(g_cont.transform());
-		}
-		/*console.log(g.container_translate);
-		var trans = 't' + g.container_translate[0]['x'] + ',' + g.container_translate[0]['y'] + g.g1_scale;
-		//var trans = g.g1_scale;
-		*/
-	}
+		g.scaler.scale_graphs();
+	};
 
 	var bbox = g.graph_containers[g.num_graphs-1].getBBox();
 	this.scaling = false;
+	this.initial_scale = 1;
 	this.curr_scale = 1;
 	this.width = 10;
 	this.height = 10;

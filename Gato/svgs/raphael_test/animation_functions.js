@@ -187,7 +187,6 @@ function Animation() {
 		// How many steps we take between each saved graph state
 		this.state_interval = 500; 
 
-		// TODO: Do graph states
 		this.construct_graph_states();
 	}
 	this.initialize_variables();
@@ -359,10 +358,12 @@ function SetAllEdgesColor(graph_id_and_color) {
     var color = split[1];
     var graph_edges = g.edges[graph_num];
     var edge_arrows = g.edge_arrows[graph_num];
-    for (var i=0; i<graph_edges.length; i++) {
-    	graph_edges[i].attr({'stroke': color});
-    	if (edge_arrows.length > i) {
-    		edge_arrows[i].attr({'fill': color});
+    //console.log(graph_edges);
+    for (var key in graph_edges) {
+    	graph_edges[key].attr({'stroke': color});
+    	var arrowhead_id = 'ea' + key;
+    	if (arrowhead_id in edge_arrows) {
+    		edge_arrows[arrowhead_id].attr({'fill': color});
     	}
     }
 }

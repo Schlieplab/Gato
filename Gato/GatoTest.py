@@ -328,6 +328,9 @@ svg_instance = {
    #'05-ShortestPaths/BellmanFord.alg':[
    # '05-ShortestPaths/BellmanFordWC.cat',
    # ],
+   '06-MaximalFlows/FordFulkerson.alg':[
+    '06-MaximalFlows/FordFulkerson6.cat','06-MaximalFlows/FordFulkersonBad.cat'
+    ],
 }
 
 

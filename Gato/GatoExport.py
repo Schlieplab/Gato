@@ -114,7 +114,6 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
                 SVG_Animation.write('%s' % token)
             else:
                 SVG_Animation.write(' %s' % token)
-        print "Write something at 117"
     elif (type == 4): #Newline on nonempty line
         SVG_Animation.write('</text>\n')
         begun_line = False
@@ -159,8 +158,6 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
                 SVG_Animation.write('%s' % token)
             else:
                 SVG_Animation.write('%s' % token)
-        print prev  
-        print "writing '%s'" % token
     elif (type == 53): #Comment
         if begun_line == False:
             begun_line = True
@@ -171,9 +168,8 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
             SVG_Animation.write('%s' % token)
         else:
             SVG_Animation.write('%s' % token)
-        print "wrote at 174"
     elif (type == 54): #Empty line with newline
-        SVG_Animation.write('<text blank = "true" id="%s" x="0" y="0" dx="%d" text-anchor="start" '\
+        SVG_Animation.write('<text blank = "true" id="%s" class="code_line" x="0" y="0" dx="%d" text-anchor="start" '\
                        'fill="black" font-family="Courier New" font-size="14.0" font-style="normal"></text>\n' % ("l_" + str(line_count), 7*indent_stack[len(indent_stack)-1]))
         line_begun = False
         line_count += 1
@@ -187,7 +183,6 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
             SVG_Animation.write('%s' % token)
         else:
             SVG_Animation.write('%s' % token)
-        print "wrote at 190"
     if type != 0:
         prev[0] = token
         prev[1] = type
@@ -326,8 +321,10 @@ def WriteGraphAsSVG(graphDisplay, file, idPrefix=''):
             
             x1e,y1e = graphDisplay.CanvasToEmbedding(x1,y1)
             x2e,y2e = graphDisplay.CanvasToEmbedding(x2,y2)
-            y1e -= y_normalizer
-            y2e -= y_normalizer
+            y1e -= y_add
+            y2e -= y_add
+            x1e -= x_add
+            x2e -= x_add
 
             if graphDisplay.G.QEdge(w,v): # Directed edges both ways
                 file.write('<line id="%s" class="edge" x1="%s" y1="%s" x2="%s" y2="%s" stroke="%s"'\
@@ -352,7 +349,8 @@ def WriteGraphAsSVG(graphDisplay, file, idPrefix=''):
                 #Shrink line to make room for arrow
                 for z in graphDisplay.G.Vertices():
                     cx,cy,cr = graphDisplay.VertexPositionAndRadius(z)
-                    cy -= y_normalizer
+                    cy -= y_add
+                    cx -= x_add
                     if(cx == wx and cy == wy):
                         angle = atan2(int(float(wy))-int(float(vy)), int(float(wx))-int(float(vx)))
                         file.write('<line id="%s" class="edge" x1="%s" y1="%s" x2="%f" y2="%f" stroke="%s"'\
@@ -382,8 +380,10 @@ def WriteGraphAsSVG(graphDisplay, file, idPrefix=''):
             da = graphDisplay.edgeAnnotation[(v,w)]
             x,y = graphDisplay.canvas.coords(graphDisplay.edgeAnnotation[(v,w)])
             xe,ye = graphDisplay.CanvasToEmbedding(x,y)
-            y -= y_normalizer
-            ye -= y_normalizer
+            y -= y_add
+            ye -= y_add
+            x -= x_add
+            xe -= x_add
             text = graphDisplay.canvas.itemcget(graphDisplay.edgeAnnotation[(v,w)],"text") 
             size = r * 0.9
             offset = 0.33 * size
