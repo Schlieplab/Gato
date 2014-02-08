@@ -104,6 +104,12 @@ function add_scaler() {
 function ToolTip(edge) {
 	this.mouseover = function(evt) {
 		// Move the tooltip to the cursor and make visible
+		if (!this.frame_is_sized) {
+			var text_bbox = this.text_elem.getBBox();
+			this.frame_width = text_bbox.width + this.frame_padding_x;
+			this.frame_height = text_bbox.height*2 + 5;
+			this.frame.attr({'width': this.frame_width, 'height': this.frame_height});
+		}
 		this.g.attr({'visibility': 'visible'});
 		this.mousemove(evt);
 	};
@@ -118,11 +124,9 @@ function ToolTip(edge) {
 	};
 
 	this.change_text = function(text) {
+		this.text_content = text;
 		this.text_elem.node.innerHTML = text;
-		var text_bbox = this.text_elem.getBBox();
-		this.frame_width = text_bbox.width + this.frame_padding_x;
-		this.frame_height = text_bbox.height*2 + 5;
-		this.frame.attr({'width': this.frame_width, 'height': this.frame_height});
+		this.frame_is_sized = false;
 	};
 
 
@@ -131,6 +135,7 @@ function ToolTip(edge) {
 		'id': this.id,
 	});
 	this.edge = edge;
+	this.frame_is_sized = true; 	// True when the frame matches the text size
 
 	// Build the tooltip
 	this.text_content = 'Run animation to see edge info';

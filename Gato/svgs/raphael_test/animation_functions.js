@@ -136,8 +136,15 @@ function Animation() {
 				}
 
 			}
-
 		}
+
+		// do the tooltips
+		var tooltips_text = state['tooltips_text'];
+		console.log(tooltips_text);
+		for (var id in tooltips_text) {
+			g.tooltip_objects[id].change_text(tooltips_text[id]);
+		}
+
 		this.step_num = state.step_num;
 		this.animate_until(n);
 		g.slider.go_to_step(n);
@@ -147,6 +154,14 @@ function Animation() {
 		Builds the Graph State array to use for playback
 	*/
 	this.construct_graph_states = function() {
+		function collect_tooltip_text() {
+			var texts = {};
+			for (var key in g.tooltip_objects) {
+				texts[key] = g.tooltip_objects[key].text_content;
+			}
+			return texts;
+		}
+
 		function collect_attr(elem) {
 			var our_attr = {};
 			var attributes = elem.node.attributes;
@@ -168,11 +183,12 @@ function Animation() {
 					var elem_obj = g[elem_type][g_num];
 					state[elem_type].push({});
 					for (var key in elem_obj) {
-						//console.log(key);
 						state[elem_type][g_num][key] = collect_attr(elem_obj[key]);
 					}
 				}
 			}
+			// Get the tooltip text
+			state['tooltips_text'] = collect_tooltip_text();
 			return state;
 		}
 		
