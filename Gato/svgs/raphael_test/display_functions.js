@@ -201,15 +201,37 @@ function add_tooltip(edge) {
 	g.tooltips[graph_num-1][tooltip.id] = tooltip.text_elem;
 }
 
+function build_graph_info(group, width, height, g_num) {
+	var rect = snap.rect(0, 0, width, height).attr({
+		'fill': '#fff',
+		'stroke': '#ccc',
+		'stroke-width': g.graph_frame_stroke_width,
+		strokeDasharray: '5,2',
+	});
+	group.append(rect);
+
+	var text_elem = snap.text(5, 0, 'bla').attr({'id': 'g' + g_num + '_info'});
+	text_elem.attr({'y': text_elem.getBBox().height-1});
+	text_elem.node.innerHTML = '';
+	group.append(text_elem);
+	return text_elem;
+}
 
 function add_graph_frame() {
-	g.graph_containers[0].append(g.graphs[0]);
-	g.graph_containers[1].append(g.graphs[1]);
-
+	var pad = g.vertex_r + g.frame_padding;
+	g.graph_infos = [];
 	for (var i=0; i<g.num_graphs; i++) {
+		g.graph_containers[i].append(g.graphs[i]);
+		g.graph_containers[i].append(g.graph_info_containers[i]);
+		
 		var graph_bbox = g.graphs[i].getBBox();
-		var pad = g.vertex_r + g.frame_padding;
-		var frame = snap.rect(0, 0, graph_bbox.width+pad, graph_bbox.height+pad).attr({
+		graph_info_text_elem = build_graph_info(g.graph_info_containers[i], graph_bbox.width/3, 20, i+1);
+		g.graph_infos.push(graph_info_text_elem);
+		g.graph_info_height = 20; // put me in settings
+		var y_trans = graph_bbox.height + pad;
+		g.graph_info_containers[i].transform('t0,' + y_trans);
+
+		var frame = snap.rect(0, 0, graph_bbox.width+pad, graph_bbox.height+pad+g.graph_info_height).attr({
 			fill: '#fff',
 			stroke: '#ccc',
 			strokeWidth: g.graph_frame_stroke_width,
@@ -221,9 +243,6 @@ function add_graph_frame() {
 }
 
 function position_graph() {
-	/*
-		LEFT OFF HERE TRYING TO POSITION THE GRAPHS
-	*/
 	var x_trans = g.code_box.width + g.padding*2;
 	g.init_container_translate = [{x: x_trans}, {x: x_trans}];
 	g.graph_translate = [{x: g.frame_padding + g.vertex_r, y: g.frame_padding + g.vertex_r},
@@ -331,6 +350,7 @@ function SpeedControls(width) {
 }
 
 function ControlPanel(width, height) {
+	/* TODO: this fucks up scaling */
 	this.width = width;
 	this.height = height;
 	this.padding = 10;
@@ -342,7 +362,7 @@ function ControlPanel(width, height) {
 	this.g.append(this.cog);
 
 	this.frame_visibility = false;
-	this.frame_g = snap.group();
+	this.frame_g = snap.group().attr({'visibility': 'hidden'});
 	this.frame_width = 400;
 	this.frame_height = 140;
 	this.frame = snap.rect(0, 0, this.frame_width, this.frame_height, 5, 5).attr({

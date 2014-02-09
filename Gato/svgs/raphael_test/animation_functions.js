@@ -145,6 +145,12 @@ function Animation() {
 			g.tooltip_objects[id].change_text(tooltips_text[id]);
 		}
 
+		// do the graph infos
+		var infos = state['graph_infos'];
+		for (var i=0; i<infos.length; i++) {
+			g.graph_infos[i].node.innerHTML = infos[i];
+		}
+
 		this.step_num = state.step_num;
 		this.animate_until(n);
 		g.slider.go_to_step(n);
@@ -160,6 +166,14 @@ function Animation() {
 				texts[key] = g.tooltip_objects[key].text_content;
 			}
 			return texts;
+		}
+
+		function collect_graph_infos() {
+			var infos = [];
+			for (var i=0; i<g.graph_infos.length; i++) {
+				infos.push(g.graph_infos[i].node.innerHTML);
+			}
+			return infos;
 		}
 
 		function collect_attr(elem) {
@@ -182,6 +196,7 @@ function Animation() {
 				for (var g_num=0; g_num<g.num_graphs; g_num++) {
 					var elem_obj = g[elem_type][g_num];
 					state[elem_type].push({});
+					console.log(elem_type);
 					for (var key in elem_obj) {
 						state[elem_type][g_num][key] = collect_attr(elem_obj[key]);
 					}
@@ -189,6 +204,7 @@ function Animation() {
 			}
 			// Get the tooltip text
 			state['tooltips_text'] = collect_tooltip_text();
+			state['graph_infos'] = collect_graph_infos();
 			return state;
 		}
 		
@@ -333,7 +349,9 @@ function UpdateEdgeInfo(edge_id, info) {
 }
 
 function UpdateGraphInfo(graph_id, info) {
-
+	var graph_num = parseInt(graph_id.substring(1));
+	var graph_info_text_elem = g.graph_infos[graph_num-1];
+	graph_info_text_elem.node.innerHTML = info;
 }
 
 /** Sets the given edge to the given color.  If the given edge

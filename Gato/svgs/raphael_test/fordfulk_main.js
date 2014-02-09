@@ -69,6 +69,8 @@ function fill_global() {
         frame_padding: 8,
         graph_containers: [snap.group().attr({'id': 'g1_container'}),
         	snap.group().attr({'id': 'g2_container'})],
+        graph_info_containers: [snap.group().attr({'id': 'g1_info_container'}), 
+            snap.group().attr({'id': 'g2_info_container'})],
         graph_frame_stroke_width: 1,
         edge_width: 4,
         edge_color: '#EEEEEE',
