@@ -212,7 +212,7 @@ function Animation() {
 		this.state = 'stopped';
 		
 		// Our step interval in milliseconds
-		this.step_ms = 1;
+		this.step_ms = 200;
 		
 		// Current step in the animation
 		this.step_num = 0;

@@ -242,6 +242,121 @@ function position_graph() {
 	}
 }
 
+function toggle_control_panel() {
+	console.log(g.control_panel);
+	if (g.control_panel.frame_visibility === false) {
+		g.control_panel.frame_visible = true;
+		g.control_panel.frame_g.attr({'visibility': 'visible'});
+	} else {
+		g.control_panel.frame_visibility = false;
+		g.control_panel.frame_g.attr({'visibility': 'hidden'});
+	}
+}
+
+function click_speed_button(evt) {
+	var id = get_id(evt.srcElement);
+	var label = id.split('_')[0];
+	var speed_controls = g.control_panel.speed_controls;
+	var buttons = speed_controls.buttons;
+	console.log(buttons);
+	var button_settings = speed_controls.button_settings;
+	for (var i=0; i<buttons.length; i++) {
+		if (button_settings[i].label === label) {
+			g.animation.step_ms = button_settings[i]['speed'];
+			buttons[i].attr({'opacity': speed_controls.button_active_opacity});
+		} else {
+			buttons[i].attr({'opacity': speed_controls.button_inactive_opacity});
+		}
+	}
+}
+
+function SpeedControls(width) {
+	this.width = width;
+	this.height = 20;
+	this.g = snap.group();
+
+	this.text_elem = snap.text(0, 0, 'Animation Speed:').attr({
+		'fill': '#DDDDDD',
+		'font-size': 15,
+		'font-family': 'Helvetica',
+		'font-weight': 'bold'
+	});
+	this.g.append(this.text_elem);
+
+	var text_bbox = this.text_elem.getBBox();
+	this.button_padding = 20;
+	this.button_width = 20;
+	this.button_height = 20;
+	this.button_active_opacity = 1;
+	this.button_inactive_opacity = .5;
+	this.button_settings = [
+		{'label': '.25x', 'speed': 200},
+		{'label': '.5x', 'speed': 37},
+		{'label': '1x', 'speed': 22},
+		{'label': '2x', 'speed': 10},
+		{'label': '4x', 'speed': .8},
+	];
+
+	this.buttons = [];
+	for (var i=0; i<this.button_settings.length; i++) {
+		var setting = this.button_settings[i];
+		var button_g = snap.group().attr({
+			'class': 'speed_button'
+		}).click(click_speed_button);
+		
+		var button_text = snap.text(0, 0, setting['label']).attr({
+			'fill': 'white'
+		});
+		var btext_bbox = button_text.getBBox();
+		button_text.attr({'y': -1 * btext_bbox.height - 2});
+		
+		var opacity = this.button_inactive_opacity;
+		if (i === 0) {
+			opacity = this.button_active_opacity;
+		}
+		var button = snap.rect(0, -1 * btext_bbox.height + 2, this.button_width, this.button_height, 4, 4).attr({
+			'id': setting['label'] + '_button',
+			'fill': '#87afff',
+			'stroke': '#476fb4',
+			'opacity': opacity
+		});
+		var x_trans = text_bbox.width + (i+1)*this.button_padding + i*this.button_width;
+		button_g.transform('t' + x_trans);
+
+		button_g.append(button);
+		button_g.append(button_text);
+		this.buttons.push(button);
+		this.g.append(button_g);
+	}
+}
+
+function ControlPanel(width, height) {
+	this.width = width;
+	this.height = height;
+	this.padding = 10;
+	this.g = snap.group().attr({
+		'cursor': 'pointer'
+	});
+
+	this.cog = snap.image('cog.png', 0, 0, 30, 30).click(toggle_control_panel);
+	this.g.append(this.cog);
+
+	this.frame_visibility = false;
+	this.frame_g = snap.group();
+	this.frame_width = 400;
+	this.frame_height = 140;
+	this.frame = snap.rect(0, 0, this.frame_width, this.frame_height, 5, 5).attr({
+		'fill': '#333333',
+	});
+	this.frame_g.append(this.frame);
+
+	this.speed_controls = new SpeedControls(this.frame_width);
+	this.speed_controls.g.transform('t' + this.padding + ',' + (this.frame_height - this.speed_controls.height));
+	this.frame_g.append(this.speed_controls.g);
+
+	this.frame_g.transform('t' + (-1*this.frame_width+10) + ',' + (-1*this.frame_height-5));
+	this.g.append(this.frame_g);
+}
 
 function PlaybackBar() {
 	this.g = snap.group();
@@ -265,8 +380,11 @@ function PlaybackBar() {
 	this.g.append(g.button_panel.g);
 
 	// Implement me
-	// g.control_panel = new ControlPanel();
-	g.control_panel = {'width': 100}
+	g.control_panel = new ControlPanel(30, 30);
+	g.control_panel.g.transform('t' + (this.width - this.padding_x - g.control_panel.width) + ',' + (this.padding_y));
+	this.g.append(g.control_panel.g);
+
+	// g.control_panel = {'width': 100}
 
 	this.slider_width = this.width - this.padding_x*4 - g.button_panel.width - g.control_panel.width;
 	this.slider_height = this.height - this.padding_y*2;
@@ -500,7 +618,7 @@ function CodeBox() {
     // Add a highlight box 
     this.highlight_box_padding = {x: 8, y: 2};
     this.highlight_box_opacity = .35;
-    this.highlight_box = snap.rect(this.line_x - this.highlight_box_padding.x/2, 0, this.widest_line - min_bbox_x + this.highlight_box_padding.x, this.line_padding + this.highlight_box_padding.y*2).attr({
+    this.highlight_box = snap.rect(this.line_x - this.highlight_box_padding.x/2, 0, this.widest_line - min_bbox_x + this.highlight_box_padding.x, this.line_padding + this.highlight_box_padding.y).attr({
     	'id': 'highlight_box',
     	'fill': 'yellow',
     	'stroke': 'blue',
