@@ -2,7 +2,7 @@ function Scaler() {
 	this.set_max_and_min_dimensions_of_graph_container = function () {
 		var bbox = g.master_graph_container.getBBox(),
 			playback_bbox = g.playback_bar.g.getBBox();
-		var max_height = playback_bbox.y - g.padding - bbox.y,
+		var max_height = playback_bbox.y + g.control_panel.height - g.padding - bbox.y,
 			max_width = g.cont_width - g.padding - bbox.x,
 			min_height = 50,
 			min_width = 50;
@@ -85,8 +85,6 @@ function Scaler() {
 	this.height = 10;
 	this.x = bbox.width - this.width;
 	this.y = bbox.height + g.frame_padding - this.height;
-	console.log(this.x);
-	console.log(this.y);
 	this.set_max_and_min_dimensions_of_graph_container();
 
 	this.elem = snap.polygon([this.x, this.y, this.x+this.width, this.y, this.x+this.width, this.y-this.height, this.x, this.y]).attr({
@@ -264,7 +262,7 @@ function position_graph() {
 function toggle_control_panel() {
 	console.log(g.control_panel);
 	if (g.control_panel.frame_visibility === false) {
-		g.control_panel.frame_visible = true;
+		g.control_panel.frame_visibility = true;
 		g.control_panel.frame_g.attr({'visibility': 'visible'});
 	} else {
 		g.control_panel.frame_visibility = false;
@@ -349,10 +347,10 @@ function SpeedControls(width) {
 	}
 }
 
-function ControlPanel(width, height) {
+function ControlPanel(cog_width, cog_height) {
 	/* TODO: this fucks up scaling */
-	this.width = width;
-	this.height = height;
+	this.cog_width = cog_width;
+	this.cog_height = cog_height;
 	this.padding = 10;
 	this.g = snap.group().attr({
 		'cursor': 'pointer'
@@ -363,18 +361,18 @@ function ControlPanel(width, height) {
 
 	this.frame_visibility = false;
 	this.frame_g = snap.group().attr({'visibility': 'hidden'});
-	this.frame_width = 400;
-	this.frame_height = 140;
-	this.frame = snap.rect(0, 0, this.frame_width, this.frame_height, 5, 5).attr({
+	this.width = 400;
+	this.height = 140;
+	this.frame = snap.rect(0, 0, this.width, this.height, 5, 5).attr({
 		'fill': '#333333',
 	});
 	this.frame_g.append(this.frame);
 
-	this.speed_controls = new SpeedControls(this.frame_width);
-	this.speed_controls.g.transform('t' + this.padding + ',' + (this.frame_height - this.speed_controls.height));
+	this.speed_controls = new SpeedControls(this.width);
+	this.speed_controls.g.transform('t' + this.padding + ',' + (this.height - this.speed_controls.height));
 	this.frame_g.append(this.speed_controls.g);
 
-	this.frame_g.transform('t' + (-1*this.frame_width+10) + ',' + (-1*this.frame_height-5));
+	this.frame_g.transform('t' + (-1*this.width+10) + ',' + (-1*this.height-5));
 	this.g.append(this.frame_g);
 }
 
@@ -401,12 +399,10 @@ function PlaybackBar() {
 
 	// Implement me
 	g.control_panel = new ControlPanel(30, 30);
-	g.control_panel.g.transform('t' + (this.width - this.padding_x - g.control_panel.width) + ',' + (this.padding_y));
+	g.control_panel.g.transform('t' + (this.width - this.padding_x - g.control_panel.cog_width) + ',' + (this.padding_y));
 	this.g.append(g.control_panel.g);
 
-	// g.control_panel = {'width': 100}
-
-	this.slider_width = this.width - this.padding_x*4 - g.button_panel.width - g.control_panel.width;
+	this.slider_width = this.width - this.padding_x*4 - g.button_panel.width - g.control_panel.cog_width;
 	this.slider_height = this.height - this.padding_y*2;
 	g.slider = new Slider(this.slider_width, this.slider_height);
 	var slider_x_trans = g.button_panel.width + this.padding_x*2;

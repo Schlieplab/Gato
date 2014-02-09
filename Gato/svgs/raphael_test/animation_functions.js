@@ -36,7 +36,6 @@ function Animation() {
 	/* Animator that executes animation commands until 
 	the given index with no timeout in between commands */
 	this.animate_until = function(stop_at_ind) {
-		console.log(this.step_num);
 		for (var i=this.step_num; i<stop_at_ind; i++) {
 			this.do_command(anim_array[i]);
 			this.step_num ++;
@@ -140,7 +139,6 @@ function Animation() {
 
 		// do the tooltips
 		var tooltips_text = state['tooltips_text'];
-		console.log(tooltips_text);
 		for (var id in tooltips_text) {
 			g.tooltip_objects[id].change_text(tooltips_text[id]);
 		}
@@ -196,7 +194,6 @@ function Animation() {
 				for (var g_num=0; g_num<g.num_graphs; g_num++) {
 					var elem_obj = g[elem_type][g_num];
 					state[elem_type].push({});
-					console.log(elem_type);
 					for (var key in elem_obj) {
 						state[elem_type][g_num][key] = collect_attr(elem_obj[key]);
 					}

@@ -134,7 +134,6 @@ function init() {
     fill_global();
     document.getElementById('base_container').setAttribute('style', 'width: ' + g.cont_width + '; height: ' + g.cont_height);
     document.getElementById('svg').setAttribute('style', 'width: ' + g.cont_width + 'px; height: ' + g.cont_height + 'px');
-    console.log("setting container to height: " + g.cont_height);
     // Initialize graphical elements
     g.playback_bar = new PlaybackBar();
     g.code_box = new CodeBox();
