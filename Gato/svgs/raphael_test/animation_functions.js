@@ -90,67 +90,73 @@ function Animation() {
 		var state_ind = parseInt(n/this.state_interval);
 		var state = this.graph_states[state_ind];
 
-		// Iterate over the graph element types, and the graphs
-		for (var i=0; i<g.graph_elem_types.length; i++) {
-			var elem_type = g.graph_elem_types[i];
-			for (var g_num=0; g_num<g.num_graphs; g_num++) {
-				
-				// For each graph and type retrieve the state object
-				var elem_state = state[elem_type][g_num];
-				for (var id in elem_state) {
-					var elem = snap.select('#' + id);
-					if (elem == null) {
-						// We need to create the element
-						if (elem_type === 'edges') {
-							elem = AddEdge(id)[0]; //todo:   Operate on the arrowhead too...
-						} else if (elem_type === 'vertices') {
-							AddVertex(id);
+		if (n > this.step_num && n < (state_ind+1)*this.state_interval) {
+			// If we are animating between now and next state then just animate until, don't go to any state
+			this.animate_until(n);
+		} else {
+			// We are moving backwards, or past the next state.  
+			// Iterate over the graph element types, and the graphs
+			for (var i=0; i<g.graph_elem_types.length; i++) {
+				var elem_type = g.graph_elem_types[i];
+				for (var g_num=0; g_num<g.num_graphs; g_num++) {
+					
+					// For each graph and type retrieve the state object
+					var elem_state = state[elem_type][g_num];
+					for (var id in elem_state) {
+						var elem = snap.select('#' + id);
+						if (elem == null) {
+							// We need to create the element
+							if (elem_type === 'edges') {
+								elem = AddEdge(id)[0]; //todo:   Operate on the arrowhead too...
+							} else if (elem_type === 'vertices') {
+								AddVertex(id);
+							}
+						}
+
+						// Apply the attributes to the element. 
+						if ('style' in elem_state[id]) {
+							// If style is present apply it first.  It will overwrite stroke-width
+							elem.attr({'style': elem_state[id]['style']})
+						}
+						for (var attr in elem_state[id]) {
+							if (attr === 'style') {
+								// Skip style since we set it above
+								continue;
+							}
+							var params = {};
+							params[attr] = elem_state[id][attr];
+							elem.attr(params);
 						}
 					}
 
-					// Apply the attributes to the element. 
-					if ('style' in elem_state[id]) {
-						// If style is present apply it first.  It will overwrite stroke-width
-						elem.attr({'style': elem_state[id]['style']})
-					}
-					for (var attr in elem_state[id]) {
-						if (attr === 'style') {
-							// Skip style since we set it above
-							continue;
+					// Remove any elements that shouldn't be in global values
+					var global_elem_state = g[elem_type][g_num];
+					for (var id in global_elem_state) {
+						if (!(id in elem_state)) {
+							if (elem_type === 'edges') {
+								DeleteEdge(id);
+							} 
 						}
-						var params = {};
-						params[attr] = elem_state[id][attr];
-						elem.attr(params);
 					}
-				}
 
-				// Remove any elements that shouldn't be in global values
-				var global_elem_state = g[elem_type][g_num];
-				for (var id in global_elem_state) {
-					if (!(id in elem_state)) {
-						if (elem_type === 'edges') {
-							DeleteEdge(id);
-						} 
-					}
 				}
-
 			}
-		}
 
-		// do the tooltips
-		var tooltips_text = state['tooltips_text'];
-		for (var id in tooltips_text) {
-			g.tooltip_objects[id].change_text(tooltips_text[id]);
-		}
+			// do the tooltips
+			var tooltips_text = state['tooltips_text'];
+			for (var id in tooltips_text) {
+				g.tooltip_objects[id].change_text(tooltips_text[id]);
+			}
 
-		// do the graph infos
-		var infos = state['graph_infos'];
-		for (var i=0; i<infos.length; i++) {
-			g.graph_infos[i].node.innerHTML = infos[i];
-		}
+			// do the graph infos
+			var infos = state['graph_infos'];
+			for (var i=0; i<infos.length; i++) {
+				g.graph_infos[i].node.innerHTML = infos[i];
+			}
 
-		this.step_num = state.step_num;
-		this.animate_until(n);
+			this.step_num = state.step_num;
+			this.animate_until(n);
+		}
 		g.slider.go_to_step(n);
 	}
 
@@ -185,7 +191,11 @@ function Animation() {
 		}
 		
 		function construct_state(step_num) {
-			// TODO: This will need to be changed for two graph operation
+			/* Builds a single graph state.  A single state is an object of the form
+			{'step_num': __, 'tooltips_text': {'id': 'text'}, 'graph_infos': [text, text],
+			'edges': [{'edge_id': {'attr_name': 'attr_value', ...}, ...}, {same thing for g2}],
+			'vertices':[{}, {}], another state array for each element type }
+			*/
 			var state = {'step_num': step_num};
 			for (var i=0; i<g.graph_elem_types.length; i++) {
 				var elem_type = g.graph_elem_types[i];

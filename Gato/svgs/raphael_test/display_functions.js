@@ -84,12 +84,12 @@ function Scaler() {
 	this.width = 20;
 	this.height = 20;
 	this.x = bbox.width - this.width;
-	this.y = bbox.height + g.frame_padding*2 - this.height + g.graph_frame_stroke_width * 2;
+	this.y = bbox.height + g.frame_padding*2 - this.height + g.graph_frame_stroke_width * 3;
 	this.set_max_and_min_dimensions_of_graph_container();
 
 	this.elem = snap.polygon([this.x, this.y, this.x+this.width, this.y, this.x+this.width, this.y-this.height, this.x, this.y]).attr({
-		'fill': '#B0000C',
-		'stroke': '#000',
+		'fill': '#cc3333',
+		'stroke': '#330000',
 		'cursor': 'move'
 	}).mousedown(this.mousedown);
 }
