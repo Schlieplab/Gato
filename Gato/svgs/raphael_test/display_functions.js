@@ -81,14 +81,14 @@ function Scaler() {
 	this.scaling = false;
 	this.initial_scale = 1;
 	this.curr_scale = 1;
-	this.width = 10;
-	this.height = 10;
+	this.width = 20;
+	this.height = 20;
 	this.x = bbox.width - this.width;
-	this.y = bbox.height + g.frame_padding - this.height;
+	this.y = bbox.height + g.frame_padding*2 - this.height + g.graph_frame_stroke_width * 2;
 	this.set_max_and_min_dimensions_of_graph_container();
 
 	this.elem = snap.polygon([this.x, this.y, this.x+this.width, this.y, this.x+this.width, this.y-this.height, this.x, this.y]).attr({
-		'fill': '#000',
+		'fill': '#B0000C',
 		'stroke': '#000',
 		'cursor': 'move'
 	}).mousedown(this.mousedown);
@@ -136,7 +136,7 @@ function ToolTip(edge) {
 	this.frame_is_sized = true; 	// True when the frame matches the text size
 
 	// Build the tooltip
-	this.text_content = 'Run animation to see edge info';
+	this.text_content = 'No Edge Info Yet';
 	this.text_elem = snap.text(0, 0, this.text_content);
 	this.g.append(this.text_elem);
 
@@ -208,7 +208,7 @@ function build_graph_info(group, width, height, g_num) {
 	});
 	group.append(rect);
 
-	var text_elem = snap.text(5, 0, 'bla').attr({'id': 'g' + g_num + '_info'});
+	var text_elem = snap.text(5, 0, 'No Info').attr({'id': 'g' + g_num + '_info'});		// Set this to "No Info"(or any text) at first so the bbox has a height
 	text_elem.attr({'y': text_elem.getBBox().height-1});
 	text_elem.node.innerHTML = '';
 	group.append(text_elem);
@@ -276,20 +276,19 @@ function click_speed_button(evt) {
 	var speed_controls = g.control_panel.speed_controls;
 	var buttons = speed_controls.buttons;
 	console.log(buttons);
-	var button_settings = speed_controls.button_settings;
+	var button_types = speed_controls.button_types;
 	for (var i=0; i<buttons.length; i++) {
-		if (button_settings[i].label === label) {
-			g.animation.step_ms = button_settings[i]['speed'];
-			buttons[i].attr({'opacity': speed_controls.button_active_opacity});
+		if (button_types[i].label === label) {
+			g.animation.step_ms = button_types[i]['speed'];
+			buttons[i].attr({'opacity': speed_controls.button_settings.active_opacity});
 		} else {
-			buttons[i].attr({'opacity': speed_controls.button_inactive_opacity});
+			buttons[i].attr({'opacity': speed_controls.button_settings.inactive_opacity});
 		}
 	}
 }
 
 function SpeedControls(width) {
 	this.width = width;
-	this.height = 20;
 	this.g = snap.group();
 
 	this.text_elem = snap.text(0, 0, 'Animation Speed:').attr({
@@ -299,45 +298,53 @@ function SpeedControls(width) {
 		'font-weight': 'bold'
 	});
 	this.g.append(this.text_elem);
-
+	
+	// Set up button settings
 	var text_bbox = this.text_elem.getBBox();
-	this.button_padding = 20;
-	this.button_width = 20;
-	this.button_height = 20;
-	this.button_active_opacity = 1;
-	this.button_inactive_opacity = .5;
-	this.button_settings = [
+	this.button_types = [
 		{'label': '.25x', 'speed': 200},
 		{'label': '.5x', 'speed': 37},
 		{'label': '1x', 'speed': 22},
 		{'label': '2x', 'speed': 10},
 		{'label': '4x', 'speed': .8},
 	];
+	var size = (this.width - text_bbox.width)/10;
+	this.button_settings = {
+		'padding': size,
+		'width': size,
+		'height': size,
+		'active_opacity': 1,
+		'inactive_opacity': .5
+	};
 
+	// Create the different buttons
+	var text_trans_y = 0;
 	this.buttons = [];
-	for (var i=0; i<this.button_settings.length; i++) {
-		var setting = this.button_settings[i];
+	for (var i=0; i<this.button_types.length; i++) {
+		var type = this.button_types[i];
 		var button_g = snap.group().attr({
 			'class': 'speed_button'
 		}).click(click_speed_button);
 		
-		var button_text = snap.text(0, 0, setting['label']).attr({
+		var button_text = snap.text(0, 0, type['label']).attr({
 			'fill': 'white'
 		});
-		var btext_bbox = button_text.getBBox();
-		button_text.attr({'y': -1 * btext_bbox.height - 2});
-		
-		var opacity = this.button_inactive_opacity;
-		if (i === 0) {
-			opacity = this.button_active_opacity;
+		if (text_trans_y === 0) {
+			// Set the variable that controls y translation of "Animation Speed" string
+			text_trans_y = button_text.getBBox().height;
 		}
-		var button = snap.rect(0, -1 * btext_bbox.height + 2, this.button_width, this.button_height, 4, 4).attr({
-			'id': setting['label'] + '_button',
+		var opacity = this.button_settings.inactive_opacity;
+		if (i === 0) {
+			opacity = this.button_settings.active_opacity;
+		}
+		var button = snap.rect(0, 3, this.button_settings.width, this.button_settings.height, 4, 4).attr({
+			'id': type['label'] + '_button',
 			'fill': '#87afff',
 			'stroke': '#476fb4',
-			'opacity': opacity
+			'opacity': opacity,
+			'cursor': 'pointer'
 		});
-		var x_trans = text_bbox.width + (i+1)*this.button_padding + i*this.button_width;
+		var x_trans = text_bbox.width + (i+1)*this.button_settings.padding + i*this.button_settings.width;
 		button_g.transform('t' + x_trans);
 
 		button_g.append(button);
@@ -345,34 +352,95 @@ function SpeedControls(width) {
 		this.buttons.push(button);
 		this.g.append(button_g);
 	}
+
+	// Translate the animation text down
+	this.text_elem.attr({'y': text_trans_y});
+
+	this.height = this.g.getBBox().height;
 }
 
-function ControlPanel(cog_width, cog_height) {
-	/* TODO: this fucks up scaling */
-	this.cog_width = cog_width;
-	this.cog_height = cog_height;
-	this.padding = 10;
-	this.g = snap.group().attr({
+function show_algo_info() {
+	// Implement me
+	console.log('showing algorithm info');
+}
+
+function create_algo_info_button() {
+	var g = snap.group().attr({
+		'cursor': 'pointer'
+	}).click(show_algo_info);
+	var text_elem = snap.text(5, 0, 'Show Algorithm Info');
+	var text_bbox = text_elem.getBBox();
+	text_elem.attr({'y': text_bbox.height});
+	var rect = snap.rect(0, 0, text_bbox.width + 10, text_bbox.height + 7, 4, 4).attr({
+		'fill': '#aaaaaa',
+		'stroke': '#777777',
+		'stroke-width': 1
+	});
+	g.append(rect);
+	g.append(text_elem);
+	return g;
+}
+
+function create_homepage_link() {
+	var g = snap.group();
+	var text_elem = snap.text(0, 0, 'Visit Gato Homepage').attr({
+		'id': 'homepage_link',
+		'fill': '#87afff',
+		'text-decoration': 'underline',
+		'font-size': 17,
+		'font-weight': 'bold',
 		'cursor': 'pointer'
 	});
+	text_elem.click(function() {
+		window.open('http://bioinformatics.rutgers.edu/Software/Gato/');
+	});
+	text_elem.attr({'y': text_elem.getBBox().height});
+	g.append(text_elem);
+	return g;
+}
 
-	this.cog = snap.image('cog.png', 0, 0, 30, 30).click(toggle_control_panel);
+function ControlPanel(cog_width, cog_height, width, height) {
+	this.cog_width = cog_width;
+	this.cog_height = cog_height;
+	this.width = width;
+	this.height = height;
+	this.padding = 10;
+	this.frame_visibility = false;
+	this.g = snap.group();
+
+	this.cog = snap.image('cog.png', 0, 0, this.cog_width, this.cog_height).click(toggle_control_panel).attr({
+		'cursor': 'pointer'
+	});
 	this.g.append(this.cog);
 
-	this.frame_visibility = false;
 	this.frame_g = snap.group().attr({'visibility': 'hidden'});
-	this.width = 400;
-	this.height = 140;
 	this.frame = snap.rect(0, 0, this.width, this.height, 5, 5).attr({
 		'fill': '#333333',
 	});
 	this.frame_g.append(this.frame);
 
-	this.speed_controls = new SpeedControls(this.width);
-	this.speed_controls.g.transform('t' + this.padding + ',' + (this.height - this.speed_controls.height));
+	// Create the speed controls
+	this.speed_controls = new SpeedControls(this.width - this.padding*2);
+	this.speed_controls.g.transform('t' + this.padding + ',' + (this.height - this.speed_controls.height + 7));
 	this.frame_g.append(this.speed_controls.g);
 
-	this.frame_g.transform('t' + (-1*this.width+10) + ',' + (-1*this.height-5));
+	// Create the algorithm info button
+	this.algo_info_button = create_algo_info_button();	// Returns a g element encompassing the algo info button
+	var bbox = this.algo_info_button.getBBox();
+	var x_trans = (this.width - this.padding*2) / 2 - bbox.width/2;
+	var y_trans = this.height - this.speed_controls.height - this.padding*2 - bbox.height + bbox.y;
+	this.algo_info_button.transform('t' + x_trans + ',' + y_trans);
+	this.frame_g.append(this.algo_info_button);
+
+	// Create the homepage link
+	this.homepage_link = create_homepage_link(); 	// Returns a g element encompassing the homepage link
+	var bbox = this.homepage_link.getBBox();
+	var x_trans = (this.width - this.padding*2) / 2 - bbox.width/2;
+	var y_trans = this.padding;
+	this.homepage_link.transform('t' + x_trans + ',' + y_trans);
+	this.frame_g.append(this.homepage_link);
+
+	this.frame_g.transform('t' + (-1*this.width+10) + ',' + (-1*this.height-5));	// Align the right edge of the frame with the cog
 	this.g.append(this.frame_g);
 }
 
@@ -397,8 +465,7 @@ function PlaybackBar() {
 	g.button_panel.g.transform('t' + this.padding_x + ',' + this.padding_y);
 	this.g.append(g.button_panel.g);
 
-	// Implement me
-	g.control_panel = new ControlPanel(30, 30);
+	g.control_panel = new ControlPanel(30, 30, 360, 130);
 	g.control_panel.g.transform('t' + (this.width - this.padding_x - g.control_panel.cog_width) + ',' + (this.padding_y));
 	this.g.append(g.control_panel.g);
 
@@ -641,7 +708,7 @@ function CodeBox() {
     	'stroke-width': 1,
     	'opacity': .35
     });
-    g.highlight_boxes = {'highlight_box': this.highlight_box};
+    g.highlight_boxes[0] = {'highlight_box': this.highlight_box};
     this.g.append(this.highlight_box);
     this.remove_highlighting();
 

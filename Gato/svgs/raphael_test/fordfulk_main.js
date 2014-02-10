@@ -15,7 +15,8 @@ function add_snap_vars() {
 		vertices: [{}, {}],
 		edges: [{}, {}],
 		edge_arrows: [{}, {}],
-		graphs: []
+		graphs: [],
+        highlight_boxes: [{}, {}],
 	});
     var vertices = {}, edges = {}, edge_arrows = {}, code_lines = {};
     for (var graph_num=0; graph_num<g.num_graphs; graph_num++) {
