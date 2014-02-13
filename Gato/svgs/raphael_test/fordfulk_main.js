@@ -56,7 +56,6 @@ function extend(a, b) {
 }
 
 function fill_global() {
-	//$.extend(g, {
 	var cont_width = window.innerWidth;
 	var cont_height = window.innerHeight;
 	extend(g, {

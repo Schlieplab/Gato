@@ -66,6 +66,8 @@ embed {  overflow:scroll; position: absolute; width: 100%%; height: 100%%; backg
 """ 
  export_html_wrapper writes an html file to the given path with the name
  'svg_name.html'.  The html file references the svg with the given name.
+
+ DO WE NEED THIS?
 """
 def export_html_wrapper(svg_name, svg_dir="./svgs/src/", html_dir="./svgs/html/"):
 
@@ -321,18 +323,26 @@ svg_instance = {
        ]
     }
 
+
+# BFS and Ford Fulkerson
+'''
 svg_instance = {
     '02-GraphsNetworks/BFS.alg':[
     '02-GraphsNetworks/BFS.cat'
    ],
-   #'05-ShortestPaths/BellmanFord.alg':[
-   # '05-ShortestPaths/BellmanFordWC.cat',
-   # ],
    '06-MaximalFlows/FordFulkerson.alg':[
     '06-MaximalFlows/FordFulkerson6.cat','06-MaximalFlows/FordFulkersonBad.cat'
     ],
 }
+'''
 
+# Cardinality matching 
+svg_instance = {
+    '08-Matching/CardinalityMatching.alg':[
+    '08-Matching/Edmonds1.cat', '08-Matching/Edmonds3.cat',
+    '08-Matching/Edmonds6.cat'
+    ],
+}
 
 #------------------------------------------------------------------
 def usage():

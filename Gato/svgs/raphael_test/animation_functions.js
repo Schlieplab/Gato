@@ -107,7 +107,19 @@ function Animation() {
 						if (elem == null) {
 							// We need to create the element
 							if (elem_type === 'edges') {
-								elem = AddEdge(id)[0]; //todo:   Operate on the arrowhead too...
+								var e = AddEdge(id);
+								elem = e[0];
+								
+								// Take care of the arrowhead state right now
+								var arrowhead = e[1];
+								var arrowhead_state = state['edge_arrows'][g_num][arrowhead.attr('id')];
+								if (arrowhead_state != null) {
+									for (var attr in arrowhead_state) {
+										var params = {};
+										params[attr] = arrowhead_state[attr];
+										arrowhead.attr(params);
+									}
+								}
 							} else if (elem_type === 'vertices') {
 								AddVertex(id);
 							}
@@ -235,13 +247,13 @@ function Animation() {
 		this.state = 'stopped';
 		
 		// Our step interval in milliseconds
-		this.step_ms = 200;
+		this.step_ms = 22;
 		
 		// Current step in the animation
 		this.step_num = 0;
 
 		// How many steps we take between each saved graph state
-		this.state_interval = 500; 
+		this.state_interval = 200; 
 
 		this.construct_graph_states();
 	}
@@ -394,6 +406,7 @@ function SetEdgeColor(edge_id, color) {
 function SetAllVerticesColor() {
 	var graph_id_and_color = arguments[0];
 	var vertices = arguments[1];
+	console.log(graph_id_and_color);
 	// TODO: Modify this to use variable length args instead of vertices 
 	var split = graph_id_and_color.split('_');
 	var graph_num = graph_num_from_id(graph_id_and_color);
@@ -584,6 +597,7 @@ function AddEdge(edge_id){
                 delete g.edge_arrows[graph_num][arrowhead_id];
                 g.edges[graph_num][reverse_edge_id].remove();
                 delete g.edges[graph_num][reverse_edge_id];
+                g.tooltip_objects[reverse_edge_id + '_tooltip'].delete_self();
                 AddEdge(reverse_edge_id);
             }
         }else{  
@@ -655,6 +669,10 @@ function DeleteEdge(edge_id){
     	edge_and_arrow[0].attr({'stroke': stroke, 'stroke-width': stroke_width});
     	edge_and_arrow[1].attr({'fill': arrow_fill});
     }
+
+    // Remove the tooltip if needed
+	var tooltip = g.tooltip_objects[edge_id + '_tooltip'];
+	tooltip.delete_self();	
 }
 
 //Adds vertex of into specified graph and coordinates in graph.  Optional id argument may be given.

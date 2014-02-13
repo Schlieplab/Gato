@@ -484,7 +484,7 @@ class AlgoWin(Frame):
             elif self.algorithm.logAnimator == 2:
                 self.secondaryGraphDisplay = AnimationHistory(self.secondaryGraphDisplay,
                                                           'disp2\t', displayNum=2)
-                self.secondaryGraphDisplay.auto_print = 1
+                #self.secondaryGraphDisplay.auto_print = 1
         else:
             if self.graph_panes:
                 self.setSash(0.5)

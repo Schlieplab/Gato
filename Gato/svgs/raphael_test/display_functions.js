@@ -43,10 +43,8 @@ function Scaler() {
 		/* Scales the graph to the scale factor passed in, or current scale factor.  Accomodates for translation changes */
 		if (scale_factor == null) {
 			scale_factor = g.scaler.curr_scale;
-			console.log(g.scaler);
 		}
 		g.master_graph_container.transform('s' + scale_factor + ',0,0');
-		console.log("Scaled down to " + scale_factor);
 		for (var i=0; i<g.graph_containers.length; i++) {
 			var g_cont = g.graph_containers[i],
 				x_trans = g.init_container_translate[i]['x']/scale_factor,
@@ -62,10 +60,7 @@ function Scaler() {
 	this.do_scale = function(evt) {
 		var dx = parseInt(evt.x) - g.scaler.start_mouse.x;
 		var new_width = g.scaler.start_width + dx;
-		console.log('new width: ' + new_width);
 		var scale_factor = new_width / g.initial_graph_width;
-
-		console.log(scale_factor);
 
 		if (scale_factor > this.max_scale_factor) {
 			scale_factor = this.max_scale_factor;
@@ -127,6 +122,13 @@ function ToolTip(edge) {
 		this.frame_is_sized = false;
 	};
 
+	this.delete_self = function() {
+		this.text_elem.remove();
+		this.frame.remove();
+		this.g.remove();
+		delete g.tooltip_objects[this.id];
+	}
+
 
 	this.id = edge.attr('id') + '_tooltip';
 	this.g = snap.group().attr({
@@ -162,7 +164,6 @@ function ToolTip(edge) {
 		},
 		function (evt) {
 			var edge_id = get_id(evt.srcElement);
-			console.log("looking for " + edge_id + '_tooltip');
 			var tooltip = g.tooltip_objects[edge_id + '_tooltip'];
 			tooltip.mouseout(evt);
 		}
@@ -260,7 +261,6 @@ function position_graph() {
 }
 
 function toggle_control_panel() {
-	console.log(g.control_panel);
 	if (g.control_panel.frame_visibility === false) {
 		g.control_panel.frame_visibility = true;
 		g.control_panel.frame_g.attr({'visibility': 'visible'});
@@ -275,7 +275,6 @@ function click_speed_button(evt) {
 	var label = id.split('_')[0];
 	var speed_controls = g.control_panel.speed_controls;
 	var buttons = speed_controls.buttons;
-	console.log(buttons);
 	var button_types = speed_controls.button_types;
 	for (var i=0; i<buttons.length; i++) {
 		if (button_types[i].label === label) {
@@ -302,11 +301,11 @@ function SpeedControls(width) {
 	// Set up button settings
 	var text_bbox = this.text_elem.getBBox();
 	this.button_types = [
-		{'label': '.25x', 'speed': 200},
-		{'label': '.5x', 'speed': 37},
-		{'label': '1x', 'speed': 22},
-		{'label': '2x', 'speed': 10},
-		{'label': '4x', 'speed': .8},
+		{'label': '.25x', 'speed': 200, 'default_selected': false},
+		{'label': '.5x', 'speed': 37, 'default_selected': false},
+		{'label': '1x', 'speed': 22, 'default_selected': true},
+		{'label': '2x', 'speed': 10, 'default_selected': false},
+		{'label': '4x', 'speed': .8, 'default_selected': false},
 	];
 	var size = (this.width - text_bbox.width)/10;
 	this.button_settings = {
@@ -334,7 +333,7 @@ function SpeedControls(width) {
 			text_trans_y = button_text.getBBox().height;
 		}
 		var opacity = this.button_settings.inactive_opacity;
-		if (i === 0) {
+		if (type['default_selected'] === true) {
 			opacity = this.button_settings.active_opacity;
 		}
 		var button = snap.rect(0, 3, this.button_settings.width, this.button_settings.height, 4, 4).attr({
@@ -361,7 +360,8 @@ function SpeedControls(width) {
 
 function show_algo_info() {
 	// Implement me
-	console.log('showing algorithm info');
+    algo_info_active = true;
+    showPopWin('../infos/BFS-BFS.html', g.cont_width*1/2, g.cont_height*1/2);	// TODO: Change this in GatoExport.py
 }
 
 function create_algo_info_button() {
@@ -415,7 +415,7 @@ function ControlPanel(cog_width, cog_height, width, height) {
 
 	this.frame_g = snap.group().attr({'visibility': 'hidden'});
 	this.frame = snap.rect(0, 0, this.width, this.height, 5, 5).attr({
-		'fill': '#333333',
+		'fill': '#444',
 	});
 	this.frame_g.append(this.frame);
 
@@ -450,7 +450,7 @@ function PlaybackBar() {
 	this.height = 40;
 	this.padding_y = 5;
 	this.padding_x = 15;
-	this.bg_color = '#676767';
+	this.bg_color = '#606060';
 	this.stroke = '#222';
 	this.stroke_width = 2;
 
@@ -692,7 +692,7 @@ function CodeBox() {
     this.width =  this.widest_line + this.padding;
     this.height = curr_y + this.padding*2;
     this.frame = snap.rect(0, 0, this.width, this.height, 5, 5).attr({
-        fill: '#aaaaaa',
+        fill: '#ddd',
         stroke: '#333333',
         strokeWidth: 2,
     });
