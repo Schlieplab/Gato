@@ -374,6 +374,7 @@ function UpdateEdgeInfo(edge_id, info) {
 function UpdateGraphInfo(graph_id, info) {
 	var graph_num = parseInt(graph_id.substring(1));
 	var graph_info_text_elem = g.graph_infos[graph_num-1];
+	console.log(info);
 	graph_info_text_elem.node.innerHTML = info;
 }
 

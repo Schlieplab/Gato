@@ -202,13 +202,14 @@ function add_tooltip(edge) {
 }
 
 function build_graph_info(group, width, height, g_num) {
-	var rect = snap.rect(0, 0, width, height).attr({
+	/*var rect = snap.rect(0, 0, width, height).attr({
 		'fill': '#fff',
 		'stroke': '#ccc',
 		'stroke-width': g.graph_frame_stroke_width,
 		strokeDasharray: '5,2',
 	});
 	group.append(rect);
+	*/
 
 	var text_elem = snap.text(5, 0, 'No Info').attr({'id': 'g' + g_num + '_info'});		// Set this to "No Info"(or any text) at first so the bbox has a height
 	text_elem.attr({'y': text_elem.getBBox().height-1});

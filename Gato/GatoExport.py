@@ -39,6 +39,7 @@ import os
 import StringIO
 import tokenize
 import re
+import pdb
 from math import sqrt, pi, sin, cos, atan2, degrees, log10, floor
 from WebGatoJS2 import animationhead
 
@@ -197,7 +198,16 @@ def cmd_as_javascript(cmd, idPrefix=''):
             result.append(quote(v))
     
     return result
-    
+
+def change_id_format(field):
+    def edge_replace(match):
+        return match.group().replace(' ', '').replace('(', '').replace(')', '').replace(',', '-')
+    edge_re = re.compile(r'g[12]_\(\d+, \d+\)')
+    if edge_re.search(field):
+        print "trying to change " + field
+        return edge_re.sub(edge_replace, field)
+    else:
+        return field
 
 def collectAnimations(histories, prefixes):
     """ Given a list of animation histories (aka list of AnimationCommands)
@@ -214,10 +224,13 @@ def collectAnimations(histories, prefixes):
         duration = max(1,int(round((cmd[0] - currentTime) * 1000, 0)))
         currentTime = cmd[0]
         mergedCmds[i][0] = str(duration)
+
+        # We want to change the ids to a different form
         for j in xrange(2, len(mergedCmds[i])):
-            if mergedCmds[i][1] == 'UpdateEdgeInfo' and j == 3:
-                continue
-            mergedCmds[i][j] = mergedCmds[i][j].replace(' ', '').replace('(', '').replace(')', '').replace(',', '-')
+            #if mergedCmds[i][1] == 'UpdateEdgeInfo' and j == 3:
+            #    continue
+            mergedCmds[i][j] = change_id_format(mergedCmds[i][j])
+            #mergedCmds[i][j] = mergedCmds[i][j].replace(' ', '').replace('(', '').replace(')', '').replace(',', '-')
     return ["Array(" + ", ".join(cmd) + ")" for cmd in mergedCmds]
 
 def get_graph_as_svg_str(graphDisplay, file, idPrefix=''):
