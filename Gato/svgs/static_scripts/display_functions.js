@@ -363,7 +363,7 @@ function SpeedControls(width) {
 function show_algo_info() {
 	// Implement me
     algo_info_active = true;
-    showPopWin(g.info_file, g.cont_width*1/2, g.cont_height*1/2);	// TODO: Change this in GatoExport.py
+    showPopWin(info_file, g.cont_width*1/2, g.cont_height*1/2);	// TODO: Change this in GatoExport.py
 }
 
 function create_algo_info_button() {

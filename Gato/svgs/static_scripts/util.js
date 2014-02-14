@@ -1,3 +1,11 @@
+function remove_scheduled_edge_blinks(edge_id) {
+    var timeout_arr = g.blinking_edges[edge_id];
+    for (var i=0; i<timeout_arr.length; i++) {
+        clearTimeout(timeout_arr[i]);
+    }
+    delete g.blinking_edges[edge_id];
+}
+
 function get_id(node) {
     var attributes = node.attributes;
     for (var attr in attributes) {

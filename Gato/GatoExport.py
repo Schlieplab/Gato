@@ -462,7 +462,7 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
 
         # Merge the animation into the HTML
         str_vars = {
-            'info_file': fileName[fileName.rindex('/') + 1:], 
+            'info_file': 'infos/' + fileName[fileName.rindex('/') + 1:], 
             'animation': ',\n'.join(animation), 
             'graph_str': '\n'.join(graph_strs), 
             'algo_str': ''.join(algo_lines)

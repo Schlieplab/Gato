@@ -12,12 +12,16 @@ function Animation() {
 		if (this.state !== 'animating') {
 			return;
 		}
+		if (g.slider.sliding === true) {
+			return;
+		}
 		if (this.step_num >= anim_array.length) {
 			this.state = 'done';
 			g.button_panel.set_buttons_state('done');
 			return;
 		}
 
+		console.log(this.step_num);
 		var last_anim = anim_array[this.step_num-1];
 		if (last_anim != null && last_anim[1] === ShowActive && g.code_box.is_line_breakpoint_active(last_anim[2])) {
 			// We're at a breakpoint
@@ -40,6 +44,7 @@ function Animation() {
 			this.do_command(anim_array[i]);
 			this.step_num ++;
 		}
+		console.log('left off at ' + this.step_num);
 	}
 
 	this.start = function() {
@@ -87,10 +92,9 @@ function Animation() {
 		}
 	}
 
-	this.jump_to_step = function(n) {
+	this.jump_to_step = function(n, move_slider) {
 		var state_ind = parseInt(n/this.state_interval);
 		var state = this.graph_states[state_ind];
-		console.log(state)
 
 		if (n > this.step_num && n < (state_ind+1)*this.state_interval) {
 			// If we are animating between now and next state then just animate until, don't go to any state
@@ -171,8 +175,10 @@ function Animation() {
 			this.step_num = state.step_num;
 			this.animate_until(n);
 		}
-		g.slider.go_to_step(n);
-		console.log("DONE JUMPING");
+
+		if (move_slider !== false) {
+			g.slider.go_to_step(n);
+		}
 	}
 
 	/*
@@ -280,8 +286,8 @@ function Slider(width, height) {
 			new_x = self.cursor_max_x;
 		}
 		self.cursor.attr({'x': new_x});
-		var step = parseInt(new_x / self.step_width);
-		g.animation.jump_to_step(step);
+		var step = self.get_step_for_position(new_x / self.step_width);
+		g.animation.jump_to_step(step, false);
 	}
 	this.cursor_mousedown = function(evt) {
 		/*	Triggers when cursor is mousedowned.  Begins sliding process by 
@@ -299,8 +305,9 @@ function Slider(width, height) {
 			at mousedown event this computes the new position of the cursor, and moves
 			the animation to the corresponding step.
 		*/
+		var self = g.slider;
 		var step = 0;
-		var new_x = this.start_cursor_x + parseInt(evt.x) - g.slider.start_mouse_x;
+		var new_x = this.start_cursor_x + parseInt(evt.x) - self.start_mouse_x;
 		if (new_x > this.cursor_max_x) {
 			new_x = this.cursor_max_x;
 			step = anim_array.length - 1;
@@ -308,10 +315,11 @@ function Slider(width, height) {
 			new_x = this.cursor_min_x;
 			step = 0;
 		} else {
-			step = parseInt(new_x / this.step_width) + 1;
+			step = self.get_step_for_position(new_x / self.step_width);
 		}
+		console.log("Step is " + step);
 		this.cursor.attr({'x': new_x});
-		g.animation.jump_to_step(step);
+		g.animation.jump_to_step(step, false);
 	}
 	this.cursor_mouseup = function(evt) {
 		/* Ends cursor sliding behavior */
@@ -320,8 +328,6 @@ function Slider(width, height) {
 	this.go_to_step = function(n, time) {
 		/* Positions the cursor at the position corresponding to step number n */
 		var position = this.slider_positions[n];
-		console.log(n);
-		console.log("going to position " + position + " with timeout " + time);
 		if (time) {
 			var diff = position*this.step_width - parseInt(this.cursor.attr('x'));
 			this.cursor.animate({'x': position*this.step_width}, time);
@@ -332,15 +338,29 @@ function Slider(width, height) {
 	this.compute_step_width = function() {
 		var sum = 0;
 		this.slider_positions = [];
+		this.position_to_step = {};
 		for (var i=0; i<anim_array.length; i++) {
+			this.position_to_step[sum] = i;
 			this.slider_positions.push(sum);
 			sum += anim_array[i][0];
 		}
 		this.slider_positions.push(sum);
+		
+		// Create an object storing position and 
+
 		return this.cursor_max_x / sum;
 	}
 	this.stop_animating = function() {
 		g.slider.cursor.stop();
+	}
+	this.get_step_for_position = function(position) {
+		var int_pos = parseInt(position);
+		console.log("Position: " + position);
+		for (;; int_pos += 1) {
+			if (int_pos in this.position_to_step) {
+				return this.position_to_step[int_pos];
+			}
+		}
 	}
 
 	this.init = function () {
@@ -370,8 +390,12 @@ function Slider(width, height) {
 		}).mousedown(this.cursor_mousedown);
 		this.cursor_max_x = this.width - this.cursor_width;
 		this.cursor_min_x = 0;
+
+		// step_width is the width of each time unit as specified in anim_array.  Total time units are the sum of first element of all arrays
 		this.step_width = this.compute_step_width()
-		//this.cursor_max_x / anim_array.length;
+		// naive_step_width is just the position in anim_array
+		this.naive_step_width = this.cursor_max_x / anim_array.length;
+		
 		this.g.append(this.cursor);
 	}
 	
@@ -414,6 +438,11 @@ function SetEdgeColor(edge_id, color) {
 	    var matches = edge_id.match(re);
 	    return "g" + matches[0] + "_" + matches[2] + "-" + matches[1];
 	}
+
+	if (edge_id in g.blinking_edges) {
+		remove_scheduled_edge_blinks(edge_id);
+	}
+
 	var graph_num = graph_num_from_id(edge_id);
 	var edge = g.edges[graph_num][edge_id];
 	if (edge == null) {
@@ -421,7 +450,8 @@ function SetEdgeColor(edge_id, color) {
 		edge = g.edges[graph_num][edge_id];
 	}
 	edge.attr({'stroke': color});	// For some reason if we don't set stroke-width it will go to 1 
-    
+    console.log('setting color of ' + edge_id + ' to ' + color);
+
     var edge_arrow = g.edge_arrows[graph_num][(g.arrow_id_prefix + edge_id)];
     if (edge_arrow !== undefined) {
     	edge_arrow.attr({'fill': color});
@@ -478,6 +508,7 @@ function SetAllEdgesColor(graph_id_and_color) {
 
 /** Blinks the given vertex between black and current color 3 times */
 function BlinkVertex(vertex_id, color) {
+	/* TODO: Add timeout array in here */
 	var vertex = g.vertices[graph_num_from_id(vertex_id)][vertex_id];
     var curr_color = vertex.attr('fill');
     for (var i=0; i<6; i+=2) {
@@ -490,10 +521,18 @@ function BlinkVertex(vertex_id, color) {
 function BlinkEdge(edge_id, color){
 	var edge = g.edges[graph_num_from_id(edge_id)][edge_id];
     var curr_color = edge.attr('stroke');
+    var timeout_arr = [];
     for (var i=0; i<6; i+=2) {
-    	setTimeout(function() { edge.attr({'stroke':  'black', 'stroke-width': g.edge_width}); }, g.step_ms*(i));
-    	setTimeout(function() { edge.attr({'stroke': curr_color, 'stroke-width': g.edge_width}); }, g.step_ms*(i+1));
+    	timeout_arr.push(setTimeout(function() { edge.attr({'stroke':  'black', 'stroke-width': g.edge_width}); }, g.step_ms*(i)));
+    	timeout_arr.push(setTimeout(function() { edge.attr({'stroke': curr_color, 'stroke-width': g.edge_width}); }, g.step_ms*(i+1)));
     }
+    timeout_arr.push(
+    	setTimeout(function(){
+    		delete blinking_edges[edge_id];
+    	}
+    ), g.step_ms*6);
+
+    g.blinking_edges[edge_id] = timeout_arr;
 }
 
 //Blink(self, list, color=None):

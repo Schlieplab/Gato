@@ -72,6 +72,8 @@ function fill_global() {
 
         // General
         arrow_id_prefix: 'ea',
+        blinking_edges: {},
+        blinking_vertices: {},
     });
     if (snap.select('g#g2') != null) {
         g.num_graphs = 2;
