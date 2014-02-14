@@ -25,9 +25,9 @@ function Animation() {
 			g.button_panel.set_buttons_state('waiting');
 		} else {
 			var anim = anim_array[this.step_num];
-			g.slider.go_to_step(this.step_num, anim[0]*this.step_ms);
 			this.do_command(anim);
 			this.step_num ++;
+			g.slider.go_to_step(this.step_num, anim[0]*this.step_ms);
 			var self = this;
 			this.scheduled_animation = setTimeout(function() {self.animator()}, anim[0]*this.step_ms);
 		}
@@ -60,6 +60,7 @@ function Animation() {
 			this.state = 'stopped';
 			clearTimeout(this.scheduled_animation);
 			this.step_num = 0;
+			g.slider.stop_animating();
 			this.jump_to_step(0);
 		}
 	}
@@ -318,11 +319,28 @@ function Slider(width, height) {
 	}
 	this.go_to_step = function(n, time) {
 		/* Positions the cursor at the position corresponding to step number n */
-		if (time !== undefined) {
-			this.cursor.animate({'x': n*this.step_width}, time);
+		var position = this.slider_positions[n];
+		console.log(n);
+		console.log("going to position " + position + " with timeout " + time);
+		if (time) {
+			var diff = position*this.step_width - parseInt(this.cursor.attr('x'));
+			this.cursor.animate({'x': position*this.step_width}, time);
 		} else {
-			this.cursor.attr({'x': n*this.step_width});
+			this.cursor.attr({'x': position*this.step_width});
 		}
+	}
+	this.compute_step_width = function() {
+		var sum = 0;
+		this.slider_positions = [];
+		for (var i=0; i<anim_array.length; i++) {
+			this.slider_positions.push(sum);
+			sum += anim_array[i][0];
+		}
+		this.slider_positions.push(sum);
+		return this.cursor_max_x / sum;
+	}
+	this.stop_animating = function() {
+		g.slider.cursor.stop();
 	}
 
 	this.init = function () {
@@ -352,7 +370,8 @@ function Slider(width, height) {
 		}).mousedown(this.cursor_mousedown);
 		this.cursor_max_x = this.width - this.cursor_width;
 		this.cursor_min_x = 0;
-		this.step_width = this.cursor_max_x / anim_array.length;
+		this.step_width = this.compute_step_width()
+		//this.cursor_max_x / anim_array.length;
 		this.g.append(this.cursor);
 	}
 	
@@ -542,10 +561,10 @@ function AddEdge(edge_id){
     var v = g.vertices[graph_num][graph_id + '_' + vertices[0]];
     var w = g.vertices[graph_num][graph_id + '_' + vertices[1]];
     
-    var vx = v.attr("cx");
-    var wx = w.attr("cx");
-    var vy = v.attr("cy");
-    var wy = w.attr("cy");
+    var vx = v.attr("cx"),
+    	wx = w.attr("cx"),
+    	vy = v.attr("cy"),
+    	wy = w.attr("cy");
     if (v == null || w == null || g.edges[graph_num][graph_id + '_' + vertices[0] + '-' + vertices[1]] != null) {
     	// Exit if one of the vertices is null or the edge already exists
     	return;

@@ -1,3 +1,7 @@
+function time_of_last_animation() {
+    return anim_array[g.animation.step_num-1][0] * g.animation.step_ms;
+}
+
 function get_id(node) {
     var attributes = node.attributes;
     for (var attr in attributes) {
