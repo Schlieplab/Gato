@@ -89,6 +89,7 @@ function Animation() {
 	this.jump_to_step = function(n) {
 		var state_ind = parseInt(n/this.state_interval);
 		var state = this.graph_states[state_ind];
+		console.log(state)
 
 		if (n > this.step_num && n < (state_ind+1)*this.state_interval) {
 			// If we are animating between now and next state then just animate until, don't go to any state
@@ -170,6 +171,7 @@ function Animation() {
 			this.animate_until(n);
 		}
 		g.slider.go_to_step(n);
+		console.log("DONE JUMPING");
 	}
 
 	/*
@@ -231,6 +233,10 @@ function Animation() {
 		for (var i=0; i<anim_array.length; i++) {
 			if (i % this.state_interval === 0) {
 				states.push(construct_state(i))
+			}
+			if (anim_array[i][1] === BlinkEdge || anim_array[i][1] === BlinkVertex) {
+				// Skip Blinks
+				continue;
 			}
 			this.do_command(anim_array[i]);
 		}
@@ -374,7 +380,6 @@ function UpdateEdgeInfo(edge_id, info) {
 function UpdateGraphInfo(graph_id, info) {
 	var graph_num = parseInt(graph_id.substring(1));
 	var graph_info_text_elem = g.graph_infos[graph_num-1];
-	console.log(info);
 	graph_info_text_elem.node.innerHTML = info;
 }
 
@@ -411,7 +416,6 @@ function SetEdgeColor(edge_id, color) {
 function SetAllVerticesColor() {
 	var graph_id_and_color = arguments[0];
 	var vertex = arguments[1];
-	console.log(graph_id_and_color);
 	// TODO: Modify this to use variable length args instead of vertices 
 	var split = graph_id_and_color.split('_');
 	var graph_num = graph_num_from_id(graph_id_and_color);
