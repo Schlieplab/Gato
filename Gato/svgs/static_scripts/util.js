@@ -1,3 +1,23 @@
+function remove_all_scheduled_vertex_blinks() {
+    for (var id in g.blinking_vertices) {
+        remove_scheduled_vertex_blinks(id);
+    }
+}
+
+function remove_scheduled_vertex_blinks(vertex_id) {
+    var timeout_arr = g.blinking_vertices[vertex_id];
+    for (var i=0; i<timeout_arr.length; i++) {
+        clearTimeout(timeout_arr[i]);
+    }
+    delete g.blinking_vertices[vertex_id];
+}
+
+function remove_all_scheduled_edge_blinks() {
+    for (var id in g.blinking_edges) {
+        remove_scheduled_edge_blinks(id);
+    }
+}
+
 function construct_AddVertex_argument_from_state(state) {
     var g_num = parseInt(state['id'].substring(1,2));
     var x = parseFloat(state['cx']) + g.coord_changes[g_num-1].x;
@@ -10,7 +30,7 @@ function remove_scheduled_edge_blinks(edge_id) {
     for (var i=0; i<timeout_arr.length; i++) {
         clearTimeout(timeout_arr[i]);
     }
-    delete g.blinking_edges[edge_id];it
+    delete g.blinking_edges[edge_id];
 }
 
 function get_id(node) {

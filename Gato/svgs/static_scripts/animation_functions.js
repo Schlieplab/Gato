@@ -417,6 +417,9 @@ function Slider(width, height) {
 
 /** Sets the vertex given by vertex_id to color */
 function SetVertexColor(vertex_id, color) {
+	if (vertex_id in g.blinking_vertices) {
+		remove_scheduled_vertex_blinks(vertex_id);
+	}
 	g.vertices[graph_num_from_id(vertex_id)][vertex_id].attr('fill', color);
 }
 
@@ -467,6 +470,8 @@ function SetEdgeColor(edge_id, color) {
 * 	If vertices != null, then only color the set of vertices specified by vertices
 */
 function SetAllVerticesColor() {
+	remove_all_scheduled_vertex_blinks();
+
 	var graph_id_and_color = arguments[0];
 	var vertex = arguments[1];
 	// TODO: Modify this to use variable length args instead of vertices 
@@ -494,6 +499,8 @@ function SetAllVerticesColor() {
 
 /** Sets all edges of given graph to color.  param is of form: "g1_#dd3333" */
 function SetAllEdgesColor(graph_id_and_color) {
+	remove_all_scheduled_edge_blinks();
+    
     var split = graph_id_and_color.split('_');
     var graph_num = graph_num_from_id(graph_id_and_color);
     var color = split[1];
@@ -515,26 +522,42 @@ function BlinkVertex(vertex_id, color) {
 	/* TODO: Add timeout array in here */
 	var vertex = g.vertices[graph_num_from_id(vertex_id)][vertex_id];
     var curr_color = vertex.attr('fill');
-    for (var i=0; i<6; i+=2) {
-    	setTimeout(function() { vertex.attr({'fill': 'black'}); }, g.step_ms*(i));
-    	setTimeout(function() { vertex.attr({'fill': curr_color}); }, g.step_ms*(i+1));
+    if (color === 'None' || !color) {
+    	color = 'black'
     }
+
+    var timeout_arr = [];
+    for (var i=0; i<6; i+=2) {
+    	timeout_arr.push(setTimeout(function() { vertex.attr({'fill': color}); }, g.animation.step_ms*i*3));
+    	timeout_arr.push(setTimeout(function() { vertex.attr({'fill': curr_color}); }, g.animation.step_ms*(i+1)*3));
+    }
+    timeout_arr.push(
+    	setTimeout(function() {
+    		delete g.blinking_vertices[vertex_id];
+    	}, g.animation.step_ms*16)
+    );
+
+    g.blinking_vertices[vertex_id] = timeout_arr;
 }
 
 /** Blinks the given edge between black and current color 3 times */
 function BlinkEdge(edge_id, color){
 	var edge = g.edges[graph_num_from_id(edge_id)][edge_id];
     var curr_color = edge.attr('stroke');
+    if (color === 'None' || !color) {
+    	color = 'black';
+    }
+
     var timeout_arr = [];
     for (var i=0; i<6; i+=2) {
-    	timeout_arr.push(setTimeout(function() { edge.attr({'stroke':  'black', 'stroke-width': g.edge_width}); }, g.step_ms*(i)));
-    	timeout_arr.push(setTimeout(function() { edge.attr({'stroke': curr_color, 'stroke-width': g.edge_width}); }, g.step_ms*(i+1)));
+    	timeout_arr.push(setTimeout(function() { edge.attr({'stroke':  color, 'stroke-width': g.edge_width}); }, g.animation.step_ms*i*3));
+	    timeout_arr.push(setTimeout(function() { edge.attr({'stroke': curr_color, 'stroke-width': g.edge_width}); }, g.animation.step_ms*(i+1)*3));
     }
     timeout_arr.push(
     	setTimeout(function(){
-    		delete blinking_edges[edge_id];
-    	}
-    ), g.step_ms*6);
+    		delete g.blinking_edges[edge_id];
+    	}, g.animation.step_ms*16)
+    );
 
     g.blinking_edges[edge_id] = timeout_arr;
 }
