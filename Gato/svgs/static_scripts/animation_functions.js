@@ -13,6 +13,9 @@ function Animation() {
 			return;
 		}
 		if (g.slider.sliding === true) {
+			setTimeout(function() {
+				g.animation.animator();
+			}, 10);
 			return;
 		}
 		if (this.step_num >= anim_array.length) {
@@ -44,7 +47,6 @@ function Animation() {
 			this.do_command(anim_array[i]);
 			this.step_num ++;
 		}
-		console.log('left off at ' + this.step_num);
 	}
 
 	this.start = function() {
@@ -117,17 +119,20 @@ function Animation() {
 								elem = e[0];
 								
 								// Take care of the arrowhead state right now
-								var arrowhead = e[1];
-								var arrowhead_state = state['edge_arrows'][g_num][arrowhead.attr('id')];
-								if (arrowhead_state != null) {
-									for (var attr in arrowhead_state) {
-										var params = {};
-										params[attr] = arrowhead_state[attr];
-										arrowhead.attr(params);
+								if (g.graphs[g_num].attr("type") == "directed") {
+									var arrowhead = e[1];
+									var arrowhead_state = state['edge_arrows'][g_num][arrowhead.attr('id')];
+									if (arrowhead_state != null) {
+										for (var attr in arrowhead_state) {
+											var params = {};
+											params[attr] = arrowhead_state[attr];
+											arrowhead.attr(params);
+										}
 									}
 								}
 							} else if (elem_type === 'vertices') {
-								AddVertex(id);
+								var arg = construct_AddVertex_argument_from_state(elem_state[id]);
+								elem = AddVertex(arg, elem_state[id]['id'].substring(3,4));
 							}
 						}
 
@@ -153,7 +158,9 @@ function Animation() {
 						if (!(id in elem_state)) {
 							if (elem_type === 'edges') {
 								DeleteEdge(id);
-							} 
+							} else if (elem_type === 'vertices') {
+								DeleteVertex(id);
+							}
 						}
 					}
 
@@ -355,7 +362,6 @@ function Slider(width, height) {
 	}
 	this.get_step_for_position = function(position) {
 		var int_pos = parseInt(position);
-		console.log("Position: " + position);
 		for (;; int_pos += 1) {
 			if (int_pos in this.position_to_step) {
 				return this.position_to_step[int_pos];
@@ -433,7 +439,6 @@ function UpdateGraphInfo(graph_id, info) {
 function SetEdgeColor(edge_id, color) {
 	function switch_edge_vertices() {
 	    // Switches the edge_id vertices.  ie. g1_(5, 4) in --> g1_(4, 5) out
-	    // TODO: Test me
 	    var re = /\d+/g;
 	    var matches = edge_id.match(re);
 	    return "g" + matches[0] + "_" + matches[2] + "-" + matches[1];
@@ -450,7 +455,6 @@ function SetEdgeColor(edge_id, color) {
 		edge = g.edges[graph_num][edge_id];
 	}
 	edge.attr({'stroke': color});	// For some reason if we don't set stroke-width it will go to 1 
-    console.log('setting color of ' + edge_id + ' to ' + color);
 
     var edge_arrow = g.edge_arrows[graph_num][(g.arrow_id_prefix + edge_id)];
     if (edge_arrow !== undefined) {
@@ -746,11 +750,45 @@ function DeleteEdge(edge_id){
 	tooltip.delete_self();	
 }
 
-//Adds vertex of into specified graph and coordinates in graph.  Optional id argument may be given.
-function AddVertex(graph_and_coordinates, id){
+//Adds vertex of into specified graph and coordinates in graph
+function AddVertex(graph_and_coordinates, vertex_num){
+	var graph_num = graph_and_coordinates.substring(1, 2);
+	console.log(graph_and_coordinates);
+	var coords = graph_and_coordinates.split("(")[1].match(/[\d\.]+/g);
+	var x = parseFloat(coords[0]) - g.coord_changes[graph_num-1].x,
+		y = parseFloat(coords[1]) - g.coord_changes[graph_num-1].y;
+	
+	var vertex_id = 'g' + graph_num + '_' + vertex_num;
+	var vertex = snap.circle(x, y, g.vertex_r).attr({
+		'id': vertex_id,
+		'class': 'vertex',
+		'fill': '#808080',
+		'style': 'filter: url(#dropshadow)'
+	});
+	g.vertices[graph_num-1][vertex_id] = vertex;
+	g.graphs[graph_num-1].append(vertex);
 
+	// TODO: compute the 4.62, don't just use a constant
+	var vertex_label = snap.text(x, y+4.62, vertex_num).attr({
+		'id': 'vl' + vertex_id,
+		'text-anchor': 'middle',
+		'fill': 'white',
+		'font-family': 'Helvetica',
+		'font-size': 14.0,
+		'font-weight': 'bold'
+	});
+	g.graphs[graph_num-1].append(vertex_label);
+	
+	return vertex;
 }
 
 function DeleteVertex(vertex_id) {
-
+	var g_num = vertex_id.substring(1,2);
+	var vertex = g.vertices[g_num-1][vertex_id];
+	var vertex_label = snap.select('#vl' + vertex_id);
+	vertex.remove()
+	if (vertex_label) {
+		vertex_label.remove()
+	}
+	delete g.vertices[g_num-1][vertex_id];
 }

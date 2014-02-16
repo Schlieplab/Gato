@@ -1,9 +1,16 @@
+function construct_AddVertex_argument_from_state(state) {
+    var g_num = parseInt(state['id'].substring(1,2));
+    var x = parseFloat(state['cx']) + g.coord_changes[g_num-1].x;
+    var y = parseFloat(state['cy']) + g.coord_changes[g_num-1].y;
+    return 'g' + g_num + '_(' + x + ', ' + y + ')';
+}
+
 function remove_scheduled_edge_blinks(edge_id) {
     var timeout_arr = g.blinking_edges[edge_id];
     for (var i=0; i<timeout_arr.length; i++) {
         clearTimeout(timeout_arr[i]);
     }
-    delete g.blinking_edges[edge_id];
+    delete g.blinking_edges[edge_id];it
 }
 
 function get_id(node) {

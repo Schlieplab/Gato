@@ -74,6 +74,10 @@ function fill_global() {
         arrow_id_prefix: 'ea',
         blinking_edges: {},
         blinking_vertices: {},
+        coord_changes: [
+            {'x': g1_x_add, 'y': g1_y_add},
+            {'x': g2_x_add, 'y': g2_y_add}
+        ]
     });
     if (snap.select('g#g2') != null) {
         g.num_graphs = 2;

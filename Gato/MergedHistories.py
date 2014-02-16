@@ -318,8 +318,8 @@ class MergedHistories:
                 raise Error("Displaynum of function in merged history is neither 1 nor 2.")
             
     def append(self, animation, display):
-        if self.auto_print:
-            print "disp" , display , "  " , animation.log_str() 
+        #if self.auto_print:
+        #    print "disp" , display , "  " , animation.log_str() 
         tuple = animation, display
         self.history.append(tuple)
         

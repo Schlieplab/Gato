@@ -197,6 +197,9 @@ def cmd_as_javascript(cmd, idPrefix=''):
         for v in cmd.kwargs['vertices']:
             result.append(quote(v))
     
+    if 'AddVertex' in result:
+        print result
+
     return result
 
 def change_id_format(field):
@@ -204,7 +207,6 @@ def change_id_format(field):
         return match.group().replace(' ', '').replace('(', '').replace(')', '').replace(',', '-')
     edge_re = re.compile(r'g[12]_\(\d+, \d+\)')
     if edge_re.search(field):
-        print "trying to change " + field
         return edge_re.sub(edge_replace, field)
     else:
         return field
@@ -229,7 +231,8 @@ def collectAnimations(histories, prefixes):
         for j in xrange(2, len(mergedCmds[i])):
             #if mergedCmds[i][1] == 'UpdateEdgeInfo' and j == 3:
             #    continue
-            mergedCmds[i][j] = change_id_format(mergedCmds[i][j])
+            if 'Edge' in mergedCmds[i][1]:
+                mergedCmds[i][j] = change_id_format(mergedCmds[i][j])
             #mergedCmds[i][j] = mergedCmds[i][j].replace(' ', '').replace('(', '').replace(')', '').replace(',', '-')
     return ["Array(" + ", ".join(cmd) + ")" for cmd in mergedCmds]
 
@@ -395,7 +398,7 @@ def get_graph_as_svg_str(graphDisplay, file, idPrefix=''):
             ret_strs.append('<text id="va%s" x="%s" y="%s" text-anchor="left" fill="%s" font-family="Helvetica" '\
                        'font-size="%s" font-style="normal">%s</text>\n' % (idPrefix+str(v),x+r+1,y+r+1,col,size,text))
 
-    return '\n'.join(ret_strs)
+    return ('\n'.join(ret_strs), x_add, y_add)
     
         
 def ExportAlgoInfo(fileName, algorithm):
@@ -447,12 +450,16 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
         graph_strs = []
         graph_type = "undirected" if graphDisplay.G.directed == 0 else "directed"
         graph_strs.append('<g id="g1" type="%s">\n' % (graph_type))
-        graph_strs.append(get_graph_as_svg_str(graphDisplay, file, idPrefix='g1_'))
+
+        g1_str, g1_x_add, g1_y_add = get_graph_as_svg_str(graphDisplay, file, idPrefix='g1_')
+        graph_strs.append(g1_str)
         graph_strs.append('</g>\n')
+        g2_x_add, g2_y_add = 0, 0
         if secondaryGraphDisplay:
             graph_type = "undirected" if secondaryGraphDisplay.G.directed == 0 else "directed"
             graph_strs.append('<g id="g2" type="%s">\n' % (graph_type))
-            graph_strs.append(get_graph_as_svg_str(secondaryGraphDisplay, file, idPrefix='g2_'))
+            g2_str, g2_x_add, g2_y_add = get_graph_as_svg_str(secondaryGraphDisplay, file, idPrefix='g2_')
+            graph_strs.append(g2_str)
             graph_strs.append('</g>\n')
 
         # Build the Algorithm SVG string
@@ -465,7 +472,11 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
             'info_file': 'infos/' + fileName[fileName.rindex('/') + 1:], 
             'animation': ',\n'.join(animation), 
             'graph_str': '\n'.join(graph_strs), 
-            'algo_str': ''.join(algo_lines)
+            'algo_str': ''.join(algo_lines),
+            'g1_x_add': g1_x_add,
+            'g1_y_add': g1_y_add,
+            'g2_x_add': g2_x_add,
+            'g2_y_add': g2_y_add
         }
         file.write(animationhead % str_vars)
         file.close()
