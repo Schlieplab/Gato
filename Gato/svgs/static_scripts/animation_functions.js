@@ -159,6 +159,8 @@ function Animation() {
 								DeleteEdge(id);
 							} else if (elem_type === 'vertices') {
 								DeleteVertex(id);
+							} else if (elem_type === 'annotations') {
+								delete_vertex_annotation(id);
 							}
 						}
 					}
@@ -578,9 +580,32 @@ function SetVertexFrameWidth(vertex_id, val) {
     }
 }
 
-//Sets annotation of vertex v to annotation.  Annotation's color is specified
-function SetVertexAnnotation(v, annotation, color) //removed 'this' parameter to because 'this' parameter was assigned value of v, v of annotation, and so on.
-{
+// Sets annotation of vertex v to annotation.  Annotation's color is specified
+function SetVertexAnnotation(vertex_id, annotation, color) {
+	var g_num = vertex_id.substring(1, 2);
+	var vertex = g.vertices[g_num-1][vertex_id];
+	if (!color) {
+		color = 'black';
+	}
+	var annotation_id = 'va' + vertex_id;
+	var text = snap.text(parseInt(vertex.attr('cx')) + g.vertex_r*1.5, parseInt(vertex.attr('cy')) + g.vertex_r*1.5	 + 4.62, annotation).attr({
+		'id': annotation_id,
+		'class': 'annotations',
+		'fill': 'black',
+		'text-anchor': 'middle',
+		'font-weight': 'bold',
+		'font-family': 'Helvetica',
+		'font-size': 14
+	});
+	g.graphs[g_num-1].append(text);
+	g.annotations[g_num-1][annotation_id] = text;
+}
+
+function delete_vertex_annotation(annotation_id) {
+	var g_num = annotation_id.substring(3, 4);
+	var annot = g.annotations[g_num-1][annotation_id];
+	annot.remove()
+	delete g.annotations[g_num-1][annotation_id];
 }
 
 

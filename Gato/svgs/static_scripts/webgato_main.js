@@ -2,7 +2,7 @@ var snap = Snap("svg");
 var g = {}; // globals
 
 function add_snap_vars() {
-    g.graph_elem_types = ['vertices', 'edges', 'code_lines', 'edge_arrows', 'highlight_boxes'];
+    g.graph_elem_types = ['vertices', 'edges', 'code_lines', 'edge_arrows', 'highlight_boxes', 'annotations'];
     g.graph_elem_ids = ['vertex', 'edge', 'code_line', 'arrowhead'];
     // TODO: update this code to be mroe generic
     extend(g, {
@@ -11,6 +11,7 @@ function add_snap_vars() {
         edge_arrows: [{}, {}],
         graphs: [],
         highlight_boxes: [{}, {}],
+        annotations: [{}, {}],
     });
     var vertices = {}, edges = {}, edge_arrows = {}, code_lines = {};
     for (var graph_num=0; graph_num<g.num_graphs; graph_num++) {
