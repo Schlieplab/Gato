@@ -24,7 +24,6 @@ function Animation() {
 			return;
 		}
 
-		console.log(this.step_num);
 		var last_anim = anim_array[this.step_num-1];
 		if (last_anim != null && last_anim[1] === ShowActive && g.code_box.is_line_breakpoint_active(last_anim[2])) {
 			// We're at a breakpoint
@@ -63,7 +62,7 @@ function Animation() {
 	}
 
 	this.stop = function() {
-		if (this.state === 'animating' || this.state === 'stopped') {
+		if (this.state === 'animating' || this.state === 'stopped' || this.state === 'stepping') {
 			this.state = 'stopped';
 			clearTimeout(this.scheduled_animation);
 			this.step_num = 0;
@@ -227,7 +226,6 @@ function Animation() {
 			var state = {'step_num': step_num};
 			for (var i=0; i<g.graph_elem_types.length; i++) {
 				var elem_type = g.graph_elem_types[i];
-				//console.log(elem_type);
 				state[elem_type] = [];
 				for (var g_num=0; g_num<g.num_graphs; g_num++) {
 					var elem_obj = g[elem_type][g_num];
@@ -324,9 +322,8 @@ function Slider(width, height) {
 		} else {
 			step = self.get_step_for_position(new_x / self.step_width);
 		}
-		console.log("Step is " + step);
-		this.cursor.attr({'x': new_x});
 		g.animation.jump_to_step(step, false);
+		self.go_to_step(step);
 	}
 	this.cursor_mouseup = function(evt) {
 		/* Ends cursor sliding behavior */
@@ -351,7 +348,9 @@ function Slider(width, height) {
 			this.slider_positions.push(sum);
 			sum += anim_array[i][0];
 		}
+		this.position_to_step[sum] = i;
 		this.slider_positions.push(sum);
+		this.slider_max_position = this.slider_positions[this.slider_positions.length-1];
 		
 		// Create an object storing position and 
 
@@ -365,6 +364,10 @@ function Slider(width, height) {
 		for (;; int_pos += 1) {
 			if (int_pos in this.position_to_step) {
 				return this.position_to_step[int_pos];
+			} else if (int_pos > this.slider_max_position) {
+				console.log(this.position_to_step);
+				console.log(this.slider_max_position);
+				return this.position_to_step[this.slider_max_position];
 			}
 		}
 	}
@@ -488,8 +491,6 @@ function SetAllVerticesColor() {
 		// TODO: Is vertices always a single string?
 		g.vertices[graph_num]['g' + (graph_num+1) + '_' + vertex].attr({'fill': color});
 		/*for (var i=0; i<vertices.length; i++) {
-			console.log(vertices[i]);
-			console.log('g' + (graph_num+1) + '_' + vertices[i]);
 			g.vertices[graph_num]['g' + (graph_num+1) + '_' + vertices[i]].attr({'fill': color});
 		}
 		*/
@@ -506,7 +507,6 @@ function SetAllEdgesColor(graph_id_and_color) {
     var color = split[1];
     var graph_edges = g.edges[graph_num];
     var edge_arrows = g.edge_arrows[graph_num];
-    //console.log(graph_edges);
     for (var key in graph_edges) {
     	graph_edges[key].attr({'stroke': color}); // For some reason if we don't set stroke-width it will go to 1 
     	var arrowhead_id = 'ea' + key;
@@ -776,7 +776,6 @@ function DeleteEdge(edge_id){
 //Adds vertex of into specified graph and coordinates in graph
 function AddVertex(graph_and_coordinates, vertex_num){
 	var graph_num = graph_and_coordinates.substring(1, 2);
-	console.log(graph_and_coordinates);
 	var coords = graph_and_coordinates.split("(")[1].match(/[\d\.]+/g);
 	var x = parseFloat(coords[0]) - g.coord_changes[graph_num-1].x,
 		y = parseFloat(coords[1]) - g.coord_changes[graph_num-1].y;

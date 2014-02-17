@@ -138,6 +138,14 @@
         </svg>
         </div>
 
+        <script type="text/javascript">
+            var info_file = "infos/SuccessiveShortestPath-MCFCycle.html";
+            var g1_x_add = 101;
+            var g1_y_add = 103;
+            var g2_x_add = 101;
+            var g2_y_add = 103;
+        </script>
+
         <script type="text/javascript" src="static_scripts/util.js"></script>
         <script type="text/javascript" src="static_scripts/animation_functions.js"></script>
         <script type="text/javascript" src="static_scripts/display_functions.js"></script>
@@ -147,15 +155,15 @@
             var anim_array = Array(Array(1, SetAllVerticesColor, "g1_grey"),
 Array(1, SetAllVerticesColor, "g2_grey"),
 Array(1, SetVertexAnnotation, "g2_1", "0"),
-Array(3, SetVertexColor, "g1_1", "green"),
+Array(2, SetVertexColor, "g1_1", "green"),
 Array(1, SetVertexAnnotation, "g1_1", "1"),
-Array(3, SetVertexAnnotation, "g2_2", "0"),
-Array(3, SetVertexAnnotation, "g2_3", "0"),
-Array(3, SetVertexColor, "g1_3", "red"),
+Array(5, SetVertexAnnotation, "g2_2", "0"),
+Array(2, SetVertexAnnotation, "g2_3", "0"),
+Array(2, SetVertexColor, "g1_3", "red"),
 Array(1, SetVertexAnnotation, "g1_3", "-1"),
 Array(3, SetVertexAnnotation, "g2_4", "0"),
-Array(3, SetEdgeColor, "g2_1-2", "red"),
-Array(1, SetEdgeColor, "g2_1-4", "red"),
+Array(4, SetEdgeColor, "g2_1-2", "red"),
+Array(2, SetEdgeColor, "g2_1-4", "red"),
 Array(1, SetEdgeColor, "g2_2-3", "red"),
 Array(1, SetEdgeColor, "g2_4-3", "red"),
 Array(1, ShowActive, "l_1"),
@@ -163,7 +171,7 @@ Array(1, UpdateEdgeInfo, "g1_1-2", "Edge (1,2) - flow: 0 of 94"),
 Array(1, UpdateEdgeInfo, "g1_2-3", "Edge (2,3) - flow: 0 of 127"),
 Array(1, UpdateEdgeInfo, "g1_1-4", "Edge (1,4) - flow: 0 of 123"),
 Array(1, UpdateEdgeInfo, "g1_4-3", "Edge (4,3) - flow: 0 of 104"),
-Array(1, UpdateGraphInfo, "g2_", ""),
+Array(1, UpdateGraphInfo, "g2_()", ""),
 Array(1, UpdateEdgeInfo, "g2_1-2", "Edge (1,2) - residual capacity: 94 - cost: 2 - reduced cost: 2"),
 Array(1, UpdateEdgeInfo, "g2_2-3", "Edge (2,3) - residual capacity: 127 - cost: 2 - reduced cost: 2"),
 Array(1, UpdateEdgeInfo, "g2_4-3", "Edge (4,3) - residual capacity: 104 - cost: 1 - reduced cost: 1"),
@@ -174,8 +182,8 @@ Array(9, ShowActive, "l_2"),
 Array(9, ShowActive, "l_1"),
 Array(9, ShowActive, "l_2"),
 Array(9, ShowActive, "l_3"),
-Array(8, SetVertexColor, "g2_3", "red"),
-Array(1, ShowActive, "l_1"),
+Array(9, SetVertexColor, "g2_3", "red"),
+Array(2, ShowActive, "l_1"),
 Array(9, ShowActive, "l_2"),
 Array(9, ShowActive, "l_1"),
 Array(9, ShowActive, "l_5"),
@@ -192,7 +200,7 @@ Array(1, SetEdgeColor, "g2_1-4", "blue"),
 Array(1, ShowActive, "l_9"),
 Array(8, SetEdgeColor, "g2_4-3", "yellow"),
 Array(1, ShowActive, "l_10"),
-Array(1, UpdateGraphInfo, "g2_", "delta=1"),
+Array(1, UpdateGraphInfo, "g2_()", "delta = 1"),
 Array(8, SetVertexColor, "g2_4", "red"),
 Array(1, SetVertexColor, "g2_3", "gray"),
 Array(1, SetEdgeColor, "g1_4-3", "#9999FF"),
@@ -216,7 +224,7 @@ Array(8, SetVertexAnnotation, "g2_1", "0"),
 Array(3, SetVertexAnnotation, "g2_2", "2"),
 Array(3, SetVertexAnnotation, "g2_3", "2"),
 Array(3, SetVertexAnnotation, "g2_4", "1"),
-Array(3, SetEdgeColor, "g2_1-2", "grey"),
+Array(5, SetEdgeColor, "g2_1-2", "grey"),
 Array(1, SetEdgeColor, "g2_1-4", "grey"),
 Array(1, SetEdgeColor, "g2_2-3", "red"),
 Array(1, SetEdgeColor, "g2_3-4", "grey"),
@@ -228,7 +236,7 @@ Array(1, UpdateEdgeInfo, "g2_4-1", "Edge (4,1) - residual capacity: 1 - cost: -1
 Array(1, UpdateEdgeInfo, "g2_1-4", "Edge (1,4) - residual capacity: 122 - cost: 1 - reduced cost: 0"),
 Array(1, UpdateEdgeInfo, "g2_4-3", "Edge (4,3) - residual capacity: 103 - cost: 1 - reduced cost: 0"),
 Array(1, UpdateEdgeInfo, "g2_3-4", "Edge (3,4) - residual capacity: 1 - cost: -1 - reduced cost: 0"),
-Array(9, ShowActive, "l_5")
+Array(8, ShowActive, "l_5")
             );
             init();
         </script>

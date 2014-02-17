@@ -336,6 +336,7 @@ svg_instance = {
 }
 '''
 
+
 '''
 # Cardinality matching 
 svg_instance = {
@@ -346,11 +347,13 @@ svg_instance = {
 }
 '''
 
+'''
 svg_instance = {
     '03-MinimalSpanningTrees/MSTInteractive.alg':[
     '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
     ],
 }
+'''
 
 #------------------------------------------------------------------
 def usage():

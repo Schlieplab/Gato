@@ -562,7 +562,7 @@ function Button(click_handler, path_str, active, translate) {
 		'cursor': 'pointer'
 	};
 	this.active = active;
-	this.button = snap.path(path_str).click(click_handler);
+	this.button = snap.path(path_str).click(click_handler).touchstart(click_handler);
 	if (this.active) {
 		this.button.attr(this.active_attr);
 	} else {
