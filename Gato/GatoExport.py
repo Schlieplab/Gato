@@ -41,7 +41,7 @@ import tokenize
 import re
 import pdb
 from math import sqrt, pi, sin, cos, atan2, degrees, log10, floor
-from WebGatoJS2 import animationhead
+from WebGatoJS import animationhead
 
 #Global constants for tokenEater
 line_count = 1
@@ -66,6 +66,7 @@ num_spaces = 0.0
 algo_lines = []     # tokenEater uses this to write algorithm lines to
 prev = ["",-1]
 indent_stack = [0]
+last_line = ''
 
 def tokenEater(type, token, (srow, scol), (erow, ecol), line):
     global line_count
@@ -74,6 +75,15 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
     global num_spaces
     global algo_lines
     global indent_stack
+    global last_line
+
+    if begun_line and last_line != line:
+        # This handles the case where there is a multi-line algorithm command 
+        # that spans the lines with a backslash(look at line 10/11 of Prim)
+        line_count += 1
+        algo_lines.append('</text>\n')
+        algo_lines.append('<text blank = "false" id="%s" class="code_line" x="0" y="0" dx="%d" text-anchor="start" '\
+                       'fill="black" font-family="Courier New" font-size="14.0" font-style="normal">' % ("l_" + str(line_count), 14*indent_stack[len(indent_stack)-1]))
 
     indent_const = 22
     if (type == 0): #EOF.  Reset globals
@@ -172,6 +182,7 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
         else:
             algo_lines.append('%s' % token)
     
+    last_line = line
     if type != 0:
         prev[0] = token
         prev[1] = type
@@ -197,9 +208,6 @@ def cmd_as_javascript(cmd, idPrefix=''):
         for v in cmd.kwargs['vertices']:
             result.append(quote(v))
     
-    if 'AddVertex' in result:
-        print result
-
     return result
 
 def change_id_format(field):
@@ -236,7 +244,8 @@ def collectAnimations(histories, prefixes):
             #mergedCmds[i][j] = mergedCmds[i][j].replace(' ', '').replace('(', '').replace(')', '').replace(',', '-')
     return ["Array(" + ", ".join(cmd) + ")" for cmd in mergedCmds]
 
-def get_graph_as_svg_str(graphDisplay, file, idPrefix=''):
+
+def get_graph_as_svg_str(graphDisplay, x_add, y_add, file, idPrefix=''):
     # Write Bubbles from weighted matching
     # XXX We make use of the fact that they have a bubble tag
     # XXX What to use as the bubble ID?
@@ -267,12 +276,18 @@ def get_graph_as_svg_str(graphDisplay, file, idPrefix=''):
     ret_strs = []
 
     # x_add and y_add will be added to the position of edges in order to make the leftmost edge be positioned at 0
-    y_add = 500000
-    x_add = 500000
+    x_add, y_add = 0, 0
+    t = False
     for v, w in graphDisplay.G.Edges():
-        vx,vy,r = graphDisplay.VertexPositionAndRadius(v)
-        x_add = min(vx, x_add)
-        y_add = min(vy, y_add)
+        vx, vy, r = graphDisplay.VertexPositionAndRadius(v)
+        if not t:
+            x_add = vx
+            y_add = vy
+            #print "setting to ", vx
+            t = True
+        else:
+            x_add = min(vx, x_add)
+            y_add = min(vy, y_add)
 
     # Write Edges
     for v,w in graphDisplay.G.Edges():
@@ -391,14 +406,15 @@ def get_graph_as_svg_str(graphDisplay, file, idPrefix=''):
                                                                                            y+offset,col,size,
                                                                                            graphDisplay.G.GetLabeling(v)))
         # Write vertex annotation
-        size = r*0.9
+        #size = r*0.9
+        size = 14
         text = graphDisplay.GetVertexAnnotation(v)
         col = 'black'
         if text != "":
-            ret_strs.append('<text id="va%s" x="%s" y="%s" text-anchor="left" fill="%s" font-family="Helvetica" '\
-                       'font-size="%s" font-style="normal">%s</text>\n' % (idPrefix+str(v),x+r+1,y+r+1,col,size,text))
+            ret_strs.append('<text id="va%s" class="vertex_annotation" x="%s" y="%s" text-anchor="left" fill="%s" font-weight="bold" font-family="Helvetica" '\
+                       'font-size="%s" font-style="normal">%s</text>\n' % (idPrefix+str(v),x+r+1,y+r*1.5+2.5,col,size,text))
 
-    return ('\n'.join(ret_strs), x_add, y_add)
+    return '\n'.join(ret_strs)
     
         
 def ExportAlgoInfo(fileName, algorithm):
@@ -426,11 +442,13 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
     if showAnimation:
         try:
             if secondaryGraphDisplayAnimationHistory:
+                #x_add, y_add = compute_coordinate_shifts([graphDisplay, secondaryGraphDisplay], [algorithm.animation_history.getHistoryOne(), secondaryGraphDisplayAnimationHistory.getHistoryTwo()])
                 animation = collectAnimations([algorithm.animation_history.getHistoryOne(),
                                                secondaryGraphDisplayAnimationHistory.getHistoryTwo(),
                                                algowin.codeLineHistory],
                                               ['g1_','g2_','l_'])
             else:
+                #x_add, y_add = compute_coordinate_shifts([graphDisplay], [algorithm.animation_history.getHistoryOne()])
                 animation = collectAnimations([algorithm.animation_history.getHistoryOne(),
                                                algowin.codeLineHistory],
                                               ['g1_','l_'])
@@ -442,6 +460,27 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
             print "graphDisplay: ", graphDisplay
             return
 
+
+        def compute_coord_changes(gdisp):
+            t = False
+            x_add, y_add = 0, 0
+            for v, w in gdisp.G.Edges():
+                vx, vy, r = gdisp.VertexPositionAndRadius(v)
+                if not t:
+                    x_add = vx
+                    y_add = vy
+                    t = True
+                else:
+                    x_add = min(vx, x_add)
+                    y_add = min(vy, y_add)
+            return x_add, y_add
+
+        # Figure out how much we want to pull the graph to the left and top before we reset the graph
+        g1_x_add, g1_y_add = compute_coord_changes(graphDisplay)
+        g2_x_add, g2_y_add = 0, 0
+        if secondaryGraphDisplay:
+            g2_x_add, g2_y_add = compute_coord_changes(secondaryGraphDisplay)
+
         # Reload the graph and execute prolog so we can save the initial state to SVG
         algorithm.Start(prologOnly=True)
         file = open(fileName, 'w')
@@ -451,23 +490,28 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
         graph_type = "undirected" if graphDisplay.G.directed == 0 else "directed"
         graph_strs.append('<g id="g1" type="%s">\n' % (graph_type))
 
-        g1_str, g1_x_add, g1_y_add = get_graph_as_svg_str(graphDisplay, file, idPrefix='g1_')
+        g1_str = get_graph_as_svg_str(graphDisplay, g1_x_add, g1_y_add, file, idPrefix='g1_')
         graph_strs.append(g1_str)
         graph_strs.append('</g>\n')
-        g2_x_add, g2_y_add = 0, 0
         if secondaryGraphDisplay:
             graph_type = "undirected" if secondaryGraphDisplay.G.directed == 0 else "directed"
             graph_strs.append('<g id="g2" type="%s">\n' % (graph_type))
-            g2_str, g2_x_add, g2_y_add = get_graph_as_svg_str(secondaryGraphDisplay, file, idPrefix='g2_')
+            g2_str = get_graph_as_svg_str(secondaryGraphDisplay, g2_x_add, g2_y_add, file, idPrefix='g2_')
             graph_strs.append(g2_str)
             graph_strs.append('</g>\n')
 
         # Build the Algorithm SVG string
         source = algorithm.GetSource()
-        tokenize.tokenize(StringIO.StringIO(source).readline, tokenEater)
+        #print source.replace('\\', '\\\\')
+        tokenize.tokenize(StringIO.StringIO(source.replace('\\', '\\\\')).readline, tokenEater)
         algowin.CommitStop()
 
         # Merge the animation into the HTML
+        print {'g1_x_add': g1_x_add,
+            'g1_y_add': g1_y_add,
+            'g2_x_add': g2_x_add,
+            'g2_y_add': g2_y_add
+        }
         str_vars = {
             'info_file': 'infos/' + fileName[fileName.rindex('/') + 1:], 
             'animation': ',\n'.join(animation), 

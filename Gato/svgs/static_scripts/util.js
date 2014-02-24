@@ -1,3 +1,68 @@
+function fix_coord_changes() {
+    // 
+    for (var g_num=0; g_num<g.num_graphs; g_num++) {
+        var coords = g.coord_changes[g_num];
+        if (g.min_x[g_num] !== null) {
+            coords.x = Math.max(coords.x, g.min_x[g_num]);
+        }
+        if (g.min_y[g_num] !== null) {
+            coords.y = Math.max(coords.y, g.min_y[g_num]);
+        }
+    }
+}
+
+function record_max_graph_size(g_num) {
+    // Checks to see if any of the graphs are bigger then they were before
+    // If they are at a current max size we record that
+    // We use this info to set the size of the graph frame to the largest size of the graph
+    //
+    // Also finds the minimum x and y of each graph and sets the g.coord_changes to that
+    for (var i=0; i<g.num_graphs; i++) {
+        // Get the max sizes
+        var bbox = g.graphs[i].getBBox();
+        var width = bbox.width;
+        var height = bbox.height;
+        var max_sizes = g.max_graph_sizes[i];
+        if (width > max_sizes.width) {
+            max_sizes.width = width;
+        }
+        if (height > max_sizes.height) {
+            max_sizes.height = height;
+        }
+    }
+}
+
+
+function remove_trailing_whitespace_lines() {
+    // Find the last line that has content 
+    var last_content = 0;
+    for (var key in g.code_lines) {
+        var line = g.code_lines[key];
+        var line_num = parseInt(key.split('_')[1]) ;
+        if (line['whitespace'] !== true && line_num > last_content) {
+            last_content = line_num;
+        }
+    }
+
+    // Delete any lines that come after the last line with content
+    for (var key in g.code_lines) {
+        var line = g.code_lines[key];
+        var line_num = parseInt(key.split('_')[1]) ;
+        if (line_num > last_content) {
+            delete g.code_lines[key];
+            line.remove();
+        }
+    }
+}
+
+function get_evt_target(evt) {
+    var target = evt.srcElement;
+    if (!target) {
+        target = evt.target;
+    }
+    return target;
+}
+
 function remove_all_scheduled_vertex_blinks() {
     for (var id in g.blinking_vertices) {
         remove_scheduled_vertex_blinks(id);

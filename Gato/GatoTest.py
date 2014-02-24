@@ -229,131 +229,164 @@ instance = {
     ]
     }
 
+# These are the algorithm/graph combos that are used to generate their 
+# Webgato counterparts.  Each algorithm is marked with a "Good" or "Bad"
+# to signify whether it works or not.  Working on getting rid of the "Bad"s
 svg_instance = {
+    # Good
     '02-GraphsNetworks/BFS-components.alg':[
-    '02-GraphsNetworks/BFS.cat', '02-GraphsNetworks/3Components.cat'
+        '02-GraphsNetworks/BFS.cat', '02-GraphsNetworks/3Components.cat'
     ],
+
+    # Good
     '02-GraphsNetworks/BFS.alg':[
-   '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
-   ],
-    '02-GraphsNetworks/BFStoDFS.alg':[
-    '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
-   ],
-    '02-GraphsNetworks/DFS-Recursive.alg':[
-   '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
-   ],
-    '02-GraphsNetworks/DFS.alg':[
-   '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
+        '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
     ],
+
+    # Good
+    '02-GraphsNetworks/BFStoDFS.alg':[
+        '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
+    ],
+
+    # Good
+    '02-GraphsNetworks/DFS-Recursive.alg':[
+        '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
+    ],
+
+    # Good
+    '02-GraphsNetworks/DFS.alg':[
+        '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
+    ],
+
+    # Good
     '03-MinimalSpanningTrees/Kruskal.alg':[
     '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
     ],
+
+    # Good
     '03-MinimalSpanningTrees/KruskalFindCircuit.alg':[
     '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
-   ],
-   '03-MinimalSpanningTrees/KruskalInefficient.alg':[
+    ],
+
+    # Good
+    '03-MinimalSpanningTrees/KruskalInefficient.alg':[
     '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
     ],
+
+    # Good
     '03-MinimalSpanningTrees/KruskalTrace.alg':[
     '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
     ],
+
+    # Good
     '03-MinimalSpanningTrees/MSTInteractive.alg':[
     '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
     ],
-       #'03-MinimalSpanningTrees/MatroidDualKruskal.alg':[
-       #'03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
-       #    ],
+
+    # Good
+    '03-MinimalSpanningTrees/MatroidDualKruskal.alg':[
+       '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
+    ],
+    
+    # Good
     '03-MinimalSpanningTrees/Prim.alg':[
-   '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
+        '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
     ],
-   '03-MinimalSpanningTrees/Prim.alg':[
-    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
-    ],
-#'04-LPDuality/PrimalDualKruskal.alg':[
-#   '04-LPDuality/PD_Kruskal5.cat'
-       #   ],
+
+    #
+    # BAD: Doesn't work in regular Gato.  Needs the expanding vertex command
+    #
+    #'04-LPDuality/PrimalDualKruskal.alg':[
+    #   '04-LPDuality/PD_Kruskal5.cat'
+    #],
+
+    # Good
     '05-ShortestPaths/BellmanFord.alg':[
-    '05-ShortestPaths/BellmanFordWC.cat'  #,'05-ShortestPaths/NegCircuit.cat'
+        '05-ShortestPaths/BellmanFordWC.cat'  #,'05-ShortestPaths/NegCircuit.cat'(BellmanFord doesn't finish on negcircuit)
     ],
+
+    # Good
     '05-ShortestPaths/Dijkstra.alg':[
-    '05-ShortestPaths/ShortestPathsUndirected06.cat'
+        '05-ShortestPaths/ShortestPathsUndirected06.cat'
     ],
+
+    # Good
     '05-ShortestPaths/DijkstraPQ.alg':[
-    '05-ShortestPaths/ShortestPathsUndirected06.cat'
+        '05-ShortestPaths/ShortestPathsUndirected06.cat'
     ],
+
+    # Good
     '05-ShortestPaths/FindPath.alg':[
-    '05-ShortestPaths/ShortestPathsUndirected06.cat'
-   ],
+        '05-ShortestPaths/ShortestPathsUndirected06.cat'
+    ],
+
+    # Good
     '05-ShortestPaths/FindPathEuclid.alg':[
-    '05-ShortestPaths/ShortestPathsUndirected06.cat'
+        '05-ShortestPaths/ShortestPathsUndirected06.cat'
     ],
+
+    # Good
     '05-ShortestPaths/NegativeCircuits.alg':[
-    #'05-ShortestPaths/NegCircuit2.cat'
+        '05-ShortestPaths/NegCircuit2.cat'
     ],
+
+    # Good -- Could use highlighting path in javascript
     '05-ShortestPaths/TwoSources.alg':[
-    '05-ShortestPaths/ShortestPathsUndirected06.cat'
+        '05-ShortestPaths/ShortestPathsUndirected06.cat'
     ],
+
+    # Good
     '06-MaximalFlows/FordFulkerson.alg':[
-    '06-MaximalFlows/FordFulkerson6.cat','06-MaximalFlows/FordFulkersonBad.cat'
+        '06-MaximalFlows/FordFulkerson6.cat','06-MaximalFlows/FordFulkersonBad.cat'
     ],
-    #'06-MaximalFlows/PreflowPush.alg':[
-    #'06-MaximalFlows/PreflowPush5.cat', '06-MaximalFlows/PreflowPush6.cat'
-    #],
-    #'07-MinimumCostFlows/CostScaling.alg':[
-    #'07-MinimumCostFlows/MCF4to4A.cat', '07-MinimumCostFlows/MCFCycle.cat'
-    #],
-    '07-MinimumCostFlows/NegativeCircuit.alg':[
+
+    # Good
+    '06-MaximalFlows/PreflowPush.alg':[
+        '06-MaximalFlows/PreflowPush5.cat', '06-MaximalFlows/PreflowPush6.cat'
+    ],
+
+    # Good for smaller graph.  Breaks on larger one due to having too many arguments in anim_array Array() function call
+    '07-MinimumCostFlows/CostScaling.alg':[
+        '07-MinimumCostFlows/MCFCycle.cat', #'07-MinimumCostFlows/MCF4to4A.cat'
+    ],
+
+    # BAD
+    #
+    #'07-MinimumCostFlows/NegativeCircuit.alg':[
     #'07-MinimumCostFlows/MCF4to4A.cat',
-    '05-ShortestPaths/NegCircuit2.cat',
-    '07-MinimumCostFlows/MCFCycle.cat'
-    ],
+    #'05-ShortestPaths/NegCircuit2.cat',
+    #'07-MinimumCostFlows/MCFCycle.cat'
+    #],
+
+    # Good
     '07-MinimumCostFlows/SuccessiveShortestPath.alg':[
-    '07-MinimumCostFlows/MCF4to1A.cat', '07-MinimumCostFlows/MCFCycle.cat'
+        '07-MinimumCostFlows/MCF4to1A.cat', '07-MinimumCostFlows/MCFCycle.cat'
     ],
+
+    # Good
     '08-Matching/Bipartite.alg':[
-    '08-Matching/Bi003.cat', '08-Matching/Bi006.cat', '08-Matching/Bi008.cat',
-    '08-Matching/Bi009.cat', '08-Matching/Bi010.cat'
+        '08-Matching/Bi003.cat', '08-Matching/Bi006.cat', '08-Matching/Bi008.cat',
+        '08-Matching/Bi009.cat', '08-Matching/Bi010.cat'
     ],
+
+    # Good
     '08-Matching/CardinalityMatching.alg':[
-    '08-Matching/Edmonds1.cat', '08-Matching/Edmonds3.cat',
-    '08-Matching/Edmonds6.cat'],
-    '09-WeightedMatching/WeightedMatching.alg':[
-       '09-WeightedMatching/bipmatch.cat', '09-WeightedMatching/var2zero.cat',
-       '09-WeightedMatching/twotriangles.cat'
-       ]
-    }
+        '08-Matching/Edmonds1.cat', '08-Matching/Edmonds3.cat', '08-Matching/Edmonds6.cat'
+    ],
+    
+    # BAD
+    #'09-WeightedMatching/WeightedMatching.alg':[
+    #   '09-WeightedMatching/bipmatch.cat', '09-WeightedMatching/var2zero.cat',
+    #   '09-WeightedMatching/twotriangles.cat'
+    #]
+}
 
-
-# BFS and Ford Fulkerson
-'''
 svg_instance = {
     '02-GraphsNetworks/BFS.alg':[
-    '02-GraphsNetworks/BFS.cat'
-   ],
-   '06-MaximalFlows/FordFulkerson.alg':[
-    '06-MaximalFlows/FordFulkerson6.cat','06-MaximalFlows/FordFulkersonBad.cat'
+        '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
     ],
 }
-'''
 
-
-'''
-# Cardinality matching 
-svg_instance = {
-    '08-Matching/CardinalityMatching.alg':[
-    '08-Matching/Edmonds1.cat', '08-Matching/Edmonds3.cat',
-    '08-Matching/Edmonds6.cat'
-    ],
-}
-'''
-
-'''
-svg_instance = {
-    '03-MinimalSpanningTrees/MSTInteractive.alg':[
-    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
-    ],
-}
-'''
 
 #------------------------------------------------------------------
 def usage():
@@ -426,16 +459,14 @@ if __name__ == '__main__':
         testPath = "../CATBox/"
 
 
-    app = AlgoWin()
+    
     # To speed up running of tests
     g.BlinkRepeat = 1 
     g.BlinkRate = 2
     
     g.Interactive = 0 # Same effect as hitting continue for interactive lines
     log = logging.getLogger("Gato")
-
-    if debug:
-        app.algorithm.logAnimator = 2
+    
     if verbose:
         if sys.version_info[0:2] < (2,4):
             log.addHandler(logging.StreamHandler(sys.stdout))
@@ -445,6 +476,7 @@ if __name__ == '__main__':
                                 stream=sys.stdout,
                                 format='%(name)s %(levelname)s %(message)s')
     else:
+        app = AlgoWin()
         if app.windowingsystem == 'win32':
 
            class NullHandler(logging.Handler):
@@ -459,7 +491,11 @@ if __name__ == '__main__':
                                 filemode='w',
                                     format='%(name)s %(levelname)s %(message)s')        
     for case in tests:
+        app = AlgoWin()
+        if debug:
+            app.algorithm.logAnimator = 2
         log.info("=== TEST === "+case[0]+" === "+case[1]+" ===")
+        print "=== TEST === "+case[0]+" === "+case[1]+" ==="
         app.OpenAlgorithm(testPath + case[0])
         g.Interactive = 0
         app.algorithm.ClearBreakpoints()

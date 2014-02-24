@@ -5,7 +5,8 @@ function Animation() {
 		} else if (anim.length === 4) {
 			anim[1](anim[2], anim[3]);
 		} else {
-			anim[1](anim.slice(2));
+			anim[1].apply(this, anim.slice(2));
+			//anim[1](anim.slice(2));
 		}
 	}
 	this.animator = function() {
@@ -37,7 +38,7 @@ function Animation() {
 			var self = this;
 			this.scheduled_animation = setTimeout(function() {self.animator()}, anim[0]*this.step_ms);
 		}
-	}
+	};
 
 	/* Animator that executes animation commands until 
 	the given index with no timeout in between commands */
@@ -45,8 +46,21 @@ function Animation() {
 		for (var i=this.step_num; i<stop_at_ind; i++) {
 			this.do_command(anim_array[i]);
 			this.step_num ++;
+			g.slider.go_to_step(this.step_num);
 		}
-	}
+	};
+
+	this.animate_til_next_line = function() {
+		for (var i=this.step_num; i<anim_array.length; i++) {
+			var anim = anim_array[i];
+			this.do_command(anim);
+			this.step_num++;
+			g.slider.go_to_step(this.step_num);
+			if (anim[1] === ShowActive) {
+				break;
+			}
+		}
+	};
 
 	this.start = function() {
 		if (this.state === 'stopped' || this.state === 'done') {
@@ -59,7 +73,7 @@ function Animation() {
 			this.state = 'animating';
 			this.animator();
 		}
-	}
+	};
 
 	this.stop = function() {
 		if (this.state === 'animating' || this.state === 'stopped' || this.state === 'stepping') {
@@ -69,7 +83,7 @@ function Animation() {
 			g.slider.stop_animating();
 			this.jump_to_step(0);
 		}
-	}
+	};
 	
 	this.continue = function() {
 		if (this.state !== 'stepping' && this.state !== 'waiting') {
@@ -82,18 +96,18 @@ function Animation() {
 		}
 		this.state = 'animating';
 		this.animator();
-	}
+	};
 
 	this.step = function() {
 		if (this.state === 'animating' || this.state === 'stepping' || this.state === 'waiting') {
 			this.state = 'stepping';
 			clearTimeout(this.scheduled_animation);
-			this.do_command(anim_array[this.step_num]);
-			this.step_num ++;
+			this.animate_til_next_line();
 		}
-	}
+	};
 
 	this.jump_to_step = function(n, move_slider) {
+		this.jumping = true;
 		var state_ind = parseInt(n/this.state_interval);
 		var state = this.graph_states[state_ind];
 
@@ -187,6 +201,7 @@ function Animation() {
 		if (move_slider !== false) {
 			g.slider.go_to_step(n);
 		}
+		this.jumping = false;
 	}
 
 	/*
@@ -253,6 +268,10 @@ function Animation() {
 				continue;
 			}
 			this.do_command(anim_array[i]);
+			if (anim_array[i][1] === AddVertex || anim_array[i][1] === AddEdge) {
+				// If the graph has potentially changed sizes then record the size to use for the frame
+				record_max_graph_size(parseInt(anim_array[i][2].substring(1,2))-1);
+			}
 		}
 
 		this.graph_states = states;
@@ -275,6 +294,8 @@ function Animation() {
 		// How many steps we take between each saved graph state
 		this.state_interval = 200; 
 
+		this.jumping = false;
+
 		this.construct_graph_states();
 	}
 	this.initialize_variables();
@@ -286,12 +307,19 @@ function Slider(width, height) {
 			mouse cursor on the track, and jumps to the corresponding step in animation
 		*/
 		var self = g.slider;
-		var new_x = evt.x - self.cursor.transform().globalMatrix.e - parseInt(self.cursor.attr('width'))/2;
+		var new_x = evt.clientX - self.cursor.transform().globalMatrix.e - parseInt(self.cursor.attr('width'))/2;
+		/*console.log(evt);
+		console.log(evt.x);
+		console.log(self.cursor.transform().globalMatrix.e);
+		console.log(self.cursor.attr('width')/2);
+		*/
 		if (new_x < 0) {
 			new_x = 0;
 		} else if (new_x > self.cursor_max_x) {
 			new_x = self.cursor_max_x;
 		}
+		console.log(new_x);
+
 		self.cursor.attr({'x': new_x});
 		var step = self.get_step_for_position(new_x / self.step_width);
 		g.animation.jump_to_step(step, false);
@@ -302,7 +330,7 @@ function Slider(width, height) {
 		*/
 		g.slider.sliding = true;
 		g.slider.start_cursor_x = parseInt(g.slider.cursor.attr('x'));
-		g.slider.start_mouse_x = parseInt(evt.x);
+		g.slider.start_mouse_x = parseInt(evt.clientX);
 	}
 	this.cursor_drag = function(evt) {
 		this.mouseup(evt);
@@ -314,7 +342,7 @@ function Slider(width, height) {
 		*/
 		var self = g.slider;
 		var step = 0;
-		var new_x = this.start_cursor_x + parseInt(evt.x) - self.start_mouse_x;
+		var new_x = this.start_cursor_x + parseInt(evt.clientX) - self.start_mouse_x;
 		if (new_x > this.cursor_max_x) {
 			new_x = this.cursor_max_x;
 			step = anim_array.length - 1;
@@ -431,7 +459,10 @@ function SetVertexColor(vertex_id, color) {
 function UpdateEdgeInfo(edge_id, info) {
 	var graph_num = parseInt(edge_id.substring(1,2));
 	var tooltip_id = edge_id + '_tooltip';
-	var tooltip = g.tooltip_objects[edge_id + '_tooltip'].change_text(info);
+	var tooltip = g.tooltip_objects[edge_id + '_tooltip'];
+	if (tooltip != null) {
+		tooltip.change_text(info);
+	}
 }
 
 function UpdateGraphInfo(graph_id, info) {
@@ -479,23 +510,19 @@ function SetAllVerticesColor() {
 
 	var graph_id_and_color = arguments[0];
 	var vertex = arguments[1];
-	// TODO: Modify this to use variable length args instead of vertices 
 	var split = graph_id_and_color.split('_');
-	var graph_num = graph_num_from_id(graph_id_and_color);
+	var g_num = parseInt(graph_id_and_color.substring(1, 2));
 	var graph_id = split[0];
 	var color = split[1];
 
-	if (vertex == null) {
-		for (var key in g.vertices[graph_num]) {
-			g.vertices[graph_num][key].attr({'fill': color});
+	if (!vertex) {
+		for (var key in g.vertices[g_num-1]) {
+			g.vertices[g_num-1][key].attr({'fill': color});
 		}
 	} else {
-		// TODO: Is vertices always a single string?
-		g.vertices[graph_num]['g' + (graph_num+1) + '_' + vertex].attr({'fill': color});
-		/*for (var i=0; i<vertices.length; i++) {
-			g.vertices[graph_num]['g' + (graph_num+1) + '_' + vertices[i]].attr({'fill': color});
+		for (var i=1; i<arguments.length; i++) {
+			g.vertices[g_num-1]['g' + (g_num) + '_' + arguments[i]].attr({'fill': color});
 		}
-		*/
 	}
 }
 
@@ -521,6 +548,9 @@ function SetAllEdgesColor(graph_id_and_color) {
 
 /** Blinks the given vertex between black and current color 3 times */
 function BlinkVertex(vertex_id, color) {
+	if (g.animation.jumping) {
+		return;
+	}
 	/* TODO: Add timeout array in here */
 	var vertex = g.vertices[graph_num_from_id(vertex_id)][vertex_id];
     var curr_color = vertex.attr('fill');
@@ -544,6 +574,9 @@ function BlinkVertex(vertex_id, color) {
 
 /** Blinks the given edge between black and current color 3 times */
 function BlinkEdge(edge_id, color){
+	if (g.animation.jumping) {
+		return;
+	}
 	var edge = g.edges[graph_num_from_id(edge_id)][edge_id];
     var curr_color = edge.attr('stroke');
     if (color === 'None' || !color) {
@@ -582,15 +615,19 @@ function SetVertexFrameWidth(vertex_id, val) {
 
 // Sets annotation of vertex v to annotation.  Annotation's color is specified
 function SetVertexAnnotation(vertex_id, annotation, color) {
+	if (annotation === "None") {
+		return;
+	}
 	var g_num = vertex_id.substring(1, 2);
 	var vertex = g.vertices[g_num-1][vertex_id];
 	if (!color) {
 		color = 'black';
 	}
 	var annotation_id = 'va' + vertex_id;
-	var text = snap.text(parseInt(vertex.attr('cx')) + g.vertex_r*1.5, parseInt(vertex.attr('cy')) + g.vertex_r*1.5	 + 4.62, annotation).attr({
+	delete_vertex_annotation(annotation_id);
+	var text = snap.text(parseInt(vertex.attr('cx')) + g.vertex_r+1, parseInt(vertex.attr('cy')) + g.vertex_r*1.5 + 2.62, annotation).attr({
 		'id': annotation_id,
-		'class': 'annotations',
+		'class': 'vertex_annotation',
 		'fill': 'black',
 		'text-anchor': 'middle',
 		'font-weight': 'bold',
@@ -603,9 +640,11 @@ function SetVertexAnnotation(vertex_id, annotation, color) {
 
 function delete_vertex_annotation(annotation_id) {
 	var g_num = annotation_id.substring(3, 4);
-	var annot = g.annotations[g_num-1][annotation_id];
-	annot.remove()
-	delete g.annotations[g_num-1][annotation_id];
+	if (annotation_id in g.annotations[g_num-1]) {
+		var annot = g.annotations[g_num-1][annotation_id];
+		annot.remove()
+		delete g.annotations[g_num-1][annotation_id];
+	}
 }
 
 
@@ -837,5 +876,6 @@ function DeleteVertex(vertex_id) {
 	if (vertex_label) {
 		vertex_label.remove()
 	}
+	delete_vertex_annotation('va' + vertex_id);
 	delete g.vertices[g_num-1][vertex_id];
 }

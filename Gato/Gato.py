@@ -868,7 +868,7 @@ class AlgoWin(Frame):
             
             # We never destroy the secondary graph display (and create it from the beginning
             # for the paned viewed. graphDisplays is set from prolog
-            if self.algorithm.graphDisplays == None or self.algorithm.graphDisplays == 1:
+            if not self.secondaryGraphDisplay or self.algorithm.graphDisplays == None or self.algorithm.graphDisplays == 1:
                 GatoExport.ExportSVG(fileName,
                                      self,
                                      self.algorithm,
@@ -877,7 +877,6 @@ class AlgoWin(Frame):
                                      None,
                                      showAnimation=True)
             else:
-                print self.secondaryGraphDisplay.animator.__class__
                 GatoExport.ExportSVG(fileName,
                                      self,
                                      self.algorithm,

@@ -29,7 +29,7 @@ function Scaler() {
 		
 		var bbox = g.master_graph_container.getBBox();
 		g.scaler.start_width = bbox.width * g.scaler.initial_scale;
-		g.scaler.start_mouse = {'x': parseInt(evt.x), 'y': parseInt(evt.y)};
+		g.scaler.start_mouse = {'x': parseInt(evt.clientX), 'y': parseInt(evt.clientY)};
 	};
 	this.drag = function(evt) {
 		this.mouseup(evt);
@@ -59,7 +59,7 @@ function Scaler() {
 		}
 	};
 	this.do_scale = function(evt) {
-		var dx = parseInt(evt.x) - g.scaler.start_mouse.x;
+		var dx = parseInt(evt.clientX) - g.scaler.start_mouse.x;
 		var new_width = g.scaler.start_width + dx;
 		var scale_factor = new_width / g.initial_graph_width;
 
@@ -159,18 +159,18 @@ function ToolTip(edge) {
 	// Set the edge mouseover
 	edge.hover(
 		function (evt) {
-			var edge_id = get_id(evt.srcElement);
+			var edge_id = get_id(get_evt_target(evt));
 			var tooltip = g.tooltip_objects[edge_id + '_tooltip'];
 			tooltip.mouseover(evt);
 		},
 		function (evt) {
-			var edge_id = get_id(evt.srcElement);
+			var edge_id = get_id(get_evt_target(evt));
 			var tooltip = g.tooltip_objects[edge_id + '_tooltip'];
 			tooltip.mouseout(evt);
 		}
 	);
 	edge.mousemove(function (evt) {
-		var edge_id = get_id(evt.srcElement);
+		var edge_id = get_id(get_evt_target(evt));
 		var tooltip = g.tooltip_objects[edge_id + '_tooltip'];
 		tooltip.mousemove(evt);
 	});
@@ -202,15 +202,6 @@ function add_tooltip(edge) {
 }
 
 function build_graph_info(group, width, height, g_num) {
-	/*var rect = snap.rect(0, 0, width, height).attr({
-		'fill': '#fff',
-		'stroke': '#ccc',
-		'stroke-width': g.graph_frame_stroke_width,
-		strokeDasharray: '5,2',
-	});
-	group.append(rect);
-	*/
-
 	var text_elem = snap.text(5, 0, 'No Info').attr({'id': 'g' + g_num + '_info'});		// Set this to "No Info"(or any text) at first so the bbox has a height
 	text_elem.attr({'y': text_elem.getBBox().height-1});
 	text_elem.node.innerHTML = '';
@@ -218,28 +209,53 @@ function build_graph_info(group, width, height, g_num) {
 	return text_elem;
 }
 
-function add_graph_frame() {
+function add_graph_info() {
+	// Padding on each edge of graph
 	var pad = g.vertex_r + g.frame_padding;
-	g.graph_infos = [];
-	for (var i=0; i<g.num_graphs; i++) {
-		g.graph_containers[i].append(g.graphs[i]);
-		g.graph_containers[i].append(g.graph_info_containers[i]);
-		
-		var graph_bbox = g.graphs[i].getBBox();
-		graph_info_text_elem = build_graph_info(g.graph_info_containers[i], graph_bbox.width/3, 20, i+1);
-		g.graph_infos.push(graph_info_text_elem);
-		g.graph_info_height = 20; // put me in settings
-		var y_trans = graph_bbox.height + pad;
-		g.graph_info_containers[i].transform('t0,' + y_trans);
 
-		var frame = snap.rect(0, 0, graph_bbox.width+pad, graph_bbox.height+pad+g.graph_info_height).attr({
+	for (var g_num=0; g_num<g.num_graphs; g_num++) {
+		var graph_bbox = g.graphs[g_num].getBBox();
+		// Add the graph and graph info to the graph container
+		g.graph_containers[g_num].append(g.graph_info_containers[g_num]);
+		// Set up the graph info
+		graph_info_text_elem = build_graph_info(g.graph_info_containers[g_num], g_num+1);
+		g.graph_infos.push(graph_info_text_elem);
+	}
+}
+
+function add_graph_frame() {
+	// Padding on each edge of graph
+	var pad = g.vertex_r + g.frame_padding;
+
+	for (var g_num=0; g_num<g.num_graphs; g_num++) {
+		var graph_bbox = g.graphs[g_num].getBBox();
+		
+		// Add the graph and graph info to the graph container
+		g.graph_containers[g_num].prepend(g.graphs[g_num]);
+		
+		// reposition the graph info
+		var y_trans = graph_bbox.height + pad;
+		g.graph_info_containers[g_num].transform('t0,' + y_trans);
+
+		// Create the frame
+		var max_size = g.max_graph_sizes[g_num];
+		var frame = null;
+		console.log(max_size);
+		//  TODO: THIS IS MESSY.  Max size should always be set here
+		if (max_size.width && max_size.height) {
+			// If we added any vertices or edges then max_size will be set and we should use that
+			console.log('setting the frame stuffs')
+			frame = snap.rect(0, 0, max_size.width+pad, max_size.height+pad+g.graph_info_height);
+		} else {
+			frame = snap.rect(0, 0, graph_bbox.width+pad, graph_bbox.height+pad+g.graph_info_height);
+		}
+		frame.attr({
 			fill: '#fff',
 			stroke: '#ccc',
 			strokeWidth: g.graph_frame_stroke_width,
 			strokeDasharray: '5,2',
 		});
-		
-		g.graph_containers[i].prepend(frame);
+		g.graph_containers[g_num].prepend(frame);
 	}
 }
 
@@ -273,7 +289,8 @@ function toggle_control_panel() {
 }
 
 function click_speed_button(evt) {
-	var id = get_id(evt.srcElement);
+	var target = get_evt_target(evt);
+	var id = get_id(target);
 	var label = id.split('_')[0];
 	var speed_controls = g.control_panel.speed_controls;
 	var buttons = speed_controls.buttons;
@@ -629,12 +646,14 @@ function CodeBox() {
 		this.highlight_box.attr({'opacity': 0});
 	}
 	this.add_line_numbers = function() {
+		var sub = 0;
 		for (var key in g.code_lines) {
 			var line = g.code_lines[key];
 			if (line['whitespace'] === true) {
+				sub ++;
 				continue;
 			}
-			var line_num = key.split('_')[1];
+			var line_num = parseInt(key.split('_')[1]) - sub;
 			var x = this.padding;
 			var y = g.code_lines[key].attr('y');
 			var elem = snap.text(x, y, line_num).attr({
@@ -683,7 +702,10 @@ function CodeBox() {
     	var new_width = this.width * this.scale_factor;
     	bbox = this.g.getBBox();
     	if (new_width < bbox.width) {
-    		this.frame.attr({'width': parseInt(this.frame.attr('width')) + (bbox.width - new_width) + this.padding})
+    		var width_diff = bbox.width - new_width + this.padding;
+    		this.frame.attr({'width': parseInt(this.frame.attr('width')) + width_diff});
+    		var old_w = parseInt(this.highlight_box.attr('width'));
+    		this.highlight_box.attr({'width': old_w + width_diff});
     	}
 	};
 

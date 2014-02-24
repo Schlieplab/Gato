@@ -13,6 +13,7 @@ function add_snap_vars() {
         highlight_boxes: [{}, {}],
         annotations: [{}, {}],
     });
+
     var vertices = {}, edges = {}, edge_arrows = {}, code_lines = {};
     for (var graph_num=0; graph_num<g.num_graphs; graph_num++) {
         
@@ -28,6 +29,10 @@ function add_snap_vars() {
         for (var i=0; i<ea.length; i++) {
             g.edge_arrows[graph_num][ea[i].attr('id')] = ea[i];
         }
+        var va = snap.selectAll('g#g' + (graph_num+1) + ' .vertex_annotation');
+        for (var i=0; i<va.length; i++) {
+            g.annotations[graph_num][va[i].attr('id')] = va[i];
+        }
     }
     var lines = snap.selectAll('.code_line');
     g.code_lines = {};
@@ -42,6 +47,8 @@ function add_snap_vars() {
     if (g2 != null) {
         g['graphs'].push(g2);
     }
+
+    g.graph_infos = [];
 }
 
 function extend(a, b) {
@@ -70,15 +77,27 @@ function fill_global() {
         graph_frame_stroke_width: 1,
         edge_width: 4,
         edge_color: '#EEEEEE',
+        graph_info_height: 20,
+
 
         // General
         arrow_id_prefix: 'ea',
         blinking_edges: {},
         blinking_vertices: {},
+
+        // We set the graph frame to the largest size the graph will attain 
+        max_graph_sizes: [
+            {'width': null, 'height': null},
+            {'width': null, 'height': null}
+        ],
+
         coord_changes: [
             {'x': g1_x_add, 'y': g1_y_add},
             {'x': g2_x_add, 'y': g2_y_add}
-        ]
+        ],
+        // These are used for double checking the coord_changes
+        min_y: [null, null],
+        min_x: [null, null],
     });
     if (snap.select('g#g2') != null) {
         g.num_graphs = 2;
@@ -134,17 +153,20 @@ function init() {
 
     // Set globals and size of base_container
     fill_global();
+    remove_trailing_whitespace_lines();
     document.getElementById('base_container').setAttribute('style', 'width: ' + g.cont_width + '; height: ' + g.cont_height);
     document.getElementById('svg').setAttribute('style', 'width: ' + g.cont_width + 'px; height: ' + g.cont_height + 'px');
     // Initialize graphical elements
     g.playback_bar = new PlaybackBar();
     g.code_box = new CodeBox();
+    add_tooltips();
+    add_graph_info();
+    g.animation = new Animation();
+    fix_coord_changes();    // Rename this
     add_graph_frame();
     position_graph();
     add_scaler();
-    add_tooltips();
     save_initial_graph_dimensions();
 
     // Build the GraphState array
-    g.animation = new Animation();
 }
