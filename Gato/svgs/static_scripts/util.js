@@ -1,3 +1,38 @@
+function switch_edge_vertices(edge_id) {
+    // Switches the edge_id vertices.  ie. g1_(5, 4) in --> g1_(4, 5) out
+    var re = /\d+/g;
+    var matches = edge_id.match(re);
+    return "g" + matches[0] + "_" + matches[2] + "-" + matches[1];
+}
+
+function get_edge_vertices(edge_id) {
+    /* Returns the two vertices an edge is connecting.  If edge_id is malformed returns null */
+    var re = /\d+/g;
+    var matches = edge_id.match(re);
+    if (matches) {
+        return matches.slice(1);
+    }
+    return null;
+}
+
+function get_default_edge_info(edge_id) {
+    var graph_index = parseInt(edge_id.substring(1,2))-1;
+    var init_infos = g.init_edge_infos[graph_index];
+    var info = init_infos[edge_id];
+    if (!info) {
+        info = init_infos[switch_edge_vertices(edge_id)];
+    }
+    if (!info) {
+        var vertices = get_edge_vertices(edge_id);
+        if (!vertices) {
+            info = '';
+        } else {
+            info = 'Edge (' + vertices[0] + ', ' + vertices[1] + ')';
+        }
+    }
+    return info    
+}
+
 function fix_coord_changes() {
     // 
     for (var g_num=0; g_num<g.num_graphs; g_num++) {
@@ -14,7 +49,7 @@ function fix_coord_changes() {
 function record_max_graph_size(g_num) {
     // Checks to see if any of the graphs are bigger then they were before
     // If they are at a current max size we record that
-    // We use this info to set the size of the graph frame to the largest size of the graph
+    // We use this info to set the size of the graph frame to the largest size of the graphsaph
     //
     // Also finds the minimum x and y of each graph and sets the g.coord_changes to that
     for (var i=0; i<g.num_graphs; i++) {

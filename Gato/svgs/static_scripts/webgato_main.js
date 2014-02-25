@@ -84,6 +84,7 @@ function fill_global() {
         arrow_id_prefix: 'ea',
         blinking_edges: {},
         blinking_vertices: {},
+        init_edge_infos: [g1_init_edge_infos, g2_init_edge_infos],
 
         // We set the graph frame to the largest size the graph will attain 
         max_graph_sizes: [

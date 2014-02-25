@@ -869,22 +869,12 @@ class AlgoWin(Frame):
             # We never destroy the secondary graph display (and create it from the beginning
             # for the paned viewed. graphDisplays is set from prolog
             if not self.secondaryGraphDisplay or self.algorithm.graphDisplays == None or self.algorithm.graphDisplays == 1:
-                GatoExport.ExportSVG(fileName,
-                                     self,
-                                     self.algorithm,
-                                     self.graphDisplay,
-                                     None,
-                                     None,
-                                     showAnimation=True)
+                GatoExport.ExportSVG(fileName, self, self.algorithm, self.graphDisplay, None, None, showAnimation=True, init_edge_infos=[self.algorithm.DB.init_etext])
             else:
-                GatoExport.ExportSVG(fileName,
-                                     self,
-                                     self.algorithm,
-                                     self.graphDisplay,
-                                     self.secondaryGraphDisplay.animator, #XXX potential bug
-                                     # self.secondaryGraphDisplay is AnimationHistory(sec...),
-                                     self.secondaryGraphDisplay,
-                                     showAnimation=True)
+                GatoExport.ExportSVG(fileName, self, self.algorithm, self.graphDisplay,
+                    self.secondaryGraphDisplay.animator, #XXX potential bug: self.secondaryGraphDisplay is AnimationHistory(sec...),
+                    self.secondaryGraphDisplay, showAnimation=True,
+                    init_edge_infos=[self.algorithm.DB.init_etext, self.algorithm.DB.init_etext2])
             
     def Quit(self,event=None):
         if self.algorithmIsRunning == 1:
@@ -1445,36 +1435,34 @@ class AlgorithmDebugger(bdb.Bdb):
         #log.debug("exc_type_name: %s" repr.repr(exc_value))
         self.interaction(frame, exc_traceback)
       
+    def add_info_commands_to_history(self):
+        ''' Inspects the graphInformer of each graph display to look for changes to 
+            the edge, graph, and vertex info.  If there are changes then we execute 
+            the relevant command in GraphDisplay so it shows up in the animation history
+        '''
+        #
+        # TODO: Pass in the init_etext to exportsvganimation
+        #
 
-    def interaction(self, frame, traceback):
-        """ *Internal* This function does all the interaction with the user
-            depending on self.GUI.mode
-        
-            - Step (self.GUI.mode == 2)
-            - Quit (self.GUI.mode == 0)
-            - Auto-run w/timer (self.GUI.mode == 1)
-        """
-        # Compute the number of changes to the edge and default graph info
+        # Note since naming is weird: self.GUI is the Algorithm() instance.  self.GUI.GUI is the AlgoWin instance
         informer = self.GUI.GUI.graphDisplay.graphInformer
         secondaryInformer = None
         edges = self.GUI.graph.edgeWeights[0].keys()    # list of tuples that are edges
         secondaryEdges = None
-        #animation_history, secondaryGraphDisplay
         history = self.GUI.animation_history
         secondaryHistory = None
 
-        # Initialize default info, change it if it is changed
-        if self.default_info is None:
-            self.default_info = informer.DefaultInfo()
-            history.UpdateGraphInfo(self.default_info)
-        elif self.default_info != informer.DefaultInfo():
+        # Initialize default info, or update it if it has changed(in case of algorithm change or something)
+        if self.default_info is None or self.default_info != informer.DefaultInfo():
             self.default_info = informer.DefaultInfo()
             history.UpdateGraphInfo(self.default_info)
 
+        # If we're dealing with a secondary display then set those variables
         if self.GUI.GUI.secondaryGraphDisplay is not None and self.GUI.GUI.secondaryGraphDisplay.graphInformer is not None:
             secondaryHistory = self.GUI.GUI.secondaryGraphDisplay
             secondaryInformer = self.GUI.GUI.secondaryGraphDisplay.graphInformer
             secondaryEdges = self.GUI.GUI.secondaryGraphDisplay.drawEdges.label.keys()
+            # Construct self.init_etext2
             if self.init_etext2 is None:
                 self.init_etext2 = {}
                 for e in secondaryEdges:
@@ -1534,7 +1522,16 @@ class AlgorithmDebugger(bdb.Bdb):
                     if e not in secondaryEdges:
                         del self.init_etext2[e]
                         self.etext_change += 1
+
+    def interaction(self, frame, traceback):
+        """ *Internal* This function does all the interaction with the user
+            depending on self.GUI.mode
         
+            - Step (self.GUI.mode == 2)
+            - Quit (self.GUI.mode == 0)
+            - Auto-run w/timer (self.GUI.mode == 1)
+        """
+        self.add_info_commands_to_history()
     
         self.setup(frame, traceback)
         # 
@@ -1590,7 +1587,8 @@ class Algorithm:
         self.algoGlobals = {}       # Sandbox for Algorithm
         self.logAnimator = 1
         self.about = None
-        
+        self.animation_history = None
+
         self.commentPattern = re.compile('[ \t]*#')
         self.blankLinePattern = re.compile('[ \t]*\n')
         

@@ -476,13 +476,6 @@ function UpdateGraphInfo(graph_id, info) {
 	not found we will try g1_(4, 5)
 */
 function SetEdgeColor(edge_id, color) {
-	function switch_edge_vertices() {
-	    // Switches the edge_id vertices.  ie. g1_(5, 4) in --> g1_(4, 5) out
-	    var re = /\d+/g;
-	    var matches = edge_id.match(re);
-	    return "g" + matches[0] + "_" + matches[2] + "-" + matches[1];
-	}
-
 	if (edge_id in g.blinking_edges) {
 		remove_scheduled_edge_blinks(edge_id);
 	}
@@ -490,7 +483,7 @@ function SetEdgeColor(edge_id, color) {
 	var graph_num = graph_num_from_id(edge_id);
 	var edge = g.edges[graph_num][edge_id];
 	if (edge == null) {
-		edge_id = switch_edge_vertices();
+		edge_id = switch_edge_vertices(edge_id);
 		edge = g.edges[graph_num][edge_id];
 	}
 	edge.attr({'stroke': color});	// For some reason if we don't set stroke-width it will go to 1 

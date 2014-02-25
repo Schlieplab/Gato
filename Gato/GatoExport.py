@@ -67,6 +67,7 @@ algo_lines = []     # tokenEater uses this to write algorithm lines to
 prev = ["",-1]
 indent_stack = [0]
 last_line = ''
+id_prefixes = ['g1_', 'g2_']
 
 def tokenEater(type, token, (srow, scol), (erow, ecol), line):
     global line_count
@@ -244,6 +245,9 @@ def collectAnimations(histories, prefixes):
             #mergedCmds[i][j] = mergedCmds[i][j].replace(' ', '').replace('(', '').replace(')', '').replace(',', '-')
     return ["Array(" + ", ".join(cmd) + ")" for cmd in mergedCmds]
 
+def get_edge_id(v, w, idPrefix):
+    return idPrefix + '{}-{}'.format(v, w)
+
 
 def get_graph_as_svg_str(graphDisplay, x_add, y_add, file, idPrefix=''):
     # Write Bubbles from weighted matching
@@ -301,14 +305,13 @@ def get_graph_as_svg_str(graphDisplay, x_add, y_add, file, idPrefix=''):
         vx = vx - x_add
         wx = wx - x_add
         
-        edge_id = idPrefix + '{}-{}'.format(v, w)
+        edge_id = get_edge_id(v, w, idPrefix)
         if graphDisplay.G.directed == 0:
             ret_strs.append('<line id="%s" class="edge" x1="%s" y1="%s" x2="%s" y2="%s" stroke="%s"'\
                        ' stroke-width="%s"/>\n' % (edge_id, vx, vy, wx, wy, col, width))
         else:
             x1,y1,x2,y2 = graphDisplay.directedDrawEdgePoints(graphDisplay.VertexPosition(v),
-                                                              graphDisplay.VertexPosition(w),
-                                                              0)
+                graphDisplay.VertexPosition(w), 0)
             
             x1e,y1e = graphDisplay.CanvasToEmbedding(x1,y1)
             x2e,y2e = graphDisplay.CanvasToEmbedding(x2,y2)
@@ -416,6 +419,31 @@ def get_graph_as_svg_str(graphDisplay, x_add, y_add, file, idPrefix=''):
 
     return '\n'.join(ret_strs)
     
+
+def compute_coord_changes(gdisp):
+    t = False
+    x_add, y_add = 0, 0
+    for v, w in gdisp.G.Edges():
+        vx, vy, r = gdisp.VertexPositionAndRadius(v)
+        if not t:
+            x_add = vx
+            y_add = vy
+            t = True
+        else:
+            x_add = min(vx, x_add)
+            y_add = min(vy, y_add)
+    return x_add, y_add
+
+def format_init_edge_infos(info_dict, idPrefix):
+    ''' Formats the info_dict to a javascript object '''
+    str_bits = ['{'] # List of strings to return joined at the end(faster than concatenation)
+    for tup, info in info_dict.iteritems():
+        v, w = tup
+        edge_id = get_edge_id(v, w, idPrefix)
+        assignment = '"{}": "{}",'.format(edge_id, info)
+        str_bits.append(assignment)
+    str_bits.append('}')
+    return '\n'.join(str_bits)
         
 def ExportAlgoInfo(fileName, algorithm):
     if not os.path.exists('./svgs/infos'):
@@ -429,13 +457,16 @@ def ExportAlgoInfo(fileName, algorithm):
     info = re.sub(r'colordef\s+color="[a-zA-z#]+">', lambda match: 'div style="height: 10px; width: 10px; display:inline; background-color:%s">&nbsp&nbsp&nbsp&nbsp</div>&nbsp' % colors.pop(0), info, count=len(colors))
     file.write(info)
 
-def ExportSVG(fileName, algowin, algorithm, graphDisplay,
-              secondaryGraphDisplay=None,
-              secondaryGraphDisplayAnimationHistory=None,
-              showAnimation=False):
+def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=None, 
+    secondaryGraphDisplayAnimationHistory=None, showAnimation=False, init_edge_infos=None):
     """ Export either the current graphs or the complete animation
-        (showAnimation=True) to the file fileName
+        (showAnimation=True) to the file fileName.
+
+        showAnimation: We don't do anything if this is False
+        init_edge_infos: list of dictionaries with keys that are tuples of form (v1, v2) where v1 and v2 are the vertices
+            that an edge connects.  The values keys point to are the initial edge infos of that edge.
     """
+    print init_edge_infos
     global algo_lines
     algo_lines = []
 
@@ -446,12 +477,12 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
                 animation = collectAnimations([algorithm.animation_history.getHistoryOne(),
                                                secondaryGraphDisplayAnimationHistory.getHistoryTwo(),
                                                algowin.codeLineHistory],
-                                              ['g1_','g2_','l_'])
+                                              ['g1_', 'g2_', 'l_'])
             else:
                 #x_add, y_add = compute_coordinate_shifts([graphDisplay], [algorithm.animation_history.getHistoryOne()])
                 animation = collectAnimations([algorithm.animation_history.getHistoryOne(),
                                                algowin.codeLineHistory],
-                                              ['g1_','l_'])
+                                              ['g1_', 'l_'])
         except IndexError:
             print "Error:"
             print "Filename: ", fileName
@@ -459,21 +490,6 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
             print "Algorithm: ", algorithm
             print "graphDisplay: ", graphDisplay
             return
-
-
-        def compute_coord_changes(gdisp):
-            t = False
-            x_add, y_add = 0, 0
-            for v, w in gdisp.G.Edges():
-                vx, vy, r = gdisp.VertexPositionAndRadius(v)
-                if not t:
-                    x_add = vx
-                    y_add = vy
-                    t = True
-                else:
-                    x_add = min(vx, x_add)
-                    y_add = min(vy, y_add)
-            return x_add, y_add
 
         # Figure out how much we want to pull the graph to the left and top before we reset the graph
         g1_x_add, g1_y_add = compute_coord_changes(graphDisplay)
@@ -490,13 +506,13 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
         graph_type = "undirected" if graphDisplay.G.directed == 0 else "directed"
         graph_strs.append('<g id="g1" type="%s">\n' % (graph_type))
 
-        g1_str = get_graph_as_svg_str(graphDisplay, g1_x_add, g1_y_add, file, idPrefix='g1_')
+        g1_str = get_graph_as_svg_str(graphDisplay, g1_x_add, g1_y_add, file, idPrefix=id_prefixes[0])
         graph_strs.append(g1_str)
         graph_strs.append('</g>\n')
         if secondaryGraphDisplay:
             graph_type = "undirected" if secondaryGraphDisplay.G.directed == 0 else "directed"
             graph_strs.append('<g id="g2" type="%s">\n' % (graph_type))
-            g2_str = get_graph_as_svg_str(secondaryGraphDisplay, g2_x_add, g2_y_add, file, idPrefix='g2_')
+            g2_str = get_graph_as_svg_str(secondaryGraphDisplay, g2_x_add, g2_y_add, file, idPrefix=id_prefixes[1])
             graph_strs.append(g2_str)
             graph_strs.append('</g>\n')
 
@@ -520,7 +536,9 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay,
             'g1_x_add': g1_x_add,
             'g1_y_add': g1_y_add,
             'g2_x_add': g2_x_add,
-            'g2_y_add': g2_y_add
+            'g2_y_add': g2_y_add,
+            'g1_init_edge_infos': format_init_edge_infos(init_edge_infos[0], id_prefixes[0]) if init_edge_infos else 'null',
+            'g2_init_edge_infos': format_init_edge_infos(init_edge_infos[1], id_prefixes[1]) if init_edge_infos and len(init_edge_infos) > 1 else 'null'
         }
         file.write(animationhead % str_vars)
         file.close()

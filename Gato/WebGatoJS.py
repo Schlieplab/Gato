@@ -48,6 +48,8 @@ animationhead = '''
             var g1_y_add = %(g1_y_add)d;
             var g2_x_add = %(g2_x_add)d;
             var g2_y_add = %(g2_y_add)d;
+            var g1_init_edge_infos = %(g1_init_edge_infos)s;
+            var g2_init_edge_infos = %(g2_init_edge_infos)s;
         </script>
 
         <script type="text/javascript" src="static_scripts/util.js"></script>

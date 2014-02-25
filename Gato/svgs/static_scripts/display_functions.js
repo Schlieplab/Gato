@@ -131,7 +131,9 @@ function ToolTip(edge) {
 	}
 
 
-	this.id = edge.attr('id') + '_tooltip';
+	var edge_id = edge.attr('id');
+	var graph_index = parseInt(edge_id.substring(1,2))-1;
+	this.id = edge_id + '_tooltip';
 	this.g = snap.group().attr({
 		'id': this.id,
 	});
@@ -139,7 +141,7 @@ function ToolTip(edge) {
 	this.frame_is_sized = true; 	// True when the frame matches the text size
 
 	// Build the tooltip
-	this.text_content = 'No Edge Info Yet';
+	this.text_content = get_default_edge_info(edge_id);
 	this.text_elem = snap.text(0, 0, this.text_content);
 	this.g.append(this.text_elem);
 
