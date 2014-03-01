@@ -613,9 +613,7 @@ class AlgoWin(Frame):
             self.tagLines(self.algorithm.GetBreakpointLines(), 'Break')
             
             # Syntax highlighting
-            tokenize.tokenize(StringIO.StringIO(self.algorithm.GetSource()).readline, 
-                              self.tokenEater)
-            
+            tokenize.tokenize(StringIO.StringIO(self.algorithm.GetSource()).readline, self.tokenEater)
             
             if self.algorithm.ReadyToStart():
                 self.buttonStart['state'] = NORMAL 
@@ -869,12 +867,15 @@ class AlgoWin(Frame):
             # We never destroy the secondary graph display (and create it from the beginning
             # for the paned viewed. graphDisplays is set from prolog
             if not self.secondaryGraphDisplay or self.algorithm.graphDisplays == None or self.algorithm.graphDisplays == 1:
-                GatoExport.ExportSVG(fileName, self, self.algorithm, self.graphDisplay, None, None, showAnimation=True, init_edge_infos=[self.algorithm.DB.init_etext])
+                GatoExport.ExportSVG(fileName, self, self.algorithm, self.graphDisplay, None, None, showAnimation=True, 
+                    init_edge_infos=self.algorithm.DB.init_edge_infos, init_vertex_infos=self.algorithm.DB.init_vertex_infos,
+                    init_graph_infos=self.algorithm.DB.init_graph_infos)
             else:
                 GatoExport.ExportSVG(fileName, self, self.algorithm, self.graphDisplay,
                     self.secondaryGraphDisplay.animator, #XXX potential bug: self.secondaryGraphDisplay is AnimationHistory(sec...),
                     self.secondaryGraphDisplay, showAnimation=True,
-                    init_edge_infos=[self.algorithm.DB.init_etext, self.algorithm.DB.init_etext2])
+                    init_edge_infos=self.algorithm.DB.init_edge_infos, init_vertex_infos=self.algorithm.DB.init_vertex_infos,
+                    init_graph_infos=self.algorithm.DB.init_graph_infos)
             
     def Quit(self,event=None):
         if self.algorithmIsRunning == 1:
@@ -1291,13 +1292,12 @@ class AlgorithmDebugger(bdb.Bdb):
         bdb.Bdb.__init__(self)
         self.doTrace = 0
         self.lastLine = -1
-        self.init_etext = None
-        self.init_etext2 = None
-        self.init_vtext = None
-        self.default_info = None
-        self.default_info2 = None
-        self.etext_change = 0
-        self.vtext_change = 0
+        self.init_edge_infos = [None, None]
+        self.edge_infos = [None, None]
+        self.init_vertex_infos = [None, None]
+        self.vertex_infos = [None, None]
+        self.init_graph_infos = [None, None]
+        self.graph_infos = [None, None]
         
     def dispatch_line(self, frame):
         """ *Internal* Only dispatch if we are in the algorithm file """
@@ -1440,88 +1440,98 @@ class AlgorithmDebugger(bdb.Bdb):
             the edge, graph, and vertex info.  If there are changes then we execute 
             the relevant command in GraphDisplay so it shows up in the animation history
         '''
-        #
-        # TODO: Pass in the init_etext to exportsvganimation
-        #
+
+        # TODO: PASS IN INITIAL GRAPH AND VERTEX INFO LIKE WE DO INITIAL EDGE INFO
+        # TODO: WHY AREN'T UPDATEVERTEXINFO COMMANDS MAKING IT IN?
+
+        def construct_initial_graph_infos():
+            for i in xrange(num_graphs):
+                if self.init_graph_infos[i] is None:
+                    self.init_graph_infos[i] = informers[i].DefaultInfo()
+                    self.graph_infos[i] = copy.deepcopy(self.init_graph_infos[i])
+
+        def construct_initial_edge_infos():
+            for i in xrange(num_graphs):
+                if self.init_edge_infos[i] is None:
+                    self.init_edge_infos[i] = {}
+                    for e in edges[i]:
+                        self.init_edge_infos[i][e] = informers[i].EdgeInfo(e[0], e[1])
+                    self.edge_infos[i] = copy.deepcopy(self.init_edge_infos[i])
+
+        def construct_initial_vertex_infos():
+            for i in xrange(num_graphs):
+                if self.init_vertex_infos[i] is None:
+                    self.init_vertex_infos[i] = {}
+                    for v in vertices[i]:
+                        self.init_vertex_infos[i][v] = informers[i].VertexInfo(v)
+                    self.vertex_infos[i] = copy.deepcopy(self.init_vertex_infos[i])
+
+        def check_for_edge_info_changes():
+            for i in xrange(num_graphs):
+                edge_infos = self.edge_infos[i]
+                history = histories[i]
+                informer = informers[i]
+                for e in edges[i]:
+                    if e not in edge_infos:
+                        edge_infos[e] = informer.EdgeInfo(e[0], e[1])
+                        history.UpdateEdgeInfo(e[0], e[1], edge_infos[e])
+                    else:
+                        past_info = edge_infos[e]
+                        curr_info = informer.EdgeInfo(e[0], e[1])
+                        if past_info != curr_info:
+                            edge_infos[e] = curr_info
+                            history.UpdateEdgeInfo(e[0], e[1], curr_info)
+                
+                for e in edge_infos.keys():
+                    if e not in edges[i]:
+                        del edge_infos[e]
+
+        def check_for_vertex_info_changes():
+            for i in xrange(num_graphs):
+                vertex_infos = self.vertex_infos[i]
+                history = histories[i]
+                informer = informers[i]
+                for v in vertices[i]:
+                    if v not in vertex_infos:
+                        vertex_infos[v] = informer.VertexInfo(v)
+                        history.UpdateVertexInfo(v, vertex_infos[v])
+                    else:
+                        past_info = vertex_infos[v]
+                        curr_info = informer.VertexInfo(v)
+                        if past_info != curr_info:
+                            vertex_infos[v] = curr_info
+                            history.UpdateVertexInfo(v, curr_info)
+
+                for v in vertex_infos.keys():
+                    if v not in vertices[i]:
+                        del vertex_infos[v]
+
+        def check_for_graph_info_changes():
+            for i in xrange(num_graphs):
+                if self.graph_infos[i] != informers[i].DefaultInfo():
+                    self.graph_infos[i] = informers[i].DefaultInfo()
+                    histories[i].UpdateGraphInfo(self.graph_infos[i])
 
         # Note since naming is weird: self.GUI is the Algorithm() instance.  self.GUI.GUI is the AlgoWin instance
-        informer = self.GUI.GUI.graphDisplay.graphInformer
-        secondaryInformer = None
-        edges = self.GUI.graph.edgeWeights[0].keys()    # list of tuples that are edges
-        secondaryEdges = None
-        history = self.GUI.animation_history
-        secondaryHistory = None
-
-        # Initialize default info, or update it if it has changed(in case of algorithm change or something)
-        if self.default_info is None or self.default_info != informer.DefaultInfo():
-            self.default_info = informer.DefaultInfo()
-            history.UpdateGraphInfo(self.default_info)
-
-        # If we're dealing with a secondary display then set those variables
+        num_graphs = 1
+        informers = [self.GUI.GUI.graphDisplay.graphInformer]
+        vertices = [self.GUI.graph.vertices]
+        edges = [self.GUI.graph.edgeWeights[0].keys()]    # list of tuples that are edges
+        histories = [self.GUI.animation_history]
         if self.GUI.GUI.secondaryGraphDisplay is not None and self.GUI.GUI.secondaryGraphDisplay.graphInformer is not None:
-            secondaryHistory = self.GUI.GUI.secondaryGraphDisplay
-            secondaryInformer = self.GUI.GUI.secondaryGraphDisplay.graphInformer
-            secondaryEdges = self.GUI.GUI.secondaryGraphDisplay.drawEdges.label.keys()
-            # Construct self.init_etext2
-            if self.init_etext2 is None:
-                self.init_etext2 = {}
-                for e in secondaryEdges:
-                    self.init_etext2[e] = secondaryInformer.EdgeInfo(e[0], e[1])
-        
-        # Construct self.init_etext
-        if self.init_etext is None:
-            self.init_etext = {}
-            for e in edges:
-                self.init_etext[e] = informer.EdgeInfo(e[0], e[1])
-                history.UpdateEdgeInfo(e[0], e[1], self.init_etext[e])
-        
-        # Check for changes from the current EdgeInfo
-        for e in edges:
-            if e not in self.init_etext:
-                self.etext_change += 1
-                self.init_etext[e] = informer.EdgeInfo(e[0], e[1])
-                history.UpdateEdgeInfo(e[0], e[1], self.init_etext[e])
-            else:
-                past_info = self.init_etext[e]
-                curr_info = informer.EdgeInfo(e[0], e[1])
-                if past_info != curr_info:
-                    self.init_etext[e] = curr_info
-                    history.UpdateEdgeInfo(e[0], e[1], self.init_etext[e])
-                    self.etext_change += 1
-        
-        for e in self.init_etext.keys():
-            if e not in edges:
-                del self.init_etext[e]
-                self.etext_change += 1
+            num_graphs = 2
+            histories.append(self.GUI.GUI.secondaryGraphDisplay)
+            informers.append(self.GUI.GUI.secondaryGraphDisplay.graphInformer)
+            edges.append(self.GUI.GUI.secondaryGraphDisplay.drawEdges.keys())
+            vertices.append(self.GUI.GUI.secondaryGraphDisplay.drawVertex.keys())
 
-
-        if secondaryInformer is not None:
-            if self.default_info2 is None:
-                self.default_info2 = secondaryInformer.DefaultInfo()
-                secondaryHistory.UpdateGraphInfo(self.default_info2)
-            elif self.default_info2 != secondaryInformer.DefaultInfo():
-                self.default_info2 = secondaryInformer.DefaultInfo()
-                secondaryHistory.UpdateGraphInfo(self.default_info2)
+        construct_initial_graph_infos()
+        construct_initial_edge_infos()
+        construct_initial_vertex_infos()
+        check_for_graph_info_changes()
+        check_for_edge_info_changes()
+        check_for_vertex_info_changes()
         
-            #  Check for changes in the current EdgeInfo
-            if secondaryEdges is not None:
-                for e in secondaryEdges:
-                    if e not in self.init_etext2:
-                        self.etext_change += 1
-                        self.init_etext2[e] = secondaryInformer.EdgeInfo(e[0], e[1])
-                        secondaryHistory.UpdateEdgeInfo(e[0], e[1], self.init_etext2[e])
-                    else:
-                        past_info = self.init_etext2[e]
-                        curr_info = secondaryInformer.EdgeInfo(e[0], e[1])
-                        if past_info != curr_info:
-                            self.init_etext2[e] = curr_info
-                            secondaryHistory.UpdateEdgeInfo(e[0], e[1], self.init_etext2[e])
-                            self.etext_change += 1
-                
-                for e in self.init_etext2.keys():
-                    if e not in secondaryEdges:
-                        del self.init_etext2[e]
-                        self.etext_change += 1
 
     def interaction(self, frame, traceback):
         """ *Internal* This function does all the interaction with the user

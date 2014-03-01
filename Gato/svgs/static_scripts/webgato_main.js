@@ -6,7 +6,9 @@ function add_snap_vars() {
     g.graph_elem_ids = ['vertex', 'edge', 'code_line', 'arrowhead'];
     // TODO: update this code to be mroe generic
     extend(g, {
+        vertex_groups: [{}, {}],
         vertices: [{}, {}],
+        edge_groups: [{}, {}],
         edges: [{}, {}],
         edge_arrows: [{}, {}],
         graphs: [],
@@ -16,7 +18,10 @@ function add_snap_vars() {
 
     var vertices = {}, edges = {}, edge_arrows = {}, code_lines = {};
     for (var graph_num=0; graph_num<g.num_graphs; graph_num++) {
-        
+        var v_g = snap.selectAll('g#g' + (graph_num+1) + ' .vertex_g');
+        for (var i=0; i<v_g.length; i++) {
+            g.vertex_groups[graph_num][v_g[i].attr('id')] = v_g[i];
+        }
         var v = snap.selectAll('g#g' + (graph_num+1) + ' .vertex');
         for (var i=0; i<v.length; i++) {
             g.vertices[graph_num][v[i].attr('id')] = v[i];
@@ -24,6 +29,10 @@ function add_snap_vars() {
         var e = snap.selectAll('g#g' + (graph_num+1) + ' .edge');
         for (var i=0; i<e.length; i++) {
             g.edges[graph_num][e[i].attr('id')] = e[i];
+        }
+        var e_g = snap.selectAll('g#g' + (graph_num+1) + ' .edge_group');
+        for (var i=0; i<e_g.length; i++) {
+            g.edge_groups[graph_num][e_g[i].attr('id')] = e_g[i];
         }
         var ea = snap.selectAll('g#g' + (graph_num+1) + ' .arrowhead');
         for (var i=0; i<ea.length; i++) {
@@ -84,7 +93,11 @@ function fill_global() {
         arrow_id_prefix: 'ea',
         blinking_edges: {},
         blinking_vertices: {},
-        init_edge_infos: [g1_init_edge_infos, g2_init_edge_infos],
+        init_edge_infos: [g1_init_edge_info, g2_init_edge_info],
+        init_graph_infos: [g1_init_graph_info, g2_init_graph_info],
+        init_vertex_infos: [g1_init_vertex_info, g2_init_vertex_info],
+        tooltips: [],
+        tooltip_objects: {},
 
         // We set the graph frame to the largest size the graph will attain 
         max_graph_sizes: [

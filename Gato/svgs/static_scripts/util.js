@@ -1,8 +1,12 @@
-function switch_edge_vertices(edge_id) {
+function switch_edge_vertices(edge_id, suffix) {
     // Switches the edge_id vertices.  ie. g1_(5, 4) in --> g1_(4, 5) out
     var re = /\d+/g;
     var matches = edge_id.match(re);
-    return "g" + matches[0] + "_" + matches[2] + "-" + matches[1];
+    var new_id = "g" + matches[0] + "_" + matches[2] + "-" + matches[1];
+    if (suffix) {
+        new_id += suffix;
+    }
+    return new_id;
 }
 
 function get_edge_vertices(edge_id) {
@@ -15,26 +19,44 @@ function get_edge_vertices(edge_id) {
     return null;
 }
 
-function get_default_edge_info(edge_id) {
-    var graph_index = parseInt(edge_id.substring(1,2))-1;
+function get_vertex_num(id) {
+    var re = /\d+/g;
+    var matches = id.match(re);
+    if (matches) {
+        return matches[1];
+    }
+    return null;
+}
+
+function get_default_edge_info(edge_g_id, graph_index) {
     var init_infos = g.init_edge_infos[graph_index];
-    var info = init_infos[edge_id];
+    var info = init_infos[edge_g_id];
     if (!info) {
-        info = init_infos[switch_edge_vertices(edge_id)];
+        info = init_infos[switch_edge_vertices(edge_g_id, '_group')];
     }
     if (!info) {
-        var vertices = get_edge_vertices(edge_id);
+        var vertices = get_edge_vertices(edge_g_id);
         if (!vertices) {
             info = '';
         } else {
             info = 'Edge (' + vertices[0] + ', ' + vertices[1] + ')';
         }
     }
-    return info    
+    return info;
+}
+
+function get_default_vertex_info(vertex_g_id, graph_index) {
+    var init_infos = g.init_vertex_infos[graph_index];
+    var vertex_id = vertex_g_id.split('_group')[0];
+    var info = init_infos[vertex_id];
+    if (!info) {
+        var vertex_num = get_vertex_num(vertex_id);
+        return 'Vertex ' + vertex_num;
+    }
+    return info;
 }
 
 function fix_coord_changes() {
-    // 
     for (var g_num=0; g_num<g.num_graphs; g_num++) {
         var coords = g.coord_changes[g_num];
         if (g.min_x[g_num] !== null) {

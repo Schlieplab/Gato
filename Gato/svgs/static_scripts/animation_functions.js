@@ -459,7 +459,7 @@ function SetVertexColor(vertex_id, color) {
 function UpdateEdgeInfo(edge_id, info) {
 	var graph_num = parseInt(edge_id.substring(1,2));
 	var tooltip_id = edge_id + '_tooltip';
-	var tooltip = g.tooltip_objects[edge_id + '_tooltip'];
+	var tooltip = g.tooltip_objects[tooltip_id];
 	if (tooltip != null) {
 		tooltip.change_text(info);
 	}
@@ -469,6 +469,15 @@ function UpdateGraphInfo(graph_id, info) {
 	var graph_num = parseInt(graph_id.substring(1));
 	var graph_info_text_elem = g.graph_infos[graph_num-1];
 	graph_info_text_elem.node.innerHTML = info;
+}
+
+function UpdateVertexInfo(vertex_id, info) {
+	var vertex_group_id = vertex_id + '_group';
+	var tooltip_id = vertex_group_id + '_tooltip';
+	var tooltip = g.tooltip_objects[tooltip_id];
+	if (tooltip != null) {
+		tooltip.change_text(info);
+	}
 }
 
 /** Sets the given edge to the given color.  If the given edge
@@ -696,6 +705,11 @@ function AddEdge(edge_id){
     var parent_graph = g.graphs[graph_num];
     var edge = null;
     var arrowhead = null;
+    var group = snap.group().attr({
+    	'class': 'edge_group',
+    	'id': edge_id + '_group',
+    	'cursor': 'pointer'
+    });
     if (parent_graph.attr("type") == "directed") {
         var reverse_edge = g.edges[graph_num][graph_id + "_" + vertices[1] + "-" + vertices[0]];
         if (reverse_edge != null) {  
@@ -736,14 +750,17 @@ function AddEdge(edge_id){
             });
     
             if (arrowhead != null) {
+                group.prepend(arrowhead);
                 parent_graph.prepend(arrowhead);
             }
-            parent_graph.prepend(edge);
+            group.prepend(edge);
+            parent_graph.prepend(group);
             g.edges[graph_num][edge.attr('id')] = edge;
+            g.edge_groups[graph_num][group.attr('id')] = group;
 		    if (arrowhead != null) {
 		    	g.edge_arrows[graph_num][arrowhead.attr('id')] = arrowhead;
 		    }
-		    add_tooltip(edge);
+		    add_tooltip(group, 'edge');
                 
             if(reverse_edge.attr("d") == null){
                 var reverse_edge_id = reverse_edge.attr('id');
@@ -752,7 +769,9 @@ function AddEdge(edge_id){
                 delete g.edge_arrows[graph_num][arrowhead_id];
                 g.edges[graph_num][reverse_edge_id].remove();
                 delete g.edges[graph_num][reverse_edge_id];
-                g.tooltip_objects[reverse_edge_id + '_tooltip'].delete_self();
+                g.edge_groups[graph_num][reverse_edge_id + '_group'].remove();
+                delete g.edge_groups[graph_num][reverse_edge_id + '_group'];
+                g.tooltip_objects[reverse_edge_id + '_group_tooltip'].delete_self();
                 AddEdge(reverse_edge_id);
             }
         }else{  
@@ -773,14 +792,16 @@ function AddEdge(edge_id){
             });
             arrowhead = createArrowhead(vx, vy, wx, wy, g.edge_width, "ea" + edge_id);   
             if (arrowhead != null) {
-                parent_graph.prepend(arrowhead);
+            	group.prepend(arrowhead);
             }
-            parent_graph.prepend(edge);
+            group.prepend(edge);
+            parent_graph.prepend(group);
             g.edges[graph_num][edge.attr('id')] = edge;
+            g.edge_groups[graph_num][group.attr('id')] = group;
 			if (arrowhead != null) {
 				g.edge_arrows[graph_num][arrowhead.attr('id')] = arrowhead;
 			}
-			add_tooltip(edge);
+			add_tooltip(group, 'edge');
         }
     }else{ 
     	//Undirected edge
@@ -790,9 +811,11 @@ function AddEdge(edge_id){
     		'stroke-width': g.edge_width,
     		'class': 'edge'
     	});
-        parent_graph.prepend(edge);
+    	group.prepend(edge);
+    	parent_graph.prepend(group);
     	g.edges[graph_num][edge.attr('id')] = edge;
-    	add_tooltip(edge);
+    	g.edge_groups[graph_num][group.attr('id')] = group;
+    	add_tooltip(group, 'edge');
     }
 
     return [edge, arrowhead];
@@ -805,6 +828,8 @@ function DeleteEdge(edge_id){
 	var vertices = edge_id.split("_")[1].match(/\d+/g);
 	g.edges[graph_num][edge_id].remove();
 	delete g.edges[graph_num][edge_id];
+	g.edge_groups[graph_num][edge_id + '_group'].remove();
+	delete g.edge_groups[graph_num][edge_id + '_group'];
 	var arrowhead_id = 'ea' + edge_id;
 	if (arrowhead_id in g.edge_arrows[graph_num]) {
 		g.edge_arrows[graph_num][arrowhead_id].remove();
@@ -826,7 +851,7 @@ function DeleteEdge(edge_id){
     }
 
     // Remove the tooltip if needed
-	var tooltip = g.tooltip_objects[edge_id + '_tooltip'];
+	var tooltip = g.tooltip_objects[edge_id + '_group_tooltip'];
 	tooltip.delete_self();	
 }
 

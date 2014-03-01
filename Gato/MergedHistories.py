@@ -44,6 +44,8 @@ g = GatoGlobals.AnimationParameters
 
 class MergedHistories:
 
+    # TODO: Replace repetitive code with functions
+
     def __init__(self):
         self.history = []
         self.history_index = None
@@ -69,6 +71,16 @@ class MergedHistories:
             if display==2:
                 self.animator2 = animator
         animation = AnimationHistory.AnimationCommand(animator.UpdateGraphInfo, (), (info,))
+        self.append(animation, display)
+
+    def UpdateVertexInfo(self, v, info, animator, display):
+        if self.animator1 is None:
+            if display==1:
+                self.animator1 = animator
+        if self.animator2 is None:
+            if display==2:
+                self.animator2 = animator
+        animation = AnimationHistory.AnimationCommand(animator.UpdateVertexInfo, (v,), (info,))
         self.append(animation, display)
 
     def SetVertexColor(self, v, color, animator, display):

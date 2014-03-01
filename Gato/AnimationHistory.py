@@ -152,6 +152,10 @@ class AnimationHistory:
             AnimationHistory.merged.auto_print = 1
         AnimationHistory.merged.UpdateGraphInfo(info, self.animator, self.displayNum)
 
+    def UpdateVertexInfo(self, v, info):
+        if self.auto_print == 1:
+            AnimationHistory.merged.auto_print = 1
+        AnimationHistory.merged.UpdateVertexInfo(v, info, self.animator, self.displayNum)
         
     #========== Provide Undo/Redo for animation commands from GraphDisplay ======
     def SetVertexColor(self, v, color):

@@ -306,6 +306,7 @@ def get_graph_as_svg_str(graphDisplay, x_add, y_add, file, idPrefix=''):
         wx = wx - x_add
         
         edge_id = get_edge_id(v, w, idPrefix)
+        ret_strs.append('<g id="%s" class="edge_group" style="cursor: pointer">' % (edge_id + '_group'))
         if graphDisplay.G.directed == 0:
             ret_strs.append('<line id="%s" class="edge" x1="%s" y1="%s" x2="%s" y2="%s" stroke="%s"'\
                        ' stroke-width="%s"/>\n' % (edge_id, vx, vy, wx, wy, col, width))
@@ -364,6 +365,7 @@ def get_graph_as_svg_str(graphDisplay, x_add, y_add, file, idPrefix=''):
                 ret_strs.append('<polyline id="%s" class="arrowhead" points="%f %f %f %f %s %f" fill="%s" transform="translate(%f,%f)'\
                            ' rotate(%f %f %f)" />\n' % ('ea' + edge_id, p1[0], p1[1], p2[0], p2[1], p3[0], p3[1],
                                                         col, tmpX, tmpY - a_width/2, angle, p1[0], a_width/2))
+            ret_strs.append('</g>')
 
 
         # Write Edge Annotations
@@ -396,6 +398,7 @@ def get_graph_as_svg_str(graphDisplay, x_add, y_add, file, idPrefix=''):
         fwe,dummy = graphDisplay.CanvasToEmbedding(fw,0)
         stroke = graphDisplay.GetVertexFrameColor(v)
 
+        ret_strs.append('<g id="%s" class="vertex_g" style="cursor: pointer">' % (idPrefix + str(v) + '_group'))
         ret_strs.append('<circle id="%s" class="vertex" cx="%s" cy="%s" r="%s" fill="%s" stroke="%s"'\
                    ' stroke-width="%s" style="filter:url(#dropshadow)"/>\n' % (idPrefix+str(v),x,y,r,col,stroke,fwe))
 
@@ -408,6 +411,7 @@ def get_graph_as_svg_str(graphDisplay, x_add, y_add, file, idPrefix=''):
                    'font-size="%s" font-style="normal" font-weight="bold" >%s</text>\n' % (idPrefix+str(v),x,
                                                                                            y+offset,col,size,
                                                                                            graphDisplay.G.GetLabeling(v)))
+        ret_strs.append('</g>')
         # Write vertex annotation
         #size = r*0.9
         size = 14
@@ -436,11 +440,25 @@ def compute_coord_changes(gdisp):
 
 def format_init_edge_infos(info_dict, idPrefix):
     ''' Formats the info_dict to a javascript object '''
+    if not info_dict:
+        return 'null';
     str_bits = ['{'] # List of strings to return joined at the end(faster than concatenation)
     for tup, info in info_dict.iteritems():
         v, w = tup
         edge_id = get_edge_id(v, w, idPrefix)
         assignment = '"{}": "{}",'.format(edge_id, info)
+        str_bits.append(assignment)
+    str_bits.append('}')
+    return '\n'.join(str_bits)
+
+def format_init_vertex_infos(info_dict, idPrefix):
+    ''' Formats the info_dict to a javascript object '''
+    if not info_dict:
+        return 'null';
+    str_bits = ['{'] # List of strings to return joined at the end(faster than concatenation)
+    for v, info in info_dict.iteritems():
+        vertex_id = idPrefix + str(v)
+        assignment = '"{}": "{}",'.format(vertex_id, info)
         str_bits.append(assignment)
     str_bits.append('}')
     return '\n'.join(str_bits)
@@ -458,7 +476,8 @@ def ExportAlgoInfo(fileName, algorithm):
     file.write(info)
 
 def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=None, 
-    secondaryGraphDisplayAnimationHistory=None, showAnimation=False, init_edge_infos=None):
+    secondaryGraphDisplayAnimationHistory=None, showAnimation=False, 
+    init_edge_infos=None, init_vertex_infos=None, init_graph_infos=None):
     """ Export either the current graphs or the complete animation
         (showAnimation=True) to the file fileName.
 
@@ -466,7 +485,8 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
         init_edge_infos: list of dictionaries with keys that are tuples of form (v1, v2) where v1 and v2 are the vertices
             that an edge connects.  The values keys point to are the initial edge infos of that edge.
     """
-    print init_edge_infos
+    #print 'IN GATO EXPORT'
+    #print init_vertex_infos
     global algo_lines
     algo_lines = []
 
@@ -523,11 +543,7 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
         algowin.CommitStop()
 
         # Merge the animation into the HTML
-        print {'g1_x_add': g1_x_add,
-            'g1_y_add': g1_y_add,
-            'g2_x_add': g2_x_add,
-            'g2_y_add': g2_y_add
-        }
+        print init_vertex_infos
         str_vars = {
             'info_file': 'infos/' + fileName[fileName.rindex('/') + 1:], 
             'animation': ',\n'.join(animation), 
@@ -537,8 +553,12 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
             'g1_y_add': g1_y_add,
             'g2_x_add': g2_x_add,
             'g2_y_add': g2_y_add,
-            'g1_init_edge_infos': format_init_edge_infos(init_edge_infos[0], id_prefixes[0]) if init_edge_infos else 'null',
-            'g2_init_edge_infos': format_init_edge_infos(init_edge_infos[1], id_prefixes[1]) if init_edge_infos and len(init_edge_infos) > 1 else 'null'
+            'g1_init_edge_info': format_init_edge_infos(init_edge_infos[0], id_prefixes[0]) if init_edge_infos else 'null',
+            'g2_init_edge_info': format_init_edge_infos(init_edge_infos[1], id_prefixes[1]) if init_edge_infos and len(init_edge_infos) > 1 else 'null',
+            'g1_init_graph_info': '"%s"' % init_graph_infos[0] if init_graph_infos and init_graph_infos[0] else '""',
+            'g2_init_graph_info': '"%s"' % init_graph_infos[1] if init_graph_infos and init_graph_infos[1] else '""',
+            'g1_init_vertex_info': format_init_vertex_infos(init_vertex_infos[0], id_prefixes[0]) if init_vertex_infos else 'null',
+            'g2_init_vertex_info': format_init_vertex_infos(init_vertex_infos[1], id_prefixes[1]) if init_vertex_infos else 'null',
         }
         file.write(animationhead % str_vars)
         file.close()

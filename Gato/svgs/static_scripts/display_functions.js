@@ -95,7 +95,9 @@ function add_scaler() {
 	g.graph_containers[g.num_graphs-1].append(g.scaler.elem);
 }
 
-function ToolTip(edge) {
+function ToolTip(elem, graph_index, elem_type) {
+	/* Takes in an element to put the tooltip on, and index of the graph(in global arrays),
+	elem_type is either 'edge' or 'vertex' */
 	this.mouseover = function(evt) {
 		// Move the tooltip to the cursor and make visible
 		if (!this.frame_is_sized) {
@@ -130,18 +132,20 @@ function ToolTip(edge) {
 		delete g.tooltip_objects[this.id];
 	}
 
-
-	var edge_id = edge.attr('id');
-	var graph_index = parseInt(edge_id.substring(1,2))-1;
-	this.id = edge_id + '_tooltip';
+	var elem_id = elem.attr('id');
+	this.id = elem_id + '_tooltip';
 	this.g = snap.group().attr({
 		'id': this.id,
 	});
-	this.edge = edge;
+	this.elem = elem;
 	this.frame_is_sized = true; 	// True when the frame matches the text size
 
 	// Build the tooltip
-	this.text_content = get_default_edge_info(edge_id);
+	if (elem_type === 'edge') {
+		this.text_content = get_default_edge_info(elem_id, graph_index);
+	} else {
+		this.text_content = get_default_vertex_info(elem_id, graph_index);
+	}
 	this.text_elem = snap.text(0, 0, this.text_content);
 	this.g.append(this.text_elem);
 
@@ -159,54 +163,59 @@ function ToolTip(edge) {
 	this.g.attr({'visibility': 'hidden'});
 
 	// Set the edge mouseover
-	edge.hover(
+	elem.hover(
 		function (evt) {
-			var edge_id = get_id(get_evt_target(evt));
-			var tooltip = g.tooltip_objects[edge_id + '_tooltip'];
+			var elem_id = get_id(get_evt_target(evt));
+			var elem = snap.select('#' + elem_id);
+			var tooltip = g.tooltip_objects[elem.parent().attr('id') + '_tooltip'];
 			tooltip.mouseover(evt);
 		},
 		function (evt) {
-			var edge_id = get_id(get_evt_target(evt));
-			var tooltip = g.tooltip_objects[edge_id + '_tooltip'];
+			var elem_id = get_id(get_evt_target(evt));
+			var elem = snap.select('#' + elem_id);
+			var tooltip = g.tooltip_objects[elem.parent().attr('id') + '_tooltip'];
 			tooltip.mouseout(evt);
 		}
 	);
-	edge.mousemove(function (evt) {
-		var edge_id = get_id(get_evt_target(evt));
-		var tooltip = g.tooltip_objects[edge_id + '_tooltip'];
+	elem.mousemove(function (evt) {
+		var elem_id = get_id(get_evt_target(evt));
+		var elem = snap.select('#' + elem_id);
+		var tooltip = g.tooltip_objects[elem.parent().attr('id') + '_tooltip'];
 		tooltip.mousemove(evt);
 	});
 }
 
 function add_tooltips() {
-	// Put these in the add_global variables function with a description to improve maintainability
-	g.tooltips = [];
-	g.tooltip_objects = {};
-
 	for (var g_num=0; g_num<g.num_graphs; g_num++) {
 		g.tooltips.push({});
-		var edges = g.edges[g_num];
-
-		for (var key in edges) {
-			var tooltip = new ToolTip(edges[key]);
+		var edge_groups = g.edge_groups[g_num];
+		for (var key in edge_groups) {
+			var tooltip = new ToolTip(edge_groups[key], g_num, 'edge');
+			g.tooltip_objects[tooltip.id] = tooltip;
+			g.tooltips[g_num][tooltip.id] = tooltip.text_elem;
+		}
+		var vertex_groups = g.vertex_groups[g_num];
+		for (var key in vertex_groups) {
+			var tooltip = new ToolTip(vertex_groups[key], g_num, 'vertex');
 			g.tooltip_objects[tooltip.id] = tooltip;
 			g.tooltips[g_num][tooltip.id] = tooltip.text_elem;
 		}
 	}
 }
 
-function add_tooltip(edge) {
-	var edge_id = edge.attr('id');
-	var graph_num = parseInt(edge_id.substring(1,2));
-	var tooltip = new ToolTip(edge);
+function add_tooltip(elem, element_type) {
+	var elem_id = elem.attr('id');
+	var graph_num = parseInt(elem_id.substring(1,2));
+	// console.log('fdsadsfds');
+	var tooltip = new ToolTip(elem, graph_num-1, element_type);
 	g.tooltip_objects[tooltip.id] = tooltip;
 	g.tooltips[graph_num-1][tooltip.id] = tooltip.text_elem;
 }
 
-function build_graph_info(group, width, height, g_num) {
+function build_graph_info(group, g_num) {
 	var text_elem = snap.text(5, 0, 'No Info').attr({'id': 'g' + g_num + '_info'});		// Set this to "No Info"(or any text) at first so the bbox has a height
 	text_elem.attr({'y': text_elem.getBBox().height-1});
-	text_elem.node.innerHTML = '';
+	text_elem.node.innerHTML = g.init_graph_infos[g_num-1];
 	group.append(text_elem);
 	return text_elem;
 }

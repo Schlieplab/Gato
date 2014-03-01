@@ -679,6 +679,10 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
     def UpdateGraphInfo(self, info):
         pass
 
+    # Empty function used to get updates in AnimationHistory
+    def UpdateVertexInfo(self, v, info):
+        pass
+
     def GetVertexColor(self,v):
         """ Return the color of v """
         dv = self.drawVertex[v]
