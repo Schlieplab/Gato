@@ -244,12 +244,16 @@ function add_graph_frame() {
 		// Add the graph and graph info to the graph container
 		g.graph_containers[g_num].prepend(g.graphs[g_num]);
 		
+		var max_size = g.max_graph_sizes[g_num];
+		
 		// reposition the graph info
 		var y_trans = graph_bbox.height + pad;
+		if (max_size.height) {
+			y_trans = max_size.height + pad;
+		}
 		g.graph_info_containers[g_num].transform('t0,' + y_trans);
 
 		// Create the frame
-		var max_size = g.max_graph_sizes[g_num];
 		var frame = null;
 		console.log(max_size);
 		//  TODO: THIS IS MESSY.  Max size should always be set here
@@ -276,11 +280,21 @@ function position_graph() {
 	g.graph_translate = [{x: g.frame_padding + g.vertex_r, y: g.frame_padding + g.vertex_r},
 		{x: g.frame_padding + g.vertex_r, y: g.frame_padding + g.vertex_r}];
 	for (var i=0; i<g.num_graphs; i++) {
+		var max_size = g.max_graph_sizes[i];
+		var graph_bbox = g.graphs[i].getBBox();
 		var this_translate = g.init_container_translate[i];
 		if (i === 0) {
 			this_translate.y = g.padding + g.graph_frame_stroke_width;
 		} else {
 			this_translate.y = g.init_container_translate[0].y + g.graph_containers[0].getBBox().height;
+		}
+		if (max_size.height) {
+			var diff = max_size.height - graph_bbox.height;
+			if (diff > 0 && graph_bbox.height != 0) {
+				console.log(g.graph_translate[i].y);
+				g.graph_translate[i].y += diff/2; 
+				console.log(g.graph_translate[i].y);
+			}
 		}
 		var this_container = g.graph_containers[i];
 		var this_graph = g.graphs[i];

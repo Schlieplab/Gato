@@ -389,6 +389,15 @@ svg_instance = {
     '06-MaximalFlows/FordFulkerson.alg':[
         '06-MaximalFlows/FordFulkerson6.cat'
     ],
+    '03-MinimalSpanningTrees/KruskalFindCircuit.alg':[
+    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
+    ],
+
+    # Good
+    '03-MinimalSpanningTrees/KruskalTrace.alg':[
+    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
+    ],
+
 }
 
 

@@ -29,13 +29,17 @@ function get_vertex_num(id) {
 }
 
 function get_default_edge_info(edge_g_id, graph_index) {
+    var vertices = get_edge_vertices(edge_g_id);
     var init_infos = g.init_edge_infos[graph_index];
+    if (!init_infos) {
+        return 'Edge (' + vertices[0] + ', ' + vertices[1] + ')';
+    }
     var info = init_infos[edge_g_id];
     if (!info) {
         info = init_infos[switch_edge_vertices(edge_g_id, '_group')];
     }
     if (!info) {
-        var vertices = get_edge_vertices(edge_g_id);
+        
         if (!vertices) {
             info = '';
         } else {
