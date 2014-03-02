@@ -255,11 +255,9 @@ function add_graph_frame() {
 
 		// Create the frame
 		var frame = null;
-		console.log(max_size);
 		//  TODO: THIS IS MESSY.  Max size should always be set here
 		if (max_size.width && max_size.height) {
 			// If we added any vertices or edges then max_size will be set and we should use that
-			console.log('setting the frame stuffs')
 			frame = snap.rect(0, 0, max_size.width+pad, max_size.height+pad+g.graph_info_height);
 		} else {
 			frame = snap.rect(0, 0, graph_bbox.width+pad, graph_bbox.height+pad+g.graph_info_height);
@@ -291,9 +289,13 @@ function position_graph() {
 		if (max_size.height) {
 			var diff = max_size.height - graph_bbox.height;
 			if (diff > 0 && graph_bbox.height != 0) {
-				console.log(g.graph_translate[i].y);
 				g.graph_translate[i].y += diff/2; 
-				console.log(g.graph_translate[i].y);
+			}
+		}
+		if (max_size.width) {
+			var diff = max_size.width - graph_bbox.width;
+			if (diff > 0 && graph_bbox.height != 0) {
+				g.graph_translate[i].x += diff/2;
 			}
 		}
 		var this_container = g.graph_containers[i];

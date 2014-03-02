@@ -1,3 +1,13 @@
+function get_moat_growing_time(step_num) {
+    for (var i=step_num; i<anim_array.length; i++) {
+        var anim = anim_array[i];
+        if (anim[1] === Wait) {
+            return anim[0];
+        }
+    }
+    return 1;
+}
+
 function switch_edge_vertices(edge_id, suffix) {
     // Switches the edge_id vertices.  ie. g1_(5, 4) in --> g1_(4, 5) out
     var re = /\d+/g;
@@ -51,10 +61,13 @@ function get_default_edge_info(edge_g_id, graph_index) {
 
 function get_default_vertex_info(vertex_g_id, graph_index) {
     var init_infos = g.init_vertex_infos[graph_index];
+    var vertex_num = get_vertex_num(vertex_g_id);
+    if (!init_infos) {
+        return 'Vertex ' + vertex_num;
+    }
     var vertex_id = vertex_g_id.split('_group')[0];
     var info = init_infos[vertex_id];
     if (!info) {
-        var vertex_num = get_vertex_num(vertex_id);
         return 'Vertex ' + vertex_num;
     }
     return info;

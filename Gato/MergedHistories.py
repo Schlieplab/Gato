@@ -170,7 +170,29 @@ class MergedHistories:
                 self.animator2 = animator
         animation = AnimationHistory.AnimationCommand(animator.BlinkVertex, (v,), (color,))
         animation.Do()
-        self.append(animation, display) 
+        self.append(animation, display)
+
+    def CreateMoat(self, moat_id, radius, color, animator, display):
+        if self.animator1 is None:
+            if display==1:
+                self.animator1 = animator
+        if self.animator2 is None:
+            if display==2:
+                self.animator2 = animator
+        animation = AnimationHistory.AnimationCommand(animator.CreateMoat, (moat_id,), (radius,color), canUndo=False)
+        animation.Do()
+        self.append(animation, display)
+
+    def GrowMoat(self, moat_id, radius, animator, display):
+        if self.animator1 is None:
+            if display==1:
+                self.animator1 = animator
+        if self.animator2 is None:
+            if display==2:
+                self.animator2 = animator
+        animation = AnimationHistory.AnimationCommand(animator.GrowMoat, (moat_id,), (radius,), canUndo=False)
+        animation.Do()
+        self.append(animation, display)
     
     def BlinkEdge(self, tail, head, animator, display, color=None):
         if self.animator1 is None:
@@ -237,6 +259,17 @@ class MergedHistories:
         animation.Do()
         self.append(animation, display)
         
+    def Wait(self, animator, display):
+        if self.animator1 is None:
+            if display==1:
+                self.animator1 = animator
+        if self.animator2 is None:
+            if display==2:
+                self.animator2 = animator
+        animation = AnimationHistory.AnimationCommand(animator.Wait, (), (), canUndo=False)
+        animation.Do()
+        self.append(animation, display)
+
     def DeleteEdge(self, tail, head, animator, display, repaint=1):
         if self.animator1 is None:
             if display==1:
@@ -332,8 +365,8 @@ class MergedHistories:
     def append(self, animation, display):
         #if self.auto_print:
         #    print "disp" , display , "  " , animation.log_str() 
-        tuple = animation, display
-        self.history.append(tuple)
+        tup = animation, display
+        self.history.append(tup)
         
     def clear(self):
         self.history = []

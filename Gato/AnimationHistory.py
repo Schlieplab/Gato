@@ -163,6 +163,11 @@ class AnimationHistory:
             AnimationHistory.merged.auto_print = 1
         AnimationHistory.merged.SetVertexColor(v, color, self.animator, self.displayNum)
        
+    def Wait(self):
+        if self.auto_print == 1:
+            AnimationHistory.merged.auto_print = 1
+        AnimationHistory.merged.Wait(self.animator, self.displayNum)
+
     def SetAllVerticesColor(self, color, graph=None, vertices=None):
         if self.auto_print == 1:
             AnimationHistory.merged.auto_print = 1
@@ -193,7 +198,17 @@ class AnimationHistory:
         if self.auto_print == 1:
             AnimationHistory.merged.auto_print = 1
         AnimationHistory.merged.BlinkEdge(tail, head, self.animator, self.displayNum, color)
+
+    def CreateMoat(self, moat_id, radius, color):
+        if self.auto_print == 1:
+            AnimationHistory.merged.auto_print = 1
+        AnimationHistory.merged.CreateMoat(moat_id, radius, color, self.animator, self.displayNum)
        
+    def GrowMoat(self, moat_id, radius):
+        if self.auto_print == 1:
+            AnimationHistory.merged.auto_print = 1
+        AnimationHistory.merged.GrowMoat(moat_id, radius, self.animator, self.displayNum)
+
     def SetVertexFrameWidth(self, v, val):
         if self.auto_print == 1:
             AnimationHistory.merged.auto_print = 1

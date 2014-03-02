@@ -2,7 +2,7 @@ var snap = Snap("svg");
 var g = {}; // globals
 
 function add_snap_vars() {
-    g.graph_elem_types = ['vertices', 'edges', 'code_lines', 'edge_arrows', 'highlight_boxes', 'annotations'];
+    g.graph_elem_types = ['vertices', 'edges', 'code_lines', 'edge_arrows', 'highlight_boxes', 'annotations', 'moats'];
     g.graph_elem_ids = ['vertex', 'edge', 'code_line', 'arrowhead'];
     // TODO: update this code to be mroe generic
     extend(g, {
@@ -14,6 +14,7 @@ function add_snap_vars() {
         graphs: [],
         highlight_boxes: [{}, {}],
         annotations: [{}, {}],
+        moats: [{}, {}],
     });
 
     var vertices = {}, edges = {}, edge_arrows = {}, code_lines = {};
@@ -98,6 +99,8 @@ function fill_global() {
         init_vertex_infos: [g1_init_vertex_info, g2_init_vertex_info],
         tooltips: [],
         tooltip_objects: {},
+        growing_moats: false,
+        jumping: true,  // At the start we are building everything 
 
         // We set the graph frame to the largest size the graph will attain 
         max_graph_sizes: [

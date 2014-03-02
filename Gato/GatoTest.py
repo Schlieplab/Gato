@@ -400,6 +400,12 @@ svg_instance = {
 
 }
 
+svg_instance = {
+    '04-LPDuality/PrimalDualKruskal.alg':[
+       '04-LPDuality/PD_Kruskal5.cat'
+    ],
+}
+
 
 #------------------------------------------------------------------
 def usage():

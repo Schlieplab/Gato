@@ -474,7 +474,7 @@ class AlgoWin(Frame):
             if self.graph_panes:
                 # We only get here during startup as show/hide is handled by
                 # moving the sash
-                self.secondaryGraphDisplay = GraphDisplayFrame(self.graph_panes)
+                self.secondaryGraphDisplay = GraphDisplayFrame(self.graph_panes, number=2)
             else:
                 self.secondaryGraphDisplay = GraphDisplayToplevel()
             self.BindKeys(self.secondaryGraphDisplay)
@@ -692,6 +692,8 @@ class AlgoWin(Frame):
         """
         
         import GatoFile
+        print 'mmhmm'
+
         
         if self.algorithmIsRunning:
             # variable file is lost here!
@@ -763,6 +765,7 @@ class AlgoWin(Frame):
                 tmp.close()
                 proFileName="%s.pro"%tmpFileName
                 tmp=file(proFileName,"w")
+                print xmlAlgorithm
                 tmp.write(xmlAlgorithm.getProlog())
                 tmp.close()
                 # open it!

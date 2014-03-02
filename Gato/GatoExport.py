@@ -279,20 +279,6 @@ def get_graph_as_svg_str(graphDisplay, x_add, y_add, file, idPrefix=''):
 
     ret_strs = []
 
-    # x_add and y_add will be added to the position of edges in order to make the leftmost edge be positioned at 0
-    x_add, y_add = 0, 0
-    t = False
-    for v, w in graphDisplay.G.Edges():
-        vx, vy, r = graphDisplay.VertexPositionAndRadius(v)
-        if not t:
-            x_add = vx
-            y_add = vy
-            #print "setting to ", vx
-            t = True
-        else:
-            x_add = min(vx, x_add)
-            y_add = min(vy, y_add)
-
     # Write Edges
     for v,w in graphDisplay.G.Edges():
         vx,vy,r = graphDisplay.VertexPositionAndRadius(v)
@@ -304,7 +290,7 @@ def get_graph_as_svg_str(graphDisplay, x_add, y_add, file, idPrefix=''):
         wy = wy - y_add
         vx = vx - x_add
         wx = wx - x_add
-        
+
         edge_id = get_edge_id(v, w, idPrefix)
         ret_strs.append('<g id="%s" class="edge_group" style="cursor: pointer">' % (edge_id + '_group'))
         if graphDisplay.G.directed == 0:
@@ -389,9 +375,12 @@ def get_graph_as_svg_str(graphDisplay, x_add, y_add, file, idPrefix=''):
 
     for v in graphDisplay.G.Vertices():
         x,y,r = graphDisplay.VertexPositionAndRadius(v)
+        print x_add
         y = y - y_add
         x = x - x_add
-        
+        #print x
+        #print
+
         # Write Vertex
         col = graphDisplay.GetVertexColor(v)
         fw = graphDisplay.GetVertexFrameWidth(v)
@@ -428,6 +417,15 @@ def compute_coord_changes(gdisp):
     t = False
     x_add, y_add = 0, 0
     for v, w in gdisp.G.Edges():
+        vx, vy, r = gdisp.VertexPositionAndRadius(v)
+        if not t:
+            x_add = vx
+            y_add = vy
+            t = True
+        else:
+            x_add = min(vx, x_add)
+            y_add = min(vy, y_add)
+    for v in gdisp.G.Vertices():
         vx, vy, r = gdisp.VertexPositionAndRadius(v)
         if not t:
             x_add = vx
@@ -526,6 +524,8 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
         graph_type = "undirected" if graphDisplay.G.directed == 0 else "directed"
         graph_strs.append('<g id="g1" type="%s">\n' % (graph_type))
 
+        print g1_x_add, g1_y_add
+        print g2_x_add, g2_y_add
         g1_str = get_graph_as_svg_str(graphDisplay, g1_x_add, g1_y_add, file, idPrefix=id_prefixes[0])
         graph_strs.append(g1_str)
         graph_strs.append('</g>\n')
@@ -543,7 +543,6 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
         algowin.CommitStop()
 
         # Merge the animation into the HTML
-        print init_vertex_infos
         str_vars = {
             'info_file': 'infos/' + fileName[fileName.rindex('/') + 1:], 
             'animation': ',\n'.join(animation), 

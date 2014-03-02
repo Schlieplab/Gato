@@ -1,5 +1,17 @@
 function Animation() {
 	this.do_command = function(anim) {
+		//console.log("Doing " + String(anim[1]).split('(')[0]);
+		// Handle growing of moats
+		if (anim[1] === GrowMoat) {
+			g.growing_moats = true;
+			if (!g.moat_growing_time) {
+				g.moat_growing_time = get_moat_growing_time(this.step_num);
+			}
+		} else if (g.growing_moats) {
+			g.growing_moats = false;
+			g.moat_growing_time = null;
+		}
+
 		if (anim.length === 3) {
 			anim[1](anim[2]);
 		} else if (anim.length === 4) {
@@ -107,7 +119,7 @@ function Animation() {
 	};
 
 	this.jump_to_step = function(n, move_slider) {
-		this.jumping = true;
+		g.jumping = true;
 		var state_ind = parseInt(n/this.state_interval);
 		var state = this.graph_states[state_ind];
 
@@ -146,6 +158,8 @@ function Animation() {
 							} else if (elem_type === 'vertices') {
 								var arg = construct_AddVertex_argument_from_state(elem_state[id]);
 								elem = AddVertex(arg, elem_state[id]['id'].substring(3,4));
+							} else if (elem_type === 'moats') {
+
 							}
 						}
 
@@ -175,6 +189,8 @@ function Animation() {
 								DeleteVertex(id);
 							} else if (elem_type === 'annotations') {
 								delete_vertex_annotation(id);
+							} else if (elem_type === 'moats') {
+								DeleteMoat(id);
 							}
 						}
 					}
@@ -201,7 +217,7 @@ function Animation() {
 		if (move_slider !== false) {
 			g.slider.go_to_step(n);
 		}
-		this.jumping = false;
+		g.jumping = false;
 	}
 
 	/*
@@ -260,6 +276,7 @@ function Animation() {
 		
 		var states = [];
 		for (var i=0; i<anim_array.length; i++) {
+			this.step_num = i;
 			if (i % this.state_interval === 0) {
 				states.push(construct_state(i))
 			}
@@ -293,8 +310,6 @@ function Animation() {
 
 		// How many steps we take between each saved graph state
 		this.state_interval = 200; 
-
-		this.jumping = false;
 
 		this.construct_graph_states();
 	}
@@ -550,7 +565,7 @@ function SetAllEdgesColor(graph_id_and_color) {
 
 /** Blinks the given vertex between black and current color 3 times */
 function BlinkVertex(vertex_id, color) {
-	if (g.animation.jumping) {
+	if (g.jumping) {
 		return;
 	}
 	/* TODO: Add timeout array in here */
@@ -576,7 +591,7 @@ function BlinkVertex(vertex_id, color) {
 
 /** Blinks the given edge between black and current color 3 times */
 function BlinkEdge(edge_id, color){
-	if (g.animation.jumping) {
+	if (g.jumping) {
 		return;
 	}
 	var edge = g.edges[graph_num_from_id(edge_id)][edge_id];
@@ -896,4 +911,43 @@ function DeleteVertex(vertex_id) {
 	}
 	delete_vertex_annotation('va' + vertex_id);
 	delete g.vertices[g_num-1][vertex_id];
+}
+
+function CreateMoat(moat_id, radius, color) {
+	radius = parseFloat(radius)
+	var g_num = parseInt(moat_id.substring(1,2));
+	var v_num = get_vertex_num(moat_id);
+	var vertex = g.vertices[g_num-1]['g' + g_num + '_' + v_num];
+	if (!radius) {
+		radius = g.vertex_r;
+	}
+	var moat = snap.circle(vertex.attr('cx'), vertex.attr('cy'), radius).attr({
+		'id': moat_id,
+		'class': 'moats',
+		'fill': color
+	});
+	g.moats[g_num-1][moat_id] = moat;
+	g.graphs[g_num-1].prepend(moat);
+}
+
+function GrowMoat(moat_id, radius) {
+	radius = parseFloat(radius);
+	var g_num = parseInt(moat_id.substring(1,2));
+	var moat = g.moats[g_num-1][moat_id];
+	if (!g.jumping) {
+		moat.animate({'r': radius}, g.moat_growing_time*g.animation.step_ms);
+	} else {
+		moat.attr({'r': radius});
+	}
+}
+
+function DeleteMoat(moat_id) {
+	var g_num = parseInt(moat_id.substring(1,2));
+	var moat = g.moats[g_num-1][moat_id];
+	delete g.moats[g_num-1][moat_id];
+	moat.remove();
+}
+
+function Wait(t) {
+
 }
