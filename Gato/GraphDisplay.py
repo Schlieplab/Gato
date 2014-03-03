@@ -1301,7 +1301,6 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
             If v is not None, then we assume that we can pass the
             ID v to AddVertex. This is true, when G is a subgraph
             """
-        print "Adding vertex ", x, y
         if v == None:
             v = self.G.AddVertex()
         else:

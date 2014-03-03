@@ -203,8 +203,7 @@ class EdgeWeight(EdgeLabeling):
     def SetAll(self, initialWeight):
         for e in self.G.Edges():
             self.label[e] = initialWeight
-            
-            
+
 
 ################################################################################
 #

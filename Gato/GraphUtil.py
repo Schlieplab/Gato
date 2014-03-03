@@ -261,9 +261,9 @@ class FlowGraphInformer(GraphInformer):
             str1 = "-Infinity"
         else:
             str1 = "%d"%tmp
-            
+
         return "Vertex %d - excess: %s" % (v, str1)
-        
+
 class ResidualGraphInformer(FlowGraphInformer):
 
     def EdgeInfo(self,v,w):

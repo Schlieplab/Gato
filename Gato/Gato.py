@@ -1443,10 +1443,7 @@ class AlgorithmDebugger(bdb.Bdb):
             the edge, graph, and vertex info.  If there are changes then we execute 
             the relevant command in GraphDisplay so it shows up in the animation history
         '''
-
-        # TODO: PASS IN INITIAL GRAPH AND VERTEX INFO LIKE WE DO INITIAL EDGE INFO
-        # TODO: WHY AREN'T UPDATEVERTEXINFO COMMANDS MAKING IT IN?
-
+        # TODO: These functions can definitely be consolidated...
         def construct_initial_graph_infos():
             for i in xrange(num_graphs):
                 if self.init_graph_infos[i] is None:
@@ -1545,7 +1542,7 @@ class AlgorithmDebugger(bdb.Bdb):
             - Auto-run w/timer (self.GUI.mode == 1)
         """
         self.add_info_commands_to_history()
-    
+
         self.setup(frame, traceback)
         # 
         #line = self.currentLine(frame)
@@ -1712,7 +1709,7 @@ class Algorithm:
         """ Read in a graph from file and open the display """
         if type(file) in types.StringTypes:
             self.graphFileName = file
-        elif type(file)==types.FileType or issubclass(file.__class__,StringIO.StringIO):
+        elif type(file) == types.FileType or issubclass(file.__class__,StringIO.StringIO):
             self.graphFileName = fileName
         else:
             raise Exception("wrong types in argument list: expected string or file like object")
@@ -1723,18 +1720,20 @@ class Algorithm:
         self.GUI.graphDisplay.RegisterGraphInformer(WeightedGraphInformer(self.graph))
         self.GUI.graphDisplay.UpdateScrollRegion(auto=1)
         
+        if self.graphDisplays == 2:
+            # Open a secondary empty graph to overwrite the results of last algorithm run
+            self.OpenSecondaryGraph(Graph.Graph(), 'tmp')
+
     def restoreGraph(self):
         self.graph=copy.deepcopy(self.cleanGraphCopy)
         self.graphIsDirty = 0
         
-    def OpenSecondaryGraph(self,G,title,informer=None):
+    def OpenSecondaryGraph(self, G, title, informer=None):
         """ Read in graph from file and open the the second display """
         self.GUI.OpenSecondaryGraphDisplay()
         self.GUI.secondaryGraphDisplay.ShowGraph(G, title)
         self.GUI.secondaryGraphDisplay.UpdateScrollRegion(auto=1)
-        if informer is not None:
-            self.GUI.secondaryGraphDisplay.RegisterGraphInformer(informer)
-            
+        self.GUI.secondaryGraphDisplay.RegisterGraphInformer(informer)
             
     def ReadyToStart(self):
         """ Return 1 if we are ready to run. That is when we user
