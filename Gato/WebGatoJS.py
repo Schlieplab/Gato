@@ -62,8 +62,7 @@ animationhead = '''
         <script type="text/javascript" src="static_scripts/webgato_main.js"></script>
         
         <script type="text/javascript">
-            var anim_array = Array(%(animation)s
-            );
+            %(animation)s
             init();
         </script>
 

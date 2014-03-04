@@ -309,7 +309,7 @@ function Animation() {
 		this.step_num = 0;
 
 		// How many steps we take between each saved graph state
-		this.state_interval = 200; 
+		this.state_interval = 500; 
 
 		this.construct_graph_states();
 	}

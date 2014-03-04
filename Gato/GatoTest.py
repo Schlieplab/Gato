@@ -292,13 +292,11 @@ svg_instance = {
     '03-MinimalSpanningTrees/Prim.alg':[
         '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
     ],
-
-    #
-    # BAD: Doesn't work in regular Gato.  Needs the expanding vertex command
-    #
-    #'04-LPDuality/PrimalDualKruskal.alg':[
-    #   '04-LPDuality/PD_Kruskal5.cat'
-    #],
+    
+    # Good
+    '04-LPDuality/PrimalDualKruskal.alg':[
+       '04-LPDuality/PD_Kruskal5.cat'
+    ],
 
     # Good
     '05-ShortestPaths/BellmanFord.alg':[
@@ -345,9 +343,9 @@ svg_instance = {
         '06-MaximalFlows/PreflowPush5.cat', '06-MaximalFlows/PreflowPush6.cat'
     ],
 
-    # Good for smaller graph.  Breaks on larger one due to having too many arguments in anim_array Array() function call
+    # Good
     '07-MinimumCostFlows/CostScaling.alg':[
-        '07-MinimumCostFlows/MCFCycle.cat', #'07-MinimumCostFlows/MCF4to4A.cat'
+        '07-MinimumCostFlows/MCFCycle.cat', '07-MinimumCostFlows/MCF4to4A.cat'
     ],
 
     # BAD
@@ -381,30 +379,6 @@ svg_instance = {
     #]
 }
 
-
-svg_instance = {
-    '02-GraphsNetworks/BFS.alg':[
-        '02-GraphsNetworks/BFS.cat'
-    ],
-    '06-MaximalFlows/FordFulkerson.alg':[
-        '06-MaximalFlows/FordFulkerson6.cat'
-    ],
-    '03-MinimalSpanningTrees/KruskalFindCircuit.alg':[
-    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
-    ],
-
-    # Good
-    '03-MinimalSpanningTrees/KruskalTrace.alg':[
-    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
-    ],
-
-}
-
-svg_instance = {
-    '04-LPDuality/PrimalDualKruskal.alg':[
-       '04-LPDuality/PD_Kruskal5.cat'
-    ],
-}
 
 
 #------------------------------------------------------------------
@@ -486,6 +460,10 @@ if __name__ == '__main__':
     g.Interactive = 0 # Same effect as hitting continue for interactive lines
     log = logging.getLogger("Gato")
     
+    app = AlgoWin()
+    if debug:
+        app.algorithm.logAnimator = 2
+
     if verbose:
         if sys.version_info[0:2] < (2,4):
             log.addHandler(logging.StreamHandler(sys.stdout))
@@ -495,7 +473,6 @@ if __name__ == '__main__':
                                 stream=sys.stdout,
                                 format='%(name)s %(levelname)s %(message)s')
     else:
-        app = AlgoWin()
         if app.windowingsystem == 'win32':
 
            class NullHandler(logging.Handler):
@@ -510,9 +487,6 @@ if __name__ == '__main__':
                                 filemode='w',
                                     format='%(name)s %(levelname)s %(message)s')        
     for case in tests:
-        app = AlgoWin()
-        if debug:
-            app.algorithm.logAnimator = 2
         log.info("=== TEST === "+case[0]+" === "+case[1]+" ===")
         print "=== TEST === "+case[0]+" === "+case[1]+" ==="
         app.OpenAlgorithm(testPath + case[0])

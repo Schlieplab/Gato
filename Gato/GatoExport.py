@@ -473,6 +473,18 @@ def ExportAlgoInfo(fileName, algorithm):
     info = re.sub(r'colordef\s+color="[a-zA-z#]+">', lambda match: 'div style="height: 10px; width: 10px; display:inline; background-color:%s">&nbsp&nbsp&nbsp&nbsp</div>&nbsp' % colors.pop(0), info, count=len(colors))
     file.write(info)
 
+def format_animation(animation):
+    def chunker(seq, size):
+        return (seq[pos:pos + size] for pos in xrange(0, len(seq), size))
+    if len(animation) < 32000:
+        return 'var anim_array = Array(' + ',\n'.join(animation) + ');'
+    else:
+        ret_str = 'var anim_array = Array(' + ',\n'.join(animation[:32000]) + ');\n'
+        for chunk in chunker(animation[32000:], 32000):
+            ret_str += 'anim_array.concat(Array(' + ','.join(chunk) + '));\n'
+        return ret_str
+
+
 def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=None, 
     secondaryGraphDisplayAnimationHistory=None, showAnimation=False, 
     init_edge_infos=None, init_vertex_infos=None, init_graph_infos=None):
@@ -524,8 +536,6 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
         graph_type = "undirected" if graphDisplay.G.directed == 0 else "directed"
         graph_strs.append('<g id="g1" type="%s">\n' % (graph_type))
 
-        print g1_x_add, g1_y_add
-        print g2_x_add, g2_y_add
         g1_str = get_graph_as_svg_str(graphDisplay, g1_x_add, g1_y_add, file, idPrefix=id_prefixes[0])
         graph_strs.append(g1_str)
         graph_strs.append('</g>\n')
@@ -538,14 +548,13 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
 
         # Build the Algorithm SVG string
         source = algorithm.GetSource()
-        #print source.replace('\\', '\\\\')
         tokenize.tokenize(StringIO.StringIO(source.replace('\\', '\\\\')).readline, tokenEater)
         algowin.CommitStop()
 
         # Merge the animation into the HTML
         str_vars = {
             'info_file': 'infos/' + fileName[fileName.rindex('/') + 1:], 
-            'animation': ',\n'.join(animation), 
+            'animation': format_animation(animation),
             'graph_str': '\n'.join(graph_strs), 
             'algo_str': ''.join(algo_lines),
             'g1_x_add': g1_x_add,
