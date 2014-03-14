@@ -114,7 +114,6 @@ class MoatedPartition:
         self.colorList = ["#FF0000","#FF8800","#FFFF00","#00FF00","#00FFFF","#0088FF",
                           "#0000FF","#8800FF","#FF00FF"]
         self.colorIndex = -1
-        self.InitMoats()
         
 
     def distance(self, u, v):
@@ -134,16 +133,14 @@ class MoatedPartition:
         return (e,d)
 
 
-    def InitMoats(self):
-        pass #self.graph_display.DeleteDrawVertices()
-
-    
     def NextColor(self):
         if self.colorIndex == len(self.colorList) - 1:
             self.colorIndex = - 1
         self.colorIndex = self.colorIndex + 1
         return self.colorList[self.colorIndex]
        
+    
+
         
     def GrowMoats(self,dist):
         if not getattr(self, 'grow_round', None):
@@ -867,7 +864,7 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
             vertices = graph.vertices
         if vertices is not None: # all specified vertices
             for v in vertices:
-                self.canvas.itemconfig(self.drawVertex[v], fill=color)            
+                self.canvas.itemconfig(self.drawVertex[v], fill=color)           
         self.update()        
         
         
@@ -1214,6 +1211,15 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
                 return e
             except:
                 return None
+
+    def CreateBubble(self, vertex_nums, offset_value, color):
+        pass
+
+    def ResizeBubble(self, vertex_nums, new_radius):
+        pass
+
+    def DeleteBubble(self, vertex_nums):
+        pass
 
     def CreateMoat(self, moat_id, radius, color):
         # Moat ID is of form 'moat_{vertex_num}-{moat_num}'

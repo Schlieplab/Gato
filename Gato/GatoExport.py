@@ -200,7 +200,6 @@ def cmd_as_javascript(cmd, idPrefix=''):
         target = quote(cmd.target, idPrefix)
         
     result = [cmd.time, cmd.method.__name__, target]
-        
     for arg in cmd.args:
         result.append(quote(arg))
     
@@ -208,7 +207,7 @@ def cmd_as_javascript(cmd, idPrefix=''):
     if cmd.method.__name__ == 'SetAllVerticesColor' and 'vertices' in cmd.kwargs:
         for v in cmd.kwargs['vertices']:
             result.append(quote(v))
-    
+
     return result
 
 def change_id_format(field):
@@ -235,14 +234,10 @@ def collectAnimations(histories, prefixes):
         duration = max(1,int(round((cmd[0] - currentTime) * 1000, 0)))
         currentTime = cmd[0]
         mergedCmds[i][0] = str(duration)
-
-        # We want to change the ids to a different form
+        # We want to change the edge ids to a different form
         for j in xrange(2, len(mergedCmds[i])):
-            #if mergedCmds[i][1] == 'UpdateEdgeInfo' and j == 3:
-            #    continue
             if 'Edge' in mergedCmds[i][1]:
                 mergedCmds[i][j] = change_id_format(mergedCmds[i][j])
-            #mergedCmds[i][j] = mergedCmds[i][j].replace(' ', '').replace('(', '').replace(')', '').replace(',', '-')
     return ["Array(" + ", ".join(cmd) + ")" for cmd in mergedCmds]
 
 def get_edge_id(v, w, idPrefix):
@@ -375,11 +370,8 @@ def get_graph_as_svg_str(graphDisplay, x_add, y_add, file, idPrefix=''):
 
     for v in graphDisplay.G.Vertices():
         x,y,r = graphDisplay.VertexPositionAndRadius(v)
-        print x_add
         y = y - y_add
         x = x - x_add
-        #print x
-        #print
 
         # Write Vertex
         col = graphDisplay.GetVertexColor(v)
@@ -495,21 +487,17 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
         init_edge_infos: list of dictionaries with keys that are tuples of form (v1, v2) where v1 and v2 are the vertices
             that an edge connects.  The values keys point to are the initial edge infos of that edge.
     """
-    #print 'IN GATO EXPORT'
-    #print init_vertex_infos
     global algo_lines
     algo_lines = []
 
     if showAnimation:
         try:
             if secondaryGraphDisplayAnimationHistory:
-                #x_add, y_add = compute_coordinate_shifts([graphDisplay, secondaryGraphDisplay], [algorithm.animation_history.getHistoryOne(), secondaryGraphDisplayAnimationHistory.getHistoryTwo()])
                 animation = collectAnimations([algorithm.animation_history.getHistoryOne(),
                                                secondaryGraphDisplayAnimationHistory.getHistoryTwo(),
                                                algowin.codeLineHistory],
                                               ['g1_', 'g2_', 'l_'])
             else:
-                #x_add, y_add = compute_coordinate_shifts([graphDisplay], [algorithm.animation_history.getHistoryOne()])
                 animation = collectAnimations([algorithm.animation_history.getHistoryOne(),
                                                algowin.codeLineHistory],
                                               ['g1_', 'l_'])
@@ -522,14 +510,24 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
             return
 
         # Figure out how much we want to pull the graph to the left and top before we reset the graph
-        g1_x_add, g1_y_add = compute_coord_changes(graphDisplay)
-        g2_x_add, g2_y_add = 0, 0
+        # These 
+        end_g1_x_add, end_g1_y_add = compute_coord_changes(graphDisplay)
+        end_g2_x_add, end_g2_y_add = 0, 0
         if secondaryGraphDisplay:
-            g2_x_add, g2_y_add = compute_coord_changes(secondaryGraphDisplay)
+            end_g2_x_add, end_g2_y_add = compute_coord_changes(secondaryGraphDisplay)
 
         # Reload the graph and execute prolog so we can save the initial state to SVG
         algorithm.Start(prologOnly=True)
         file = open(fileName, 'w')
+
+        start_g1_x_add, start_g1_y_add = compute_coord_changes(graphDisplay)
+        g1_x_add = min(start_g1_x_add, end_g1_x_add)
+        g1_y_add = min(start_g1_y_add, end_g1_y_add)
+        start_g2_x_add, start_g2_y_add, g2_x_add, g2_y_add = 0, 0, 0, 0
+        if secondaryGraphDisplay:
+            start_g2_x_add, start_g2_y_add = compute_coord_changes(secondaryGraphDisplay)
+            g2_y_add = min(start_g2_y_add, end_g2_y_add)
+            g2_x_add = min(start_g2_x_add, end_g2_x_add)
 
         # Build the SVG graph string
         graph_strs = []

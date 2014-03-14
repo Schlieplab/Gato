@@ -379,6 +379,14 @@ svg_instance = {
     #]
 }
 
+svg_instance = {
+    # BAD
+    '09-WeightedMatching/WeightedMatching.alg':[
+      '09-WeightedMatching/bipmatch.cat', '09-WeightedMatching/var2zero.cat',
+       '09-WeightedMatching/twotriangles.cat'
+    ]
+}
+
 
 
 #------------------------------------------------------------------
@@ -488,7 +496,6 @@ if __name__ == '__main__':
                                     format='%(name)s %(levelname)s %(message)s')        
     for case in tests:
         log.info("=== TEST === "+case[0]+" === "+case[1]+" ===")
-        print "=== TEST === "+case[0]+" === "+case[1]+" ==="
         app.OpenAlgorithm(testPath + case[0])
         g.Interactive = 0
         app.algorithm.ClearBreakpoints()

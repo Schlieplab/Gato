@@ -10,6 +10,9 @@ function Animation() {
 		} else if (g.growing_moats) {
 			g.growing_moats = false;
 			g.moat_growing_time = null;
+		} 
+		if (anim[1] === ResizeBubble) {
+			g.bubble_resize_time = anim[0]*this.step_ms;
 		}
 
 		if (anim.length === 3) {
@@ -191,6 +194,8 @@ function Animation() {
 								delete_vertex_annotation(id);
 							} else if (elem_type === 'moats') {
 								DeleteMoat(id);
+							} else if (elem_type === 'bubbles') {
+								DeleteBubbleWithId(id);
 							}
 						}
 					}
@@ -285,7 +290,7 @@ function Animation() {
 				continue;
 			}
 			this.do_command(anim_array[i]);
-			if (anim_array[i][1] === AddVertex || anim_array[i][1] === AddEdge) {
+			if (anim_array[i][1] === AddVertex || anim_array[i][1] === AddEdge || anim_array[i][1] === ResizeBubble) {
 				// If the graph has potentially changed sizes then record the size to use for the frame
 				record_max_graph_size(parseInt(anim_array[i][2].substring(1,2))-1);
 			}
@@ -294,7 +299,6 @@ function Animation() {
 		this.graph_states = states;
 		this.jump_to_step(0);
 	}
-
 
 
 	this.initialize_variables = function() {
@@ -333,7 +337,6 @@ function Slider(width, height) {
 		} else if (new_x > self.cursor_max_x) {
 			new_x = self.cursor_max_x;
 		}
-		console.log(new_x);
 
 		self.cursor.attr({'x': new_x});
 		var step = self.get_step_for_position(new_x / self.step_width);
@@ -538,7 +541,19 @@ function SetAllVerticesColor() {
 		}
 	} else {
 		for (var i=1; i<arguments.length; i++) {
-			g.vertices[g_num-1]['g' + (g_num) + '_' + arguments[i]].attr({'fill': color});
+			if (is_multiple_vertices(arguments[i])) {
+				// Weighted matching sometimes passes in vertices like (v1, v2, v3...)
+				var vertex_nums = get_ints_from_str(arguments[i]);
+				console.log(arguments[i]);
+				console.log(vertex_nums);
+				for (var v in vertex_nums) {
+					console.log('g' + (g_num) + '_' + vertex_nums[v]);
+					console.log(g.vertices[1]);
+					g.vertices[g_num-1]['g' + (g_num) + '_' + vertex_nums[v]].attr({'fill': color});
+				}
+			} else {
+				g.vertices[g_num-1]['g' + (g_num) + '_' + arguments[i]].attr({'fill': color});
+			}
 		}
 	}
 }
@@ -702,7 +717,7 @@ function createArrowhead(vx, vy, wx, wy, stroke_width, id){
 
 //Directed or undirected added to graph.
 function AddEdge(edge_id){
-	var graph_num = graph_num_from_id(edge_id);
+	var graph_num = parseInt(edge_id.substring(1,2)) - 1;
     var graph_id = edge_id.split("_")[0];
     var vertices = edge_id.split("_")[1].match(/\d+/g);
     var v = g.vertices[graph_num][graph_id + '_' + vertices[0]];
@@ -832,6 +847,7 @@ function AddEdge(edge_id){
     	g.edge_groups[graph_num][group.attr('id')] = group;
     	add_tooltip(group, 'edge');
     }
+    group.insertBefore(v);
 
     return [edge, arrowhead];
 }
@@ -914,10 +930,10 @@ function DeleteVertex(vertex_id) {
 }
 
 function CreateMoat(moat_id, radius, color) {
-	radius = parseFloat(radius)
+	radius = parseFloat(radius);
 	var g_num = parseInt(moat_id.substring(1,2));
 	var v_num = get_vertex_num(moat_id);
-	var vertex = g.vertices[g_num-1]['g' + g_num + '_' + v_num];
+	var vertex = g.vertices[g_num-1][get_vertex_id(g_num, v_num)];
 	if (!radius) {
 		radius = g.vertex_r;
 	}
@@ -946,6 +962,63 @@ function DeleteMoat(moat_id) {
 	var moat = g.moats[g_num-1][moat_id];
 	delete g.moats[g_num-1][moat_id];
 	moat.remove();
+}
+
+function CreateBubble(which_graph, vertex_nums_str, offset_values_str, color) {
+	// which_graph: string of form g1_() or g2_()
+	// vertex_nums_str: python list as string "[v1, v2, v3...]" that contains all of the vertices for this bubble
+	// offset_values: python list as string "[v1_offset, v2_offset, ...]"
+	var vertex_nums = get_ints_from_str(vertex_nums_str);
+	var offset_values = get_floats_from_str(offset_values_str);
+	var g_num = parseInt(which_graph.substring(1,2));
+	for (var i=0; i<vertex_nums.length; i++) {
+		var vertex = g.vertices[g_num-1][get_vertex_id(g_num, vertex_nums[i])];
+		var bubble_id = get_bubble_id(vertex, vertex_nums);
+		var bubble = snap.circle(vertex.attr('cx'), vertex.attr('cy'), 0).attr({
+			'id': bubble_id,
+			'class': 'bubbles',
+			'fill': color
+		});
+		g.bubbles[g_num-1][bubble_id] = bubble;
+		g.bubble_offsets[g_num-1][bubble_id] = offset_values[i];
+		g.graphs[g_num-1].prepend(bubble);
+	}
+}
+
+function ResizeBubble(which_graph, vertex_nums_str, new_radius) {
+	var vertex_nums = get_ints_from_str(vertex_nums_str);
+	var g_num = parseInt(which_graph.substring(1,2));
+	for (var i=0; i<vertex_nums.length; i++) {
+		var vertex = g.vertices[g_num-1][get_vertex_id(g_num, vertex_nums[i])];
+		var bubble_id = get_bubble_id(vertex, vertex_nums);
+		var bubble = g.bubbles[g_num-1][bubble_id];
+		//console.log(new_radius);
+		var our_radius = parseInt(new_radius) + parseInt(Math.floor(g.bubble_offsets[g_num-1][bubble_id]));
+		if (!g.jumping) {
+			bubble.animate({'r': our_radius}, g.bubble_resize_time);
+		} else {
+			bubble.attr('r', our_radius);
+		}
+	}
+}
+
+function DeleteBubble(which_graph, vertex_nums_str) {
+	var vertex_nums = get_ints_from_str(vertex_nums_str);
+	var g_num = parseInt(which_graph.substring(1,2));
+	for (var i=0; i<vertex_nums.length; i++) {
+		var vertex = g.vertices[g_num-1][get_vertex_id(g_num, vertex_nums[i])];
+		var bubble_id = get_bubble_id(vertex, vertex_nums);
+		var bubble = g.bubbles[g_num-1][bubble_id];
+		delete g.bubbles[g_num-1][bubble_id];
+		bubble.remove();
+	}
+}
+
+function DeleteBubbleWithId(bubble_id) {
+	var g_num = parseInt(bubble_id.substring(1,2));
+	var bubble = g.bubbles[g_num-1][bubble_id];
+	bubble.remove()
+	delete g.bubbles[g_num-1][bubble_id];
 }
 
 function Wait(t) {

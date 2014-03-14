@@ -1,3 +1,46 @@
+
+function get_bubble_id(vertex, vertex_nums) {
+    return vertex.attr('id') + '_bubble_' + vertex_nums.join();
+}
+
+function get_vertex_id(g_num, vertex_num) {
+    return 'g' + g_num + '_' + vertex_num;
+}
+
+function is_multiple_vertices(vertex_str) {
+    var re = /\d+/g;
+    var matches = vertex_str.match(re);
+    if (matches && matches.length > 1) {
+        return true;
+    }
+    return false;
+}
+
+function get_ints_from_str(list_str) {
+    var re = /\d+/g;
+    var matches = list_str.match(re);
+    if (matches) {
+        return matches.map(function(x) {
+            return parseInt(x);
+        });
+    } else {
+        return null;
+    }
+}
+
+function get_floats_from_str(list_str) {
+    var re = /[+-]?\d+(\.\d+)?/g;
+    var matches = list_str.match(re);
+    if (matches) {
+        return matches.map(function(x) {
+            return parseFloat(x);
+        });
+    } else {
+        return null;
+    }
+}
+
+
 function get_moat_growing_time(step_num) {
     for (var i=step_num; i<anim_array.length; i++) {
         var anim = anim_array[i];
@@ -96,12 +139,16 @@ function record_max_graph_size(g_num) {
         var bbox = g.graphs[i].getBBox();
         var width = bbox.width;
         var height = bbox.height;
+        var x = bbox.x;
         var max_sizes = g.max_graph_sizes[i];
-        if (width > max_sizes.width) {
+        if (!max_sizes.width || width > max_sizes.width) {
             max_sizes.width = width;
         }
-        if (height > max_sizes.height) {
+        if (!max_sizes.height || height > max_sizes.height) {
             max_sizes.height = height;
+        }
+        if (!max_sizes.left || x < max_sizes.left) {
+            max_sizes.left = x;
         }
     }
 }

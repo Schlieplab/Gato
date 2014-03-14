@@ -54,6 +54,10 @@ class AnimationCommand:
         self.undo_method = undo_method
         self.undo_args = undo_args
 
+        #if self.method.__name__ == 'SetAllVerticesColor':
+        #    print 'it is:', self.kwargs
+        #    print id(self)
+
         self.time = time.time()
 
     def CanUndo(self):
@@ -63,7 +67,6 @@ class AnimationCommand:
         #return apply(self.method, self.target + self.args)
         args = self.target + self.args
         return self.method(*args,**self.kwargs)
-        
         
     def Undo(self):
         if self.canUndo:
@@ -83,6 +86,8 @@ class AnimationCommand:
         if self.method == "UpdateEdgeInfo":
             return '%s(%s, %s, "%s")' % (self.method, self.target[0], self.target[1], self.args[0])
         """
+        # print self.method.__name__
+        # print self.args
 
         if len(self.target) == 1:
             t = self.target[0]
@@ -91,6 +96,9 @@ class AnimationCommand:
 
         if self.kwargs:
             kwstr = ["%s=%s" % (str(key),str(val)) for key,val in self.kwargs.items()]
+            # if 'SetAll' in self.method.__name__:
+            #     print 'kwargs: ', self.kwargs
+            #     print 'kwstr: ', kwstr
             kwstr = ",".join(kwstr)
         else:
             kwstr = ''
@@ -101,8 +109,8 @@ class AnimationCommand:
             argstr = str(self.args[0])
         else:
             argstr = ",".join(self.args)
-                
-        return "%s(%s,%s) %s" % (self.method.__name__, t, argstr, kwstr)      
+
+        return "%s(%s,%s) %s" % (self.method.__name__, t, argstr, kwstr)
 
 
 class AnimationHistory:
@@ -141,6 +149,11 @@ class AnimationHistory:
             print "We're in display 1"""
         AnimationHistory.merged = MergedHistories.MergedHistories()
         
+    def print_set_all_vertices(self):
+        for h in self.getHistoryTwo():
+            if 'SetAll' in h.method.__name__:
+                print h.kwargs
+
 
     def UpdateEdgeInfo(self, tail, head, info):
         if self.auto_print == 1:
@@ -198,6 +211,23 @@ class AnimationHistory:
         if self.auto_print == 1:
             AnimationHistory.merged.auto_print = 1
         AnimationHistory.merged.BlinkEdge(tail, head, self.animator, self.displayNum, color)
+
+    def CreateBubble(self, vertex_nums, offset_value, color):
+        if self.auto_print == 1:
+            AnimationHistory.merged.auto_print = 1
+        AnimationHistory.merged.CreateBubble(vertex_nums, offset_value, color, self.animator, self.displayNum)
+       
+
+    def ResizeBubble(self, vertex_nums, new_radius):
+        if self.auto_print == 1:
+            AnimationHistory.merged.auto_print = 1
+        AnimationHistory.merged.ResizeBubble(vertex_nums, new_radius, self.animator, self.displayNum)
+
+    def DeleteBubble(self, vertex_nums):
+        if self.auto_print == 1:
+            AnimationHistory.merged.auto_print = 1
+        AnimationHistory.merged.DeleteBubble(vertex_nums, self.animator, self.displayNum)
+
 
     def CreateMoat(self, moat_id, radius, color):
         if self.auto_print == 1:

@@ -115,7 +115,7 @@ class MergedHistories:
                                          canUndo=False)  
         animation.Do()
         self.append(animation, display)
-        
+
     def SetAllEdgesColor(self, color, animator, display, leaveColor=None, graph=None, edges=None):
         if self.animator1 is None:
             if display==1:
@@ -171,6 +171,40 @@ class MergedHistories:
         animation = AnimationHistory.AnimationCommand(animator.BlinkVertex, (v,), (color,))
         animation.Do()
         self.append(animation, display)
+
+    def CreateBubble(self, vertex_nums, offset_value, color, animator, display):
+        if self.animator1 is None:
+            if display==1:
+                self.animator1 = animator
+        if self.animator2 is None:
+            if display==2:
+                self.animator2 = animator
+        animation = AnimationHistory.AnimationCommand(animator.CreateBubble, (), (vertex_nums, offset_value, color), canUndo=False)
+        animation.Do()
+        self.append(animation, display)
+
+    def ResizeBubble(self, vertex_nums, new_radius, animator, display):
+        if self.animator1 is None:
+            if display==1:
+                self.animator1 = animator
+        if self.animator2 is None:
+            if display==2:
+                self.animator2 = animator
+        animation = AnimationHistory.AnimationCommand(animator.ResizeBubble, (), (vertex_nums, new_radius), canUndo=False)
+        animation.Do()
+        self.append(animation, display)
+
+    def DeleteBubble(self, vertex_nums, animator, display):
+        if self.animator1 is None:
+            if display==1:
+                self.animator1 = animator
+        if self.animator2 is None:
+            if display==2:
+                self.animator2 = animator
+        animation = AnimationHistory.AnimationCommand(animator.DeleteBubble, (), (vertex_nums,), canUndo=False)
+        animation.Do()
+        self.append(animation, display)
+
 
     def CreateMoat(self, moat_id, radius, color, animator, display):
         if self.animator1 is None:

@@ -294,6 +294,9 @@ function position_graph() {
 		}
 		if (max_size.width) {
 			var diff = max_size.width - graph_bbox.width;
+			if (max_size.left) {
+				diff += max_size.left;
+			}
 			if (diff > 0 && graph_bbox.height != 0) {
 				g.graph_translate[i].x += diff/2;
 			}
