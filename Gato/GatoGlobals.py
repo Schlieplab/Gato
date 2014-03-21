@@ -157,7 +157,9 @@ gProperty = {
     'EvenOrder':(0, 'an even number of vertices', 'even order'),
     # Whether the first set of edge weights G.edgeWeights[0] are all non-negative
     'NonNegativeEdgeWeights':(0, 'edge weights which are all non-negative',
-                              'non-negative edge weights')
+                              'non-negative edge weights'),
+    # Number of edges on graph
+    'Size': (0, 'no edges', 'number of edges')
     }
 
 

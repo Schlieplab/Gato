@@ -1,6 +1,5 @@
 function Animation() {
 	this.do_command = function(anim) {
-		//console.log("Doing " + String(anim[1]).split('(')[0]);
 		// Handle growing of moats
 		if (anim[1] === GrowMoat) {
 			g.growing_moats = true;
@@ -21,7 +20,6 @@ function Animation() {
 			anim[1](anim[2], anim[3]);
 		} else {
 			anim[1].apply(this, anim.slice(2));
-			//anim[1](anim.slice(2));
 		}
 	}
 	this.animator = function() {
@@ -50,6 +48,7 @@ function Animation() {
 			this.do_command(anim);
 			this.step_num ++;
 			g.slider.go_to_step(this.step_num, anim[0]*this.step_ms);
+			// console.log("Doing " + String(anim[1]).split(' ')[1]);
 			var self = this;
 			this.scheduled_animation = setTimeout(function() {self.animator()}, anim[0]*this.step_ms);
 		}
@@ -381,7 +380,7 @@ function Slider(width, height) {
 		/* Positions the cursor at the position corresponding to step number n */
 		var position = this.slider_positions[n];
 		if (time) {
-			var diff = position*this.step_width - parseInt(this.cursor.attr('x'));
+			// var diff = position*this.step_width - parseInt(this.cursor.attr('x'));
 			this.cursor.animate({'x': position*this.step_width}, time);
 		} else {
 			this.cursor.attr({'x': position*this.step_width});
@@ -399,9 +398,6 @@ function Slider(width, height) {
 		this.position_to_step[sum] = i;
 		this.slider_positions.push(sum);
 		this.slider_max_position = this.slider_positions[this.slider_positions.length-1];
-		
-		// Create an object storing position and 
-
 		return this.cursor_max_x / sum;
 	}
 	this.stop_animating = function() {

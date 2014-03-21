@@ -85,7 +85,7 @@ class Graph:
         self.edgeWeights      = {}   # Dictionary of edge labellings
         self.edgeWeights[0]   = EdgeWeight(self)
         self.vertexWeights    = {}   # None by default
-        self.size             = 0
+        self.size             = 0    # Number of edges
         self.edgeWidth        = None
         self.vertexAnnotation = None
         self.edgeAnnotation   = None
@@ -443,7 +443,9 @@ class Graph:
             #if self.euclidian:
             #    return True
             #else:
-            return self.QNonNegativeEdgeWeights()     
+            return self.QNonNegativeEdgeWeights() 
+        elif name == 'Size':
+            return self.size
         else:
             try:
                 return self.properties[name]

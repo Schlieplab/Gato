@@ -1795,7 +1795,6 @@ class Algorithm:
             self.algoGlobals['A'] = self.animation_history
         else:
             self.algoGlobals['A'] = self.GUI.graphDisplay
-        self.algoGlobals['GD'] = self.GUI.graphDisplay
 
         # Explictely load packages we want to make available to the algorithm
         # NOTE: algorithm prologs should not import Gato modules directly
@@ -1965,7 +1964,7 @@ class Algorithm:
         
             Proper names for properties are defined in gProperty
         """
-        for property,requiredValue in propertyValueDict.iteritems():
+        for property, requiredValue in propertyValueDict.iteritems():
             failed = 0
             value = self.graph.Property(property)
             if value != 'Unknown':   

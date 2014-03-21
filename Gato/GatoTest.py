@@ -372,17 +372,18 @@ svg_instance = {
         '08-Matching/Edmonds1.cat', '08-Matching/Edmonds3.cat', '08-Matching/Edmonds6.cat'
     ],
     
-    # BAD
-    #'09-WeightedMatching/WeightedMatching.alg':[
-    #   '09-WeightedMatching/bipmatch.cat', '09-WeightedMatching/var2zero.cat',
-    #   '09-WeightedMatching/twotriangles.cat'
-    #]
+    # Good
+    '09-WeightedMatching/WeightedMatching.alg':[
+       '09-WeightedMatching/k4.cat', '09-WeightedMatching/var2zero.cat',
+       '09-WeightedMatching/11vs13.cat'
+    ]
 }
 
 svg_instance = {
-    '04-LPDuality/PrimalDualKruskal.alg':[
-       '04-LPDuality/PD_Kruskal5.cat'
-    ],
+    '09-WeightedMatching/WeightedMatching.alg':[
+       '09-WeightedMatching/k4.cat', '09-WeightedMatching/var2zero.cat',
+       '09-WeightedMatching/11vs13.cat'
+    ]
 }
 
 
