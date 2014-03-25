@@ -356,7 +356,7 @@ function Slider(width, height) {
 		var new_x = this.start_cursor_x + parseInt(evt.clientX) - self.start_mouse_x;
 		if (new_x > this.cursor_max_x) {
 			new_x = this.cursor_max_x;
-			step = anim_array.length - 1;
+			step = anim_array.length;
 		} else if (new_x < this.cursor_min_x) {
 			new_x = this.cursor_min_x;
 			step = 0;
@@ -464,7 +464,7 @@ function SetVertexColor(vertex_id, color) {
 
 function UpdateEdgeInfo(edge_id, info) {
 	var graph_num = parseInt(edge_id.substring(1,2));
-	var tooltip_id = edge_id + '_tooltip';
+	var tooltip_id = edge_id + '_group_tooltip';
 	var tooltip = g.tooltip_objects[tooltip_id];
 	if (tooltip != null) {
 		tooltip.change_text(info);
@@ -839,7 +839,7 @@ function AddEdge(edge_id){
 }
 
 //Deletes edge of corresponding id from graph
-function DeleteEdge(edge_id){
+function DeleteEdge(edge_id) {
 	var graph_num = graph_num_from_id(edge_id);
 	var graph_id = edge_id.substring(0,2);
 	var vertices = edge_id.split("_")[1].match(/\d+/g);
@@ -873,7 +873,7 @@ function DeleteEdge(edge_id){
 }
 
 //Adds vertex of into specified graph and coordinates in graph
-function AddVertex(graph_and_coordinates, vertex_num){
+function AddVertex(graph_and_coordinates, vertex_num) {
 	var graph_num = graph_and_coordinates.substring(1, 2);
 	var coords = graph_and_coordinates.split("(")[1].match(/[\d\.]+/g);
 	var x = parseFloat(coords[0]) - g.coord_changes[graph_num-1].x,
@@ -882,14 +882,16 @@ function AddVertex(graph_and_coordinates, vertex_num){
 	var vertex_id = 'g' + graph_num + '_' + vertex_num;
 	var group_id = vertex_id + '_group';
 	var group = snap.group().attr({
-		'id': group_id
+		'id': group_id,
+		'cursor': 'pointer'
 	});
 	g.vertex_groups[graph_num-1][group_id] = group;
 	var vertex = snap.circle(x, y, g.vertex_r).attr({
 		'id': vertex_id,
 		'class': 'vertex',
 		'fill': '#808080',
-		'style': 'filter: url(#dropshadow)'
+		'style': 'filter: url(#dropshadow)',
+		'cursor': 'pointer'
 	});
 	g.vertices[graph_num-1][vertex_id] = vertex;
 	//g.graphs[graph_num-1].append(vertex);
@@ -907,6 +909,7 @@ function AddVertex(graph_and_coordinates, vertex_num){
 	group.append(vertex_label);
 	//g.graphs[graph_num-1].append(vertex_label);
 	g.graphs[graph_num-1].append(group);
+	add_tooltip(group, 'vertex');
 
 	return vertex;
 }

@@ -95,9 +95,8 @@ function add_scaler() {
 	g.graph_containers[g.num_graphs-1].append(g.scaler.elem);
 }
 
-function ToolTip(elem, graph_index, elem_type) {
-	/* Takes in an element to put the tooltip on, and index of the graph(in global arrays),
-	elem_type is either 'edge' or 'vertex' */
+function ToolTip(elem, elem_type) {
+	/* Takes in an element to put the tooltip on elem_type is either 'edge' or 'vertex' */
 	this.mouseover = function(evt) {
 		// Move the tooltip to the cursor and make visible
 		if (!this.frame_is_sized) {
@@ -109,23 +108,34 @@ function ToolTip(elem, graph_index, elem_type) {
 		this.g.attr({'visibility': 'visible'});
 		this.mousemove(evt);
 	};
+	
 	this.mousemove = function(evt) {
+		// Move the tooltip to the cursor
 		var x_trans = evt.clientX - this.frame_width;
 		var y_trans = evt.clientY + this.frame_height/2;
 		this.g.transform('t' + x_trans + ',' + y_trans);
 	};
 
 	this.mouseout = function(evt) {
+		// Hide the tooltip
 		this.g.attr({'visibility': 'hidden'});
 	};
 
 	this.change_text = function(text) {
+		// Change the content of the ToolTip text node
 		this.text_content = text;
 		this.text_elem.node.innerHTML = text;
 		this.frame_is_sized = false;
 	};
 
 	this.delete_self = function() {
+		// Remove the tooltip from the canvas, and from the 
+		// global tooltips and tooltip_objects arrays
+		for (var key in g.tooltips[this.g_num-1]) {
+			if (g.tooltips[this.g_num-1][key] === this.text_elem) {
+				delete g.tooltips[this.g_num-1][key];
+			}
+		}
 		this.text_elem.remove();
 		this.frame.remove();
 		this.g.remove();
@@ -133,18 +143,19 @@ function ToolTip(elem, graph_index, elem_type) {
 	}
 
 	var elem_id = elem.attr('id');
+	this.g_num = parseInt(elem_id.substring(1,2));
 	this.id = elem_id + '_tooltip';
 	this.g = snap.group().attr({
 		'id': this.id,
 	});
 	this.elem = elem;
-	this.frame_is_sized = true; 	// True when the frame matches the text size
+	this.frame_is_sized = true; 	
 
 	// Build the tooltip
 	if (elem_type === 'edge') {
-		this.text_content = get_default_edge_info(elem_id, graph_index);
+		this.text_content = get_default_edge_info(elem_id, this.g_num-1);
 	} else {
-		this.text_content = get_default_vertex_info(elem_id, graph_index);
+		this.text_content = get_default_vertex_info(elem_id, this.g_num-1);
 	}
 	this.text_elem = snap.text(0, 0, this.text_content);
 	this.g.append(this.text_elem);
@@ -185,18 +196,19 @@ function ToolTip(elem, graph_index, elem_type) {
 	});
 }
 
-function add_tooltips() {
+function initialize_tooltips() {
+	// This function creates tooltips for all of the vertices and edges current on the graph
+	// It does not respect existing ToolTips so call at the beginning of the program run
 	for (var g_num=0; g_num<g.num_graphs; g_num++) {
-		g.tooltips.push({});
 		var edge_groups = g.edge_groups[g_num];
 		for (var key in edge_groups) {
-			var tooltip = new ToolTip(edge_groups[key], g_num, 'edge');
+			var tooltip = new ToolTip(edge_groups[key], 'edge');
 			g.tooltip_objects[tooltip.id] = tooltip;
 			g.tooltips[g_num][tooltip.id] = tooltip.text_elem;
 		}
 		var vertex_groups = g.vertex_groups[g_num];
 		for (var key in vertex_groups) {
-			var tooltip = new ToolTip(vertex_groups[key], g_num, 'vertex');
+			var tooltip = new ToolTip(vertex_groups[key], 'vertex');
 			g.tooltip_objects[tooltip.id] = tooltip;
 			g.tooltips[g_num][tooltip.id] = tooltip.text_elem;
 		}
@@ -204,9 +216,10 @@ function add_tooltips() {
 }
 
 function add_tooltip(elem, element_type) {
+	// Adds a tooltip to the given element(always a edge group or vertex group right now)
+	// element_type is either 'edge' or 'vertex' right now-- we need to the element_type to determine default tooltip info
 	var elem_id = elem.attr('id');
 	var graph_num = parseInt(elem_id.substring(1,2));
-	// console.log('fdsadsfds');
 	var tooltip = new ToolTip(elem, graph_num-1, element_type);
 	g.tooltip_objects[tooltip.id] = tooltip;
 	g.tooltips[graph_num-1][tooltip.id] = tooltip.text_elem;
@@ -498,6 +511,7 @@ function ControlPanel(cog_width, cog_height, width, height) {
 }
 
 function PlaybackBar() {
+	// Object to represent the whole playback bar at the bottom
 	this.g = snap.group();
 	this.width = g.cont_width * 3/4 - g.padding*2;
 	this.height = 40;

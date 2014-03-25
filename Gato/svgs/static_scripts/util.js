@@ -1,15 +1,17 @@
-
 function get_bubble_id(vertex, vertex_nums) {
+    // Given a vertex attr and the vertex numbers the bubble connects, return a bubble id
     return vertex.attr('id') + '_bubble_' + vertex_nums.join('-');
 }
 
 function get_vertex_id(g_num, vertex_num) {
+    // Given a graph number and a vertex number construct an id
     return 'g' + g_num + '_' + vertex_num;
 }
 
-function is_multiple_vertices(vertex_str) {
+function is_multiple_vertices(add_vertex_str) {
+    // Returns true if the add_vertex_str has multiple vertices
     var re = /\d+/g;
-    var matches = vertex_str.match(re);
+    var matches = add_vertex_str.match(re);
     if (matches && matches.length > 1) {
         return true;
     }
@@ -17,6 +19,7 @@ function is_multiple_vertices(vertex_str) {
 }
 
 function get_ints_from_str(list_str) {
+    // Given a python list of ints, return a javascript array of ints
     var re = /\d+/g;
     var matches = list_str.match(re);
     if (matches) {
@@ -29,6 +32,7 @@ function get_ints_from_str(list_str) {
 }
 
 function get_floats_from_str(list_str) {
+    // Given a python list of floats, return a javascript array of floats
     var re = /[+-]?\d+(\.\d+)?/g;
     var matches = list_str.match(re);
     if (matches) {
@@ -42,6 +46,8 @@ function get_floats_from_str(list_str) {
 
 
 function get_moat_growing_time(step_num) {
+    // Given a step_number, this will find the first Wait() command
+    // that follows that step_number and return the animation length of that Wait command
     for (var i=step_num; i<anim_array.length; i++) {
         var anim = anim_array[i];
         if (anim[1] === Wait) {
@@ -63,7 +69,7 @@ function switch_edge_vertices(edge_id, suffix) {
 }
 
 function get_edge_vertices(edge_id) {
-    /* Returns the two vertices an edge is connecting.  If edge_id is malformed returns null */
+    // Returns the two vertices an edge is connecting.  If edge_id is malformed returns null
     var re = /\d+/g;
     var matches = edge_id.match(re);
     if (matches) {
@@ -73,6 +79,7 @@ function get_edge_vertices(edge_id) {
 }
 
 function get_vertex_num(id) {
+    // Returns an int representing the number associated with the vertex
     var re = /\d+/g;
     var matches = id.match(re);
     if (matches) {
@@ -82,17 +89,18 @@ function get_vertex_num(id) {
 }
 
 function get_default_edge_info(edge_g_id, graph_index) {
+    // Given an edge id this will reutrn the initial edge info
     var vertices = get_edge_vertices(edge_g_id);
     var init_infos = g.init_edge_infos[graph_index];
     if (!init_infos) {
         return 'Edge (' + vertices[0] + ', ' + vertices[1] + ')';
     }
-    var info = init_infos[edge_g_id];
+    var edge_id = edge_g_id.split('_group')[0];
+    var info = init_infos[edge_id];
     if (!info) {
-        info = init_infos[switch_edge_vertices(edge_g_id, '_group')];
+        info = init_infos[switch_edge_vertices(edge_id)];
     }
     if (!info) {
-        
         if (!vertices) {
             info = '';
         } else {
@@ -103,6 +111,7 @@ function get_default_edge_info(edge_g_id, graph_index) {
 }
 
 function get_default_vertex_info(vertex_g_id, graph_index) {
+    // Given a vertex id this will return the initial info
     var init_infos = g.init_vertex_infos[graph_index];
     var vertex_num = get_vertex_num(vertex_g_id);
     if (!init_infos) {
@@ -114,18 +123,6 @@ function get_default_vertex_info(vertex_g_id, graph_index) {
         return 'Vertex ' + vertex_num;
     }
     return info;
-}
-
-function fix_coord_changes() {
-    for (var g_num=0; g_num<g.num_graphs; g_num++) {
-        var coords = g.coord_changes[g_num];
-        if (g.min_x[g_num] !== null) {
-            coords.x = Math.max(coords.x, g.min_x[g_num]);
-        }
-        if (g.min_y[g_num] !== null) {
-            coords.y = Math.max(coords.y, g.min_y[g_num]);
-        }
-    }
 }
 
 function record_max_graph_size(g_num) {
@@ -155,6 +152,9 @@ function record_max_graph_size(g_num) {
 
 
 function remove_trailing_whitespace_lines() {
+    // This function will remove any line elements from the g.code_lines object 
+    // and the canvas if they are trailing whitespace lines
+
     // Find the last line that has content 
     var last_content = 0;
     for (var key in g.code_lines) {
@@ -177,11 +177,31 @@ function remove_trailing_whitespace_lines() {
 }
 
 function get_evt_target(evt) {
+    // Returns the target of an event.  We need this because
+    // the attribute is stored in different places for different browsers
     var target = evt.srcElement;
     if (!target) {
         target = evt.target;
     }
     return target;
+}
+
+function construct_AddVertex_argument_from_state(state) {
+    // Given a state object of a vertex this will create the argument
+    // to AddVertex that will produce that vertex
+    var g_num = parseInt(state['id'].substring(1,2));
+    var x = parseFloat(state['cx']) + g.coord_changes[g_num-1].x;
+    var y = parseFloat(state['cy']) + g.coord_changes[g_num-1].y;
+    return 'g' + g_num + '_(' + x + ', ' + y + ')';
+}
+
+function remove_scheduled_vertex_blinks(vertex_id) {
+    // Given a vertex_id this will remove any scheduled vertex blinks, if any
+    var timeout_arr = g.blinking_vertices[vertex_id];
+    for (var i=0; i<timeout_arr.length; i++) {
+        clearTimeout(timeout_arr[i]);
+    }
+    delete g.blinking_vertices[vertex_id];
 }
 
 function remove_all_scheduled_vertex_blinks() {
@@ -190,28 +210,8 @@ function remove_all_scheduled_vertex_blinks() {
     }
 }
 
-function remove_scheduled_vertex_blinks(vertex_id) {
-    var timeout_arr = g.blinking_vertices[vertex_id];
-    for (var i=0; i<timeout_arr.length; i++) {
-        clearTimeout(timeout_arr[i]);
-    }
-    delete g.blinking_vertices[vertex_id];
-}
-
-function remove_all_scheduled_edge_blinks() {
-    for (var id in g.blinking_edges) {
-        remove_scheduled_edge_blinks(id);
-    }
-}
-
-function construct_AddVertex_argument_from_state(state) {
-    var g_num = parseInt(state['id'].substring(1,2));
-    var x = parseFloat(state['cx']) + g.coord_changes[g_num-1].x;
-    var y = parseFloat(state['cy']) + g.coord_changes[g_num-1].y;
-    return 'g' + g_num + '_(' + x + ', ' + y + ')';
-}
-
 function remove_scheduled_edge_blinks(edge_id) {
+    // Given an edge_id this will remove any scheduled edge blinks, if any
     var timeout_arr = g.blinking_edges[edge_id];
     for (var i=0; i<timeout_arr.length; i++) {
         clearTimeout(timeout_arr[i]);
@@ -219,7 +219,16 @@ function remove_scheduled_edge_blinks(edge_id) {
     delete g.blinking_edges[edge_id];
 }
 
+function remove_all_scheduled_edge_blinks() {
+    // Need I explain?
+    for (var id in g.blinking_edges) {
+        remove_scheduled_edge_blinks(id);
+    }
+}
+
 function get_id(node) {
+    // Given a DOM node it will return the 'id' if it is present, else null.
+    // We use this when getting the id of an event target
     var attributes = node.attributes;
     for (var attr in attributes) {
         var a = attributes[attr];
@@ -231,118 +240,30 @@ function get_id(node) {
 }
 
 function graph_num_from_id (id) {
+    // Returns the index we use to reach the represented graph in all the global datastructures
     return parseInt(id.substring(1,2)) - 1;
 }
 
-function exit( status ) {
-    // http://kevin.vanzonneveld.net
-    // +   original by: Brett Zamir (http://brettz9.blogspot.com)
-    // +      input by: Paul
-    // +   bugfixed by: Hyam Singer (http://www.impact-computing.com/)
-    // +   improved by: Philip Peterson
-    // +   bugfixed by: Brett Zamir (http://brettz9.blogspot.com)
-    // %        note 1: Should be considered expirimental. Please comment on this function.
-    // *     example 1: exit();
-    // *     returns 1: null
-
-    var i;
-
-    if (typeof status === 'string') {
-        alert(status);
-    }
-
-    window.addEventListener('error', function (e) {e.preventDefault();e.stopPropagation();}, false);
-
-    var handlers = [
-        'copy', 'cut', 'paste',
-        'beforeunload', 'blur', 'change', 'click', 'contextmenu', 'dblclick', 'focus', 'keydown', 'keypress', 'keyup', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseup', 'resize', 'scroll',
-        'DOMNodeInserted', 'DOMNodeRemoved', 'DOMNodeRemovedFromDocument', 'DOMNodeInsertedIntoDocument', 'DOMAttrModified', 'DOMCharacterDataModified', 'DOMElementNameChanged', 'DOMAttributeNameChanged', 'DOMActivate', 'DOMFocusIn', 'DOMFocusOut', 'online', 'offline', 'textInput',
-        'abort', 'close', 'dragdrop', 'load', 'paint', 'reset', 'select', 'submit', 'unload'
-    ];
-
-    function stopPropagation (e) {
-        e.stopPropagation();
-        // e.preventDefault(); // Stop for the form controls, etc., too?
-    }
-    for (i=0; i < handlers.length; i++) {
-        window.addEventListener(handlers[i], function (e) {stopPropagation(e);}, true);
-    }
-
-    if (window.stop) {
-        window.stop();
-    }
-
-    throw '';
-}
-
-//Return a 2-index array [v1,v2] which has an angle of
-//90 degrees clockwise to the vector (dx,dy)
 function Orthogonal(dx, dy){
-
+    // Return a 2-index array [v1,v2] which has an angle of
+    // 90 degrees clockwise to the vector (dx,dy)
+    // Used when creating arrowheads
+    
     var u1 = dx;
     var u2 = dy;
-    
     var length = Math.sqrt(Math.pow(u1,2) + Math.pow(u2,2));
     
     if(length < 0.001){
         length = 0.001;
     }
-    
     u1 /= length;
     u2 /= length;
     return [-1*u2, u1];
 }
 
-
-//Translate client coordinates to svg coordinates.  If given element then translates to coordinates
-//in that elements coordinate system
-function cursorPoint(evt, element){
-    pt = {x: evt.clientX, y: evt.clientY};
-    if (element === null || element === undefined)
-        return pt.matrixTransform(document.getScreenCTM().inverse());
-    else
-        return pt.matrixTransform(document.getScreenCTM().inverse());
-}
-
-
-function get_translate(elem) {
-    var trans = document.getElementById(elem.attr('id')).getAttribute('transform');
-    var l_paren_split = trans.split('(');
-    var found = false;
-    var x_tran = 0, y_tran = 0;
-    for (var i=0; i<l_paren_split.length; i++) {
-        if (found === true) {
-            var r_paren_split = l_paren_split[i].split(')');
-            if (r_paren_split[0].indexOf(',') === -1) {
-                x_tran = parseInt(r_paren_split[0]);
-            } else {
-                var comma_split = r_paren_split[0].split(',');
-                x_tran = parseInt(comma_split[0]);
-                y_tran = parseInt(comma_split[1]);
-            }
-            found = false;
-        }
-        if (l_paren_split[i].indexOf('translate') !== -1) {
-            found = true;
-        }
-    }
-    return [x_tran, y_tran];
-}
-
-function set_translate(elem, x, y){
-    var transformation = document.getElementById(elem.attr('id')).getAttribute('transform');
-
-    if(transformation != null){
-        if(transformation.indexOf("translate") == -1){
-            elem.transform(transformation + " translate(" + x + " " + y + ")");
-        }else{
-            var header = transformation.substring(0, transformation.indexOf("translate") + "translate".length);
-            var trailer = transformation.slice(transformation.indexOf("translate") + "translate".length);
-            trailer = trailer.slice(trailer.indexOf(")"));
-            var newattr = header + "(" + x + " " + y + trailer;
-            elem.transform(newattr);
-        }
-    }else{
-        elem.transform("translate(" + x + " " + y + ")");
+function extend(a, b) {
+    // Updates object a with properties in object b
+    for (var key in b) {
+        a[key] = b[key];
     }
 }
