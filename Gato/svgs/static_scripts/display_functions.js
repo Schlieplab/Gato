@@ -299,7 +299,7 @@ function position_graph() {
 			var diff = 0;
 			if (graph_bbox.width != 0) {
 				if (max_size.min_left && max_size.min_left < g.frame_padding) {
-					//diff += -1*max_size.min_left;
+					diff += -1*max_size.min_left;
 				}
 			}
 			if (diff > 0) {
