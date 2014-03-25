@@ -16,6 +16,7 @@ function add_snap_vars() {
         annotations: [{}, {}],
         moats: [{}, {}],
         bubbles: [{}, {}],
+        pre_vertex: []
     });
 
     var vertices = {}, edges = {}, edge_arrows = {}, code_lines = {};
@@ -44,6 +45,7 @@ function add_snap_vars() {
         for (var i=0; i<va.length; i++) {
             g.annotations[graph_num][va[i].attr('id')] = va[i];
         }
+        g.pre_vertex.push(snap.select('g#g' + (graph_num+1) + '_pre_vertices_group'));
     }
     var lines = snap.selectAll('.code_line');
     g.code_lines = {};
@@ -90,8 +92,7 @@ function fill_global() {
         edge_color: '#EEEEEE',
         graph_info_height: 20,
         bubble_offsets: [{}, {}],
-
-
+       
         // General
         arrow_id_prefix: 'ea',
         blinking_edges: {},
@@ -106,8 +107,8 @@ function fill_global() {
 
         // We set the graph frame to the largest size the graph will attain 
         max_graph_sizes: [
-            {'width': null, 'height': null, 'left': null, 'right': null},
-            {'width': null, 'height': null, 'left': null, 'right': null}
+            {'width': null, 'height': null, 'min_left': null, 'max_right': null},
+            {'width': null, 'height': null, 'min_left': null, 'max_right': null}
         ],
 
         coord_changes: [
@@ -118,6 +119,9 @@ function fill_global() {
         min_y: [null, null],
         min_x: [null, null],
     });
+    var trans = g.frame_padding + g.vertex_r;
+    g['graph_translate'] = [{x: trans, y:trans}, {x: trans, y: trans}];
+
     if (snap.select('g#g2') != null) {
         g.num_graphs = 2;
     } else {

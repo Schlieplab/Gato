@@ -255,8 +255,9 @@ function add_graph_frame() {
 
 		// Create the frame
 		var frame = null;
-		//  TODO: THIS IS MESSY.  Max size should always be set here
+		//  TODO: THIS IS MESSY.  Max size should always be set here.
 		if (max_size.width && max_size.height) {
+			console.log('moo');
 			// If we added any vertices or edges then max_size will be set and we should use that
 			frame = snap.rect(0, 0, max_size.width+pad, max_size.height+pad+g.graph_info_height);
 		} else {
@@ -273,19 +274,21 @@ function add_graph_frame() {
 }
 
 function position_graph() {
+	// Used for initial translations, and also scaling of graph
 	var x_trans = g.code_box.width + g.padding*2;
-	g.init_container_translate = [{x: x_trans}, {x: x_trans}];
-	g.graph_translate = [{x: g.frame_padding + g.vertex_r, y: g.frame_padding + g.vertex_r},
-		{x: g.frame_padding + g.vertex_r, y: g.frame_padding + g.vertex_r}];
+    g['init_container_translate'] = [{x: x_trans}, {x: x_trans}];
 	for (var i=0; i<g.num_graphs; i++) {
 		var max_size = g.max_graph_sizes[i];
-		var graph_bbox = g.graphs[i].getBBox();
-		var this_translate = g.init_container_translate[i];
+		var container_translate = g.init_container_translate[i];
 		if (i === 0) {
-			this_translate.y = g.padding + g.graph_frame_stroke_width;
+			container_translate.y = g.padding + g.graph_frame_stroke_width;
 		} else {
-			this_translate.y = g.init_container_translate[0].y + g.graph_containers[0].getBBox().height;
+			container_translate.y = g.init_container_translate[0].y + g.graph_containers[0].getBBox().height;
 		}
+
+		// Adjust the translations if we have a max height and width.  
+		// If we don't have one, then the original size is ok
+		var graph_bbox = g.graphs[i].getBBox();
 		if (max_size.height) {
 			var diff = max_size.height - graph_bbox.height;
 			if (diff > 0 && graph_bbox.height != 0) {
@@ -293,18 +296,19 @@ function position_graph() {
 			}
 		}
 		if (max_size.width) {
-			var diff = max_size.width - graph_bbox.width;
-			if (max_size.left) {
-				diff += max_size.left;
+			var diff = 0;
+			if (graph_bbox.width != 0) {
+				if (max_size.min_left && max_size.min_left < g.frame_padding) {
+					//diff += -1*max_size.min_left;
+				}
 			}
-			if (diff > 0 && graph_bbox.height != 0) {
-				g.graph_translate[i].x += diff/2;
+			if (diff > 0) {
+				g.graph_translate[i]['x'] += diff - g.vertex_r;
 			}
 		}
-		var this_container = g.graph_containers[i];
-		var this_graph = g.graphs[i];
-		this_container.transform('t' + this_translate.x + ',' + this_translate.y);
-		this_graph.transform('t' + g.graph_translate[i]['x'] + ',' + g.graph_translate[i]['y']);	
+		
+		g.graph_containers[i].transform('t' + container_translate.x + ',' + container_translate.y);
+		g.graphs[i].transform('t' + g.graph_translate[i]['x'] + ',' + g.graph_translate[i]['y']);	
 	}
 }
 

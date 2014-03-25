@@ -48,7 +48,6 @@ function Animation() {
 			this.do_command(anim);
 			this.step_num ++;
 			g.slider.go_to_step(this.step_num, anim[0]*this.step_ms);
-			// console.log("Doing " + String(anim[1]).split(' ')[1]);
 			var self = this;
 			this.scheduled_animation = setTimeout(function() {self.animator()}, anim[0]*this.step_ms);
 		}
@@ -326,11 +325,6 @@ function Slider(width, height) {
 		*/
 		var self = g.slider;
 		var new_x = evt.clientX - self.cursor.transform().globalMatrix.e - parseInt(self.cursor.attr('width'))/2;
-		/*console.log(evt);
-		console.log(evt.x);
-		console.log(self.cursor.transform().globalMatrix.e);
-		console.log(self.cursor.attr('width')/2);
-		*/
 		if (new_x < 0) {
 			new_x = 0;
 		} else if (new_x > self.cursor_max_x) {
@@ -350,7 +344,7 @@ function Slider(width, height) {
 		g.slider.start_mouse_x = parseInt(evt.clientX);
 	}
 	this.cursor_drag = function(evt) {
-		this.mouseup(evt);
+		this.cursor_mouseup(evt);
 	}
 	this.cursor_mousemove = function(evt) {
 		/*	This does the actual moving of the cursor.  Using the cursor and mouse positions
@@ -409,8 +403,6 @@ function Slider(width, height) {
 			if (int_pos in this.position_to_step) {
 				return this.position_to_step[int_pos];
 			} else if (int_pos > this.slider_max_position) {
-				console.log(this.position_to_step);
-				console.log(this.slider_max_position);
 				return this.position_to_step[this.slider_max_position];
 			}
 		}
@@ -540,11 +532,7 @@ function SetAllVerticesColor() {
 			if (is_multiple_vertices(arguments[i])) {
 				// Weighted matching sometimes passes in vertices like (v1, v2, v3...)
 				var vertex_nums = get_ints_from_str(arguments[i]);
-				console.log(arguments[i]);
-				console.log(vertex_nums);
 				for (var v in vertex_nums) {
-					console.log('g' + (g_num) + '_' + vertex_nums[v]);
-					console.log(g.vertices[1]);
 					g.vertices[g_num-1]['g' + (g_num) + '_' + vertex_nums[v]].attr({'fill': color});
 				}
 			} else {
@@ -718,6 +706,8 @@ function AddEdge(edge_id){
     var vertices = edge_id.split("_")[1].match(/\d+/g);
     var v = g.vertices[graph_num][graph_id + '_' + vertices[0]];
     var w = g.vertices[graph_num][graph_id + '_' + vertices[1]];
+    var v_group = g.vertex_groups[graph_num][graph_id + '_' + vertices[0] + '_group'];
+    var w_group = g.vertex_groups[graph_num][graph_id + '_' + vertices[1] + '_group'];
     
     var vx = v.attr("cx"),
     	wx = w.attr("cx"),
@@ -843,7 +833,7 @@ function AddEdge(edge_id){
     	g.edge_groups[graph_num][group.attr('id')] = group;
     	add_tooltip(group, 'edge');
     }
-    group.insertBefore(v);
+    group.insertBefore(g.pre_vertex[graph_num]);
 
     return [edge, arrowhead];
 }
@@ -890,6 +880,11 @@ function AddVertex(graph_and_coordinates, vertex_num){
 		y = parseFloat(coords[1]) - g.coord_changes[graph_num-1].y;
 	
 	var vertex_id = 'g' + graph_num + '_' + vertex_num;
+	var group_id = vertex_id + '_group';
+	var group = snap.group().attr({
+		'id': group_id
+	});
+	g.vertex_groups[graph_num-1][group_id] = group;
 	var vertex = snap.circle(x, y, g.vertex_r).attr({
 		'id': vertex_id,
 		'class': 'vertex',
@@ -897,7 +892,8 @@ function AddVertex(graph_and_coordinates, vertex_num){
 		'style': 'filter: url(#dropshadow)'
 	});
 	g.vertices[graph_num-1][vertex_id] = vertex;
-	g.graphs[graph_num-1].append(vertex);
+	//g.graphs[graph_num-1].append(vertex);
+	group.append(vertex);
 
 	// TODO: compute the 4.62, don't just use a constant
 	var vertex_label = snap.text(x, y+4.62, vertex_num).attr({
@@ -908,14 +904,19 @@ function AddVertex(graph_and_coordinates, vertex_num){
 		'font-size': 14.0,
 		'font-weight': 'bold'
 	});
-	g.graphs[graph_num-1].append(vertex_label);
-	
+	group.append(vertex_label);
+	//g.graphs[graph_num-1].append(vertex_label);
+	g.graphs[graph_num-1].append(group);
+
 	return vertex;
 }
 
 function DeleteVertex(vertex_id) {
-	var g_num = vertex_id.substring(1,2);
+	var g_num = parseInt(vertex_id.substring(1,2));
+	var group_id = vertex_id + '_group';
 	var vertex = g.vertices[g_num-1][vertex_id];
+	var group = g.vertex_groups[g_num-1][group_id];
+	group.remove()
 	var vertex_label = snap.select('#vl' + vertex_id);
 	vertex.remove()
 	if (vertex_label) {
@@ -923,6 +924,7 @@ function DeleteVertex(vertex_id) {
 	}
 	delete_vertex_annotation('va' + vertex_id);
 	delete g.vertices[g_num-1][vertex_id];
+	delete g.vertex_groups[g_num-1][group_id];
 }
 
 function CreateMoat(moat_id, radius, color) {
@@ -988,7 +990,6 @@ function ResizeBubble(which_graph, vertex_nums_str, new_radius) {
 		var vertex = g.vertices[g_num-1][get_vertex_id(g_num, vertex_nums[i])];
 		var bubble_id = get_bubble_id(vertex, vertex_nums);
 		var bubble = g.bubbles[g_num-1][bubble_id];
-		//console.log(new_radius);
 		var our_radius = parseInt(new_radius) + parseInt(Math.floor(g.bubble_offsets[g_num-1][bubble_id]));
 		if (!g.jumping) {
 			bubble.animate({'r': our_radius}, g.bubble_resize_time);

@@ -346,7 +346,7 @@ def get_graph_as_svg_str(graphDisplay, x_add, y_add, file, idPrefix=''):
                 ret_strs.append('<polyline id="%s" class="arrowhead" points="%f %f %f %f %s %f" fill="%s" transform="translate(%f,%f)'\
                            ' rotate(%f %f %f)" />\n' % ('ea' + edge_id, p1[0], p1[1], p2[0], p2[1], p3[0], p3[1],
                                                         col, tmpX, tmpY - a_width/2, angle, p1[0], a_width/2))
-            ret_strs.append('</g>')
+        ret_strs.append('</g>')
 
 
         # Write Edge Annotations
@@ -368,6 +368,7 @@ def get_graph_as_svg_str(graphDisplay, x_add, y_add, file, idPrefix=''):
                            'font-size="%s" font-style="normal">%s</text>\n' % (idPrefix+str(xe),
                                                                                ye+offset,col,size,text))
 
+    ret_strs.append('<g id="%s"></g>' % (idPrefix+'pre_vertices_group'))
     for v in graphDisplay.G.Vertices():
         x,y,r = graphDisplay.VertexPositionAndRadius(v)
         y = y - y_add
@@ -406,27 +407,27 @@ def get_graph_as_svg_str(graphDisplay, x_add, y_add, file, idPrefix=''):
     
 
 def compute_coord_changes(gdisp):
-    t = False
+    has_elements = False
     x_add, y_add = 0, 0
     for v, w in gdisp.G.Edges():
         vx, vy, r = gdisp.VertexPositionAndRadius(v)
-        if not t:
+        if not has_elements:
             x_add = vx
             y_add = vy
-            t = True
+            has_elements = True
         else:
             x_add = min(vx, x_add)
             y_add = min(vy, y_add)
     for v in gdisp.G.Vertices():
         vx, vy, r = gdisp.VertexPositionAndRadius(v)
-        if not t:
+        if not has_elements:
             x_add = vx
             y_add = vy
-            t = True
+            has_elements = True
         else:
             x_add = min(vx, x_add)
             y_add = min(vy, y_add)
-    return x_add, y_add
+    return x_add, y_add, has_elements
 
 def format_init_edge_infos(info_dict, idPrefix):
     ''' Formats the info_dict to a javascript object '''
@@ -511,23 +512,32 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
 
         # Figure out how much we want to pull the graph to the left and top before we reset the graph
         # These 
-        end_g1_x_add, end_g1_y_add = compute_coord_changes(graphDisplay)
+        end_g1_x_add, end_g1_y_add, end_g1_has_elements = compute_coord_changes(graphDisplay)
         end_g2_x_add, end_g2_y_add = 0, 0
         if secondaryGraphDisplay:
-            end_g2_x_add, end_g2_y_add = compute_coord_changes(secondaryGraphDisplay)
+            end_g2_x_add, end_g2_y_add, end_g2_has_elements = compute_coord_changes(secondaryGraphDisplay)
 
         # Reload the graph and execute prolog so we can save the initial state to SVG
         algorithm.Start(prologOnly=True)
         file = open(fileName, 'w')
 
-        start_g1_x_add, start_g1_y_add = compute_coord_changes(graphDisplay)
-        g1_x_add = min(start_g1_x_add, end_g1_x_add)
-        g1_y_add = min(start_g1_y_add, end_g1_y_add)
+        start_g1_x_add, start_g1_y_add, start_g1_has_elements = compute_coord_changes(graphDisplay)
+        if start_g1_has_elements and end_g1_has_elements:
+            g1_x_add, g1_y_add = min(start_g1_x_add, end_g1_x_add), min(start_g1_y_add, end_g1_y_add)
+        elif start_g1_has_elements:
+            g1_x_add, g1_y_add = start_g1_x_add, start_g1_y_add
+        else:
+            g1_x_add, g1_y_add = end_g1_x_add, end_g1_y_add
+
         start_g2_x_add, start_g2_y_add, g2_x_add, g2_y_add = 0, 0, 0, 0
         if secondaryGraphDisplay:
-            start_g2_x_add, start_g2_y_add = compute_coord_changes(secondaryGraphDisplay)
-            g2_y_add = min(start_g2_y_add, end_g2_y_add)
-            g2_x_add = min(start_g2_x_add, end_g2_x_add)
+            start_g2_x_add, start_g2_y_add, start_g2_has_elements = compute_coord_changes(secondaryGraphDisplay)
+            if start_g2_has_elements and end_g2_has_elements:
+                g2_y_add, g2_x_add = min(start_g2_y_add, end_g2_y_add), min(start_g2_x_add, end_g2_x_add)
+            elif start_g2_has_elements:
+                g2_y_add, g2_x_add = start_g2_y_add, start_g2_x_add
+            else:
+                g2_y_add, g2_x_add = end_g2_y_add, end_g2_x_add
 
         # Build the SVG graph string
         graph_strs = []

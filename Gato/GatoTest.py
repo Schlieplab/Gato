@@ -380,6 +380,10 @@ svg_instance = {
 }
 
 svg_instance = {
+    '03-MinimalSpanningTrees/KruskalFindCircuit.alg':[
+    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
+    ],
+    # Good
     '09-WeightedMatching/WeightedMatching.alg':[
        '09-WeightedMatching/k4.cat', '09-WeightedMatching/var2zero.cat',
        '09-WeightedMatching/11vs13.cat'

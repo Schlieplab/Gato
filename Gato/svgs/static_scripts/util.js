@@ -1,6 +1,6 @@
 
 function get_bubble_id(vertex, vertex_nums) {
-    return vertex.attr('id') + '_bubble_' + vertex_nums.join();
+    return vertex.attr('id') + '_bubble_' + vertex_nums.join('-');
 }
 
 function get_vertex_id(g_num, vertex_num) {
@@ -147,8 +147,8 @@ function record_max_graph_size(g_num) {
         if (!max_sizes.height || height > max_sizes.height) {
             max_sizes.height = height;
         }
-        if (!max_sizes.left || x < max_sizes.left) {
-            max_sizes.left = x;
+        if (!max_sizes.min_left || x < max_sizes.min_left) {
+            max_sizes.min_left = x;
         }
     }
 }
