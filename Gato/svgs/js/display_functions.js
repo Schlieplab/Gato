@@ -333,16 +333,6 @@ function position_graph() {
 	}
 }
 
-function toggle_control_panel() {
-	if (g.control_panel.frame_visibility === false) {
-		g.control_panel.frame_visibility = true;
-		g.control_panel.frame_g.attr({'visibility': 'visible'});
-	} else {
-		g.control_panel.frame_visibility = false;
-		g.control_panel.frame_g.attr({'visibility': 'hidden'});
-	}
-}
-
 function click_speed_button(evt) {
 	var target = get_evt_target(evt);
 	var id = get_id(target);
@@ -474,15 +464,39 @@ function create_homepage_link() {
 }
 
 function ControlPanel(cog_width, cog_height, width, height) {
+	/* Object that controls the control panel at the bottom right of the screen that is 
+		brought up by clicking on the cog.
+	*/
+	this.toggle_visibility = function() {
+		console.log('in toggle');
+		if (g.control_panel.frame_visibility === false) {
+			g.control_panel.frame_visibility = true;
+			g.control_panel.frame_g.attr({'visibility': 'visible'});
+		} else {
+			g.control_panel.frame_visibility = false;
+			g.control_panel.frame_g.attr({'visibility': 'hidden'});
+		}
+	};
+	this.cursor_in_control_panel = function(evt) {
+		var elem = Snap.getElementByPoint(evt.clientX, evt.clientY);
+		while (elem !== null && elem !== snap) {
+			if (elem === this.g) {
+				return true;
+			}
+			elem = elem.parent();
+		}
+		return false;
+	};
+
 	this.cog_width = cog_width;
 	this.cog_height = cog_height;
 	this.width = width;
 	this.height = height;
 	this.padding = 10;
 	this.frame_visibility = false;
-	this.g = snap.group();
+	this.g = snap.group().attr({'id': 'control_panel_group'});
 
-	this.cog = snap.image('img/cog.png', 0, 0, this.cog_width, this.cog_height).click(toggle_control_panel).attr({
+	this.cog = snap.image('img/cog.png', 0, 0, this.cog_width, this.cog_height).click(this.toggle_visibility).attr({
 		'cursor': 'pointer'
 	});
 	this.g.append(this.cog);

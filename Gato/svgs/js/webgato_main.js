@@ -187,6 +187,11 @@ function global_mouseup(evt) {
     if (g.slider.sliding === true) {
         g.slider.cursor_mouseup(evt);
     }
+    if (g.control_panel.frame_visibility === true) {
+        if (!g.control_panel.cursor_in_control_panel(evt)) {
+            g.control_panel.toggle_visibility();
+        }
+    }
 }
 
 function global_mousemove(evt) {
