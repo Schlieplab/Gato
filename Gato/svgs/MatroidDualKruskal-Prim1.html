@@ -2,10 +2,13 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" type="text/css" href="libs/subModal/subModal.css" />
-        <script type="text/javascript" src="libs/subModal/common.js"></script>
-        <script type="text/javascript" src="libs/subModal/subModal.js"></script>
-        <script src="libs/snap.svg.js" type="text/javascript"></script>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" type="text/css" href="js/subModal/subModal.css" />
+        <script type="text/javascript" src="js/subModal/common.js"></script>
+        <script type="text/javascript" src="js/subModal/subModal.js"></script>
+        <script src="js/snap.svg.js" type="text/javascript"></script>
         <style>
             html, body {
                 margin: 0 auto;
@@ -302,14 +305,14 @@
             var g2_init_vertex_info = null;
         </script>
 
-        <script type="text/javascript" src="static_scripts/util.js"></script>
-        <script type="text/javascript" src="static_scripts/animation_functions.js"></script>
-        <script type="text/javascript" src="static_scripts/display_functions.js"></script>
-        <script type="text/javascript" src="static_scripts/webgato_main.js"></script>
+        <script type="text/javascript" src="js/util.js"></script>
+        <script type="text/javascript" src="js/animation_functions.js"></script>
+        <script type="text/javascript" src="js/display_functions.js"></script>
+        <script type="text/javascript" src="js/webgato_main.js"></script>
         
         <script type="text/javascript">
             var anim_array = Array(Array(1, SetVertexColor, "g1_1", "blue"),
-Array(2, SetVertexColor, "g1_2", "blue"),
+Array(1, SetVertexColor, "g1_2", "blue"),
 Array(1, SetEdgeColor, "g1_1-2", "blue"),
 Array(1, SetVertexColor, "g1_5", "blue"),
 Array(1, SetEdgeColor, "g1_1-5", "blue"),
@@ -343,7 +346,7 @@ Array(1, SetVertexColor, "g1_12", "blue"),
 Array(1, SetEdgeColor, "g1_11-12", "blue"),
 Array(1, SetVertexColor, "g1_13", "blue"),
 Array(1, SetEdgeColor, "g1_12-13", "blue"),
-Array(1, SetEdgeColor, "g1_12-15", "blue"),
+Array(4, SetEdgeColor, "g1_12-15", "blue"),
 Array(1, SetVertexColor, "g1_14", "blue"),
 Array(1, SetEdgeColor, "g1_14-13", "blue"),
 Array(1, SetEdgeColor, "g1_15-14", "blue"),
@@ -393,7 +396,7 @@ Array(1, ShowActive, "l_4"),
 Array(6, ShowActive, "l_5"),
 Array(5, SetEdgeColor, "g1_12-15", "black"),
 Array(1, SetEdgeColor, "g1_12-15", "grey"),
-Array(2, ShowActive, "l_3"),
+Array(1, ShowActive, "l_3"),
 Array(1, UpdateGraphInfo, "g1_()", "Weight of spanning graph: 2238.000000"),
 Array(1, UpdateEdgeInfo, "g1_10-11", "Weight of edge (10,11): 86 - Weight of spanninggraph: 2238"),
 Array(1, UpdateEdgeInfo, "g1_4-8", "Weight of edge (4,8): 49 - Weight of spanninggraph: 2238"),
@@ -419,12 +422,12 @@ Array(1, UpdateEdgeInfo, "g1_9-6", "Weight of edge (9,6): 48 - Weight of spannin
 Array(1, UpdateEdgeInfo, "g1_12-15", "Weight of edge (12,15): 197 - Weight of spanninggraph: 2238"),
 Array(1, UpdateEdgeInfo, "g1_4-3", "Weight of edge (4,3): 78 - Weight of spanninggraph: 2238"),
 Array(1, UpdateEdgeInfo, "g1_2-4", "Weight of edge (2,4): 118 - Weight of spanninggraph: 2238"),
-Array(5, SetEdgeColor, "g1_15-14", "yellow"),
+Array(4, SetEdgeColor, "g1_15-14", "yellow"),
 Array(1, ShowActive, "l_4"),
-Array(7, ShowActive, "l_5"),
-Array(5, SetEdgeColor, "g1_15-14", "black"),
+Array(5, ShowActive, "l_5"),
+Array(4, SetEdgeColor, "g1_15-14", "black"),
 Array(1, SetEdgeColor, "g1_15-14", "grey"),
-Array(2, ShowActive, "l_3"),
+Array(1, ShowActive, "l_3"),
 Array(1, UpdateGraphInfo, "g1_()", "Weight of spanning graph: 2048.000000"),
 Array(1, UpdateEdgeInfo, "g1_10-11", "Weight of edge (10,11): 86 - Weight of spanninggraph: 2048"),
 Array(1, UpdateEdgeInfo, "g1_4-8", "Weight of edge (4,8): 49 - Weight of spanninggraph: 2048"),
@@ -450,14 +453,14 @@ Array(1, UpdateEdgeInfo, "g1_9-6", "Weight of edge (9,6): 48 - Weight of spannin
 Array(1, UpdateEdgeInfo, "g1_12-15", "Weight of edge (12,15): 197 - Weight of spanninggraph: 2048"),
 Array(1, UpdateEdgeInfo, "g1_4-3", "Weight of edge (4,3): 78 - Weight of spanninggraph: 2048"),
 Array(1, UpdateEdgeInfo, "g1_2-4", "Weight of edge (2,4): 118 - Weight of spanninggraph: 2048"),
-Array(5, SetEdgeColor, "g1_6-15", "yellow"),
+Array(4, SetEdgeColor, "g1_6-15", "yellow"),
 Array(1, ShowActive, "l_4"),
-Array(7, ShowActive, "l_3"),
-Array(6, SetEdgeColor, "g1_6-15", "blue"),
+Array(5, ShowActive, "l_3"),
+Array(5, SetEdgeColor, "g1_6-15", "blue"),
 Array(1, SetEdgeColor, "g1_2-5", "yellow"),
 Array(1, ShowActive, "l_4"),
 Array(5, ShowActive, "l_5"),
-Array(5, SetEdgeColor, "g1_2-5", "black"),
+Array(4, SetEdgeColor, "g1_2-5", "black"),
 Array(1, SetEdgeColor, "g1_2-5", "grey"),
 Array(1, ShowActive, "l_3"),
 Array(1, UpdateGraphInfo, "g1_()", "Weight of spanning graph: 1896.000000"),
@@ -485,10 +488,10 @@ Array(1, UpdateEdgeInfo, "g1_9-6", "Weight of edge (9,6): 48 - Weight of spannin
 Array(1, UpdateEdgeInfo, "g1_12-15", "Weight of edge (12,15): 197 - Weight of spanninggraph: 1896"),
 Array(1, UpdateEdgeInfo, "g1_4-3", "Weight of edge (4,3): 78 - Weight of spanninggraph: 1896"),
 Array(1, UpdateEdgeInfo, "g1_2-4", "Weight of edge (2,4): 118 - Weight of spanninggraph: 1896"),
-Array(5, SetEdgeColor, "g1_3-2", "yellow"),
+Array(4, SetEdgeColor, "g1_3-2", "yellow"),
 Array(1, ShowActive, "l_4"),
-Array(6, ShowActive, "l_5"),
-Array(5, SetEdgeColor, "g1_3-2", "black"),
+Array(5, ShowActive, "l_5"),
+Array(4, SetEdgeColor, "g1_3-2", "black"),
 Array(1, SetEdgeColor, "g1_3-2", "grey"),
 Array(1, ShowActive, "l_3"),
 Array(1, UpdateGraphInfo, "g1_()", "Weight of spanning graph: 1748.000000"),
@@ -516,9 +519,9 @@ Array(1, UpdateEdgeInfo, "g1_9-6", "Weight of edge (9,6): 48 - Weight of spannin
 Array(1, UpdateEdgeInfo, "g1_12-15", "Weight of edge (12,15): 197 - Weight of spanninggraph: 1748"),
 Array(1, UpdateEdgeInfo, "g1_4-3", "Weight of edge (4,3): 78 - Weight of spanninggraph: 1748"),
 Array(1, UpdateEdgeInfo, "g1_2-4", "Weight of edge (2,4): 118 - Weight of spanninggraph: 1748"),
-Array(5, SetEdgeColor, "g1_1-5", "yellow"),
+Array(4, SetEdgeColor, "g1_1-5", "yellow"),
 Array(1, ShowActive, "l_4"),
-Array(7, ShowActive, "l_5"),
+Array(5, ShowActive, "l_5"),
 Array(5, SetEdgeColor, "g1_1-5", "black"),
 Array(1, SetEdgeColor, "g1_1-5", "grey"),
 Array(1, ShowActive, "l_3"),
@@ -604,14 +607,14 @@ Array(1, UpdateEdgeInfo, "g1_4-3", "Weight of edge (4,3): 78 - Weight of spannin
 Array(1, UpdateEdgeInfo, "g1_2-4", "Weight of edge (2,4): 118 - Weight of spanninggraph: 1516"),
 Array(4, SetEdgeColor, "g1_10-11", "yellow"),
 Array(1, ShowActive, "l_4"),
-Array(5, ShowActive, "l_3"),
+Array(6, ShowActive, "l_3"),
 Array(5, SetEdgeColor, "g1_10-11", "blue"),
 Array(1, SetEdgeColor, "g1_4-3", "yellow"),
 Array(1, ShowActive, "l_4"),
-Array(5, ShowActive, "l_5"),
+Array(7, ShowActive, "l_5"),
 Array(5, SetEdgeColor, "g1_4-3", "black"),
 Array(1, SetEdgeColor, "g1_4-3", "grey"),
-Array(1, ShowActive, "l_3"),
+Array(2, ShowActive, "l_3"),
 Array(1, UpdateGraphInfo, "g1_()", "Weight of spanning graph: 1438.000000"),
 Array(1, UpdateEdgeInfo, "g1_10-11", "Weight of edge (10,11): 86 - Weight of spanninggraph: 1438"),
 Array(1, UpdateEdgeInfo, "g1_4-8", "Weight of edge (4,8): 49 - Weight of spanninggraph: 1438"),
@@ -637,12 +640,12 @@ Array(1, UpdateEdgeInfo, "g1_9-6", "Weight of edge (9,6): 48 - Weight of spannin
 Array(1, UpdateEdgeInfo, "g1_12-15", "Weight of edge (12,15): 197 - Weight of spanninggraph: 1438"),
 Array(1, UpdateEdgeInfo, "g1_4-3", "Weight of edge (4,3): 78 - Weight of spanninggraph: 1438"),
 Array(1, UpdateEdgeInfo, "g1_2-4", "Weight of edge (2,4): 118 - Weight of spanninggraph: 1438"),
-Array(4, SetEdgeColor, "g1_6-3", "yellow"),
+Array(5, SetEdgeColor, "g1_6-3", "yellow"),
 Array(1, ShowActive, "l_4"),
-Array(5, ShowActive, "l_5"),
-Array(4, SetEdgeColor, "g1_6-3", "black"),
+Array(6, ShowActive, "l_5"),
+Array(5, SetEdgeColor, "g1_6-3", "black"),
 Array(1, SetEdgeColor, "g1_6-3", "grey"),
-Array(1, ShowActive, "l_3"),
+Array(2, ShowActive, "l_3"),
 Array(1, UpdateGraphInfo, "g1_()", "Weight of spanning graph: 1369.000000"),
 Array(1, UpdateEdgeInfo, "g1_10-11", "Weight of edge (10,11): 86 - Weight of spanninggraph: 1369"),
 Array(1, UpdateEdgeInfo, "g1_4-8", "Weight of edge (4,8): 49 - Weight of spanninggraph: 1369"),
@@ -668,17 +671,17 @@ Array(1, UpdateEdgeInfo, "g1_9-6", "Weight of edge (9,6): 48 - Weight of spannin
 Array(1, UpdateEdgeInfo, "g1_12-15", "Weight of edge (12,15): 197 - Weight of spanninggraph: 1369"),
 Array(1, UpdateEdgeInfo, "g1_4-3", "Weight of edge (4,3): 78 - Weight of spanninggraph: 1369"),
 Array(1, UpdateEdgeInfo, "g1_2-4", "Weight of edge (2,4): 118 - Weight of spanninggraph: 1369"),
-Array(4, SetEdgeColor, "g1_6-10", "yellow"),
-Array(5, ShowActive, "l_4"),
-Array(6, ShowActive, "l_3"),
+Array(5, SetEdgeColor, "g1_6-10", "yellow"),
+Array(1, ShowActive, "l_4"),
+Array(7, ShowActive, "l_3"),
 Array(5, SetEdgeColor, "g1_6-10", "blue"),
 Array(1, SetEdgeColor, "g1_3-9", "yellow"),
 Array(1, ShowActive, "l_4"),
-Array(5, ShowActive, "l_3"),
+Array(6, ShowActive, "l_3"),
 Array(5, SetEdgeColor, "g1_3-9", "blue"),
 Array(1, SetEdgeColor, "g1_9-7", "yellow"),
 Array(1, ShowActive, "l_4"),
-Array(5, ShowActive, "l_5"),
+Array(6, ShowActive, "l_5"),
 Array(5, SetEdgeColor, "g1_9-7", "black"),
 Array(1, SetEdgeColor, "g1_9-7", "grey"),
 Array(1, ShowActive, "l_3"),
@@ -707,10 +710,10 @@ Array(1, UpdateEdgeInfo, "g1_9-6", "Weight of edge (9,6): 48 - Weight of spannin
 Array(1, UpdateEdgeInfo, "g1_12-15", "Weight of edge (12,15): 197 - Weight of spanninggraph: 1312"),
 Array(1, UpdateEdgeInfo, "g1_4-3", "Weight of edge (4,3): 78 - Weight of spanninggraph: 1312"),
 Array(1, UpdateEdgeInfo, "g1_2-4", "Weight of edge (2,4): 118 - Weight of spanninggraph: 1312"),
-Array(4, SetEdgeColor, "g1_4-8", "yellow"),
-Array(1, ShowActive, "l_4"),
-Array(5, ShowActive, "l_5"),
-Array(4, SetEdgeColor, "g1_4-8", "black"),
+Array(5, SetEdgeColor, "g1_4-8", "yellow"),
+Array(2, ShowActive, "l_4"),
+Array(7, ShowActive, "l_5"),
+Array(5, SetEdgeColor, "g1_4-8", "black"),
 Array(1, SetEdgeColor, "g1_4-8", "grey"),
 Array(1, ShowActive, "l_3"),
 Array(1, UpdateGraphInfo, "g1_()", "Weight of spanning graph: 1263.000000"),
@@ -738,7 +741,7 @@ Array(1, UpdateEdgeInfo, "g1_9-6", "Weight of edge (9,6): 48 - Weight of spannin
 Array(1, UpdateEdgeInfo, "g1_12-15", "Weight of edge (12,15): 197 - Weight of spanninggraph: 1263"),
 Array(1, UpdateEdgeInfo, "g1_4-3", "Weight of edge (4,3): 78 - Weight of spanninggraph: 1263"),
 Array(1, UpdateEdgeInfo, "g1_2-4", "Weight of edge (2,4): 118 - Weight of spanninggraph: 1263"),
-Array(4, SetEdgeColor, "g1_9-6", "yellow"),
+Array(5, SetEdgeColor, "g1_9-6", "yellow"),
 Array(1, ShowActive, "l_4"),
 Array(5, ShowActive, "l_3"),
 Array(5, SetEdgeColor, "g1_9-6", "blue"),
@@ -749,10 +752,10 @@ Array(5, SetEdgeColor, "g1_7-6", "blue"),
 Array(1, SetEdgeColor, "g1_8-9", "yellow"),
 Array(1, ShowActive, "l_4"),
 Array(5, ShowActive, "l_3"),
-Array(5, SetEdgeColor, "g1_8-9", "blue"),
+Array(6, SetEdgeColor, "g1_8-9", "blue"),
 Array(1, SetEdgeColor, "g1_4-9", "yellow"),
 Array(1, ShowActive, "l_4"),
-Array(5, ShowActive, "l_3"),
+Array(6, ShowActive, "l_3"),
 Array(5, SetEdgeColor, "g1_4-9", "blue"));
             init();
         </script>

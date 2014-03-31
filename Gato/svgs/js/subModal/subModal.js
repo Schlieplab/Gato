@@ -19,7 +19,7 @@ var gPopupContainer = null;
 var gPopFrame = null;
 var gReturnFunc;
 var gPopupIsShown = false;
-var gDefaultPage = "./libs/subModal/loading.html";
+var gDefaultPage = "js/subModal/loading.html";
 var gHideSelects = false;
 var gReturnVal = null;
 
@@ -49,7 +49,7 @@ function initPopUp() {
 			'<div id="popupTitleBar">' +
 				'<div id="popupTitle"></div>' +
 				'<div id="popupControls">' +
-					'<img src="./libs/subModal/close.gif" onclick="hidePopWin(true);" id="popCloseBox" />' +
+					'<img src="js/subModal/close.gif" onclick="hidePopWin(true);" id="popCloseBox" />' +
 				'</div>' +
 			'</div>' +
 			'<iframe src="'+ gDefaultPage +'" style="width:100%;height:100%;background-color:transparent;" scrolling="auto" frameborder="0" allowtransparency="true" id="popupFrame" name="popupFrame" width="100%" height="100%"></iframe>' +

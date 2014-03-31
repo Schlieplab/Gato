@@ -360,8 +360,6 @@ svg_instance = {
 }
 
 
-
-
 #------------------------------------------------------------------
 def usage():
     print "Usage: GatoTest.py"
@@ -486,8 +484,6 @@ if __name__ == '__main__':
 
         if not os.path.exists('./svgs'):
             os.makedirs('./svgs')
-        if not os.path.exists('./svgs/src/'):
-            os.makedirs('./svgs/src/')
 
         if svg:
             app.ExportSVGAnimation('svgs/%s-%s.html' %

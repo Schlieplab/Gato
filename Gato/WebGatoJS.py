@@ -2,10 +2,13 @@ animationhead = '''
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" type="text/css" href="libs/subModal/subModal.css" />
-        <script type="text/javascript" src="libs/subModal/common.js"></script>
-        <script type="text/javascript" src="libs/subModal/subModal.js"></script>
-        <script src="libs/snap.svg.js" type="text/javascript"></script>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" type="text/css" href="js/subModal/subModal.css" />
+        <script type="text/javascript" src="js/subModal/common.js"></script>
+        <script type="text/javascript" src="js/subModal/subModal.js"></script>
+        <script src="js/snap.svg.js" type="text/javascript"></script>
         <style>
             html, body {
                 margin: 0 auto;
@@ -57,10 +60,10 @@ animationhead = '''
             var g2_init_vertex_info = %(g2_init_vertex_info)s;
         </script>
 
-        <script type="text/javascript" src="static_scripts/util.js"></script>
-        <script type="text/javascript" src="static_scripts/animation_functions.js"></script>
-        <script type="text/javascript" src="static_scripts/display_functions.js"></script>
-        <script type="text/javascript" src="static_scripts/webgato_main.js"></script>
+        <script type="text/javascript" src="js/util.js"></script>
+        <script type="text/javascript" src="js/animation_functions.js"></script>
+        <script type="text/javascript" src="js/display_functions.js"></script>
+        <script type="text/javascript" src="js/webgato_main.js"></script>
         
         <script type="text/javascript">
             %(animation)s

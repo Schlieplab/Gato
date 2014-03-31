@@ -279,7 +279,6 @@ function add_graph_frame() {
 		var frame = null;
 		//  TODO: THIS IS MESSY.  Max size should always be set here.
 		if (max_size.width && max_size.height) {
-			console.log('moo');
 			// If we added any vertices or edges then max_size will be set and we should use that
 			frame = snap.rect(0, 0, max_size.width+pad, max_size.height+pad+g.graph_info_height);
 		} else {
