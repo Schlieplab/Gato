@@ -1,5 +1,15 @@
 function Scaler() {
+	/* This object represents the graphical and programmatical elements
+		of the graph scaler.  It appears at the bottom right of the graph
+		as a red triangle.
+	*/
 	this.set_max_and_min_dimensions_of_graph_container = function() {
+		/* Sets the following properties on the Scaler object:
+		this.max_scale_factor: The largest value the graph can be scaled to
+			before it grows too large for it's space
+		this.min_scale_factor: The minimum value the graph can be scaled to.
+			This one isn't as essential, but we definitely don't want negative scale values.
+		*/
 		var bbox = g.master_graph_container.getBBox(),
 			playback_bbox = g.playback_bar.g.getBBox();
 		var max_height = playback_bbox.y + g.control_panel.height - g.padding - bbox.y,
@@ -20,13 +30,12 @@ function Scaler() {
 		} else if (this.curr_scale < this.min_scale_factor) {
 			this.initial_scale = this.min_scale_factor;
 			this.curr_scale = this.min_scale_factor;
-			this._scale_graphs(this.curr_scale);
+			this.scale_graphs(this.curr_scale);
 		}
 	};
 
 	this.mousedown = function(evt) {
 		g.scaler.scaling = true;
-		
 		var bbox = g.master_graph_container.getBBox();
 		g.scaler.start_width = bbox.width * g.scaler.initial_scale;
 		g.scaler.start_mouse = {'x': parseInt(evt.clientX), 'y': parseInt(evt.clientY)};
@@ -38,10 +47,24 @@ function Scaler() {
 		g.scaler.scaling = false;
 	};
 	this.mousemove = function(evt) {
-		this.do_scale(evt);
+		/* Computes the new scale_factor and calls scale_graphs() */
+		var dx = parseInt(evt.clientX) - g.scaler.start_mouse.x;
+		var new_width = g.scaler.start_width + dx;
+		var scale_factor = new_width / g.initial_graph_width;
+
+		if (scale_factor > this.max_scale_factor) {
+			scale_factor = this.max_scale_factor;
+		} else if (scale_factor < this.min_scale_factor) {
+			scale_factor = this.min_scale_factor;
+		}
+
+		g.scaler.curr_scale = scale_factor;
+		g.scaler.scale_graphs();
 	};
 	this.scale_graphs = function(scale_factor) {
-		/* Scales the graph to the scale factor passed in, or current scale factor.  Accomodates for translation changes */
+		/* Scales the graph to the scale factor passed in, 
+			or current scale factor.  Accomodates for translation changes(what does that mean?)
+		*/
 		if (scale_factor == null) {
 			scale_factor = g.scaler.curr_scale;
 		}
@@ -58,41 +81,25 @@ function Scaler() {
 			g_cont.transform('t' + x_trans + ',' + y_trans);
 		}
 	};
-	this.do_scale = function(evt) {
-		var dx = parseInt(evt.clientX) - g.scaler.start_mouse.x;
-		var new_width = g.scaler.start_width + dx;
-		var scale_factor = new_width / g.initial_graph_width;
-
-		if (scale_factor > this.max_scale_factor) {
-			scale_factor = this.max_scale_factor;
-		} else if (scale_factor < this.min_scale_factor) {
-			scale_factor = this.min_scale_factor;
-		}
-
-		g.scaler.curr_scale = scale_factor;
-		g.scaler.scale_graphs();
-	};
 
 	var bbox = g.graph_containers[g.num_graphs-1].getBBox();
+	// true if the scaler is currently being manipulated
 	this.scaling = false;
+	// The initial scale factor of the graph
 	this.initial_scale = 1;
+	// The current scale factor of the graph
 	this.curr_scale = 1;
+	this.set_max_and_min_dimensions_of_graph_container();
+	
 	this.width = 20;
 	this.height = 20;
 	this.x = bbox.width - this.width;
 	this.y = bbox.height + g.frame_padding*2 - this.height + g.graph_frame_stroke_width * 3;
-	this.set_max_and_min_dimensions_of_graph_container();
-
 	this.elem = snap.polygon([this.x, this.y, this.x+this.width, this.y, this.x+this.width, this.y-this.height, this.x, this.y]).attr({
 		'fill': '#cc3333',
 		'stroke': '#330000',
 		'cursor': 'move'
 	}).mousedown(this.mousedown);
-}
-
-function add_scaler() {
-	g.scaler = new Scaler();
-	g.graph_containers[g.num_graphs-1].append(g.scaler.elem);
 }
 
 function ToolTip(elem, elem_type) {
@@ -225,24 +232,26 @@ function add_tooltip(elem, element_type) {
 	g.tooltips[graph_num-1][tooltip.id] = tooltip.text_elem;
 }
 
-function build_graph_info(group, g_num) {
-	var text_elem = snap.text(5, 0, 'No Info').attr({'id': 'g' + g_num + '_info'});		// Set this to "No Info"(or any text) at first so the bbox has a height
-	text_elem.attr({'y': text_elem.getBBox().height-1});
-	text_elem.node.innerHTML = g.init_graph_infos[g_num-1];
-	group.append(text_elem);
-	return text_elem;
-}
+
 
 function add_graph_info() {
-	// Padding on each edge of graph
-	var pad = g.vertex_r + g.frame_padding;
+	/* Adds graph info elements to the canvas */
+	function build_graph_info(group, g_num) {
+		var text_elem = snap.text(5, 0, 'No Info').attr({'id': 'g' + g_num + '_info'});		// Set this to "No Info"(or any text) at first so the bbox has a height
+		text_elem.attr({'y': text_elem.getBBox().height-1});
+		text_elem.node.innerHTML = g.init_graph_infos[g_num-1];
+		group.append(text_elem);
+		return text_elem;
+	}
 
+	var pad = g.vertex_r + g.frame_padding; // Padding on each edge of the graph
+	
 	for (var g_num=0; g_num<g.num_graphs; g_num++) {
 		var graph_bbox = g.graphs[g_num].getBBox();
 		// Add the graph and graph info to the graph container
 		g.graph_containers[g_num].append(g.graph_info_containers[g_num]);
 		// Set up the graph info
-		graph_info_text_elem = build_graph_info(g.graph_info_containers[g_num], g_num+1);
+		var graph_info_text_elem = build_graph_info(g.graph_info_containers[g_num], g_num+1);
 		g.graph_infos.push(graph_info_text_elem);
 	}
 }

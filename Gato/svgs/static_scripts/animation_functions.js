@@ -454,8 +454,8 @@ function Slider(width, height) {
 *
 */
 
-/** Sets the vertex given by vertex_id to color */
 function SetVertexColor(vertex_id, color) {
+	// Sets the vertex given by vertex_id to color
 	if (vertex_id in g.blinking_vertices) {
 		remove_scheduled_vertex_blinks(vertex_id);
 	}
@@ -463,6 +463,7 @@ function SetVertexColor(vertex_id, color) {
 }
 
 function UpdateEdgeInfo(edge_id, info) {
+	// Updates the tooltip text corresponding to the edge given by edge_id with the string "info"
 	var graph_num = parseInt(edge_id.substring(1,2));
 	var tooltip_id = edge_id + '_group_tooltip';
 	var tooltip = g.tooltip_objects[tooltip_id];
@@ -472,12 +473,14 @@ function UpdateEdgeInfo(edge_id, info) {
 }
 
 function UpdateGraphInfo(graph_id, info) {
+	// Updates the graph info for the given graph with the string "info"
 	var graph_num = parseInt(graph_id.substring(1));
 	var graph_info_text_elem = g.graph_infos[graph_num-1];
 	graph_info_text_elem.node.innerHTML = info;
 }
 
 function UpdateVertexInfo(vertex_id, info) {
+	// Updates the vertex info tooltip for the given vertex with the string "info"
 	var vertex_group_id = vertex_id + '_group';
 	var tooltip_id = vertex_group_id + '_tooltip';
 	var tooltip = g.tooltip_objects[tooltip_id];
@@ -486,11 +489,12 @@ function UpdateVertexInfo(vertex_id, info) {
 	}
 }
 
-/** Sets the given edge to the given color.  If the given edge
-	is not found, then the reverse direction is tried, e.g. if g1_(5, 4) is
-	not found we will try g1_(4, 5)
-*/
 function SetEdgeColor(edge_id, color) {
+	/** Sets the given edge to the given color.  If the given edge
+		is not found, then the reverse direction is tried, e.g. if g1_(5, 4) is
+		not found we will try g1_(4, 5).
+		If there are any scheduled edge blinks for this edge then we will remove those scheduled blinks.
+	*/
 	if (edge_id in g.blinking_edges) {
 		remove_scheduled_edge_blinks(edge_id);
 	}
@@ -509,11 +513,13 @@ function SetEdgeColor(edge_id, color) {
     }
 }
 
-/** Sets color of all vertices of a given graph to a given color.
-* 	graph_id_and_color is string of form "g{graph_num}_#{hex_color}"
-* 	If vertices != null, then only color the set of vertices specified by vertices
-*/
 function SetAllVerticesColor() {
+	/** Sets color of all vertices of a given graph to a given color.
+	 	First argument is always graph_id_and_color: string of form "g{graph_num}_#{hex_color}"
+	 	Optional argument afterwards is a string of vertices like "1,2,3,4"
+	 	Sometimes though(see WeightedMatching algorithms) the vertices are passed in like 
+	 	SetAllVerticesColor(arg_1, v1, v2, v3, v4, ...).  We account for all forms of arguments
+	*/
 	remove_all_scheduled_vertex_blinks();
 
 	var graph_id_and_color = arguments[0];
@@ -543,8 +549,8 @@ function SetAllVerticesColor() {
 }
 
 
-/** Sets all edges of given graph to color.  param is of form: "g1_#dd3333" */
 function SetAllEdgesColor(graph_id_and_color) {
+	// Sets all edges of given graph to color.  param is of form: "g1_#dd3333"
 	remove_all_scheduled_edge_blinks();
     
     var split = graph_id_and_color.split('_');
@@ -562,8 +568,10 @@ function SetAllEdgesColor(graph_id_and_color) {
 }
 
 
-/** Blinks the given vertex between black and current color 3 times */
 function BlinkVertex(vertex_id, color) {
+	// Blinks the given vertex between black and current color 3 times
+	// Adds an array of blink animations to g.blinking_vertices, and adds a task to delete those animations
+	// from g.blinking_vertices when they are completed
 	if (g.jumping) {
 		return;
 	}
@@ -588,8 +596,10 @@ function BlinkVertex(vertex_id, color) {
     g.blinking_vertices[vertex_id] = timeout_arr;
 }
 
-/** Blinks the given edge between black and current color 3 times */
 function BlinkEdge(edge_id, color){
+	// Blinks the given edge between black and current color 3 times
+	// Adds an array of blink animations to g.blinking_edges, and adds a task to delete those animations
+	// from g.blinking_edges when they are completed
 	if (g.jumping) {
 		return;
 	}
@@ -613,10 +623,10 @@ function BlinkEdge(edge_id, color){
     g.blinking_edges[edge_id] = timeout_arr;
 }
 
-//Blink(self, list, color=None):
-//Sets the frame width of a vertex
 function SetVertexFrameWidth(vertex_id, val) {
-	// Take away dropshadow
+	// Sets the stroke-width of a vertex
+
+	// Take away dropshadow(this get's messed up by changing stroke-width)
     var vertex = g.vertices[graph_num_from_id(vertex_id)][vertex_id];
 	if (val !== '0') {
         vertex.attr({"style": ""});
@@ -629,8 +639,8 @@ function SetVertexFrameWidth(vertex_id, val) {
     }
 }
 
-// Sets annotation of vertex v to annotation.  Annotation's color is specified
 function SetVertexAnnotation(vertex_id, annotation, color) {
+	// Sets annotation of vertex vertex_id to annotation.  Annotation's color is optionally specified
 	if (annotation === "None") {
 		return;
 	}

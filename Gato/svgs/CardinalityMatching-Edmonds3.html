@@ -24,6 +24,7 @@
                 cursor: pointer;
             }
         </style>
+        <title>Gato -- CardinalityMatching algorithm on Edmonds3 graph</title>
     </head>
     <body>
 
@@ -42,60 +43,80 @@
 <g id="g1_1-2_group" class="edge_group" style="cursor: pointer">
 <line id="g1_1-2" class="edge" x1="0.0" y1="50.0" x2="100.0" y2="0.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_1-3_group" class="edge_group" style="cursor: pointer">
 <line id="g1_1-3" class="edge" x1="0.0" y1="50.0" x2="100.0" y2="100.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_2-4_group" class="edge_group" style="cursor: pointer">
 <line id="g1_2-4" class="edge" x1="100.0" y1="0.0" x2="200.0" y2="50.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_3-2_group" class="edge_group" style="cursor: pointer">
 <line id="g1_3-2" class="edge" x1="100.0" y1="100.0" x2="100.0" y2="0.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_3-5_group" class="edge_group" style="cursor: pointer">
 <line id="g1_3-5" class="edge" x1="100.0" y1="100.0" x2="200.0" y2="150.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_3-9_group" class="edge_group" style="cursor: pointer">
 <line id="g1_3-9" class="edge" x1="100.0" y1="100.0" x2="0.0" y2="150.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_4-3_group" class="edge_group" style="cursor: pointer">
 <line id="g1_4-3" class="edge" x1="200.0" y1="50.0" x2="100.0" y2="100.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_4-8_group" class="edge_group" style="cursor: pointer">
 <line id="g1_4-8" class="edge" x1="200.0" y1="50.0" x2="300.0" y2="0.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_5-4_group" class="edge_group" style="cursor: pointer">
 <line id="g1_5-4" class="edge" x1="200.0" y1="150.0" x2="200.0" y2="50.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_5-7_group" class="edge_group" style="cursor: pointer">
 <line id="g1_5-7" class="edge" x1="200.0" y1="150.0" x2="100.0" y2="200.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_5-10_group" class="edge_group" style="cursor: pointer">
 <line id="g1_5-10" class="edge" x1="200.0" y1="150.0" x2="200.0" y2="250.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_6-4_group" class="edge_group" style="cursor: pointer">
 <line id="g1_6-4" class="edge" x1="300.0" y1="100.0" x2="200.0" y2="50.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_6-5_group" class="edge_group" style="cursor: pointer">
 <line id="g1_6-5" class="edge" x1="300.0" y1="100.0" x2="200.0" y2="150.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_7-3_group" class="edge_group" style="cursor: pointer">
 <line id="g1_7-3" class="edge" x1="100.0" y1="200.0" x2="100.0" y2="100.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_8-6_group" class="edge_group" style="cursor: pointer">
 <line id="g1_8-6" class="edge" x1="300.0" y1="0.0" x2="300.0" y2="100.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_8-11_group" class="edge_group" style="cursor: pointer">
 <line id="g1_8-11" class="edge" x1="300.0" y1="0.0" x2="400.0" y2="50.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_9-7_group" class="edge_group" style="cursor: pointer">
 <line id="g1_9-7" class="edge" x1="0.0" y1="150.0" x2="100.0" y2="200.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_10-7_group" class="edge_group" style="cursor: pointer">
 <line id="g1_10-7" class="edge" x1="200.0" y1="250.0" x2="100.0" y2="200.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_11-6_group" class="edge_group" style="cursor: pointer">
 <line id="g1_11-6" class="edge" x1="400.0" y1="50.0" x2="300.0" y2="100.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
+<g id="g1_pre_vertices_group"></g>
 <g id="g1_1_group" class="vertex_g" style="cursor: pointer">
 <circle id="g1_1" class="vertex" cx="0.0" cy="50.0" r="14.0" fill="grey" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
 
@@ -167,126 +188,146 @@
 <g id="g2" type="undirected">
 
 <g id="g2_1-2_group" class="edge_group" style="cursor: pointer">
-<line id="g2_1-2" class="edge" x1="-87.3015873016" y1="-11.9047619048" x2="12.6984126984" y2="-61.9047619048" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g2_1-2" class="edge" x1="0.0" y1="50.0" x2="100.0" y2="0.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g2_1-3_group" class="edge_group" style="cursor: pointer">
-<line id="g2_1-3" class="edge" x1="-87.3015873016" y1="-11.9047619048" x2="12.6984126984" y2="38.0952380952" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g2_1-3" class="edge" x1="0.0" y1="50.0" x2="100.0" y2="100.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g2_2-4_group" class="edge_group" style="cursor: pointer">
-<line id="g2_2-4" class="edge" x1="12.6984126984" y1="-61.9047619048" x2="112.698412698" y2="-11.9047619048" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g2_2-4" class="edge" x1="100.0" y1="0.0" x2="200.0" y2="50.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g2_3-2_group" class="edge_group" style="cursor: pointer">
-<line id="g2_3-2" class="edge" x1="12.6984126984" y1="38.0952380952" x2="12.6984126984" y2="-61.9047619048" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g2_3-2" class="edge" x1="100.0" y1="100.0" x2="100.0" y2="0.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g2_3-5_group" class="edge_group" style="cursor: pointer">
-<line id="g2_3-5" class="edge" x1="12.6984126984" y1="38.0952380952" x2="112.698412698" y2="88.0952380952" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g2_3-5" class="edge" x1="100.0" y1="100.0" x2="200.0" y2="150.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g2_3-9_group" class="edge_group" style="cursor: pointer">
-<line id="g2_3-9" class="edge" x1="12.6984126984" y1="38.0952380952" x2="-87.3015873016" y2="88.0952380952" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g2_3-9" class="edge" x1="100.0" y1="100.0" x2="0.0" y2="150.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g2_4-3_group" class="edge_group" style="cursor: pointer">
-<line id="g2_4-3" class="edge" x1="112.698412698" y1="-11.9047619048" x2="12.6984126984" y2="38.0952380952" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g2_4-3" class="edge" x1="200.0" y1="50.0" x2="100.0" y2="100.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g2_4-8_group" class="edge_group" style="cursor: pointer">
-<line id="g2_4-8" class="edge" x1="112.698412698" y1="-11.9047619048" x2="212.698412698" y2="-61.9047619048" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g2_4-8" class="edge" x1="200.0" y1="50.0" x2="300.0" y2="0.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g2_5-4_group" class="edge_group" style="cursor: pointer">
-<line id="g2_5-4" class="edge" x1="112.698412698" y1="88.0952380952" x2="112.698412698" y2="-11.9047619048" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g2_5-4" class="edge" x1="200.0" y1="150.0" x2="200.0" y2="50.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g2_5-7_group" class="edge_group" style="cursor: pointer">
-<line id="g2_5-7" class="edge" x1="112.698412698" y1="88.0952380952" x2="12.6984126984" y2="138.095238095" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g2_5-7" class="edge" x1="200.0" y1="150.0" x2="100.0" y2="200.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g2_5-10_group" class="edge_group" style="cursor: pointer">
-<line id="g2_5-10" class="edge" x1="112.698412698" y1="88.0952380952" x2="112.698412698" y2="188.095238095" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g2_5-10" class="edge" x1="200.0" y1="150.0" x2="200.0" y2="250.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g2_6-4_group" class="edge_group" style="cursor: pointer">
-<line id="g2_6-4" class="edge" x1="212.698412698" y1="38.0952380952" x2="112.698412698" y2="-11.9047619048" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g2_6-4" class="edge" x1="300.0" y1="100.0" x2="200.0" y2="50.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g2_6-5_group" class="edge_group" style="cursor: pointer">
-<line id="g2_6-5" class="edge" x1="212.698412698" y1="38.0952380952" x2="112.698412698" y2="88.0952380952" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g2_6-5" class="edge" x1="300.0" y1="100.0" x2="200.0" y2="150.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g2_7-3_group" class="edge_group" style="cursor: pointer">
-<line id="g2_7-3" class="edge" x1="12.6984126984" y1="138.095238095" x2="12.6984126984" y2="38.0952380952" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g2_7-3" class="edge" x1="100.0" y1="200.0" x2="100.0" y2="100.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g2_8-6_group" class="edge_group" style="cursor: pointer">
-<line id="g2_8-6" class="edge" x1="212.698412698" y1="-61.9047619048" x2="212.698412698" y2="38.0952380952" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g2_8-6" class="edge" x1="300.0" y1="0.0" x2="300.0" y2="100.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g2_8-11_group" class="edge_group" style="cursor: pointer">
-<line id="g2_8-11" class="edge" x1="212.698412698" y1="-61.9047619048" x2="312.698412698" y2="-11.9047619048" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g2_8-11" class="edge" x1="300.0" y1="0.0" x2="400.0" y2="50.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g2_9-7_group" class="edge_group" style="cursor: pointer">
-<line id="g2_9-7" class="edge" x1="-87.3015873016" y1="88.0952380952" x2="12.6984126984" y2="138.095238095" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g2_9-7" class="edge" x1="0.0" y1="150.0" x2="100.0" y2="200.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g2_10-7_group" class="edge_group" style="cursor: pointer">
-<line id="g2_10-7" class="edge" x1="112.698412698" y1="188.095238095" x2="12.6984126984" y2="138.095238095" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g2_10-7" class="edge" x1="200.0" y1="250.0" x2="100.0" y2="200.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g2_11-6_group" class="edge_group" style="cursor: pointer">
-<line id="g2_11-6" class="edge" x1="312.698412698" y1="-11.9047619048" x2="212.698412698" y2="38.0952380952" stroke="#DDDDDD" stroke-width="4.0"/>
+<line id="g2_11-6" class="edge" x1="400.0" y1="50.0" x2="300.0" y2="100.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
+<g id="g2_pre_vertices_group"></g>
 <g id="g2_1_group" class="vertex_g" style="cursor: pointer">
-<circle id="g2_1" class="vertex" cx="-87.3015873016" cy="-11.9047619048" r="14.0" fill="grey" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+<circle id="g2_1" class="vertex" cx="0.0" cy="50.0" r="14.0" fill="grey" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
 
-<text id="vlg2_1" x="-87.3015873016" y="-7.28476190476" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >1</text>
+<text id="vlg2_1" x="0.0" y="54.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >1</text>
 
 </g>
 <g id="g2_2_group" class="vertex_g" style="cursor: pointer">
-<circle id="g2_2" class="vertex" cx="12.6984126984" cy="-61.9047619048" r="14.0" fill="grey" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+<circle id="g2_2" class="vertex" cx="100.0" cy="0.0" r="14.0" fill="grey" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
 
-<text id="vlg2_2" x="12.6984126984" y="-57.2847619048" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >2</text>
+<text id="vlg2_2" x="100.0" y="4.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >2</text>
 
 </g>
 <g id="g2_3_group" class="vertex_g" style="cursor: pointer">
-<circle id="g2_3" class="vertex" cx="12.6984126984" cy="38.0952380952" r="14.0" fill="grey" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+<circle id="g2_3" class="vertex" cx="100.0" cy="100.0" r="14.0" fill="grey" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
 
-<text id="vlg2_3" x="12.6984126984" y="42.7152380952" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >3</text>
+<text id="vlg2_3" x="100.0" y="104.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >3</text>
 
 </g>
 <g id="g2_4_group" class="vertex_g" style="cursor: pointer">
-<circle id="g2_4" class="vertex" cx="112.698412698" cy="-11.9047619048" r="14.0" fill="grey" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+<circle id="g2_4" class="vertex" cx="200.0" cy="50.0" r="14.0" fill="grey" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
 
-<text id="vlg2_4" x="112.698412698" y="-7.28476190476" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >4</text>
+<text id="vlg2_4" x="200.0" y="54.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >4</text>
 
 </g>
 <g id="g2_5_group" class="vertex_g" style="cursor: pointer">
-<circle id="g2_5" class="vertex" cx="112.698412698" cy="88.0952380952" r="14.0" fill="grey" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+<circle id="g2_5" class="vertex" cx="200.0" cy="150.0" r="14.0" fill="grey" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
 
-<text id="vlg2_5" x="112.698412698" y="92.7152380952" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >5</text>
+<text id="vlg2_5" x="200.0" y="154.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >5</text>
 
 </g>
 <g id="g2_6_group" class="vertex_g" style="cursor: pointer">
-<circle id="g2_6" class="vertex" cx="212.698412698" cy="38.0952380952" r="14.0" fill="grey" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+<circle id="g2_6" class="vertex" cx="300.0" cy="100.0" r="14.0" fill="grey" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
 
-<text id="vlg2_6" x="212.698412698" y="42.7152380952" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >6</text>
+<text id="vlg2_6" x="300.0" y="104.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >6</text>
 
 </g>
 <g id="g2_7_group" class="vertex_g" style="cursor: pointer">
-<circle id="g2_7" class="vertex" cx="12.6984126984" cy="138.095238095" r="14.0" fill="grey" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+<circle id="g2_7" class="vertex" cx="100.0" cy="200.0" r="14.0" fill="grey" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
 
-<text id="vlg2_7" x="12.6984126984" y="142.715238095" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >7</text>
+<text id="vlg2_7" x="100.0" y="204.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >7</text>
 
 </g>
 <g id="g2_8_group" class="vertex_g" style="cursor: pointer">
-<circle id="g2_8" class="vertex" cx="212.698412698" cy="-61.9047619048" r="14.0" fill="grey" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+<circle id="g2_8" class="vertex" cx="300.0" cy="0.0" r="14.0" fill="grey" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
 
-<text id="vlg2_8" x="212.698412698" y="-57.2847619048" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >8</text>
+<text id="vlg2_8" x="300.0" y="4.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >8</text>
 
 </g>
 <g id="g2_9_group" class="vertex_g" style="cursor: pointer">
-<circle id="g2_9" class="vertex" cx="-87.3015873016" cy="88.0952380952" r="14.0" fill="grey" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+<circle id="g2_9" class="vertex" cx="0.0" cy="150.0" r="14.0" fill="grey" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
 
-<text id="vlg2_9" x="-87.3015873016" y="92.7152380952" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >9</text>
+<text id="vlg2_9" x="0.0" y="154.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >9</text>
 
 </g>
 <g id="g2_10_group" class="vertex_g" style="cursor: pointer">
-<circle id="g2_10" class="vertex" cx="112.698412698" cy="188.095238095" r="14.0" fill="grey" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+<circle id="g2_10" class="vertex" cx="200.0" cy="250.0" r="14.0" fill="grey" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
 
-<text id="vlg2_10" x="112.698412698" y="192.715238095" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >10</text>
+<text id="vlg2_10" x="200.0" y="254.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >10</text>
 
 </g>
 <g id="g2_11_group" class="vertex_g" style="cursor: pointer">
-<circle id="g2_11" class="vertex" cx="312.698412698" cy="-11.9047619048" r="14.0" fill="grey" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+<circle id="g2_11" class="vertex" cx="400.0" cy="50.0" r="14.0" fill="grey" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
 
-<text id="vlg2_11" x="312.698412698" y="-7.28476190476" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >11</text>
+<text id="vlg2_11" x="400.0" y="54.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >11</text>
 
 </g>
 </g>
@@ -347,8 +388,8 @@
             var info_file = "infos/CardinalityMatching-Edmonds3.html";
             var g1_x_add = 50;
             var g1_y_add = 50;
-            var g2_x_add = 137;
-            var g2_y_add = 111;
+            var g2_x_add = 50;
+            var g2_y_add = 50;
             var g1_init_edge_info = {
 "g1_1-3": "Edge (1,3)",
 "g1_10-11": "Edge (10,11)",
@@ -482,30 +523,30 @@ Array(1, UpdateVertexInfo, "g1_9", "Vertex 9 at position (50,200)"),
 Array(1, UpdateVertexInfo, "g1_10", "Vertex 10 at position (250,300)"),
 Array(1, UpdateVertexInfo, "g1_11", "Vertex 11 at position (450,100)"),
 Array(5, ShowActive, "l_33"),
-Array(5, ShowActive, "l_34"),
-Array(6, ShowActive, "l_35"),
+Array(7, ShowActive, "l_34"),
+Array(7, ShowActive, "l_35"),
 Array(5, SetAllVerticesColor, "g2_grey"),
 Array(2, SetAllEdgesColor, "g2_grey"),
 Array(2, SetVertexColor, "g2_1", "#663333"),
 Array(1, SetVertexAnnotation, "g2_1", "1"),
 Array(6, SetVertexColor, "g2_2", "#993333"),
 Array(2, SetVertexAnnotation, "g2_2", "1"),
-Array(6, SetVertexColor, "g2_3", "#CC3333"),
+Array(5, SetVertexColor, "g2_3", "#CC3333"),
 Array(2, SetVertexAnnotation, "g2_3", "1"),
 Array(6, SetVertexColor, "g2_4", "#336633"),
-Array(2, SetVertexAnnotation, "g2_4", "1"),
-Array(6, SetVertexColor, "g2_5", "#666633"),
+Array(1, SetVertexAnnotation, "g2_4", "1"),
+Array(2, SetVertexColor, "g2_5", "#666633"),
 Array(2, SetVertexAnnotation, "g2_5", "1"),
 Array(6, SetVertexColor, "g2_6", "#996633"),
-Array(2, SetVertexAnnotation, "g2_6", "1"),
-Array(6, SetVertexColor, "g2_7", "#CC6633"),
-Array(2, SetVertexAnnotation, "g2_7", "1"),
-Array(6, SetVertexColor, "g2_8", "#339933"),
-Array(3, SetVertexAnnotation, "g2_8", "1"),
-Array(6, SetVertexColor, "g2_9", "#669933"),
-Array(3, SetVertexAnnotation, "g2_9", "1"),
-Array(6, SetVertexColor, "g2_10", "#999933"),
-Array(2, SetVertexAnnotation, "g2_10", "1"),
+Array(1, SetVertexAnnotation, "g2_6", "1"),
+Array(3, SetVertexColor, "g2_7", "#CC6633"),
+Array(1, SetVertexAnnotation, "g2_7", "1"),
+Array(3, SetVertexColor, "g2_8", "#339933"),
+Array(2, SetVertexAnnotation, "g2_8", "1"),
+Array(3, SetVertexColor, "g2_9", "#669933"),
+Array(2, SetVertexAnnotation, "g2_9", "1"),
+Array(3, SetVertexColor, "g2_10", "#999933"),
+Array(1, SetVertexAnnotation, "g2_10", "1"),
 Array(3, SetVertexColor, "g2_11", "#CC9933"),
 Array(1, SetVertexAnnotation, "g2_11", "1"),
 Array(3, SetVertexFrameWidth, "g2_1", "6"),
@@ -521,9 +562,9 @@ Array(1, SetEdgeColor, "g2_1-2", "blue"),
 Array(2, ShowActive, "l_34"),
 Array(5, ShowActive, "l_35"),
 Array(4, SetAllVerticesColor, "g2_grey"),
-Array(1, SetAllEdgesColor, "g2_grey"),
-Array(2, SetVertexFrameWidth, "g2_1", "0"),
-Array(1, SetVertexColor, "g2_3", "#CC3333"),
+Array(2, SetAllEdgesColor, "g2_grey"),
+Array(3, SetVertexFrameWidth, "g2_1", "0"),
+Array(2, SetVertexColor, "g2_3", "#CC3333"),
 Array(1, SetVertexAnnotation, "g2_3", "1"),
 Array(3, SetVertexColor, "g2_4", "#336633"),
 Array(1, SetVertexAnnotation, "g2_4", "1"),
@@ -550,10 +591,10 @@ Array(1, SetEdgeColor, "g2_1-2", "#CC3333"),
 Array(1, SetVertexAnnotation, "g2_2", "1"),
 Array(3, SetEdgeColor, "g2_4-3", "red"),
 Array(1, ShowActive, "l_36"),
-Array(6, ShowActive, "l_39"),
+Array(5, ShowActive, "l_39"),
 Array(5, ShowActive, "l_43"),
 Array(5, ShowActive, "l_44"),
-Array(5, SetVertexColor, "g1_4", "blue"),
+Array(4, SetVertexColor, "g1_4", "blue"),
 Array(1, SetVertexColor, "g1_3", "blue"),
 Array(1, SetEdgeColor, "g1_4-3", "blue"),
 Array(1, SetEdgeColor, "g2_4-3", "blue"),
@@ -607,7 +648,7 @@ Array(3, SetVertexColor, "g2_10", "#999933"),
 Array(1, SetVertexAnnotation, "g2_10", "1"),
 Array(3, SetVertexColor, "g2_11", "#CC9933"),
 Array(1, SetVertexAnnotation, "g2_11", "1"),
-Array(3, SetVertexFrameWidth, "g2_7", "6"),
+Array(2, SetVertexFrameWidth, "g2_7", "6"),
 Array(1, SetVertexColor, "g2_5", "#CC6633"),
 Array(1, SetEdgeColor, "g2_5-7", "#CC6633"),
 Array(1, SetVertexAnnotation, "g2_5", "0"),
@@ -619,11 +660,11 @@ Array(1, ShowActive, "l_36"),
 Array(5, ShowActive, "l_39"),
 Array(5, ShowActive, "l_43"),
 Array(5, ShowActive, "l_44"),
-Array(4, SetVertexColor, "g1_9", "blue"),
+Array(5, SetVertexColor, "g1_9", "blue"),
 Array(1, SetVertexColor, "g1_7", "blue"),
 Array(1, SetEdgeColor, "g1_9-7", "blue"),
 Array(1, SetEdgeColor, "g2_9-7", "blue"),
-Array(1, ShowActive, "l_34"),
+Array(2, ShowActive, "l_34"),
 Array(5, ShowActive, "l_35"),
 Array(4, SetAllVerticesColor, "g2_grey"),
 Array(1, SetAllEdgesColor, "g2_grey"),
@@ -651,8 +692,8 @@ Array(3, SetEdgeColor, "g2_8-11", "red"),
 Array(1, ShowActive, "l_36"),
 Array(5, ShowActive, "l_39"),
 Array(5, ShowActive, "l_43"),
-Array(5, ShowActive, "l_44"),
-Array(4, SetVertexColor, "g1_8", "blue"),
+Array(6, ShowActive, "l_44"),
+Array(5, SetVertexColor, "g1_8", "blue"),
 Array(1, SetVertexColor, "g1_11", "blue"),
 Array(1, SetEdgeColor, "g1_8-11", "blue"),
 Array(1, SetEdgeColor, "g2_8-11", "blue"),
@@ -683,8 +724,8 @@ Array(1, SetEdgeColor, "g2_8-6", "#999933"),
 Array(1, SetVertexAnnotation, "g2_8", "0"),
 Array(3, SetVertexColor, "g2_11", "#999933"),
 Array(1, SetEdgeColor, "g2_8-11", "#999933"),
-Array(2, SetVertexAnnotation, "g2_11", "1"),
-Array(4, SetEdgeColor, "g2_11-6", "red"),
+Array(1, SetVertexAnnotation, "g2_11", "1"),
+Array(3, SetEdgeColor, "g2_11-6", "red"),
 Array(1, ShowActive, "l_36"),
 Array(5, ShowActive, "l_39"),
 Array(5, ShowActive, "l_40"),
@@ -739,7 +780,7 @@ Array(5, ShowActive, "l_39"),
 Array(5, ShowActive, "l_40"),
 Array(5, ShowActive, "l_41"),
 Array(4, AddVertex, "g2_(211.9047619047619, 185.71428571428572)", "13"),
-Array(3, AddEdge, "g2_13-2"),
+Array(4, AddEdge, "g2_13-2"),
 Array(1, AddEdge, "g2_13-1"),
 Array(1, SetEdgeColor, "g2_4-3", "black"),
 Array(2, SetEdgeColor, "g2_9-7", "black"),
@@ -771,20 +812,20 @@ Array(4, SetAllVerticesColor, "g2_grey"),
 Array(1, SetAllEdgesColor, "g2_grey"),
 Array(1, SetVertexColor, "g2_13", "#66CC33"),
 Array(1, SetVertexAnnotation, "g2_13", "1"),
-Array(3, SetVertexFrameWidth, "g2_13", "6"),
+Array(4, SetVertexFrameWidth, "g2_13", "6"),
 Array(1, SetVertexColor, "g2_2", "#66CC33"),
 Array(1, SetEdgeColor, "g2_13-2", "#66CC33"),
 Array(1, SetVertexAnnotation, "g2_2", "0"),
 Array(3, SetVertexColor, "g2_1", "#66CC33"),
 Array(1, SetEdgeColor, "g2_1-2", "#66CC33"),
 Array(1, SetVertexAnnotation, "g2_1", "1"),
-Array(3, SetEdgeColor, "g2_13-1", "red"),
+Array(4, SetEdgeColor, "g2_13-1", "red"),
 Array(1, ShowActive, "l_36"),
 Array(5, ShowActive, "l_39"),
 Array(5, ShowActive, "l_40"),
-Array(5, ShowActive, "l_41"),
+Array(6, ShowActive, "l_41"),
 Array(4, AddVertex, "g2_(137.30158730158732, 111.90476190476191)", "14"),
-Array(3, SetEdgeColor, "g2_1-2", "black"),
+Array(4, SetEdgeColor, "g2_1-2", "black"),
 Array(1, DeleteEdge, "g2_13-1", "1"),
 Array(1, DeleteEdge, "g2_13-2", "1"),
 Array(1, DeleteVertex, "g2_13"),
@@ -798,11 +839,11 @@ Array(1, SetAllEdgesColor, "g2_grey"),
 Array(1, SetVertexColor, "g2_14", "#99CC33"),
 Array(1, SetVertexAnnotation, "g2_14", "1"),
 Array(3, SetVertexFrameWidth, "g2_14", "6"),
-Array(1, ShowActive, "l_36"),
+Array(2, ShowActive, "l_36"),
 Array(5, ShowActive, "l_37"),
 Array(5, ShowActive, "l_34"),
 Array(5, ShowActive, "l_46"),
-Array(4, SetVertexColor, "g1_9", "orange"),
+Array(5, SetVertexColor, "g1_9", "orange"),
 Array(1, SetVertexColor, "g1_7", "orange"),
 Array(1, SetVertexColor, "g1_10", "orange"),
 Array(1, SetVertexColor, "g1_5", "orange"),

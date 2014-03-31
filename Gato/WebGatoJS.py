@@ -24,6 +24,7 @@ animationhead = '''
                 cursor: pointer;
             }
         </style>
+        <title>%(title)s</title>
     </head>
     <body>
 

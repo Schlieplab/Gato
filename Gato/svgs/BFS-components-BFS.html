@@ -24,6 +24,7 @@
                 cursor: pointer;
             }
         </style>
+        <title>Gato -- BFS algorithm on components graph</title>
     </head>
     <body>
 
@@ -42,78 +43,104 @@
 <g id="g1_1-2_group" class="edge_group" style="cursor: pointer">
 <line id="g1_1-2" class="edge" x1="150.0" y1="0.0" x2="100.0" y2="50.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_1-15_group" class="edge_group" style="cursor: pointer">
 <line id="g1_1-15" class="edge" x1="150.0" y1="0.0" x2="150.0" y2="50.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_1-3_group" class="edge_group" style="cursor: pointer">
 <line id="g1_1-3" class="edge" x1="150.0" y1="0.0" x2="200.0" y2="50.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_2-4_group" class="edge_group" style="cursor: pointer">
 <line id="g1_2-4" class="edge" x1="100.0" y1="50.0" x2="50.0" y2="150.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_2-5_group" class="edge_group" style="cursor: pointer">
 <line id="g1_2-5" class="edge" x1="100.0" y1="50.0" x2="100.0" y2="150.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_2-15_group" class="edge_group" style="cursor: pointer">
 <line id="g1_2-15" class="edge" x1="100.0" y1="50.0" x2="150.0" y2="50.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_3-6_group" class="edge_group" style="cursor: pointer">
 <line id="g1_3-6" class="edge" x1="200.0" y1="50.0" x2="200.0" y2="150.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_3-7_group" class="edge_group" style="cursor: pointer">
 <line id="g1_3-7" class="edge" x1="200.0" y1="50.0" x2="250.0" y2="150.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_4-8_group" class="edge_group" style="cursor: pointer">
 <line id="g1_4-8" class="edge" x1="50.0" y1="150.0" x2="0.0" y2="250.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_4-9_group" class="edge_group" style="cursor: pointer">
 <line id="g1_4-9" class="edge" x1="50.0" y1="150.0" x2="50.0" y2="250.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_4-10_group" class="edge_group" style="cursor: pointer">
 <line id="g1_4-10" class="edge" x1="50.0" y1="150.0" x2="100.0" y2="250.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_5-11_group" class="edge_group" style="cursor: pointer">
 <line id="g1_5-11" class="edge" x1="100.0" y1="150.0" x2="150.0" y2="250.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_5-10_group" class="edge_group" style="cursor: pointer">
 <line id="g1_5-10" class="edge" x1="100.0" y1="150.0" x2="100.0" y2="250.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_6-7_group" class="edge_group" style="cursor: pointer">
 <line id="g1_6-7" class="edge" x1="200.0" y1="150.0" x2="250.0" y2="150.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_6-12_group" class="edge_group" style="cursor: pointer">
 <line id="g1_6-12" class="edge" x1="200.0" y1="150.0" x2="200.0" y2="250.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_7-13_group" class="edge_group" style="cursor: pointer">
 <line id="g1_7-13" class="edge" x1="250.0" y1="150.0" x2="250.0" y2="250.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_7-14_group" class="edge_group" style="cursor: pointer">
 <line id="g1_7-14" class="edge" x1="250.0" y1="150.0" x2="300.0" y2="250.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_8-9_group" class="edge_group" style="cursor: pointer">
 <line id="g1_8-9" class="edge" x1="0.0" y1="250.0" x2="50.0" y2="250.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_10-11_group" class="edge_group" style="cursor: pointer">
 <line id="g1_10-11" class="edge" x1="100.0" y1="250.0" x2="150.0" y2="250.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_11-6_group" class="edge_group" style="cursor: pointer">
 <line id="g1_11-6" class="edge" x1="150.0" y1="250.0" x2="200.0" y2="150.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_11-12_group" class="edge_group" style="cursor: pointer">
 <line id="g1_11-12" class="edge" x1="150.0" y1="250.0" x2="200.0" y2="250.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_12-13_group" class="edge_group" style="cursor: pointer">
 <line id="g1_12-13" class="edge" x1="200.0" y1="250.0" x2="250.0" y2="250.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_12-14_group" class="edge_group" style="cursor: pointer">
 <line id="g1_12-14" class="edge" x1="200.0" y1="250.0" x2="300.0" y2="250.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_15-5_group" class="edge_group" style="cursor: pointer">
 <line id="g1_15-5" class="edge" x1="150.0" y1="50.0" x2="100.0" y2="150.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
 <g id="g1_15-6_group" class="edge_group" style="cursor: pointer">
 <line id="g1_15-6" class="edge" x1="150.0" y1="50.0" x2="200.0" y2="150.0" stroke="#DDDDDD" stroke-width="4.0"/>
 
+</g>
+<g id="g1_pre_vertices_group"></g>
 <g id="g1_1_group" class="vertex_g" style="cursor: pointer">
 <circle id="g1_1" class="vertex" cx="150.0" cy="0.0" r="14.0" fill="#EEEEEE" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
 
@@ -293,8 +320,8 @@
         <script type="text/javascript">
             var anim_array = Array(Array(1, SetAllVerticesColor, "g1_#EEEEEE"),
 Array(2, SetVertexAnnotation, "g1_1", "None"),
-Array(2, SetVertexAnnotation, "g1_2", "None"),
-Array(2, SetVertexAnnotation, "g1_3", "None"),
+Array(3, SetVertexAnnotation, "g1_2", "None"),
+Array(3, SetVertexAnnotation, "g1_3", "None"),
 Array(2, SetVertexAnnotation, "g1_4", "None"),
 Array(2, SetVertexAnnotation, "g1_5", "None"),
 Array(2, SetVertexAnnotation, "g1_6", "None"),
@@ -307,7 +334,7 @@ Array(2, SetVertexAnnotation, "g1_12", "None"),
 Array(2, SetVertexAnnotation, "g1_13", "None"),
 Array(2, SetVertexAnnotation, "g1_14", "None"),
 Array(2, SetVertexAnnotation, "g1_15", "None"),
-Array(7, ShowActive, "l_1"),
+Array(8, ShowActive, "l_1"),
 Array(5, ShowActive, "l_3"),
 Array(5, ShowActive, "l_4"),
 Array(4, BlinkVertex, "g1_1", "None"),
@@ -458,7 +485,7 @@ Array(1, UpdateVertexInfo, "g1_4", "Vertex 4 - Queue position 1"),
 Array(1, UpdateVertexInfo, "g1_5", "Vertex 5 - Queue position 2"),
 Array(1, UpdateVertexInfo, "g1_6", "Vertex 6 - Queue position 3"),
 Array(4, SetVertexAnnotation, "g1_3", "4"),
-Array(5, ShowActive, "l_13"),
+Array(3, ShowActive, "l_13"),
 Array(1, UpdateVertexInfo, "g1_3", "Vertex 3 - label 4"),
 Array(5, ShowActive, "l_14"),
 Array(4, SetVertexFrameWidth, "g1_3", "6"),
@@ -507,7 +534,7 @@ Array(5, ShowActive, "l_16"),
 Array(4, SetVertexColor, "g1_8", "#FF0000"),
 Array(1, ShowActive, "l_17"),
 Array(5, ShowActive, "l_18"),
-Array(4, SetVertexColor, "g1_8", "blue"),
+Array(5, SetVertexColor, "g1_8", "blue"),
 Array(1, ShowActive, "l_19"),
 Array(1, UpdateVertexInfo, "g1_8", "Vertex 8 - Queue position 4"),
 Array(4, SetEdgeColor, "g1_4-8", "#FF0000"),
@@ -523,11 +550,11 @@ Array(1, ShowActive, "l_19"),
 Array(1, UpdateVertexInfo, "g1_9", "Vertex 9 - Queue position 5"),
 Array(4, SetEdgeColor, "g1_4-9", "#FF0000"),
 Array(1, ShowActive, "l_14"),
-Array(5, SetEdgeColor, "g1_4-10", "yellow"),
+Array(4, SetEdgeColor, "g1_4-10", "yellow"),
 Array(1, ShowActive, "l_15"),
 Array(5, ShowActive, "l_16"),
 Array(4, SetVertexColor, "g1_10", "#FF0000"),
-Array(2, ShowActive, "l_17"),
+Array(1, ShowActive, "l_17"),
 Array(5, ShowActive, "l_18"),
 Array(4, SetVertexColor, "g1_10", "blue"),
 Array(1, ShowActive, "l_19"),
@@ -683,7 +710,7 @@ Array(1, UpdateVertexInfo, "g1_12", "Vertex 12 - Queue position 4"),
 Array(1, UpdateVertexInfo, "g1_13", "Vertex 13 - Queue position 5"),
 Array(1, UpdateVertexInfo, "g1_14", "Vertex 14 - Queue position 6"),
 Array(4, SetVertexAnnotation, "g1_8", "9"),
-Array(4, ShowActive, "l_13"),
+Array(3, ShowActive, "l_13"),
 Array(1, UpdateVertexInfo, "g1_8", "Vertex 8 - label 9"),
 Array(5, ShowActive, "l_14"),
 Array(4, SetVertexFrameWidth, "g1_8", "6"),
@@ -783,7 +810,7 @@ Array(1, ShowActive, "l_15"),
 Array(5, ShowActive, "l_14"),
 Array(4, SetEdgeColor, "g1_11-12", "grey"),
 Array(1, SetVertexFrameWidth, "g1_11", "0"),
-Array(1, ShowActive, "l_10"),
+Array(3, ShowActive, "l_10"),
 Array(5, ShowActive, "l_11"),
 Array(4, SetVertexColor, "g1_12", "#FF0000"),
 Array(1, SetVertexFrameWidth, "g1_11", "0"),
@@ -803,7 +830,7 @@ Array(5, ShowActive, "l_14"),
 Array(4, SetEdgeColor, "g1_6-12", "#FF0000"),
 Array(1, SetEdgeColor, "g1_11-12", "yellow"),
 Array(1, ShowActive, "l_15"),
-Array(5, ShowActive, "l_14"),
+Array(6, ShowActive, "l_14"),
 Array(4, SetEdgeColor, "g1_11-12", "grey"),
 Array(1, SetEdgeColor, "g1_12-13", "yellow"),
 Array(1, ShowActive, "l_15"),
@@ -836,7 +863,7 @@ Array(1, ShowActive, "l_15"),
 Array(5, ShowActive, "l_14"),
 Array(4, SetEdgeColor, "g1_12-13", "grey"),
 Array(1, SetVertexFrameWidth, "g1_13", "0"),
-Array(1, ShowActive, "l_10"),
+Array(2, ShowActive, "l_10"),
 Array(5, ShowActive, "l_11"),
 Array(4, SetVertexColor, "g1_14", "#FF0000"),
 Array(1, SetVertexFrameWidth, "g1_13", "0"),
@@ -857,19 +884,19 @@ Array(1, ShowActive, "l_15"),
 Array(5, ShowActive, "l_14"),
 Array(4, SetEdgeColor, "g1_12-14", "grey"),
 Array(1, SetVertexFrameWidth, "g1_14", "0"),
-Array(1, ShowActive, "l_10"),
+Array(2, ShowActive, "l_10"),
 Array(5, ShowActive, "l_3"),
 Array(5, ShowActive, "l_4"),
 Array(4, BlinkVertex, "g1_2", "None"),
 Array(9, ShowActive, "l_3"),
 Array(5, ShowActive, "l_4"),
 Array(4, BlinkVertex, "g1_3", "None"),
-Array(9, ShowActive, "l_3"),
+Array(15, ShowActive, "l_3"),
 Array(5, ShowActive, "l_4"),
 Array(4, BlinkVertex, "g1_4", "None"),
 Array(9, ShowActive, "l_3"),
 Array(5, ShowActive, "l_4"),
-Array(4, BlinkVertex, "g1_5", "None"),
+Array(5, BlinkVertex, "g1_5", "None"),
 Array(9, ShowActive, "l_3"),
 Array(5, ShowActive, "l_4"),
 Array(4, BlinkVertex, "g1_6", "None"),
@@ -895,7 +922,7 @@ Array(9, ShowActive, "l_3"),
 Array(5, ShowActive, "l_4"),
 Array(4, BlinkVertex, "g1_13", "None"),
 Array(9, ShowActive, "l_3"),
-Array(7, ShowActive, "l_4"),
+Array(5, ShowActive, "l_4"),
 Array(4, BlinkVertex, "g1_14", "None"),
 Array(9, ShowActive, "l_3"),
 Array(5, ShowActive, "l_4"),

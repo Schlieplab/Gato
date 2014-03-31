@@ -63,26 +63,6 @@ embed {  overflow:scroll; position: absolute; width: 100%%; height: 100%%; backg
 </html>
 """
 
-""" 
- export_html_wrapper writes an html file to the given path with the name
- 'svg_name.html'.  The html file references the svg with the given name.
-
- DO WE NEED THIS?
-"""
-def export_html_wrapper(svg_name, svg_dir="./svgs/src/", html_dir="./svgs/html/"):
-
-    # Create the html directory if it doesn't exist
-    if not os.path.exists(html_dir):
-        os.makedirs(html_dir)
-
-    svg_path = svg_dir + svg_name
-    html_content = HTML_SKELETON % (svg_name)
-    file_name = html_dir + "%s.html" % (svg_name[0:-4])    # Strip the .svg off of the name and append .html
-    html_file = open(file_name, "w+")
-    html_file.write(html_content)
-    html_file.close()
-
-
 
 #
 # Negative cycle property
@@ -340,7 +320,7 @@ svg_instance = {
 
     # Good
     '06-MaximalFlows/PreflowPush.alg':[
-        '06-MaximalFlows/PreflowPush5.cat', '06-MaximalFlows/PreflowPush6.cat'
+       '06-MaximalFlows/PreflowPush5.cat', '06-MaximalFlows/PreflowPush6.cat'
     ],
 
     # Good
@@ -379,12 +359,6 @@ svg_instance = {
     ]
 }
 
-svg_instance = {
-   # Good
-    '03-MinimalSpanningTrees/Kruskal.alg':[
-    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
-    ],
-}
 
 
 
@@ -519,7 +493,5 @@ if __name__ == '__main__':
             app.ExportSVGAnimation('svgs/%s-%s.html' %
                                    (os.path.splitext(os.path.basename(case[0]))[0],
                                     os.path.splitext(os.path.basename(case[1]))[0])) 
-            export_html_wrapper("%s-%s.svg" % (os.path.splitext(os.path.basename(case[0]))[0],
-                                    os.path.splitext(os.path.basename(case[1]))[0]))
 
 

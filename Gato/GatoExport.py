@@ -477,6 +477,11 @@ def format_animation(animation):
             ret_str += 'anim_array.concat(Array(' + ','.join(chunk) + '));\n'
         return ret_str
 
+def construct_title(fileName):
+    sp = fileName.split('/')[1].split('-')
+    algorithm = sp[0]
+    graph = sp[1].split('.')[0]
+    return 'Gato -- %s algorithm on %s graph' % (algorithm, graph)
 
 def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=None, 
     secondaryGraphDisplayAnimationHistory=None, showAnimation=False, 
@@ -561,6 +566,7 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
 
         # Merge the animation into the HTML
         str_vars = {
+            'title': construct_title(fileName),
             'info_file': 'infos/' + fileName[fileName.rindex('/') + 1:], 
             'animation': format_animation(animation),
             'graph_str': '\n'.join(graph_strs), 
