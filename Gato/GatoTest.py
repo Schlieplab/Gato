@@ -43,27 +43,6 @@ from Gato import *
 import GatoGlobals
 g = GatoGlobals.AnimationParameters
 
-
-HTML_SKELETON = """ 
-<?xml version="1.0"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
- "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html style="border-width: 0px; margin: 0px; width: 100%%; height: 100%%" xmlns="http://www.w3.org/1999/xhtml">
-<head >
-<style>
-html, body { margin:0; padding:0; background-image: url('img/white_wall.png')}
-embed {  overflow:scroll; position: absolute; width: 100%%; height: 100%%; background-color: #F5F5F5}
-</style>
-<meta http-equiv="content-type" content="application/xhtml+xml;charset=UTF-8" />
-</head>
-<body id="body" >
-    <embed id="svg_image" src="../src/%s" type="image/svg+xml"></embed>
-</body>
-</html>
-"""
-
-
 #
 # Negative cycle property
 #
@@ -209,9 +188,57 @@ instance = {
     ]
     }
 
+svg_instance = [
+    {
+        'chapter_directory': '02-GraphsNetworks',
+        'chapter_number': 2,
+        'title': 'chapter_title',
+        'algorithms': [
+            {
+                'file': 'BFS-components.alg',
+                'description': 'bfs components description',
+                'graphs': [
+                    '02-GraphsNetworks/BFS.cat', '02-GraphsNetworks/3Components.cat'
+                ]
+            },
+            {
+                'file': 'BFS.alg',
+                'description': 'bfs description',
+                'graphs': [
+                    '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
+                ]
+            }
+        ]
+    },
+
+    {
+        'chapter_directory': '03-MinimalSpanningTrees',
+        'chapter_number': 3,
+        'title': 'MinimalSpanningTrees',
+        'algorithms': [
+            {
+                'file': 'Kruskal.alg',
+                'description': 'kruskal description',
+                'graphs': [
+                    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
+                ]
+            },
+            {
+                'file': 'KruskalFindCircuit.alg',
+                'description': 'kruskal find circuit description',
+                'graphs': [
+                    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
+                ]
+            }
+        ]
+    }
+]
+
+
 # These are the algorithm/graph combos that are used to generate their 
 # Webgato counterparts.  Each algorithm is marked with a "Good" or "Bad"
 # to signify whether it works or not.  Working on getting rid of the "Bad"s
+'''
 svg_instance = {
     # Good
     '02-GraphsNetworks/BFS-components.alg':[
@@ -358,7 +385,13 @@ svg_instance = {
        '09-WeightedMatching/11vs13.cat'
     ]
 }
+'''
 
+def create_svg_index_page():
+    ''' Creates an HTML index page that leads to the SVG 
+        animations generated from the svg_instance dictionary
+    ''' 
+    pass
 
 #------------------------------------------------------------------
 def usage():
@@ -397,9 +430,7 @@ if __name__ == '__main__':
     if test:
         testPath = "./"
         tests = [ ("BFS.alg", "sample.cat") ]
-    else:
-        if svg:
-            instance = svg_instance
+    elif not svg:
         if all:
             ei = {
                 '05-ShortestPaths/BellmanFord.alg':['05-ShortestPaths/11x11neg.cat',
@@ -431,7 +462,6 @@ if __name__ == '__main__':
         testPath = "../CATBox/"
 
 
-    
     # To speed up running of tests
     g.BlinkRepeat = 1 
     g.BlinkRate = 2
@@ -465,29 +495,73 @@ if __name__ == '__main__':
                                 filename='/tmp/Gato.log',
                                 filemode='w',
                                     format='%(name)s %(levelname)s %(message)s')        
-    for case in tests:
-        log.info("=== TEST === "+case[0]+" === "+case[1]+" ===")
-        app.OpenAlgorithm(testPath + case[0])
-        g.Interactive = 0
-        app.algorithm.ClearBreakpoints()
-        app.update_idletasks()
-        app.update()
-        app.OpenGraph(testPath + case[1])
-        app.update_idletasks()
-        app.update()
-        # Run it ...
-        app.after_idle(app.CmdContinue) # after idle needed since CmdStart
-        # does not return
-        app.CmdStart()
-        app.update_idletasks()
-        #app.mainloop()
-
+    
+    if svg:
         if not os.path.exists('./svgs'):
             os.makedirs('./svgs')
+        '''
+        {
+        'chapter_directory': '02-GraphsNetworks',
+        'chapter_number': 2,
+        'title': 'chapter_title',
+        'algorithms': [
+            {
+                'file': 'BFS-components.alg',
+                'description': 'bfs components description',
+                'graphs': [
+                    '02-GraphsNetworks/BFS.cat', '02-GraphsNetworks/3Components.cat'
+                ]
+            },
+            {
+                'file': 'BFS.alg',
+                'description': 'bfs description',
+                'graphs': [
+                    '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
+                ]
+            }
+        ]
+        },
+        '''
+        graph_pngs = {}
+        testPath = "../CATBox/"
+        for chapter_dict in svg_instance:
+            for algo in chapter_dict['algorithms']:
+                for graph_file in algo['graphs']:
+                    log.info("=== TEST === "+algo['file']+" === "+graph_file+" ===")
+                    app.OpenAlgorithm(testPath + chapter_dict['chapter_directory'] + '/' + algo['file'])
+                    g.Interactive = 0 # This is set to 0 above.  Do we need to do it here as well?
+                    app.algorithm.ClearBreakpoints()
+                    app.update_idletasks()
+                    app.update()
+                    app.OpenGraph(testPath + graph_file)
+                    app.update_idletasks()
+                    app.update()
+                    # Run it ...
+                    app.after_idle(app.CmdContinue) # after idle needed since CmdStart
+                    # does not return
+                    app.CmdStart()
+                    app.update_idletasks()
 
-        if svg:
-            app.ExportSVGAnimation('svgs/%s-%s.html' %
-                                   (os.path.splitext(os.path.basename(case[0]))[0],
-                                    os.path.splitext(os.path.basename(case[1]))[0])) 
+                    # Generate the SVG
+                    app.ExportSVGAnimation('svgs/%s-%s.html' %
+                        (os.path.splitext(algo['file'])[0], os.path.splitext(os.path.basename(graph_file))[0])) 
 
+    else:
+        for case in tests:
+            log.info("=== TEST === "+case[0]+" === "+case[1]+" ===")
+            app.OpenAlgorithm(testPath + case[0])
+            g.Interactive = 0
+            app.algorithm.ClearBreakpoints()
+            app.update_idletasks()
+            app.update()
+            app.OpenGraph(testPath + case[1])
+            app.update_idletasks()
+            app.update()
+            # Run it ...
+            app.after_idle(app.CmdContinue) # after idle needed since CmdStart
+            # does not return
+            app.CmdStart()
+            app.update_idletasks()
+            #app.mainloop()
 
+            

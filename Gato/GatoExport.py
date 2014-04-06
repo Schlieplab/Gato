@@ -40,7 +40,7 @@ import StringIO
 import tokenize
 import re
 import pdb
-from math import sqrt, pi, sin, cos, atan2, degrees, log10, floor
+from math import sqrt, pi, sin, cos, atan2, degrees, log10, floor, ceil
 from WebGatoJS import animationhead
 
 #Global constants for tokenEater
@@ -244,34 +244,189 @@ def get_edge_id(v, w, idPrefix):
     return idPrefix + '{}-{}'.format(v, w)
 
 
-def get_graph_as_svg_str(graphDisplay, x_add, y_add, file, idPrefix=''):
-    # Write Bubbles from weighted matching
-    # XXX We make use of the fact that they have a bubble tag
-    # XXX What to use as the bubble ID?
-##    bubbles = graphDisplay.canvas.find_withtag("bubbles")
-##    for b in bubbles:
-##        col = graphDisplay.canvas.itemcget(b,"fill")
-##        # Find center and convert to Embedding coordinates
-##        coords = graphDisplay.canvas.coords(b)
-##        x = 0.5 * (coords[2] - coords[0]) + coords[0]
-##        y = 0.5 * (coords[3] - coords[1]) + coords[1]
-##        r = 0.5 * (coords[2] - coords[0])
-##        xe,ye = graphDisplay.CanvasToEmbedding(x,y)
-##        re,dummy = graphDisplay.CanvasToEmbedding(r,0)
-##        file.write('<circle cx="%s" cy="%s" r="%s" fill="%s" '\
-##                   ' stroke-width="0" />\n' % (xe,ye,re,col))           
+def get_graph_as_svg_str_standalone(graphDisplay, x_add, y_add, file, idPrefix='', translate=None):
+    ''' Returns a 3-tuple of (svg_string, width, height).  The SVG string returned
+        is designed for standalone viewing.
+    '''
+    def update_min_and_max(x, y, min_x, min_y, max_x, max_y):
+        if min_x == None:
+            min_x = x
+        else:
+            min_x = min(x, min_x)
+        if max_x == None:
+            max_x = x
+        else:
+            max_x = max(x, max_x)
+        if min_y == None:
+            min_y = y
+        else:
+            min_y = min(y, min_y)
+        if max_y == None:
+            max_y = y
+        else:
+            max_y = max(y, max_y)
+        return min_x, min_y, max_x, max_y
+
+    ret_strs = []
+    min_x, max_x, min_y, max_y = None, None, None, None
+
+    # Keep track of vertex_radius as we have to shift everything over by that much so 
+    # vertices on the far left don't appear half off the screen
+    vertex_radius = None
+    for v in graphDisplay.G.Vertices():
+        x,y,r = graphDisplay.VertexPositionAndRadius(v)
+        if vertex_radius == None:
+            vertex_radius = r
+            x_add -= vertex_radius
+            y_add -= vertex_radius
+            break
+
+    if translate:
+        ret_strs.append('<g transform="translate(%d %d)">\n' % (translate[0], translate[1]))
+
+    # Write Edges:
+    for v,w in graphDisplay.G.Edges():
+        vx, vy, r = graphDisplay.VertexPositionAndRadius(v)
+        wx, wy, r = graphDisplay.VertexPositionAndRadius(w)
+        col = graphDisplay.GetEdgeColor(v,w)
+        width = graphDisplay.GetEdgeWidth(v,w)
+        
+        vy -= y_add
+        wy -= y_add
+        vx -= x_add
+        wx -= x_add
+        min_x, min_y, max_x, max_y = update_min_and_max(vx, vy, min_x, min_y, max_x, max_y)
+        min_x, min_y, max_x, max_y = update_min_and_max(wx, wy, min_x, min_y, max_x, max_y)
+
+        if graphDisplay.G.directed == 0:
+            ret_strs.append('<line x1="%s" y1="%s" x2="%s" y2="%s" stroke="%s"'\
+                       ' stroke-width="%s"/>\n' % (vx, vy, wx, wy, col, width))
+        else:
+            x1,y1,x2,y2 = graphDisplay.directedDrawEdgePoints(graphDisplay.VertexPosition(v),
+                graphDisplay.VertexPosition(w), 0)
+            
+            x1e,y1e = graphDisplay.CanvasToEmbedding(x1,y1)
+            x2e,y2e = graphDisplay.CanvasToEmbedding(x2,y2)
+            y1e -= y_add
+            y2e -= y_add
+            x1e -= x_add
+            x2e -= x_add
+            min_x, min_y, max_x, max_y = update_min_and_max(x1e, y1e, min_x, min_y, max_x, max_y)
+            min_x, min_y, max_x, max_y = update_min_and_max(x2e, y2e, min_x, min_y, max_x, max_y)
+
+            if graphDisplay.G.QEdge(w,v): # Directed edges both ways
+                ret_strs.append('<line x1="%s" y1="%s" x2="%s" y2="%s" stroke="%s"'\
+                           ' stroke-width="%s"/>\n' % (x1e, y1e, x2e, y2e, col, width))
+            else: # Just one directed edge
+                # XXX How to color arrowhead?
+                l = sqrt((float(wx)-float(vx))**2 + (float(wy)-float(vy))**2)
+                if (l < .001):
+                    l = .001
+
+                c = (l-2*graphDisplay.zVertexRadius)/l + .01
+                tmpX = float(vx) + c*(float(wx) - float(vx))
+                tmpY = float(vy) + c*(float(wy) - float(vy))
+                
+                #dx = 0 #offset of wx to make room for arrow
+                #dy = 0 #offset of wy
+                cr = 0
+                #Took out marker-end="url(#Arrowhead)" and added polyline
+                #Shrink line to make room for arrow
+                for z in graphDisplay.G.Vertices():
+                    cx,cy,cr = graphDisplay.VertexPositionAndRadius(z)
+                    cy -= y_add
+                    cx -= x_add
+                    min_x, min_y, max_x, max_y = update_min_and_max(cx, cy, min_x, min_y, max_x, max_y)
+                    if(cx == wx and cy == wy):
+                        angle = atan2(int(float(wy))-int(float(vy)), int(float(wx))-int(float(vx)))
+                        ret_strs.append('<line x1="%s" y1="%s" x2="%f" y2="%f" stroke="%s"'\
+                               ' stroke-width="%s" />\n' % (vx, vy, tmpX, tmpY,
+                                                            col, width))
+                        break
+
+                #Temporary settings for size of polyline arrowhead
+                a_width = (1 + 1.5/(1*pow(log10(float(width)), 6)))
+                if(a_width > 5.0):
+                    a_width = 5.0
+                a_width *= float(width) 
+                p1 = (0,0)
+                p2 = (0, a_width)
+                p3 = (cr, a_width/2)
+                angle = degrees(atan2(int(wy)-int(vy), int(wx)-int(vx)))
+                c = (l-2*graphDisplay.zVertexRadius)/l
+                tmpX = float(vx) + c*(float(wx) - float(vx))
+                tmpY = float(vy) + c*(float(wy) - float(vy))
+                ret_strs.append('<polyline points="%f %f %f %f %s %f" fill="%s" transform="translate(%f,%f)'\
+                           ' rotate(%f %f %f)" />\n' % (p1[0], p1[1], p2[0], p2[1], p3[0], p3[1],
+                                                        col, tmpX, tmpY - a_width/2, angle, p1[0], a_width/2))
 
 
-##    # Write Highlighted paths
-##    # XXX What to use as the bubble ID?
-##    for pathID, draw_path in graphDisplay.highlightedPath.items():
-##        # XXX Need to check visibility? See HidePath
-##        col = graphDisplay.canvas.itemcget(draw_path,"fill")
-##        width = graphDisplay.canvas.itemcget(draw_path,"width")
-##        points = ["%s,%s" % graphDisplay.VertexPositionAndRadius(v)[0:2] for v in pathID]
-##        file.write('<polyline points="%s" stroke="%s" stroke-width="%s" '\
-##                   'fill="None" />\n' % (" ".join(points),col,width))
+        # Write Edge Annotations
+        if graphDisplay.edgeAnnotation.QDefined((v,w)):
+            da = graphDisplay.edgeAnnotation[(v,w)]
+            x,y = graphDisplay.canvas.coords(graphDisplay.edgeAnnotation[(v,w)])
+            xe,ye = graphDisplay.CanvasToEmbedding(x,y)
+            y -= y_add
+            ye -= y_add
+            x -= x_add
+            xe -= x_add
+            min_x, min_y, max_x, max_y = update_min_and_max(x, y, min_x, min_y, max_x, max_y)
+            min_x, min_y, max_x, max_y = update_min_and_max(xe, ye, min_x, min_y, max_x, max_y)
+            text = graphDisplay.canvas.itemcget(graphDisplay.edgeAnnotation[(v,w)],"text") 
+            size = r * 0.9
+            offset = 0.33 * size
+            col = 'black'
+            if text != "":
+                ret_strs.append('<text x="%s" y="%s" text-anchor="center" '\
+                           'fill="%s" font-family="Helvetica" '\
+                           'font-size="%s" font-style="normal">%s</text>\n' % (ye+offset,col,size,text))
 
+    for v in graphDisplay.G.Vertices():
+        x,y,r = graphDisplay.VertexPositionAndRadius(v)
+        y -= y_add
+        x -= x_add
+        min_x, min_y, max_x, max_y = update_min_and_max(x, y, min_x, min_y, max_x, max_y)
+
+        # Write Vertex
+        col = graphDisplay.GetVertexColor(v)
+        fw = graphDisplay.GetVertexFrameWidth(v)
+        fwe,dummy = graphDisplay.CanvasToEmbedding(fw,0)
+        stroke = graphDisplay.GetVertexFrameColor(v)
+
+        ret_strs.append('<circle cx="%s" cy="%s" r="%s" fill="%s" stroke="%s"'\
+                   ' stroke-width="%s" style="filter:url(#dropshadow)"/>\n' % (x,y,r,col,stroke,fwe))
+
+        # Write Vertex Label
+        col = graphDisplay.canvas.itemcget(graphDisplay.drawLabel[v], "fill")
+        size = r*1.0
+        offset = 0.33 * size
+
+        ret_strs.append('<text x="%s" y="%s" text-anchor="middle" fill="%s" font-family="Helvetica" '\
+                   'font-size="%s" font-style="normal" font-weight="bold" >%s</text>\n' % (x, y+offset,col,size, graphDisplay.G.GetLabeling(v)))
+        # Write vertex annotation
+        #size = r*0.9
+        size = 14
+        text = graphDisplay.GetVertexAnnotation(v)
+        col = 'black'
+        if text != "":
+            ret_strs.append('<text x="%s" y="%s" text-anchor="left" fill="%s" font-weight="bold" font-family="Helvetica" '\
+                       'font-size="%s" font-style="normal">%s</text>\n' % (x+r+1,y+r*1.5+2.5,col,size,text))
+
+    if translate:
+        ret_strs.append('</g>')
+
+    print "min_x:", min_x, "max_x:", max_x
+    print "min_y:", min_y, "max_y:", max_y
+    width = max_x-min_x+vertex_radius*2
+    height = max_y-min_y+vertex_radius*2
+    return '\n'.join(ret_strs), width, height
+
+
+
+def get_graph_as_svg_str_for_animation(graphDisplay, x_add, y_add, file, idPrefix=''):
+    ''' Returns an svg string.  The SVG string returned 
+        is designed for use with javascript with WebGato
+    '''
     ret_strs = []
 
     # Write Edges
@@ -281,11 +436,11 @@ def get_graph_as_svg_str(graphDisplay, x_add, y_add, file, idPrefix=''):
         col = graphDisplay.GetEdgeColor(v,w)
         width = graphDisplay.GetEdgeWidth(v,w)
         
-        vy = vy - y_add
-        wy = wy - y_add
-        vx = vx - x_add
-        wx = wx - x_add
-
+        vy -= y_add
+        wy -= y_add
+        vx -= x_add
+        wx -= x_add
+        
         edge_id = get_edge_id(v, w, idPrefix)
         ret_strs.append('<g id="%s" class="edge_group" style="cursor: pointer">' % (edge_id + '_group'))
         if graphDisplay.G.directed == 0:
@@ -358,6 +513,7 @@ def get_graph_as_svg_str(graphDisplay, x_add, y_add, file, idPrefix=''):
             ye -= y_add
             x -= x_add
             xe -= x_add
+
             text = graphDisplay.canvas.itemcget(graphDisplay.edgeAnnotation[(v,w)],"text") 
             size = r * 0.9
             offset = 0.33 * size
@@ -371,8 +527,8 @@ def get_graph_as_svg_str(graphDisplay, x_add, y_add, file, idPrefix=''):
     ret_strs.append('<g id="%s"></g>' % (idPrefix+'pre_vertices_group'))
     for v in graphDisplay.G.Vertices():
         x,y,r = graphDisplay.VertexPositionAndRadius(v)
-        y = y - y_add
-        x = x - x_add
+        y -= y_add
+        x -= x_add
 
         # Write Vertex
         col = graphDisplay.GetVertexColor(v)
@@ -495,6 +651,13 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
     """
     global algo_lines
     algo_lines = []
+    file = open(fileName, 'w')
+
+    # Figure out how much we want to pull the graph to the left and top before we reset the graph
+    end_g1_x_add, end_g1_y_add, end_g1_has_elements = compute_coord_changes(graphDisplay)
+    end_g2_x_add, end_g2_y_add = 0, 0
+    if secondaryGraphDisplay:
+        end_g2_x_add, end_g2_y_add, end_g2_has_elements = compute_coord_changes(secondaryGraphDisplay)
 
     if showAnimation:
         try:
@@ -515,47 +678,40 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
             print "graphDisplay: ", graphDisplay
             return
 
-        # Figure out how much we want to pull the graph to the left and top before we reset the graph
-        # These 
-        end_g1_x_add, end_g1_y_add, end_g1_has_elements = compute_coord_changes(graphDisplay)
-        end_g2_x_add, end_g2_y_add = 0, 0
-        if secondaryGraphDisplay:
-            end_g2_x_add, end_g2_y_add, end_g2_has_elements = compute_coord_changes(secondaryGraphDisplay)
+    # Reload the graph and execute prolog so we can save the initial state to SVG
+    algorithm.Start(prologOnly=True)
 
-        # Reload the graph and execute prolog so we can save the initial state to SVG
-        algorithm.Start(prologOnly=True)
-        file = open(fileName, 'w')
+    start_g1_x_add, start_g1_y_add, start_g1_has_elements = compute_coord_changes(graphDisplay)
+    if start_g1_has_elements and end_g1_has_elements:
+        g1_x_add, g1_y_add = min(start_g1_x_add, end_g1_x_add), min(start_g1_y_add, end_g1_y_add)
+    elif start_g1_has_elements:
+        g1_x_add, g1_y_add = start_g1_x_add, start_g1_y_add
+    else:
+        g1_x_add, g1_y_add = end_g1_x_add, end_g1_y_add
 
-        start_g1_x_add, start_g1_y_add, start_g1_has_elements = compute_coord_changes(graphDisplay)
-        if start_g1_has_elements and end_g1_has_elements:
-            g1_x_add, g1_y_add = min(start_g1_x_add, end_g1_x_add), min(start_g1_y_add, end_g1_y_add)
-        elif start_g1_has_elements:
-            g1_x_add, g1_y_add = start_g1_x_add, start_g1_y_add
+    start_g2_x_add, start_g2_y_add, g2_x_add, g2_y_add = 0, 0, 0, 0
+    if secondaryGraphDisplay:
+        start_g2_x_add, start_g2_y_add, start_g2_has_elements = compute_coord_changes(secondaryGraphDisplay)
+        if start_g2_has_elements and end_g2_has_elements:
+            g2_y_add, g2_x_add = min(start_g2_y_add, end_g2_y_add), min(start_g2_x_add, end_g2_x_add)
+        elif start_g2_has_elements:
+            g2_y_add, g2_x_add = start_g2_y_add, start_g2_x_add
         else:
-            g1_x_add, g1_y_add = end_g1_x_add, end_g1_y_add
+            g2_y_add, g2_x_add = end_g2_y_add, end_g2_x_add
 
-        start_g2_x_add, start_g2_y_add, g2_x_add, g2_y_add = 0, 0, 0, 0
-        if secondaryGraphDisplay:
-            start_g2_x_add, start_g2_y_add, start_g2_has_elements = compute_coord_changes(secondaryGraphDisplay)
-            if start_g2_has_elements and end_g2_has_elements:
-                g2_y_add, g2_x_add = min(start_g2_y_add, end_g2_y_add), min(start_g2_x_add, end_g2_x_add)
-            elif start_g2_has_elements:
-                g2_y_add, g2_x_add = start_g2_y_add, start_g2_x_add
-            else:
-                g2_y_add, g2_x_add = end_g2_y_add, end_g2_x_add
-
+    if showAnimation:
         # Build the SVG graph string
         graph_strs = []
         graph_type = "undirected" if graphDisplay.G.directed == 0 else "directed"
         graph_strs.append('<g id="g1" type="%s">\n' % (graph_type))
 
-        g1_str = get_graph_as_svg_str(graphDisplay, g1_x_add, g1_y_add, file, idPrefix=id_prefixes[0])
+        g1_str = get_graph_as_svg_str_for_animation(graphDisplay, g1_x_add, g1_y_add, file, idPrefix=id_prefixes[0])
         graph_strs.append(g1_str)
         graph_strs.append('</g>\n')
         if secondaryGraphDisplay:
             graph_type = "undirected" if secondaryGraphDisplay.G.directed == 0 else "directed"
             graph_strs.append('<g id="g2" type="%s">\n' % (graph_type))
-            g2_str = get_graph_as_svg_str(secondaryGraphDisplay, g2_x_add, g2_y_add, file, idPrefix=id_prefixes[1])
+            g2_str = get_graph_as_svg_str_for_animation(secondaryGraphDisplay, g2_x_add, g2_y_add, file, idPrefix=id_prefixes[1])
             graph_strs.append(g2_str)
             graph_strs.append('</g>\n')
 
@@ -588,4 +744,57 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
         # Export the algorithm info to its own HTML file        
         ExportAlgoInfo(fileName, algorithm)
     else:
-        pass
+        '''
+        The commands on Ubuntu to get these libraries installed:
+        sudo apt-get install libcairo2-dev librsvg2-dev python-rsvg
+        '''
+        import cairo
+        import rsvg
+
+        drop_shadow = '''
+            <filter id="dropshadow" height="130%">
+              <feGaussianBlur in="SourceAlpha" stdDeviation="1"/> <!-- stdDeviation is how much to blur -->
+                <feOffset dx="2.5" dy="2.5" result="offsetblur"/> <!-- how much to offset -->
+                <feMerge> 
+                  <feMergeNode/> <!-- this contains the offset blurred image -->
+                  <feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->
+               </feMerge>
+            </filter>
+        '''
+        edge_padding = 5
+        g1_svg_body_str, g1_width, g1_height = get_graph_as_svg_str_standalone(graphDisplay, g1_x_add, 
+            g1_y_add, file, idPrefix=id_prefixes[0], translate=(edge_padding, edge_padding))
+        g2_svg_body_str, g2_width, g2_height = '', 0, 0
+        print "secondaryGraphDisplay: ", secondaryGraphDisplay
+        g2_y_padding = 0
+        if secondaryGraphDisplay:
+            g2_y_padding = 10
+            g2_svg_body_str, g2_width, g2_height = get_graph_as_svg_str_standalone(secondaryGraphDisplay, g2_x_add, 
+                g2_y_add, file, idPrefix=id_prefixes[1], translate=(edge_padding,g1_height+g2_y_padding+edge_padding))
+
+        
+
+        width = int(max(g1_width, g2_width))+edge_padding*2
+        height = int(g1_height+g2_height+g2_y_padding)+edge_padding*2 
+        scale = min(200.0/width, 1.0)
+        
+        # Put a border between the graphs
+        if secondaryGraphDisplay:
+            y = g1_height + g2_y_padding/2 + edge_padding
+            g2_svg_body_str += '<line x1="0" x2="%d" y1="%d" y2="%d" stroke="#000" stroke-width="3.0" />' % (width, y, y)
+        svg_str = '\n'.join(['<svg width="%d" height="%d">' % (width, height), drop_shadow, g1_svg_body_str, g2_svg_body_str, '</svg>'])
+        file.write(svg_str)
+        file.close()
+
+        #img = cairo.ImageSurface(cairo.FORMAT_ARGB32, int(ceil(width*scale)), int(ceil(height*scale)))  this line changes dimensions to 200 wide
+        img = cairo.ImageSurface(cairo.FORMAT_ARGB32, width, height)
+
+        ctx = cairo.Context(img)
+        print ctx.fill_extents()
+        # white_fill_pattern = cairo.SolidPattern(255, 255, 255)
+        # ctx.paint()
+        # ctx.mask(white_fill_pattern)
+        #ctx.scale(scale, scale)
+        handler= rsvg.Handle(None, svg_str)
+        handler.render_cairo(ctx)
+        img.write_to_png("/home/scott/workspace/svg.png")

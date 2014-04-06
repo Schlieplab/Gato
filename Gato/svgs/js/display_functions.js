@@ -468,7 +468,6 @@ function ControlPanel(cog_width, cog_height, width, height) {
 		brought up by clicking on the cog.
 	*/
 	this.toggle_visibility = function() {
-		console.log('in toggle');
 		if (g.control_panel.frame_visibility === false) {
 			g.control_panel.frame_visibility = true;
 			g.control_panel.frame_g.attr({'visibility': 'visible'});

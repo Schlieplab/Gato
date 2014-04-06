@@ -851,11 +851,12 @@ class AlgoWin(Frame):
                                  )
         if fileName is not "":
             import GatoExport
-            GatoExport.ExportSVG(fileName, self, self.algorithm,
-                                 self.graphDisplay,
-                                 self.secondaryGraphDisplay.animator, #XXX potential bug
-                                 # self.secondaryGraphDisplay is AnimationHistory(sec...)
-                                 showAnimation=False)
+
+            if not self.secondaryGraphDisplay or self.algorithm.graphDisplays == None or self.algorithm.graphDisplays == 1:
+                GatoExport.ExportSVG(fileName, self, self.algorithm, self.graphDisplay, showAnimation=False)
+            else:
+                GatoExport.ExportSVG(fileName, self, self.algorithm, self.graphDisplay,
+                    self.secondaryGraphDisplay.animator, showAnimation=False)
 
     def ExportSVGAnimation(self, fileName=None):
         """ GUI to control export of SVG file  """
@@ -874,14 +875,8 @@ class AlgoWin(Frame):
                     init_edge_infos=self.algorithm.DB.init_edge_infos, init_vertex_infos=self.algorithm.DB.init_vertex_infos,
                     init_graph_infos=self.algorithm.DB.init_graph_infos)
             else:
-                # for cmd in self.algorithm.animation_history.getHistoryTwo():
-                #     if 'SetAll' in cmd.method.__name__:
-                #         print cmd.kwargs
-                #         print id(cmd)
-                #         print cmd
                 GatoExport.ExportSVG(fileName, self, self.algorithm, self.graphDisplay,
-                    self.secondaryGraphDisplay.animator, #XXX potential bug: self.secondaryGraphDisplay is AnimationHistory(sec...),
-                    self.secondaryGraphDisplay, showAnimation=True,
+                    self.secondaryGraphDisplay.animator, self.secondaryGraphDisplay, showAnimation=True,
                     init_edge_infos=self.algorithm.DB.init_edge_infos, init_vertex_infos=self.algorithm.DB.init_vertex_infos,
                     init_graph_infos=self.algorithm.DB.init_graph_infos)
             
