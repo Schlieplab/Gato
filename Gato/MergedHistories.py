@@ -331,6 +331,21 @@ class MergedHistories:
         animation = AnimationHistory.AnimationCommand(animator.DeleteVertex, (v,), (), canUndo=False)
         animation.Do()
         self.append(animation, display)
+
+    def HighlightPath(self, path, color, animator, display, closed=0):
+        if self.animator1 is None:
+            if display==1:
+                self.animator1 = animator
+        if self.animator2 is None:
+            if display==2:
+                self.animator2 = animator
+        animation = AnimationHistory.AnimationCommand(animator.HighlightPath, (path,), (color,closed), canUndo=False)
+        animation.Do()
+        self.append(animation, display)
+        # # XXXIMPLEMENTME
+        # if self.auto_print == 1:
+        #     AnimationHistory.merged.auto_print = 1
+        # AnimationHistory.merged.HighlightPath(path, color, closed)  
         
     def __getattr__(self,arg):
         print "Function tried to be called: ", arg

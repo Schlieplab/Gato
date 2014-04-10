@@ -843,9 +843,10 @@ class AlgoWin(Frame):
         if file is not "": 
             self.graphDisplay.PrintToPSFile(file)
 
-    def ExportSVG(self):
+    def ExportSVG(self, fileName=None, write_to_png=False):
         """ GUI to control export of SVG file  """
-        fileName = asksaveasfilename(title="Export SVG",
+        if not fileName:
+            fileName = asksaveasfilename(title="Export SVG",
                                  defaultextension=".svg",
                                  filetypes = [("SVG", ".svg")]
                                  )
@@ -853,10 +854,11 @@ class AlgoWin(Frame):
             import GatoExport
 
             if not self.secondaryGraphDisplay or self.algorithm.graphDisplays == None or self.algorithm.graphDisplays == 1:
-                GatoExport.ExportSVG(fileName, self, self.algorithm, self.graphDisplay, showAnimation=False)
+                GatoExport.ExportSVG(fileName, self, self.algorithm, self.graphDisplay, 
+                    showAnimation=False, write_to_png=write_to_png)
             else:
                 GatoExport.ExportSVG(fileName, self, self.algorithm, self.graphDisplay,
-                    self.secondaryGraphDisplay.animator, showAnimation=False)
+                    self.secondaryGraphDisplay.animator, showAnimation=False, write_to_png=write_to_png)
 
     def ExportSVGAnimation(self, fileName=None):
         """ GUI to control export of SVG file  """
@@ -867,7 +869,6 @@ class AlgoWin(Frame):
                                          )
         if fileName is not "":
             import GatoExport
-            
             # We never destroy the secondary graph display (and create it from the beginning
             # for the paned viewed. graphDisplays is set from prolog
             if not self.secondaryGraphDisplay or self.algorithm.graphDisplays == None or self.algorithm.graphDisplays == 1:
@@ -879,7 +880,7 @@ class AlgoWin(Frame):
                     self.secondaryGraphDisplay.animator, self.secondaryGraphDisplay, showAnimation=True,
                     init_edge_infos=self.algorithm.DB.init_edge_infos, init_vertex_infos=self.algorithm.DB.init_vertex_infos,
                     init_graph_infos=self.algorithm.DB.init_graph_infos)
-            
+
     def Quit(self,event=None):
         if self.algorithmIsRunning == 1:
             self.commandAfterStop = self.Quit

@@ -188,52 +188,281 @@ instance = {
     ]
     }
 
+
+#
+#
+# TODO: Once the index page is being generated completely correctly come back to this svg_instance
+# list and give all of the algorithms names that more closely reflect the names in the book
 svg_instance = [
+    # {
+    #     'chapter_directory': '02-GraphsNetworks',
+    #     'chapter_number': 2,
+    #     'title': 'chapter_title',
+    #     'algorithms': [
+    #         {
+    #             'title': 'BFS-components',
+    #             'file': 'BFS-components.alg',
+    #             'description': 'bfs components description',
+    #             'graphs': [
+    #                 '02-GraphsNetworks/BFS.cat', '02-GraphsNetworks/3Components.cat',
+    #                 '02-GraphsNetworks/DoubleSquare.cat', '02-GraphsNetworks/DoubleTriangle.cat',
+    #                 '02-GraphsNetworks/K10-10.cat', '02-GraphsNetworks/K3-3.cat'
+    #             ]
+    #         },
+    #         {
+    #             'title': 'BFS',
+    #             'file': 'BFS.alg',
+    #             'description': 'bfs description',
+    #             'graphs': [
+    #                 '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
+    #             ]
+    #         },
+    #         {
+    #             'title': 'BFS to DFS',
+    #             'file': 'BFStoDFS.alg',
+    #             'description': 'BFS to DFS description',
+    #             'graphs': [
+    #                 '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
+    #             ]
+    #         },
+    #         {
+    #             'title': 'DFS Recursive',
+    #             'file': 'DFS-Recursive.alg',
+    #             'description': 'DFS Recursive description',
+    #             'graphs': [
+    #                 '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
+    #             ]
+    #         },
+    #         {
+    #             'title': 'DFS',
+    #             'file': 'DFS.alg',
+    #             'description': 'DFS description',
+    #             'graphs': [
+    #                 '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
+    #             ]
+    #         }
+    #     ]
+    # },
+
+    
+    # {
+    #     'chapter_directory': '03-MinimalSpanningTrees',
+    #     'chapter_number': 3,
+    #     'title': 'MinimalSpanningTrees',
+    #     'algorithms': [
+    #         {   
+    #             'title': 'Kruskal\'s Algorithm',
+    #             'file': 'Kruskal.alg',
+    #             'description': 'kruskal description',
+    #             'graphs': [
+    #                 '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
+    #             ]
+    #         },
+    #         {
+    #             'title': 'KruskalFindCircuit',
+    #             'file': 'KruskalFindCircuit.alg',
+    #             'description': 'kruskal find circuit description',
+    #             'graphs': [
+    #                 '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
+    #             ]
+    #         },
+    #         {
+    #             'title': 'Kruskal Inefficient',
+    #             'file': 'KruskalInefficient.alg',
+    #             'description': 'KruskalInefficient description',
+    #             'graphs': [
+    #                 '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
+    #             ]
+    #         },
+    #         {
+    #             'title': 'Kruskal Trace',
+    #             'file': 'KruskalTrace.alg',
+    #             'description': 'KruskalTrace description',
+    #             'graphs': [
+    #                 '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
+    #             ]   
+    #         },
+    #         {
+    #             'title': 'MST Interactive',
+    #             'file': 'MSTInteractive.alg',
+    #             'description': 'mst interactive description',
+    #             'graphs': [
+    #                 '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
+    #             ]
+    #         },
+    #         {
+    #             'title': 'Matroid Dual Kruskal',
+    #             'file': 'MatroidDualKruskal.alg',
+    #             'description': 'matroid dual kruskal description', 
+    #             'graphs': [
+    #                 '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
+    #             ]
+    #         },
+    #         {
+    #             'title': 'Prim',
+    #             'file': 'Prim.alg',
+    #             'description': 'Prim description',
+    #             'graphs': [
+    #                 '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
+    #             ]
+    #         }
+    #     ]
+    # },
+
+    # {
+    #     'chapter_directory': '04-LPDuality',
+    #     'chapter_number': 4,
+    #     'title': 'LPDuality',
+    #     'algorithms': [
+    #         {
+    #             'title': 'Primal Dual Kruskal',
+    #             'file': 'PrimalDualKruskal.alg',
+    #             'graphs': [
+    #                 '04-LPDuality/PD_Kruskal5.cat'
+    #             ]
+    #         }
+    #     ]
+    # },
+
     {
-        'chapter_directory': '02-GraphsNetworks',
-        'chapter_number': 2,
-        'title': 'chapter_title',
+        'chapter_directory': '05-ShortestPaths',
+        'chapter_number': 5,
+        'title': 'Shortest Paths',
         'algorithms': [
+            # {
+            #     'title': 'Bellman Ford',
+            #     'file': 'BellmanFord.alg',
+            #     'graphs': [
+            #         '05-ShortestPaths/BellmanFordWC.cat'
+            #     ]
+            # },
+            # {
+            #     'title': 'Dijkstra',
+            #     'file': 'Dijkstra.alg',
+            #     'graphs': [
+            #         '05-ShortestPaths/ShortestPathsUndirected06.cat'
+            #     ]
+            # },
+            # {
+            #     'title': 'DijkstraPQ',
+            #     'file': 'DijkstraPQ.alg',
+            #     'graphs': [
+            #         '05-ShortestPaths/ShortestPathsUndirected06.cat'
+            #     ]
+            # },
+            # {
+            #     'title': 'FindPath',
+            #     'file': 'FindPath.alg',
+            #     'graphs': [
+            #         '05-ShortestPaths/ShortestPathsUndirected06.cat'
+            #     ]
+            # },
             {
-                'file': 'BFS-components.alg',
-                'description': 'bfs components description',
+                'title': 'FindPathEuclid',
+                'file': 'FindPathEuclid.alg',
                 'graphs': [
-                    '02-GraphsNetworks/BFS.cat', '02-GraphsNetworks/3Components.cat'
+                    '05-ShortestPaths/ShortestPathsUndirected06.cat'
                 ]
             },
-            {
-                'file': 'BFS.alg',
-                'description': 'bfs description',
-                'graphs': [
-                    '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
-                ]
-            }
+            # {
+            #     'title': 'NegativeCircuits',
+            #     'file': 'NegativeCircuits.alg',
+            #     'graphs': [
+            #         '05-ShortestPaths/NegCircuit2.cat'
+            #     ]
+            # },
+            # # Could use highlighting of paths on this
+            # {
+            #     'title': 'TwoSources',
+            #     'file': 'TwoSources.alg',
+            #     'graphs': [
+            #         '05-ShortestPaths/ShortestPathsUndirected06.cat'
+            #     ]
+            # }
         ]
     },
 
-    {
-        'chapter_directory': '03-MinimalSpanningTrees',
-        'chapter_number': 3,
-        'title': 'MinimalSpanningTrees',
-        'algorithms': [
-            {
-                'file': 'Kruskal.alg',
-                'description': 'kruskal description',
-                'graphs': [
-                    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
-                ]
-            },
-            {
-                'file': 'KruskalFindCircuit.alg',
-                'description': 'kruskal find circuit description',
-                'graphs': [
-                    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
-                ]
-            }
-        ]
-    }
+    # {
+    #     'chapter_directory': '06-MaximalFlows',
+    #     'chapter_number': 6,
+    #     'title': 'Maximal Flows',
+    #     'algorithms': [
+    #         {
+    #             'title': 'FordFulkerson',
+    #             'file': 'FordFulkerson.alg',
+    #             'graphs': [
+    #                 '06-MaximalFlows/FordFulkerson6.cat', #'06-MaximalFlows/FordFulkersonBad.cat'
+    #             ]
+    #         },
+    #         {
+    #             'title': 'PreflowPush',
+    #             'file': 'PreflowPush.alg',
+    #             'graphs': [
+    #                 '06-MaximalFlows/PreflowPush5.cat', '06-MaximalFlows/PreflowPush6.cat'
+    #             ]
+    #         }
+    #     ]
+    # },
+
+    # {
+    #     'chapter_directory': '07-MinimumCostFlows',
+    #     'chapter_number': 7,
+    #     'title': 'Minimum Cost Flows',
+    #     'algorithms': [
+    #         {
+    #             'title': 'SuccessiveShortestPath',
+    #             'file': 'SuccessiveShortestPath.alg',
+    #             'graphs': [
+    #                 '07-MinimumCostFlows/MCF4to1A.cat', '07-MinimumCostFlows/MCFCycle.cat'
+    #             ]
+    #         },
+    #     ]
+    # },
+
+    # {
+    #     'chapter_directory': '08-Matching',
+    #     'chapter_number': 8,
+    #     'title': 'Matching',
+    #     'algorithms': [
+    #         {
+    #             'title': 'Bipartite',
+    #             'file': 'Bipartite.alg',
+    #             'graphs': [
+    #                 '08-Matching/Bi003.cat', '08-Matching/Bi006.cat', '08-Matching/Bi008.cat',
+    #                 '08-Matching/Bi009.cat', '08-Matching/Bi010.cat'
+    #             ]
+    #         },
+    #         {
+    #             'title': 'CardinalityMatching',
+    #             'file': 'CardinalityMatching.alg',
+    #             'graphs': [
+    #                 '08-Matching/Edmonds1.cat', '08-Matching/Edmonds3.cat', '08-Matching/Edmonds6.cat'
+    #             ]
+    #         }
+    #     ]
+    # },
+
+    # {
+    #     'chapter_directory': '09-WeightedMatching',
+    #     'chapter_number': 9,
+    #     'title': 'WeightedMatching',
+    #     'algorithms': [
+    #         {
+    #             'title': 'WeightedMatching',
+    #             'file': 'WeightedMatching.alg',
+    #             'graphs': [
+    #                 '09-WeightedMatching/k4.cat', '09-WeightedMatching/var2zero.cat',
+    #                 '09-WeightedMatching/11vs13.cat'
+    #             ]
+    #         }
+    #     ]
+    # }
 ]
 
+# Keys: e.g. '09-WeightedMatching/k4.cat', values: graph description
+graph_descriptions = {
+    
+}
 
 # These are the algorithm/graph combos that are used to generate their 
 # Webgato counterparts.  Each algorithm is marked with a "Good" or "Bad"
@@ -387,11 +616,28 @@ svg_instance = {
 }
 '''
 
-def create_svg_index_page():
+def create_svg_index_page(graph_pngs):
     ''' Creates an HTML index page that leads to the SVG 
         animations generated from the svg_instance dictionary
-    ''' 
-    pass
+    '''
+    import jinja2
+    svg_locations = {}
+    for chapter_dict in svg_instance:
+        for algo in chapter_dict['algorithms']:
+            algo_name = os.path.splitext(algo['file'])[0]
+            for graph in algo['graphs']:
+                graph_name = os.path.splitext(os.path.basename(graph))[0]
+                svg_locations[algo['title'] + graph] = algo_name + '--' + graph_name + '.html'
+
+    with open('svg_index_template.html', 'r') as template_in:
+        with open('svgs/index.html', 'w') as index_out:
+            template = jinja2.Template(template_in.read())
+            index_out.write(template.render({
+                'svg_instance': svg_instance, 
+                'graph_pngs': graph_pngs, 
+                'graph_descriptions': graph_descriptions,
+                'svg_locations': svg_locations
+            }))
 
 #------------------------------------------------------------------
 def usage():
@@ -499,29 +745,7 @@ if __name__ == '__main__':
     if svg:
         if not os.path.exists('./svgs'):
             os.makedirs('./svgs')
-        '''
-        {
-        'chapter_directory': '02-GraphsNetworks',
-        'chapter_number': 2,
-        'title': 'chapter_title',
-        'algorithms': [
-            {
-                'file': 'BFS-components.alg',
-                'description': 'bfs components description',
-                'graphs': [
-                    '02-GraphsNetworks/BFS.cat', '02-GraphsNetworks/3Components.cat'
-                ]
-            },
-            {
-                'file': 'BFS.alg',
-                'description': 'bfs description',
-                'graphs': [
-                    '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
-                ]
-            }
-        ]
-        },
-        '''
+        
         graph_pngs = {}
         testPath = "../CATBox/"
         for chapter_dict in svg_instance:
@@ -543,8 +767,19 @@ if __name__ == '__main__':
                     app.update_idletasks()
 
                     # Generate the SVG
-                    app.ExportSVGAnimation('svgs/%s-%s.html' %
-                        (os.path.splitext(algo['file'])[0], os.path.splitext(os.path.basename(graph_file))[0])) 
+                    app.ExportSVGAnimation('svgs/%s--%s.html' %
+                        (os.path.splitext(algo['file'])[0], os.path.splitext(os.path.basename(graph_file))[0]))
+                    # Generate the PNG
+                    if graph_file not in graph_pngs:
+                        #
+                        # TODO: Get a machine independent path here
+                        #
+                        file_name = '/home/scott/workspace/gato-code/Gato/svgs/img/%s.png' % (os.path.splitext(os.path.basename(graph_file))[0])
+                        png_file = app.ExportSVG(file_name, write_to_png=True)
+                        graph_name = os.path.splitext(os.path.basename(graph_file))[0]
+                        graph_pngs[graph_file] = {'file': file_name, 'name': graph_name}
+
+        create_svg_index_page(graph_pngs)
 
     else:
         for case in tests:

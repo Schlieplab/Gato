@@ -273,9 +273,10 @@ class AnimationHistory:
         AnimationHistory.merged.DeleteVertex(v, self.animator, self.displayNum)
         
 
-    #def HighlightPath(self, path, color, closed):
-    #    XXXIMPLEMENTME
-            
+    def HighlightPath(self, path, color, closed=0):
+        if self.auto_print == 1:
+            AnimationHistory.merged.auto_print = 1
+        AnimationHistory.merged.HighlightPath(path, color, self.animator, self.displayNum, closed)  
         
     #========== Handle all other methods from GraphDisplay =====================
     def __getattr__(self,arg):

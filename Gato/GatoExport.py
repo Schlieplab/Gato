@@ -68,6 +68,17 @@ prev = ["",-1]
 indent_stack = [0]
 last_line = ''
 id_prefixes = ['g1_', 'g2_']
+svg_drop_shadow = '''
+    <filter id="dropshadow" height="130%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="1"/> <!-- stdDeviation is how much to blur -->
+        <feOffset dx="2.5" dy="2.5" result="offsetblur"/> <!-- how much to offset -->
+        <feMerge> 
+          <feMergeNode/> <!-- this contains the offset blurred image -->
+          <feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->
+       </feMerge>
+    </filter>
+'''
+
 
 def tokenEater(type, token, (srow, scol), (erow, ecol), line):
     global line_count
@@ -415,8 +426,6 @@ def get_graph_as_svg_str_standalone(graphDisplay, x_add, y_add, file, idPrefix='
     if translate:
         ret_strs.append('</g>')
 
-    print "min_x:", min_x, "max_x:", max_x
-    print "min_y:", min_y, "max_y:", max_y
     width = max_x-min_x+vertex_radius*2
     height = max_y-min_y+vertex_radius*2
     return '\n'.join(ret_strs), width, height
@@ -634,14 +643,15 @@ def format_animation(animation):
         return ret_str
 
 def construct_title(fileName):
-    sp = fileName.split('/')[1].split('-')
+    sp = fileName.split('/')[1].split('--')
     algorithm = sp[0]
     graph = sp[1].split('.')[0]
     return 'Gato -- %s algorithm on %s graph' % (algorithm, graph)
 
 def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=None, 
     secondaryGraphDisplayAnimationHistory=None, showAnimation=False, 
-    init_edge_infos=None, init_vertex_infos=None, init_graph_infos=None):
+    init_edge_infos=None, init_vertex_infos=None, init_graph_infos=None,
+    write_to_png=False):
     """ Export either the current graphs or the complete animation
         (showAnimation=True) to the file fileName.
 
@@ -650,6 +660,7 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
             that an edge connects.  The values keys point to are the initial edge infos of that edge.
     """
     global algo_lines
+
     algo_lines = []
     file = open(fileName, 'w')
 
@@ -699,7 +710,7 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
         else:
             g2_y_add, g2_x_add = end_g2_y_add, end_g2_x_add
 
-    if showAnimation:
+    if showAnimation and not write_to_png:
         # Build the SVG graph string
         graph_strs = []
         graph_type = "undirected" if graphDisplay.G.directed == 0 else "directed"
@@ -743,36 +754,18 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
 
         # Export the algorithm info to its own HTML file        
         ExportAlgoInfo(fileName, algorithm)
-    else:
-        '''
-        The commands on Ubuntu to get these libraries installed:
-        sudo apt-get install libcairo2-dev librsvg2-dev python-rsvg
-        '''
-        import cairo
-        import rsvg
 
-        drop_shadow = '''
-            <filter id="dropshadow" height="130%">
-              <feGaussianBlur in="SourceAlpha" stdDeviation="1"/> <!-- stdDeviation is how much to blur -->
-                <feOffset dx="2.5" dy="2.5" result="offsetblur"/> <!-- how much to offset -->
-                <feMerge> 
-                  <feMergeNode/> <!-- this contains the offset blurred image -->
-                  <feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->
-               </feMerge>
-            </filter>
-        '''
+
+    elif not showAnimation and not write_to_png:
         edge_padding = 5
         g1_svg_body_str, g1_width, g1_height = get_graph_as_svg_str_standalone(graphDisplay, g1_x_add, 
             g1_y_add, file, idPrefix=id_prefixes[0], translate=(edge_padding, edge_padding))
         g2_svg_body_str, g2_width, g2_height = '', 0, 0
-        print "secondaryGraphDisplay: ", secondaryGraphDisplay
         g2_y_padding = 0
         if secondaryGraphDisplay:
             g2_y_padding = 10
             g2_svg_body_str, g2_width, g2_height = get_graph_as_svg_str_standalone(secondaryGraphDisplay, g2_x_add, 
                 g2_y_add, file, idPrefix=id_prefixes[1], translate=(edge_padding,g1_height+g2_y_padding+edge_padding))
-
-        
 
         width = int(max(g1_width, g2_width))+edge_padding*2
         height = int(g1_height+g2_height+g2_y_padding)+edge_padding*2 
@@ -782,19 +775,45 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
         if secondaryGraphDisplay:
             y = g1_height + g2_y_padding/2 + edge_padding
             g2_svg_body_str += '<line x1="0" x2="%d" y1="%d" y2="%d" stroke="#000" stroke-width="3.0" />' % (width, y, y)
-        svg_str = '\n'.join(['<svg width="%d" height="%d">' % (width, height), drop_shadow, g1_svg_body_str, g2_svg_body_str, '</svg>'])
+        svg_str = '\n'.join(['<svg width="%d" height="%d">' % (width, height), svg_drop_shadow, g1_svg_body_str, g2_svg_body_str, '</svg>'])
         file.write(svg_str)
         file.close()
 
-        #img = cairo.ImageSurface(cairo.FORMAT_ARGB32, int(ceil(width*scale)), int(ceil(height*scale)))  this line changes dimensions to 200 wide
-        img = cairo.ImageSurface(cairo.FORMAT_ARGB32, width, height)
+    elif not showAnimation and write_to_png:
+        '''
+        The commands on Ubuntu to get these libraries installed:
+        sudo apt-get install libcairo2-dev librsvg2-dev python-rsvg
+        '''
+        import cairo
+        import rsvg
+
+        file.close()
+
+        edge_padding = 15
+        g1_svg_body_str, g1_width, g1_height = get_graph_as_svg_str_standalone(graphDisplay, g1_x_add, 
+            g1_y_add, file, idPrefix=id_prefixes[0], translate=(edge_padding, edge_padding))
+        g2_svg_body_str, g2_width, g2_height = '', 0, 0
+        g2_y_padding = 0
+        if secondaryGraphDisplay:
+            g2_y_padding = 10
+            g2_svg_body_str, g2_width, g2_height = get_graph_as_svg_str_standalone(secondaryGraphDisplay, g2_x_add, 
+                g2_y_add, file, idPrefix=id_prefixes[1], translate=(edge_padding,g1_height+g2_y_padding+edge_padding))
+
+        width = int(max(g1_width, g2_width))+edge_padding*2
+        height = int(g1_height+g2_height+g2_y_padding)+edge_padding*2 
+        scale = min(200.0/width, 1.0)
+        
+        # Put a border between the graphs
+        if secondaryGraphDisplay:
+            y = g1_height + g2_y_padding/2 + edge_padding
+            g2_svg_body_str += '<line x1="0" x2="%d" y1="%d" y2="%d" stroke="#000" stroke-width="3.0" />' % (width, y, y)
+        svg_str = '\n'.join(['<svg width="%d" height="%d">' % (width, height), svg_drop_shadow, g1_svg_body_str, g2_svg_body_str, '</svg>'])
+
+        img = cairo.ImageSurface(cairo.FORMAT_ARGB32, int(ceil(width*scale)), int(ceil(height*scale)))
 
         ctx = cairo.Context(img)
-        print ctx.fill_extents()
-        # white_fill_pattern = cairo.SolidPattern(255, 255, 255)
-        # ctx.paint()
-        # ctx.mask(white_fill_pattern)
-        #ctx.scale(scale, scale)
+        ctx.scale(scale, scale)
         handler= rsvg.Handle(None, svg_str)
         handler.render_cairo(ctx)
-        img.write_to_png("/home/scott/workspace/svg.png")
+        img.write_to_png(fileName)
+

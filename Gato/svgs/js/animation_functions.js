@@ -194,6 +194,8 @@ function Animation() {
 								DeleteMoat(id);
 							} else if (elem_type === 'bubbles') {
 								DeleteBubbleWithId(id);
+							} else if (elem_type === 'highlighted_paths') {
+								DeleteHighlightedPath(id);
 							}
 						}
 					}
@@ -1033,4 +1035,42 @@ function DeleteBubbleWithId(bubble_id) {
 
 function Wait(t) {
 
+}
+
+function HighlightPath(graph_and_path, color, closed) {
+	// graph_and_path example: g1_[17, 10, 3, 4].
+	// if closed != 0 then we make a line back to the first item in path
+	var g_num = parseInt(graph_and_path.substring(1,2));
+	var vertex_nums = get_ints_from_str(graph_and_path.split('_')[1]);
+
+	var coords = [];	// Holds 2-tuples of coordinates
+	for (var i=0; i<vertex_nums.length; i++) {
+		var vertex = g.vertices[g_num-1][get_vertex_id(g_num, vertex_nums[i])];
+		coords.push([vertex.attr('cx'), vertex.attr('cy')]);
+	}
+	if (closed !== "0") {	
+		var vertex = g.vertices[g_num-1][get_vertex_id(g_num, vertex_nums[0])];
+		coords.push([vertex.attr('cx'), vertex.attr('cy')]);
+	}
+
+	var path_id = 'g' + g_num + '_' + vertex_nums.join('-');
+	var path_str = 'M' + coords[0][0] + ',' + coords[0][1];
+	for (var i=1; i<coords.length; i++) {
+		path_str += 'L' + coords[i][0] + ',' + coords[i][1];
+	}
+	var path = snap.path(path_str).attr({
+		'id': path_id,
+		'stroke': color,
+		'stroke-width': 16,
+		'fill': 'none'
+	});
+	g.graphs[g_num-1].prepend(path);
+	g.highlighted_paths[g_num-1][path_id] = path;
+}
+
+function DeleteHighlightedPath(path_id) {
+	var g_num = parseInt(path_id.substring(1,2));
+	var path = g.highlighted_paths[g_num-1][path_id];
+	path.remove();
+	delete g.highlighted_paths[g_num-1][path_id];
 }

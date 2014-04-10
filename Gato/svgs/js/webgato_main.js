@@ -73,7 +73,7 @@ function fill_global() {
             {'width': null, 'height': null, 'min_left': null}
         ],
         // All of the different elem types that we have to keep track of the history of in animation_functions.Animation
-        graph_elem_types: ['vertices', 'edges', 'code_lines', 'edge_arrows', 'highlight_boxes', 'annotations', 'moats', 'bubbles'],
+        graph_elem_types: ['vertices', 'edges', 'code_lines', 'edge_arrows', 'highlight_boxes', 'annotations', 'moats', 'bubbles', 'highlighted_paths'],
     });
 
     // Set the initial graph_translate.  this might be changed in display_functions.position_graph
@@ -109,6 +109,7 @@ function add_graph_element_globals() {
         annotations: [{}, {}],
         moats: [{}, {}],
         bubbles: [{}, {}],
+        highlighted_paths: [{}, {}],
         // Each graph has a pre_vertex element.  This element simply acts as a marker
         // so we can add edges immediately before it(so they will appear above other 
         // elements, such as bubbles, that we prepend to the graph)
