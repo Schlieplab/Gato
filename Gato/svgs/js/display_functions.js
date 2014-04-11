@@ -833,5 +833,14 @@ function CodeBox() {
     this.add_line_numbers();
     this.add_break_points();
 
+    for (var key in g.code_lines) {
+    	var curr_line = g.code_lines[key];
+    	(function (codebox, closure_key) {
+    		curr_line.click(function() {
+    			codebox.breakpoints[closure_key].click();
+    		});
+    	})(this, key);
+    }
+
     this.scale_and_translate();
 }

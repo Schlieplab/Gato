@@ -95,7 +95,7 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
         line_count += 1
         algo_lines.append('</text>\n')
         algo_lines.append('<text blank = "false" id="%s" class="code_line" x="0" y="0" dx="%d" text-anchor="start" '\
-                       'fill="black" font-family="Courier New" font-size="14.0" font-style="normal">' % ("l_" + str(line_count), 14*indent_stack[len(indent_stack)-1]))
+                       'fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">' % ("l_" + str(line_count), 14*indent_stack[len(indent_stack)-1]))
 
     indent_const = 22
     if (type == 0): #EOF.  Reset globals
@@ -108,7 +108,7 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
         if begun_line == False:
             begun_line = True
             algo_lines.append('<text blank = "false" id="%s" class="code_line" x="0" y="0" dx="%d" text-anchor="start" '\
-                       'fill="black" font-family="Courier New" font-size="14.0" font-style="normal">' % ("l_" + str(line_count), 7*indent_stack[len(indent_stack)-1]))
+                       'fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">' % ("l_" + str(line_count), 7*indent_stack[len(indent_stack)-1]))
 
         if token in keywordsList:
             if (prev[1] == -1 or prev[1] == 5 or prev[1] == 4 or prev[1] == 54 or prev[1] == 6): #first word
@@ -145,7 +145,7 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
         if begun_line == False:
             begun_line = True
             algo_lines.append('<text blank = "false" id="%s" class="code_line" x="0" y="0" dx="%d" text-anchor="start" '\
-                       'fill="black" font-family="Courier New" font-size="14.0" font-style="normal">' % ("l_" + str(line_count), 7*indent_stack[len(indent_stack)-1]))
+                       'fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">' % ("l_" + str(line_count), 7*indent_stack[len(indent_stack)-1]))
 
         if token in operatorsList:
             if token == "<":
@@ -172,7 +172,7 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
         if begun_line == False:
             begun_line = True
             algo_lines.append('<text blank = "false" id="%s" class="code_line" x="0" y="0" dx="%d" text-anchor="start" '\
-                       'fill="black" font-family="Courier New" font-size="14.0" font-style="normal">' % ("l_" + str(line_count), 7*indent_stack[len(indent_stack)-1]))
+                       'fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">' % ("l_" + str(line_count), 7*indent_stack[len(indent_stack)-1]))
 
         if (prev[0] in specialList and (prev[0] != "]" and prev[0] != ")")):
             algo_lines.append('%s' % token)
@@ -180,14 +180,14 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
             algo_lines.append('%s' % token)
     elif (type == 54): #Empty line with newline
         algo_lines.append('<text blank = "true" id="%s" class="code_line" x="0" y="0" dx="%d" text-anchor="start" '\
-                       'fill="black" font-family="Courier New" font-size="14.0" font-style="normal"></text>\n' % ("l_" + str(line_count), 7*indent_stack[len(indent_stack)-1]))
+                       'fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"></text>\n' % ("l_" + str(line_count), 7*indent_stack[len(indent_stack)-1]))
         line_begun = False
         line_count += 1
     else:
         if begun_line == False:
             begun_line = True
             algo_lines.append('<text blank = "false" id="%s" class="code_line" x="0" y="0" dx="%d" text-anchor="start" '\
-                       'fill="black" font-family="Courier New" font-size="14.0" font-style="normal">' % ("l_" + str(line_count), 7*indent_stack[len(indent_stack)-1]))
+                       'fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">' % ("l_" + str(line_count), 7*indent_stack[len(indent_stack)-1]))
 
         if (prev[0] in specialList and (prev[0] != "]" and prev[0] != ")")):
             algo_lines.append('%s' % token)
