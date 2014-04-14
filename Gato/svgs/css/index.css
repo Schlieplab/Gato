@@ -1,5 +1,12 @@
 body {
-	background-image: url('../img/white_wall.png');
+	background-color: #ABC7D9;
+}
+
+.fixed_left_nav {
+	position: fixed; 
+	left: 0px; 
+	top: 50px; 
+	padding: 10px;
 }
 
 .algo_div {
@@ -22,4 +29,8 @@ body {
 
 .graph_img_description {
 	margin-top: 20px;
+}
+
+.chapter_div {
+	padding-top: 0px;
 }

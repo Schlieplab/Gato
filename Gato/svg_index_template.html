@@ -8,10 +8,22 @@
 <link href="css/index.css" rel="stylesheet" />
 </head>
 <body>
+	<div class="fixed_left_nav well">
+		<h4>Go to Chapter</h4>
+		{% for chapter_dict in svg_instance %}
+		<h4><a href="#chapter_{{ chapter_dict['chapter_number'] }}_div">{{ chapter_dict['chapter_number'] }}</a></h4>
+		{% endfor %}
+	</div>
 	<div class="container">
+		<div class="row">
+			<div class="header col-xs-12">
+				<h1>WebGato Animation Index</h1>
+			</div>
+		</div>
+
 	{% for chapter_dict in svg_instance %}
 		
-		<div class="chapter_div well row">
+		<div id="chapter_{{ chapter_dict['chapter_number'] }}_div" class="chapter_div well row">
 			<div class="col-xs-12">
 				<div class="row">
 					<div class="col-xs-12">
