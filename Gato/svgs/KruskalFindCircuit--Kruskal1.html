@@ -1,0 +1,511 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" type="text/css" href="js/subModal/subModal.css" />
+        <script type="text/javascript" src="js/subModal/common.js"></script>
+        <script type="text/javascript" src="js/subModal/subModal.js"></script>
+        <script src="js/snap.svg.js" type="text/javascript"></script>
+        <style>
+            html, body {
+                margin: 0 auto;
+                overflow-y: hidden;
+                background-image:url('img/white_wall.png')
+            }
+            * {
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                -khtml-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+            .edge {
+                cursor: pointer;
+            }
+        </style>
+        <title>Gato -- KruskalFindCircuit algorithm on Kruskal1 graph</title>
+    </head>
+    <body>
+
+        <div id="base_container">
+        <svg id="svg">
+            <filter id="dropshadow" height="130%">
+              <feGaussianBlur in="SourceAlpha" stdDeviation="1"/> <!-- stdDeviation is how much to blur -->
+                <feOffset dx="2.5" dy="2.5" result="offsetblur"/> <!-- how much to offset -->
+                <feMerge> 
+                  <feMergeNode/> <!-- this contains the offset blurred image -->
+                  <feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->
+               </feMerge>
+            </filter>
+            <g id="g1" type="undirected">
+
+<g id="g1_1-2_group" class="edge_group" style="cursor: pointer">
+<line id="g1_1-2" class="edge" x1="0.0" y1="50.0" x2="100.0" y2="100.0" stroke="#DDDDDD" stroke-width="4.0"/>
+
+</g>
+<g id="g1_2-3_group" class="edge_group" style="cursor: pointer">
+<line id="g1_2-3" class="edge" x1="100.0" y1="100.0" x2="200.0" y2="0.0" stroke="#DDDDDD" stroke-width="4.0"/>
+
+</g>
+<g id="g1_3-4_group" class="edge_group" style="cursor: pointer">
+<line id="g1_3-4" class="edge" x1="200.0" y1="0.0" x2="250.0" y2="50.0" stroke="#DDDDDD" stroke-width="4.0"/>
+
+</g>
+<g id="g1_4-5_group" class="edge_group" style="cursor: pointer">
+<line id="g1_4-5" class="edge" x1="250.0" y1="50.0" x2="500.0" y2="0.0" stroke="#DDDDDD" stroke-width="4.0"/>
+
+</g>
+<g id="g1_4-10_group" class="edge_group" style="cursor: pointer">
+<line id="g1_4-10" class="edge" x1="250.0" y1="50.0" x2="200.0" y2="150.0" stroke="#DDDDDD" stroke-width="4.0"/>
+
+</g>
+<g id="g1_5-6_group" class="edge_group" style="cursor: pointer">
+<line id="g1_5-6" class="edge" x1="500.0" y1="0.0" x2="600.0" y2="100.0" stroke="#DDDDDD" stroke-width="4.0"/>
+
+</g>
+<g id="g1_5-8_group" class="edge_group" style="cursor: pointer">
+<line id="g1_5-8" class="edge" x1="500.0" y1="0.0" x2="450.0" y2="100.0" stroke="#DDDDDD" stroke-width="4.0"/>
+
+</g>
+<g id="g1_6-7_group" class="edge_group" style="cursor: pointer">
+<line id="g1_6-7" class="edge" x1="600.0" y1="100.0" x2="700.0" y2="50.0" stroke="#DDDDDD" stroke-width="4.0"/>
+
+</g>
+<g id="g1_8-9_group" class="edge_group" style="cursor: pointer">
+<line id="g1_8-9" class="edge" x1="450.0" y1="100.0" x2="350.0" y2="150.0" stroke="#DDDDDD" stroke-width="4.0"/>
+
+</g>
+<g id="g1_pre_vertices_group"></g>
+<g id="g1_1_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_1" class="vertex" cx="0.0" cy="50.0" r="14.0" fill="#FF0000" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_1" x="0.0" y="54.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >1</text>
+
+</g>
+<g id="g1_2_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_2" class="vertex" cx="100.0" cy="100.0" r="14.0" fill="#00FF00" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_2" x="100.0" y="104.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >2</text>
+
+</g>
+<g id="g1_3_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_3" class="vertex" cx="200.0" cy="0.0" r="14.0" fill="#0000FF" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_3" x="200.0" y="4.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >3</text>
+
+</g>
+<g id="g1_4_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_4" class="vertex" cx="250.0" cy="50.0" r="14.0" fill="#009999" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_4" x="250.0" y="54.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >4</text>
+
+</g>
+<g id="g1_5_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_5" class="vertex" cx="500.0" cy="0.0" r="14.0" fill="#990099" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_5" x="500.0" y="4.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >5</text>
+
+</g>
+<g id="g1_6_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_6" class="vertex" cx="600.0" cy="100.0" r="14.0" fill="#999900" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_6" x="600.0" y="104.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >6</text>
+
+</g>
+<g id="g1_7_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_7" class="vertex" cx="700.0" cy="50.0" r="14.0" fill="#996666" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_7" x="700.0" y="54.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >7</text>
+
+</g>
+<g id="g1_8_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_8" class="vertex" cx="450.0" cy="100.0" r="14.0" fill="#669966" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_8" x="450.0" y="104.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >8</text>
+
+</g>
+<g id="g1_9_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_9" class="vertex" cx="350.0" cy="150.0" r="14.0" fill="#666699" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_9" x="350.0" y="154.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >9</text>
+
+</g>
+<g id="g1_10_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_10" class="vertex" cx="200.0" cy="150.0" r="14.0" fill="#0066CC" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_10" x="200.0" y="154.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >10</text>
+
+</g>
+</g>
+
+<g id="g2" type="undirected">
+
+<g id="g2_pre_vertices_group"></g>
+</g>
+
+            <text blank = "false" id="l_1" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">def</tspan> CreatingCircuit(u,v):</text>
+<text blank = "false" id="l_2" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">path = ShortestPath(u,v)</text>
+<text blank = "false" id="l_3" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan> path:</text>
+<text blank = "false" id="l_4" class="code_line" x="0" y="0" dx="56" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">return</tspan> True</text>
+<text blank = "false" id="l_5" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">else</tspan>:</text>
+<text blank = "false" id="l_6" class="code_line" x="0" y="0" dx="56" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">return</tspan> False</text>
+<text blank = "true" id="l_7" class="code_line" x="0" y="0" dx="56" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"></text>
+<text blank = "false" id="l_8" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">E = Sort(Edges,byWeight)</text>
+<text blank = "true" id="l_9" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"></text>
+<text blank = "false" id="l_10" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">for</tspan>(u,v)<tspan font-weight="bold"> in</tspan> E:</text>
+<text blank = "false" id="l_11" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan><tspan font-weight="bold"> not</tspan> CreatingCircuit(u,v):</text>
+<text blank = "false" id="l_12" class="code_line" x="0" y="0" dx="56" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">AddEdge(u,v)</text>
+
+        </svg>
+        </div>
+
+        <script type="text/javascript">
+            var info_file = "infos/KruskalFindCircuit--Kruskal1.html";
+            var g1_x_add = 50;
+            var g1_y_add = 50;
+            var g2_x_add = 50;
+            var g2_y_add = 50;
+            var g1_init_edge_info = {
+"g1_1-3": "Edge (1,3)",
+"g1_10-11": "Edge (10,11)",
+"g1_4-8": "Edge (4,8)",
+"g1_1-15": "Edge (1,15)",
+"g1_8-9": "Edge (8,9)",
+"g1_6-12": "Edge (6,12)",
+"g1_3-7": "Edge (3,7)",
+"g1_2-5": "Edge (2,5)",
+"g1_15-5": "Edge (15,5)",
+"g1_1-2": "Edge (1,2)",
+"g1_6-7": "Edge (6,7)",
+"g1_12-13": "Edge (12,13)",
+"g1_3-6": "Edge (3,6)",
+"g1_4-10": "Edge (4,10)",
+"g1_7-14": "Edge (7,14)",
+"g1_12-14": "Edge (12,14)",
+"g1_5-11": "Edge (5,11)",
+"g1_4-9": "Edge (4,9)",
+"g1_11-12": "Edge (11,12)",
+"g1_5-10": "Edge (5,10)",
+"g1_7-13": "Edge (7,13)",
+"g1_15-6": "Edge (15,6)",
+"g1_2-15": "Edge (2,15)",
+"g1_2-4": "Edge (2,4)",
+"g1_11-6": "Edge (11,6)",
+};
+            var g2_init_edge_info = null;
+            var g1_init_graph_info = "";
+            var g2_init_graph_info = "";
+            var g1_init_vertex_info = {
+"g1_1": "Vertex 1 - not visited yet",
+"g1_2": "Vertex 2 - not visited yet",
+"g1_3": "Vertex 3 - not visited yet",
+"g1_4": "Vertex 4 - not visited yet",
+"g1_5": "Vertex 5 - not visited yet",
+"g1_6": "Vertex 6 - not visited yet",
+"g1_7": "Vertex 7 - not visited yet",
+"g1_8": "Vertex 8 - not visited yet",
+"g1_9": "Vertex 9 - not visited yet",
+"g1_10": "Vertex 10 - not visited yet",
+"g1_11": "Vertex 11 - not visited yet",
+"g1_12": "Vertex 12 - not visited yet",
+"g1_13": "Vertex 13 - not visited yet",
+"g1_14": "Vertex 14 - not visited yet",
+"g1_15": "Vertex 15 - not visited yet",
+};
+            var g2_init_vertex_info = null;
+        </script>
+
+        <script type="text/javascript" src="js/util.js"></script>
+        <script type="text/javascript" src="js/animation_functions.js"></script>
+        <script type="text/javascript" src="js/display_functions.js"></script>
+        <script type="text/javascript" src="js/webgato_main.js"></script>
+        
+        <script type="text/javascript">
+            var anim_array = Array(Array(1, SetVertexColor, "g1_1", "#FF0000"),
+Array(1, SetVertexColor, "g1_2", "#00FF00"),
+Array(1, SetVertexColor, "g1_3", "#0000FF"),
+Array(1, SetVertexColor, "g1_4", "#009999"),
+Array(3, SetVertexColor, "g1_5", "#990099"),
+Array(1, SetVertexColor, "g1_6", "#999900"),
+Array(1, SetVertexColor, "g1_7", "#996666"),
+Array(1, SetVertexColor, "g1_8", "#669966"),
+Array(1, SetVertexColor, "g1_9", "#666699"),
+Array(1, SetVertexColor, "g1_10", "#0066CC"),
+Array(1, ShowActive, "l_1"),
+Array(1, UpdateEdgeInfo, "g1_1-2", "Edge (1,2) weight: 112"),
+Array(1, UpdateEdgeInfo, "g1_4-10", "Edge (4,10) weight: 112"),
+Array(1, UpdateEdgeInfo, "g1_6-7", "Edge (6,7) weight: 112"),
+Array(1, UpdateEdgeInfo, "g1_5-6", "Edge (5,6) weight: 141"),
+Array(1, UpdateEdgeInfo, "g1_8-9", "Edge (8,9) weight: 112"),
+Array(1, UpdateEdgeInfo, "g1_4-5", "Edge (4,5) weight: 255"),
+Array(1, UpdateEdgeInfo, "g1_2-3", "Edge (2,3) weight: 141"),
+Array(1, UpdateEdgeInfo, "g1_3-4", "Edge (3,4) weight: 71"),
+Array(1, UpdateEdgeInfo, "g1_5-8", "Edge (5,8) weight: 112"),
+Array(1, UpdateVertexInfo, "g1_1", "Vertex 1 at position (50,100)"),
+Array(1, UpdateVertexInfo, "g1_2", "Vertex 2 at position (150,150)"),
+Array(1, UpdateVertexInfo, "g1_3", "Vertex 3 at position (250,50)"),
+Array(1, UpdateVertexInfo, "g1_4", "Vertex 4 at position (300,100)"),
+Array(1, UpdateVertexInfo, "g1_5", "Vertex 5 at position (550,50)"),
+Array(1, UpdateVertexInfo, "g1_6", "Vertex 6 at position (650,150)"),
+Array(1, UpdateVertexInfo, "g1_7", "Vertex 7 at position (750,100)"),
+Array(1, UpdateVertexInfo, "g1_8", "Vertex 8 at position (500,150)"),
+Array(1, UpdateVertexInfo, "g1_9", "Vertex 9 at position (400,200)"),
+Array(1, UpdateVertexInfo, "g1_10", "Vertex 10 at position (250,200)"),
+Array(4, ShowActive, "l_8"),
+Array(6, ShowActive, "l_10"),
+Array(5, SetEdgeColor, "g1_3-4", "yellow"),
+Array(2, ShowActive, "l_11"),
+Array(5, SetAllEdgesColor, "g2_#DDDDDD"),
+Array(1, SetAllVerticesColor, "g2_#000099"),
+Array(1, SetEdgeColor, "g1_3-4", "green"),
+Array(1, ShowActive, "l_12"),
+Array(5, AddVertex, "g2_(250, 50)", "3"),
+Array(3, AddVertex, "g2_(300, 100)", "4"),
+Array(2, AddEdge, "g2_3-4"),
+Array(1, SetAllVerticesColor, "g1_#0000FF", "4"),
+Array(2, SetEdgeColor, "g1_3-4", "#0000FF"),
+Array(1, ShowActive, "l_10"),
+Array(5, SetEdgeColor, "g1_1-2", "yellow"),
+Array(1, ShowActive, "l_11"),
+Array(4, SetAllEdgesColor, "g2_#DDDDDD"),
+Array(1, SetAllVerticesColor, "g2_#000099"),
+Array(1, SetEdgeColor, "g1_1-2", "green"),
+Array(1, ShowActive, "l_12"),
+Array(4, AddVertex, "g2_(50, 100)", "1"),
+Array(4, AddVertex, "g2_(150, 150)", "2"),
+Array(3, AddEdge, "g2_1-2"),
+Array(1, SetAllVerticesColor, "g1_#FF0000", "2"),
+Array(2, SetEdgeColor, "g1_1-2", "#FF0000"),
+Array(1, ShowActive, "l_10"),
+Array(5, SetEdgeColor, "g1_4-10", "yellow"),
+Array(1, ShowActive, "l_11"),
+Array(4, SetAllEdgesColor, "g2_#DDDDDD"),
+Array(1, SetAllVerticesColor, "g2_#000099"),
+Array(1, SetEdgeColor, "g1_4-10", "green"),
+Array(1, ShowActive, "l_12"),
+Array(5, AddVertex, "g2_(250, 200)", "10"),
+Array(3, AddEdge, "g2_4-10"),
+Array(1, SetAllVerticesColor, "g1_#0000FF", "10"),
+Array(2, SetEdgeColor, "g1_4-10", "#0000FF"),
+Array(1, ShowActive, "l_10"),
+Array(5, SetEdgeColor, "g1_5-8", "yellow"),
+Array(1, ShowActive, "l_11"),
+Array(5, SetAllEdgesColor, "g2_#DDDDDD"),
+Array(1, SetAllVerticesColor, "g2_#000099"),
+Array(1, SetEdgeColor, "g1_5-8", "green"),
+Array(1, ShowActive, "l_12"),
+Array(4, AddVertex, "g2_(550, 50)", "5"),
+Array(4, AddVertex, "g2_(500, 150)", "8"),
+Array(3, AddEdge, "g2_5-8"),
+Array(1, SetAllVerticesColor, "g1_#990099", "8"),
+Array(2, SetEdgeColor, "g1_5-8", "#990099"),
+Array(2, ShowActive, "l_10"),
+Array(5, SetEdgeColor, "g1_6-7", "yellow"),
+Array(1, ShowActive, "l_11"),
+Array(4, SetAllEdgesColor, "g2_#DDDDDD"),
+Array(1, SetAllVerticesColor, "g2_#000099"),
+Array(1, SetEdgeColor, "g1_6-7", "green"),
+Array(1, ShowActive, "l_12"),
+Array(5, AddVertex, "g2_(650, 150)", "6"),
+Array(3, AddVertex, "g2_(750, 100)", "7"),
+Array(3, AddEdge, "g2_6-7"),
+Array(1, SetAllVerticesColor, "g1_#999900", "7"),
+Array(1, SetEdgeColor, "g1_6-7", "#999900"),
+Array(1, ShowActive, "l_10"),
+Array(5, SetEdgeColor, "g1_8-9", "yellow"),
+Array(1, ShowActive, "l_11"),
+Array(4, SetAllEdgesColor, "g2_#DDDDDD"),
+Array(1, SetAllVerticesColor, "g2_#000099"),
+Array(1, SetEdgeColor, "g1_8-9", "green"),
+Array(1, ShowActive, "l_12"),
+Array(4, AddVertex, "g2_(400, 200)", "9"),
+Array(3, AddEdge, "g2_8-9"),
+Array(1, SetAllVerticesColor, "g1_#990099", "9"),
+Array(2, SetEdgeColor, "g1_8-9", "#990099"),
+Array(1, ShowActive, "l_10"),
+Array(5, SetEdgeColor, "g1_2-3", "yellow"),
+Array(1, ShowActive, "l_11"),
+Array(4, SetVertexAnnotation, "g2_2", "s"),
+Array(3, SetVertexAnnotation, "g2_3", "t"),
+Array(3, SetAllEdgesColor, "g2_#DDDDDD"),
+Array(1, SetAllVerticesColor, "g2_#000099"),
+Array(1, SetVertexColor, "g2_3", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_4", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_1", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_2", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_10", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_5", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_8", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_6", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_7", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_9", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_2", "blue"),
+Array(1, SetVertexColor, "g2_2", "grey"),
+Array(1, SetVertexFrameWidth, "g2_2", "6"),
+Array(1, SetVertexFrameWidth, "g2_2", "6"),
+Array(1, SetEdgeColor, "g2_1-2", "yellow"),
+Array(1, SetVertexColor, "g2_1", "blue"),
+Array(1, SetVertexColor, "g2_1", "blue"),
+Array(1, SetEdgeColor, "g2_1-2", "grey"),
+Array(1, SetVertexFrameWidth, "g2_2", "0"),
+Array(1, SetVertexColor, "g2_1", "grey"),
+Array(1, SetVertexFrameWidth, "g2_2", "0"),
+Array(1, SetVertexFrameWidth, "g2_1", "6"),
+Array(1, SetVertexFrameWidth, "g2_1", "6"),
+Array(1, SetEdgeColor, "g2_1-2", "yellow"),
+Array(1, SetEdgeColor, "g2_1-2", "grey"),
+Array(1, SetVertexFrameWidth, "g2_1", "0"),
+Array(1, SetEdgeColor, "g1_2-3", "green"),
+Array(1, ShowActive, "l_12"),
+Array(4, AddEdge, "g2_2-3"),
+Array(1, SetVertexColor, "g1_1", "#0000FF"),
+Array(1, SetVertexColor, "g1_2", "#0000FF"),
+Array(1, SetEdgeColor, "g1_2-1", "#0000FF"),
+Array(1, SetAllVerticesColor, "g1_#0000FF", "1", "2"),
+Array(1, SetEdgeColor, "g1_2-3", "#0000FF"),
+Array(1, ShowActive, "l_10"),
+Array(5, SetEdgeColor, "g1_5-6", "yellow"),
+Array(1, ShowActive, "l_11"),
+Array(5, SetVertexAnnotation, "g2_2", ""),
+Array(3, SetVertexAnnotation, "g2_3", ""),
+Array(3, SetVertexAnnotation, "g2_5", "s"),
+Array(3, SetVertexAnnotation, "g2_6", "t"),
+Array(3, SetAllEdgesColor, "g2_#DDDDDD"),
+Array(1, SetAllVerticesColor, "g2_#000099"),
+Array(1, SetVertexColor, "g2_3", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_4", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_1", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_2", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_10", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_5", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_8", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_6", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_7", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_9", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_5", "blue"),
+Array(1, SetVertexColor, "g2_5", "grey"),
+Array(1, SetVertexFrameWidth, "g2_5", "6"),
+Array(1, SetVertexFrameWidth, "g2_5", "6"),
+Array(1, SetEdgeColor, "g2_5-8", "yellow"),
+Array(1, SetVertexColor, "g2_8", "blue"),
+Array(1, SetVertexColor, "g2_8", "blue"),
+Array(1, SetEdgeColor, "g2_5-8", "grey"),
+Array(1, SetVertexFrameWidth, "g2_5", "0"),
+Array(1, SetVertexColor, "g2_8", "grey"),
+Array(1, SetVertexFrameWidth, "g2_5", "0"),
+Array(1, SetVertexFrameWidth, "g2_8", "6"),
+Array(1, SetVertexFrameWidth, "g2_8", "6"),
+Array(1, SetEdgeColor, "g2_5-8", "yellow"),
+Array(1, SetEdgeColor, "g2_5-8", "grey"),
+Array(1, SetEdgeColor, "g2_8-9", "yellow"),
+Array(1, SetVertexColor, "g2_9", "blue"),
+Array(1, SetVertexColor, "g2_9", "blue"),
+Array(1, SetEdgeColor, "g2_8-9", "grey"),
+Array(1, SetVertexFrameWidth, "g2_8", "0"),
+Array(1, SetVertexColor, "g2_9", "grey"),
+Array(1, SetVertexFrameWidth, "g2_8", "0"),
+Array(1, SetVertexFrameWidth, "g2_9", "6"),
+Array(1, SetVertexFrameWidth, "g2_9", "6"),
+Array(1, SetEdgeColor, "g2_8-9", "yellow"),
+Array(1, SetEdgeColor, "g2_8-9", "grey"),
+Array(1, SetVertexFrameWidth, "g2_9", "0"),
+Array(1, SetEdgeColor, "g1_5-6", "green"),
+Array(1, ShowActive, "l_12"),
+Array(5, AddEdge, "g2_5-6"),
+Array(1, SetVertexColor, "g1_6", "#990099"),
+Array(1, SetVertexColor, "g1_7", "#990099"),
+Array(1, SetEdgeColor, "g1_7-6", "#990099"),
+Array(1, SetAllVerticesColor, "g1_#990099", "6", "7"),
+Array(1, SetEdgeColor, "g1_5-6", "#990099"),
+Array(1, ShowActive, "l_10"),
+Array(5, SetEdgeColor, "g1_4-5", "yellow"),
+Array(1, ShowActive, "l_11"),
+Array(5, SetVertexAnnotation, "g2_5", ""),
+Array(3, SetVertexAnnotation, "g2_6", ""),
+Array(2, SetVertexAnnotation, "g2_4", "s"),
+Array(2, SetVertexAnnotation, "g2_5", "t"),
+Array(6, SetAllEdgesColor, "g2_#DDDDDD"),
+Array(1, SetAllVerticesColor, "g2_#000099"),
+Array(1, SetVertexColor, "g2_3", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_4", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_1", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_2", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_10", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_5", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_8", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_6", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_7", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_9", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_4", "blue"),
+Array(1, SetVertexColor, "g2_4", "grey"),
+Array(1, SetVertexFrameWidth, "g2_4", "6"),
+Array(1, SetVertexFrameWidth, "g2_4", "6"),
+Array(1, SetEdgeColor, "g2_3-4", "yellow"),
+Array(1, SetVertexColor, "g2_3", "blue"),
+Array(1, SetVertexColor, "g2_3", "blue"),
+Array(1, SetEdgeColor, "g2_3-4", "grey"),
+Array(1, SetEdgeColor, "g2_4-10", "yellow"),
+Array(1, SetVertexColor, "g2_10", "blue"),
+Array(1, SetVertexColor, "g2_10", "blue"),
+Array(1, SetEdgeColor, "g2_4-10", "grey"),
+Array(1, SetVertexFrameWidth, "g2_4", "0"),
+Array(1, SetVertexColor, "g2_3", "grey"),
+Array(1, SetVertexFrameWidth, "g2_4", "0"),
+Array(1, SetVertexFrameWidth, "g2_3", "6"),
+Array(1, SetVertexFrameWidth, "g2_3", "6"),
+Array(1, SetEdgeColor, "g2_2-3", "yellow"),
+Array(1, SetVertexColor, "g2_2", "blue"),
+Array(1, SetVertexColor, "g2_2", "blue"),
+Array(1, SetEdgeColor, "g2_2-3", "grey"),
+Array(1, SetEdgeColor, "g2_3-4", "yellow"),
+Array(1, SetEdgeColor, "g2_3-4", "grey"),
+Array(1, SetVertexFrameWidth, "g2_3", "0"),
+Array(1, SetVertexColor, "g2_10", "grey"),
+Array(1, SetVertexFrameWidth, "g2_3", "0"),
+Array(1, SetVertexFrameWidth, "g2_10", "6"),
+Array(1, SetVertexFrameWidth, "g2_10", "6"),
+Array(1, SetEdgeColor, "g2_4-10", "yellow"),
+Array(1, SetEdgeColor, "g2_4-10", "grey"),
+Array(1, SetVertexFrameWidth, "g2_10", "0"),
+Array(1, SetVertexColor, "g2_2", "grey"),
+Array(1, SetVertexFrameWidth, "g2_10", "0"),
+Array(1, SetVertexFrameWidth, "g2_2", "6"),
+Array(1, SetVertexFrameWidth, "g2_2", "6"),
+Array(1, SetEdgeColor, "g2_1-2", "yellow"),
+Array(1, SetVertexColor, "g2_1", "blue"),
+Array(1, SetVertexColor, "g2_1", "blue"),
+Array(1, SetEdgeColor, "g2_1-2", "grey"),
+Array(1, SetEdgeColor, "g2_2-3", "yellow"),
+Array(1, SetEdgeColor, "g2_2-3", "grey"),
+Array(1, SetVertexFrameWidth, "g2_2", "0"),
+Array(1, SetVertexColor, "g2_1", "grey"),
+Array(1, SetVertexFrameWidth, "g2_2", "0"),
+Array(1, SetVertexFrameWidth, "g2_1", "6"),
+Array(1, SetVertexFrameWidth, "g2_1", "6"),
+Array(1, SetEdgeColor, "g2_1-2", "yellow"),
+Array(1, SetEdgeColor, "g2_1-2", "grey"),
+Array(1, SetVertexFrameWidth, "g2_1", "0"),
+Array(1, SetEdgeColor, "g1_4-5", "green"),
+Array(1, ShowActive, "l_12"),
+Array(4, AddEdge, "g2_4-5"),
+Array(1, SetVertexColor, "g1_5", "#0000FF"),
+Array(1, SetVertexColor, "g1_8", "#0000FF"),
+Array(1, SetVertexColor, "g1_6", "#0000FF"),
+Array(1, SetVertexColor, "g1_9", "#0000FF"),
+Array(1, SetVertexColor, "g1_7", "#0000FF"),
+Array(1, SetEdgeColor, "g1_8-5", "#0000FF"),
+Array(1, SetEdgeColor, "g1_6-5", "#0000FF"),
+Array(1, SetEdgeColor, "g1_9-8", "#0000FF"),
+Array(1, SetEdgeColor, "g1_7-6", "#0000FF"),
+Array(1, SetAllVerticesColor, "g1_#0000FF", "5", "8", "9", "6", "7"),
+Array(1, SetEdgeColor, "g1_4-5", "#0000FF"),
+Array(1, ShowActive, "l_10"));
+            init();
+        </script>
+
+    </body>
+</html>

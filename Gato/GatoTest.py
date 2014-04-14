@@ -194,169 +194,169 @@ instance = {
 # TODO: Once the index page is being generated completely correctly come back to this svg_instance
 # list and give all of the algorithms names that more closely reflect the names in the book
 svg_instance = [
-    # {
-    #     'chapter_directory': '02-GraphsNetworks',
-    #     'chapter_number': 2,
-    #     'title': 'chapter_title',
-    #     'algorithms': [
-    #         {
-    #             'title': 'BFS-components',
-    #             'file': 'BFS-components.alg',
-    #             'description': 'bfs components description',
-    #             'graphs': [
-    #                 '02-GraphsNetworks/BFS.cat', '02-GraphsNetworks/3Components.cat',
-    #                 '02-GraphsNetworks/DoubleSquare.cat', '02-GraphsNetworks/DoubleTriangle.cat',
-    #                 '02-GraphsNetworks/K10-10.cat', '02-GraphsNetworks/K3-3.cat'
-    #             ]
-    #         },
-    #         {
-    #             'title': 'BFS',
-    #             'file': 'BFS.alg',
-    #             'description': 'bfs description',
-    #             'graphs': [
-    #                 '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
-    #             ]
-    #         },
-    #         {
-    #             'title': 'BFS to DFS',
-    #             'file': 'BFStoDFS.alg',
-    #             'description': 'BFS to DFS description',
-    #             'graphs': [
-    #                 '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
-    #             ]
-    #         },
-    #         {
-    #             'title': 'DFS Recursive',
-    #             'file': 'DFS-Recursive.alg',
-    #             'description': 'DFS Recursive description',
-    #             'graphs': [
-    #                 '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
-    #             ]
-    #         },
-    #         {
-    #             'title': 'DFS',
-    #             'file': 'DFS.alg',
-    #             'description': 'DFS description',
-    #             'graphs': [
-    #                 '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
-    #             ]
-    #         }
-    #     ]
-    # },
+    {
+        'chapter_directory': '02-GraphsNetworks',
+        'chapter_number': 2,
+        'title': 'chapter_title',
+        'algorithms': [
+            {
+                'title': 'BFS-components',
+                'file': 'BFS-components.alg',
+                'description': 'bfs components description',
+                'graphs': [
+                    '02-GraphsNetworks/BFS.cat', '02-GraphsNetworks/3Components.cat',
+                    '02-GraphsNetworks/DoubleSquare.cat', '02-GraphsNetworks/DoubleTriangle.cat',
+                    '02-GraphsNetworks/K10-10.cat', '02-GraphsNetworks/K3-3.cat'
+                ]
+            },
+            {
+                'title': 'BFS',
+                'file': 'BFS.alg',
+                'description': 'bfs description',
+                'graphs': [
+                    '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
+                ]
+            },
+            {
+                'title': 'BFS to DFS',
+                'file': 'BFStoDFS.alg',
+                'description': 'BFS to DFS description',
+                'graphs': [
+                    '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
+                ]
+            },
+            {
+                'title': 'DFS Recursive',
+                'file': 'DFS-Recursive.alg',
+                'description': 'DFS Recursive description',
+                'graphs': [
+                    '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
+                ]
+            },
+            {
+                'title': 'DFS',
+                'file': 'DFS.alg',
+                'description': 'DFS description',
+                'graphs': [
+                    '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
+                ]
+            }
+        ]
+    },
 
     
-    # {
-    #     'chapter_directory': '03-MinimalSpanningTrees',
-    #     'chapter_number': 3,
-    #     'title': 'MinimalSpanningTrees',
-    #     'algorithms': [
-    #         {   
-    #             'title': 'Kruskal\'s Algorithm',
-    #             'file': 'Kruskal.alg',
-    #             'description': 'kruskal description',
-    #             'graphs': [
-    #                 '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
-    #             ]
-    #         },
-    #         {
-    #             'title': 'KruskalFindCircuit',
-    #             'file': 'KruskalFindCircuit.alg',
-    #             'description': 'kruskal find circuit description',
-    #             'graphs': [
-    #                 '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
-    #             ]
-    #         },
-    #         {
-    #             'title': 'Kruskal Inefficient',
-    #             'file': 'KruskalInefficient.alg',
-    #             'description': 'KruskalInefficient description',
-    #             'graphs': [
-    #                 '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
-    #             ]
-    #         },
-    #         {
-    #             'title': 'Kruskal Trace',
-    #             'file': 'KruskalTrace.alg',
-    #             'description': 'KruskalTrace description',
-    #             'graphs': [
-    #                 '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
-    #             ]   
-    #         },
-    #         {
-    #             'title': 'MST Interactive',
-    #             'file': 'MSTInteractive.alg',
-    #             'description': 'mst interactive description',
-    #             'graphs': [
-    #                 '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
-    #             ]
-    #         },
-    #         {
-    #             'title': 'Matroid Dual Kruskal',
-    #             'file': 'MatroidDualKruskal.alg',
-    #             'description': 'matroid dual kruskal description', 
-    #             'graphs': [
-    #                 '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
-    #             ]
-    #         },
-    #         {
-    #             'title': 'Prim',
-    #             'file': 'Prim.alg',
-    #             'description': 'Prim description',
-    #             'graphs': [
-    #                 '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
-    #             ]
-    #         }
-    #     ]
-    # },
+    {
+        'chapter_directory': '03-MinimalSpanningTrees',
+        'chapter_number': 3,
+        'title': 'MinimalSpanningTrees',
+        'algorithms': [
+            {   
+                'title': 'Kruskal\'s Algorithm',
+                'file': 'Kruskal.alg',
+                'description': 'kruskal description',
+                'graphs': [
+                    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
+                ]
+            },
+            {
+                'title': 'KruskalFindCircuit',
+                'file': 'KruskalFindCircuit.alg',
+                'description': 'kruskal find circuit description',
+                'graphs': [
+                    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
+                ]
+            },
+            {
+                'title': 'Kruskal Inefficient',
+                'file': 'KruskalInefficient.alg',
+                'description': 'KruskalInefficient description',
+                'graphs': [
+                    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
+                ]
+            },
+            {
+                'title': 'Kruskal Trace',
+                'file': 'KruskalTrace.alg',
+                'description': 'KruskalTrace description',
+                'graphs': [
+                    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
+                ]   
+            },
+            {
+                'title': 'MST Interactive',
+                'file': 'MSTInteractive.alg',
+                'description': 'mst interactive description',
+                'graphs': [
+                    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
+                ]
+            },
+            {
+                'title': 'Matroid Dual Kruskal',
+                'file': 'MatroidDualKruskal.alg',
+                'description': 'matroid dual kruskal description', 
+                'graphs': [
+                    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
+                ]
+            },
+            {
+                'title': 'Prim',
+                'file': 'Prim.alg',
+                'description': 'Prim description',
+                'graphs': [
+                    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
+                ]
+            }
+        ]
+    },
 
-    # {
-    #     'chapter_directory': '04-LPDuality',
-    #     'chapter_number': 4,
-    #     'title': 'LPDuality',
-    #     'algorithms': [
-    #         {
-    #             'title': 'Primal Dual Kruskal',
-    #             'file': 'PrimalDualKruskal.alg',
-    #             'graphs': [
-    #                 '04-LPDuality/PD_Kruskal5.cat'
-    #             ]
-    #         }
-    #     ]
-    # },
+    {
+        'chapter_directory': '04-LPDuality',
+        'chapter_number': 4,
+        'title': 'LPDuality',
+        'algorithms': [
+            {
+                'title': 'Primal Dual Kruskal',
+                'file': 'PrimalDualKruskal.alg',
+                'graphs': [
+                    '04-LPDuality/PD_Kruskal5.cat'
+                ]
+            }
+        ]
+    },
 
     {
         'chapter_directory': '05-ShortestPaths',
         'chapter_number': 5,
         'title': 'Shortest Paths',
         'algorithms': [
-            # {
-            #     'title': 'Bellman Ford',
-            #     'file': 'BellmanFord.alg',
-            #     'graphs': [
-            #         '05-ShortestPaths/BellmanFordWC.cat'
-            #     ]
-            # },
-            # {
-            #     'title': 'Dijkstra',
-            #     'file': 'Dijkstra.alg',
-            #     'graphs': [
-            #         '05-ShortestPaths/ShortestPathsUndirected06.cat'
-            #     ]
-            # },
-            # {
-            #     'title': 'DijkstraPQ',
-            #     'file': 'DijkstraPQ.alg',
-            #     'graphs': [
-            #         '05-ShortestPaths/ShortestPathsUndirected06.cat'
-            #     ]
-            # },
-            # {
-            #     'title': 'FindPath',
-            #     'file': 'FindPath.alg',
-            #     'graphs': [
-            #         '05-ShortestPaths/ShortestPathsUndirected06.cat'
-            #     ]
-            # },
+            {
+                'title': 'Bellman Ford',
+                'file': 'BellmanFord.alg',
+                'graphs': [
+                    '05-ShortestPaths/BellmanFordWC.cat'
+                ]
+            },
+            {
+                'title': 'Dijkstra',
+                'file': 'Dijkstra.alg',
+                'graphs': [
+                    '05-ShortestPaths/ShortestPathsUndirected06.cat'
+                ]
+            },
+            {
+                'title': 'DijkstraPQ',
+                'file': 'DijkstraPQ.alg',
+                'graphs': [
+                    '05-ShortestPaths/ShortestPathsUndirected06.cat'
+                ]
+            },
+            {
+                'title': 'FindPath',
+                'file': 'FindPath.alg',
+                'graphs': [
+                    '05-ShortestPaths/ShortestPathsUndirected06.cat'
+                ]
+            },
             {
                 'title': 'FindPathEuclid',
                 'file': 'FindPathEuclid.alg',
@@ -364,100 +364,118 @@ svg_instance = [
                     '05-ShortestPaths/ShortestPathsUndirected06.cat'
                 ]
             },
-            # {
-            #     'title': 'NegativeCircuits',
-            #     'file': 'NegativeCircuits.alg',
-            #     'graphs': [
-            #         '05-ShortestPaths/NegCircuit2.cat'
-            #     ]
-            # },
-            # # Could use highlighting of paths on this
-            # {
-            #     'title': 'TwoSources',
-            #     'file': 'TwoSources.alg',
-            #     'graphs': [
-            #         '05-ShortestPaths/ShortestPathsUndirected06.cat'
-            #     ]
-            # }
+            {
+                'title': 'NegativeCircuits',
+                'file': 'NegativeCircuits.alg',
+                'graphs': [
+                    '05-ShortestPaths/NegCircuit2.cat'
+                ]
+            },
+            # Could use highlighting of paths on this
+            {
+                'title': 'TwoSources',
+                'file': 'TwoSources.alg',
+                'graphs': [
+                    '05-ShortestPaths/ShortestPathsUndirected06.cat'
+                ]
+            }
         ]
     },
 
-    # {
-    #     'chapter_directory': '06-MaximalFlows',
-    #     'chapter_number': 6,
-    #     'title': 'Maximal Flows',
-    #     'algorithms': [
-    #         {
-    #             'title': 'FordFulkerson',
-    #             'file': 'FordFulkerson.alg',
-    #             'graphs': [
-    #                 '06-MaximalFlows/FordFulkerson6.cat', #'06-MaximalFlows/FordFulkersonBad.cat'
-    #             ]
-    #         },
-    #         {
-    #             'title': 'PreflowPush',
-    #             'file': 'PreflowPush.alg',
-    #             'graphs': [
-    #                 '06-MaximalFlows/PreflowPush5.cat', '06-MaximalFlows/PreflowPush6.cat'
-    #             ]
-    #         }
-    #     ]
-    # },
+    {
+        'chapter_directory': '06-MaximalFlows',
+        'chapter_number': 6,
+        'title': 'Maximal Flows',
+        'algorithms': [
+            {
+                'title': 'FordFulkerson',
+                'file': 'FordFulkerson.alg',
+                'graphs': [
+                    '06-MaximalFlows/FordFulkerson6.cat', #'06-MaximalFlows/FordFulkersonBad.cat'
+                ]
+            },
+            {
+                'title': 'PreflowPush',
+                'file': 'PreflowPush.alg',
+                'graphs': [
+                    '06-MaximalFlows/PreflowPush5.cat', '06-MaximalFlows/PreflowPush6.cat'
+                ]
+            }
+        ]
+    },
 
-    # {
-    #     'chapter_directory': '07-MinimumCostFlows',
-    #     'chapter_number': 7,
-    #     'title': 'Minimum Cost Flows',
-    #     'algorithms': [
-    #         {
-    #             'title': 'SuccessiveShortestPath',
-    #             'file': 'SuccessiveShortestPath.alg',
-    #             'graphs': [
-    #                 '07-MinimumCostFlows/MCF4to1A.cat', '07-MinimumCostFlows/MCFCycle.cat'
-    #             ]
-    #         },
-    #     ]
-    # },
+    {
+        'chapter_directory': '07-MinimumCostFlows',
+        'chapter_number': 7,
+        'title': 'Minimum Cost Flows',
+        'algorithms': [
+            {
+                'title': 'SuccessiveShortestPath',
+                'file': 'SuccessiveShortestPath.alg',
+                'graphs': [
+                    '07-MinimumCostFlows/MCF4to1A.cat', '07-MinimumCostFlows/MCFCycle.cat'
+                ]
+            },
+        ]
+    },
 
-    # {
-    #     'chapter_directory': '08-Matching',
-    #     'chapter_number': 8,
-    #     'title': 'Matching',
-    #     'algorithms': [
-    #         {
-    #             'title': 'Bipartite',
-    #             'file': 'Bipartite.alg',
-    #             'graphs': [
-    #                 '08-Matching/Bi003.cat', '08-Matching/Bi006.cat', '08-Matching/Bi008.cat',
-    #                 '08-Matching/Bi009.cat', '08-Matching/Bi010.cat'
-    #             ]
-    #         },
-    #         {
-    #             'title': 'CardinalityMatching',
-    #             'file': 'CardinalityMatching.alg',
-    #             'graphs': [
-    #                 '08-Matching/Edmonds1.cat', '08-Matching/Edmonds3.cat', '08-Matching/Edmonds6.cat'
-    #             ]
-    #         }
-    #     ]
-    # },
+    {
+        'chapter_directory': '08-Matching',
+        'chapter_number': 8,
+        'title': 'Matching',
+        'algorithms': [
+            {
+                'title': 'Bipartite',
+                'file': 'Bipartite.alg',
+                'graphs': [
+                    '08-Matching/Bi003.cat', '08-Matching/Bi006.cat', '08-Matching/Bi008.cat',
+                    '08-Matching/Bi009.cat', '08-Matching/Bi010.cat'
+                ]
+            },
+            {
+                'title': 'CardinalityMatching',
+                'file': 'CardinalityMatching.alg',
+                'graphs': [
+                    '08-Matching/Edmonds1.cat', '08-Matching/Edmonds3.cat', '08-Matching/Edmonds6.cat'
+                ]
+            }
+        ]
+    },
 
-    # {
-    #     'chapter_directory': '09-WeightedMatching',
-    #     'chapter_number': 9,
-    #     'title': 'WeightedMatching',
-    #     'algorithms': [
-    #         {
-    #             'title': 'WeightedMatching',
-    #             'file': 'WeightedMatching.alg',
-    #             'graphs': [
-    #                 '09-WeightedMatching/k4.cat', '09-WeightedMatching/var2zero.cat',
-    #                 '09-WeightedMatching/11vs13.cat'
-    #             ]
-    #         }
-    #     ]
-    # }
+    {
+        'chapter_directory': '09-WeightedMatching',
+        'chapter_number': 9,
+        'title': 'WeightedMatching',
+        'algorithms': [
+            {
+                'title': 'WeightedMatching',
+                'file': 'WeightedMatching.alg',
+                'graphs': [
+                    '09-WeightedMatching/k4.cat', '09-WeightedMatching/var2zero.cat',
+                    '09-WeightedMatching/11vs13.cat'
+                ]
+            }
+        ]
+    }
 ]
+
+# svg_instance = [
+# {
+#         'chapter_directory': '02-GraphsNetworks',
+#         'chapter_number': 2,
+#         'title': 'chapter_title',
+#         'algorithms': [
+#             {
+#                 'title': 'BFS-components',
+#                 'file': 'BFS-components.alg',
+#                 'description': 'bfs components description',
+#                 'graphs': [
+#                     '02-GraphsNetworks/BFS.cat',
+#                 ]
+#             }
+#             ]
+#             }
+# ]
 
 # Keys: e.g. '09-WeightedMatching/k4.cat', values: graph description
 graph_descriptions = {

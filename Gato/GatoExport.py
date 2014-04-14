@@ -192,7 +192,7 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
         if (prev[0] in specialList and (prev[0] != "]" and prev[0] != ")")):
             algo_lines.append('%s' % token)
         else:
-            algo_lines.append('%s' % token)
+            algo_lines.append(' %s' % token)
     
     last_line = line
     if type != 0:

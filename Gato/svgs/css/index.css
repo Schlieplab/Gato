@@ -1,0 +1,25 @@
+body {
+	background-image: url('../img/white_wall.png');
+}
+
+.algo_div {
+	background-color: white;
+	border-radius: 5px;
+	margin-top: 10px;
+	padding: 10px;
+}
+
+.graph_img {
+	border: 1px solid #aaa;
+	border-radius: 2px;
+	height: 100%;
+	width: auto;
+}
+
+.graph_div {
+	text-align: center;
+}
+
+.graph_img_description {
+	margin-top: 20px;
+}
