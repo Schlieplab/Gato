@@ -459,27 +459,9 @@ svg_instance = [
     }
 ]
 
-# svg_instance = [
-# {
-#         'chapter_directory': '02-GraphsNetworks',
-#         'chapter_number': 2,
-#         'title': 'chapter_title',
-#         'algorithms': [
-#             {
-#                 'title': 'BFS-components',
-#                 'file': 'BFS-components.alg',
-#                 'description': 'bfs components description',
-#                 'graphs': [
-#                     '02-GraphsNetworks/BFS.cat',
-#                 ]
-#             }
-#             ]
-#             }
-# ]
-
 # Keys: e.g. '09-WeightedMatching/k4.cat', values: graph description
 graph_descriptions = {
-    
+    '02-GraphsNetworks/BFS.cat': 'BFS Graph Description'
 }
 
 # These are the algorithm/graph combos that are used to generate their 
@@ -789,13 +771,11 @@ if __name__ == '__main__':
                         (os.path.splitext(algo['file'])[0], os.path.splitext(os.path.basename(graph_file))[0]))
                     # Generate the PNG
                     if graph_file not in graph_pngs:
-                        #
-                        # TODO: Get a machine independent path here
-                        #
-                        file_name = '/home/scott/workspace/gato-code/Gato/svgs/img/%s.png' % (os.path.splitext(os.path.basename(graph_file))[0])
+                        file_name = 'svgs/img/%s.png' % (os.path.splitext(os.path.basename(graph_file))[0])
                         png_file = app.ExportSVG(file_name, write_to_png=True)
                         graph_name = os.path.splitext(os.path.basename(graph_file))[0]
-                        graph_pngs[graph_file] = {'file': file_name, 'name': graph_name}
+                        path_from_index = '/'.join(file_name.split('/')[1:])
+                        graph_pngs[graph_file] = {'file': path_from_index, 'name': graph_name}
 
         create_svg_index_page(graph_pngs)
 
