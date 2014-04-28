@@ -745,7 +745,20 @@ if __name__ == '__main__':
     if svg:
         if not os.path.exists('./svgs'):
             os.makedirs('./svgs')
-        
+
+        # Warn the user if they don't have the correct libraries for PNG generation
+        has_png_libs = True
+        try:
+            import cairo
+            import rsvg
+        except:
+            has_png_libs = False
+            err_msg = ('*******\nWARNING:\n'
+                'Generation of an SVG Index page requires the python packages for cairo(http://cairographics.org/)'
+                ' and librsvg(https://wiki.gnome.org/action/show/Projects/LibRsvg?action=show&redirect=LibRsvg).'
+                '  SVG generation will continue, but no index page will be generated.\n*******')
+            print err_msg
+
         graph_pngs = {}
         testPath = "../CATBox/"
         for chapter_dict in svg_instance:
@@ -770,14 +783,15 @@ if __name__ == '__main__':
                     app.ExportSVGAnimation('svgs/%s--%s.html' %
                         (os.path.splitext(algo['file'])[0], os.path.splitext(os.path.basename(graph_file))[0]))
                     # Generate the PNG
-                    if graph_file not in graph_pngs:
+                    if graph_file not in graph_pngs and has_png_libs:
                         file_name = 'svgs/img/%s.png' % (os.path.splitext(os.path.basename(graph_file))[0])
                         png_file = app.ExportSVG(file_name, write_to_png=True)
                         graph_name = os.path.splitext(os.path.basename(graph_file))[0]
                         path_from_index = '/'.join(file_name.split('/')[1:])
                         graph_pngs[graph_file] = {'file': path_from_index, 'name': graph_name}
 
-        create_svg_index_page(graph_pngs)
+        if has_png_libs:
+            create_svg_index_page(graph_pngs)
 
     else:
         for case in tests:
