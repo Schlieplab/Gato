@@ -758,6 +758,16 @@ function CodeBox() {
         }
         this.highlight_box.attr({'opacity': this.highlight_box_opacity});
         this.highlight_box.transform('t0,' + (line_bbox.y - this.highlight_box_padding.y));
+
+        // Set the click handler of highlight_box to the line it is covering
+        if (this.current_highlight_box_click !== undefined) {
+            this.highlight_box.unclick(this.current_highlight_box_click);
+        }
+        this.current_highlight_box_click = function() {
+            console.log(line_id);
+            g.code_box.breakpoints[line_id].click();
+        };
+        this.highlight_box.click(this.current_highlight_box_click);
     }
     this.remove_highlighting = function()   {
         this.highlight_box.attr({'opacity': 0});
@@ -875,7 +885,8 @@ function CodeBox() {
         'fill': 'yellow',
         'stroke': 'blue',
         'stroke-width': 1,
-        'opacity': .35
+        'opacity': .35,
+        'cursor': 'pointer'
     });
     g.highlight_boxes[0] = {'highlight_box': this.highlight_box};
     this.g.append(this.highlight_box);
