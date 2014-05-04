@@ -24,10 +24,12 @@ function Scaler() {
         
         // If the graph started too large or small then scale it appropriately
         if (this.curr_scale > this.max_scale_factor) {
+            // console.log("hitting max");
             this.initial_scale = this.max_scale_factor;
             this.curr_scale = this.max_scale_factor;
             this.scale_graphs(this.curr_scale);
         } else if (this.curr_scale < this.min_scale_factor) {
+            // console.log("hitting min");
             this.initial_scale = this.min_scale_factor;
             this.curr_scale = this.min_scale_factor;
             this.scale_graphs(this.curr_scale);
@@ -299,7 +301,7 @@ function position_graph() {
         curr_scale = g.scaler.curr_scale;
     }
 
-    var x_trans = g.code_box.frame_width + g.padding*2;
+    var x_trans = (g.code_box.frame_width * g.code_box.scale_factor) + g.padding*2;
     g['init_container_translate'] = [{x: x_trans}, {x: x_trans}];
     for (var i=0; i<g.num_graphs; i++) {
         var max_size = g.max_graph_sizes[i];
@@ -333,6 +335,7 @@ function position_graph() {
 
         container_translate.x = container_translate.x / curr_scale;
         container_translate.y = container_translate.y / curr_scale;
+        // console.log(container_translate);
         g.graph_containers[i].transform('t' + container_translate.x + ',' + container_translate.y);
         g.graphs[i].transform('t' + g.graph_translate[i]['x'] + ',' + g.graph_translate[i]['y']);   
     }
@@ -396,11 +399,13 @@ function SpeedControls(width) {
     for (var i=0; i<this.button_types.length; i++) {
         var type = this.button_types[i];
         var button_g = snap.group().attr({
-            'class': 'speed_button'
+            'class': 'speed_button',
+            'cursor': 'pointer'
         }).click(click_speed_button);
         
         var button_text = snap.text(0, 0, type['label']).attr({
-            'fill': 'white'
+            'id': type['label'] + '_button_label',
+            'fill': 'white',
         });
         if (text_trans_y === 0) {
             // Set the variable that controls y translation of "Animation Speed" string
@@ -415,7 +420,6 @@ function SpeedControls(width) {
             'fill': '#87afff',
             'stroke': '#476fb4',
             'opacity': opacity,
-            'cursor': 'pointer'
         });
         var x_trans = text_bbox.width + (i+1)*this.button_settings.padding + i*this.button_settings.width;
         button_g.transform('t' + x_trans);
@@ -828,13 +832,16 @@ function CodeBox() {
         this.g.transform(translate + scale);
 
         // Resize the frame and highlight box
-        this.frame.remove();    // Remove the frame before getting the bbox, so the bbox tells us how wide the lines are
+        // Remove the frame and highlight_box before getting the bbox, so the bbox tells us how wide the lines are
+        this.frame.remove();    
+        this.highlight_box.remove();
         var bbox = this.g.getBBox();
-        this.frame_width = bbox.width / this.scale_factor;
+        this.frame_width = bbox.width / this.scale_factor + this.padding;
         this.frame.attr({'width': this.frame_width});
-        this.g.prepend(this.frame);
         this.highlight_box_width = this.frame_width - this.highlight_box_x;
         this.highlight_box.attr({'width': this.highlight_box_width});
+        this.g.prepend(this.frame);
+        this.g.append(this.highlight_box);
     };
 
     this.line_padding = 18;

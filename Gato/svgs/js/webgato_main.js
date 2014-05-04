@@ -222,9 +222,10 @@ function window_resize(evt) {
     g.cont_width = window.innerWidth;
     document.getElementById('svg').setAttribute('style', 'width: ' + g.cont_width + 'px; height: ' + g.cont_height + 'px');
     g.playback_bar.resize();
-    g.scaler.set_max_and_min_dimensions_of_graph_container();
     g.code_box.scale_and_translate();
+    g.scaler.set_max_and_min_dimensions_of_graph_container();
     position_graph();
+    //g.scaler.set_max_and_min_dimensions_of_graph_container();
 }
 
 function init() {
