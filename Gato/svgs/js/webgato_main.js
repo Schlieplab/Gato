@@ -8,6 +8,10 @@ function fill_global() {
     var cont_width = window.innerWidth;
     var cont_height = window.innerHeight;
     extend(g, {
+        playback_bar: null,
+        code_box: null,
+        animation: null,
+
         /* General Globals */
         // Width and height of the whole draw area
         cont_width: cont_width,
@@ -213,11 +217,22 @@ function global_drag(evt) {
     }
 }
 
+function window_resize(evt) {
+    g.cont_height = window.innerHeight;
+    g.cont_width = window.innerWidth;
+    document.getElementById('svg').setAttribute('style', 'width: ' + g.cont_width + 'px; height: ' + g.cont_height + 'px');
+    g.playback_bar.resize();
+    g.scaler.set_max_and_min_dimensions_of_graph_container();
+    g.code_box.scale_and_translate();
+    position_graph();
+}
+
 function init() {
     // Add global event handlers
     snap.mouseup(global_mouseup);
     snap.mousemove(global_mousemove);
     snap.drag(function(){}, function(){}, global_drag)
+    window.onresize = window_resize;
 
     // Set globals and size of base_container
     fill_global();

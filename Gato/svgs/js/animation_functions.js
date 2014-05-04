@@ -409,8 +409,20 @@ function Slider(width, height) {
 			}
 		}
 	}
+	this.resize_width = function(new_width) {
+		/* 	This function resizes the slider.  It does this
+			in the GUI as well as computing new mappings of pos->coord and coord-> pos
+		*/
+		this.width = new_width;
+		this.track_width = this.width;
+		this.track.attr({'width': this.width});
+		this.cursor_max_x = this.width - this.cursor_width;
+		this.step_width = this.compute_step_width()
+		this.naive_step_width = this.cursor_max_x / anim_array.length;
+	}
 
 	this.init = function () {
+		this.min_width = 50;
 		this.sliding = false;
 		this.width = width;
 		this.height = height;
