@@ -14,31 +14,18 @@ function Scaler() {
         */
         var bbox = g.master_graph_container.getBBox(),
             playback_bbox = g.playback_bar.g.getBBox();
-        // console.log(playback_bbox.y + g.control_panel.height - g.padding - bbox.y);
-        // var max_height = playback_bbox.y + g.control_panel.height - g.padding - bbox.y, // control_panel height gets added in because the playback_bbox includes it
         var max_height = g.cont_height - g.padding*3 - g.playback_bar.frame.attr('height'),
             max_width = g.cont_width - g.padding - get_graph_x_trans(),
-            // max_width = g.cont_width - g.padding*2 - g.code_box.frame_width,
             min_height = 50,
             min_width = 50;
         var max_scale_factor_y = max_height / (bbox.height / this.curr_scale),
             max_scale_factor_x = max_width / (bbox.width / this.curr_scale);
         
-        // console.log("g cont width: " + g.cont_width);
-        // console.log("g.code_box.frame_width: " + g.code_box.frame_width);
-        // console.log("bbox x: " + bbox.x);
-        // console.log("curr scale: " + this.curr_scale);
-        // console.log("bbox width: " + bbox.width);
-        // console.log("max width: " + max_width);
-        // console.log("max y scale: " + max_scale_factor_y);
-        // console.log("max x scale: " + max_scale_factor_x);
         this.max_scale_factor = Math.min(max_scale_factor_x, max_scale_factor_y);
         this.min_scale_factor = .15;
 
         this.curr_scale = this.max_scale_factor;
         this.scale_graphs(this.curr_scale);
-        // console.log("curr sclae: " + this.curr_scale);
-        // console.log("---------------------------");
 
         /*
         THIS BLOCK IS COMMENTED OUT SINCE BELOW IT WE SET THE CURR_SCALE TO
@@ -251,7 +238,7 @@ function add_tooltip(elem, element_type) {
     // element_type is either 'edge' or 'vertex' right now-- we need to the element_type to determine default tooltip info
     var elem_id = elem.attr('id');
     var graph_num = parseInt(elem_id.substring(1,2));
-    var tooltip = new ToolTip(elem, graph_num-1, element_type);
+    var tooltip = new ToolTip(elem, element_type);
     g.tooltip_objects[tooltip.id] = tooltip;
     g.tooltips[graph_num-1][tooltip.id] = tooltip.text_elem;
 }
@@ -330,7 +317,6 @@ function position_graph(initial) {
     var x_trans = get_graph_x_trans();
     if (g.init_container_translate === undefined) {
         g['init_container_translate'] = [{x: x_trans, y: g.padding + g.graph_frame_stroke_width}, {x: x_trans, y: g.padding + g.graph_frame_stroke_width}];
-        // console.log("MOO");
     }
     for (var i=0; i<g.num_graphs; i++) {
         var max_size = g.max_graph_sizes[i];
@@ -346,7 +332,6 @@ function position_graph(initial) {
         container_translate.y = container_translate.y / curr_scale;
         if (i === 1) {
             container_translate.y = g.graph_containers[0].getBBox().y2;
-            console.log(container_translate.y);
         }
 
         // Adjust the translations if we have a max height and width.  
@@ -356,7 +341,6 @@ function position_graph(initial) {
             if (max_size.height) {
                 var diff = max_size.height - graph_bbox.height;
                 if (diff > 0 && graph_bbox.height != 0) {
-                    console.log("i: " + i + " adding to graph translate");
                     g.graph_translate[i].y += diff/2; 
                 }
             }
@@ -374,8 +358,6 @@ function position_graph(initial) {
         }
 
         container_translate.x = container_translate.x / curr_scale;
-        // console.log("curr scale: " + curr_scale);
-        // console.log(container_translate);
         g.graph_containers[i].transform('t' + container_translate.x + ',' + container_translate.y);
         g.graphs[i].transform('t' + g.graph_translate[i]['x'] + ',' + g.graph_translate[i]['y']);   
     }
@@ -815,7 +797,6 @@ function CodeBox() {
             this.highlight_box.unclick(this.current_highlight_box_click);
         }
         this.current_highlight_box_click = function() {
-            console.log(line_id);
             g.code_box.breakpoints[line_id].click();
         };
         this.highlight_box.click(this.current_highlight_box_click);
@@ -839,6 +820,7 @@ function CodeBox() {
                 'font-size': 14,
                 'cursor': 'pointer'
             });
+            // Bind breakpoint click to the line number click
             (function (e, line_key) {
                 e.click(function() {
                     g.code_box.breakpoints[line_key].click();
