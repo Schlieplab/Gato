@@ -185,7 +185,7 @@ function ToolTip(elem, elem_type) {
     // Build the tooltip
     if (elem_type === 'edge') {
         this.text_content = get_default_edge_info(elem_id, this.g_num-1);
-    } else {
+    } else if (elem_type === 'vertex') {
         this.text_content = get_default_vertex_info(elem_id, this.g_num-1);
     }
     this.text_elem = snap.text(0, 0, this.text_content);
@@ -721,6 +721,12 @@ function ButtonPanel() {
     }
 }
 
+function StaticToolTip() {
+    /*  These are tooltips that don't contain graph or edge info, and thus
+        have static text content.  They are currentliy used for 
+    */
+}
+
 function Button(click_handler, path_str, active, translate) {
     /*  This object represents one of the buttons that control animation
         that are located at the left side of the playback bar
@@ -830,8 +836,14 @@ function CodeBox() {
             var y = g.code_lines[key].attr('y');
             var elem = snap.text(x, y, line_num).attr({
                 'font-family': 'Courier New',
-                'font-size': 14
+                'font-size': 14,
+                'cursor': 'pointer'
             });
+            (function (e, line_key) {
+                e.click(function() {
+                    g.code_box.breakpoints[line_key].click();
+                })
+            })(elem, key);
             this.g.append(elem);
         }
     }
