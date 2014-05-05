@@ -24,21 +24,21 @@ function Scaler() {
         var max_scale_factor_y = max_height / (bbox.height / this.curr_scale),
             max_scale_factor_x = max_width / (bbox.width / this.curr_scale);
         
-        console.log("g cont width: " + g.cont_width);
-        console.log("g.code_box.frame_width: " + g.code_box.frame_width);
+        // console.log("g cont width: " + g.cont_width);
+        // console.log("g.code_box.frame_width: " + g.code_box.frame_width);
         // console.log("bbox x: " + bbox.x);
         // console.log("curr scale: " + this.curr_scale);
         // console.log("bbox width: " + bbox.width);
         // console.log("max width: " + max_width);
-        console.log("max y scale: " + max_scale_factor_y);
-        console.log("max x scale: " + max_scale_factor_x);
+        // console.log("max y scale: " + max_scale_factor_y);
+        // console.log("max x scale: " + max_scale_factor_x);
         this.max_scale_factor = Math.min(max_scale_factor_x, max_scale_factor_y);
         this.min_scale_factor = .15;
 
         this.curr_scale = this.max_scale_factor;
         this.scale_graphs(this.curr_scale);
-        console.log("curr sclae: " + this.curr_scale);
-        console.log("---------------------------");
+        // console.log("curr sclae: " + this.curr_scale);
+        // console.log("---------------------------");
 
         /*
         THIS BLOCK IS COMMENTED OUT SINCE BELOW IT WE SET THE CURR_SCALE TO
@@ -329,22 +329,24 @@ function position_graph(initial) {
 
     var x_trans = get_graph_x_trans();
     if (g.init_container_translate === undefined) {
-        g['init_container_translate'] = [{x: x_trans}, {x: x_trans}];
+        g['init_container_translate'] = [{x: x_trans, y: g.padding + g.graph_frame_stroke_width}, {x: x_trans, y: g.padding + g.graph_frame_stroke_width}];
         // console.log("MOO");
     }
     for (var i=0; i<g.num_graphs; i++) {
         var max_size = g.max_graph_sizes[i];
         var container_translate = null;
+        
         if (initial === true) {
+            // If this is the first time we are calling this function then we want to keep track of the initial translation of the containers
             container_translate = g.init_container_translate[i];
         } else {
-            container_translate = {x: x_trans};
+            container_translate = {x: x_trans, y: g.padding + g.graph_frame_stroke_width};
         }
-        if (i === 0) {
-            container_translate.y = g.padding + g.graph_frame_stroke_width;
-        } else {
+
+        container_translate.y = container_translate.y / curr_scale;
+        if (i === 1) {
             container_translate.y = g.graph_containers[0].getBBox().y2;
-            // console.log(container_translate.y);
+            console.log(container_translate.y);
         }
 
         // Adjust the translations if we have a max height and width.  
@@ -372,7 +374,6 @@ function position_graph(initial) {
         }
 
         container_translate.x = container_translate.x / curr_scale;
-        container_translate.y = container_translate.y / curr_scale;
         // console.log("curr scale: " + curr_scale);
         // console.log(container_translate);
         g.graph_containers[i].transform('t' + container_translate.x + ',' + container_translate.y);
@@ -438,6 +439,7 @@ function SpeedControls(width) {
     for (var i=0; i<this.button_types.length; i++) {
         var type = this.button_types[i];
         var button_g = snap.group().attr({
+            'id': type['label'] + '_g',
             'class': 'speed_button',
             'cursor': 'pointer'
         }).click(click_speed_button);
