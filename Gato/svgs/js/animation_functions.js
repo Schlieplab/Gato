@@ -297,6 +297,7 @@ function Animation() {
 		}
 
 		this.graph_states = states;
+
 		this.jump_to_step(0);
 	}
 
@@ -1066,7 +1067,7 @@ function HighlightPath(graph_and_path, color, closed) {
 		coords.push([vertex.attr('cx'), vertex.attr('cy')]);
 	}
 
-	var path_id = 'g' + g_num + '_' + vertex_nums.join('-');
+	var path_id = 'g' + g_num + '_' + vertex_nums.join('-') + '_highlighted_path';
 	var path_str = 'M' + coords[0][0] + ',' + coords[0][1];
 	for (var i=1; i<coords.length; i++) {
 		path_str += 'L' + coords[i][0] + ',' + coords[i][1];

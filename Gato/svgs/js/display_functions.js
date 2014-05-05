@@ -209,6 +209,8 @@ function ToolTip(elem, elem_type) {
         function (evt) {
             var elem_id = get_id(get_evt_target(evt));
             var elem = snap.select('#' + elem_id);
+            // console.log(elem_id);
+            // console.log(elem.parent().attr('id'));
             var tooltip = g.tooltip_objects[elem.parent().attr('id') + '_tooltip'];
             tooltip.mouseover(evt);
         },

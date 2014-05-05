@@ -291,7 +291,7 @@ def get_graph_as_svg_str_standalone(graphDisplay, x_add, y_add, file, idPrefix='
             x_add -= vertex_radius
             y_add -= vertex_radius
             break
-
+    print idPrefix
     if translate:
         ret_strs.append('<g transform="translate(%d %d)">\n' % (translate[0], translate[1]))
 
@@ -426,6 +426,9 @@ def get_graph_as_svg_str_standalone(graphDisplay, x_add, y_add, file, idPrefix='
     if translate:
         ret_strs.append('</g>')
 
+    print "max_x: {}".format(max_x)
+    print "min_x: {}".format(min_x)
+    print "vertex_radius: {}".format(vertex_radius)
     width = max_x-min_x+vertex_radius*2
     height = max_y-min_y+vertex_radius*2
     return '\n'.join(ret_strs), width, height
