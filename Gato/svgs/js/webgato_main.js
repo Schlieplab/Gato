@@ -217,7 +217,20 @@ function global_drag(evt) {
     }
 }
 
+var window_size_check = (function() {
+    var notice_shown = false;
+    return function() {
+        if (!notice_shown) {
+            if (window.innerWidth < 450 || window.innerHeight < 350) {
+                alert("Gato requires a window size of at least 450px width and 350px height.  Your window is smaller than that and the application may not work as intended.");
+                notice_shown = true;
+            }
+        }
+    }
+})();
+
 function window_resize(evt) {
+    window_size_check();
     g.cont_height = window.innerHeight;
     g.cont_width = window.innerWidth;
     document.getElementById('svg').setAttribute('style', 'width: ' + g.cont_width + 'px; height: ' + g.cont_height + 'px');
@@ -228,6 +241,8 @@ function window_resize(evt) {
 }
 
 function init() {
+    window_size_check();
+
     // Add global event handlers
     snap.mouseup(global_mouseup);
     snap.mousemove(global_mousemove);

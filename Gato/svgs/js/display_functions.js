@@ -17,7 +17,7 @@ function Scaler() {
         // console.log(playback_bbox.y + g.control_panel.height - g.padding - bbox.y);
         // var max_height = playback_bbox.y + g.control_panel.height - g.padding - bbox.y, // control_panel height gets added in because the playback_bbox includes it
         var max_height = g.cont_height - g.padding*3 - g.playback_bar.frame.attr('height'),
-            max_width = g.cont_width - g.padding*2 - get_graph_x_trans(),
+            max_width = g.cont_width - g.padding - get_graph_x_trans(),
             // max_width = g.cont_width - g.padding*2 - g.code_box.frame_width,
             min_height = 50,
             min_width = 50;
@@ -209,8 +209,6 @@ function ToolTip(elem, elem_type) {
         function (evt) {
             var elem_id = get_id(get_evt_target(evt));
             var elem = snap.select('#' + elem_id);
-            // console.log(elem_id);
-            // console.log(elem.parent().attr('id'));
             var tooltip = g.tooltip_objects[elem.parent().attr('id') + '_tooltip'];
             tooltip.mouseover(evt);
         },
