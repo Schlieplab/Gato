@@ -158,7 +158,7 @@ function Animation() {
 								}
 							} else if (elem_type === 'vertices') {
 								var arg = construct_AddVertex_argument_from_state(elem_state[id]);
-								elem = AddVertex(arg, elem_state[id]['id'].substring(3,4));
+								elem = AddVertex(arg, elem_state[id]['id'].substring(3));
 							} else if (elem_type === 'moats') {
 
 							}
@@ -557,7 +557,6 @@ function SetAllVerticesColor() {
 					g.vertices[g_num-1]['g' + (g_num) + '_' + vertex_nums[v]].attr({'fill': color});
 				}
 			} else {
-				//console.log('g' + (g_num) + '_' + arguments[i]);
 				g.vertices[g_num-1]['g' + (g_num) + '_' + arguments[i]].attr({'fill': color});
 			}
 		}
