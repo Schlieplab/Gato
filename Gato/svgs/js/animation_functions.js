@@ -419,6 +419,7 @@ function Slider(width, height) {
 		this.cursor_max_x = this.width - this.cursor_width;
 		this.step_width = this.compute_step_width()
 		this.naive_step_width = this.cursor_max_x / anim_array.length;
+		this.go_to_step(g.animation.step_num, 0);
 	}
 
 	this.init = function () {
@@ -556,6 +557,7 @@ function SetAllVerticesColor() {
 					g.vertices[g_num-1]['g' + (g_num) + '_' + vertex_nums[v]].attr({'fill': color});
 				}
 			} else {
+				//console.log('g' + (g_num) + '_' + arguments[i]);
 				g.vertices[g_num-1]['g' + (g_num) + '_' + arguments[i]].attr({'fill': color});
 			}
 		}

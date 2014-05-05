@@ -225,7 +225,6 @@ function window_resize(evt) {
     g.code_box.scale_and_translate();
     g.scaler.set_max_and_min_dimensions_of_graph_container();
     position_graph();
-    //g.scaler.set_max_and_min_dimensions_of_graph_container();
 }
 
 function init() {
@@ -246,7 +245,7 @@ function init() {
     add_graph_info();
     g.animation = new Animation();
     add_graph_frame();
-    position_graph();
+    position_graph(true);
     add_scaler();
     save_initial_graph_dimensions();
 }

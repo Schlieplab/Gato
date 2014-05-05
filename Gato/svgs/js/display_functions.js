@@ -1,3 +1,5 @@
+
+
 function Scaler() {
     /* This object represents the graphical and programmatical elements
         of the graph scaler.  It appears at the bottom right of the graph
@@ -12,28 +14,48 @@ function Scaler() {
         */
         var bbox = g.master_graph_container.getBBox(),
             playback_bbox = g.playback_bar.g.getBBox();
-        var max_height = playback_bbox.y + g.control_panel.height - g.padding - bbox.y, // control_panel height gets added in because the playback_bbox includes it
-            max_width = g.cont_width - g.padding - bbox.x,
+        // console.log(playback_bbox.y + g.control_panel.height - g.padding - bbox.y);
+        // var max_height = playback_bbox.y + g.control_panel.height - g.padding - bbox.y, // control_panel height gets added in because the playback_bbox includes it
+        var max_height = g.cont_height - g.padding*3 - g.playback_bar.frame.attr('height'),
+            max_width = g.cont_width - g.padding*2 - get_graph_x_trans(),
+            // max_width = g.cont_width - g.padding*2 - g.code_box.frame_width,
             min_height = 50,
             min_width = 50;
         var max_scale_factor_y = max_height / (bbox.height / this.curr_scale),
             max_scale_factor_x = max_width / (bbox.width / this.curr_scale);
-            
-        this.max_scale_factor = Math.min(max_scale_factor_x, max_scale_factor_y);
-        this.min_scale_factor = .3;
         
+        console.log("g cont width: " + g.cont_width);
+        console.log("g.code_box.frame_width: " + g.code_box.frame_width);
+        // console.log("bbox x: " + bbox.x);
+        // console.log("curr scale: " + this.curr_scale);
+        // console.log("bbox width: " + bbox.width);
+        // console.log("max width: " + max_width);
+        console.log("max y scale: " + max_scale_factor_y);
+        console.log("max x scale: " + max_scale_factor_x);
+        this.max_scale_factor = Math.min(max_scale_factor_x, max_scale_factor_y);
+        this.min_scale_factor = .15;
+
+        this.curr_scale = this.max_scale_factor;
+        this.scale_graphs(this.curr_scale);
+        console.log("curr sclae: " + this.curr_scale);
+        console.log("---------------------------");
+
+        /*
+        THIS BLOCK IS COMMENTED OUT SINCE BELOW IT WE SET THE CURR_SCALE TO
+        MAX_SCALE_FACTOR
+
         // If the graph started too large or small then scale it appropriately
         if (this.curr_scale > this.max_scale_factor) {
             // console.log("hitting max");
-            this.initial_scale = this.max_scale_factor;
             this.curr_scale = this.max_scale_factor;
             this.scale_graphs(this.curr_scale);
-        } else if (this.curr_scale < this.min_scale_factor) {
-            // console.log("hitting min");
-            this.initial_scale = this.min_scale_factor;
+        } 
+        if (this.curr_scale < this.min_scale_factor) {
+            //console.log("hitting min");
             this.curr_scale = this.min_scale_factor;
             this.scale_graphs(this.curr_scale);
         }
+        */
     };
 
     this.mousedown = function(evt) {
@@ -73,9 +95,9 @@ function Scaler() {
         g.master_graph_container.transform('s' + scale_factor + ',0,0');
         for (var i=0; i<g.graph_containers.length; i++) {
             var g_cont = g.graph_containers[i],
-                x_trans = g.init_container_translate[i]['x']/scale_factor,
+                x_trans = get_graph_x_trans() / scale_factor,
                 y_trans = 0;
-            if (i == 0) {
+            if (i === 0) {
                 y_trans = g.init_container_translate[i]['y']/scale_factor;
             } else {
                 y_trans = g.graph_containers[0].getBBox().y2;
@@ -87,11 +109,11 @@ function Scaler() {
     var bbox = g.graph_containers[g.num_graphs-1].getBBox();
     // true if the scaler is currently being manipulated
     this.scaling = false;
-    // The initial scale factor of the graph
-    this.initial_scale = 1;
     // The current scale factor of the graph
     this.curr_scale = 1;
     this.set_max_and_min_dimensions_of_graph_container();
+    // The initial scale factor of the graph
+    this.initial_scale = this.curr_scale;
     
     this.width = 20;
     this.height = 20;
@@ -294,47 +316,64 @@ function add_graph_frame() {
     }
 }
 
-function position_graph() {
+function get_graph_x_trans() {
+    return (g.code_box.frame_width * g.code_box.scale_factor) + g.padding*2;
+}
+
+function position_graph(initial) {
     // Used for initial translations, and also scaling of graph
     var curr_scale = 1;
     if (g.scaler !== undefined) {
         curr_scale = g.scaler.curr_scale;
     }
 
-    var x_trans = (g.code_box.frame_width * g.code_box.scale_factor) + g.padding*2;
-    g['init_container_translate'] = [{x: x_trans}, {x: x_trans}];
+    var x_trans = get_graph_x_trans();
+    if (g.init_container_translate === undefined) {
+        g['init_container_translate'] = [{x: x_trans}, {x: x_trans}];
+        // console.log("MOO");
+    }
     for (var i=0; i<g.num_graphs; i++) {
         var max_size = g.max_graph_sizes[i];
-        var container_translate = g.init_container_translate[i];
+        var container_translate = null;
+        if (initial === true) {
+            container_translate = g.init_container_translate[i];
+        } else {
+            container_translate = {x: x_trans};
+        }
         if (i === 0) {
             container_translate.y = g.padding + g.graph_frame_stroke_width;
         } else {
-            container_translate.y = g.init_container_translate[0].y + g.graph_containers[0].getBBox().height;
+            container_translate.y = g.graph_containers[0].getBBox().y2;
+            // console.log(container_translate.y);
         }
 
         // Adjust the translations if we have a max height and width.  
         // If we don't have one, then the original size is ok
-        var graph_bbox = g.graphs[i].getBBox();
-        if (max_size.height) {
-            var diff = max_size.height - graph_bbox.height;
-            if (diff > 0 && graph_bbox.height != 0) {
-                g.graph_translate[i].y += diff/2; 
-            }
-        }
-        if (max_size.width) {
-            var diff = 0;
-            if (graph_bbox.width != 0) {
-                if (max_size.min_left && max_size.min_left < g.frame_padding) {
-                    diff += -1*max_size.min_left;
+        if (initial === true) {
+            var graph_bbox = g.graphs[i].getBBox();
+            if (max_size.height) {
+                var diff = max_size.height - graph_bbox.height;
+                if (diff > 0 && graph_bbox.height != 0) {
+                    console.log("i: " + i + " adding to graph translate");
+                    g.graph_translate[i].y += diff/2; 
                 }
             }
-            if (diff > 0) {
-                g.graph_translate[i]['x'] += diff - g.vertex_r;
+            if (max_size.width) {
+                var diff = 0;
+                if (graph_bbox.width != 0) {
+                    if (max_size.min_left && max_size.min_left < g.frame_padding) {
+                        diff += -1*max_size.min_left;
+                    }
+                }
+                if (diff > 0) {
+                    g.graph_translate[i]['x'] += diff - g.vertex_r;
+                }
             }
         }
 
         container_translate.x = container_translate.x / curr_scale;
         container_translate.y = container_translate.y / curr_scale;
+        // console.log("curr scale: " + curr_scale);
         // console.log(container_translate);
         g.graph_containers[i].transform('t' + container_translate.x + ',' + container_translate.y);
         g.graphs[i].transform('t' + g.graph_translate[i]['x'] + ',' + g.graph_translate[i]['y']);   
@@ -813,16 +852,19 @@ function CodeBox() {
     this.is_line_breakpoint_active = function(line_id) {
         return this.breakpoints[line_id].active;
     }
-    this.scale_and_translate = function(initial) {
-        /* This function accounts for the cases where there is too much code and
-            the code box goes off the screen.  In those cases it is scaled down
+    this.scale_and_translate = function() {
+        /*  This function is called at the beginning of the program and will
+            scale the codebox based on vertical and horizontal dimensions
         */
         if (!this.initial_bbox) {
             this.initial_bbox = this.g.getBBox();
         }
         var playback_bbox = g.playback_bar.g.getBBox();
         var max_height = playback_bbox.y + g.control_panel.height - g.padding*2 - this.initial_bbox.y;
-        var max_scale_factor = max_height / this.initial_bbox.height;
+        var max_scale_factor_y = max_height / this.initial_bbox.height;
+        var max_width = g.cont_width * .5;
+        var max_scale_factor_x = max_width / this.initial_bbox.width;
+        var max_scale_factor = Math.min(max_scale_factor_y, max_scale_factor_x);
         this.scale_factor = 1;
         if (max_scale_factor < 1) {
             this.scale_factor = max_scale_factor;
