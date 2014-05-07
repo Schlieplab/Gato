@@ -762,16 +762,18 @@ function BreakPoint(width, breakpoint_num) {
     this.click = function() {
         if (this.active === true) {
             this.active = false;
-            this.button.attr({'opacity': this.inactive_opacity});
+            this.button.attr({'opacity': this.inactive_opacity, 'fill': this.inactive_fill});
         } else {
             this.active = true;
-            this.button.attr({'opacity': this.active_opacity});
+            this.button.attr({'opacity': this.active_opacity, 'fill': this.active_fill});
         }
     }
     this.g = snap.group();
     this.active = false;
-    this.active_opacity = 1;
-    this.inactive_opacity = .5;
+    this.active_opacity = .9;
+    this.inactive_opacity = .3;
+    this.inactive_fill = 'blue';
+    this.active_fill = '#E30000';
 
     var path_str = 'M0 0 L8 0 L12 4 L8 8 L0 8 L0 0 Z';
     var self = this;    
@@ -781,7 +783,7 @@ function BreakPoint(width, breakpoint_num) {
     this.button = snap.path(path_str)
     .attr({
         'id': 'breakpoint_' + breakpoint_num,
-        'fill': 'blue',
+        'fill': this.inactive_fill,
         'opacity': this.inactive_opacity,
         'cursor': 'pointer'
     })
