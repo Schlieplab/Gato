@@ -434,10 +434,13 @@ function Slider(width, height) {
 		this.track_width = this.width;
 		this.track_height = 8;
 		this.track_y = this.height/2-this.track_height/2;
-		this.track = snap.rect(0, this.track_y, this.width, this.track_height, 2, 2).attr({
+		this.track = snap.rect(0, this.track_y, this.width, this.track_height, 2, 2)
+		.attr({
 			'fill': '#AAA',
 			'cursor': 'pointer'
-		}).click(this.track_click);
+		})
+		.click(this.track_click)
+		.touchstart(this.track_click);
 		this.g.append(this.track);
 
 		// Construct the cursor

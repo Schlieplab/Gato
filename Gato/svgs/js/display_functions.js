@@ -135,7 +135,6 @@ function ToolTip(elem, elem_type) {
         // Hide the tooltip
         this.g.attr({'visibility': 'hidden'});
     };
-
     this.change_text = function(text) {
         // Change the content of the ToolTip text node
         this.text_content = text;
@@ -155,7 +154,7 @@ function ToolTip(elem, elem_type) {
         this.frame.remove();
         this.g.remove();
         delete g.tooltip_objects[this.id];
-    }
+    };
 
     var elem_id = elem.attr('id');
     this.g_num = parseInt(elem_id.substring(1,2));
@@ -185,10 +184,9 @@ function ToolTip(elem, elem_type) {
         'stroke-width': 2
     });
     this.g.prepend(this.frame);
-
     this.g.attr({'visibility': 'hidden'});
 
-    // Set the edge mouseover
+    // Set the mouseover and mousemove
     elem.hover(
         function (evt) {
             var elem_id = get_id(get_evt_target(evt));
@@ -203,6 +201,13 @@ function ToolTip(elem, elem_type) {
             tooltip.mouseout(evt);
         }
     );
+    elem.click(function (evt) {
+        var elem_id = get_id(get_evt_target(evt));
+        var elem = snap.select('#' + elem_id);
+        var tooltip = g.tooltip_objects[elem.parent().attr('id') + '_tooltip'];
+        tooltip.mouseover(evt);
+        g.active_tooltip = tooltip;
+    });
     elem.mousemove(function (evt) {
         var elem_id = get_id(get_evt_target(evt));
         var elem = snap.select('#' + elem_id);
@@ -417,11 +422,14 @@ function SpeedControls(width) {
     this.buttons = [];
     for (var i=0; i<this.button_types.length; i++) {
         var type = this.button_types[i];
-        var button_g = snap.group().attr({
+        var button_g = snap.group()
+        .attr({
             'id': type['label'] + '_g',
             'class': 'speed_button',
             'cursor': 'pointer'
-        }).click(click_speed_button);
+        })
+        .click(click_speed_button)
+        .touchstart(click_speed_button);
         
         var button_text = snap.text(0, 0, type['label']).attr({
             'id': type['label'] + '_button_label',
@@ -466,7 +474,9 @@ function create_algo_info_button() {
     /* Creates the button that when clicked will show the algorithm info iframe */
     var g = snap.group().attr({
         'cursor': 'pointer'
-    }).click(show_algo_info);
+    })
+    .click(show_algo_info)
+    .touchstart(show_algo_info);
     var text_elem = snap.text(5, 0, 'Show Algorithm Info');
     var text_bbox = text_elem.getBBox();
     text_elem.attr({'y': text_bbox.height});
@@ -490,9 +500,10 @@ function create_homepage_link() {
         'font-weight': 'bold',
         'cursor': 'pointer'
     });
-    text_elem.click(function() {
+    var link_func = function() {
         window.open('http://bioinformatics.rutgers.edu/Software/Gato/');
-    });
+    };
+    text_elem.click(link_func).touchstart(link_func);
     text_elem.attr({'y': text_elem.getBBox().height});
     g.append(text_elem);
     return g;
@@ -530,7 +541,10 @@ function ControlPanel(cog_width, cog_height, width, height) {
     this.frame_visibility = false;
     this.g = snap.group().attr({'id': 'control_panel_group'});
 
-    this.cog = snap.image('img/cog.png', 0, 0, this.cog_width, this.cog_height).click(this.toggle_visibility).attr({
+    this.cog = snap.image('img/cog.png', 0, 0, this.cog_width, this.cog_height)
+    .click(this.toggle_visibility)
+    .touchstart(this.toggle_visibility)
+    .attr({
         'cursor': 'pointer'
     });
     this.g.append(this.cog);
@@ -758,17 +772,21 @@ function BreakPoint(width, breakpoint_num) {
     this.active = false;
     this.active_opacity = 1;
     this.inactive_opacity = .5;
-    var self = this;    
 
     var path_str = 'M0 0 L8 0 L12 4 L8 8 L0 8 L0 0 Z';
-    this.button = snap.path(path_str).attr({
+    var self = this;    
+    var click_func = function() {
+        self.click();
+    };
+    this.button = snap.path(path_str)
+    .attr({
         'id': 'breakpoint_' + breakpoint_num,
         'fill': 'blue',
         'opacity': this.inactive_opacity,
         'cursor': 'pointer'
-    }).click(function() {
-        self.click();
-    });
+    })
+    .click(click_func)
+    .touchstart(click_func);
     this.g.append(this.button);
 }
 
@@ -796,7 +814,7 @@ function CodeBox() {
         this.current_highlight_box_click = function() {
             g.code_box.breakpoints[line_id].click();
         };
-        this.highlight_box.click(this.current_highlight_box_click);
+        this.highlight_box.click(this.current_highlight_box_click).touchstart(this.current_highlight_box_click);
     }
     this.remove_highlighting = function()   {
         this.highlight_box.attr({'opacity': 0});
@@ -819,9 +837,10 @@ function CodeBox() {
             });
             // Bind breakpoint click to the line number click
             (function (e, line_key) {
-                e.click(function() {
+                var line_num_click = function() {
                     g.code_box.breakpoints[line_key].click();
-                })
+                };
+                e.click(line_num_click).touchstart(line_num_click);
             })(elem, key);
             this.g.append(elem);
         }
@@ -941,9 +960,10 @@ function CodeBox() {
     for (var key in g.code_lines) {
         var curr_line = g.code_lines[key];
         (function (codebox, closure_key) {
-            curr_line.click(function() {
+            var line_click_func = function() {
                 codebox.breakpoints[closure_key].click();
-            });
+            };
+            curr_line.click(line_click_func).touchstart(line_click_func);
         })(this, key);
     }
 

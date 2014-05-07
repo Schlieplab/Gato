@@ -41,6 +41,7 @@ function initPopUp() {
 	popmask = document.createElement('div');
 	popmask.id = 'popupMask';
 	popmask.setAttribute("onclick", "hidePopWin(true)");
+	popmask.setAttribute("ontouchstart", "hidePopWin(true)");
 	popcont = document.createElement('div');
 	popcont.setAttribute("opacity", 0.5);
 	popcont.id = 'popupContainer';
@@ -49,7 +50,7 @@ function initPopUp() {
 			'<div id="popupTitleBar">' +
 				'<div id="popupTitle"></div>' +
 				'<div id="popupControls">' +
-					'<img src="js/subModal/close.gif" onclick="hidePopWin(true);" id="popCloseBox" />' +
+					'<img src="js/subModal/close.gif" onclick="hidePopWin(true);" ontouchstart="hidePopWin(true)" id="popCloseBox" />' +
 				'</div>' +
 			'</div>' +
 			'<iframe src="'+ gDefaultPage +'" style="width:100%;height:100%;background-color:transparent;" scrolling="auto" frameborder="0" allowtransparency="true" id="popupFrame" name="popupFrame" width="100%" height="100%"></iframe>' +
@@ -78,7 +79,7 @@ function initPopUp() {
 		if (elms[i].className.indexOf("submodal") == 0) { 
 			// var onclick = 'function (){showPopWin(\''+elms[i].href+'\','+width+', '+height+', null);return false;};';
 			// elms[i].onclick = eval(onclick);
-			elms[i].onclick = function(){
+			var click_func = function(){
 				// default width and height
 				var width = 400;
 				var height = 200;
@@ -89,7 +90,9 @@ function initPopUp() {
 					height = parseInt(params[2]);
 				}
 				showPopWin(this.href,width,height,null); return false;
-			}
+			};
+			elms[i].onclick = click_func;
+			elms[i].ontouchstart = click_func;
 		}
 	}
 }

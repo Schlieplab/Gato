@@ -197,6 +197,10 @@ function global_mouseup(evt) {
             g.control_panel.toggle_visibility();
         }
     }
+    if (g.active_tooltip) {
+        g.active_tooltip.mouseout();
+        g.active_tooltip = undefined;
+    }
 }
 
 function global_mousemove(evt) {
