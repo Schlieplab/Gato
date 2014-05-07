@@ -1,5 +1,3 @@
-
-
 function Scaler() {
     /* This object represents the graphical and programmatical elements
         of the graph scaler.  It appears at the bottom right of the graph
@@ -24,25 +22,24 @@ function Scaler() {
         this.max_scale_factor = Math.min(max_scale_factor_x, max_scale_factor_y);
         this.min_scale_factor = .15;
 
-        this.curr_scale = this.max_scale_factor;
-        this.scale_graphs(this.curr_scale);
-
-        /*
-        THIS BLOCK IS COMMENTED OUT SINCE BELOW IT WE SET THE CURR_SCALE TO
-        MAX_SCALE_FACTOR
-
-        // If the graph started too large or small then scale it appropriately
-        if (this.curr_scale > this.max_scale_factor) {
-            // console.log("hitting max");
+        if (this.initial_scale) {
+            // If this isn't the first time we're calling this function then 
+            // the window is being resized and we should maximize the graph size
             this.curr_scale = this.max_scale_factor;
             this.scale_graphs(this.curr_scale);
-        } 
-        if (this.curr_scale < this.min_scale_factor) {
-            //console.log("hitting min");
-            this.curr_scale = this.min_scale_factor;
-            this.scale_graphs(this.curr_scale);
         }
-        */
+        if (this.initial_scale === undefined) {
+            // If this is the first time this is run then adjust the graph to fit appropriately
+            // If the graph started too large or small then scale it appropriately
+            if (this.curr_scale > this.max_scale_factor) {
+                this.curr_scale = this.max_scale_factor;
+                this.scale_graphs(this.curr_scale);
+            } 
+            if (this.curr_scale < this.min_scale_factor) {
+                this.curr_scale = this.min_scale_factor;
+                this.scale_graphs(this.curr_scale);
+            }
+        }
     };
 
     this.mousedown = function(evt) {
