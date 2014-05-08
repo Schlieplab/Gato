@@ -40,6 +40,7 @@ import StringIO
 import tokenize
 import re
 import pdb
+from bs4 import BeautifulSoup
 from math import sqrt, pi, sin, cos, atan2, degrees, log10, floor, ceil
 from WebGatoJS import animationhead
 
@@ -291,7 +292,6 @@ def get_graph_as_svg_str_standalone(graphDisplay, x_add, y_add, file, idPrefix='
             x_add -= vertex_radius
             y_add -= vertex_radius
             break
-    print idPrefix
     if translate:
         ret_strs.append('<g transform="translate(%d %d)">\n' % (translate[0], translate[1]))
 
@@ -426,9 +426,6 @@ def get_graph_as_svg_str_standalone(graphDisplay, x_add, y_add, file, idPrefix='
     if translate:
         ret_strs.append('</g>')
 
-    print "max_x: {}".format(max_x)
-    print "min_x: {}".format(min_x)
-    print "vertex_radius: {}".format(vertex_radius)
     width = max_x-min_x+vertex_radius*2
     height = max_y-min_y+vertex_radius*2
     return '\n'.join(ret_strs), width, height
@@ -628,11 +625,36 @@ def ExportAlgoInfo(fileName, algorithm):
 
     file = open("./svgs/infos/%s" % os.path.basename(fileName).replace("svg", "html"), "w")
     info = algorithm.About()
-    r = re.compile(r'colordef\s+color="[a-zA-z#]+')
-    matches = r.findall(info)
-    colors = [s.split('"')[1] for s in matches]
-    info = re.sub(r'colordef\s+color="[a-zA-z#]+">', lambda match: 'div style="height: 10px; width: 10px; display:inline; background-color:%s">&nbsp&nbsp&nbsp&nbsp</div>&nbsp' % colors.pop(0), info, count=len(colors))
-    file.write(info)
+    soup = BeautifulSoup(info)
+
+    # Link the CSS file
+    head = soup.find('head')
+    if not head:
+        html = soup.find('html')
+        html.insert(0, soup.new_tag('head'))
+        head = soup.find('head')
+    head.insert(0, soup.new_tag('link', rel='stylesheet', href='../css/info_page_style.css'))
+
+    # Insert a div with background-color found by colordef into the <dt> elements
+    for dt in soup.find_all('dt'):
+        colordef = dt.find('colordef')
+        if not colordef:
+            continue
+        color = colordef['color']
+        colordef.extract()
+        color_div = soup.new_tag('div')
+        color_div.string = '&nbsp;&nbsp;&nbsp;&nbsp;'
+        color_div['style'] = 'background-color: %s' % color
+        color_div['class'] = 'color_div'
+        dt.append(color_div)
+
+    # Add a div with "clear: both" to make the next row
+    for dd in soup.find_all('dd'):
+        clear_div = soup.new_tag('div')
+        clear_div['class'] = 'clear_div'
+        dd.insert_after(clear_div)
+
+    file.write(soup.prettify(formatter=None))
 
 def format_animation(animation):
     def chunker(seq, size):

@@ -459,6 +459,23 @@ svg_instance = [
     }
 ]
 
+# used for testing
+# svg_instance = [
+# {
+#         'chapter_directory': '02-GraphsNetworks',
+#         'chapter_number': 2,
+#         'title': 'chapter_title',
+#         'algorithms': [
+#             {
+#                 'title': 'BFS',
+#                 'file': 'BFS.alg',
+#                 'description': 'bfs description',
+#                 'graphs': [
+#                     '02-GraphsNetworks/BFS.cat'
+#                 ]
+#             },]
+#             }]
+
 # Keys: e.g. '09-WeightedMatching/k4.cat', values: graph description
 graph_descriptions = {
     '02-GraphsNetworks/BFS.cat': 'BFS Graph Description'
@@ -764,7 +781,6 @@ if __name__ == '__main__':
         for chapter_dict in svg_instance:
             for algo in chapter_dict['algorithms']:
                 for graph_file in algo['graphs']:
-                    print "=== TEST === "+algo['file']+" === "+graph_file+" ==="
                     log.info("=== TEST === "+algo['file']+" === "+graph_file+" ===")
                     app.OpenAlgorithm(testPath + chapter_dict['chapter_directory'] + '/' + algo['file'])
                     g.Interactive = 0 # This is set to 0 above.  Do we need to do it here as well?
