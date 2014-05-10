@@ -179,9 +179,10 @@ function ToolTip(elem, elem_type) {
     this.frame_width = text_bbox.width + this.frame_padding_x;
     this.frame_height = text_bbox.height*2 + 5;
     this.frame = snap.rect(-1 * this.frame_padding_x/2, text_bbox.height* -1.5, this.frame_width, this.frame_height, 4, 4).attr({
-        'fill': '#AABBAA',
-        'stroke': '#556655',
-        'stroke-width': 2
+        'fill': '#AFC8FA',
+        'stroke': '#010E26',
+        'stroke-width': 1,
+        'filter' : 'url(#tooltip_dropshadow)'
     });
     this.g.prepend(this.frame);
     this.g.attr({'visibility': 'hidden'});
