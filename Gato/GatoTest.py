@@ -462,19 +462,27 @@ svg_instance = [
 # used for testing
 # svg_instance = [
 # {
-#         'chapter_directory': '02-GraphsNetworks',
-#         'chapter_number': 2,
-#         'title': 'chapter_title',
+#         'chapter_directory': '08-Matching',
+#         'chapter_number': 8,
+#         'title': 'Matching',
 #         'algorithms': [
 #             {
-#                 'title': 'BFS',
-#                 'file': 'BFS.alg',
-#                 'description': 'bfs description',
+#                 'title': 'Bipartite',
+#                 'file': 'Bipartite.alg',
 #                 'graphs': [
-#                     '02-GraphsNetworks/BFS.cat'
+#                     '08-Matching/Bi003.cat', '08-Matching/Bi006.cat', '08-Matching/Bi008.cat',
+#                     '08-Matching/Bi009.cat', '08-Matching/Bi010.cat'
 #                 ]
-#             },]
-#             }]
+#             },
+#             {
+#                 'title': 'CardinalityMatching',
+#                 'file': 'CardinalityMatching.alg',
+#                 'graphs': [
+#                     '08-Matching/Edmonds1.cat', '08-Matching/Edmonds3.cat', '08-Matching/Edmonds6.cat'
+#                 ]
+#             }
+#         ]
+#     },]
 
 # Keys: e.g. '09-WeightedMatching/k4.cat', values: graph description
 graph_descriptions = {

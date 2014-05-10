@@ -1120,7 +1120,7 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
             coords += (t.x * self.zoomFactor / 100.0,
                        t.y * self.zoomFactor / 100.0)
         c = self.canvas.create_line(coords, tag="highlight", fill=color,
-                                    width = 16)
+                                    width=16)
         
         self.canvas.lower(c,"edges")
         self.highlightedPath[pathID] = c 
@@ -1129,7 +1129,6 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
     def HidePath(self, pathID):
         #XXX Do we want to hide or delete?
         self.canvas.delete(self.highlightedPath[pathID])
-        
 
     ############################################################################
     #				       

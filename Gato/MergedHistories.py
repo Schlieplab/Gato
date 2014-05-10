@@ -53,43 +53,31 @@ class MergedHistories:
         self.animator2 = None
         self.auto_print = 0
 
-    def UpdateEdgeInfo(self, tail, head, info, animator, display):
+    def _check_animator_set(self, animator, display):
         if self.animator1 is None:
-            if display==1:
+            if display == 1:
                 self.animator1 = animator
         if self.animator2 is None:
-            if display==2:
+            if display == 2:
                 self.animator2 = animator
+
+    def UpdateEdgeInfo(self, tail, head, info, animator, display):
+        self._check_animator_set(animator, display)
         animation = AnimationHistory.AnimationCommand(animator.UpdateEdgeInfo, (tail, head), (info,))
         self.append(animation, display)
 
     def UpdateGraphInfo(self, info, animator, display):
-        if self.animator1 is None:
-            if display==1:
-                self.animator1 = animator
-        if self.animator2 is None:
-            if display==2:
-                self.animator2 = animator
+        self._check_animator_set(animator, display)
         animation = AnimationHistory.AnimationCommand(animator.UpdateGraphInfo, (), (info,))
         self.append(animation, display)
 
     def UpdateVertexInfo(self, v, info, animator, display):
-        if self.animator1 is None:
-            if display==1:
-                self.animator1 = animator
-        if self.animator2 is None:
-            if display==2:
-                self.animator2 = animator
+        self._check_animator_set(animator, display)
         animation = AnimationHistory.AnimationCommand(animator.UpdateVertexInfo, (v,), (info,))
         self.append(animation, display)
 
     def SetVertexColor(self, v, color, animator, display):
-        if self.animator1 is None:
-            if display==1:
-                self.animator1 = animator
-        if self.animator2 is None:
-            if display==2:
-                self.animator2 = animator
+        self._check_animator_set(animator, display)
         animation = AnimationHistory.AnimationCommand(animator.SetVertexColor, (v,), (color,),
                                                             undo_args=(animator.GetVertexColor(v),))
         animation.Do()
@@ -97,12 +85,7 @@ class MergedHistories:
         
     #seperate the setAllVert call into component SetVertexColor calls?  Make it undoable
     def SetAllVerticesColor(self, color, animator, display, graph=None, vertices=None):
-        if self.animator1 is None:
-            if display==1:
-                self.animator1 = animator
-        if self.animator2 is None:
-            if display==2:
-                self.animator2 = animator
+        self._check_animator_set(animator, display)
         if graph:
             vertices = graph.Vertices()
         if vertices:
@@ -117,12 +100,7 @@ class MergedHistories:
         self.append(animation, display)
 
     def SetAllEdgesColor(self, color, animator, display, leaveColor=None, graph=None, edges=None):
-        if self.animator1 is None:
-            if display==1:
-                self.animator1 = animator
-        if self.animator2 is None:
-            if display==2:
-                self.animator2 = animator
+        self._check_animator_set(animator, display)
         if graph:
             edges = graph.Edges()
         if edges:
@@ -136,12 +114,7 @@ class MergedHistories:
         self.append(animation, display)
         
     def SetEdgesColor(self, edges, color, animator, display):
-        if self.animator1 is None:
-            if display==1:
-                self.animator1 = animator
-        if self.animator2 is None:
-            if display==2:
-                self.animator2 = animator
+        self._check_animator_set(animator, display)
         for head, tail in edges:
             animation = AnimationHistory.AnimationCommand(animator.SetEdgeColor, (tail,head), 
                                         (color,), canUndo = False)
@@ -149,12 +122,7 @@ class MergedHistories:
             self.append(animation, display)
     
     def SetEdgeColor(self, tail, head, color, animator, display):
-        if self.animator1 is None:
-            if display==1:
-                self.animator1 = animator
-        if self.animator2 is None:
-            if display==2:
-                self.animator2 = animator
+        self._check_animator_set(animator, display)
         tail, head = animator.G.Edge(tail, head)
         animation = AnimationHistory.AnimationCommand(animator.SetEdgeColor, (tail,head), (color,),
                                      undo_args=(animator.GetEdgeColor(tail,head),))
@@ -162,115 +130,65 @@ class MergedHistories:
         self.append(animation, display)
        
     def BlinkVertex(self, v, animator, display, color=None):
-        if self.animator1 is None:
-            if display==1:
-                self.animator1 = animator
-        if self.animator2 is None:
-            if display==2:
-                self.animator2 = animator
+        self._check_animator_set(animator, display)
         animation = AnimationHistory.AnimationCommand(animator.BlinkVertex, (v,), (color,))
         animation.Do()
         self.append(animation, display)
 
     def CreateBubble(self, vertex_nums, offset_value, color, animator, display):
-        if self.animator1 is None:
-            if display==1:
-                self.animator1 = animator
-        if self.animator2 is None:
-            if display==2:
-                self.animator2 = animator
+        self._check_animator_set(animator, display)
         animation = AnimationHistory.AnimationCommand(animator.CreateBubble, (), (vertex_nums, offset_value, color), canUndo=False)
         animation.Do()
         self.append(animation, display)
 
     def ResizeBubble(self, vertex_nums, new_radius, animator, display):
-        if self.animator1 is None:
-            if display==1:
-                self.animator1 = animator
-        if self.animator2 is None:
-            if display==2:
-                self.animator2 = animator
+        self._check_animator_set(animator, display)
         animation = AnimationHistory.AnimationCommand(animator.ResizeBubble, (), (vertex_nums, new_radius), canUndo=False)
         animation.Do()
         self.append(animation, display)
 
     def DeleteBubble(self, vertex_nums, animator, display):
-        if self.animator1 is None:
-            if display==1:
-                self.animator1 = animator
-        if self.animator2 is None:
-            if display==2:
-                self.animator2 = animator
+        self._check_animator_set(animator, display)
         animation = AnimationHistory.AnimationCommand(animator.DeleteBubble, (), (vertex_nums,), canUndo=False)
         animation.Do()
         self.append(animation, display)
 
 
     def CreateMoat(self, moat_id, radius, color, animator, display):
-        if self.animator1 is None:
-            if display==1:
-                self.animator1 = animator
-        if self.animator2 is None:
-            if display==2:
-                self.animator2 = animator
+        self._check_animator_set(animator, display)
         animation = AnimationHistory.AnimationCommand(animator.CreateMoat, (moat_id,), (radius,color), canUndo=False)
         animation.Do()
         self.append(animation, display)
 
     def GrowMoat(self, moat_id, radius, animator, display):
-        if self.animator1 is None:
-            if display==1:
-                self.animator1 = animator
-        if self.animator2 is None:
-            if display==2:
-                self.animator2 = animator
+        self._check_animator_set(animator, display)
         animation = AnimationHistory.AnimationCommand(animator.GrowMoat, (moat_id,), (radius,), canUndo=False)
         animation.Do()
         self.append(animation, display)
     
     def BlinkEdge(self, tail, head, animator, display, color=None):
-        if self.animator1 is None:
-            if display==1:
-                self.animator1 = animator
-        if self.animator2 is None:
-            if display==2:
-                self.animator2 = animator
+        self._check_animator_set(animator, display)
         tail, head = animator.G.Edge(tail, head)
         animation = AnimationHistory.AnimationCommand(animator.BlinkEdge, (tail,head), (color,))
         animation.Do()
         self.append(animation, display)
         
     def SetVertexFrameWidth(self, v, val, animator, display):
-        if self.animator1 is None:
-            if display==1:
-                self.animator1 = animator
-        if self.animator2 is None:
-            if display==2:
-                self.animator2 = animator
+        self._check_animator_set(animator, display)
         animation = AnimationHistory.AnimationCommand(animator.SetVertexFrameWidth, (v,), (val,),
                                      undo_args=(animator.GetVertexFrameWidth(v),))
         animation.Do()
         self.append(animation, display)
         
     def SetVertexAnnotation(self, v, annotation, animator, display, color="black"):
-        if self.animator1 is None:
-            if display==1:
-                self.animator1 = animator
-        if self.animator2 is None:
-            if display==2:
-                self.animator2 = animator
+        self._check_animator_set(animator, display)
         animation = AnimationHistory.AnimationCommand(animator.SetVertexAnnotation, (v,), (annotation,),
                                      undo_args=(animator.GetVertexAnnotation(v),))
         animation.Do()
         self.append(animation, display)
         
     def AddVertex(self, x, y, animator, display, v = None):
-        if self.animator1 is None:
-            if display==1:
-                self.animator1 = animator
-        if self.animator2 is None:
-            if display==2:
-                self.animator2 = animator
+        self._check_animator_set(animator, display)
         if v:
             animation = AnimationHistory.AnimationCommand(animator.AddVertex, (x,y), (v,),
                                                                                         canUndo=False)
@@ -282,47 +200,27 @@ class MergedHistories:
         return result
         
     def AddEdge(self, tail, head, animator, display):
-        if self.animator1 is None:
-            if display==1:
-                self.animator1 = animator
-        if self.animator2 is None:
-            if display==2:
-                self.animator2 = animator
+        self._check_animator_set(animator, display)
         animation = AnimationHistory.AnimationCommand(animator.AddEdge, (tail,head), (),
                                      canUndo=False)
         animation.Do()
         self.append(animation, display)
         
     def Wait(self, animator, display):
-        if self.animator1 is None:
-            if display==1:
-                self.animator1 = animator
-        if self.animator2 is None:
-            if display==2:
-                self.animator2 = animator
+        self._check_animator_set(animator, display)
         animation = AnimationHistory.AnimationCommand(animator.Wait, (), (), canUndo=False)
         animation.Do()
         self.append(animation, display)
 
     def DeleteEdge(self, tail, head, animator, display, repaint=1):
-        if self.animator1 is None:
-            if display==1:
-                self.animator1 = animator
-        if self.animator2 is None:
-            if display==2:
-                self.animator2 = animator
+        self._check_animator_set(animator, display)
         animation = AnimationHistory.AnimationCommand(animator.DeleteEdge, (tail,head), (repaint,),
                                      canUndo=False)
         animation.Do()
         self.append(animation, display)
         
     def DeleteVertex(self, v, animator, display):
-        if self.animator1 is None:
-            if display==1:
-                self.animator1 = animator
-        if self.animator2 is None:
-            if display==2:
-                self.animator2 = animator
+        self._check_animator_set(animator, display)
         #Delete all edges containing v
         #Call deletevertex command
         for d in animator.drawEdges.keys():
@@ -333,19 +231,21 @@ class MergedHistories:
         self.append(animation, display)
 
     def HighlightPath(self, path, color, animator, display, closed=0):
-        if self.animator1 is None:
-            if display==1:
-                self.animator1 = animator
-        if self.animator2 is None:
-            if display==2:
-                self.animator2 = animator
+        self._check_animator_set(animator, display)
         animation = AnimationHistory.AnimationCommand(animator.HighlightPath, (path,), (color,closed), canUndo=False)
-        animation.Do()
+        result = animation.Do()
         self.append(animation, display)
+        return result
         # # XXXIMPLEMENTME
         # if self.auto_print == 1:
         #     AnimationHistory.merged.auto_print = 1
-        # AnimationHistory.merged.HighlightPath(path, color, closed)  
+        # AnimationHistory.merged.HighlightPath(path, color, closed)
+
+    def HidePath(self, pathID, animator, display):
+        self._check_animator_set(animator, display)
+        animation = AnimationHistory.AnimationCommand(animator.HidePath, (pathID,), (), canUndo=False)
+        result = animation.Do()
+        self.append(animation, display)
         
     def __getattr__(self,arg):
         print "Function tried to be called: ", arg

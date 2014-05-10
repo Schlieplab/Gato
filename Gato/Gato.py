@@ -692,8 +692,6 @@ class AlgoWin(Frame):
         """
         
         import GatoFile
-        print 'mmhmm'
-
         
         if self.algorithmIsRunning:
             # variable file is lost here!
@@ -765,7 +763,6 @@ class AlgoWin(Frame):
                 tmp.close()
                 proFileName="%s.pro"%tmpFileName
                 tmp=file(proFileName,"w")
-                print xmlAlgorithm
                 tmp.write(xmlAlgorithm.getProlog())
                 tmp.close()
                 # open it!

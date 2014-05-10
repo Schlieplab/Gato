@@ -149,12 +149,6 @@ class AnimationHistory:
             print "We're in display 1"""
         AnimationHistory.merged = MergedHistories.MergedHistories()
         
-    def print_set_all_vertices(self):
-        for h in self.getHistoryTwo():
-            if 'SetAll' in h.method.__name__:
-                print h.kwargs
-
-
     def UpdateEdgeInfo(self, tail, head, info):
         if self.auto_print == 1:
             AnimationHistory.merged.auto_print = 1
@@ -276,8 +270,13 @@ class AnimationHistory:
     def HighlightPath(self, path, color, closed=0):
         if self.auto_print == 1:
             AnimationHistory.merged.auto_print = 1
-        AnimationHistory.merged.HighlightPath(path, color, self.animator, self.displayNum, closed)  
-        
+        return AnimationHistory.merged.HighlightPath(path, color, self.animator, self.displayNum, closed)  
+
+    def HidePath(self, pathID):
+        if self.auto_print == 1:
+            AnimationHistory.merged.auto_print = 1
+        AnimationHistory.merged.HidePath(pathID, self.animator, self.displayNum)  
+
     #========== Handle all other methods from GraphDisplay =====================
     def __getattr__(self,arg):
         # XXX This is broken. Calls to self.animator methods as args
