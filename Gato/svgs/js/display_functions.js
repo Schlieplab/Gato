@@ -123,9 +123,13 @@ function ToolTip(elem, elem_type) {
         this.g.attr({'visibility': 'visible'});
         this.mousemove(evt);
     };
-    
+
     this.mousemove = function(evt) {
         // Move the tooltip to the cursor
+        if (Object.prototype.toString.call(evt) === '[object TouchEvent]') {
+            // TODO: Abstract this
+            evt = evt.touches[0];
+        }
         var x_trans = evt.clientX - this.frame_width;
         var y_trans = evt.clientY + this.frame_height/2;
         this.g.transform('t' + x_trans + ',' + y_trans);
@@ -202,11 +206,12 @@ function ToolTip(elem, elem_type) {
             tooltip.mouseout(evt);
         }
     );
-    elem.click(function (evt) {
+    elem.touchstart(function (evt) {
         var elem_id = get_id(get_evt_target(evt));
         var elem = snap.select('#' + elem_id);
         var tooltip = g.tooltip_objects[elem.parent().attr('id') + '_tooltip'];
         tooltip.mouseover(evt);
+        g.new_active_tooltip = true;
         g.active_tooltip = tooltip;
     });
     elem.mousemove(function (evt) {

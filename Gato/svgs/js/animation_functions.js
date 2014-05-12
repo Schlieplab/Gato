@@ -21,7 +21,7 @@ function Animation() {
 		} else {
 			anim[1].apply(this, anim.slice(2));
 		}
-	}
+	};
 	this.animator = function() {
 		if (this.state !== 'animating') {
 			return;
