@@ -520,6 +520,7 @@ function ControlPanel(cog_width, cog_height, width, height) {
         brought up by clicking on the cog.
     */
     this.toggle_visibility = function() {
+        console.log("in toggle visibility");
         if (g.control_panel.frame_visibility === false) {
             g.control_panel.frame_visibility = true;
             g.control_panel.frame_g.attr({'visibility': 'visible'});
@@ -549,7 +550,6 @@ function ControlPanel(cog_width, cog_height, width, height) {
 
     this.cog = snap.image('img/cog.png', 0, 0, this.cog_width, this.cog_height)
     .click(this.toggle_visibility)
-    .touchstart(this.toggle_visibility)
     .attr({
         'cursor': 'pointer'
     });
@@ -811,7 +811,7 @@ function CodeBox() {
 
         // Set the click handler of highlight_box to the line it is covering
         if (this.current_highlight_box_click !== undefined) {
-            this.highlight_box.unclick(this.current_highlight_box_click);
+            this.highlight_box.unclick(this.current_highlight_box_click).untouchstart(this.current_highlight_box_click);
         }
         this.current_highlight_box_click = function() {
             g.code_box.breakpoints[line_id].click();
