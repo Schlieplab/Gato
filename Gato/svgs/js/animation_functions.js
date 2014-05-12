@@ -223,7 +223,7 @@ function Animation() {
 			g.slider.go_to_step(n);
 		}
 		g.jumping = false;
-	}
+	};
 
 	/*
 		Builds the Graph State array to use for playback
@@ -299,7 +299,7 @@ function Animation() {
 		this.graph_states = states;
 
 		this.jump_to_step(0);
-	}
+	};
 
 
 	this.initialize_variables = function() {
@@ -317,7 +317,7 @@ function Animation() {
 		this.state_interval = 500; 
 
 		this.construct_graph_states();
-	}
+	};
 	this.initialize_variables();
 }
 
@@ -326,18 +326,22 @@ function Slider(width, height) {
 		/*	Triggers when the slider track is clicked.  Moves the cursor to the position of the
 			mouse cursor on the track, and jumps to the corresponding step in animation
 		*/
+		var clientX = evt.clientX;
+		if (Object.prototype.toString.call(evt) === '[object TouchEvent]') {
+			clientX = evt.touches[0].clientX;
+		}
 		var self = g.slider;
-		var new_x = evt.clientX - self.cursor.transform().globalMatrix.e - parseInt(self.cursor.attr('width'))/2;
+		var new_x = clientX - self.cursor.transform().globalMatrix.e - parseInt(self.cursor.attr('width'))/2;
+
 		if (new_x < 0) {
 			new_x = 0;
 		} else if (new_x > self.cursor_max_x) {
 			new_x = self.cursor_max_x;
 		}
-
 		self.cursor.attr({'x': new_x});
 		var step = self.get_step_for_position(new_x / self.step_width);
 		g.animation.jump_to_step(step, false);
-	}
+	};
 	this.cursor_mousedown = function(evt) {
 		/*	Triggers when cursor is mousedowned.  Begins sliding process by 
 			recording initial cursor and mouse positions
@@ -345,10 +349,10 @@ function Slider(width, height) {
 		g.slider.sliding = true;
 		g.slider.start_cursor_x = parseInt(g.slider.cursor.attr('x'));
 		g.slider.start_mouse_x = parseInt(evt.clientX);
-	}
+	};
 	this.cursor_drag = function(evt) {
 		this.cursor_mouseup(evt);
-	}
+	};
 	this.cursor_mousemove = function(evt) {
 		/*	This does the actual moving of the cursor.  Using the cursor and mouse positions
 			at mousedown event this computes the new position of the cursor, and moves
@@ -368,11 +372,11 @@ function Slider(width, height) {
 		}
 		g.animation.jump_to_step(step, false);
 		self.go_to_step(step);
-	}
+	};
 	this.cursor_mouseup = function(evt) {
 		/* Ends cursor sliding behavior */
 		this.sliding = false;
-	}
+	};
 	this.go_to_step = function(n, time) {
 		/* Positions the cursor at the position corresponding to step number n */
 		var position = this.slider_positions[n];
@@ -382,7 +386,7 @@ function Slider(width, height) {
 		} else {
 			this.cursor.attr({'x': position*this.step_width});
 		}
-	}
+	};
 	this.compute_step_width = function() {
 		var sum = 0;
 		this.slider_positions = [];
@@ -396,10 +400,10 @@ function Slider(width, height) {
 		this.slider_positions.push(sum);
 		this.slider_max_position = this.slider_positions[this.slider_positions.length-1];
 		return this.cursor_max_x / sum;
-	}
+	};
 	this.stop_animating = function() {
 		g.slider.cursor.stop();
-	}
+	};
 	this.get_step_for_position = function(position) {
 		var int_pos = parseInt(position);
 		for (;; int_pos += 1) {
@@ -409,7 +413,7 @@ function Slider(width, height) {
 				return this.position_to_step[this.slider_max_position];
 			}
 		}
-	}
+	};
 	this.resize_width = function(new_width) {
 		/* 	This function resizes the slider.  It does this
 			in the GUI as well as computing new mappings of pos->coord and coord-> pos
@@ -421,7 +425,7 @@ function Slider(width, height) {
 		this.step_width = this.compute_step_width()
 		this.naive_step_width = this.cursor_max_x / anim_array.length;
 		this.go_to_step(g.animation.step_num, 0);
-	}
+	};
 
 	this.init = function () {
 		this.min_width = 50;
@@ -461,7 +465,7 @@ function Slider(width, height) {
 		this.naive_step_width = this.cursor_max_x / anim_array.length;
 		
 		this.g.append(this.cursor);
-	}
+	};
 	
 	this.init();
 }

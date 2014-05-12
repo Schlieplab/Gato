@@ -720,12 +720,6 @@ function ButtonPanel() {
     }
 }
 
-function StaticToolTip() {
-    /*  These are tooltips that don't contain graph or edge info, and thus
-        have static text content.  They are currentliy used for 
-    */
-}
-
 function Button(click_handler, path_str, active, translate) {
     /*  This object represents one of the buttons that control animation
         that are located at the left side of the playback bar
@@ -755,11 +749,11 @@ function Button(click_handler, path_str, active, translate) {
     this.set_active = function() {
         this.active = true;
         this.button.attr(this.active_attr);
-    }
+    };
     this.set_inactive = function() {
         this.active = false;
         this.button.attr(this.inactive_attr);       
-    }
+    };
 }
 
 
@@ -773,7 +767,7 @@ function BreakPoint(width, breakpoint_num) {
             this.active = true;
             this.button.attr({'opacity': this.active_opacity, 'fill': this.active_fill});
         }
-    }
+    };
     this.g = snap.group();
     this.active = false;
     this.active_opacity = .9;
@@ -823,10 +817,10 @@ function CodeBox() {
             g.code_box.breakpoints[line_id].click();
         };
         this.highlight_box.click(this.current_highlight_box_click).touchstart(this.current_highlight_box_click);
-    }
+    };
     this.remove_highlighting = function()   {
         this.highlight_box.attr({'opacity': 0});
-    }
+    };
     this.add_line_numbers = function() {
         var sub = 0;
         for (var key in g.code_lines) {
@@ -852,7 +846,7 @@ function CodeBox() {
             })(elem, key);
             this.g.append(elem);
         }
-    }
+    };
     this.add_break_points = function() {
         this.breakpoints = {};
         for (var key in g.code_lines) {
@@ -868,10 +862,10 @@ function CodeBox() {
             var trans_y = parseInt(line.attr('y')) - line.getBBox().height/2;
             this.breakpoints[key].g.transform('t' + trans_x + ',' + trans_y);
         }
-    }
+    };
     this.is_line_breakpoint_active = function(line_id) {
         return this.breakpoints[line_id].active;
-    }
+    };
     this.scale_and_translate = function() {
         /*  This function is called at the beginning of the program and will
             scale the codebox based on vertical and horizontal dimensions
