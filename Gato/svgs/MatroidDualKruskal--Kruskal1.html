@@ -41,6 +41,14 @@
                   <feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->
                </feMerge>
             </filter>
+            <filter id="tooltip_dropshadow" height="130%">
+              <feGaussianBlur in="SourceAlpha" stdDeviation="1"/> <!-- stdDeviation is how much to blur -->
+                <feOffset dx="2" dy="2" result="offsetblur"/> <!-- how much to offset -->
+                <feMerge> 
+                  <feMergeNode/> <!-- this contains the offset blurred image -->
+                  <feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->
+               </feMerge>
+            </filter>
             <g id="g1" type="undirected">
 
 <g id="g1_1-2_group" class="edge_group" style="cursor: pointer">
@@ -263,12 +271,12 @@ Array(1, UpdateVertexInfo, "g1_9", "Vertex 9 at position (400,200)"),
 Array(1, UpdateVertexInfo, "g1_10", "Vertex 10 at position (250,200)"),
 Array(6, ShowActive, "l_3"),
 Array(5, SetEdgeColor, "g1_4-5", "yellow"),
-Array(2, ShowActive, "l_4"),
-Array(6, ShowActive, "l_3"),
+Array(1, ShowActive, "l_4"),
+Array(5, ShowActive, "l_3"),
 Array(5, SetEdgeColor, "g1_4-5", "blue"),
 Array(1, SetEdgeColor, "g1_2-3", "yellow"),
 Array(1, ShowActive, "l_4"),
-Array(6, ShowActive, "l_3"),
+Array(5, ShowActive, "l_3"),
 Array(5, SetEdgeColor, "g1_2-3", "blue"),
 Array(1, SetEdgeColor, "g1_5-6", "yellow"),
 Array(1, ShowActive, "l_4"),
@@ -284,7 +292,7 @@ Array(5, ShowActive, "l_3"),
 Array(5, SetEdgeColor, "g1_4-10", "blue"),
 Array(1, SetEdgeColor, "g1_5-8", "yellow"),
 Array(1, ShowActive, "l_4"),
-Array(6, ShowActive, "l_3"),
+Array(5, ShowActive, "l_3"),
 Array(5, SetEdgeColor, "g1_5-8", "blue"),
 Array(1, SetEdgeColor, "g1_6-7", "yellow"),
 Array(1, ShowActive, "l_4"),
