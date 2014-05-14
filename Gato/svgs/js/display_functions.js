@@ -1,3 +1,7 @@
+/*
+TODO: Change the text of speed controls
+*/
+
 function Scaler() {
     /* This object represents the graphical and programmatical elements
         of the graph scaler.  It appears at the bottom right of the graph
@@ -386,29 +390,21 @@ function click_speed_button(evt) {
         if (button_types[i].label === target_label) {
             g.animation.step_ms = button_types[i]['speed'];
             buttons[i].attr({'opacity': speed_controls.button_settings.active_opacity});
+            g.control_panel.set_text(target_label);
         } else {
             buttons[i].attr({'opacity': speed_controls.button_settings.inactive_opacity});
         }
     }
 }
 
-function SpeedControls(width) {
+function SpeedControls(width, height) {
     /*  Object that represents the row of speed buttons in the
         menu that opens at bottom right 
     */
     this.width = width;
+    this.height = height;
     this.g = snap.group();
 
-    this.text_elem = snap.text(0, 0, 'Animation Speed:').attr({
-        'fill': '#DDDDDD',
-        'font-size': 15,
-        'font-family': 'Helvetica',
-        'font-weight': 'bold'
-    });
-    this.g.append(this.text_elem);
-    
-    // Set up button settings
-    var text_bbox = this.text_elem.getBBox();
     this.button_types = [
         {'label': '.25x', 'speed': 200, 'default_selected': false},
         {'label': '.5x', 'speed': 37, 'default_selected': false},
@@ -416,17 +412,16 @@ function SpeedControls(width) {
         {'label': '2x', 'speed': 10, 'default_selected': false},
         {'label': '4x', 'speed': .8, 'default_selected': false},
     ];
-    var size = (this.width - text_bbox.width)/10;
     this.button_settings = {
-        'padding': size,
-        'width': size,
-        'height': size,
+        'width': this.width,
+        'height': this.height / this.button_types.length,
         'active_opacity': 1,
         'inactive_opacity': .5
     };
 
+    console.log(this.button_settings);  
+
     // Create the different buttons
-    var text_trans_y = 0;
     this.buttons = [];
     for (var i=0; i<this.button_types.length; i++) {
         var type = this.button_types[i];
@@ -439,35 +434,34 @@ function SpeedControls(width) {
         .click(click_speed_button)
         .touchstart(click_speed_button);
         
-        var button_text = snap.text(0, 0, type['label']).attr({
+        var button_text = snap.text(this.button_settings.width/2, 0, type['label']).attr({
             'id': type['label'] + '_button_label',
             'fill': 'white',
+            'font-family': 'Helvetica',
+            'font-size': 16,
+            'font-weight': 'bold',
+            'text-anchor': 'middle'
         });
-        if (text_trans_y === 0) {
-            // Set the variable that controls y translation of "Animation Speed" string
-            text_trans_y = button_text.getBBox().height;
-        }
+
         var opacity = this.button_settings.inactive_opacity;
         if (type['default_selected'] === true) {
             opacity = this.button_settings.active_opacity;
         }
-        var button = snap.rect(0, 3, this.button_settings.width, this.button_settings.height, 4, 4).attr({
+        var button = snap.rect(0, 0, this.button_settings.width, this.button_settings.height).attr({
             'id': type['label'] + '_button',
             'fill': '#87afff',
             'stroke': '#476fb4',
             'opacity': opacity,
         });
-        var x_trans = text_bbox.width + (i+1)*this.button_settings.padding + i*this.button_settings.width;
-        button_g.transform('t' + x_trans);
+        button_text.transform('t0,' + (button_text.getBBox().height+5));
+        var y_trans = i*this.button_settings.height;
+        button_g.transform('t0,' + y_trans);
 
         button_g.append(button);
         button_g.append(button_text);
         this.buttons.push(button);
         this.g.append(button_g);
     }
-
-    // Translate the animation text down
-    this.text_elem.attr({'y': text_trans_y});
 
     this.height = this.g.getBBox().height;
 }
@@ -517,20 +511,10 @@ function create_homepage_link() {
     return g;
 }
 
-function ControlPanel(cog_width, cog_height, width, height) {
+function ControlPanel(button_panel_height, y_trans) {
     /*  Object that controls the control panel at the bottom right of the screen that is 
         brought up by clicking on the cog.
     */
-    this.toggle_visibility = function() {
-        console.log("in toggle visibility");
-        if (g.control_panel.frame_visibility === false) {
-            g.control_panel.frame_visibility = true;
-            g.control_panel.frame_g.attr({'visibility': 'visible'});
-        } else {
-            g.control_panel.frame_visibility = false;
-            g.control_panel.frame_g.attr({'visibility': 'hidden'});
-        }
-    };
     this.cursor_in_control_panel = function(evt) {
         var elem = Snap.getElementByPoint(evt.clientX, evt.clientY);
         while (elem !== null && elem !== snap) {
@@ -541,51 +525,85 @@ function ControlPanel(cog_width, cog_height, width, height) {
         }
         return false;
     };
+    this.set_text = function(txt) {
+        this.speed_menu_text_content = txt;
+        this.speed_menu_text_elem.node.innerHTML = txt;
+    };
 
-    this.cog_width = cog_width;
-    this.cog_height = cog_height;
-    this.width = width;
-    this.height = height;
-    this.padding = 10;
+    this.button_panel_height = button_panel_height;
+    this.padding = 5;
     this.frame_visibility = false;
-    this.g = snap.group().attr({'id': 'control_panel_group'});
-
-    this.cog = snap.image('img/cog.png', 0, 0, this.cog_width, this.cog_height)
-    .click(this.toggle_visibility)
+    this.g = snap.group().attr({'id': 'control_panel_group', 'cursor': 'pointer'});
+    
+    this.open_group = snap.group().attr({'id': 'open_group'});
+    this.speed_menu_text_content = '.25x';
+    this.speed_menu_text_elem = snap.text(0, 20, this.speed_menu_text_content)
     .attr({
-        'cursor': 'pointer'
+        'fill': 'white',
+        'font-family': 'Helvetica',
+        'font-size': 16,
+        'font-weight': 'bold'
     });
-    this.g.append(this.cog);
+    var text_bbox = this.speed_menu_text_elem.getBBox();
+    this.text_height = text_bbox.height;
+    this.text_width = text_bbox.width;
 
-    this.frame_g = snap.group().attr({'visibility': 'hidden'});
-    this.frame = snap.rect(0, 0, this.width, this.height, 5, 5).attr({
-        'fill': '#444',
+    this.triang_padding = 9;
+    this.triang_x = this.text_width + this.triang_padding;
+    this.triang_y = 12;
+    this.triang_height = 8;
+    this.triang_width = 7;
+    this.speed_triang = snap.polygon([this.triang_x-this.triang_width,this.triang_y, this.triang_x,this.triang_y+this.triang_height, this.triang_x+this.triang_width,this.triang_y])
+    .attr({'fill': '#87afff'});
+    this.open_group.append(this.speed_triang);
+    this.open_group.append(this.speed_menu_text_elem);
+    this.g.append(this.open_group);
+
+    this.width = this.g.getBBox().width;
+    this.set_text('1x');
+    this.speed_frame_width = this.width + this.padding*2;
+    this.speed_frame_height_closed = this.button_panel_height;
+    this.speed_frame_height_open = 200;
+    this.speed_frame_x = -1*this.padding;
+    this.speed_frame_y_closed = -1*y_trans;
+    this.speed_frame_y_open = -1*y_trans - (this.speed_frame_height_open - this.button_panel_height);
+    this.speed_frame_open = false;
+    this.speed_frame = snap.rect(
+        this.speed_frame_x, 
+        this.speed_frame_y_closed, 
+        this.speed_frame_width, 
+        this.speed_frame_height_open, 3, 3)
+    .attr({
+        'fill': '#555',
+        'stroke': 'black',
+        'stroke-width': 1
     });
-    this.frame_g.append(this.frame);
+    
+    this.open_group.prepend(this.speed_frame);
+    this.height = this.g.getBBox().height;  // Get the height with the open height
+    this.speed_frame.attr({'height': this.speed_frame_height_closed});
+    console.log('height is: ' + this.height);
+    
+    this.speed_controls = new SpeedControls(this.speed_frame_width, this.speed_frame_height_open - this.button_panel_height);
+    this.speed_controls.g.attr({'visibility': 'hidden'});
+    this.speed_controls.g.transform('t' + this.speed_frame_x + ',' + (-1*(this.speed_frame_height_open - this.button_panel_height + this.padding)));
+    console.log(this.speed_controls.g.transform());
+    this.g.append(this.speed_controls.g);
 
-    // Create the speed controls
-    this.speed_controls = new SpeedControls(this.width - this.padding*2);
-    this.speed_controls.g.transform('t' + this.padding + ',' + (this.height - this.speed_controls.height + 7));
-    this.frame_g.append(this.speed_controls.g);
-
-    // Create the algorithm info button
-    this.algo_info_button = create_algo_info_button();  // Returns a g element encompassing the algo info button
-    var bbox = this.algo_info_button.getBBox();
-    var x_trans = (this.width - this.padding*2) / 2 - bbox.width/2;
-    var y_trans = this.height - this.speed_controls.height - this.padding*2 - bbox.height + bbox.y;
-    this.algo_info_button.transform('t' + x_trans + ',' + y_trans);
-    this.frame_g.append(this.algo_info_button);
-
-    // Create the homepage link
-    this.homepage_link = create_homepage_link();    // Returns a g element encompassing the homepage link
-    var bbox = this.homepage_link.getBBox();
-    var x_trans = (this.width - this.padding*2) / 2 - bbox.width/2;
-    var y_trans = this.padding;
-    this.homepage_link.transform('t' + x_trans + ',' + y_trans);
-    this.frame_g.append(this.homepage_link);
-
-    this.frame_g.transform('t' + (-1*this.width+10) + ',' + (-1*this.height-5));    // Align the right edge of the frame with the cog
-    this.g.append(this.frame_g);
+    this.toggle_visibility = (function(self) {
+        var anim_speed = 300;
+        return function() {
+            self.speed_frame_open = !self.speed_frame_open;
+            if (self.speed_frame_open) {
+                g.control_panel.speed_controls.g.attr({'visibility': 'visible'});
+                self.speed_frame.attr({'y': self.speed_frame_y_open, 'height': self.speed_frame_height_open});
+            } else {
+                g.control_panel.speed_controls.g.attr({'visibility': 'hidden'});
+                self.speed_frame.attr({'y': self.speed_frame_y_closed, 'height': self.speed_frame_height_closed});
+            }
+        }
+    })(this);
+    this.open_group.click(this.toggle_visibility);
 }
 
 function PlaybackBar() {
@@ -611,12 +629,12 @@ function PlaybackBar() {
     g.button_panel.g.transform('t' + this.padding_x + ',' + this.padding_y);
     this.g.append(g.button_panel.g);
 
-    g.control_panel = new ControlPanel(30, 30, 360, 130);
-    this.control_panel_x = this.width - this.padding_x - g.control_panel.cog_width;
+    g.control_panel = new ControlPanel(this.height, this.padding_y);
+    this.control_panel_x = this.width - this.padding_x - g.control_panel.width;
     g.control_panel.g.transform('t' + this.control_panel_x + ',' + this.padding_y);
     this.g.append(g.control_panel.g);
 
-    this.slider_width = this.width - this.padding_x*4 - g.button_panel.width - g.control_panel.cog_width;
+    this.slider_width = this.width - this.padding_x*4 - g.button_panel.width - g.control_panel.width;
     this.slider_height = this.height - this.padding_y*2;
     g.slider = new Slider(this.slider_width, this.slider_height);
     this.slider_x_trans = g.button_panel.width + this.padding_x*2;
@@ -638,10 +656,10 @@ PlaybackBar.prototype.resize = function() {
         this.y_translate = g.cont_height - this.height - g.padding;
         this.g.transform('t' + this.x_translate + ',' + this.y_translate);
 
-        this.control_panel_x = this.width - this.padding_x - g.control_panel.cog_width;
+        this.control_panel_x = this.width - this.padding_x - g.control_panel.width;
         g.control_panel.g.transform('t' + this.control_panel_x + ',' + this.padding_y);
 
-        var new_slider_width = this.width - this.padding_x*4 - g.button_panel.width - g.control_panel.cog_width;
+        var new_slider_width = this.width - this.padding_x*4 - g.button_panel.width - g.control_panel.width;
         if (new_slider_width > g.slider.min_width) {
             this.slider_width = new_slider_width;
             g.slider.resize_width(this.slider_width);
