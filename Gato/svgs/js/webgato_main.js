@@ -198,15 +198,14 @@ function global_mouseup(evt) {
     //         g.control_panel.toggle_visibility();
     //     }
     // }
-    if (g.active_tooltip) {
+    if (g.active_tooltip !== undefined) {
         if (g.new_active_tooltip !== true) {
             // If this tooltip wasn't triggered by this event
             g.active_tooltip.mouseout();
             g.active_tooltip = undefined;
-            g.new_active_tooltip = false;
         } else {
             // New tooltip.  Register that we've seen it and go on our way
-            g.new_active_tooltip = true;
+            g.new_active_tooltip = false;
         }
     }
 }

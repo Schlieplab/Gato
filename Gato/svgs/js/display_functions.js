@@ -218,6 +218,9 @@ function ToolTip(elem, elem_type) {
         var tooltip = g.tooltip_objects[elem.parent().attr('id') + '_tooltip'];
         tooltip.mouseover(evt);
         g.new_active_tooltip = true;
+        if (g.active_tooltip !== undefined) {
+            g.active_tooltip.mouseout();
+        }
         g.active_tooltip = tooltip;
     });
     elem.mousemove(function (evt) {
@@ -603,7 +606,7 @@ function ControlPanel(button_panel_height, y_trans) {
             }
         }
     })(this);
-    this.open_group.click(this.toggle_visibility);
+    this.open_group.click(this.toggle_visibility).touchstart(this.toggle_visibility);
 }
 
 function PlaybackBar() {
