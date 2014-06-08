@@ -471,6 +471,7 @@ function show_algo_info() {
     /* Pops open the algorithm info iframe */
     algo_info_active = true;
     showPopWin(info_file, g.cont_width*1/2, g.cont_height*1/2);
+    document.getElementById('help_div').className = 'visible';
 }
 
 function create_algo_info_button() {
@@ -635,13 +636,13 @@ function HelpPanel(y_trans, padding, button_panel_height) {
     var text_bbox = this.text_elem.getBBox();
     this.text_elem.attr({'x': this.width/2, 'y': text_bbox.height + 5})
     this.g.append(this.text_elem);
-
     this.frame = snap.rect(0, -1*y_trans, this.width, button_panel_height)
     .attr({
         'fill': '#555',
         'stroke': 'black',
         'stroke-width': 1
     });
+    
     this.g.prepend(this.frame);
 }
 

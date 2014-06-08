@@ -790,6 +790,7 @@ if __name__ == '__main__':
             for algo in chapter_dict['algorithms']:
                 for graph_file in algo['graphs']:
                     log.info("=== TEST === "+algo['file']+" === "+graph_file+" ===")
+                    print "=== TEST === "+algo['file']+" === "+graph_file+" ==="
                     app.OpenAlgorithm(testPath + chapter_dict['chapter_directory'] + '/' + algo['file'])
                     g.Interactive = 0 # This is set to 0 above.  Do we need to do it here as well?
                     app.algorithm.ClearBreakpoints()

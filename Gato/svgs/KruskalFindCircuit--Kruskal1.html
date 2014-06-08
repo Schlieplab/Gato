@@ -26,11 +26,53 @@
             .edge {
                 cursor: pointer;
             }
+            #help_div {
+                position: absolute;
+                width: 100%;
+                height: 2.5em;
+                top: 0px;
+                left: 0px;
+                background-color: white;
+                border-bottom: 1px solid #aaa;
+                color: #333;
+            }
+            .invisible {
+                visibility: hidden;
+            }
+            .visible {
+                visibility: visible;
+                z-index: 1000;
+            }
+            .help_link {
+                font-family: Helvetica;
+                font-size: 1.5em;
+                text-decoration: none;
+                color: #87afff;
+            }
+            .help_link:visited {
+                color: #1354D6;
+            }
+            .help_link:hover {
+                color: #1354D6;
+            }
+            .left_link {
+                border-right: 1px solid #aaa;
+                padding-right: 15px;
+                margin-right: 0px;
+            }
+            .right_link {
+                margin-left: 0px;
+                padding-left: 15px;
+            }
         </style>
         <title>Gato -- KruskalFindCircuit algorithm on Kruskal1 graph</title>
     </head>
     <body>
-
+        <div id="help_div" class="invisible">
+            <div style="padding: .5em">
+                <a class="help_link left_link" href="./index.html">Index</a><a class="help_link right_link" href="./help.html">Help</a>
+            </div>
+        </div>
         <div id="base_container">
         <svg id="svg">
             <filter id="dropshadow" height="130%">
@@ -243,7 +285,7 @@ Array(1, SetVertexColor, "g1_7", "#996666"),
 Array(1, SetVertexColor, "g1_8", "#669966"),
 Array(1, SetVertexColor, "g1_9", "#666699"),
 Array(1, SetVertexColor, "g1_10", "#0066CC"),
-Array(1, ShowActive, "l_1"),
+Array(2, ShowActive, "l_1"),
 Array(1, UpdateEdgeInfo, "g1_1-2", "Edge (1,2) weight: 112"),
 Array(1, UpdateEdgeInfo, "g1_4-10", "Edge (4,10) weight: 112"),
 Array(1, UpdateEdgeInfo, "g1_6-7", "Edge (6,7) weight: 112"),
@@ -264,16 +306,16 @@ Array(1, UpdateVertexInfo, "g1_8", "Vertex 8 at position (500,150)"),
 Array(1, UpdateVertexInfo, "g1_9", "Vertex 9 at position (400,200)"),
 Array(1, UpdateVertexInfo, "g1_10", "Vertex 10 at position (250,200)"),
 Array(5, ShowActive, "l_8"),
-Array(6, ShowActive, "l_10"),
-Array(5, SetEdgeColor, "g1_3-4", "yellow"),
-Array(2, ShowActive, "l_11"),
+Array(5, ShowActive, "l_10"),
+Array(4, SetEdgeColor, "g1_3-4", "yellow"),
+Array(1, ShowActive, "l_11"),
 Array(5, SetAllEdgesColor, "g2_#DDDDDD"),
 Array(1, SetAllVerticesColor, "g2_#000099"),
 Array(1, SetEdgeColor, "g1_3-4", "green"),
 Array(1, ShowActive, "l_12"),
-Array(5, AddVertex, "g2_(250, 50)", "3"),
-Array(6, AddVertex, "g2_(300, 100)", "4"),
-Array(5, AddEdge, "g2_3-4"),
+Array(4, AddVertex, "g2_(250, 50)", "3"),
+Array(3, AddVertex, "g2_(300, 100)", "4"),
+Array(6, AddEdge, "g2_3-4"),
 Array(1, SetAllVerticesColor, "g1_#0000FF", "4"),
 Array(3, SetEdgeColor, "g1_3-4", "#0000FF"),
 Array(2, ShowActive, "l_10"),
@@ -282,12 +324,12 @@ Array(1, ShowActive, "l_11"),
 Array(5, SetAllEdgesColor, "g2_#DDDDDD"),
 Array(1, SetAllVerticesColor, "g2_#000099"),
 Array(1, SetEdgeColor, "g1_1-2", "green"),
-Array(1, ShowActive, "l_12"),
+Array(2, ShowActive, "l_12"),
 Array(5, AddVertex, "g2_(50, 100)", "1"),
-Array(6, AddVertex, "g2_(150, 150)", "2"),
-Array(5, AddEdge, "g2_1-2"),
+Array(7, AddVertex, "g2_(150, 150)", "2"),
+Array(6, AddEdge, "g2_1-2"),
 Array(1, SetAllVerticesColor, "g1_#FF0000", "2"),
-Array(2, SetEdgeColor, "g1_1-2", "#FF0000"),
+Array(3, SetEdgeColor, "g1_1-2", "#FF0000"),
 Array(2, ShowActive, "l_10"),
 Array(5, SetEdgeColor, "g1_4-10", "yellow"),
 Array(1, ShowActive, "l_11"),
@@ -295,8 +337,8 @@ Array(5, SetAllEdgesColor, "g2_#DDDDDD"),
 Array(1, SetAllVerticesColor, "g2_#000099"),
 Array(1, SetEdgeColor, "g1_4-10", "green"),
 Array(1, ShowActive, "l_12"),
-Array(5, AddVertex, "g2_(250, 200)", "10"),
-Array(7, AddEdge, "g2_4-10"),
+Array(4, AddVertex, "g2_(250, 200)", "10"),
+Array(5, AddEdge, "g2_4-10"),
 Array(1, SetAllVerticesColor, "g1_#0000FF", "10"),
 Array(2, SetEdgeColor, "g1_4-10", "#0000FF"),
 Array(2, ShowActive, "l_10"),
@@ -307,42 +349,42 @@ Array(1, SetAllVerticesColor, "g2_#000099"),
 Array(1, SetEdgeColor, "g1_5-8", "green"),
 Array(1, ShowActive, "l_12"),
 Array(5, AddVertex, "g2_(550, 50)", "5"),
-Array(6, AddVertex, "g2_(500, 150)", "8"),
+Array(5, AddVertex, "g2_(500, 150)", "8"),
 Array(5, AddEdge, "g2_5-8"),
 Array(1, SetAllVerticesColor, "g1_#990099", "8"),
 Array(2, SetEdgeColor, "g1_5-8", "#990099"),
-Array(2, ShowActive, "l_10"),
-Array(6, SetEdgeColor, "g1_6-7", "yellow"),
+Array(1, ShowActive, "l_10"),
+Array(5, SetEdgeColor, "g1_6-7", "yellow"),
 Array(1, ShowActive, "l_11"),
 Array(4, SetAllEdgesColor, "g2_#DDDDDD"),
 Array(1, SetAllVerticesColor, "g2_#000099"),
 Array(1, SetEdgeColor, "g1_6-7", "green"),
 Array(1, ShowActive, "l_12"),
 Array(5, AddVertex, "g2_(650, 150)", "6"),
-Array(7, AddVertex, "g2_(750, 100)", "7"),
-Array(5, AddEdge, "g2_6-7"),
+Array(6, AddVertex, "g2_(750, 100)", "7"),
+Array(2, AddEdge, "g2_6-7"),
 Array(1, SetAllVerticesColor, "g1_#999900", "7"),
 Array(2, SetEdgeColor, "g1_6-7", "#999900"),
 Array(1, ShowActive, "l_10"),
-Array(4, SetEdgeColor, "g1_8-9", "yellow"),
+Array(5, SetEdgeColor, "g1_8-9", "yellow"),
 Array(1, ShowActive, "l_11"),
-Array(4, SetAllEdgesColor, "g2_#DDDDDD"),
+Array(5, SetAllEdgesColor, "g2_#DDDDDD"),
 Array(1, SetAllVerticesColor, "g2_#000099"),
 Array(1, SetEdgeColor, "g1_8-9", "green"),
 Array(1, ShowActive, "l_12"),
-Array(5, AddVertex, "g2_(400, 200)", "9"),
-Array(5, AddEdge, "g2_8-9"),
+Array(4, AddVertex, "g2_(400, 200)", "9"),
+Array(6, AddEdge, "g2_8-9"),
 Array(1, SetAllVerticesColor, "g1_#990099", "9"),
-Array(2, SetEdgeColor, "g1_8-9", "#990099"),
-Array(1, ShowActive, "l_10"),
-Array(9, SetEdgeColor, "g1_2-3", "yellow"),
-Array(1, ShowActive, "l_11"),
+Array(3, SetEdgeColor, "g1_8-9", "#990099"),
+Array(2, ShowActive, "l_10"),
+Array(5, SetEdgeColor, "g1_2-3", "yellow"),
+Array(2, ShowActive, "l_11"),
 Array(5, SetVertexAnnotation, "g2_2", "s"),
-Array(4, SetVertexAnnotation, "g2_3", "t"),
-Array(4, SetAllEdgesColor, "g2_#DDDDDD"),
+Array(5, SetVertexAnnotation, "g2_3", "t"),
+Array(5, SetAllEdgesColor, "g2_#DDDDDD"),
 Array(1, SetAllVerticesColor, "g2_#000099"),
-Array(2, SetVertexColor, "g2_3", "#CFCFCF"),
-Array(2, SetVertexColor, "g2_4", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_3", "#CFCFCF"),
+Array(1, SetVertexColor, "g2_4", "#CFCFCF"),
 Array(1, SetVertexColor, "g2_1", "#CFCFCF"),
 Array(1, SetVertexColor, "g2_2", "#CFCFCF"),
 Array(1, SetVertexColor, "g2_10", "#CFCFCF"),
@@ -369,20 +411,20 @@ Array(1, SetEdgeColor, "g2_1-2", "grey"),
 Array(1, SetVertexFrameWidth, "g2_1", "0"),
 Array(1, SetEdgeColor, "g1_2-3", "green"),
 Array(1, ShowActive, "l_12"),
-Array(4, AddEdge, "g2_2-3"),
+Array(5, AddEdge, "g2_2-3"),
 Array(1, SetVertexColor, "g1_1", "#0000FF"),
 Array(1, SetVertexColor, "g1_2", "#0000FF"),
 Array(1, SetEdgeColor, "g1_2-1", "#0000FF"),
 Array(1, SetAllVerticesColor, "g1_#0000FF", "1", "2"),
-Array(1, SetEdgeColor, "g1_2-3", "#0000FF"),
+Array(2, SetEdgeColor, "g1_2-3", "#0000FF"),
 Array(2, ShowActive, "l_10"),
 Array(5, SetEdgeColor, "g1_5-6", "yellow"),
 Array(1, ShowActive, "l_11"),
 Array(5, SetVertexAnnotation, "g2_2", ""),
-Array(3, SetVertexAnnotation, "g2_3", ""),
-Array(2, SetVertexAnnotation, "g2_5", "s"),
-Array(2, SetVertexAnnotation, "g2_6", "t"),
-Array(3, SetAllEdgesColor, "g2_#DDDDDD"),
+Array(5, SetVertexAnnotation, "g2_3", ""),
+Array(5, SetVertexAnnotation, "g2_5", "s"),
+Array(5, SetVertexAnnotation, "g2_6", "t"),
+Array(5, SetAllEdgesColor, "g2_#DDDDDD"),
 Array(1, SetAllVerticesColor, "g2_#000099"),
 Array(1, SetVertexColor, "g2_3", "#CFCFCF"),
 Array(1, SetVertexColor, "g2_4", "#CFCFCF"),
@@ -423,19 +465,19 @@ Array(1, SetEdgeColor, "g2_8-9", "grey"),
 Array(1, SetVertexFrameWidth, "g2_9", "0"),
 Array(1, SetEdgeColor, "g1_5-6", "green"),
 Array(1, ShowActive, "l_12"),
-Array(4, AddEdge, "g2_5-6"),
+Array(5, AddEdge, "g2_5-6"),
 Array(1, SetVertexColor, "g1_6", "#990099"),
 Array(1, SetVertexColor, "g1_7", "#990099"),
 Array(1, SetEdgeColor, "g1_7-6", "#990099"),
 Array(1, SetAllVerticesColor, "g1_#990099", "6", "7"),
-Array(1, SetEdgeColor, "g1_5-6", "#990099"),
-Array(1, ShowActive, "l_10"),
+Array(2, SetEdgeColor, "g1_5-6", "#990099"),
+Array(2, ShowActive, "l_10"),
 Array(5, SetEdgeColor, "g1_4-5", "yellow"),
 Array(1, ShowActive, "l_11"),
-Array(4, SetVertexAnnotation, "g2_5", ""),
-Array(3, SetVertexAnnotation, "g2_6", ""),
-Array(4, SetVertexAnnotation, "g2_4", "s"),
-Array(3, SetVertexAnnotation, "g2_5", "t"),
+Array(5, SetVertexAnnotation, "g2_5", ""),
+Array(5, SetVertexAnnotation, "g2_6", ""),
+Array(2, SetVertexAnnotation, "g2_4", "s"),
+Array(2, SetVertexAnnotation, "g2_5", "t"),
 Array(7, SetAllEdgesColor, "g2_#DDDDDD"),
 Array(1, SetAllVerticesColor, "g2_#000099"),
 Array(1, SetVertexColor, "g2_3", "#CFCFCF"),
@@ -479,7 +521,7 @@ Array(1, SetVertexFrameWidth, "g2_10", "6"),
 Array(1, SetEdgeColor, "g2_4-10", "yellow"),
 Array(1, SetEdgeColor, "g2_4-10", "grey"),
 Array(1, SetVertexFrameWidth, "g2_10", "0"),
-Array(2, SetVertexColor, "g2_2", "grey"),
+Array(1, SetVertexColor, "g2_2", "grey"),
 Array(1, SetVertexFrameWidth, "g2_10", "0"),
 Array(1, SetVertexFrameWidth, "g2_2", "6"),
 Array(1, SetVertexFrameWidth, "g2_2", "6"),
@@ -501,7 +543,7 @@ Array(1, SetEdgeColor, "g1_4-5", "green"),
 Array(1, ShowActive, "l_12"),
 Array(5, AddEdge, "g2_4-5"),
 Array(1, SetVertexColor, "g1_5", "#0000FF"),
-Array(1, SetVertexColor, "g1_8", "#0000FF"),
+Array(2, SetVertexColor, "g1_8", "#0000FF"),
 Array(1, SetVertexColor, "g1_6", "#0000FF"),
 Array(1, SetVertexColor, "g1_9", "#0000FF"),
 Array(1, SetVertexColor, "g1_7", "#0000FF"),
@@ -511,7 +553,7 @@ Array(1, SetEdgeColor, "g1_9-8", "#0000FF"),
 Array(1, SetEdgeColor, "g1_7-6", "#0000FF"),
 Array(1, SetAllVerticesColor, "g1_#0000FF", "5", "8", "9", "6", "7"),
 Array(2, SetEdgeColor, "g1_4-5", "#0000FF"),
-Array(1, ShowActive, "l_10"));
+Array(2, ShowActive, "l_10"));
             init();
         </script>
 

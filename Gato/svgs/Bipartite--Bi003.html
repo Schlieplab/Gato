@@ -26,11 +26,53 @@
             .edge {
                 cursor: pointer;
             }
+            #help_div {
+                position: absolute;
+                width: 100%;
+                height: 2.5em;
+                top: 0px;
+                left: 0px;
+                background-color: white;
+                border-bottom: 1px solid #aaa;
+                color: #333;
+            }
+            .invisible {
+                visibility: hidden;
+            }
+            .visible {
+                visibility: visible;
+                z-index: 1000;
+            }
+            .help_link {
+                font-family: Helvetica;
+                font-size: 1.5em;
+                text-decoration: none;
+                color: #87afff;
+            }
+            .help_link:visited {
+                color: #1354D6;
+            }
+            .help_link:hover {
+                color: #1354D6;
+            }
+            .left_link {
+                border-right: 1px solid #aaa;
+                padding-right: 15px;
+                margin-right: 0px;
+            }
+            .right_link {
+                margin-left: 0px;
+                padding-left: 15px;
+            }
         </style>
         <title>Gato -- Bipartite algorithm on Bi003 graph</title>
     </head>
     <body>
-
+        <div id="help_div" class="invisible">
+            <div style="padding: .5em">
+                <a class="help_link left_link" href="./index.html">Index</a><a class="help_link right_link" href="./help.html">Help</a>
+            </div>
+        </div>
         <div id="base_container">
         <svg id="svg">
             <filter id="dropshadow" height="130%">
@@ -303,7 +345,7 @@
         
         <script type="text/javascript">
             var anim_array = Array(Array(1, SetVertexColor, "g1_1", "#ff9999"),
-Array(2, SetVertexColor, "g1_2", "#ff9999"),
+Array(1, SetVertexColor, "g1_2", "#ff9999"),
 Array(1, SetVertexColor, "g1_3", "#ff9999"),
 Array(1, SetVertexColor, "g1_4", "#ff9999"),
 Array(1, SetVertexColor, "g1_5", "#ff9999"),
@@ -331,23 +373,23 @@ Array(1, UpdateVertexInfo, "g1_8", "Vertex 8 in W  has no predecessor"),
 Array(1, UpdateVertexInfo, "g1_9", "Vertex 9 in W  has no predecessor"),
 Array(5, ShowActive, "l_21"),
 Array(5, ShowActive, "l_30"),
-Array(7, ShowActive, "l_41"),
+Array(6, ShowActive, "l_41"),
 Array(5, SetVertexColor, "g1_1", "#99ff99"),
-Array(3, SetVertexColor, "g1_2", "#ff9999"),
-Array(3, SetVertexColor, "g1_3", "#99ff99"),
-Array(2, SetVertexColor, "g1_4", "#ff9999"),
-Array(2, SetVertexColor, "g1_5", "#99ff99"),
+Array(1, SetVertexColor, "g1_2", "#ff9999"),
+Array(1, SetVertexColor, "g1_3", "#99ff99"),
+Array(1, SetVertexColor, "g1_4", "#ff9999"),
+Array(1, SetVertexColor, "g1_5", "#99ff99"),
 Array(1, SetVertexColor, "g1_6", "#ff9999"),
 Array(1, SetVertexColor, "g1_7", "#99ff99"),
 Array(1, SetVertexColor, "g1_8", "#ff9999"),
 Array(1, SetVertexColor, "g1_9", "#99ff99"),
-Array(2, ShowActive, "l_42"),
+Array(1, ShowActive, "l_42"),
 Array(1, UpdateVertexInfo, "g1_1", "Vertex 1 in V  has no predecessor"),
 Array(1, UpdateVertexInfo, "g1_3", "Vertex 3 in V  has no predecessor"),
 Array(1, UpdateVertexInfo, "g1_5", "Vertex 5 in V  has no predecessor"),
 Array(1, UpdateVertexInfo, "g1_7", "Vertex 7 in V  has no predecessor"),
 Array(1, UpdateVertexInfo, "g1_9", "Vertex 9 in V  has no predecessor"),
-Array(6, ShowActive, "l_43"),
+Array(5, ShowActive, "l_43"),
 Array(5, ShowActive, "l_44"),
 Array(5, SetVertexColor, "g1_1", "#99ff99"),
 Array(1, SetVertexColor, "g1_2", "#ff9999"),
@@ -359,7 +401,7 @@ Array(1, SetVertexColor, "g1_7", "#99ff99"),
 Array(1, SetVertexColor, "g1_8", "#ff9999"),
 Array(1, SetVertexColor, "g1_9", "#99ff99"),
 Array(1, SetAllEdgesColor, "g1_black"),
-Array(2, SetVertexColor, "g1_1", "#00cc00"),
+Array(3, SetVertexColor, "g1_1", "#00cc00"),
 Array(1, SetVertexColor, "g1_1", "#00cc00"),
 Array(1, SetVertexColor, "g1_3", "#00cc00"),
 Array(1, SetVertexColor, "g1_3", "#00cc00"),
@@ -384,7 +426,7 @@ Array(1, UpdateVertexInfo, "g1_5", "Vertex 5 in V  is exposed"),
 Array(1, UpdateVertexInfo, "g1_7", "Vertex 7 in V  is exposed"),
 Array(1, UpdateVertexInfo, "g1_9", "Vertex 9 in V  is exposed"),
 Array(5, ShowActive, "l_46"),
-Array(5, SetVertexColor, "g1_1", "blue"),
+Array(4, SetVertexColor, "g1_1", "blue"),
 Array(1, SetVertexColor, "g1_2", "blue"),
 Array(1, SetEdgeColor, "g1_1-2", "blue"),
 Array(1, HidePath, "g1_(1, 2)"),
@@ -397,7 +439,7 @@ Array(1, SetVertexColor, "g1_7", "#00cc00"),
 Array(1, SetVertexColor, "g1_9", "#00cc00"),
 Array(1, SetVertexFrameWidth, "g1_1", "0"),
 Array(1, SetVertexColor, "g1_1", "#99ff99"),
-Array(1, SetVertexColor, "g1_2", "#ff9999"),
+Array(2, SetVertexColor, "g1_2", "#ff9999"),
 Array(1, SetVertexColor, "g1_3", "#99ff99"),
 Array(1, SetVertexColor, "g1_4", "#ff9999"),
 Array(1, SetVertexColor, "g1_5", "#99ff99"),
@@ -406,7 +448,7 @@ Array(1, SetVertexColor, "g1_7", "#99ff99"),
 Array(1, SetVertexColor, "g1_8", "#ff9999"),
 Array(1, SetVertexColor, "g1_9", "#99ff99"),
 Array(1, SetAllEdgesColor, "g1_black"),
-Array(4, SetVertexColor, "g1_3", "#00cc00"),
+Array(3, SetVertexColor, "g1_3", "#00cc00"),
 Array(1, SetVertexColor, "g1_3", "#00cc00"),
 Array(1, SetVertexColor, "g1_5", "#00cc00"),
 Array(1, SetVertexColor, "g1_5", "#00cc00"),
@@ -431,7 +473,7 @@ Array(1, ShowActive, "l_45"),
 Array(1, UpdateVertexInfo, "g1_1", "Vertex 1 in V  has predecessor 2"),
 Array(1, UpdateVertexInfo, "g1_2", "Vertex 2 in W  has predecessor 3"),
 Array(1, UpdateVertexInfo, "g1_4", "Vertex 4 in W  has predecessor 3"),
-Array(5, ShowActive, "l_46"),
+Array(4, ShowActive, "l_46"),
 Array(5, SetVertexColor, "g1_3", "blue"),
 Array(1, SetVertexColor, "g1_4", "blue"),
 Array(1, SetEdgeColor, "g1_3-4", "blue"),
@@ -439,7 +481,7 @@ Array(1, HidePath, "g1_(3, 4)"),
 Array(1, ShowActive, "l_43"),
 Array(1, UpdateEdgeInfo, "g1_3-4", "Edge (3,4) is a matching edge"),
 Array(5, ShowActive, "l_44"),
-Array(5, SetVertexColor, "g1_5", "#00cc00"),
+Array(4, SetVertexColor, "g1_5", "#00cc00"),
 Array(1, SetVertexColor, "g1_7", "#00cc00"),
 Array(1, SetVertexColor, "g1_9", "#00cc00"),
 Array(1, SetVertexColor, "g1_1", "#00cc00"),
@@ -454,7 +496,7 @@ Array(1, SetVertexColor, "g1_7", "#99ff99"),
 Array(1, SetVertexColor, "g1_8", "#ff9999"),
 Array(1, SetVertexColor, "g1_9", "#99ff99"),
 Array(1, SetAllEdgesColor, "g1_black"),
-Array(4, SetVertexColor, "g1_5", "#00cc00"),
+Array(2, SetVertexColor, "g1_5", "#00cc00"),
 Array(1, SetVertexColor, "g1_5", "#00cc00"),
 Array(1, SetVertexColor, "g1_7", "#00cc00"),
 Array(1, SetVertexColor, "g1_7", "#00cc00"),
@@ -463,7 +505,7 @@ Array(1, SetVertexColor, "g1_9", "#00cc00"),
 Array(1, SetVertexColor, "g1_5", "#00cc00"),
 Array(1, SetVertexFrameWidth, "g1_5", "6"),
 Array(1, SetVertexFrameWidth, "g1_5", "6"),
-Array(3, SetEdgeColor, "g1_4-5", "yellow"),
+Array(1, SetEdgeColor, "g1_4-5", "yellow"),
 Array(1, SetVertexColor, "g1_4", "red"),
 Array(1, SetEdgeColor, "g1_4-5", "#ccccff"),
 Array(1, SetVertexColor, "g1_3", "#00cc00"),
@@ -501,7 +543,7 @@ Array(1, SetVertexColor, "g1_7", "#99ff99"),
 Array(1, SetVertexColor, "g1_8", "#ff9999"),
 Array(1, SetVertexColor, "g1_9", "#99ff99"),
 Array(1, SetAllEdgesColor, "g1_black"),
-Array(3, SetVertexColor, "g1_7", "#00cc00"),
+Array(2, SetVertexColor, "g1_7", "#00cc00"),
 Array(1, SetVertexColor, "g1_7", "#00cc00"),
 Array(1, SetVertexColor, "g1_9", "#00cc00"),
 Array(1, SetVertexColor, "g1_9", "#00cc00"),
@@ -524,7 +566,7 @@ Array(1, UpdateVertexInfo, "g1_4", "Vertex 4 in W  has no predecessor"),
 Array(1, UpdateVertexInfo, "g1_5", "Vertex 5 in V  has predecessor 6"),
 Array(1, UpdateVertexInfo, "g1_6", "Vertex 6 in W  has predecessor 7"),
 Array(1, UpdateVertexInfo, "g1_8", "Vertex 8 in W  has predecessor 7"),
-Array(6, ShowActive, "l_46"),
+Array(5, ShowActive, "l_46"),
 Array(5, SetVertexColor, "g1_7", "blue"),
 Array(1, SetVertexColor, "g1_8", "blue"),
 Array(1, SetEdgeColor, "g1_7-8", "blue"),
@@ -545,7 +587,7 @@ Array(1, SetVertexColor, "g1_7", "#99ff99"),
 Array(1, SetVertexColor, "g1_8", "#ff9999"),
 Array(1, SetVertexColor, "g1_9", "#99ff99"),
 Array(1, SetAllEdgesColor, "g1_black"),
-Array(3, SetVertexColor, "g1_9", "#00cc00"),
+Array(2, SetVertexColor, "g1_9", "#00cc00"),
 Array(1, SetVertexColor, "g1_9", "#00cc00"),
 Array(1, SetVertexColor, "g1_9", "#00cc00"),
 Array(1, SetVertexFrameWidth, "g1_9", "6"),
@@ -603,15 +645,15 @@ Array(1, SetVertexFrameWidth, "g1_1", "6"),
 Array(1, SetEdgeColor, "g1_1-2", "yellow"),
 Array(1, SetEdgeColor, "g1_1-2", "blue"),
 Array(1, SetVertexFrameWidth, "g1_1", "0"),
-Array(2, ShowActive, "l_45"),
+Array(1, ShowActive, "l_45"),
 Array(1, UpdateVertexInfo, "g1_1", "Vertex 1 in V  has predecessor 2"),
 Array(1, UpdateVertexInfo, "g1_2", "Vertex 2 in W  has predecessor 3"),
 Array(1, UpdateVertexInfo, "g1_3", "Vertex 3 in V  has predecessor 4"),
 Array(1, UpdateVertexInfo, "g1_4", "Vertex 4 in W  has predecessor 5"),
 Array(1, UpdateVertexInfo, "g1_7", "Vertex 7 in V  has predecessor 8"),
 Array(1, UpdateVertexInfo, "g1_8", "Vertex 8 in W  has predecessor 9"),
-Array(6, ShowActive, "l_48"),
-Array(6, ShowActive, "l_43"),
+Array(5, ShowActive, "l_48"),
+Array(5, ShowActive, "l_43"),
 Array(6, ShowActive, "l_50"),
 Array(5, SetVertexFrameWidth, "g1_1", "2"),
 Array(1, SetVertexFrameWidth, "g1_3", "2"),

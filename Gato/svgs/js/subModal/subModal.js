@@ -133,7 +133,7 @@ function showPopWin(url, width, height, returnFunc, showCloseBox) {
 	gPopFrame.style.height = (height) + "px";
 	
 	// set the url
-	gPopFrame.src = url;
+	gPopFrame.contentWindow.location.replace(url);
 	
 	gReturnFunc = returnFunc;
 	// for IE
@@ -227,10 +227,17 @@ function hidePopWin(callReturnFunc) {
 		gReturnVal = window.frames["popupFrame"].returnVal;
 		window.setTimeout('gReturnFunc(gReturnVal);', 1);
 	}
-	gPopFrame.src = gDefaultPage;
+	gPopFrame.contentWindow.location.replace(gDefaultPage);
+	// gPopFrame.src = gDefaultPage;
 	// display all select boxes
 	if (gHideSelects == true) {
 		displaySelectBoxes();
+	}
+
+	/* Added by Scott Merkling 6/8/2014 */
+	var help_div = document.getElementById('help_div');
+	if (help_div) {
+		help_div.className = 'invisible';
 	}
 }
 
