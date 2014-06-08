@@ -826,7 +826,7 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
 
         width = int(max(g1_width, g2_width))+edge_padding*2
         height = int(g1_height+g2_height+g2_y_padding)+edge_padding*2 
-        scale = min(200.0/width, 1.0)
+        scale = min(min(200.0/width, 1.0), min(200.0/height, 1.0))
         
         # Put a border between the graphs
         if secondaryGraphDisplay:
