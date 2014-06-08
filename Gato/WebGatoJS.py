@@ -70,7 +70,7 @@ animationhead = '''
     <body>
         <div id="help_div" class="invisible">
             <div style="padding: .5em">
-                <a class="help_link left_link" href="./index.html">Index</a><a class="help_link right_link" href="./help.html">Help</a>
+                <a class="help_link left_link" href="./index.html" target="_blank">Index</a><a class="help_link right_link" href="./help.html" target="_blank">Help</a>
             </div>
         </div>
         <div id="base_container">

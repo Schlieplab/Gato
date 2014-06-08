@@ -11,6 +11,19 @@ body {
 	z-index: 1000;
 	font-size: 20px;
 	padding-top: 5px;
+	border-radius: 0px;
+}
+
+.fixed_top_help_div {
+	position: fixed;
+	right: 0px;
+	top: 0px;
+	height: 40px;
+	padding: 10px;
+	z-index: 1000;
+	font-size: 20px;
+	padding-top: 5px;
+	border-radius: 0px;
 }
 
 .algo_div {
@@ -18,6 +31,7 @@ body {
 	border-radius: 5px;
 	margin-top: 10px;
 	padding: 10px;
+	border-radius: 0px;
 }
 
 .graph_img {
@@ -29,6 +43,7 @@ body {
 
 .graph_div {
 	text-align: center;
+	border-radius: 0px;
 }
 
 .graph_img_description {
@@ -37,4 +52,5 @@ body {
 
 .chapter_div {
 	padding-top: 0px;
+	border-radius: 0px;
 }
