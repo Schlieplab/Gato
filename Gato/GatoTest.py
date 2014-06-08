@@ -197,7 +197,7 @@ svg_instance = [
     {
         'chapter_directory': '02-GraphsNetworks',
         'chapter_number': 2,
-        'title': 'chapter_title',
+        'title': 'Basics, Notation and Data Structures',
         'algorithms': [
             {
                 'title': 'BFS-components',
@@ -248,7 +248,7 @@ svg_instance = [
     {
         'chapter_directory': '03-MinimalSpanningTrees',
         'chapter_number': 3,
-        'title': 'MinimalSpanningTrees',
+        'title': 'Minimum Spanning Trees',
         'algorithms': [
             {   
                 'title': 'Kruskal\'s Algorithm',
@@ -312,7 +312,7 @@ svg_instance = [
     {
         'chapter_directory': '04-LPDuality',
         'chapter_number': 4,
-        'title': 'LPDuality',
+        'title': 'Linear Programming Duality',
         'algorithms': [
             {
                 'title': 'Primal Dual Kruskal',
@@ -407,7 +407,7 @@ svg_instance = [
     {
         'chapter_directory': '07-MinimumCostFlows',
         'chapter_number': 7,
-        'title': 'Minimum Cost Flows',
+        'title': 'Minimum-cost Flows',
         'algorithms': [
             {
                 'title': 'SuccessiveShortestPath',
@@ -445,7 +445,7 @@ svg_instance = [
     {
         'chapter_directory': '09-WeightedMatching',
         'chapter_number': 9,
-        'title': 'WeightedMatching',
+        'title': 'Weighted Matching',
         'algorithms': [
             {
                 'title': 'WeightedMatching',

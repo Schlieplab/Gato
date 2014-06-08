@@ -384,7 +384,7 @@ function click_speed_button(evt) {
     /* Changes the animation speed based on which button was clicked */
     var target_id = get_id(get_evt_target(evt));
     var target_label = target_id.split('_')[0];
-    var speed_controls = g.control_panel.speed_controls;
+    var speed_controls = g.control_panel.speed_panel.speed_controls;
     var buttons = speed_controls.buttons;
     var button_types = speed_controls.button_types;
     
@@ -393,7 +393,7 @@ function click_speed_button(evt) {
         if (button_types[i].label === target_label) {
             g.animation.step_ms = button_types[i]['speed'];
             buttons[i].attr({'opacity': speed_controls.button_settings.active_opacity});
-            g.control_panel.set_text(target_label);
+            g.control_panel.speed_panel.set_text(target_label);
         } else {
             buttons[i].attr({'opacity': speed_controls.button_settings.inactive_opacity});
         }
@@ -409,11 +409,11 @@ function SpeedControls(width, height) {
     this.g = snap.group();
 
     this.button_types = [
-        {'label': '.25x', 'speed': 200, 'default_selected': false},
-        {'label': '.5x', 'speed': 37, 'default_selected': false},
-        {'label': '1x', 'speed': 22, 'default_selected': true},
-        {'label': '2x', 'speed': 10, 'default_selected': false},
         {'label': '4x', 'speed': .8, 'default_selected': false},
+        {'label': '2x', 'speed': 10, 'default_selected': false},
+        {'label': '1x', 'speed': 22, 'default_selected': true},
+        {'label': '.5x', 'speed': 37, 'default_selected': false},
+        {'label': '.25x', 'speed': 200, 'default_selected': false},
     ];
     this.button_settings = {
         'width': this.width,
@@ -421,8 +421,6 @@ function SpeedControls(width, height) {
         'active_opacity': 1,
         'inactive_opacity': .5
     };
-
-    console.log(this.button_settings);  
 
     // Create the different buttons
     this.buttons = [];
@@ -514,43 +512,24 @@ function create_homepage_link() {
     return g;
 }
 
-function ControlPanel(button_panel_height, y_trans) {
-    /*  Object that controls the control panel at the bottom right of the screen that is 
-        brought up by clicking on the cog.
-    */
-    this.cursor_in_control_panel = function(evt) {
-        var elem = Snap.getElementByPoint(evt.clientX, evt.clientY);
-        while (elem !== null && elem !== snap) {
-            if (elem === this.g) {
-                return true;
-            }
-            elem = elem.parent();
-        }
-        return false;
-    };
-    this.set_text = function(txt) {
-        this.speed_menu_text_content = txt;
-        this.speed_menu_text_elem.node.innerHTML = txt;
-    };
-
+function SpeedPanel(y_trans, padding, button_panel_height) {
+    this.padding = padding;
     this.button_panel_height = button_panel_height;
-    this.padding = 5;
-    this.frame_visibility = false;
-    this.g = snap.group().attr({'id': 'control_panel_group', 'cursor': 'pointer'});
-    
-    this.open_group = snap.group().attr({'id': 'open_group'});
+    // Add the current speed and opening triangle
+    this.g = snap.group().attr({'id': 'speed_panel_group', 'cursor': 'pointer'});
+    this.open_group = snap.group().attr({'id': 'speed_panel_open_group'});
+    this.g.append(this.open_group);
     this.speed_menu_text_content = '.25x';
     this.speed_menu_text_elem = snap.text(0, 20, this.speed_menu_text_content)
     .attr({
         'fill': 'white',
         'font-family': 'Helvetica',
         'font-size': 16,
-        'font-weight': 'bold'
+        'font-weight': 'bold',
     });
     var text_bbox = this.speed_menu_text_elem.getBBox();
     this.text_height = text_bbox.height;
     this.text_width = text_bbox.width;
-
     this.triang_padding = 9;
     this.triang_x = this.text_width + this.triang_padding;
     this.triang_y = 12;
@@ -560,10 +539,10 @@ function ControlPanel(button_panel_height, y_trans) {
     .attr({'fill': '#87afff'});
     this.open_group.append(this.speed_triang);
     this.open_group.append(this.speed_menu_text_elem);
-    this.g.append(this.open_group);
 
     this.width = this.g.getBBox().width;
-    this.set_text('1x');
+
+    // Add the speed frame
     this.speed_frame_width = this.width + this.padding*2;
     this.speed_frame_height_closed = this.button_panel_height;
     this.speed_frame_height_open = 200;
@@ -581,32 +560,89 @@ function ControlPanel(button_panel_height, y_trans) {
         'stroke': 'black',
         'stroke-width': 1
     });
-    
     this.open_group.prepend(this.speed_frame);
     this.height = this.g.getBBox().height;  // Get the height with the open height
     this.speed_frame.attr({'height': this.speed_frame_height_closed});
-    console.log('height is: ' + this.height);
-    
     this.speed_controls = new SpeedControls(this.speed_frame_width, this.speed_frame_height_open - this.button_panel_height);
     this.speed_controls.g.attr({'visibility': 'hidden'});
     this.speed_controls.g.transform('t' + this.speed_frame_x + ',' + (-1*(this.speed_frame_height_open - this.button_panel_height + this.padding)));
-    console.log(this.speed_controls.g.transform());
     this.g.append(this.speed_controls.g);
 
+    // Add the visibility click handler
     this.toggle_visibility = (function(self) {
-        var anim_speed = 300;
         return function() {
             self.speed_frame_open = !self.speed_frame_open;
             if (self.speed_frame_open) {
-                g.control_panel.speed_controls.g.attr({'visibility': 'visible'});
+                g.control_panel.speed_panel.speed_controls.g.attr({'visibility': 'visible'});
                 self.speed_frame.attr({'y': self.speed_frame_y_open, 'height': self.speed_frame_height_open});
             } else {
-                g.control_panel.speed_controls.g.attr({'visibility': 'hidden'});
+                g.control_panel.speed_panel.speed_controls.g.attr({'visibility': 'hidden'});
                 self.speed_frame.attr({'y': self.speed_frame_y_closed, 'height': self.speed_frame_height_closed});
             }
         }
     })(this);
     this.open_group.click(this.toggle_visibility).touchstart(this.toggle_visibility);
+
+    this.set_text = function(txt) {
+        this.speed_menu_text_content = txt;
+        this.speed_menu_text_elem.node.innerHTML = txt;
+    };
+    this.set_text('1x');
+}
+
+function ControlPanel(button_panel_height, y_trans) {
+    /*  Object that controls the control panel at the bottom right of the screen that is 
+        brought up by clicking on the cog.
+    */
+    this.cursor_in_control_panel = function(evt) {
+        var elem = Snap.getElementByPoint(evt.clientX, evt.clientY);
+        while (elem !== null && elem !== snap) {
+            if (elem === this.g) {
+                return true;
+            }
+            elem = elem.parent();
+        }
+        return false;
+    };
+
+    this.button_panel_height = button_panel_height;
+    this.padding = 5;
+    this.frame_visibility = false;
+    this.g = snap.group().attr({'id': 'control_panel_group'});
+    this.speed_panel = new SpeedPanel(y_trans, this.padding, button_panel_height);
+    this.g.append(this.speed_panel.g);
+    this.help_panel = new HelpPanel(y_trans, this.padding, button_panel_height);
+    this.g.append(this.help_panel.g);
+    this.help_panel.g.transform('t' + (this.speed_panel.width+this.padding) + ',0');
+    this.width = this.speed_panel.width + this.help_panel.width + this.padding;
+}
+
+function HelpPanel(y_trans, padding, button_panel_height) {
+    this.padding = padding;
+    this.button_panel_height = button_panel_height;
+    this.g = snap.group().attr({'id': 'help_panel_group', 'cursor': 'pointer'})
+    .click(show_algo_info);
+    this.width = 24;
+
+    this.text_elem = snap.text(0, 0, '?')
+    .attr({
+        'fill': 'white',
+        'font-size': 16,
+        'font-family': 'Helvetica',
+        'font-weight': 'bold',
+        'text-anchor': 'middle',
+    });
+    var text_bbox = this.text_elem.getBBox();
+    this.text_elem.attr({'x': this.width/2, 'y': text_bbox.height + 5})
+    this.g.append(this.text_elem);
+
+    this.frame = snap.rect(0, -1*y_trans, this.width, button_panel_height)
+    .attr({
+        'fill': '#555',
+        'stroke': 'black',
+        'stroke-width': 1
+    });
+    this.g.prepend(this.frame);
 }
 
 function PlaybackBar() {

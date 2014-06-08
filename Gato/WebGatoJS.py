@@ -27,7 +27,7 @@ animationhead = '''
                 cursor: pointer;
             }
         </style>
-        <title>%(title)s</title>
+        <title>WebGato: %(title)s</title>
     </head>
     <body>
 
