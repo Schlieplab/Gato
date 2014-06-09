@@ -116,7 +116,7 @@ function Scaler() {
     }).mousedown(this.mousedown);
 }
 
-function ToolTip(elem, elem_type) {
+function ToolTip(elem, text_content, elem_type, position) {
     /* Takes in an element to put the tooltip on elem_type is either 'edge' or 'vertex' */
     this.mouseover = function(evt) {
         // Move the tooltip to the cursor and make visible
@@ -136,8 +136,19 @@ function ToolTip(elem, elem_type) {
             // TODO: Abstract this
             evt = evt.touches[0];
         }
-        var x_trans = evt.clientX - this.frame_width;
-        var y_trans = evt.clientY + this.frame_height/2;
+        var x_trans = evt.clientX;
+        var y_trans = evt.clientY;
+        if (this.position === 'bottom') {
+            y_trans = evt.clientY + this.frame_height;
+        } else if (this.position === 'right') {
+            x_trans = evt.clientX + this.frame_width/2;
+            y_trans = evt.clientY + this.frame_height/2;
+        } else if (this.position === 'top') {
+            y_trans = evt.clientY - this.frame_height/2 - 5;
+        } else {
+            x_trans = evt.clientX - this.frame_width;
+            y_trans = evt.clientY + this.frame_height/2;
+        }
         this.g.transform('t' + x_trans + ',' + y_trans);
     };
 
@@ -173,14 +184,16 @@ function ToolTip(elem, elem_type) {
         'id': this.id,
     });
     this.elem = elem;
-    this.frame_is_sized = true;     
+    this.elem_type = elem_type;
+    this.frame_is_sized = true;  
+    if (position) {
+        this.position = position;
+    } else {
+        this.position = 'left';
+    }
 
     // Build the tooltip
-    if (elem_type === 'edge') {
-        this.text_content = get_default_edge_info(elem_id, this.g_num-1);
-    } else if (elem_type === 'vertex') {
-        this.text_content = get_default_vertex_info(elem_id, this.g_num-1);
-    }
+    this.text_content = text_content;
     this.text_elem = snap.text(0, 0, this.text_content);
     this.g.append(this.text_elem);
 
@@ -202,13 +215,20 @@ function ToolTip(elem, elem_type) {
         function (evt) {
             var elem_id = get_id(get_evt_target(evt));
             var elem = snap.select('#' + elem_id);
+            var tooltip = null;
             var tooltip = g.tooltip_objects[elem.parent().attr('id') + '_tooltip'];
+            if (!tooltip) {
+                tooltip = g.tooltip_objects[elem.attr('id') + '_tooltip'];
+            }
             tooltip.mouseover(evt);
         },
         function (evt) {
             var elem_id = get_id(get_evt_target(evt));
             var elem = snap.select('#' + elem_id);
             var tooltip = g.tooltip_objects[elem.parent().attr('id') + '_tooltip'];
+            if (!tooltip) {
+                tooltip = g.tooltip_objects[elem.attr('id') + '_tooltip'];
+            }
             tooltip.mouseout(evt);
         }
     );
@@ -216,6 +236,9 @@ function ToolTip(elem, elem_type) {
         var elem_id = get_id(get_evt_target(evt));
         var elem = snap.select('#' + elem_id);
         var tooltip = g.tooltip_objects[elem.parent().attr('id') + '_tooltip'];
+        if (!tooltip) {
+            tooltip = g.tooltip_objects[elem.attr('id') + '_tooltip'];
+        }
         tooltip.mouseover(evt);
         g.new_active_tooltip = true;
         if (g.active_tooltip !== undefined) {
@@ -227,6 +250,9 @@ function ToolTip(elem, elem_type) {
         var elem_id = get_id(get_evt_target(evt));
         var elem = snap.select('#' + elem_id);
         var tooltip = g.tooltip_objects[elem.parent().attr('id') + '_tooltip'];
+        if (!tooltip) {
+            tooltip = g.tooltip_objects[elem.attr('id') + '_tooltip'];
+        }
         tooltip.mousemove(evt);
     });
 }
@@ -237,27 +263,37 @@ function initialize_tooltips() {
     for (var g_num=0; g_num<g.num_graphs; g_num++) {
         var edge_groups = g.edge_groups[g_num];
         for (var key in edge_groups) {
-            var tooltip = new ToolTip(edge_groups[key], 'edge');
+            var tooltip = new ToolTip(edge_groups[key],  get_default_edge_info(edge_groups[key].attr('id'), g_num), 'edge');
             g.tooltip_objects[tooltip.id] = tooltip;
             g.tooltips[g_num][tooltip.id] = tooltip.text_elem;
         }
         var vertex_groups = g.vertex_groups[g_num];
         for (var key in vertex_groups) {
-            var tooltip = new ToolTip(vertex_groups[key], 'vertex');
+            var tooltip = new ToolTip(vertex_groups[key], get_default_vertex_info(vertex_groups[key].attr('id'), g_num), 'vertex');
             g.tooltip_objects[tooltip.id] = tooltip;
             g.tooltips[g_num][tooltip.id] = tooltip.text_elem;
         }
     }
 }
 
-function add_tooltip(elem, element_type) {
+function add_tooltip(elem, element_type, tooltip_text, position) {
     // Adds a tooltip to the given element(always a edge group or vertex group right now)
     // element_type is either 'edge' or 'vertex' right now-- we need to the element_type to determine default tooltip info
     var elem_id = elem.attr('id');
-    var graph_num = parseInt(elem_id.substring(1,2));
-    var tooltip = new ToolTip(elem, element_type);
+    var g_num = parseInt(elem_id.substring(1,2))-1;
+    var tooltip = null;
+    if (element_type === 'edge') {
+        tooltip = new ToolTip(elem, get_default_edge_info(elem_id, g_num), element_type, position);
+    } else if (element_type === 'vertex') {
+        tooltip = new ToolTip(elem, get_default_vertex_info(elem_id, g_num), element_type, position);
+    } else if (tooltip_text) {
+        tooltip = new ToolTip(elem, tooltip_text, 'other', position);
+    } else {
+        return;
+    }
     g.tooltip_objects[tooltip.id] = tooltip;
-    g.tooltips[graph_num-1][tooltip.id] = tooltip.text_elem;
+    g.tooltips[g_num][tooltip.id] = tooltip.text_elem;
+    return tooltip;
 }
 
 function add_graph_info() {
@@ -753,13 +789,13 @@ function ButtonPanel() {
     this.width = 205;
 
     this.buttons = {};
-    this.buttons['start'] = new Button(start_click, 'M0,0 0,30 20,15 Z', true, [0,0]);
+    this.buttons['start'] = new Button(start_click, 'M0,0 0,30 20,15 Z', true, [0,0], 'g1_start_button', 'Start');
     this.g.append(this.buttons['start'].button);
-    this.buttons['step'] = new Button(step_click, 'M0,0 0,30 20,15 Z M20,0 20,30 30,30 30,0 Z', false, [50,0]);
+    this.buttons['step'] = new Button(step_click, 'M0,0 0,30 20,15 Z M20,0 20,30 30,30 30,0 Z', false, [50,0], 'g1_step_button', 'Step');
     this.g.append(this.buttons['step'].button);
-    this.buttons['continue'] = new Button(continue_click, 'M0,0 0,30 10,30 10,0 Z M15,0 15,30 35,15 Z', false, [110,0]);
+    this.buttons['continue'] = new Button(continue_click, 'M0,0 0,30 10,30 10,0 Z M15,0 15,30 35,15 Z', false, [110,0], 'g1_continue_button', 'Continue');
     this.g.append(this.buttons['continue'].button);
-    this.buttons['stop'] = new Button(stop_click, 'M0,0 0,30 30,30 30,0 Z', false, [175,0]);
+    this.buttons['stop'] = new Button(stop_click, 'M0,0 0,30 30,30 30,0 Z', false, [175,0], 'g1_stop_button', 'Stop');
     this.g.append(this.buttons['stop'].button);
 
     this.button_states = {
@@ -780,7 +816,7 @@ function ButtonPanel() {
     }
 }
 
-function Button(click_handler, path_str, active, translate) {
+function Button(click_handler, path_str, active, translate, button_id, help_text) {
     /*  This object represents one of the buttons that control animation
         that are located at the left side of the playback bar
     */
@@ -798,7 +834,7 @@ function Button(click_handler, path_str, active, translate) {
         'cursor': 'pointer'
     };
     this.active = active;
-    this.button = snap.path(path_str).click(click_handler).touchstart(click_handler);
+    this.button = snap.path(path_str).attr({'id': button_id}).click(click_handler).touchstart(click_handler);
     if (this.active) {
         this.button.attr(this.active_attr);
     } else {
@@ -814,8 +850,11 @@ function Button(click_handler, path_str, active, translate) {
         this.active = false;
         this.button.attr(this.inactive_attr);       
     };
-}
 
+    if (help_text) {
+        this.tooltip = add_tooltip(this.button, 'button', help_text, 'top');
+    }
+}
 
 function BreakPoint(width, breakpoint_num) {
     /*  This object represents the line breakpoints */
