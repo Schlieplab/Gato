@@ -591,7 +591,7 @@ function SpeedPanel(y_trans, padding, button_panel_height) {
         this.speed_frame_x, 
         this.speed_frame_y_closed, 
         this.speed_frame_width, 
-        this.speed_frame_height_open, 3, 3)
+        this.speed_frame_height_open)
     .attr({
         'fill': '#555',
         'stroke': 'black',
@@ -694,7 +694,7 @@ function PlaybackBar() {
     this.stroke = '#222';
     this.stroke_width = 2;
 
-    this.frame = snap.rect(0, 0, this.width, this.height, 5, 5).attr({
+    this.frame = snap.rect(0, 0, this.width, this.height, 1, 1).attr({
         'fill': this.bg_color,
         'stroke': this.stroke,
         'stroke-width': this.stroke_width,
@@ -1030,7 +1030,7 @@ function CodeBox() {
     this.initial_frame_width = this.frame_width;
     this.frame_height = curr_y + this.padding*2;
 
-    this.frame = snap.rect(0, 0, this.frame_width, this.frame_height, 5, 5).attr({
+    this.frame = snap.rect(0, 0, this.frame_width, this.frame_height, 1, 1).attr({
         fill: '#ddd',
         stroke: '#333333',
         strokeWidth: 2,
