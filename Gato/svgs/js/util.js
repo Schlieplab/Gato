@@ -1,3 +1,13 @@
+function isiPhone(){
+    return (
+        //Detect iPhone
+        (navigator.platform.indexOf("iPhone") != -1) ||
+        //Detect iPod
+        (navigator.platform.indexOf("iPod") != -1) ||
+        (navigator.platform.indexOf("iPad") != -1)
+    );
+}
+
 function add_scaler() {
     g.scaler = new Scaler();
     g.graph_containers[g.num_graphs-1].append(g.scaler.elem);

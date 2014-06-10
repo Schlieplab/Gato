@@ -43,6 +43,7 @@ function initPopUp() {
 	popmask.setAttribute("onclick", "hidePopWin(true)");
 	popmask.setAttribute("ontouchstart", "hidePopWin(true)");
 	popcont = document.createElement('div');
+	popcont.setAttribute("style", "-webkit-overflow-scrolling:touch; overflow: auto");
 	popcont.setAttribute("opacity", 0.5);
 	popcont.id = 'popupContainer';
 	popcont.innerHTML = '' +

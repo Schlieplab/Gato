@@ -16,9 +16,7 @@ body {
 }
 
 .codebox_help_image {
-	float: left;
-	margin-left: 20px;
-	max-width: 30%;
+	float: right;	max-width: 30%;
 	height: auto;
 }
 

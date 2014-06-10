@@ -212,7 +212,7 @@ function Animation() {
 			// do the graph infos
 			var infos = state['graph_infos'];
 			for (var i=0; i<infos.length; i++) {
-				g.graph_infos[i].node.innerHTML = infos[i];
+				g.graph_infos[i].node.textContent = infos[i];
 			}
 
 			this.step_num = state.step_num;
@@ -240,7 +240,7 @@ function Animation() {
 		function collect_graph_infos() {
 			var infos = [];
 			for (var i=0; i<g.graph_infos.length; i++) {
-				infos.push(g.graph_infos[i].node.innerHTML);
+				infos.push(g.graph_infos[i].node.textContent);
 			}
 			return infos;
 		}
@@ -499,7 +499,7 @@ function UpdateGraphInfo(graph_id, info) {
 	// Updates the graph info for the given graph with the string "info"
 	var graph_num = parseInt(graph_id.substring(1));
 	var graph_info_text_elem = g.graph_infos[graph_num-1];
-	graph_info_text_elem.node.innerHTML = info;
+	graph_info_text_elem.node.textContent = info;
 }
 
 function UpdateVertexInfo(vertex_id, info) {

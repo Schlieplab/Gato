@@ -26,52 +26,21 @@
             .edge {
                 cursor: pointer;
             }
-            #help_div {
-                position: absolute;
-                width: 100%;
-                height: 2.5em;
-                top: 0px;
-                left: 0px;
+            #nav_bar {
+                height: 60px;
+                /* background-color: #10347D; */
                 background-color: white;
-                border-bottom: 1px solid #aaa;
-                color: #333;
-            }
-            .invisible {
-                visibility: hidden;
-            }
-            .visible {
-                visibility: visible;
-                z-index: 1000;
-            }
-            .help_link {
-                font-family: Helvetica;
-                font-size: 1.5em;
-                text-decoration: none;
-                color: #87afff;
-            }
-            .help_link:visited {
-                color: #1354D6;
-            }
-            .help_link:hover {
-                color: #1354D6;
-            }
-            .left_link {
-                border-right: 1px solid #aaa;
-                padding-right: 15px;
-                margin-right: 0px;
-            }
-            .right_link {
-                margin-left: 0px;
-                padding-left: 15px;
+                width: 100%;
+                border-bottom: 2px solid #ccc;
             }
         </style>
         <title>Gato -- Bipartite algorithm on Bi008 graph</title>
     </head>
     <body>
-        <div id="help_div" class="invisible">
-            <div style="padding: .5em">
-                <a class="help_link left_link" href="./index.html" target="_blank">Index</a><a class="help_link right_link" href="./help.html" target="_blank">Help</a>
-            </div>
+        <div id="nav_bar">
+            <svg id="nav_svg">
+
+            </svg>
         </div>
         <div id="base_container">
         <svg id="svg">
@@ -193,6 +162,7 @@
 
         <script type="text/javascript">
             var info_file = "infos/Bipartite--Bi008.html";
+            var animation_name = "Bipartite algorithm on Bi008 graph";
             var g1_x_add = 100;
             var g1_y_add = 50;
             var g2_x_add = 0;
@@ -299,8 +269,8 @@
         
         <script type="text/javascript">
             var anim_array = Array(Array(1, SetVertexColor, "g1_1", "#ff9999"),
-Array(2, SetVertexColor, "g1_2", "#ff9999"),
-Array(1, SetVertexColor, "g1_3", "#ff9999"),
+Array(18, SetVertexColor, "g1_2", "#ff9999"),
+Array(5, SetVertexColor, "g1_3", "#ff9999"),
 Array(1, SetVertexColor, "g1_4", "#ff9999"),
 Array(2, ShowActive, "l_1"),
 Array(1, UpdateEdgeInfo, "g1_3-1", "Edge (3,1) is not a matching edge"),
@@ -308,54 +278,54 @@ Array(1, UpdateEdgeInfo, "g1_2-4", "Edge (2,4) is not a matching edge"),
 Array(1, UpdateEdgeInfo, "g1_4-3", "Edge (4,3) is not a matching edge"),
 Array(1, UpdateVertexInfo, "g1_1", "Vertex 1 in W  has no predecessor"),
 Array(1, UpdateVertexInfo, "g1_3", "Vertex 3 in W  has no predecessor"),
-Array(5, ShowActive, "l_21"),
-Array(5, ShowActive, "l_30"),
-Array(6, ShowActive, "l_41"),
+Array(17, ShowActive, "l_21"),
+Array(18, ShowActive, "l_30"),
+Array(43, ShowActive, "l_41"),
 Array(5, SetVertexColor, "g1_1", "#99ff99"),
 Array(2, SetVertexColor, "g1_3", "#ff9999"),
-Array(1, SetVertexColor, "g1_2", "#ff9999"),
-Array(1, SetVertexColor, "g1_4", "#99ff99"),
-Array(2, ShowActive, "l_42"),
+Array(17, SetVertexColor, "g1_2", "#ff9999"),
+Array(17, SetVertexColor, "g1_4", "#99ff99"),
+Array(39, ShowActive, "l_42"),
 Array(1, UpdateVertexInfo, "g1_1", "Vertex 1 in V  has no predecessor"),
 Array(1, UpdateVertexInfo, "g1_4", "Vertex 4 in V  has no predecessor"),
-Array(6, ShowActive, "l_43"),
-Array(6, ShowActive, "l_44"),
+Array(35, ShowActive, "l_43"),
+Array(35, ShowActive, "l_44"),
 Array(5, SetVertexColor, "g1_1", "#99ff99"),
 Array(1, SetVertexColor, "g1_2", "#ff9999"),
-Array(1, SetVertexColor, "g1_3", "#ff9999"),
-Array(1, SetVertexColor, "g1_4", "#99ff99"),
+Array(13, SetVertexColor, "g1_3", "#ff9999"),
+Array(2, SetVertexColor, "g1_4", "#99ff99"),
 Array(1, SetAllEdgesColor, "g1_black"),
-Array(2, SetVertexColor, "g1_1", "#00cc00"),
+Array(4, SetVertexColor, "g1_1", "#00cc00"),
 Array(1, SetVertexColor, "g1_1", "#00cc00"),
 Array(1, SetVertexColor, "g1_4", "#00cc00"),
 Array(1, SetVertexColor, "g1_4", "#00cc00"),
 Array(1, SetVertexColor, "g1_1", "#00cc00"),
 Array(1, SetVertexFrameWidth, "g1_1", "6"),
 Array(1, SetVertexFrameWidth, "g1_1", "6"),
-Array(1, SetEdgeColor, "g1_3-1", "yellow"),
+Array(2, SetEdgeColor, "g1_3-1", "yellow"),
 Array(1, SetVertexColor, "g1_3", "red"),
 Array(1, SetEdgeColor, "g1_3-1", "#ccccff"),
 Array(1, HighlightPath, "g1_[1, 3]", "yellow", "0"),
-Array(2, ShowActive, "l_45"),
+Array(26, ShowActive, "l_45"),
 Array(1, UpdateVertexInfo, "g1_1", "Vertex 1 in V  is exposed"),
 Array(1, UpdateVertexInfo, "g1_3", "Vertex 3 in W  has predecessor 1"),
 Array(1, UpdateVertexInfo, "g1_4", "Vertex 4 in V  is exposed"),
-Array(6, ShowActive, "l_46"),
+Array(40, ShowActive, "l_46"),
 Array(5, SetVertexColor, "g1_3", "blue"),
 Array(2, SetVertexColor, "g1_1", "blue"),
-Array(1, SetEdgeColor, "g1_3-1", "blue"),
-Array(1, HidePath, "g1_(1, 3)"),
-Array(1, ShowActive, "l_43"),
+Array(16, SetEdgeColor, "g1_3-1", "blue"),
+Array(16, HidePath, "g1_(1, 3)"),
+Array(17, ShowActive, "l_43"),
 Array(1, UpdateEdgeInfo, "g1_3-1", "Edge (3,1) is a matching edge"),
-Array(5, ShowActive, "l_44"),
-Array(5, SetVertexColor, "g1_4", "#00cc00"),
-Array(1, SetVertexFrameWidth, "g1_1", "0"),
-Array(1, SetVertexColor, "g1_1", "#99ff99"),
+Array(15, ShowActive, "l_44"),
+Array(6, SetVertexColor, "g1_4", "#00cc00"),
+Array(2, SetVertexFrameWidth, "g1_1", "0"),
+Array(3, SetVertexColor, "g1_1", "#99ff99"),
 Array(1, SetVertexColor, "g1_2", "#ff9999"),
 Array(1, SetVertexColor, "g1_3", "#ff9999"),
 Array(1, SetVertexColor, "g1_4", "#99ff99"),
 Array(1, SetAllEdgesColor, "g1_black"),
-Array(2, SetVertexColor, "g1_4", "#00cc00"),
+Array(3, SetVertexColor, "g1_4", "#00cc00"),
 Array(1, SetVertexColor, "g1_4", "#00cc00"),
 Array(1, SetVertexColor, "g1_4", "#00cc00"),
 Array(1, SetVertexFrameWidth, "g1_4", "6"),
@@ -364,33 +334,33 @@ Array(1, SetEdgeColor, "g1_2-4", "yellow"),
 Array(1, SetVertexColor, "g1_2", "red"),
 Array(1, SetEdgeColor, "g1_2-4", "#ccccff"),
 Array(1, HighlightPath, "g1_[4, 2]", "yellow", "0"),
-Array(1, ShowActive, "l_45"),
+Array(2, ShowActive, "l_45"),
 Array(1, UpdateVertexInfo, "g1_1", "Vertex 1 in V  has no predecessor"),
 Array(1, UpdateVertexInfo, "g1_2", "Vertex 2 in W  has predecessor 4"),
 Array(1, UpdateVertexInfo, "g1_3", "Vertex 3 in W  has no predecessor"),
-Array(5, ShowActive, "l_46"),
+Array(6, ShowActive, "l_46"),
 Array(5, SetVertexColor, "g1_2", "blue"),
-Array(1, SetVertexColor, "g1_4", "blue"),
-Array(1, SetEdgeColor, "g1_2-4", "blue"),
-Array(1, HidePath, "g1_(4, 2)"),
-Array(1, ShowActive, "l_43"),
+Array(2, SetVertexColor, "g1_4", "blue"),
+Array(6, SetEdgeColor, "g1_2-4", "blue"),
+Array(23, HidePath, "g1_(4, 2)"),
+Array(16, ShowActive, "l_43"),
 Array(1, UpdateEdgeInfo, "g1_2-4", "Edge (2,4) is a matching edge"),
-Array(5, ShowActive, "l_44"),
+Array(15, ShowActive, "l_44"),
 Array(5, SetVertexFrameWidth, "g1_4", "0"),
-Array(1, SetVertexColor, "g1_1", "#99ff99"),
+Array(2, SetVertexColor, "g1_1", "#99ff99"),
 Array(1, SetVertexColor, "g1_2", "#ff9999"),
-Array(1, SetVertexColor, "g1_3", "#ff9999"),
+Array(2, SetVertexColor, "g1_3", "#ff9999"),
 Array(1, SetVertexColor, "g1_4", "#99ff99"),
 Array(1, SetAllEdgesColor, "g1_black"),
-Array(2, ShowActive, "l_45"),
+Array(3, ShowActive, "l_45"),
 Array(1, UpdateVertexInfo, "g1_2", "Vertex 2 in W  has no predecessor"),
 Array(1, UpdateVertexInfo, "g1_4", "Vertex 4 in V  has no predecessor"),
-Array(5, ShowActive, "l_48"),
-Array(6, ShowActive, "l_43"),
-Array(7, ShowActive, "l_50"),
-Array(5, SetVertexFrameWidth, "g1_1", "6"),
-Array(1, SetVertexFrameWidth, "g1_4", "6"),
-Array(1, SetVertexFrameWidth, "g1_3", "2"),
+Array(43, ShowActive, "l_48"),
+Array(7, ShowActive, "l_43"),
+Array(48, ShowActive, "l_50"),
+Array(6, SetVertexFrameWidth, "g1_1", "6"),
+Array(10, SetVertexFrameWidth, "g1_4", "6"),
+Array(2, SetVertexFrameWidth, "g1_3", "2"),
 Array(1, SetVertexFrameWidth, "g1_2", "2"));
             init();
         </script>

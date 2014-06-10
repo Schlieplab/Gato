@@ -1,12 +1,14 @@
-var snap = Snap("svg");
+var snap = Snap("#svg");
+var nav_snap = Snap("#nav_svg");
 var g = {}; // globals
 
 function fill_global() {
     /*  Fills the global variable, g, with all necessary info.  
         Where we don't have info yet null values are inserted
     */
+    var navbar_height = 60;
     var cont_width = window.innerWidth;
-    var cont_height = window.innerHeight;
+    var cont_height = window.innerHeight - navbar_height;
     extend(g, {
         playback_bar: null,
         code_box: null,
@@ -14,12 +16,16 @@ function fill_global() {
 
         /* General Globals */
         // Width and height of the whole draw area
+        navbar_height: navbar_height,
+        navbar_padding: 5,
+        ios_statusbar_height: 20,
         cont_width: cont_width,
         cont_height: cont_height,
+        playback_bar_stroke_width: 2,
         // Location in the file system of the algorithm info file
         info_file: 'infos/%(info_file)s',
         // Number of pixels to use for padding on edges of canvas and between elements
-        padding: Math.min(Math.ceil(cont_width*.02), Math.ceil(cont_height)*.02),
+        padding: Math.min(Math.ceil(cont_width*.02), Math.ceil(cont_height)*.03),
         // The x/y coordinate shifts we apply to any coordinates passed in from animation commands
         coord_changes: [
             {'x': g1_x_add, 'y': g1_y_add},
@@ -199,13 +205,18 @@ function global_mouseup(evt) {
     //     }
     // }
     if (g.active_tooltip !== undefined) {
+        console.log('we have an active tooltip');
+        console.log(g.active_tooltip);
         if (g.new_active_tooltip !== true) {
             // If this tooltip wasn't triggered by this event
+            console.log('new active tooltip != true');
+            console.log(g.new_active_tooltip);
             g.active_tooltip.mouseout();
             g.active_tooltip = undefined;
         } else {
             // New tooltip.  Register that we've seen it and go on our way
             g.new_active_tooltip = false;
+            console.log('this is a new active tooltip');
         }
     }
 }
@@ -243,17 +254,117 @@ var window_size_check = (function() {
 
 function window_resize(evt) {
     window_size_check();
-    g.cont_height = window.innerHeight;
+    g.cont_height = window.innerHeight - g.navbar_height;
     g.cont_width = window.innerWidth;
     document.getElementById('svg').setAttribute('style', 'width: ' + g.cont_width + 'px; height: ' + g.cont_height + 'px');
     g.playback_bar.resize();
     g.code_box.scale_and_translate();
     g.scaler.set_max_and_min_dimensions_of_graph_container();
     position_graph();
+    g.navbar.resize();
+}
+
+function NavBar() {
+    // g.navbar_height, g.navbar_padding, g.ios_statusbar_height
+    
+    // this is jsut here to simulate the status bar
+    // nav_snap.rect(0, 0, g.cont_width, 20);
+    this.padding = g.navbar_padding;
+    this.width = g.cont_width - g.padding*2;
+    this.height = g.navbar_height;
+
+    this.g = nav_snap.group().attr({'id': 'navbar_g'});
+
+    // Create backlink
+    this.backlink_g = nav_snap.group().attr({'id': 'backlink_g', 'cursor': 'pointer'});
+    var h = this.height - this.padding*2 - g.ios_statusbar_height;
+    var p = 5.0;
+    var k = Math.sqrt(2.0*Math.pow(p, 2));
+    var f = Math.pow(p,2) / k;
+    this.backlink_poly = nav_snap.polygon([
+        0, h/2.0,
+        h/2.0, h,
+        h/2.0 + k/2.0, h - Math.pow(p,2)/k,
+        k, h/2.0,
+        h/2.0 + k/2.0, Math.pow(p,2) / k,
+        h/2.0, 0
+    ])
+    .attr({
+        'fill': '#ccc'
+    });
+    this.backlink_g.append(this.backlink_poly);
+    this.backlink_text = nav_snap.text(h/2.0 + k/2.0 + this.padding, h/2.0 + 5, "Animation Index")
+    .attr({
+        'fill': '#ccc',
+        'font-family': 'Helvetica',
+        'font-size': 14,
+    });
+    this.backlink_g.append(this.backlink_text);
+    var backlink_bbox = this.backlink_g.getBBox();
+    this.backlink_rect = nav_snap.rect(0, 0, backlink_bbox.width, backlink_bbox.height)
+    .attr({
+        'fill': 'white'
+    });
+    this.backlink_g.prepend(this.backlink_rect);
+    this.backlink_g.click(
+        function() {
+            window.location = 'index.html';
+        }
+    );
+    this.g.append(this.backlink_g);
+
+
+    // Create the title
+    this.anim_title = nav_snap.text(this.width/2, h/2.0 + 5, animation_name)
+    .attr({
+        'fill': '#ccc',
+        'font-family': 'Helvetica',
+        'font-size': 15,
+        'text-anchor': 'middle'
+    });
+    this.g.append(this.anim_title);
+
+    this.cog_dim = 30;
+    this.cog = nav_snap.image('img/cog_grey.png', this.width - this.cog_dim, 0, this.cog_dim, this.cog_dim)
+    .attr({
+        'cursor': 'pointer'
+    }).click(show_algo_info);
+    // TODO: Add a click handler to this
+    this.g.append(this.cog);
+
+    this.help_link = nav_snap.text(0, h/2.0 + 5, "Help")
+    .attr({
+        'fill': '#ccc',
+        'font-family': 'Helvetica',
+        'font-size': 15,
+        'text-anchor': 'middle',
+        'cursor': 'pointer'
+    }).click(function() {
+        window.location = 'help.html';
+    });
+    this.help_link.attr({'x': this.width - this.cog_dim - this.help_link.getBBox().width - 5});
+    this.g.append(this.help_link);
+
+    // This creates a line directly in middle of nav bar
+    // navbar_g.append(nav_snap.rect(0, 15, g.cont_width, 1));
+
+    this.g.transform('t' + g.padding + ',' + (g.ios_statusbar_height+g.navbar_padding));
+
+    this.resize = function() {
+        this.width = g.cont_width - g.padding*2;
+        this.anim_title.attr({'x': g.cont_width/2});
+        this.cog.attr({'x': this.width - this.cog_dim});
+        this.help_link.attr({'x': this.width - this.cog_dim - this.help_link.getBBox().width - 5});
+    };
+
+    //nav_snap.rect(g.cont_width/2, 0, 1, 500);
 }
 
 function init() {
     window_size_check();
+
+    console.log(snap);
+    console.log(nav_snap);
 
     // Add global event handlers
     snap.mouseup(global_mouseup);
@@ -275,4 +386,8 @@ function init() {
     position_graph(true);
     add_scaler();
     save_initial_graph_dimensions();
+
+    g.navbar = new NavBar();
+
+    //snap.rect(g.cont_width/2, 0, 1, 500);
 }
