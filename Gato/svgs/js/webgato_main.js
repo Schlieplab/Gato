@@ -22,6 +22,7 @@ function fill_global() {
         cont_width: cont_width,
         cont_height: cont_height,
         playback_bar_stroke_width: 2,
+        graph_frame_normalize_diff: 10,
         // Location in the file system of the algorithm info file
         info_file: 'infos/%(info_file)s',
         // Number of pixels to use for padding on edges of canvas and between elements
@@ -192,6 +193,7 @@ function save_initial_graph_dimensions() {
 }
 
 function global_mouseup(evt) {
+    console.log('in global mouseup');
     if (g.scaler.scaling === true) {
         g.scaler.mouseup(evt);
     }
@@ -223,6 +225,7 @@ function global_mouseup(evt) {
 
 
 function global_mousemove(evt) {
+    console.log('in global mousemove');
     if (g.scaler.scaling === true) {
         g.scaler.mousemove(evt);
     }
@@ -232,6 +235,7 @@ function global_mousemove(evt) {
 }
 
 function global_drag(evt) {
+    console.log('in global drag');
     if (g.scaler.scaling === true) {
         g.scaler.drag(evt);
     }
@@ -363,13 +367,12 @@ function NavBar() {
 function init() {
     window_size_check();
 
-    console.log(snap);
-    console.log(nav_snap);
-
     // Add global event handlers
     snap.mouseup(global_mouseup);
     snap.mousemove(global_mousemove);
-    snap.drag(function(){}, function(){}, global_drag)
+    snap.touchmove(global_mousemove);
+    snap.touchend(global_mouseup);
+    snap.drag(function(){}, function(){}, global_drag);
     window.onresize = window_resize;
 
     // Set globals and size of base_container
@@ -388,6 +391,4 @@ function init() {
     save_initial_graph_dimensions();
 
     g.navbar = new NavBar();
-
-    //snap.rect(g.cont_width/2, 0, 1, 500);
 }

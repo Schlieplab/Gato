@@ -92,7 +92,7 @@ PickVertex   = lambda : self.PickVertex(1,None)
 label        = VisibleVertexLabeling(A)
 pred         = AnimatedPredecessor(A)
 Neighborhood = lambda v,a=A,g=G: AnimatedNeighborhood(a,g,v,["red"])
-Q            = AnimatedVertexQueue(A,"blue","red")
+Q            = AnimatedVertexQueue(A)
 
 class MyGraphInformer(GraphInformer):
 

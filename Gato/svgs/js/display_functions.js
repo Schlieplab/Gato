@@ -286,6 +286,8 @@ function add_graph_frame() {
     // Padding on each edge of graph
     var pad = g.vertex_r + g.frame_padding;
 
+    // Compute the dimensions of each graph frame
+    var graph_frame_dim = [{'width': null, 'height': null}, {'width': null, 'height': null}];
     for (var g_num=0; g_num<g.num_graphs; g_num++) {
         var graph_bbox = g.graphs[g_num].getBBox();
         
@@ -306,17 +308,45 @@ function add_graph_frame() {
         //  TODO: THIS IS MESSY.  Max size should always be set here.
         if (max_size.width && max_size.height) {
             // If we added any vertices or edges then max_size will be set and we should use that
-            frame = snap.rect(0, 0, max_size.width+pad, max_size.height+pad+g.graph_info_height);
+            graph_frame_dim[g_num] = {'width': max_size.width+pad, 'height':  max_size.height+pad+g.graph_info_height};
+            // frame = snap.rect(0, 0, max_size.width+pad, max_size.height+pad+g.graph_info_height);
         } else {
-            frame = snap.rect(0, 0, graph_bbox.width+pad, graph_bbox.height+pad+g.graph_info_height);
+            graph_frame_dim[g_num] = {'width': graph_bbox.width+pad, 'height': graph_bbox.height+pad+g.graph_info_height};
+            // frame = snap.rect(0, 0, graph_bbox.width+pad, graph_bbox.height+pad+g.graph_info_height);
         }
-        frame.attr({
-            fill: '#fff',
-            stroke: '#ccc',
-            strokeWidth: g.graph_frame_stroke_width,
-            strokeDasharray: '5,2',
-        });
-        g.graph_containers[g_num].prepend(frame);
+        // frame.attr({
+        //     id: 'g' + (g_num+1) + '_frame',
+        //     fill: '#fff',
+        //     stroke: '#ccc',
+        //     strokeWidth: g.graph_frame_stroke_width,
+        //     strokeDasharray: '5,2',
+        // });
+        // g.graph_containers[g_num].prepend(frame);
+    }
+
+    // Normalize the frame width.  If there is only a small discrepancy in widths between graphs then make them the same
+    if (graph_frame_dim[0]['width'] && graph_frame_dim[1]['width']) {
+        if (Math.abs(graph_frame_dim[0]['width'] - graph_frame_dim[1]['width']) < g.graph_frame_normalize_diff) {
+            var same_width = Math.max(graph_frame_dim[0]['width'], graph_frame_dim[1]['width']);
+            graph_frame_dim[0]['width'] = same_width;
+            graph_frame_dim[1]['width'] = same_width;
+        }
+    }
+
+    // Create the frames
+    for (var g_num=0; g_num<g.num_graphs; g_num++) {
+        var frame_dim = graph_frame_dim[g_num];
+        if (frame_dim['width'] && frame_dim['height']) {
+            var frame = snap.rect(0, 0, frame_dim['width'], frame_dim['height'])
+            .attr({
+                id: 'g' + (g_num+1) + '_frame',
+                fill: '#fff',
+                stroke: '#ccc',
+                strokeWidth: g.graph_frame_stroke_width,
+                strokeDasharray: '5,2',
+            });
+            g.graph_containers[g_num].prepend(frame);
+        }
     }
 }
 
@@ -326,15 +356,19 @@ function get_graph_x_trans() {
 
 function position_graph(initial) {
     // Used for initial translations, and also scaling of graph
+    
+    // Record the current scale
     var curr_scale = 1;
     if (g.scaler !== undefined) {
         curr_scale = g.scaler.curr_scale;
     }
 
+    // If the initial translation has not been set then set it
     var x_trans = get_graph_x_trans();
     if (g.init_container_translate === undefined) {
         g['init_container_translate'] = [{x: x_trans, y: g.padding + g.graph_frame_stroke_width}, {x: x_trans, y: g.padding + g.graph_frame_stroke_width}];
     }
+
     for (var i=0; i<g.num_graphs; i++) {
         var max_size = g.max_graph_sizes[i];
         var container_translate = null;
@@ -603,7 +637,7 @@ function ControlPanel(button_panel_height, y_trans) {
             }
         }
     })(this);
-    this.open_group.click(this.toggle_visibility).touchstart(this.toggle_visibility);
+    this.open_group.click(this.toggle_visibility);
 }
 
 function PlaybackBar() {

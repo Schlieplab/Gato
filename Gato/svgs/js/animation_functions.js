@@ -346,11 +346,15 @@ function Slider(width, height) {
 		/*	Triggers when cursor is mousedowned.  Begins sliding process by 
 			recording initial cursor and mouse positions
 		*/
+		console.log('in mousedown');
 		g.slider.sliding = true;
 		g.slider.start_cursor_x = parseInt(g.slider.cursor.attr('x'));
 		g.slider.start_mouse_x = parseInt(evt.clientX);
+		console.log(evt.clientX);
+		console.log('leaving mousedown');
 	};
 	this.cursor_drag = function(evt) {
+		console.log('in cursor drag');
 		this.cursor_mouseup(evt);
 	};
 	this.cursor_mousemove = function(evt) {
@@ -358,6 +362,7 @@ function Slider(width, height) {
 			at mousedown event this computes the new position of the cursor, and moves
 			the animation to the corresponding step.
 		*/
+		console.log('in cursor mousemove');
 		var self = g.slider;
 		var step = 0;
 		var new_x = this.start_cursor_x + parseInt(evt.clientX) - self.start_mouse_x;
@@ -375,6 +380,7 @@ function Slider(width, height) {
 	};
 	this.cursor_mouseup = function(evt) {
 		/* Ends cursor sliding behavior */
+		console.log('in cursor mouseup');
 		this.sliding = false;
 	};
 	this.go_to_step = function(n, time) {
