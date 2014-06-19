@@ -181,7 +181,9 @@ function ToolTip(elem, elem_type) {
     } else if (elem_type === 'vertex') {
         this.text_content = get_default_vertex_info(elem_id, this.g_num-1);
     }
-    this.text_elem = snap.text(0, 0, this.text_content);
+    this.text_elem = snap.text(0, 0, this.text_content).attr({
+        'font-family': 'Helvetica'
+    });
     this.g.append(this.text_elem);
 
     var text_bbox = this.text_elem.getBBox();
@@ -192,7 +194,7 @@ function ToolTip(elem, elem_type) {
         'fill': '#AFC8FA',
         'stroke': '#010E26',
         'stroke-width': 1,
-        'filter' : 'url(#tooltip_dropshadow)'
+        'filter' : 'url(#tooltip_dropshadow)',
     });
     this.g.prepend(this.frame);
     this.g.attr({'visibility': 'hidden'});
@@ -309,19 +311,9 @@ function add_graph_frame() {
         if (max_size.width && max_size.height) {
             // If we added any vertices or edges then max_size will be set and we should use that
             graph_frame_dim[g_num] = {'width': max_size.width+pad, 'height':  max_size.height+pad+g.graph_info_height};
-            // frame = snap.rect(0, 0, max_size.width+pad, max_size.height+pad+g.graph_info_height);
         } else {
             graph_frame_dim[g_num] = {'width': graph_bbox.width+pad, 'height': graph_bbox.height+pad+g.graph_info_height};
-            // frame = snap.rect(0, 0, graph_bbox.width+pad, graph_bbox.height+pad+g.graph_info_height);
         }
-        // frame.attr({
-        //     id: 'g' + (g_num+1) + '_frame',
-        //     fill: '#fff',
-        //     stroke: '#ccc',
-        //     strokeWidth: g.graph_frame_stroke_width,
-        //     strokeDasharray: '5,2',
-        // });
-        // g.graph_containers[g_num].prepend(frame);
     }
 
     // Normalize the frame width.  If there is only a small discrepancy in widths between graphs then make them the same

@@ -45,6 +45,7 @@ function Animation() {
 			g.button_panel.set_buttons_state('waiting');
 		} else {
 			var anim = anim_array[this.step_num];
+			console.log(String(anim[1]).split()[1]);
 			this.do_command(anim);
 			this.step_num ++;
 			g.slider.go_to_step(this.step_num, anim[0]*this.step_ms);

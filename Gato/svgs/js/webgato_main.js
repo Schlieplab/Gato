@@ -193,7 +193,6 @@ function save_initial_graph_dimensions() {
 }
 
 function global_mouseup(evt) {
-    console.log('in global mouseup');
     if (g.scaler.scaling === true) {
         g.scaler.mouseup(evt);
     }
@@ -207,25 +206,19 @@ function global_mouseup(evt) {
     //     }
     // }
     if (g.active_tooltip !== undefined) {
-        console.log('we have an active tooltip');
-        console.log(g.active_tooltip);
         if (g.new_active_tooltip !== true) {
             // If this tooltip wasn't triggered by this event
-            console.log('new active tooltip != true');
-            console.log(g.new_active_tooltip);
             g.active_tooltip.mouseout();
             g.active_tooltip = undefined;
         } else {
             // New tooltip.  Register that we've seen it and go on our way
             g.new_active_tooltip = false;
-            console.log('this is a new active tooltip');
         }
     }
 }
 
 
 function global_mousemove(evt) {
-    console.log('in global mousemove');
     if (g.scaler.scaling === true) {
         g.scaler.mousemove(evt);
     }
@@ -235,7 +228,6 @@ function global_mousemove(evt) {
 }
 
 function global_drag(evt) {
-    console.log('in global drag');
     if (g.scaler.scaling === true) {
         g.scaler.drag(evt);
     }
