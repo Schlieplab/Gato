@@ -428,6 +428,34 @@ function click_speed_button(evt) {
     }
 }
 
+function HelpPanel(y_trans, padding, button_panel_height) {
+    this.padding = padding;
+    this.button_panel_height = button_panel_height;
+    this.g = snap.group().attr({'id': 'help_panel_group', 'cursor': 'pointer'})
+    .click(show_algo_info);
+    this.width = 24;
+
+    this.text_elem = snap.text(0, 0, '?')
+    .attr({
+        'fill': 'white',
+        'font-size': 16,
+        'font-family': 'Helvetica',
+        'font-weight': 'bold',
+        'text-anchor': 'middle',
+    });
+    var text_bbox = this.text_elem.getBBox();
+    this.text_elem.attr({'x': this.width/2, 'y': text_bbox.height + 5})
+    this.g.append(this.text_elem);
+    this.frame = snap.rect(0, -1*y_trans, this.width, button_panel_height)
+    .attr({
+        'fill': '#555',
+        'stroke': '#222',
+        'stroke-width': 1
+    });
+    
+    this.g.prepend(this.frame);
+}
+
 function SpeedControls(width, height) {
     /*  Object that represents the row of speed buttons in the
         menu that opens at bottom right 
@@ -610,13 +638,20 @@ function ControlPanel(button_panel_height, y_trans) {
     this.open_group.prepend(this.speed_frame);
     this.height = this.g.getBBox().height;  // Get the height with the open height
     this.speed_frame.attr({'height': this.speed_frame_height_closed});
-    console.log('height is: ' + this.height);
     
     this.speed_controls = new SpeedControls(this.speed_frame_width, this.speed_frame_height_open - this.button_panel_height);
     this.speed_controls.g.attr({'visibility': 'hidden'});
     this.speed_controls.g.transform('t' + this.speed_frame_x + ',' + (-1*(this.speed_frame_height_open - this.button_panel_height + this.padding)));
-    console.log(this.speed_controls.g.transform());
     this.g.append(this.speed_controls.g);
+    if (isiPhone()) {
+        this.width = this.speed_controls.width;
+    } else {
+        // If it isn't an iPad or iPhone then we want to display the HelpPanel at the bottom of the screen
+        this.help_panel = new HelpPanel(y_trans, this.padding, button_panel_height);
+        this.g.append(this.help_panel.g);
+        this.help_panel.g.transform('t' + (this.speed_controls.width-this.padding) + ',0');
+        this.width = this.speed_controls.width + this.help_panel.width-this.padding;
+    }
 
     this.toggle_visibility = (function(self) {
         var anim_speed = 300;
