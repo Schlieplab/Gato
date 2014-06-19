@@ -39,10 +39,53 @@
                 border-bottom: 2px solid #ccc;
                 height: 60px;
             }
+            #help_div {
+                position: absolute;
+                width: 100%;
+                height: 2.5em;
+                top: 0px;
+                left: 0px;
+                background-color: white;
+                border-bottom: 1px solid #aaa;
+                color: #333;
+            }
+            .invisible {
+                visibility: hidden;
+            }
+            .visible {
+                visibility: visible;
+                z-index: 1000;
+            }
+            .help_link {
+                font-family: Helvetica;
+                font-size: 1.5em;
+                text-decoration: none;
+                color: #87afff;
+            }
+            .help_link:visited {
+                color: #1354D6;
+            }
+            .help_link:hover {
+                color: #1354D6;
+            }
+            .left_link {
+                border-right: 1px solid #aaa;
+                padding-right: 15px;
+                margin-right: 0px;
+            }
+            .right_link {
+                margin-left: 0px;
+                padding-left: 15px;
+            }
         </style>
         <title>Gato -- PrimalDualKruskal algorithm on PD_Kruskal5 graph</title>
     </head>
     <body>
+        <div id="help_div" class="invisible">
+            <div style="padding: .5em">
+                <a class="help_link left_link" href="./index.html" target="_blank">Index</a><a class="help_link right_link" href="./help.html" target="_blank">Help</a>
+            </div>
+        </div>
         <div id="nav_bar" class="inactive_nav">
             <svg id="nav_svg">
 
@@ -292,7 +335,7 @@
         
         <script type="text/javascript">
             var anim_array = Array(Array(1, SetVertexColor, "g2_1", "#FF0000"),
-Array(1, SetVertexColor, "g2_2", "#00FF00"),
+Array(2, SetVertexColor, "g2_2", "#00FF00"),
 Array(1, SetVertexColor, "g2_3", "#0000FF"),
 Array(1, SetVertexColor, "g2_4", "#009999"),
 Array(1, SetVertexColor, "g2_5", "#990099"),
@@ -362,15 +405,15 @@ Array(1, GrowMoat, "g1_moat_9-0", "23.5"),
 Array(1, GrowMoat, "g1_moat_10-0", "23.5"),
 Array(1, GrowMoat, "g1_moat_11-0", "23.5"),
 Array(1, GrowMoat, "g1_moat_12-0", "23.5"),
-Array(446, Wait, "g1_()"),
+Array(432, Wait, "g1_()"),
 Array(1, AddEdge, "g2_7-12"),
 Array(1, ShowActive, "l_3"),
 Array(5, AddEdge, "g1_7-12"),
 Array(1, SetAllVerticesColor, "g2_#996666", "12"),
-Array(2, SetEdgeColor, "g2_7-12", "#996666"),
-Array(3, ShowActive, "l_1"),
+Array(1, SetEdgeColor, "g2_7-12", "#996666"),
+Array(2, ShowActive, "l_1"),
 Array(1, UpdateEdgeInfo, "g1_7-12", "Edge (7,12) weight: 47"),
-Array(6, ShowActive, "l_2"),
+Array(5, ShowActive, "l_2"),
 Array(6, CreateMoat, "g1_moat_1-1", "23.5", "#FF8800"),
 Array(1, CreateMoat, "g1_moat_2-1", "23.5", "#FF8800"),
 Array(1, CreateMoat, "g1_moat_3-1", "23.5", "#FF8800"),
@@ -395,14 +438,14 @@ Array(1, GrowMoat, "g1_moat_8-1", "35.0"),
 Array(1, GrowMoat, "g1_moat_9-1", "35.0"),
 Array(1, GrowMoat, "g1_moat_10-1", "35.0"),
 Array(1, GrowMoat, "g1_moat_11-1", "35.0"),
-Array(228, Wait, "g1_()"),
+Array(227, Wait, "g1_()"),
 Array(1, AddEdge, "g2_4-8"),
-Array(2, ShowActive, "l_3"),
+Array(1, ShowActive, "l_3"),
 Array(5, AddEdge, "g1_4-8"),
 Array(1, SetAllVerticesColor, "g2_#009999", "8"),
 Array(1, SetEdgeColor, "g2_4-8", "#009999"),
-Array(2, ShowActive, "l_1"),
-Array(5, ShowActive, "l_2"),
+Array(1, ShowActive, "l_1"),
+Array(6, ShowActive, "l_2"),
 Array(6, CreateMoat, "g1_moat_1-2", "35.0", "#FFFF00"),
 Array(1, CreateMoat, "g1_moat_2-2", "35.0", "#FFFF00"),
 Array(1, CreateMoat, "g1_moat_3-2", "35.0", "#FFFF00"),
@@ -427,7 +470,7 @@ Array(1, GrowMoat, "g1_moat_12-2", "42.0"),
 Array(1, GrowMoat, "g1_moat_9-2", "42.0"),
 Array(1, GrowMoat, "g1_moat_10-2", "42.0"),
 Array(1, GrowMoat, "g1_moat_11-2", "42.0"),
-Array(142, Wait, "g1_()"),
+Array(141, Wait, "g1_()"),
 Array(1, AddEdge, "g2_8-9"),
 Array(1, ShowActive, "l_3"),
 Array(5, AddEdge, "g1_8-9"),
@@ -460,13 +503,13 @@ Array(1, GrowMoat, "g1_moat_7-3", "59.0"),
 Array(1, GrowMoat, "g1_moat_12-3", "59.0"),
 Array(1, GrowMoat, "g1_moat_10-3", "59.0"),
 Array(1, GrowMoat, "g1_moat_11-3", "59.0"),
-Array(378, Wait, "g1_()"),
+Array(379, Wait, "g1_()"),
 Array(1, AddEdge, "g2_9-10"),
 Array(1, ShowActive, "l_3"),
 Array(5, AddEdge, "g1_9-10"),
 Array(1, SetAllVerticesColor, "g2_#009999", "10"),
 Array(1, SetEdgeColor, "g2_9-10", "#009999"),
-Array(1, ShowActive, "l_1"),
+Array(2, ShowActive, "l_1"),
 Array(1, UpdateEdgeInfo, "g1_10-9", "Edge (10,9) weight: 117"),
 Array(5, ShowActive, "l_2"),
 Array(6, CreateMoat, "g1_moat_1-4", "59.0", "#00FFFF"),
@@ -493,9 +536,9 @@ Array(1, GrowMoat, "g1_moat_6-4", "66.5"),
 Array(1, GrowMoat, "g1_moat_7-4", "66.5"),
 Array(1, GrowMoat, "g1_moat_12-4", "66.5"),
 Array(1, GrowMoat, "g1_moat_11-4", "66.5"),
-Array(184, Wait, "g1_()"),
+Array(179, Wait, "g1_()"),
 Array(1, AddEdge, "g2_3-4"),
-Array(1, ShowActive, "l_3"),
+Array(2, ShowActive, "l_3"),
 Array(5, AddEdge, "g1_3-4"),
 Array(1, SetVertexColor, "g2_4", "#0000FF"),
 Array(1, SetVertexColor, "g2_8", "#0000FF"),
@@ -533,7 +576,7 @@ Array(1, GrowMoat, "g1_moat_6-5", "71.0"),
 Array(1, GrowMoat, "g1_moat_7-5", "71.0"),
 Array(1, GrowMoat, "g1_moat_12-5", "71.0"),
 Array(1, GrowMoat, "g1_moat_11-5", "71.0"),
-Array(112, Wait, "g1_()"),
+Array(116, Wait, "g1_()"),
 Array(1, AddEdge, "g2_3-11"),
 Array(1, ShowActive, "l_3"),
 Array(5, AddEdge, "g1_3-11"),
@@ -584,8 +627,8 @@ Array(1, SetEdgeColor, "g2_10-9", "#00FF00"),
 Array(1, SetAllVerticesColor, "g2_#00FF00", "3", "4", "8", "9", "10", "11"),
 Array(2, SetEdgeColor, "g2_2-3", "#00FF00"),
 Array(2, ShowActive, "l_1"),
-Array(6, ShowActive, "l_2"),
-Array(6, CreateMoat, "g1_moat_1-7", "75.5", "#8800FF"),
+Array(5, ShowActive, "l_2"),
+Array(7, CreateMoat, "g1_moat_1-7", "75.5", "#8800FF"),
 Array(1, CreateMoat, "g1_moat_2-7", "75.5", "#8800FF"),
 Array(1, CreateMoat, "g1_moat_3-7", "75.5", "#8800FF"),
 Array(1, CreateMoat, "g1_moat_4-7", "75.5", "#8800FF"),
@@ -609,13 +652,13 @@ Array(1, GrowMoat, "g1_moat_5-7", "80.5"),
 Array(1, GrowMoat, "g1_moat_6-7", "80.5"),
 Array(1, GrowMoat, "g1_moat_7-7", "80.5"),
 Array(1, GrowMoat, "g1_moat_12-7", "80.5"),
-Array(147, Wait, "g1_()"),
+Array(142, Wait, "g1_()"),
 Array(1, AddEdge, "g2_7-11"),
-Array(1, ShowActive, "l_3"),
+Array(2, ShowActive, "l_3"),
 Array(5, AddEdge, "g1_7-11"),
 Array(1, SetVertexColor, "g2_2", "#996666"),
 Array(2, SetVertexColor, "g2_3", "#996666"),
-Array(2, SetVertexColor, "g2_4", "#996666"),
+Array(1, SetVertexColor, "g2_4", "#996666"),
 Array(1, SetVertexColor, "g2_11", "#996666"),
 Array(1, SetVertexColor, "g2_8", "#996666"),
 Array(1, SetVertexColor, "g2_9", "#996666"),
@@ -630,7 +673,7 @@ Array(1, SetAllVerticesColor, "g2_#996666", "2", "3", "4", "11", "8", "9", "10")
 Array(2, SetEdgeColor, "g2_7-11", "#996666"),
 Array(2, ShowActive, "l_1"),
 Array(1, UpdateEdgeInfo, "g1_7-11", "Edge (7,11) weight: 161"),
-Array(6, ShowActive, "l_2"),
+Array(5, ShowActive, "l_2"),
 Array(7, CreateMoat, "g1_moat_1-8", "80.5", "#FF00FF"),
 Array(1, CreateMoat, "g1_moat_5-8", "80.5", "#FF00FF"),
 Array(1, CreateMoat, "g1_moat_6-8", "80.5", "#FF00FF"),
@@ -655,14 +698,14 @@ Array(1, GrowMoat, "g1_moat_11-8", "90.0"),
 Array(1, GrowMoat, "g1_moat_8-8", "90.0"),
 Array(1, GrowMoat, "g1_moat_9-8", "90.0"),
 Array(1, GrowMoat, "g1_moat_10-8", "90.0"),
-Array(295, Wait, "g1_()"),
+Array(296, Wait, "g1_()"),
 Array(1, AddEdge, "g2_2-5"),
 Array(1, ShowActive, "l_3"),
 Array(5, AddEdge, "g1_2-5"),
 Array(1, SetAllVerticesColor, "g2_#996666", "5"),
 Array(2, SetEdgeColor, "g2_2-5", "#996666"),
 Array(2, ShowActive, "l_1"),
-Array(6, ShowActive, "l_2"),
+Array(5, ShowActive, "l_2"),
 Array(6, CreateMoat, "g1_moat_1-9", "90.0", "#FF0000"),
 Array(1, CreateMoat, "g1_moat_6-9", "90.0", "#FF0000"),
 Array(1, CreateMoat, "g1_moat_7-9", "90.0", "#FF0000"),
@@ -687,13 +730,13 @@ Array(1, GrowMoat, "g1_moat_8-9", "96.0"),
 Array(1, GrowMoat, "g1_moat_9-9", "96.0"),
 Array(1, GrowMoat, "g1_moat_10-9", "96.0"),
 Array(1, GrowMoat, "g1_moat_5-9", "96.0"),
-Array(169, Wait, "g1_()"),
+Array(202, Wait, "g1_()"),
 Array(1, AddEdge, "g2_4-6"),
-Array(1, ShowActive, "l_3"),
+Array(2, ShowActive, "l_3"),
 Array(5, AddEdge, "g1_4-6"),
 Array(1, SetAllVerticesColor, "g2_#996666", "6"),
 Array(2, SetEdgeColor, "g2_4-6", "#996666"),
-Array(1, ShowActive, "l_1"),
+Array(2, ShowActive, "l_1"),
 Array(1, UpdateEdgeInfo, "g1_6-4", "Edge (6,4) weight: 191"),
 Array(5, ShowActive, "l_2"),
 Array(6, CreateMoat, "g1_moat_1-10", "96.0", "#FF8800"),
@@ -720,12 +763,12 @@ Array(1, GrowMoat, "g1_moat_9-10", "100.0"),
 Array(1, GrowMoat, "g1_moat_10-10", "100.0"),
 Array(1, GrowMoat, "g1_moat_5-10", "100.0"),
 Array(1, GrowMoat, "g1_moat_6-10", "100.0"),
-Array(96, Wait, "g1_()"),
+Array(142, Wait, "g1_()"),
 Array(1, AddEdge, "g2_1-8"),
-Array(1, ShowActive, "l_3"),
+Array(2, ShowActive, "l_3"),
 Array(5, AddEdge, "g1_1-8"),
 Array(1, SetVertexColor, "g2_7", "#FF0000"),
-Array(6, SetVertexColor, "g2_12", "#FF0000"),
+Array(2, SetVertexColor, "g2_12", "#FF0000"),
 Array(1, SetVertexColor, "g2_11", "#FF0000"),
 Array(1, SetVertexColor, "g2_2", "#FF0000"),
 Array(1, SetVertexColor, "g2_3", "#FF0000"),
@@ -746,8 +789,8 @@ Array(1, SetEdgeColor, "g2_6-4", "#FF0000"),
 Array(1, SetEdgeColor, "g2_9-8", "#FF0000"),
 Array(1, SetEdgeColor, "g2_10-9", "#FF0000"),
 Array(1, SetAllVerticesColor, "g2_#FF0000", "7", "12", "2", "3", "4", "11", "8", "9", "10", "5", "6"),
-Array(1, SetEdgeColor, "g2_1-8", "#FF0000"),
-Array(1, ShowActive, "l_1"),
+Array(3, SetEdgeColor, "g2_1-8", "#FF0000"),
+Array(2, ShowActive, "l_1"),
 Array(1, UpdateEdgeInfo, "g1_1-8", "Edge (1,8) weight: 199"));
             init();
         </script>

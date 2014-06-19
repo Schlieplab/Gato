@@ -39,10 +39,53 @@
                 border-bottom: 2px solid #ccc;
                 height: 60px;
             }
+            #help_div {
+                position: absolute;
+                width: 100%;
+                height: 2.5em;
+                top: 0px;
+                left: 0px;
+                background-color: white;
+                border-bottom: 1px solid #aaa;
+                color: #333;
+            }
+            .invisible {
+                visibility: hidden;
+            }
+            .visible {
+                visibility: visible;
+                z-index: 1000;
+            }
+            .help_link {
+                font-family: Helvetica;
+                font-size: 1.5em;
+                text-decoration: none;
+                color: #87afff;
+            }
+            .help_link:visited {
+                color: #1354D6;
+            }
+            .help_link:hover {
+                color: #1354D6;
+            }
+            .left_link {
+                border-right: 1px solid #aaa;
+                padding-right: 15px;
+                margin-right: 0px;
+            }
+            .right_link {
+                margin-left: 0px;
+                padding-left: 15px;
+            }
         </style>
         <title>Gato -- DFS-Recursive algorithm on FordFulkerson5 graph</title>
     </head>
     <body>
+        <div id="help_div" class="invisible">
+            <div style="padding: .5em">
+                <a class="help_link left_link" href="./index.html" target="_blank">Index</a><a class="help_link right_link" href="./help.html" target="_blank">Help</a>
+            </div>
+        </div>
         <div id="nav_bar" class="inactive_nav">
             <svg id="nav_svg">
 
@@ -332,34 +375,34 @@
         
         <script type="text/javascript">
             var anim_array = Array(Array(1, SetAllVerticesColor, "g1_#EEEEEE"),
-Array(1, SetVertexAnnotation, "g1_1", "None"),
+Array(3, SetVertexAnnotation, "g1_1", "None"),
 Array(5, SetVertexColor, "g1_1", "#CFCFCF"),
 Array(1, SetVertexAnnotation, "g1_2", "None"),
 Array(5, SetVertexColor, "g1_2", "#CFCFCF"),
 Array(1, SetVertexAnnotation, "g1_3", "None"),
-Array(6, SetVertexColor, "g1_3", "#CFCFCF"),
+Array(2, SetVertexColor, "g1_3", "#CFCFCF"),
 Array(1, SetVertexAnnotation, "g1_4", "None"),
-Array(2, SetVertexColor, "g1_4", "#CFCFCF"),
+Array(3, SetVertexColor, "g1_4", "#CFCFCF"),
 Array(1, SetVertexAnnotation, "g1_5", "None"),
-Array(2, SetVertexColor, "g1_5", "#CFCFCF"),
+Array(4, SetVertexColor, "g1_5", "#CFCFCF"),
 Array(1, SetVertexAnnotation, "g1_6", "None"),
-Array(5, SetVertexColor, "g1_6", "#CFCFCF"),
+Array(4, SetVertexColor, "g1_6", "#CFCFCF"),
 Array(1, SetVertexAnnotation, "g1_7", "None"),
-Array(3, SetVertexColor, "g1_7", "#CFCFCF"),
+Array(4, SetVertexColor, "g1_7", "#CFCFCF"),
 Array(1, SetVertexAnnotation, "g1_8", "None"),
-Array(2, SetVertexColor, "g1_8", "#CFCFCF"),
+Array(4, SetVertexColor, "g1_8", "#CFCFCF"),
 Array(1, SetVertexAnnotation, "g1_9", "None"),
-Array(2, SetVertexColor, "g1_9", "#CFCFCF"),
+Array(4, SetVertexColor, "g1_9", "#CFCFCF"),
 Array(1, SetVertexAnnotation, "g1_10", "None"),
-Array(2, SetVertexColor, "g1_10", "#CFCFCF"),
-Array(5, SetVertexAnnotation, "g1_11", "None"),
-Array(2, SetVertexColor, "g1_11", "#CFCFCF"),
-Array(4, SetVertexAnnotation, "g1_12", "None"),
-Array(4, SetVertexColor, "g1_12", "#CFCFCF"),
-Array(3, SetVertexAnnotation, "g1_13", "None"),
+Array(4, SetVertexColor, "g1_10", "#CFCFCF"),
+Array(1, SetVertexAnnotation, "g1_11", "None"),
+Array(4, SetVertexColor, "g1_11", "#CFCFCF"),
+Array(5, SetVertexAnnotation, "g1_12", "None"),
+Array(5, SetVertexColor, "g1_12", "#CFCFCF"),
+Array(5, SetVertexAnnotation, "g1_13", "None"),
 Array(5, SetVertexColor, "g1_13", "#CFCFCF"),
 Array(5, SetVertexAnnotation, "g1_14", "None"),
-Array(7, SetVertexColor, "g1_14", "#CFCFCF"),
+Array(5, SetVertexColor, "g1_14", "#CFCFCF"),
 Array(6, ShowActive, "l_1"),
 Array(1, UpdateEdgeInfo, "g1_1-2", "Edge (1,2) weight: 141"),
 Array(1, UpdateEdgeInfo, "g1_5-9", "Edge (5,9) weight: 50"),
@@ -432,7 +475,7 @@ Array(1, SetVertexFrameWidth, "g1_9", "0"),
 Array(1, SetVertexFrameWidth, "g1_5", "0"),
 Array(1, SetEdgeColor, "g1_2-4", "yellow"),
 Array(1, BlinkEdge, "g1_2-4", "white"),
-Array(10, SetEdgeColor, "g1_2-4", "red"),
+Array(9, SetEdgeColor, "g1_2-4", "red"),
 Array(1, SetVertexAnnotation, "g1_4", "7"),
 Array(5, SetVertexColor, "g1_4", "red"),
 Array(1, SetVertexFrameWidth, "g1_4", "6"),
@@ -450,15 +493,15 @@ Array(1, SetVertexFrameWidth, "g1_4", "0"),
 Array(1, SetVertexFrameWidth, "g1_2", "0"),
 Array(1, SetEdgeColor, "g1_1-3", "yellow"),
 Array(1, BlinkEdge, "g1_1-3", "white"),
-Array(10, SetEdgeColor, "g1_1-3", "red"),
+Array(9, SetEdgeColor, "g1_1-3", "red"),
 Array(1, SetVertexAnnotation, "g1_3", "9"),
-Array(6, SetVertexColor, "g1_3", "red"),
+Array(5, SetVertexColor, "g1_3", "red"),
 Array(1, SetVertexFrameWidth, "g1_3", "6"),
 Array(1, SetEdgeColor, "g1_3-6", "yellow"),
 Array(1, BlinkEdge, "g1_3-6", "white"),
 Array(10, SetEdgeColor, "g1_3-6", "red"),
 Array(1, SetVertexAnnotation, "g1_6", "10"),
-Array(6, SetVertexColor, "g1_6", "red"),
+Array(5, SetVertexColor, "g1_6", "red"),
 Array(1, SetVertexFrameWidth, "g1_6", "6"),
 Array(1, SetEdgeColor, "g1_6-10", "yellow"),
 Array(1, BlinkEdge, "g1_6-10", "white"),
@@ -468,7 +511,7 @@ Array(5, SetVertexColor, "g1_10", "red"),
 Array(1, SetVertexFrameWidth, "g1_10", "6"),
 Array(1, SetEdgeColor, "g1_10-13", "yellow"),
 Array(1, BlinkEdge, "g1_10-13", "white"),
-Array(10, SetEdgeColor, "g1_10-13", "red"),
+Array(9, SetEdgeColor, "g1_10-13", "red"),
 Array(1, SetVertexAnnotation, "g1_13", "12"),
 Array(5, SetVertexColor, "g1_13", "red"),
 Array(1, SetVertexFrameWidth, "g1_13", "6"),
@@ -492,7 +535,7 @@ Array(5, SetVertexColor, "g1_11", "red"),
 Array(1, SetVertexFrameWidth, "g1_11", "6"),
 Array(1, SetEdgeColor, "g1_11-13", "yellow"),
 Array(1, BlinkEdge, "g1_11-13", "white"),
-Array(10, SetEdgeColor, "g1_11-13", "grey"),
+Array(9, SetEdgeColor, "g1_11-13", "grey"),
 Array(1, SetVertexFrameWidth, "g1_11", "0"),
 Array(1, SetVertexFrameWidth, "g1_7", "0"),
 Array(1, SetVertexFrameWidth, "g1_3", "0"),

@@ -39,10 +39,53 @@ animationhead = '''
                 border-bottom: 2px solid #ccc;
                 height: 60px;
             }
+            #help_div {
+                position: absolute;
+                width: 100%%;
+                height: 2.5em;
+                top: 0px;
+                left: 0px;
+                background-color: white;
+                border-bottom: 1px solid #aaa;
+                color: #333;
+            }
+            .invisible {
+                visibility: hidden;
+            }
+            .visible {
+                visibility: visible;
+                z-index: 1000;
+            }
+            .help_link {
+                font-family: Helvetica;
+                font-size: 1.5em;
+                text-decoration: none;
+                color: #87afff;
+            }
+            .help_link:visited {
+                color: #1354D6;
+            }
+            .help_link:hover {
+                color: #1354D6;
+            }
+            .left_link {
+                border-right: 1px solid #aaa;
+                padding-right: 15px;
+                margin-right: 0px;
+            }
+            .right_link {
+                margin-left: 0px;
+                padding-left: 15px;
+            }
         </style>
         <title>%(title)s</title>
     </head>
     <body>
+        <div id="help_div" class="invisible">
+            <div style="padding: .5em">
+                <a class="help_link left_link" href="./index.html" target="_blank">Index</a><a class="help_link right_link" href="./help.html" target="_blank">Help</a>
+            </div>
+        </div>
         <div id="nav_bar" class="inactive_nav">
             <svg id="nav_svg">
 

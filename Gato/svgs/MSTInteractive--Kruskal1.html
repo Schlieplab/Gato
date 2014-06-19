@@ -39,10 +39,53 @@
                 border-bottom: 2px solid #ccc;
                 height: 60px;
             }
+            #help_div {
+                position: absolute;
+                width: 100%;
+                height: 2.5em;
+                top: 0px;
+                left: 0px;
+                background-color: white;
+                border-bottom: 1px solid #aaa;
+                color: #333;
+            }
+            .invisible {
+                visibility: hidden;
+            }
+            .visible {
+                visibility: visible;
+                z-index: 1000;
+            }
+            .help_link {
+                font-family: Helvetica;
+                font-size: 1.5em;
+                text-decoration: none;
+                color: #87afff;
+            }
+            .help_link:visited {
+                color: #1354D6;
+            }
+            .help_link:hover {
+                color: #1354D6;
+            }
+            .left_link {
+                border-right: 1px solid #aaa;
+                padding-right: 15px;
+                margin-right: 0px;
+            }
+            .right_link {
+                margin-left: 0px;
+                padding-left: 15px;
+            }
         </style>
         <title>Gato -- MSTInteractive algorithm on Kruskal1 graph</title>
     </head>
     <body>
+        <div id="help_div" class="invisible">
+            <div style="padding: .5em">
+                <a class="help_link left_link" href="./index.html" target="_blank">Index</a><a class="help_link right_link" href="./help.html" target="_blank">Help</a>
+            </div>
+        </div>
         <div id="nav_bar" class="inactive_nav">
             <svg id="nav_svg">
 
@@ -279,7 +322,7 @@ Array(1, UpdateVertexInfo, "g1_7", "Vertex 7 at position (750,100)"),
 Array(1, UpdateVertexInfo, "g1_8", "Vertex 8 at position (500,150)"),
 Array(1, UpdateVertexInfo, "g1_9", "Vertex 9 at position (400,200)"),
 Array(1, UpdateVertexInfo, "g1_10", "Vertex 10 at position (250,200)"),
-Array(5, SetEdgeColor, "g1_1-2", "green"),
+Array(4, SetEdgeColor, "g1_1-2", "green"),
 Array(1, BlinkEdge, "g1_1-2", "None"),
 Array(11, ShowActive, "l_5"),
 Array(6, ShowActive, "l_6"),
@@ -302,7 +345,7 @@ Array(1, UpdateEdgeInfo, "g1_2-3", "Weight of edge (2,3): 141 - Weight of compon
 Array(5, ShowActive, "l_3"),
 Array(5, SetEdgeColor, "g1_3-4", "green"),
 Array(1, BlinkEdge, "g1_3-4", "None"),
-Array(11, ShowActive, "l_5"),
+Array(10, ShowActive, "l_5"),
 Array(6, ShowActive, "l_6"),
 Array(5, SetAllVerticesColor, "g1_#FF0000", "4"),
 Array(2, SetEdgeColor, "g1_3-4", "#FF0000"),
@@ -327,7 +370,7 @@ Array(1, UpdateEdgeInfo, "g1_3-4", "Weight of edge (3,4): 71 - Weight of compone
 Array(5, ShowActive, "l_3"),
 Array(5, SetEdgeColor, "g1_4-10", "green"),
 Array(1, BlinkEdge, "g1_4-10", "None"),
-Array(10, ShowActive, "l_5"),
+Array(11, ShowActive, "l_5"),
 Array(6, ShowActive, "l_6"),
 Array(5, SetAllVerticesColor, "g1_#FF0000", "10"),
 Array(2, SetEdgeColor, "g1_4-10", "#FF0000"),
@@ -341,7 +384,7 @@ Array(1, UpdateEdgeInfo, "g1_3-4", "Weight of edge (3,4): 71 - Weight of compone
 Array(5, ShowActive, "l_3"),
 Array(5, SetEdgeColor, "g1_5-6", "green"),
 Array(1, BlinkEdge, "g1_5-6", "None"),
-Array(11, ShowActive, "l_5"),
+Array(10, ShowActive, "l_5"),
 Array(6, ShowActive, "l_6"),
 Array(5, SetAllVerticesColor, "g1_#FF0000", "6"),
 Array(2, SetEdgeColor, "g1_5-6", "#FF0000"),
@@ -359,7 +402,7 @@ Array(1, BlinkEdge, "g1_5-8", "None"),
 Array(11, ShowActive, "l_5"),
 Array(6, ShowActive, "l_6"),
 Array(5, SetAllVerticesColor, "g1_#FF0000", "8"),
-Array(2, SetEdgeColor, "g1_5-8", "#FF0000"),
+Array(3, SetEdgeColor, "g1_5-8", "#FF0000"),
 Array(2, ShowActive, "l_1"),
 Array(1, UpdateGraphInfo, "g1_()", "Component [1,2,3,...] has maximal weight: 944 - MST weight is 1168"),
 Array(1, UpdateEdgeInfo, "g1_1-2", "Weight of edge (1,2): 112 - Weight of component: 944"),
@@ -376,7 +419,7 @@ Array(10, ShowActive, "l_5"),
 Array(6, ShowActive, "l_6"),
 Array(5, SetAllVerticesColor, "g1_#FF0000", "7"),
 Array(2, SetEdgeColor, "g1_6-7", "#FF0000"),
-Array(2, ShowActive, "l_1"),
+Array(1, ShowActive, "l_1"),
 Array(1, UpdateGraphInfo, "g1_()", "Component [1,2,3,...] has maximal weight: 1056 - MST weight is 1168"),
 Array(1, UpdateEdgeInfo, "g1_1-2", "Weight of edge (1,2): 112 - Weight of component: 1056"),
 Array(1, UpdateEdgeInfo, "g1_4-10", "Weight of edge (4,10): 112 - Weight of component: 1056"),

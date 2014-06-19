@@ -39,10 +39,53 @@
                 border-bottom: 2px solid #ccc;
                 height: 60px;
             }
+            #help_div {
+                position: absolute;
+                width: 100%;
+                height: 2.5em;
+                top: 0px;
+                left: 0px;
+                background-color: white;
+                border-bottom: 1px solid #aaa;
+                color: #333;
+            }
+            .invisible {
+                visibility: hidden;
+            }
+            .visible {
+                visibility: visible;
+                z-index: 1000;
+            }
+            .help_link {
+                font-family: Helvetica;
+                font-size: 1.5em;
+                text-decoration: none;
+                color: #87afff;
+            }
+            .help_link:visited {
+                color: #1354D6;
+            }
+            .help_link:hover {
+                color: #1354D6;
+            }
+            .left_link {
+                border-right: 1px solid #aaa;
+                padding-right: 15px;
+                margin-right: 0px;
+            }
+            .right_link {
+                margin-left: 0px;
+                padding-left: 15px;
+            }
         </style>
         <title>Gato -- KruskalTrace algorithm on Kruskal1 graph</title>
     </head>
     <body>
+        <div id="help_div" class="invisible">
+            <div style="padding: .5em">
+                <a class="help_link left_link" href="./index.html" target="_blank">Index</a><a class="help_link right_link" href="./help.html" target="_blank">Help</a>
+            </div>
+        </div>
         <div id="nav_bar" class="inactive_nav">
             <svg id="nav_svg">
 
@@ -259,10 +302,10 @@
         <script type="text/javascript">
             var anim_array = Array(Array(1, SetVertexColor, "g1_1", "#FF0000"),
 Array(2, BlinkVertex, "g1_1", "None"),
-Array(9, SetVertexColor, "g1_1", "#FF0000"),
+Array(8, SetVertexColor, "g1_1", "#FF0000"),
 Array(1, SetVertexColor, "g1_2", "#00FF00"),
 Array(1, BlinkVertex, "g1_2", "None"),
-Array(11, SetVertexColor, "g1_2", "#00FF00"),
+Array(9, SetVertexColor, "g1_2", "#00FF00"),
 Array(1, SetVertexColor, "g1_3", "#0000FF"),
 Array(1, BlinkVertex, "g1_3", "None"),
 Array(9, SetVertexColor, "g1_3", "#0000FF"),
@@ -311,20 +354,20 @@ Array(5, ShowActive, "l_13"),
 Array(5, ShowActive, "l_19"),
 Array(6, ShowActive, "l_21"),
 Array(5, SetEdgeColor, "g1_3-4", "yellow"),
-Array(1, ShowActive, "l_22"),
+Array(2, ShowActive, "l_22"),
 Array(5, ShowActive, "l_23"),
 Array(5, SetVertexColor, "g1_4", "#0000FF"),
 Array(1, BlinkVertex, "g1_4", "None"),
 Array(10, SetVertexColor, "g1_4", "#0000FF"),
 Array(1, SetEdgeColor, "g1_3-4", "#0000FF"),
 Array(1, SetAllVerticesColor, "g1_#0000FF", "4"),
-Array(2, ShowActive, "l_21"),
-Array(5, SetEdgeColor, "g1_1-2", "yellow"),
+Array(1, ShowActive, "l_21"),
+Array(4, SetEdgeColor, "g1_1-2", "yellow"),
 Array(1, ShowActive, "l_22"),
 Array(5, ShowActive, "l_23"),
-Array(5, SetVertexColor, "g1_2", "#FF0000"),
+Array(4, SetVertexColor, "g1_2", "#FF0000"),
 Array(1, BlinkVertex, "g1_2", "None"),
-Array(9, SetVertexColor, "g1_2", "#FF0000"),
+Array(10, SetVertexColor, "g1_2", "#FF0000"),
 Array(1, SetEdgeColor, "g1_1-2", "#FF0000"),
 Array(1, SetAllVerticesColor, "g1_#FF0000", "2"),
 Array(2, ShowActive, "l_21"),
@@ -339,7 +382,7 @@ Array(1, SetAllVerticesColor, "g1_#0000FF", "10"),
 Array(2, ShowActive, "l_21"),
 Array(5, SetEdgeColor, "g1_5-8", "yellow"),
 Array(1, ShowActive, "l_22"),
-Array(6, ShowActive, "l_23"),
+Array(5, ShowActive, "l_23"),
 Array(5, SetVertexColor, "g1_8", "#990099"),
 Array(1, BlinkVertex, "g1_8", "None"),
 Array(10, SetVertexColor, "g1_8", "#990099"),
@@ -351,17 +394,17 @@ Array(1, ShowActive, "l_22"),
 Array(5, ShowActive, "l_23"),
 Array(5, SetVertexColor, "g1_7", "#999900"),
 Array(1, BlinkVertex, "g1_7", "None"),
-Array(9, SetVertexColor, "g1_7", "#999900"),
+Array(8, SetVertexColor, "g1_7", "#999900"),
 Array(1, SetEdgeColor, "g1_6-7", "#999900"),
 Array(1, SetAllVerticesColor, "g1_#999900", "7"),
-Array(2, ShowActive, "l_21"),
+Array(1, ShowActive, "l_21"),
 Array(5, SetEdgeColor, "g1_8-9", "yellow"),
-Array(2, ShowActive, "l_22"),
+Array(1, ShowActive, "l_22"),
 Array(5, ShowActive, "l_23"),
 Array(5, SetVertexColor, "g1_9", "#990099"),
 Array(1, BlinkVertex, "g1_9", "None"),
-Array(10, SetVertexColor, "g1_9", "#990099"),
-Array(2, SetEdgeColor, "g1_8-9", "#990099"),
+Array(9, SetVertexColor, "g1_9", "#990099"),
+Array(1, SetEdgeColor, "g1_8-9", "#990099"),
 Array(1, SetAllVerticesColor, "g1_#990099", "9"),
 Array(2, ShowActive, "l_21"),
 Array(5, SetEdgeColor, "g1_2-3", "yellow"),
@@ -369,10 +412,10 @@ Array(1, ShowActive, "l_22"),
 Array(5, ShowActive, "l_23"),
 Array(5, SetVertexColor, "g1_1", "#0000FF"),
 Array(1, BlinkVertex, "g1_1", "None"),
-Array(8, SetVertexColor, "g1_2", "#0000FF"),
+Array(9, SetVertexColor, "g1_2", "#0000FF"),
 Array(1, BlinkVertex, "g1_2", "None"),
 Array(10, SetVertexColor, "g1_2", "#0000FF"),
-Array(1, SetEdgeColor, "g1_2-3", "#0000FF"),
+Array(2, SetEdgeColor, "g1_2-3", "#0000FF"),
 Array(1, SetVertexColor, "g1_1", "#0000FF"),
 Array(1, SetEdgeColor, "g1_2-1", "#0000FF"),
 Array(1, SetAllVerticesColor, "g1_#0000FF", "1", "2"),
@@ -384,14 +427,14 @@ Array(5, SetVertexColor, "g1_6", "#990099"),
 Array(1, BlinkVertex, "g1_6", "None"),
 Array(8, SetVertexColor, "g1_7", "#990099"),
 Array(1, BlinkVertex, "g1_7", "None"),
-Array(9, SetVertexColor, "g1_6", "#990099"),
+Array(8, SetVertexColor, "g1_6", "#990099"),
 Array(1, SetEdgeColor, "g1_5-6", "#990099"),
-Array(2, SetVertexColor, "g1_7", "#990099"),
+Array(1, SetVertexColor, "g1_7", "#990099"),
 Array(1, SetEdgeColor, "g1_7-6", "#990099"),
 Array(1, SetAllVerticesColor, "g1_#990099", "6", "7"),
 Array(2, ShowActive, "l_21"),
 Array(5, SetEdgeColor, "g1_4-5", "yellow"),
-Array(2, ShowActive, "l_22"),
+Array(1, ShowActive, "l_22"),
 Array(5, ShowActive, "l_23"),
 Array(5, SetVertexColor, "g1_5", "#0000FF"),
 Array(1, BlinkVertex, "g1_5", "None"),

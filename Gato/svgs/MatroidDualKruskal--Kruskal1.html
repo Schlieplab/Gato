@@ -39,10 +39,53 @@
                 border-bottom: 2px solid #ccc;
                 height: 60px;
             }
+            #help_div {
+                position: absolute;
+                width: 100%;
+                height: 2.5em;
+                top: 0px;
+                left: 0px;
+                background-color: white;
+                border-bottom: 1px solid #aaa;
+                color: #333;
+            }
+            .invisible {
+                visibility: hidden;
+            }
+            .visible {
+                visibility: visible;
+                z-index: 1000;
+            }
+            .help_link {
+                font-family: Helvetica;
+                font-size: 1.5em;
+                text-decoration: none;
+                color: #87afff;
+            }
+            .help_link:visited {
+                color: #1354D6;
+            }
+            .help_link:hover {
+                color: #1354D6;
+            }
+            .left_link {
+                border-right: 1px solid #aaa;
+                padding-right: 15px;
+                margin-right: 0px;
+            }
+            .right_link {
+                margin-left: 0px;
+                padding-left: 15px;
+            }
         </style>
         <title>Gato -- MatroidDualKruskal algorithm on Kruskal1 graph</title>
     </head>
     <body>
+        <div id="help_div" class="invisible">
+            <div style="padding: .5em">
+                <a class="help_link left_link" href="./index.html" target="_blank">Index</a><a class="help_link right_link" href="./help.html" target="_blank">Help</a>
+            </div>
+        </div>
         <div id="nav_bar" class="inactive_nav">
             <svg id="nav_svg">
 
@@ -248,7 +291,7 @@
         
         <script type="text/javascript">
             var anim_array = Array(Array(1, SetVertexColor, "g1_1", "blue"),
-Array(3, SetVertexColor, "g1_2", "blue"),
+Array(2, SetVertexColor, "g1_2", "blue"),
 Array(1, SetEdgeColor, "g1_1-2", "blue"),
 Array(1, SetVertexColor, "g1_3", "blue"),
 Array(1, SetEdgeColor, "g1_2-3", "blue"),
@@ -287,7 +330,7 @@ Array(1, UpdateVertexInfo, "g1_7", "Vertex 7 at position (750,100)"),
 Array(1, UpdateVertexInfo, "g1_8", "Vertex 8 at position (500,150)"),
 Array(1, UpdateVertexInfo, "g1_9", "Vertex 9 at position (400,200)"),
 Array(1, UpdateVertexInfo, "g1_10", "Vertex 10 at position (250,200)"),
-Array(5, ShowActive, "l_3"),
+Array(6, ShowActive, "l_3"),
 Array(5, SetEdgeColor, "g1_4-5", "yellow"),
 Array(1, ShowActive, "l_4"),
 Array(5, ShowActive, "l_3"),
@@ -305,7 +348,7 @@ Array(1, ShowActive, "l_4"),
 Array(5, ShowActive, "l_3"),
 Array(5, SetEdgeColor, "g1_1-2", "blue"),
 Array(1, SetEdgeColor, "g1_4-10", "yellow"),
-Array(2, ShowActive, "l_4"),
+Array(1, ShowActive, "l_4"),
 Array(5, ShowActive, "l_3"),
 Array(5, SetEdgeColor, "g1_4-10", "blue"),
 Array(1, SetEdgeColor, "g1_5-8", "yellow"),
@@ -317,7 +360,7 @@ Array(1, ShowActive, "l_4"),
 Array(5, ShowActive, "l_3"),
 Array(5, SetEdgeColor, "g1_6-7", "blue"),
 Array(1, SetEdgeColor, "g1_8-9", "yellow"),
-Array(2, ShowActive, "l_4"),
+Array(1, ShowActive, "l_4"),
 Array(5, ShowActive, "l_3"),
 Array(5, SetEdgeColor, "g1_8-9", "blue"),
 Array(1, SetEdgeColor, "g1_3-4", "yellow"),
