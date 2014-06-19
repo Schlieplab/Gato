@@ -27,17 +27,23 @@ animationhead = '''
                 cursor: pointer;
             }
             #nav_bar {
-                height: 60px;
                 /* background-color: #10347D; */
                 background-color: white;
                 width: 100%%;
+            }
+            .inactive_nav {
+                height: 0px;
+                border-bottom: 0px;
+            }
+            .active_nav {
                 border-bottom: 2px solid #ccc;
+                height: 60px;
             }
         </style>
         <title>%(title)s</title>
     </head>
     <body>
-        <div id="nav_bar">
+        <div id="nav_bar" class="inactive_nav">
             <svg id="nav_svg">
 
             </svg>
