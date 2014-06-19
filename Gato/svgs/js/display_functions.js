@@ -265,7 +265,9 @@ function add_tooltip(elem, element_type) {
 function add_graph_info() {
     /* Adds graph info elements to the canvas */
     function build_graph_info(group, g_num) {
-        var text_elem = snap.text(5, 0, 'No Info').attr({'id': 'g' + g_num + '_info'});     // Set this to "No Info"(or any text) at first so the bbox has a height
+        var text_elem = snap.text(5, 0, 'No Info').attr({'id': 'g' + g_num + '_info'}).attr({
+            'font-family': 'Helvetica'
+        });     // Set this to "No Info"(or any text) at first so the bbox has a height
         text_elem.attr({'y': text_elem.getBBox().height-1});    
         text_elem.attr({'text': g.init_graph_infos[g_num-1]}); // TODO: commit this line    /* This line fixes the safari issue */
         group.append(text_elem);
