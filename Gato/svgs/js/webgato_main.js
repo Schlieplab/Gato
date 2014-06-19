@@ -6,7 +6,12 @@ function fill_global() {
     /*  Fills the global variable, g, with all necessary info.  
         Where we don't have info yet null values are inserted
     */
-    var navbar_height = 60;
+    var navbar_height = 0;
+    var navbar_padding = 0;
+    if (isiPhone()) {
+        navbar_height = 60;
+        navbar_padding = 5;
+    }
     var cont_width = window.innerWidth;
     var cont_height = window.innerHeight - navbar_height;
     extend(g, {
@@ -17,7 +22,7 @@ function fill_global() {
         /* General Globals */
         // Width and height of the whole draw area
         navbar_height: navbar_height,
-        navbar_padding: 5,
+        navbar_padding: navbar_padding,
         ios_statusbar_height: 20,
         cont_width: cont_width,
         cont_height: cont_height,
@@ -382,5 +387,10 @@ function init() {
     add_scaler();
     save_initial_graph_dimensions();
 
-    g.navbar = new NavBar();
+    if (isiPhone()) {
+        document.getElementById('nav_bar').className = 'active_nav';
+        g.navbar = new NavBar();
+    } else {
+        g.navbar = null;
+    }
 }
