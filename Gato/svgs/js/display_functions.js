@@ -666,7 +666,7 @@ function ControlPanel(button_panel_height, y_trans) {
             }
         }
     })(this);
-    this.open_group.click(this.toggle_visibility);
+    this.open_group.click(this.toggle_visibility).touchstart(this.toggle_visibility);
 }
 
 function PlaybackBar() {
