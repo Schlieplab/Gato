@@ -1,0 +1,22 @@
+* {
+	font-family: Helvetica;
+}
+
+dt {
+	display: inline;
+}
+
+dd {
+	display: inline;
+}
+
+.clear_div {
+	clear: both;
+	height: 10px;
+}
+
+.color_div {
+	width: 10px;
+	height: 10px;
+	display: inline;
+}

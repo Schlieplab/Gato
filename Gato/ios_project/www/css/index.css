@@ -1,0 +1,61 @@
+body {
+	background-color: #ABC7D9;
+}
+
+.fixed_top_nav {
+	position: fixed; 
+	left: 0px; 
+	top: 0px; 
+	height: 40px;
+	padding: 10px;
+	z-index: 1000;
+	font-size: 20px;
+	padding-top: 5px;
+	border-radius: 0px;
+}
+
+.fixed_top_help {
+	position: fixed;
+	right: 0px;
+	top: 0px;
+	height: 40px;
+	padding: 10px;
+	z-index: 1000;
+	font-size: 20px;
+	padding-top: 5px;
+	border-radius: 0px;
+}
+
+.algo_div {
+	background-color: white;
+	border-radius: 5px;
+	margin-top: 10px;
+	padding: 10px;
+	border-radius: 0px;
+}
+
+.graph_img {
+	border: 1px solid #aaa;
+	border-radius: 2px;
+	height: 100%;
+	width: auto;
+}
+
+.graph_div {
+	text-align: center;
+	border-radius: 0px;
+}
+
+.graph_img_description {
+	margin-top: 20px;
+}
+
+.chapter_div {
+	padding-top: 0px;
+	border-radius: 0px;
+}
+
+.invisible {
+	display: none;
+	visibility: hidden;
+}

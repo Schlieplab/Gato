@@ -1,0 +1,971 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" type="text/css" href="js/subModal/subModal.css" />
+        <script type="text/javascript" src="js/subModal/common.js"></script>
+        <script type="text/javascript" src="js/subModal/subModal.js"></script>
+        <script src="js/snap.svg.js" type="text/javascript"></script>
+        <style>
+            html, body {
+                margin: 0 auto;
+                overflow-y: hidden;
+                background-image:url('img/white_wall.png')
+            }
+            * {
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                -khtml-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+            .edge {
+                cursor: pointer;
+            }
+            #nav_bar {
+                /* background-color: #10347D; */
+                background-color: white;
+                width: 100%;
+            }
+            .inactive_nav {
+                height: 0px;
+                border-bottom: 0px;
+            }
+            .active_nav {
+                border-bottom: 2px solid #ccc;
+                height: 60px;
+            }
+            #help_div {
+                position: absolute;
+                width: 100%;
+                height: 2.5em;
+                top: 0px;
+                left: 0px;
+                background-color: white;
+                border-bottom: 1px solid #aaa;
+                color: #333;
+            }
+            .invisible {
+                visibility: hidden;
+            }
+            .visible {
+                visibility: visible;
+                z-index: 1000;
+            }
+            .help_link {
+                font-family: Helvetica;
+                font-size: 1.5em;
+                text-decoration: none;
+                color: #87afff;
+            }
+            .help_link:visited {
+                color: #1354D6;
+            }
+            .help_link:hover {
+                color: #1354D6;
+            }
+            .left_link {
+                border-right: 1px solid #aaa;
+                padding-right: 15px;
+                margin-right: 0px;
+            }
+            .right_link {
+                margin-left: 0px;
+                padding-left: 15px;
+            }
+        </style>
+        <title>Gato -- NegativeCircuits algorithm on NegCircuit2 graph</title>
+    </head>
+    <body>
+        <div id="help_div" class="invisible">
+            <div style="padding: .5em">
+                <a class="help_link left_link" href="./index.html" target="_blank">Index</a><a class="help_link right_link" href="./help.html" target="_blank">Help</a>
+            </div>
+        </div>
+        <div id="nav_bar" class="inactive_nav">
+            <svg id="nav_svg">
+
+            </svg>
+        </div>
+        <div id="base_container">
+        <svg id="svg">
+            <filter id="dropshadow" height="130%">
+              <feGaussianBlur in="SourceAlpha" stdDeviation="1"/> <!-- stdDeviation is how much to blur -->
+                <feOffset dx="2.5" dy="2.5" result="offsetblur"/> <!-- how much to offset -->
+                <feMerge> 
+                  <feMergeNode/> <!-- this contains the offset blurred image -->
+                  <feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->
+               </feMerge>
+            </filter>
+            <filter id="tooltip_dropshadow" height="130%">
+              <feGaussianBlur in="SourceAlpha" stdDeviation="1"/> <!-- stdDeviation is how much to blur -->
+                <feOffset dx="2" dy="2" result="offsetblur"/> <!-- how much to offset -->
+                <feMerge> 
+                  <feMergeNode/> <!-- this contains the offset blurred image -->
+                  <feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->
+               </feMerge>
+            </filter>
+            <g id="g1" type="directed">
+
+<g id="g1_1-3_group" class="edge_group" style="cursor: pointer">
+<line id="g1_1-3" class="edge" x1="0.0" y1="150.0" x2="124.936868" y2="108.354377" stroke="#DDDDDD" stroke-width="4.0" />
+
+<polyline id="eag1_1-3" class="arrowhead" points="0.000000 0.000000 0.000000 20.000000 14.0 10.000000" fill="#DDDDDD" transform="translate(123.436868,98.854377) rotate(-18.434949 0.000000 10.000000)" />
+
+</g>
+<g id="g1_1-2_group" class="edge_group" style="cursor: pointer">
+<line id="g1_1-2" class="edge" x1="0.0" y1="150.0" x2="124.936868" y2="191.645623" stroke="#DDDDDD" stroke-width="4.0" />
+
+<polyline id="eag1_1-2" class="arrowhead" points="0.000000 0.000000 0.000000 20.000000 14.0 10.000000" fill="#DDDDDD" transform="translate(123.436868,181.145623) rotate(18.434949 0.000000 10.000000)" />
+
+</g>
+<g id="g1_1-11_group" class="edge_group" style="cursor: pointer">
+<line id="g1_1-11" class="edge" x1="0.0" y1="150.0" x2="131.701010" y2="18.298990" stroke="#DDDDDD" stroke-width="4.0" />
+
+<polyline id="eag1_1-11" class="arrowhead" points="0.000000 0.000000 0.000000 20.000000 14.0 10.000000" fill="#DDDDDD" transform="translate(130.201010,9.798990) rotate(-45.000000 0.000000 10.000000)" />
+
+</g>
+<g id="g1_1-12_group" class="edge_group" style="cursor: pointer">
+<line id="g1_1-12" class="edge" x1="0.0" y1="150.0" x2="131.701010" y2="281.701010" stroke="#DDDDDD" stroke-width="4.0" />
+
+<polyline id="eag1_1-12" class="arrowhead" points="0.000000 0.000000 0.000000 20.000000 14.0 10.000000" fill="#DDDDDD" transform="translate(130.201010,270.201010) rotate(45.000000 0.000000 10.000000)" />
+
+</g>
+<g id="g1_2-3_group" class="edge_group" style="cursor: pointer">
+<line id="g1_2-3" class="edge" x1="150.0" y1="200.0" x2="150.000000" y2="127.000000" stroke="#DDDDDD" stroke-width="4.0" />
+
+<polyline id="eag1_2-3" class="arrowhead" points="0.000000 0.000000 0.000000 20.000000 14.0 10.000000" fill="#DDDDDD" transform="translate(150.000000,118.000000) rotate(-90.000000 0.000000 10.000000)" />
+
+</g>
+<g id="g1_3-11_group" class="edge_group" style="cursor: pointer">
+<line id="g1_3-11" class="edge" x1="150.0" y1="100.0" x2="150.000000" y2="27.000000" stroke="#DDDDDD" stroke-width="4.0" />
+
+<polyline id="eag1_3-11" class="arrowhead" points="0.000000 0.000000 0.000000 20.000000 14.0 10.000000" fill="#DDDDDD" transform="translate(150.000000,18.000000) rotate(-90.000000 0.000000 10.000000)" />
+
+</g>
+<g id="g1_4-5_group" class="edge_group" style="cursor: pointer">
+<line id="g1_4-5" class="edge" x1="250.0" y1="0.0" x2="323.000000" y2="0.000000" stroke="#DDDDDD" stroke-width="4.0" />
+
+<polyline id="eag1_4-5" class="arrowhead" points="0.000000 0.000000 0.000000 20.000000 14.0 10.000000" fill="#DDDDDD" transform="translate(322.000000,-10.000000) rotate(0.000000 0.000000 10.000000)" />
+
+</g>
+<g id="g1_5-10_group" class="edge_group" style="cursor: pointer">
+<line id="g1_5-10" class="edge" x1="350.0" y1="0.0" x2="423.000000" y2="0.000000" stroke="#DDDDDD" stroke-width="4.0" />
+
+<polyline id="eag1_5-10" class="arrowhead" points="0.000000 0.000000 0.000000 20.000000 14.0 10.000000" fill="#DDDDDD" transform="translate(422.000000,-10.000000) rotate(0.000000 0.000000 10.000000)" />
+
+</g>
+<g id="g1_6-7_group" class="edge_group" style="cursor: pointer">
+<line id="g1_6-7" class="edge" x1="450.0" y1="100.0" x2="450.000000" y2="173.000000" stroke="#DDDDDD" stroke-width="4.0" />
+
+<polyline id="eag1_6-7" class="arrowhead" points="0.000000 0.000000 0.000000 20.000000 14.0 10.000000" fill="#DDDDDD" transform="translate(450.000000,162.000000) rotate(90.000000 0.000000 10.000000)" />
+
+</g>
+<g id="g1_7-13_group" class="edge_group" style="cursor: pointer">
+<line id="g1_7-13" class="edge" x1="450.0" y1="200.0" x2="450.000000" y2="273.000000" stroke="#DDDDDD" stroke-width="4.0" />
+
+<polyline id="eag1_7-13" class="arrowhead" points="0.000000 0.000000 0.000000 20.000000 14.0 10.000000" fill="#DDDDDD" transform="translate(450.000000,262.000000) rotate(90.000000 0.000000 10.000000)" />
+
+</g>
+<g id="g1_8-9_group" class="edge_group" style="cursor: pointer">
+<line id="g1_8-9" class="edge" x1="350.0" y1="300.0" x2="277.000000" y2="300.000000" stroke="#DDDDDD" stroke-width="4.0" />
+
+<polyline id="eag1_8-9" class="arrowhead" points="0.000000 0.000000 0.000000 20.000000 14.0 10.000000" fill="#DDDDDD" transform="translate(278.000000,290.000000) rotate(180.000000 0.000000 10.000000)" />
+
+</g>
+<g id="g1_9-12_group" class="edge_group" style="cursor: pointer">
+<line id="g1_9-12" class="edge" x1="250.0" y1="300.0" x2="177.000000" y2="300.000000" stroke="#DDDDDD" stroke-width="4.0" />
+
+<polyline id="eag1_9-12" class="arrowhead" points="0.000000 0.000000 0.000000 20.000000 14.0 10.000000" fill="#DDDDDD" transform="translate(178.000000,290.000000) rotate(180.000000 0.000000 10.000000)" />
+
+</g>
+<g id="g1_10-6_group" class="edge_group" style="cursor: pointer">
+<line id="g1_10-6" class="edge" x1="450.0" y1="0.0" x2="450.000000" y2="73.000000" stroke="#DDDDDD" stroke-width="4.0" />
+
+<polyline id="eag1_10-6" class="arrowhead" points="0.000000 0.000000 0.000000 20.000000 14.0 10.000000" fill="#DDDDDD" transform="translate(450.000000,62.000000) rotate(90.000000 0.000000 10.000000)" />
+
+</g>
+<g id="g1_11-4_group" class="edge_group" style="cursor: pointer">
+<line id="g1_11-4" class="edge" x1="150.0" y1="0.0" x2="223.000000" y2="0.000000" stroke="#DDDDDD" stroke-width="4.0" />
+
+<polyline id="eag1_11-4" class="arrowhead" points="0.000000 0.000000 0.000000 20.000000 14.0 10.000000" fill="#DDDDDD" transform="translate(222.000000,-10.000000) rotate(0.000000 0.000000 10.000000)" />
+
+</g>
+<g id="g1_12-2_group" class="edge_group" style="cursor: pointer">
+<line id="g1_12-2" class="edge" x1="150.0" y1="300.0" x2="150.000000" y2="227.000000" stroke="#DDDDDD" stroke-width="4.0" />
+
+<polyline id="eag1_12-2" class="arrowhead" points="0.000000 0.000000 0.000000 20.000000 14.0 10.000000" fill="#DDDDDD" transform="translate(150.000000,218.000000) rotate(-90.000000 0.000000 10.000000)" />
+
+</g>
+<g id="g1_13-8_group" class="edge_group" style="cursor: pointer">
+<line id="g1_13-8" class="edge" x1="450.0" y1="300.0" x2="377.000000" y2="300.000000" stroke="#DDDDDD" stroke-width="4.0" />
+
+<polyline id="eag1_13-8" class="arrowhead" points="0.000000 0.000000 0.000000 20.000000 14.0 10.000000" fill="#DDDDDD" transform="translate(378.000000,290.000000) rotate(180.000000 0.000000 10.000000)" />
+
+</g>
+<g id="g1_pre_vertices_group"></g>
+<g id="g1_1_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_1" class="vertex" cx="0.0" cy="150.0" r="14.0" fill="green" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_1" x="0.0" y="154.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >1</text>
+
+</g>
+<g id="g1_2_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_2" class="vertex" cx="150.0" cy="200.0" r="14.0" fill="green" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_2" x="150.0" y="204.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >2</text>
+
+</g>
+<g id="g1_3_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_3" class="vertex" cx="150.0" cy="100.0" r="14.0" fill="green" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_3" x="150.0" y="104.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >3</text>
+
+</g>
+<g id="g1_4_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_4" class="vertex" cx="250.0" cy="0.0" r="14.0" fill="green" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_4" x="250.0" y="4.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >4</text>
+
+</g>
+<g id="g1_5_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_5" class="vertex" cx="350.0" cy="0.0" r="14.0" fill="green" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_5" x="350.0" y="4.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >5</text>
+
+</g>
+<g id="g1_6_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_6" class="vertex" cx="450.0" cy="100.0" r="14.0" fill="green" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_6" x="450.0" y="104.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >6</text>
+
+</g>
+<g id="g1_7_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_7" class="vertex" cx="450.0" cy="200.0" r="14.0" fill="green" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_7" x="450.0" y="204.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >7</text>
+
+</g>
+<g id="g1_8_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_8" class="vertex" cx="350.0" cy="300.0" r="14.0" fill="green" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_8" x="350.0" y="304.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >8</text>
+
+</g>
+<g id="g1_9_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_9" class="vertex" cx="250.0" cy="300.0" r="14.0" fill="green" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_9" x="250.0" y="304.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >9</text>
+
+</g>
+<g id="g1_10_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_10" class="vertex" cx="450.0" cy="0.0" r="14.0" fill="green" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_10" x="450.0" y="4.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >10</text>
+
+</g>
+<g id="g1_11_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_11" class="vertex" cx="150.0" cy="0.0" r="14.0" fill="green" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_11" x="150.0" y="4.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >11</text>
+
+</g>
+<g id="g1_12_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_12" class="vertex" cx="150.0" cy="300.0" r="14.0" fill="green" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_12" x="150.0" y="304.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >12</text>
+
+</g>
+<g id="g1_13_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_13" class="vertex" cx="450.0" cy="300.0" r="14.0" fill="green" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_13" x="450.0" y="304.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >13</text>
+
+</g>
+</g>
+
+            <text blank = "false" id="l_1" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">s = PickVertex()</text>
+<text blank = "false" id="l_2" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">dist[s] = 0</text>
+<text blank = "false" id="l_3" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">pred[s] = None</text>
+<text blank = "false" id="l_4" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">count = 0</text>
+<text blank = "true" id="l_5" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"></text>
+<text blank = "false" id="l_6" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">NEXT.Append(s)</text>
+<text blank = "true" id="l_7" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"></text>
+<text blank = "false" id="l_8" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">while</tspan> count &lt; G.Order()<tspan font-weight="bold"> and</tspan> NEXT.IsNotEmpty():</text>
+<text blank = "false" id="l_9" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan> NOW.IsEmpty():</text>
+<text blank = "false" id="l_10" class="code_line" x="0" y="0" dx="56" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">while</tspan> NEXT.IsNotEmpty():</text>
+<text blank = "false" id="l_11" class="code_line" x="0" y="0" dx="84" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">v = NEXT.Top()</text>
+<text blank = "false" id="l_12" class="code_line" x="0" y="0" dx="84" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">NOW.Append(v)</text>
+<text blank = "false" id="l_13" class="code_line" x="0" y="0" dx="56" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">count += 1</text>
+<text blank = "false" id="l_14" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">while</tspan> NOW.IsNotEmpty():</text>
+<text blank = "false" id="l_15" class="code_line" x="0" y="0" dx="56" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">v = NOW.Top()</text>
+<text blank = "false" id="l_16" class="code_line" x="0" y="0" dx="56" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">for</tspan> w<tspan font-weight="bold"> in</tspan> Neighborhood(v):</text>
+<text blank = "false" id="l_17" class="code_line" x="0" y="0" dx="84" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan> dist[w] > dist[v] + length[(v,w)]:</text>
+<text blank = "false" id="l_18" class="code_line" x="0" y="0" dx="112" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">pred[w] = v</text>
+<text blank = "false" id="l_19" class="code_line" x="0" y="0" dx="112" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">dist[w] = dist[v] + length[(v,w)]</text>
+<text blank = "false" id="l_20" class="code_line" x="0" y="0" dx="112" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan><tspan font-weight="bold"> not</tspan> NEXT.Contains(w):</text>
+<text blank = "false" id="l_21" class="code_line" x="0" y="0" dx="140" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">NEXT.Append(w)</text>
+<text blank = "true" id="l_22" class="code_line" x="0" y="0" dx="140" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"></text>
+<text blank = "false" id="l_23" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan> NEXT.IsNotEmpty():</text>
+<text blank = "false" id="l_24" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">t = NEXT.Top()</text>
+<text blank = "false" id="l_25" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">marked[t] = 1</text>
+<text blank = "false" id="l_26" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">while</tspan><tspan font-weight="bold"> not</tspan> marked.QDefined(pred[t]):</text>
+<text blank = "false" id="l_27" class="code_line" x="0" y="0" dx="56" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">t = pred[t]</text>
+<text blank = "false" id="l_28" class="code_line" x="0" y="0" dx="56" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">marked[t] = 1</text>
+<text blank = "false" id="l_29" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">root = t</text>
+<text blank = "false" id="l_30" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">while</tspan> pred[t] != root:</text>
+<text blank = "false" id="l_31" class="code_line" x="0" y="0" dx="56" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">circuit.AddEdge((pred[t],t))</text>
+<text blank = "false" id="l_32" class="code_line" x="0" y="0" dx="56" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">t = pred[t]</text>
+<text blank = "false" id="l_33" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">circuit.AddEdge((pred[t],t))</text>
+
+        </svg>
+        </div>
+
+        <script type="text/javascript">
+            var info_file = "infos/NegativeCircuits--NegCircuit2.html";
+            var animation_name = "NegativeCircuits algorithm on NegCircuit2 graph";
+            var g1_x_add = 50;
+            var g1_y_add = 50;
+            var g2_x_add = 0;
+            var g2_y_add = 0;
+            var g1_init_edge_info = {
+"g1_1-3": "Edge (1,3)",
+"g1_10-11": "Edge (10,11)",
+"g1_4-8": "Edge (4,8)",
+"g1_1-15": "Edge (1,15)",
+"g1_8-9": "Edge (8,9)",
+"g1_6-12": "Edge (6,12)",
+"g1_3-7": "Edge (3,7)",
+"g1_2-5": "Edge (2,5)",
+"g1_15-5": "Edge (15,5)",
+"g1_1-2": "Edge (1,2)",
+"g1_6-7": "Edge (6,7)",
+"g1_12-13": "Edge (12,13)",
+"g1_3-6": "Edge (3,6)",
+"g1_4-10": "Edge (4,10)",
+"g1_7-14": "Edge (7,14)",
+"g1_12-14": "Edge (12,14)",
+"g1_5-11": "Edge (5,11)",
+"g1_4-9": "Edge (4,9)",
+"g1_11-12": "Edge (11,12)",
+"g1_5-10": "Edge (5,10)",
+"g1_7-13": "Edge (7,13)",
+"g1_15-6": "Edge (15,6)",
+"g1_2-15": "Edge (2,15)",
+"g1_2-4": "Edge (2,4)",
+"g1_11-6": "Edge (11,6)",
+};
+            var g2_init_edge_info = null;
+            var g1_init_graph_info = "";
+            var g2_init_graph_info = "";
+            var g1_init_vertex_info = {
+"g1_1": "Vertex 1 - not visited yet",
+"g1_2": "Vertex 2 - not visited yet",
+"g1_3": "Vertex 3 - not visited yet",
+"g1_4": "Vertex 4 - not visited yet",
+"g1_5": "Vertex 5 - not visited yet",
+"g1_6": "Vertex 6 - not visited yet",
+"g1_7": "Vertex 7 - not visited yet",
+"g1_8": "Vertex 8 - not visited yet",
+"g1_9": "Vertex 9 - not visited yet",
+"g1_10": "Vertex 10 - not visited yet",
+"g1_11": "Vertex 11 - not visited yet",
+"g1_12": "Vertex 12 - not visited yet",
+"g1_13": "Vertex 13 - not visited yet",
+"g1_14": "Vertex 14 - not visited yet",
+"g1_15": "Vertex 15 - not visited yet",
+};
+            var g2_init_vertex_info = null;
+        </script>
+
+        <script type="text/javascript" src="js/util.js"></script>
+        <script type="text/javascript" src="js/animation_functions.js"></script>
+        <script type="text/javascript" src="js/display_functions.js"></script>
+        <script type="text/javascript" src="js/webgato_main.js"></script>
+        
+        <script type="text/javascript">
+            var anim_array = Array(Array(1, SetAllVerticesColor, "g1_green"),
+Array(4, ShowActive, "l_1"),
+Array(1, UpdateEdgeInfo, "g1_1-2", "Edge (1,2) length: 158.113883"),
+Array(1, UpdateEdgeInfo, "g1_12-2", "Edge (12,2) length: 100.000000"),
+Array(1, UpdateEdgeInfo, "g1_1-3", "Edge (1,3) length: 158.113883"),
+Array(1, UpdateEdgeInfo, "g1_5-10", "Edge (5,10) length: 100.000000"),
+Array(1, UpdateEdgeInfo, "g1_1-12", "Edge (1,12) length: 212.132034"),
+Array(1, UpdateEdgeInfo, "g1_4-5", "Edge (4,5) length: 100.000000"),
+Array(1, UpdateEdgeInfo, "g1_7-13", "Edge (7,13) length: 100.000000"),
+Array(1, UpdateEdgeInfo, "g1_10-6", "Edge (10,6) length: 100.000000"),
+Array(1, UpdateEdgeInfo, "g1_3-11", "Edge (3,11) length: 100.000000"),
+Array(1, UpdateEdgeInfo, "g1_6-7", "Edge (6,7) length: 100.000000"),
+Array(1, UpdateEdgeInfo, "g1_8-9", "Edge (8,9) length: 100.000000"),
+Array(1, UpdateEdgeInfo, "g1_2-3", "Edge (2,3) length: 100.000000"),
+Array(1, UpdateEdgeInfo, "g1_13-8", "Edge (13,8) length: -2000.000000"),
+Array(1, UpdateEdgeInfo, "g1_11-4", "Edge (11,4) length: 100.000000"),
+Array(1, UpdateEdgeInfo, "g1_1-11", "Edge (1,11) length: 212.132034"),
+Array(1, UpdateEdgeInfo, "g1_9-12", "Edge (9,12) length: 100.000000"),
+Array(1, UpdateVertexInfo, "g1_1", "Vertex 1 is not in tree"),
+Array(1, UpdateVertexInfo, "g1_2", "Vertex 2 is not in tree"),
+Array(1, UpdateVertexInfo, "g1_3", "Vertex 3 is not in tree"),
+Array(1, UpdateVertexInfo, "g1_4", "Vertex 4 is not in tree"),
+Array(1, UpdateVertexInfo, "g1_5", "Vertex 5 is not in tree"),
+Array(1, UpdateVertexInfo, "g1_6", "Vertex 6 is not in tree"),
+Array(1, UpdateVertexInfo, "g1_7", "Vertex 7 is not in tree"),
+Array(1, UpdateVertexInfo, "g1_8", "Vertex 8 is not in tree"),
+Array(1, UpdateVertexInfo, "g1_9", "Vertex 9 is not in tree"),
+Array(1, UpdateVertexInfo, "g1_10", "Vertex 10 is not in tree"),
+Array(1, UpdateVertexInfo, "g1_11", "Vertex 11 is not in tree"),
+Array(1, UpdateVertexInfo, "g1_12", "Vertex 12 is not in tree"),
+Array(1, UpdateVertexInfo, "g1_13", "Vertex 13 is not in tree"),
+Array(4, SetVertexAnnotation, "g1_1", "s"),
+Array(7, ShowActive, "l_2"),
+Array(1, UpdateVertexInfo, "g1_1", "Vertex 1 is root of tree"),
+Array(5, ShowActive, "l_3"),
+Array(6, ShowActive, "l_4"),
+Array(5, ShowActive, "l_6"),
+Array(5, SetVertexColor, "g1_1", "red"),
+Array(1, ShowActive, "l_8"),
+Array(5, ShowActive, "l_9"),
+Array(6, ShowActive, "l_10"),
+Array(5, ShowActive, "l_11"),
+Array(5, SetVertexColor, "g1_1", "grey"),
+Array(1, SetVertexFrameWidth, "g1_1", "6"),
+Array(1, ShowActive, "l_12"),
+Array(5, SetVertexColor, "g1_1", "blue"),
+Array(2, ShowActive, "l_10"),
+Array(5, ShowActive, "l_13"),
+Array(5, ShowActive, "l_14"),
+Array(5, ShowActive, "l_15"),
+Array(5, SetVertexColor, "g1_1", "grey"),
+Array(1, SetVertexFrameWidth, "g1_1", "6"),
+Array(2, ShowActive, "l_16"),
+Array(5, SetVertexFrameWidth, "g1_1", "6"),
+Array(1, SetEdgeColor, "g1_1-3", "yellow"),
+Array(1, ShowActive, "l_17"),
+Array(5, ShowActive, "l_18"),
+Array(5, SetEdgeColor, "g1_1-3", "red"),
+Array(1, ShowActive, "l_19"),
+Array(5, ShowActive, "l_20"),
+Array(1, UpdateVertexInfo, "g1_3", "Vertex 3 has predecessor 1 and distance 158.11"),
+Array(5, ShowActive, "l_21"),
+Array(4, SetVertexColor, "g1_3", "red"),
+Array(1, ShowActive, "l_16"),
+Array(5, SetEdgeColor, "g1_1-2", "yellow"),
+Array(2, ShowActive, "l_17"),
+Array(6, ShowActive, "l_18"),
+Array(5, SetEdgeColor, "g1_1-2", "red"),
+Array(1, ShowActive, "l_19"),
+Array(6, ShowActive, "l_20"),
+Array(1, UpdateVertexInfo, "g1_2", "Vertex 2 has predecessor 1 and distance 158.11"),
+Array(6, ShowActive, "l_21"),
+Array(5, SetVertexColor, "g1_2", "red"),
+Array(2, ShowActive, "l_16"),
+Array(5, SetEdgeColor, "g1_1-11", "yellow"),
+Array(2, ShowActive, "l_17"),
+Array(5, ShowActive, "l_18"),
+Array(5, SetEdgeColor, "g1_1-11", "red"),
+Array(2, ShowActive, "l_19"),
+Array(5, ShowActive, "l_20"),
+Array(1, UpdateVertexInfo, "g1_11", "Vertex 11 has predecessor 1 and distance 212.13"),
+Array(5, ShowActive, "l_21"),
+Array(5, SetVertexColor, "g1_11", "red"),
+Array(2, ShowActive, "l_16"),
+Array(5, SetEdgeColor, "g1_1-12", "yellow"),
+Array(2, ShowActive, "l_17"),
+Array(5, ShowActive, "l_18"),
+Array(5, SetEdgeColor, "g1_1-12", "red"),
+Array(1, ShowActive, "l_19"),
+Array(5, ShowActive, "l_20"),
+Array(1, UpdateVertexInfo, "g1_12", "Vertex 12 has predecessor 1 and distance 212.13"),
+Array(5, ShowActive, "l_21"),
+Array(5, SetVertexColor, "g1_12", "red"),
+Array(2, ShowActive, "l_16"),
+Array(5, SetVertexFrameWidth, "g1_1", "0"),
+Array(2, ShowActive, "l_14"),
+Array(6, ShowActive, "l_8"),
+Array(6, ShowActive, "l_9"),
+Array(5, ShowActive, "l_10"),
+Array(6, ShowActive, "l_11"),
+Array(5, SetVertexColor, "g1_3", "grey"),
+Array(1, SetVertexFrameWidth, "g1_1", "0"),
+Array(1, SetVertexFrameWidth, "g1_3", "6"),
+Array(1, ShowActive, "l_12"),
+Array(4, SetVertexColor, "g1_3", "blue"),
+Array(2, ShowActive, "l_10"),
+Array(5, ShowActive, "l_11"),
+Array(4, SetVertexColor, "g1_2", "grey"),
+Array(1, SetVertexFrameWidth, "g1_3", "0"),
+Array(1, SetVertexFrameWidth, "g1_2", "6"),
+Array(1, ShowActive, "l_12"),
+Array(5, SetVertexColor, "g1_2", "blue"),
+Array(2, ShowActive, "l_10"),
+Array(5, ShowActive, "l_11"),
+Array(5, SetVertexColor, "g1_11", "grey"),
+Array(1, SetVertexFrameWidth, "g1_2", "0"),
+Array(1, SetVertexFrameWidth, "g1_11", "6"),
+Array(1, ShowActive, "l_12"),
+Array(5, SetVertexColor, "g1_11", "blue"),
+Array(2, ShowActive, "l_10"),
+Array(5, ShowActive, "l_11"),
+Array(5, SetVertexColor, "g1_12", "grey"),
+Array(1, SetVertexFrameWidth, "g1_11", "0"),
+Array(1, SetVertexFrameWidth, "g1_12", "6"),
+Array(1, ShowActive, "l_12"),
+Array(5, SetVertexColor, "g1_12", "blue"),
+Array(1, ShowActive, "l_10"),
+Array(6, ShowActive, "l_13"),
+Array(5, ShowActive, "l_14"),
+Array(5, ShowActive, "l_15"),
+Array(5, SetVertexColor, "g1_3", "grey"),
+Array(1, SetVertexFrameWidth, "g1_1", "0"),
+Array(1, SetVertexFrameWidth, "g1_3", "6"),
+Array(1, ShowActive, "l_16"),
+Array(5, SetVertexFrameWidth, "g1_3", "6"),
+Array(1, SetEdgeColor, "g1_3-11", "yellow"),
+Array(1, ShowActive, "l_17"),
+Array(5, ShowActive, "l_16"),
+Array(5, SetEdgeColor, "g1_3-11", "grey"),
+Array(1, SetVertexFrameWidth, "g1_3", "0"),
+Array(1, ShowActive, "l_14"),
+Array(5, ShowActive, "l_15"),
+Array(4, SetVertexColor, "g1_2", "grey"),
+Array(1, SetVertexFrameWidth, "g1_3", "0"),
+Array(1, SetVertexFrameWidth, "g1_2", "6"),
+Array(1, ShowActive, "l_16"),
+Array(5, SetVertexFrameWidth, "g1_2", "6"),
+Array(1, SetEdgeColor, "g1_2-3", "yellow"),
+Array(1, ShowActive, "l_17"),
+Array(5, ShowActive, "l_16"),
+Array(5, SetEdgeColor, "g1_2-3", "grey"),
+Array(1, SetVertexFrameWidth, "g1_2", "0"),
+Array(2, ShowActive, "l_14"),
+Array(5, ShowActive, "l_15"),
+Array(5, SetVertexColor, "g1_11", "grey"),
+Array(1, SetVertexFrameWidth, "g1_2", "0"),
+Array(1, SetVertexFrameWidth, "g1_11", "6"),
+Array(2, ShowActive, "l_16"),
+Array(5, SetVertexFrameWidth, "g1_11", "6"),
+Array(1, SetEdgeColor, "g1_11-4", "yellow"),
+Array(1, ShowActive, "l_17"),
+Array(5, ShowActive, "l_18"),
+Array(5, SetEdgeColor, "g1_11-4", "red"),
+Array(1, ShowActive, "l_19"),
+Array(5, ShowActive, "l_20"),
+Array(1, UpdateVertexInfo, "g1_4", "Vertex 4 has predecessor 11 and distance 312.13"),
+Array(5, ShowActive, "l_21"),
+Array(5, SetVertexColor, "g1_4", "red"),
+Array(2, ShowActive, "l_16"),
+Array(5, SetVertexFrameWidth, "g1_11", "0"),
+Array(1, ShowActive, "l_14"),
+Array(5, ShowActive, "l_15"),
+Array(5, SetVertexColor, "g1_12", "grey"),
+Array(1, SetVertexFrameWidth, "g1_11", "0"),
+Array(1, SetVertexFrameWidth, "g1_12", "6"),
+Array(1, ShowActive, "l_16"),
+Array(4, SetVertexFrameWidth, "g1_12", "6"),
+Array(1, SetEdgeColor, "g1_12-2", "yellow"),
+Array(2, ShowActive, "l_17"),
+Array(5, ShowActive, "l_16"),
+Array(5, SetEdgeColor, "g1_12-2", "grey"),
+Array(1, SetVertexFrameWidth, "g1_12", "0"),
+Array(3, ShowActive, "l_14"),
+Array(5, ShowActive, "l_8"),
+Array(6, ShowActive, "l_9"),
+Array(5, ShowActive, "l_10"),
+Array(6, ShowActive, "l_11"),
+Array(5, SetVertexColor, "g1_4", "grey"),
+Array(1, SetVertexFrameWidth, "g1_12", "0"),
+Array(1, SetVertexFrameWidth, "g1_4", "6"),
+Array(1, ShowActive, "l_12"),
+Array(5, SetVertexColor, "g1_4", "blue"),
+Array(2, ShowActive, "l_10"),
+Array(5, ShowActive, "l_13"),
+Array(5, ShowActive, "l_14"),
+Array(5, ShowActive, "l_15"),
+Array(5, SetVertexColor, "g1_4", "grey"),
+Array(1, SetVertexFrameWidth, "g1_12", "0"),
+Array(1, SetVertexFrameWidth, "g1_4", "6"),
+Array(1, ShowActive, "l_16"),
+Array(5, SetVertexFrameWidth, "g1_4", "6"),
+Array(2, SetEdgeColor, "g1_4-5", "yellow"),
+Array(2, ShowActive, "l_17"),
+Array(6, ShowActive, "l_18"),
+Array(5, SetEdgeColor, "g1_4-5", "red"),
+Array(1, ShowActive, "l_19"),
+Array(5, ShowActive, "l_20"),
+Array(1, UpdateVertexInfo, "g1_5", "Vertex 5 has predecessor 4 and distance 412.13"),
+Array(5, ShowActive, "l_21"),
+Array(5, SetVertexColor, "g1_5", "red"),
+Array(2, ShowActive, "l_16"),
+Array(5, SetVertexFrameWidth, "g1_4", "0"),
+Array(1, ShowActive, "l_14"),
+Array(6, ShowActive, "l_8"),
+Array(6, ShowActive, "l_9"),
+Array(5, ShowActive, "l_10"),
+Array(5, ShowActive, "l_11"),
+Array(5, SetVertexColor, "g1_5", "grey"),
+Array(1, SetVertexFrameWidth, "g1_4", "0"),
+Array(1, SetVertexFrameWidth, "g1_5", "6"),
+Array(1, ShowActive, "l_12"),
+Array(5, SetVertexColor, "g1_5", "blue"),
+Array(2, ShowActive, "l_10"),
+Array(5, ShowActive, "l_13"),
+Array(5, ShowActive, "l_14"),
+Array(5, ShowActive, "l_15"),
+Array(5, SetVertexColor, "g1_5", "grey"),
+Array(1, SetVertexFrameWidth, "g1_4", "0"),
+Array(1, SetVertexFrameWidth, "g1_5", "6"),
+Array(4, ShowActive, "l_16"),
+Array(5, SetVertexFrameWidth, "g1_5", "6"),
+Array(1, SetEdgeColor, "g1_5-10", "yellow"),
+Array(2, ShowActive, "l_17"),
+Array(5, ShowActive, "l_18"),
+Array(5, SetEdgeColor, "g1_5-10", "red"),
+Array(1, ShowActive, "l_19"),
+Array(5, ShowActive, "l_20"),
+Array(1, UpdateVertexInfo, "g1_10", "Vertex 10 has predecessor 5 and distance 512.13"),
+Array(5, ShowActive, "l_21"),
+Array(5, SetVertexColor, "g1_10", "red"),
+Array(1, ShowActive, "l_16"),
+Array(5, SetVertexFrameWidth, "g1_5", "0"),
+Array(1, ShowActive, "l_14"),
+Array(5, ShowActive, "l_8"),
+Array(6, ShowActive, "l_9"),
+Array(6, ShowActive, "l_10"),
+Array(6, ShowActive, "l_11"),
+Array(5, SetVertexColor, "g1_10", "grey"),
+Array(2, SetVertexFrameWidth, "g1_5", "0"),
+Array(2, SetVertexFrameWidth, "g1_10", "6"),
+Array(2, ShowActive, "l_12"),
+Array(5, SetVertexColor, "g1_10", "blue"),
+Array(1, ShowActive, "l_10"),
+Array(6, ShowActive, "l_13"),
+Array(5, ShowActive, "l_14"),
+Array(5, ShowActive, "l_15"),
+Array(5, SetVertexColor, "g1_10", "grey"),
+Array(1, SetVertexFrameWidth, "g1_5", "0"),
+Array(1, SetVertexFrameWidth, "g1_10", "6"),
+Array(2, ShowActive, "l_16"),
+Array(5, SetVertexFrameWidth, "g1_10", "6"),
+Array(1, SetEdgeColor, "g1_10-6", "yellow"),
+Array(1, ShowActive, "l_17"),
+Array(6, ShowActive, "l_18"),
+Array(5, SetEdgeColor, "g1_10-6", "red"),
+Array(1, ShowActive, "l_19"),
+Array(5, ShowActive, "l_20"),
+Array(1, UpdateVertexInfo, "g1_6", "Vertex 6 has predecessor 10 and distance 612.13"),
+Array(5, ShowActive, "l_21"),
+Array(5, SetVertexColor, "g1_6", "red"),
+Array(2, ShowActive, "l_16"),
+Array(5, SetVertexFrameWidth, "g1_10", "0"),
+Array(2, ShowActive, "l_14"),
+Array(6, ShowActive, "l_8"),
+Array(5, ShowActive, "l_9"),
+Array(5, ShowActive, "l_10"),
+Array(5, ShowActive, "l_11"),
+Array(5, SetVertexColor, "g1_6", "grey"),
+Array(1, SetVertexFrameWidth, "g1_10", "0"),
+Array(1, SetVertexFrameWidth, "g1_6", "6"),
+Array(1, ShowActive, "l_12"),
+Array(5, SetVertexColor, "g1_6", "blue"),
+Array(2, ShowActive, "l_10"),
+Array(6, ShowActive, "l_13"),
+Array(5, ShowActive, "l_14"),
+Array(6, ShowActive, "l_15"),
+Array(5, SetVertexColor, "g1_6", "grey"),
+Array(1, SetVertexFrameWidth, "g1_10", "0"),
+Array(1, SetVertexFrameWidth, "g1_6", "6"),
+Array(1, ShowActive, "l_16"),
+Array(5, SetVertexFrameWidth, "g1_6", "6"),
+Array(1, SetEdgeColor, "g1_6-7", "yellow"),
+Array(2, ShowActive, "l_17"),
+Array(5, ShowActive, "l_18"),
+Array(5, SetEdgeColor, "g1_6-7", "red"),
+Array(1, ShowActive, "l_19"),
+Array(5, ShowActive, "l_20"),
+Array(1, UpdateVertexInfo, "g1_7", "Vertex 7 has predecessor 6 and distance 712.13"),
+Array(5, ShowActive, "l_21"),
+Array(5, SetVertexColor, "g1_7", "red"),
+Array(2, ShowActive, "l_16"),
+Array(5, SetVertexFrameWidth, "g1_6", "0"),
+Array(2, ShowActive, "l_14"),
+Array(5, ShowActive, "l_8"),
+Array(5, ShowActive, "l_9"),
+Array(6, ShowActive, "l_10"),
+Array(5, ShowActive, "l_11"),
+Array(5, SetVertexColor, "g1_7", "grey"),
+Array(1, SetVertexFrameWidth, "g1_6", "0"),
+Array(1, SetVertexFrameWidth, "g1_7", "6"),
+Array(2, ShowActive, "l_12"),
+Array(5, SetVertexColor, "g1_7", "blue"),
+Array(2, ShowActive, "l_10"),
+Array(6, ShowActive, "l_13"),
+Array(5, ShowActive, "l_14"),
+Array(5, ShowActive, "l_15"),
+Array(5, SetVertexColor, "g1_7", "grey"),
+Array(1, SetVertexFrameWidth, "g1_6", "0"),
+Array(1, SetVertexFrameWidth, "g1_7", "6"),
+Array(1, ShowActive, "l_16"),
+Array(5, SetVertexFrameWidth, "g1_7", "6"),
+Array(1, SetEdgeColor, "g1_7-13", "yellow"),
+Array(1, ShowActive, "l_17"),
+Array(5, ShowActive, "l_18"),
+Array(4, SetEdgeColor, "g1_7-13", "red"),
+Array(1, ShowActive, "l_19"),
+Array(5, ShowActive, "l_20"),
+Array(1, UpdateVertexInfo, "g1_13", "Vertex 13 has predecessor 7 and distance 812.13"),
+Array(5, ShowActive, "l_21"),
+Array(5, SetVertexColor, "g1_13", "red"),
+Array(1, ShowActive, "l_16"),
+Array(5, SetVertexFrameWidth, "g1_7", "0"),
+Array(2, ShowActive, "l_14"),
+Array(6, ShowActive, "l_8"),
+Array(5, ShowActive, "l_9"),
+Array(5, ShowActive, "l_10"),
+Array(5, ShowActive, "l_11"),
+Array(5, SetVertexColor, "g1_13", "grey"),
+Array(1, SetVertexFrameWidth, "g1_7", "0"),
+Array(1, SetVertexFrameWidth, "g1_13", "6"),
+Array(1, ShowActive, "l_12"),
+Array(5, SetVertexColor, "g1_13", "blue"),
+Array(2, ShowActive, "l_10"),
+Array(5, ShowActive, "l_13"),
+Array(6, ShowActive, "l_14"),
+Array(6, ShowActive, "l_15"),
+Array(5, SetVertexColor, "g1_13", "grey"),
+Array(1, SetVertexFrameWidth, "g1_7", "0"),
+Array(2, SetVertexFrameWidth, "g1_13", "6"),
+Array(2, ShowActive, "l_16"),
+Array(5, SetVertexFrameWidth, "g1_13", "6"),
+Array(2, SetEdgeColor, "g1_13-8", "yellow"),
+Array(2, ShowActive, "l_17"),
+Array(5, ShowActive, "l_18"),
+Array(5, SetEdgeColor, "g1_13-8", "red"),
+Array(1, ShowActive, "l_19"),
+Array(5, ShowActive, "l_20"),
+Array(1, UpdateVertexInfo, "g1_8", "Vertex 8 has predecessor 13 and distance -1187.87"),
+Array(5, ShowActive, "l_21"),
+Array(5, SetVertexColor, "g1_8", "red"),
+Array(1, ShowActive, "l_16"),
+Array(5, SetVertexFrameWidth, "g1_13", "0"),
+Array(2, ShowActive, "l_14"),
+Array(5, ShowActive, "l_8"),
+Array(5, ShowActive, "l_9"),
+Array(5, ShowActive, "l_10"),
+Array(6, ShowActive, "l_11"),
+Array(5, SetVertexColor, "g1_8", "grey"),
+Array(1, SetVertexFrameWidth, "g1_13", "0"),
+Array(1, SetVertexFrameWidth, "g1_8", "6"),
+Array(2, ShowActive, "l_12"),
+Array(5, SetVertexColor, "g1_8", "blue"),
+Array(2, ShowActive, "l_10"),
+Array(5, ShowActive, "l_13"),
+Array(5, ShowActive, "l_14"),
+Array(5, ShowActive, "l_15"),
+Array(5, SetVertexColor, "g1_8", "grey"),
+Array(1, SetVertexFrameWidth, "g1_13", "0"),
+Array(1, SetVertexFrameWidth, "g1_8", "6"),
+Array(2, ShowActive, "l_16"),
+Array(5, SetVertexFrameWidth, "g1_8", "6"),
+Array(1, SetEdgeColor, "g1_8-9", "yellow"),
+Array(1, ShowActive, "l_17"),
+Array(5, ShowActive, "l_18"),
+Array(5, SetEdgeColor, "g1_8-9", "red"),
+Array(1, ShowActive, "l_19"),
+Array(6, ShowActive, "l_20"),
+Array(1, UpdateVertexInfo, "g1_9", "Vertex 9 has predecessor 8 and distance -1087.87"),
+Array(5, ShowActive, "l_21"),
+Array(5, SetVertexColor, "g1_9", "red"),
+Array(2, ShowActive, "l_16"),
+Array(5, SetVertexFrameWidth, "g1_8", "0"),
+Array(2, ShowActive, "l_14"),
+Array(5, ShowActive, "l_8"),
+Array(5, ShowActive, "l_9"),
+Array(5, ShowActive, "l_10"),
+Array(5, ShowActive, "l_11"),
+Array(5, SetVertexColor, "g1_9", "grey"),
+Array(1, SetVertexFrameWidth, "g1_8", "0"),
+Array(1, SetVertexFrameWidth, "g1_9", "6"),
+Array(1, ShowActive, "l_12"),
+Array(5, SetVertexColor, "g1_9", "blue"),
+Array(2, ShowActive, "l_10"),
+Array(5, ShowActive, "l_13"),
+Array(5, ShowActive, "l_14"),
+Array(5, ShowActive, "l_15"),
+Array(5, SetVertexColor, "g1_9", "grey"),
+Array(1, SetVertexFrameWidth, "g1_8", "0"),
+Array(1, SetVertexFrameWidth, "g1_9", "6"),
+Array(2, ShowActive, "l_16"),
+Array(5, SetVertexFrameWidth, "g1_9", "6"),
+Array(1, SetEdgeColor, "g1_9-12", "yellow"),
+Array(1, ShowActive, "l_17"),
+Array(5, ShowActive, "l_18"),
+Array(5, SetEdgeColor, "g1_1-12", "grey"),
+Array(1, SetEdgeColor, "g1_9-12", "red"),
+Array(1, ShowActive, "l_19"),
+Array(1, UpdateVertexInfo, "g1_12", "Vertex 12 has predecessor 9 and distance 212.13"),
+Array(5, ShowActive, "l_20"),
+Array(1, UpdateVertexInfo, "g1_12", "Vertex 12 has predecessor 9 and distance -987.87"),
+Array(5, ShowActive, "l_21"),
+Array(5, SetVertexColor, "g1_12", "red"),
+Array(2, ShowActive, "l_16"),
+Array(5, SetVertexFrameWidth, "g1_9", "0"),
+Array(2, ShowActive, "l_14"),
+Array(6, ShowActive, "l_8"),
+Array(6, ShowActive, "l_9"),
+Array(6, ShowActive, "l_10"),
+Array(5, ShowActive, "l_11"),
+Array(5, SetVertexColor, "g1_12", "grey"),
+Array(1, SetVertexFrameWidth, "g1_9", "0"),
+Array(1, SetVertexFrameWidth, "g1_12", "6"),
+Array(1, ShowActive, "l_12"),
+Array(5, SetVertexColor, "g1_12", "blue"),
+Array(1, ShowActive, "l_10"),
+Array(5, ShowActive, "l_13"),
+Array(5, ShowActive, "l_14"),
+Array(5, ShowActive, "l_15"),
+Array(5, SetVertexColor, "g1_12", "grey"),
+Array(1, SetVertexFrameWidth, "g1_9", "0"),
+Array(2, SetVertexFrameWidth, "g1_12", "6"),
+Array(1, ShowActive, "l_16"),
+Array(5, SetVertexFrameWidth, "g1_12", "6"),
+Array(1, SetEdgeColor, "g1_12-2", "yellow"),
+Array(1, ShowActive, "l_17"),
+Array(6, ShowActive, "l_18"),
+Array(5, SetEdgeColor, "g1_1-2", "grey"),
+Array(1, SetEdgeColor, "g1_12-2", "red"),
+Array(1, ShowActive, "l_19"),
+Array(1, UpdateVertexInfo, "g1_2", "Vertex 2 has predecessor 12 and distance 158.11"),
+Array(5, ShowActive, "l_20"),
+Array(1, UpdateVertexInfo, "g1_2", "Vertex 2 has predecessor 12 and distance -887.87"),
+Array(5, ShowActive, "l_21"),
+Array(5, SetVertexColor, "g1_2", "red"),
+Array(1, ShowActive, "l_16"),
+Array(5, SetVertexFrameWidth, "g1_12", "0"),
+Array(1, ShowActive, "l_14"),
+Array(5, ShowActive, "l_8"),
+Array(5, ShowActive, "l_9"),
+Array(5, ShowActive, "l_10"),
+Array(6, ShowActive, "l_11"),
+Array(4, SetVertexColor, "g1_2", "grey"),
+Array(1, SetVertexFrameWidth, "g1_12", "0"),
+Array(1, SetVertexFrameWidth, "g1_2", "6"),
+Array(2, ShowActive, "l_12"),
+Array(5, SetVertexColor, "g1_2", "blue"),
+Array(2, ShowActive, "l_10"),
+Array(5, ShowActive, "l_13"),
+Array(5, ShowActive, "l_14"),
+Array(5, ShowActive, "l_15"),
+Array(5, SetVertexColor, "g1_2", "grey"),
+Array(1, SetVertexFrameWidth, "g1_12", "0"),
+Array(1, SetVertexFrameWidth, "g1_2", "6"),
+Array(1, ShowActive, "l_16"),
+Array(5, SetVertexFrameWidth, "g1_2", "6"),
+Array(2, SetEdgeColor, "g1_2-3", "yellow"),
+Array(3, ShowActive, "l_17"),
+Array(6, ShowActive, "l_18"),
+Array(5, SetEdgeColor, "g1_1-3", "grey"),
+Array(1, SetEdgeColor, "g1_2-3", "red"),
+Array(1, ShowActive, "l_19"),
+Array(1, UpdateVertexInfo, "g1_3", "Vertex 3 has predecessor 2 and distance 158.11"),
+Array(5, ShowActive, "l_20"),
+Array(1, UpdateVertexInfo, "g1_3", "Vertex 3 has predecessor 2 and distance -787.87"),
+Array(5, ShowActive, "l_21"),
+Array(5, SetVertexColor, "g1_3", "red"),
+Array(1, ShowActive, "l_16"),
+Array(5, SetVertexFrameWidth, "g1_2", "0"),
+Array(2, ShowActive, "l_14"),
+Array(5, ShowActive, "l_8"),
+Array(5, ShowActive, "l_9"),
+Array(6, ShowActive, "l_10"),
+Array(5, ShowActive, "l_11"),
+Array(4, SetVertexColor, "g1_3", "grey"),
+Array(1, SetVertexFrameWidth, "g1_2", "0"),
+Array(1, SetVertexFrameWidth, "g1_3", "6"),
+Array(1, ShowActive, "l_12"),
+Array(5, SetVertexColor, "g1_3", "blue"),
+Array(1, ShowActive, "l_10"),
+Array(5, ShowActive, "l_13"),
+Array(5, ShowActive, "l_14"),
+Array(5, ShowActive, "l_15"),
+Array(5, SetVertexColor, "g1_3", "grey"),
+Array(1, SetVertexFrameWidth, "g1_2", "0"),
+Array(1, SetVertexFrameWidth, "g1_3", "6"),
+Array(1, ShowActive, "l_16"),
+Array(4, SetVertexFrameWidth, "g1_3", "6"),
+Array(1, SetEdgeColor, "g1_3-11", "yellow"),
+Array(1, ShowActive, "l_17"),
+Array(5, ShowActive, "l_18"),
+Array(5, SetEdgeColor, "g1_1-11", "grey"),
+Array(1, SetEdgeColor, "g1_3-11", "red"),
+Array(1, ShowActive, "l_19"),
+Array(1, UpdateVertexInfo, "g1_11", "Vertex 11 has predecessor 3 and distance 212.13"),
+Array(5, ShowActive, "l_20"),
+Array(1, UpdateVertexInfo, "g1_11", "Vertex 11 has predecessor 3 and distance -687.87"),
+Array(5, ShowActive, "l_21"),
+Array(5, SetVertexColor, "g1_11", "red"),
+Array(1, ShowActive, "l_16"),
+Array(4, SetVertexFrameWidth, "g1_3", "0"),
+Array(1, ShowActive, "l_14"),
+Array(5, ShowActive, "l_8"),
+Array(5, ShowActive, "l_23"),
+Array(5, ShowActive, "l_24"),
+Array(4, SetVertexColor, "g1_11", "grey"),
+Array(1, SetVertexFrameWidth, "g1_3", "0"),
+Array(1, SetVertexFrameWidth, "g1_11", "6"),
+Array(1, ShowActive, "l_25"),
+Array(4, SetVertexColor, "g1_11", "yellow"),
+Array(1, ShowActive, "l_26"),
+Array(6, ShowActive, "l_27"),
+Array(6, ShowActive, "l_28"),
+Array(5, SetVertexColor, "g1_3", "yellow"),
+Array(2, ShowActive, "l_26"),
+Array(5, ShowActive, "l_27"),
+Array(5, ShowActive, "l_28"),
+Array(5, SetVertexColor, "g1_2", "yellow"),
+Array(2, ShowActive, "l_26"),
+Array(6, ShowActive, "l_27"),
+Array(6, ShowActive, "l_28"),
+Array(5, SetVertexColor, "g1_12", "yellow"),
+Array(2, ShowActive, "l_26"),
+Array(5, ShowActive, "l_27"),
+Array(5, ShowActive, "l_28"),
+Array(5, SetVertexColor, "g1_9", "yellow"),
+Array(1, ShowActive, "l_26"),
+Array(5, ShowActive, "l_27"),
+Array(5, ShowActive, "l_28"),
+Array(5, SetVertexColor, "g1_8", "yellow"),
+Array(2, ShowActive, "l_26"),
+Array(6, ShowActive, "l_27"),
+Array(6, ShowActive, "l_28"),
+Array(5, SetVertexColor, "g1_13", "yellow"),
+Array(2, ShowActive, "l_26"),
+Array(5, ShowActive, "l_27"),
+Array(6, ShowActive, "l_28"),
+Array(5, SetVertexColor, "g1_7", "yellow"),
+Array(2, ShowActive, "l_26"),
+Array(6, ShowActive, "l_27"),
+Array(5, ShowActive, "l_28"),
+Array(5, SetVertexColor, "g1_6", "yellow"),
+Array(1, ShowActive, "l_26"),
+Array(5, ShowActive, "l_27"),
+Array(5, ShowActive, "l_28"),
+Array(5, SetVertexColor, "g1_10", "yellow"),
+Array(2, ShowActive, "l_26"),
+Array(5, ShowActive, "l_27"),
+Array(5, ShowActive, "l_28"),
+Array(5, SetVertexColor, "g1_5", "yellow"),
+Array(2, ShowActive, "l_26"),
+Array(6, ShowActive, "l_27"),
+Array(6, ShowActive, "l_28"),
+Array(5, SetVertexColor, "g1_4", "yellow"),
+Array(2, ShowActive, "l_26"),
+Array(6, ShowActive, "l_29"),
+Array(5, ShowActive, "l_30"));
+            init();
+        </script>
+
+    </body>
+</html>
