@@ -368,7 +368,6 @@ function init() {
     snap.mouseup(global_mouseup);
     snap.mousemove(global_mousemove);
     snap.touchmove(global_mousemove);
-    snap.touchend(global_mouseup);
     snap.drag(function(){}, function(){}, global_drag);
     window.onresize = window_resize;
 
