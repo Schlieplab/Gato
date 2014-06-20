@@ -24,8 +24,12 @@ function Scaler() {
             max_scale_factor_x = max_width / (bbox.width / this.curr_scale);
         
         this.max_scale_factor = Math.min(max_scale_factor_x, max_scale_factor_y);
-        this.min_scale_factor = .15;
-
+        if (isiPhone()) {
+            this.min_scale_factor = .3;
+        } else {
+            this.min_scale_factor = .15;    
+        }
+        
         if (this.initial_scale) {
             if (this.curr_scale > this.max_scale_factor) {
                 // If this isn't the first time we're calling this function then 
@@ -49,10 +53,17 @@ function Scaler() {
     };
 
     this.mousedown = function(evt) {
+        console.log('in scaler')
         g.scaler.scaling = true;
         var bbox = g.master_graph_container.getBBox();
         g.scaler.start_width = bbox.width * g.scaler.initial_scale;
-        g.scaler.start_mouse = {'x': parseInt(evt.clientX), 'y': parseInt(evt.clientY)};
+        var start_x = parseInt(evt.clientX),
+            start_y = parseInt(evt.clientY);
+        if (Object.prototype.toString.call(evt) === '[object TouchEvent]') {
+            start_x = parseInt(evt.touches[0].clientX);
+            start_y = parseInt(evt.touches[0].clientY);
+        }
+        g.scaler.start_mouse = {'x': start_x, 'y': start_y};
     };
     this.drag = function(evt) {
         this.mouseup(evt);
@@ -62,7 +73,11 @@ function Scaler() {
     };
     this.mousemove = function(evt) {
         /* Computes the new scale_factor and calls scale_graphs() */
-        var dx = parseInt(evt.clientX) - g.scaler.start_mouse.x;
+        var clientX = evt.clientX;
+        if (Object.prototype.toString.call(evt) === '[object TouchEvent]') {
+            clientX = evt.touches[0].clientX;
+        }
+        var dx = parseInt(clientX) - g.scaler.start_mouse.x;
         var new_width = g.scaler.start_width + dx;
         var scale_factor = new_width / g.initial_graph_width;
 
@@ -114,6 +129,12 @@ function Scaler() {
         'stroke': '#330000',
         'cursor': 'move'
     }).mousedown(this.mousedown);
+    var w = 15;
+    var h = 15;
+    var e = 15;
+    this.click_receiver = snap.polygon([this.x-w-e, this.y+h, this.x+this.width+w, this.y+h, this.x+this.width+w, this.y-this.height-h-e, this.x-w-e, this.y+h]).attr({
+        'opacity': 0,
+    }).mousedown(this.mousedown);
 }
 
 function ToolTip(elem, elem_type) {
@@ -136,8 +157,14 @@ function ToolTip(elem, elem_type) {
             // TODO: Abstract this
             evt = evt.touches[0];
         }
-        var x_trans = evt.clientX - this.frame_width;
-        var y_trans = evt.clientY + this.frame_height/2 - g.navbar_height;
+        var clientX = parseInt(evt.clientX),
+            clientY = parseInt(evt.clientY);
+        if (Object.prototype.toString.call(evt) === '[object TouchEvent]') {
+            clientX = parseInt(evt.touches[0].clientX);
+            clientY = parseInt(evt.touches[0].clientY);
+        }
+        var x_trans = clientX - this.frame_width;
+        var y_trans = clientY + this.frame_height/2 - g.navbar_height;
         this.g.transform('t' + x_trans + ',' + y_trans);
     };
 
@@ -448,8 +475,8 @@ function HelpPanel(y_trans, padding, button_panel_height) {
     this.g.append(this.text_elem);
     this.frame = snap.rect(0, -1*y_trans, this.width, button_panel_height)
     .attr({
-        'fill': '#555',
-        'stroke': '#222',
+        'fill': g.playback_bar_fill,
+        'stroke': g.playback_bar_stroke,
         'stroke-width': 1
     });
     
@@ -572,7 +599,13 @@ function ControlPanel(button_panel_height, y_trans) {
         brought up by clicking on the cog.
     */
     this.cursor_in_control_panel = function(evt) {
-        var elem = Snap.getElementByPoint(evt.clientX, evt.clientY);
+        var clientX = parseInt(evt.clientX),
+            clientY = parseInt(evt.clientY);
+        if (Object.prototype.toString.call(evt) === '[object TouchEvent]') {
+            clientX = parseInt(evt.touches[0].clientX);
+            clientY = parseInt(evt.touches[0].clientY);
+        }
+        var elem = Snap.getElementByPoint(clientX, clientY);
         while (elem !== null && elem !== snap) {
             if (elem === this.g) {
                 return true;
@@ -628,10 +661,10 @@ function ControlPanel(button_panel_height, y_trans) {
         this.speed_frame_x, 
         this.speed_frame_y_closed, 
         this.speed_frame_width, 
-        this.speed_frame_height_open, 2, 2)
+        this.speed_frame_height_open)
     .attr({
-        'fill': '#606060',
-        'stroke': '#222',
+        'fill': g.playback_bar_fill,
+        'stroke': g.playback_bar_stroke,
         'stroke-width': 1
     });
     
@@ -677,11 +710,11 @@ function PlaybackBar() {
     this.height = 40;
     this.padding_y = 5;
     this.padding_x = 15;
-    this.bg_color = '#606060';
-    this.stroke = '#222';
+    this.bg_color = g.playback_bar_fill;
+    this.stroke = g.playback_bar_stroke;
     this.stroke_width = g.playback_bar_stroke_width;
 
-    this.frame = snap.rect(0, 0, this.width, this.height, 5, 5).attr({
+    this.frame = snap.rect(0, 0, this.width, this.height, 1, 1).attr({
         'fill': this.bg_color,
         'stroke': this.stroke,
         'stroke-width': this.stroke_width,
@@ -745,6 +778,7 @@ function step_click(evt) {
     /* This is called when the step button is clicked */
     var buttons = g.button_panel.buttons;
     if (buttons.step.active) {
+        buttons.step.pulsate();
         g.button_panel.set_buttons_state('stepping');
         g.animation.step();
     }
@@ -776,14 +810,18 @@ function ButtonPanel() {
     this.width = 205;
 
     this.buttons = {};
-    this.buttons['start'] = new Button(start_click, 'M0,0 0,30 20,15 Z', true, [0,0]);
+    this.buttons['start'] = new Button(start_click, 'M0,0 0,30 20,15 Z', true, [0,0], [20, 30]);
     this.g.append(this.buttons['start'].button);
-    this.buttons['step'] = new Button(step_click, 'M0,0 0,30 20,15 Z M20,0 20,30 30,30 30,0 Z', false, [50,0]);
+    this.g.append(this.buttons['start'].click_receiver);
+    this.buttons['step'] = new Button(step_click, 'M0,0 0,30 20,15 Z M20,0 20,30 30,30 30,0 Z', false, [50,0], [30, 30]);
     this.g.append(this.buttons['step'].button);
-    this.buttons['continue'] = new Button(continue_click, 'M0,0 0,30 10,30 10,0 Z M15,0 15,30 35,15 Z', false, [110,0]);
+    this.g.append(this.buttons['step'].click_receiver);
+    this.buttons['continue'] = new Button(continue_click, 'M0,0 0,30 10,30 10,0 Z M15,0 15,30 35,15 Z', false, [110,0], [35, 30]);
     this.g.append(this.buttons['continue'].button);
-    this.buttons['stop'] = new Button(stop_click, 'M0,0 0,30 30,30 30,0 Z', false, [175,0]);
+    this.g.append(this.buttons['continue'].click_receiver);
+    this.buttons['stop'] = new Button(stop_click, 'M0,0 0,30 30,30 30,0 Z', false, [175,0], [30, 30]);
     this.g.append(this.buttons['stop'].button);
+    this.g.append(this.buttons['stop'].click_receiver);
 
     this.button_states = {
         'animating': {'step': true, 'stop': true},
@@ -803,11 +841,17 @@ function ButtonPanel() {
     }
 }
 
-function Button(click_handler, path_str, active, translate) {
+function Button(click_handler, path_str, active, translate, dim) {
     /*  This object represents one of the buttons that control animation
-        that are located at the left side of the playback bar
+        that are located at the left side of the playback bar.
+        click_handler: the function to be called on click
+        path_str: the path string to pass to snap
+        active: true/false whether or not the button is active
+        translate: [x, y] array representing translation
+        dim: [width, height] array representing the width and height of the button, to be used for making a larger click handler
     */
     this.color = '#87afff';
+    this.pulse_color = '#547ccc';
     this.active_opacity = 1;
     this.inactive_opacity = .47;
     this.inactive_attr = {
@@ -822,20 +866,34 @@ function Button(click_handler, path_str, active, translate) {
     };
     this.active = active;
     this.button = snap.path(path_str).click(click_handler).touchstart(click_handler);
+    var extra_width = 20;
+    var extra_height = 20;
+    this.click_receiver = snap.rect(extra_width/2.0*-1, extra_height/2.0*-1, dim[0]+extra_width, dim[1]+extra_height).attr({
+        'opacity': 0
+    }).click(click_handler).touchstart(click_handler);
     if (this.active) {
         this.button.attr(this.active_attr);
     } else {
         this.button.attr(this.inactive_attr);
     }
     this.button.transform('t' + translate[0] + ',' + translate[1]);
+    this.click_receiver.transform('t' + translate[0] + ',' + translate[1]);
 
     this.set_active = function() {
         this.active = true;
-        this.button.attr(this.active_attr);
+        this.button.animate({'fill-opacity': this.active_opacity}, 250);
     };
     this.set_inactive = function() {
         this.active = false;
-        this.button.attr(this.inactive_attr);       
+        this.button.animate({'fill-opacity': this.inactive_opacity}, 250);       
+    };
+    this.pulsate = function() {
+        console.log('pulsating');
+        this.button.animate({'fill': this.pulse_color}, 125);
+        var self = this;
+        setTimeout(function() {
+            self.button.animate({'fill': self.color}, 125);
+        }, 125);
     };
 }
 
@@ -1014,10 +1072,10 @@ function CodeBox() {
     this.initial_frame_width = this.frame_width;
     this.frame_height = curr_y + this.padding*2;
 
-    this.frame = snap.rect(0, 0, this.frame_width, this.frame_height, 5, 5).attr({
+    this.frame = snap.rect(0, 0, this.frame_width, this.frame_height, g.rect_r, g.rect_r).attr({
         fill: '#ddd',
         stroke: '#333333',
-        strokeWidth: 2,
+        strokeWidth: g.codebox_stroke_width,
     });
     this.g.prepend(this.frame);
 

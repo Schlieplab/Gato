@@ -11,6 +11,7 @@ function isiPhone(){
 function add_scaler() {
     g.scaler = new Scaler();
     g.graph_containers[g.num_graphs-1].append(g.scaler.elem);
+    g.graph_containers[g.num_graphs-1].append(g.scaler.click_receiver);
 }
 
 function get_bubble_id(vertex, vertex_nums) {

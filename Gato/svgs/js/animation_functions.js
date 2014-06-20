@@ -347,15 +347,15 @@ function Slider(width, height) {
 		/*	Triggers when cursor is mousedowned.  Begins sliding process by 
 			recording initial cursor and mouse positions
 		*/
-		console.log('in mousedown');
+		var clientX = evt.clientX;
+		if (Object.prototype.toString.call(evt) === '[object TouchEvent]') {
+			clientX = evt.touches[0].clientX;
+		}
 		g.slider.sliding = true;
 		g.slider.start_cursor_x = parseInt(g.slider.cursor.attr('x'));
-		g.slider.start_mouse_x = parseInt(evt.clientX);
-		console.log(evt.clientX);
-		console.log('leaving mousedown');
+		g.slider.start_mouse_x = parseInt(clientX);
 	};
 	this.cursor_drag = function(evt) {
-		console.log('in cursor drag');
 		this.cursor_mouseup(evt);
 	};
 	this.cursor_mousemove = function(evt) {
@@ -363,10 +363,13 @@ function Slider(width, height) {
 			at mousedown event this computes the new position of the cursor, and moves
 			the animation to the corresponding step.
 		*/
-		console.log('in cursor mousemove');
+		var clientX = parseInt(evt.clientX);
+		if (Object.prototype.toString.call(evt) === '[object TouchEvent]') {
+			clientX = parseInt(evt.touches[0].clientX);
+		}
 		var self = g.slider;
 		var step = 0;
-		var new_x = this.start_cursor_x + parseInt(evt.clientX) - self.start_mouse_x;
+		var new_x = this.start_cursor_x + clientX - self.start_mouse_x;
 		if (new_x > this.cursor_max_x) {
 			new_x = this.cursor_max_x;
 			step = anim_array.length;
@@ -376,7 +379,7 @@ function Slider(width, height) {
 		} else {
 			step = self.get_step_for_position(new_x / self.step_width);
 		}
-		g.animation.jump_to_step(step, false);
+		//g.animation.jump_to_step(step, false);
 		self.go_to_step(step);
 	};
 	this.cursor_mouseup = function(evt) {
@@ -387,12 +390,14 @@ function Slider(width, height) {
 	this.go_to_step = function(n, time) {
 		/* Positions the cursor at the position corresponding to step number n */
 		var position = this.slider_positions[n];
+		var x = position*this.step_width;
 		if (time) {
 			// var diff = position*this.step_width - parseInt(this.cursor.attr('x'));
-			this.cursor.animate({'x': position*this.step_width}, time);
+			this.cursor.animate({'x': x}, time);
 		} else {
-			this.cursor.attr({'x': position*this.step_width});
+			this.cursor.attr({'x': x});
 		}
+		this.cursor_click_receiver.attr({'x': x-this.cursor_extra_click_width/2.0});
 	};
 	this.compute_step_width = function() {
 		var sum = 0;
@@ -443,16 +448,21 @@ function Slider(width, height) {
 
 		// Construct the slider track
 		this.track_width = this.width;
-		this.track_height = 8;
+		this.track_height = 10;
 		this.track_y = this.height/2-this.track_height/2;
-		this.track = snap.rect(0, this.track_y, this.width, this.track_height, 2, 2)
-		.attr({
+		this.track = snap.rect(0, this.track_y, this.width, this.track_height, 2, 2).attr({
 			'fill': '#AAA',
 			'cursor': 'pointer'
 		})
 		.click(this.track_click)
 		.touchstart(this.track_click);
+		this.track_click_receiver = snap.rect(0, -10, this.width, this.height+20).attr({
+			'opacity': 0
+		})
+		.click(this.track_click)
+		.touchstart(this.track_click);
 		this.g.append(this.track);
+		this.g.append(this.track_click_receiver);
 
 		// Construct the cursor
 		this.cursor_height = this.height;
@@ -463,6 +473,15 @@ function Slider(width, height) {
 			'stroke-width': 1,
 			'cursor': 'pointer'
 		}).mousedown(this.cursor_mousedown);
+		this.cursor_extra_click_width = 40;
+		this.cursor_extra_click_height = 20;
+		this.cursor_click_receiver = snap.rect(this.cursor_extra_click_width/2.0*-1, 
+			this.cursor_extra_click_height*-1/2.0, 
+			this.cursor_width+this.cursor_extra_click_width, 
+			this.cursor_height+this.cursor_extra_click_height
+		).attr({
+			'opacity': 0
+		}).mousedown(this.cursor_mousedown);
 		this.cursor_max_x = this.width - this.cursor_width;
 		this.cursor_min_x = 0;
 
@@ -471,6 +490,7 @@ function Slider(width, height) {
 		// naive_step_width is just the position in anim_array
 		this.naive_step_width = this.cursor_max_x / anim_array.length;
 		
+		this.g.append(this.cursor_click_receiver);
 		this.g.append(this.cursor);
 	};
 	

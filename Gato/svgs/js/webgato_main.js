@@ -8,12 +8,14 @@ function fill_global() {
     */
     var navbar_height = 0;
     var navbar_padding = 0;
+    var navbar_border_height = 0;
     if (isiPhone()) {
         navbar_height = 60;
         navbar_padding = 5;
+        navbar_border_height = 2;
     }
     var cont_width = window.innerWidth;
-    var cont_height = window.innerHeight - navbar_height;
+    var cont_height = window.innerHeight - navbar_height - navbar_border_height;
     extend(g, {
         playback_bar: null,
         code_box: null,
@@ -23,10 +25,15 @@ function fill_global() {
         // Width and height of the whole draw area
         navbar_height: navbar_height,
         navbar_padding: navbar_padding,
+        navbar_border_height: navbar_border_height,
         ios_statusbar_height: 20,
         cont_width: cont_width,
         cont_height: cont_height,
+        rect_r: 1, 
         playback_bar_stroke_width: 2,
+        codebox_stroke_width: 2,
+        playback_bar_fill: '#606060',
+        playback_bar_stroke: '#333',
         graph_frame_normalize_diff: 10,
         // Location in the file system of the algorithm info file
         info_file: 'infos/%(info_file)s',
@@ -255,7 +262,7 @@ var window_size_check = (function() {
 
 function window_resize(evt) {
     window_size_check();
-    g.cont_height = window.innerHeight - g.navbar_height;
+    g.cont_height = window.innerHeight - g.navbar_height - g.navbar_border_height;
     g.cont_width = window.innerWidth;
     document.getElementById('svg').setAttribute('style', 'width: ' + g.cont_width + 'px; height: ' + g.cont_height + 'px');
     g.playback_bar.resize();
@@ -313,7 +320,6 @@ function NavBar() {
         }
     );
     this.g.append(this.backlink_g);
-
 
     // Create the title
     this.anim_title = nav_snap.text(this.width/2, h/2.0 + 5, animation_name)
@@ -374,7 +380,7 @@ function init() {
     // Set globals and size of base_container
     fill_global();
     remove_trailing_whitespace_lines();
-    document.getElementById('base_container').setAttribute('style', 'width: ' + g.cont_width + '; height: ' + g.cont_height);
+    document.getElementById('base_container').setAttribute('style', 'width: ' + g.cont_width + 'px; height: ' + g.cont_height + 'px');
     document.getElementById('svg').setAttribute('style', 'width: ' + g.cont_width + 'px; height: ' + g.cont_height + 'px');
     g.playback_bar = new PlaybackBar();
     g.code_box = new CodeBox();
