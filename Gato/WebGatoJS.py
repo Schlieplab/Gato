@@ -83,7 +83,7 @@ animationhead = '''
     <body>
         <div id="help_div" class="invisible">
             <div style="padding: .5em">
-                <a class="help_link left_link" href="./index.html" target="_blank">Index</a><a class="help_link right_link" href="./help.html" target="_blank">Help</a>
+                <a class="help_link left_link" href="./index.html#chapter_%(chapter_number)d_div" target="_blank">Index</a><a class="help_link right_link" href="./help.html" target="_blank">Help</a>
             </div>
         </div>
         <div id="nav_bar" class="inactive_nav">
@@ -115,6 +115,7 @@ animationhead = '''
         </div>
 
         <script type="text/javascript">
+            var chapter_number = %(chapter_number)d;
             var info_file = "%(info_file)s";
             var animation_name = "%(animation_name)s";
             var g1_x_add = %(g1_x_add)d;

@@ -807,7 +807,8 @@ if __name__ == '__main__':
 
                     # Generate the SVG
                     app.ExportSVGAnimation('svgs/%s--%s.html' %
-                        (os.path.splitext(algo['file'])[0], os.path.splitext(os.path.basename(graph_file))[0]))
+                        (os.path.splitext(algo['file'])[0], os.path.splitext(os.path.basename(graph_file))[0]),
+                        chapter_number=chapter_dict['chapter_number'])
                     # Generate the PNG
                     if graph_file not in graph_pngs and has_png_libs:
                         file_name = 'svgs/img/%s.png' % (os.path.splitext(os.path.basename(graph_file))[0])

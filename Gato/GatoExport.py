@@ -682,7 +682,7 @@ def construct_animation_name(fileName):
 def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=None, 
     secondaryGraphDisplayAnimationHistory=None, showAnimation=False, 
     init_edge_infos=None, init_vertex_infos=None, init_graph_infos=None,
-    write_to_png=False):
+    write_to_png=False, chapter_number=None):
     """ Export either the current graphs or the complete animation
         (showAnimation=True) to the file fileName.
 
@@ -766,6 +766,7 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
         str_vars = {
             'title': construct_title(fileName),
             'animation_name': construct_animation_name(fileName),
+            'chapter_number': chapter_number or 0,
             'info_file': 'infos/' + fileName[fileName.rindex('/') + 1:], 
             'animation': format_animation(animation),
             'graph_str': '\n'.join(graph_strs), 

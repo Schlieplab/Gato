@@ -329,7 +329,7 @@ function NavBar() {
     this.backlink_g.prepend(this.backlink_rect);
     this.backlink_g.click(
         function() {
-            window.location = 'index.html';
+            window.location = 'index.html#chapter_' + chapter_number + '_div';
         }
     );
     this.g.append(this.backlink_g);
