@@ -330,41 +330,41 @@
 <text blank = "false" id="l_8" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">met = FALSE</text>
 <text blank = "true" id="l_9" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"></text>
 <text blank = "false" id="l_10" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">while</tspan><tspan font-weight="bold"> not</tspan> met:</text>
-<text blank = "false" id="l_11" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">v = PQ_s.DeleteMin()</text>
-<text blank = "false" id="l_12" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">permanent_s[v] = TRUE</text>
-<text blank = "false" id="l_13" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan> permanent_t[v]:</text>
-<text blank = "false" id="l_14" class="code_line" x="0" y="0" dx="49" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">met = TRUE</text>
-<text blank = "false" id="l_15" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">for</tspan> w<tspan font-weight="bold"> in</tspan> Neighborhood(v):</text>
-<text blank = "false" id="l_16" class="code_line" x="0" y="0" dx="56" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan> dist_s[w] == gInfinity:</text>
-<text blank = "false" id="l_17" class="code_line" x="0" y="0" dx="84" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">pred_s[w] = v</text>
-<text blank = "false" id="l_18" class="code_line" x="0" y="0" dx="84" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">dist_s[w] = dist_s[v] + length[(v,w)]</text>
-<text blank = "false" id="l_19" class="code_line" x="0" y="0" dx="84" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">PQ_s.Insert(w,dist_s[w])</text>
-<text blank = "false" id="l_20" class="code_line" x="0" y="0" dx="56" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">elif</tspan> dist_s[w] > dist_s[v] + length[(v,w)]:</text>
-<text blank = "false" id="l_21" class="code_line" x="0" y="0" dx="84" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">pred_s[w] = v</text>
-<text blank = "false" id="l_22" class="code_line" x="0" y="0" dx="84" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">dist_s[w] = dist_s[v] + length[(v,w)]</text>
-<text blank = "false" id="l_23" class="code_line" x="0" y="0" dx="84" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">PQ_s.DecreaseKey(w,dist_s[w])</text>
-<text blank = "false" id="l_24" class="code_line" x="0" y="0" dx="56" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan> permanent_t[w]:</text>
-<text blank = "false" id="l_25" class="code_line" x="0" y="0" dx="84" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan> currentlength > dist_s[w] + dist_t[w]:</text>
-<text blank = "false" id="l_26" class="code_line" x="0" y="0" dx="112" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">currentlength = dist_s[w] + dist_t[w]</text>
-<text blank = "false" id="l_27" class="code_line" x="0" y="0" dx="112" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">SetBridge(v,w)</text>
-<text blank = "false" id="l_28" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">v = PQ_t.DeleteMin()</text>
-<text blank = "false" id="l_29" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">permanent_t[v] = TRUE</text>
-<text blank = "false" id="l_30" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan> permanent_s[v]:</text>
-<text blank = "false" id="l_31" class="code_line" x="0" y="0" dx="49" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">met = TRUE</text>
-<text blank = "false" id="l_32" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">for</tspan> w<tspan font-weight="bold"> in</tspan> Neighborhood(v):</text>
-<text blank = "false" id="l_33" class="code_line" x="0" y="0" dx="56" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan> dist_t[w] == gInfinity:</text>
-<text blank = "false" id="l_34" class="code_line" x="0" y="0" dx="84" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">pred_t[w] = v</text>
-<text blank = "false" id="l_35" class="code_line" x="0" y="0" dx="84" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">dist_t[w] = dist_t[v] + length[(v,w)]</text>
-<text blank = "false" id="l_36" class="code_line" x="0" y="0" dx="84" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">PQ_t.Insert(w,dist_t[w])</text>
-<text blank = "false" id="l_37" class="code_line" x="0" y="0" dx="56" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">elif</tspan> dist_t[w] > dist_t[v] + length[(v,w)]:</text>
-<text blank = "false" id="l_38" class="code_line" x="0" y="0" dx="84" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">pred_t[w] = v</text>
-<text blank = "false" id="l_39" class="code_line" x="0" y="0" dx="84" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">dist_t[w] = dist_t[v] + length[(v,w)]</text>
-<text blank = "false" id="l_40" class="code_line" x="0" y="0" dx="84" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">PQ_t.DecreaseKey(w,dist_t[w])</text>
-<text blank = "false" id="l_41" class="code_line" x="0" y="0" dx="56" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan> permanent_s[w]:</text>
-<text blank = "false" id="l_42" class="code_line" x="0" y="0" dx="84" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan> currentlength > dist_s[w] + dist_t[w]:</text>
-<text blank = "false" id="l_43" class="code_line" x="0" y="0" dx="112" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">currentlength = dist_s[w] + dist_t[w]</text>
-<text blank = "false" id="l_44" class="code_line" x="0" y="0" dx="112" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">SetBridge(v,w)</text>
-<text blank = "true" id="l_45" class="code_line" x="0" y="0" dx="112" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"></text>
+<text blank = "false" id="l_11" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">v = PQ_s.DeleteMin()</text>
+<text blank = "false" id="l_12" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">permanent_s[v] = TRUE</text>
+<text blank = "false" id="l_13" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan> permanent_t[v]:</text>
+<text blank = "false" id="l_14" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">met = TRUE</text>
+<text blank = "false" id="l_15" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">for</tspan> w<tspan font-weight="bold"> in</tspan> Neighborhood(v):</text>
+<text blank = "false" id="l_16" class="code_line" x="0" y="0" dx="32" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan> dist_s[w] == gInfinity:</text>
+<text blank = "false" id="l_17" class="code_line" x="0" y="0" dx="48" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">pred_s[w] = v</text>
+<text blank = "false" id="l_18" class="code_line" x="0" y="0" dx="48" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">dist_s[w] = dist_s[v] + length[(v,w)]</text>
+<text blank = "false" id="l_19" class="code_line" x="0" y="0" dx="48" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">PQ_s.Insert(w,dist_s[w])</text>
+<text blank = "false" id="l_20" class="code_line" x="0" y="0" dx="32" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">elif</tspan> dist_s[w] > dist_s[v] + length[(v,w)]:</text>
+<text blank = "false" id="l_21" class="code_line" x="0" y="0" dx="48" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">pred_s[w] = v</text>
+<text blank = "false" id="l_22" class="code_line" x="0" y="0" dx="48" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">dist_s[w] = dist_s[v] + length[(v,w)]</text>
+<text blank = "false" id="l_23" class="code_line" x="0" y="0" dx="48" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">PQ_s.DecreaseKey(w,dist_s[w])</text>
+<text blank = "false" id="l_24" class="code_line" x="0" y="0" dx="32" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan> permanent_t[w]:</text>
+<text blank = "false" id="l_25" class="code_line" x="0" y="0" dx="48" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan> currentlength > dist_s[w] + dist_t[w]:</text>
+<text blank = "false" id="l_26" class="code_line" x="0" y="0" dx="64" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">currentlength = dist_s[w] + dist_t[w]</text>
+<text blank = "false" id="l_27" class="code_line" x="0" y="0" dx="64" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">SetBridge(v,w)</text>
+<text blank = "false" id="l_28" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">v = PQ_t.DeleteMin()</text>
+<text blank = "false" id="l_29" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">permanent_t[v] = TRUE</text>
+<text blank = "false" id="l_30" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan> permanent_s[v]:</text>
+<text blank = "false" id="l_31" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">met = TRUE</text>
+<text blank = "false" id="l_32" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">for</tspan> w<tspan font-weight="bold"> in</tspan> Neighborhood(v):</text>
+<text blank = "false" id="l_33" class="code_line" x="0" y="0" dx="32" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan> dist_t[w] == gInfinity:</text>
+<text blank = "false" id="l_34" class="code_line" x="0" y="0" dx="48" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">pred_t[w] = v</text>
+<text blank = "false" id="l_35" class="code_line" x="0" y="0" dx="48" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">dist_t[w] = dist_t[v] + length[(v,w)]</text>
+<text blank = "false" id="l_36" class="code_line" x="0" y="0" dx="48" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">PQ_t.Insert(w,dist_t[w])</text>
+<text blank = "false" id="l_37" class="code_line" x="0" y="0" dx="32" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">elif</tspan> dist_t[w] > dist_t[v] + length[(v,w)]:</text>
+<text blank = "false" id="l_38" class="code_line" x="0" y="0" dx="48" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">pred_t[w] = v</text>
+<text blank = "false" id="l_39" class="code_line" x="0" y="0" dx="48" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">dist_t[w] = dist_t[v] + length[(v,w)]</text>
+<text blank = "false" id="l_40" class="code_line" x="0" y="0" dx="48" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">PQ_t.DecreaseKey(w,dist_t[w])</text>
+<text blank = "false" id="l_41" class="code_line" x="0" y="0" dx="32" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan> permanent_s[w]:</text>
+<text blank = "false" id="l_42" class="code_line" x="0" y="0" dx="48" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan> currentlength > dist_s[w] + dist_t[w]:</text>
+<text blank = "false" id="l_43" class="code_line" x="0" y="0" dx="64" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">currentlength = dist_s[w] + dist_t[w]</text>
+<text blank = "false" id="l_44" class="code_line" x="0" y="0" dx="64" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">SetBridge(v,w)</text>
+<text blank = "true" id="l_45" class="code_line" x="0" y="0" dx="64" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"></text>
 <text blank = "false" id="l_46" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">ShowPath(Bridge)</text>
 
         </svg>
@@ -480,7 +480,7 @@ Array(1, UpdateVertexInfo, "g1_15", "Vertex 15 is in neither tree"),
 Array(1, UpdateVertexInfo, "g1_16", "Vertex 16 is in neither tree"),
 Array(1, UpdateVertexInfo, "g1_17", "Vertex 17 is in neither tree"),
 Array(4, SetVertexAnnotation, "g1_1", "s"),
-Array(3, ShowActive, "l_2"),
+Array(2, ShowActive, "l_2"),
 Array(1, UpdateVertexInfo, "g1_1", "Vertex 1 is source"),
 Array(4, SetVertexAnnotation, "g1_17", "t"),
 Array(3, ShowActive, "l_4"),
@@ -545,7 +545,7 @@ Array(1, ShowActive, "l_35"),
 Array(5, ShowActive, "l_36"),
 Array(1, UpdateVertexInfo, "g1_9", "Vertex 9 has predecessor 17 and distance 158.11 from sink"),
 Array(4, SetVertexColor, "g1_9", "#87ceff"),
-Array(2, ShowActive, "l_41"),
+Array(1, ShowActive, "l_41"),
 Array(5, ShowActive, "l_32"),
 Array(5, SetEdgeColor, "g1_17-16", "yellow"),
 Array(1, ShowActive, "l_33"),
@@ -556,9 +556,9 @@ Array(5, ShowActive, "l_36"),
 Array(1, UpdateVertexInfo, "g1_16", "Vertex 16 has predecessor 17 and distance 158.11 from sink"),
 Array(4, SetVertexColor, "g1_16", "#87ceff"),
 Array(1, ShowActive, "l_41"),
-Array(6, ShowActive, "l_32"),
+Array(5, ShowActive, "l_32"),
 Array(5, SetVertexFrameWidth, "g1_17", "0"),
-Array(3, ShowActive, "l_10"),
+Array(1, ShowActive, "l_10"),
 Array(5, ShowActive, "l_11"),
 Array(5, SetVertexColor, "g1_7", "red"),
 Array(1, SetVertexFrameWidth, "g1_1", "0"),
@@ -627,7 +627,7 @@ Array(5, ShowActive, "l_41"),
 Array(5, ShowActive, "l_32"),
 Array(5, SetEdgeColor, "g1_9-17", "#009000"),
 Array(1, SetVertexFrameWidth, "g1_9", "0"),
-Array(2, ShowActive, "l_10"),
+Array(1, ShowActive, "l_10"),
 Array(5, ShowActive, "l_11"),
 Array(5, SetVertexColor, "g1_2", "red"),
 Array(1, SetVertexFrameWidth, "g1_7", "0"),
@@ -765,7 +765,7 @@ Array(5, SetEdgeColor, "g1_10-16", "grey"),
 Array(1, SetVertexFrameWidth, "g1_10", "0"),
 Array(1, ShowActive, "l_10"),
 Array(5, ShowActive, "l_11"),
-Array(5, SetVertexColor, "g1_8", "red"),
+Array(4, SetVertexColor, "g1_8", "red"),
 Array(1, SetVertexFrameWidth, "g1_6", "0"),
 Array(1, SetVertexFrameWidth, "g1_8", "6"),
 Array(1, SetEdgeColor, "g1_7-8", "red"),
@@ -787,8 +787,8 @@ Array(5, ShowActive, "l_15"),
 Array(5, SetEdgeColor, "g1_11-8", "grey"),
 Array(1, SetEdgeColor, "g1_8-9", "yellow"),
 Array(1, ShowActive, "l_16"),
-Array(12, ShowActive, "l_17"),
-Array(6, SetEdgeColor, "g1_8-9", "#EE9900"),
+Array(5, ShowActive, "l_17"),
+Array(5, SetEdgeColor, "g1_8-9", "#EE9900"),
 Array(1, ShowActive, "l_18"),
 Array(5, ShowActive, "l_19"),
 Array(1, UpdateVertexInfo, "g1_9", "Vertex 9 has predecessor 8 (17) and distance 449.54 (158.11) from source (sink)"),
@@ -855,15 +855,15 @@ Array(5, ShowActive, "l_15"),
 Array(5, SetEdgeColor, "g1_11-8", "yellow"),
 Array(1, ShowActive, "l_16"),
 Array(5, ShowActive, "l_20"),
-Array(6, ShowActive, "l_24"),
-Array(6, ShowActive, "l_15"),
+Array(5, ShowActive, "l_24"),
+Array(5, ShowActive, "l_15"),
 Array(5, SetEdgeColor, "g1_11-8", "grey"),
 Array(1, SetEdgeColor, "g1_11-5", "yellow"),
 Array(1, ShowActive, "l_16"),
 Array(5, ShowActive, "l_17"),
-Array(6, SetEdgeColor, "g1_11-5", "#EE9900"),
+Array(5, SetEdgeColor, "g1_11-5", "#EE9900"),
 Array(1, ShowActive, "l_18"),
-Array(6, ShowActive, "l_19"),
+Array(5, ShowActive, "l_19"),
 Array(1, UpdateVertexInfo, "g1_5", "Vertex 5 has predecessor 11 and distance 510.56 from source"),
 Array(4, SetVertexColor, "g1_5", "blue"),
 Array(1, ShowActive, "l_24"),
@@ -875,9 +875,9 @@ Array(5, SetEdgeColor, "g1_11-10", "#EE9900"),
 Array(1, ShowActive, "l_18"),
 Array(5, ShowActive, "l_19"),
 Array(1, UpdateVertexInfo, "g1_10", "Vertex 10 has predecessor 11 (9) and distance 488.39 (308.11) from source (sink)"),
-Array(5, SetVertexColor, "g1_10", "blue"),
+Array(4, SetVertexColor, "g1_10", "blue"),
 Array(1, ShowActive, "l_24"),
-Array(6, ShowActive, "l_25"),
+Array(5, ShowActive, "l_25"),
 Array(5, ShowActive, "l_15"),
 Array(5, SetVertexFrameWidth, "g1_11", "0"),
 Array(1, ShowActive, "l_28"),
@@ -899,7 +899,7 @@ Array(5, ShowActive, "l_36"),
 Array(1, UpdateVertexInfo, "g1_7", "Vertex 7 has predecessor 1 (8) and distance 150.00 (457.65) from source (sink)"),
 Array(4, SetVertexColor, "g1_7", "#87ceff"),
 Array(1, ShowActive, "l_41"),
-Array(6, ShowActive, "l_42"),
+Array(5, ShowActive, "l_42"),
 Array(5, ShowActive, "l_32"),
 Array(5, SetEdgeColor, "g1_11-8", "yellow"),
 Array(1, ShowActive, "l_33"),
@@ -916,7 +916,7 @@ Array(5, ShowActive, "l_32"),
 Array(5, SetEdgeColor, "g1_8-9", "#009000"),
 Array(1, SetVertexFrameWidth, "g1_8", "0"),
 Array(1, ShowActive, "l_10"),
-Array(6, ShowActive, "l_46"),
+Array(5, ShowActive, "l_46"),
 Array(5, HighlightPath, "g1_[1, 7, 8, 9, 17]", "yellow", "0"));
             init();
         </script>

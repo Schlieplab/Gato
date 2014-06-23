@@ -326,17 +326,17 @@
 <text blank = "false" id="l_4" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">W.Insert(s,dist[s])</text>
 <text blank = "true" id="l_5" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"></text>
 <text blank = "false" id="l_6" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">while</tspan> W.IsNotEmpty():</text>
-<text blank = "false" id="l_7" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">v = W.DeleteMin()</text>
-<text blank = "true" id="l_8" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"></text>
-<text blank = "false" id="l_9" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">for</tspan> w<tspan font-weight="bold"> in</tspan> Neighborhood(v):</text>
-<text blank = "false" id="l_10" class="code_line" x="0" y="0" dx="56" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan> dist[w] == gInfinity:</text>
-<text blank = "false" id="l_11" class="code_line" x="0" y="0" dx="84" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">pred[w] = v</text>
-<text blank = "false" id="l_12" class="code_line" x="0" y="0" dx="84" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">dist[w] = dist[v] + length[(v,w)]</text>
-<text blank = "false" id="l_13" class="code_line" x="0" y="0" dx="84" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">W.Insert(w,dist[w])</text>
-<text blank = "false" id="l_14" class="code_line" x="0" y="0" dx="56" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">elif</tspan> dist[w] > dist[v] + length[(v,w)]:</text>
-<text blank = "false" id="l_15" class="code_line" x="0" y="0" dx="84" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">pred[w] = v</text>
-<text blank = "false" id="l_16" class="code_line" x="0" y="0" dx="84" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">dist[w] = dist[v] + length[(v,w)]</text>
-<text blank = "false" id="l_17" class="code_line" x="0" y="0" dx="84" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">W.DecreaseKey(w,dist[w])</text>
+<text blank = "false" id="l_7" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">v = W.DeleteMin()</text>
+<text blank = "true" id="l_8" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"></text>
+<text blank = "false" id="l_9" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">for</tspan> w<tspan font-weight="bold"> in</tspan> Neighborhood(v):</text>
+<text blank = "false" id="l_10" class="code_line" x="0" y="0" dx="32" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan> dist[w] == gInfinity:</text>
+<text blank = "false" id="l_11" class="code_line" x="0" y="0" dx="48" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">pred[w] = v</text>
+<text blank = "false" id="l_12" class="code_line" x="0" y="0" dx="48" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">dist[w] = dist[v] + length[(v,w)]</text>
+<text blank = "false" id="l_13" class="code_line" x="0" y="0" dx="48" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">W.Insert(w,dist[w])</text>
+<text blank = "false" id="l_14" class="code_line" x="0" y="0" dx="32" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">elif</tspan> dist[w] > dist[v] + length[(v,w)]:</text>
+<text blank = "false" id="l_15" class="code_line" x="0" y="0" dx="48" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">pred[w] = v</text>
+<text blank = "false" id="l_16" class="code_line" x="0" y="0" dx="48" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">dist[w] = dist[v] + length[(v,w)]</text>
+<text blank = "false" id="l_17" class="code_line" x="0" y="0" dx="48" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">W.DecreaseKey(w,dist[w])</text>
 
         </svg>
         </div>
@@ -445,7 +445,7 @@ Array(3, ShowActive, "l_3"),
 Array(1, UpdateVertexInfo, "g1_1", "Vertex 1 is root of tree"),
 Array(4, SetVertexColor, "g1_1", "#CFCFCF"),
 Array(1, ShowActive, "l_4"),
-Array(5, SetVertexColor, "g1_1", "blue"),
+Array(4, SetVertexColor, "g1_1", "blue"),
 Array(1, ShowActive, "l_6"),
 Array(5, ShowActive, "l_7"),
 Array(5, SetVertexColor, "g1_1", "red"),
@@ -477,7 +477,7 @@ Array(1, ShowActive, "l_10"),
 Array(5, ShowActive, "l_11"),
 Array(5, SetEdgeColor, "g1_1-7", "#EE9900"),
 Array(1, ShowActive, "l_12"),
-Array(5, SetVertexColor, "g1_7", "blue"),
+Array(4, SetVertexColor, "g1_7", "blue"),
 Array(1, ShowActive, "l_13"),
 Array(1, UpdateVertexInfo, "g1_7", "Vertex 7 has predecessor 1 and distance 150.000000"),
 Array(4, SetVertexColor, "g1_7", "blue"),
@@ -490,7 +490,7 @@ Array(1, SetVertexFrameWidth, "g1_1", "0"),
 Array(1, SetVertexFrameWidth, "g1_7", "6"),
 Array(1, SetEdgeColor, "g1_1-7", "red"),
 Array(1, ShowActive, "l_9"),
-Array(4, SetVertexFrameWidth, "g1_7", "6"),
+Array(5, SetVertexFrameWidth, "g1_7", "6"),
 Array(1, SetEdgeColor, "g1_1-7", "yellow"),
 Array(1, ShowActive, "l_10"),
 Array(5, ShowActive, "l_14"),
@@ -562,13 +562,13 @@ Array(5, SetEdgeColor, "g1_7-6", "grey"),
 Array(1, SetEdgeColor, "g1_6-1", "yellow"),
 Array(1, ShowActive, "l_10"),
 Array(5, ShowActive, "l_14"),
-Array(6, ShowActive, "l_9"),
+Array(5, ShowActive, "l_9"),
 Array(5, SetEdgeColor, "g1_6-1", "red"),
 Array(1, SetEdgeColor, "g1_6-11", "yellow"),
 Array(1, ShowActive, "l_10"),
 Array(5, ShowActive, "l_11"),
-Array(6, SetEdgeColor, "g1_6-11", "#EE9900"),
-Array(2, ShowActive, "l_12"),
+Array(5, SetEdgeColor, "g1_6-11", "#EE9900"),
+Array(1, ShowActive, "l_12"),
 Array(5, SetVertexColor, "g1_11", "blue"),
 Array(1, ShowActive, "l_13"),
 Array(1, UpdateVertexInfo, "g1_11", "Vertex 11 has predecessor 6 and distance 330.277564"),
@@ -611,7 +611,7 @@ Array(1, SetVertexFrameWidth, "g1_8", "0"),
 Array(1, SetVertexFrameWidth, "g1_11", "6"),
 Array(1, SetEdgeColor, "g1_6-11", "red"),
 Array(1, ShowActive, "l_9"),
-Array(5, SetVertexFrameWidth, "g1_11", "6"),
+Array(4, SetVertexFrameWidth, "g1_11", "6"),
 Array(1, SetEdgeColor, "g1_6-11", "yellow"),
 Array(1, ShowActive, "l_10"),
 Array(5, ShowActive, "l_14"),
@@ -660,7 +660,7 @@ Array(1, SetVertexFrameWidth, "g1_11", "0"),
 Array(1, SetVertexFrameWidth, "g1_3", "6"),
 Array(1, SetEdgeColor, "g1_3-2", "red"),
 Array(1, ShowActive, "l_9"),
-Array(5, SetVertexFrameWidth, "g1_3", "6"),
+Array(4, SetVertexFrameWidth, "g1_3", "6"),
 Array(1, SetEdgeColor, "g1_4-3", "yellow"),
 Array(1, ShowActive, "l_10"),
 Array(5, ShowActive, "l_11"),
@@ -833,7 +833,7 @@ Array(5, SetVertexFrameWidth, "g1_17", "6"),
 Array(1, SetEdgeColor, "g1_9-17", "yellow"),
 Array(1, ShowActive, "l_10"),
 Array(5, ShowActive, "l_14"),
-Array(6, ShowActive, "l_9"),
+Array(5, ShowActive, "l_9"),
 Array(5, SetEdgeColor, "g1_9-17", "red"),
 Array(1, SetEdgeColor, "g1_17-16", "yellow"),
 Array(1, ShowActive, "l_10"),
@@ -842,7 +842,7 @@ Array(5, ShowActive, "l_9"),
 Array(5, SetEdgeColor, "g1_17-16", "grey"),
 Array(1, SetVertexFrameWidth, "g1_17", "0"),
 Array(1, ShowActive, "l_6"),
-Array(5, ShowActive, "l_7"),
+Array(6, ShowActive, "l_7"),
 Array(5, SetVertexColor, "g1_13", "red"),
 Array(1, SetVertexFrameWidth, "g1_17", "0"),
 Array(1, SetVertexFrameWidth, "g1_13", "6"),
