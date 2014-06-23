@@ -1013,7 +1013,7 @@ function CodeBox() {
             this.initial_bbox = this.g.getBBox();
         }
         var playback_bbox = g.playback_bar.g.getBBox();
-        var max_height = playback_bbox.y + g.control_panel.height - g.padding*2 - this.initial_bbox.y - g.navbar_height;
+        var max_height = playback_bbox.y + g.control_panel.height - g.playback_bar.height - g.padding*2 - this.initial_bbox.y - g.navbar_height;
         var max_scale_factor_y = max_height / this.initial_bbox.height;
         var max_width = g.cont_width * .5;
         var max_scale_factor_x = max_width / this.initial_bbox.width;
@@ -1024,6 +1024,7 @@ function CodeBox() {
         }
         var scale = 's' + this.scale_factor + ',0,0';
         var translate = 't' + g.padding + ',' + g.padding;
+        console.log("scaling to " + this.scale_factor); 
         this.g.transform(translate + scale);
 
         // Resize the frame and highlight box

@@ -1159,6 +1159,8 @@ function HidePath(graph_and_path) {
 	var vertex_nums = get_ints_from_str(graph_and_path.split('_')[1]);
 	path_id = 'g' + g_num + '_' + vertex_nums.join('-') + '_highlighted_path';
 	var path = g.highlighted_paths[g_num-1][path_id];
-	path.remove();
+	if (path) {
+		path.remove();
+	}
 	delete g.highlighted_paths[g_num-1][path_id];
 }
