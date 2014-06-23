@@ -16,8 +16,11 @@ function Scaler() {
         */
         var bbox = g.master_graph_container.getBBox(),
             playback_bbox = g.playback_bar.g.getBBox();
-        var max_height = g.cont_height - g.padding*3 - g.playback_bar.frame.attr('height'),
-            max_width = g.cont_width - g.padding - get_graph_x_trans(),
+        var max_height = g.cont_height - g.padding*3 - g.playback_bar.frame.attr('height');
+        if (isiPhone()) {
+            max_height = g.cont_height - g.padding*2 - g.playback_bar.frame.attr('height');
+        }
+        var max_width = g.cont_width - g.padding - get_graph_x_trans(),
             min_height = 50,
             min_width = 50;
         var max_scale_factor_y = max_height / (bbox.height / this.curr_scale),
@@ -124,7 +127,8 @@ function Scaler() {
     this.height = 20;
     this.x = bbox.width - this.width + g.graph_frame_stroke_width;
     this.y = bbox.height;   // TODO: commit this line
-    this.elem = snap.polygon([this.x, this.y, this.x+this.width, this.y, this.x+this.width, this.y-this.height, this.x, this.y]).attr({
+    this.elem = snap.polygon([this.x, this.y, this.x+this.width, this.y, this.x+this.width, this.y-this.height, this.x, this.y]).attr(
+    {
         'fill': '#cc3333',
         'stroke': '#330000',
         'cursor': 'move'
@@ -132,7 +136,8 @@ function Scaler() {
     var w = 15;
     var h = 15;
     var e = 15;
-    this.click_receiver = snap.polygon([this.x-w-e, this.y+h, this.x+this.width+w, this.y+h, this.x+this.width+w, this.y-this.height-h-e, this.x-w-e, this.y+h]).attr({
+    this.click_receiver = snap.polygon([this.x-w-e, this.y+h, this.x+this.width+w, this.y+h, this.x+this.width+w, this.y-this.height-h-e, this.x-w-e, this.y+h]).attr(
+    {
         'opacity': 0,
     }).mousedown(this.mousedown);
 }
@@ -552,6 +557,7 @@ function show_algo_info() {
     /* Pops open the algorithm info iframe */
     algo_info_active = true;
     showPopWin(info_file, g.cont_width*1/2, g.cont_height*1/2);
+    document.getElementById('help_div').className = 'visible';
 }
 
 function create_algo_info_button() {
@@ -704,7 +710,11 @@ function ControlPanel(button_panel_height, y_trans) {
 function PlaybackBar() {
     /* Object to represent the whole playback bar at the bottom */
     this.g = snap.group();
-    this.width = g.cont_width * 3/4 - g.padding*2;
+    if (isiPhone()) {
+        this.width = g.cont_width;
+    } else {
+        this.width = g.cont_width * 3/4 - g.padding*2;
+    }
     this.min_width = 350;
     this.height = 40;
     this.padding_y = 5;
@@ -736,19 +746,29 @@ function PlaybackBar() {
     g.slider.g.transform('t' + this.slider_x_trans + ',' + this.padding_y)
     this.g.append(g.slider.g);
 
-    this.x_translate = g.cont_width/8 + g.padding;
-    this.y_translate = g.cont_height - this.height - g.padding;
+    this.compute_translate = function() {
+        if (isiPhone()) {
+            this.x_translate = 0;
+            this.y_translate = g.cont_height - this.height;
+        } else {
+            this.x_translate = g.cont_width/8 + g.padding;
+            this.y_translate = g.cont_height - this.height - g.padding;
+        }
+    };
+    this.compute_translate();
     this.g.transform('t' + this.x_translate + ',' + this.y_translate);
 }
 
 PlaybackBar.prototype.resize = function() {
     /* Called on window resize to redraw */
     var new_width = g.cont_width * 3/4 - g.padding*2;
+    if (isiPhone()) {
+        new_width = g.cont_width;
+    }
     if (new_width > this.min_width) {
-        this.width = g.cont_width * 3/4 - g.padding*2;
+        this.width = new_width;
         this.frame.attr({'width': this.width});
-        this.x_translate = g.cont_width/8 + g.padding;
-        this.y_translate = g.cont_height - this.height - g.padding;
+        this.compute_translate();
         this.g.transform('t' + this.x_translate + ',' + this.y_translate);
 
         this.control_panel_x = this.width - this.padding_x - g.control_panel.width;
@@ -810,17 +830,17 @@ function ButtonPanel() {
 
     this.buttons = {};
     this.buttons['start'] = new Button(start_click, 'M0,0 0,30 20,15 Z', true, [0,0], [20, 30]);
-    this.g.append(this.buttons['start'].button);
     this.g.append(this.buttons['start'].click_receiver);
+    this.g.append(this.buttons['start'].button);
     this.buttons['step'] = new Button(step_click, 'M0,0 0,30 20,15 Z M20,0 20,30 30,30 30,0 Z', false, [50,0], [30, 30]);
-    this.g.append(this.buttons['step'].button);
     this.g.append(this.buttons['step'].click_receiver);
+    this.g.append(this.buttons['step'].button);
     this.buttons['continue'] = new Button(continue_click, 'M0,0 0,30 10,30 10,0 Z M15,0 15,30 35,15 Z', false, [110,0], [35, 30]);
-    this.g.append(this.buttons['continue'].button);
     this.g.append(this.buttons['continue'].click_receiver);
+    this.g.append(this.buttons['continue'].button);
     this.buttons['stop'] = new Button(stop_click, 'M0,0 0,30 30,30 30,0 Z', false, [175,0], [30, 30]);
-    this.g.append(this.buttons['stop'].button);
     this.g.append(this.buttons['stop'].click_receiver);
+    this.g.append(this.buttons['stop'].button);
 
     this.button_states = {
         'animating': {'step': true, 'stop': true},
@@ -867,8 +887,9 @@ function Button(click_handler, path_str, active, translate, dim) {
     this.button = snap.path(path_str).click(click_handler).touchstart(click_handler);
     var extra_width = 20;
     var extra_height = 20;
-    this.click_receiver = snap.rect(extra_width/2.0*-1, extra_height/2.0*-1, dim[0]+extra_width, dim[1]+extra_height).attr({
-        'opacity': 0
+    this.click_receiver = snap.rect(extra_width/2.0*-1, extra_height/2.0*-1, dim[0]+extra_width, dim[1]+extra_height).attr(
+    {
+        'opacity': 0,
     }).click(click_handler).touchstart(click_handler);
     if (this.active) {
         this.button.attr(this.active_attr);
@@ -881,10 +902,12 @@ function Button(click_handler, path_str, active, translate, dim) {
     this.set_active = function() {
         this.active = true;
         this.button.animate({'fill-opacity': this.active_opacity}, 250);
+        this.button.attr({'cursor': 'pointer'});
     };
     this.set_inactive = function() {
         this.active = false;
-        this.button.animate({'fill-opacity': this.inactive_opacity}, 250);       
+        this.button.animate({'fill-opacity': this.inactive_opacity}, 250);  
+        this.button.attr({'cursor': 'default'});    
     };
     this.pulsate = function() {
         console.log('pulsating');
@@ -1013,7 +1036,7 @@ function CodeBox() {
             this.initial_bbox = this.g.getBBox();
         }
         var playback_bbox = g.playback_bar.g.getBBox();
-        var max_height = playback_bbox.y + g.control_panel.height - g.padding*2 - this.initial_bbox.y - g.navbar_height;
+        var max_height = playback_bbox.y + g.control_panel.height - g.playback_bar.height - g.padding*2 - this.initial_bbox.y - g.navbar_height;
         var max_scale_factor_y = max_height / this.initial_bbox.height;
         var max_width = g.cont_width * .5;
         var max_scale_factor_x = max_width / this.initial_bbox.width;
@@ -1024,6 +1047,7 @@ function CodeBox() {
         }
         var scale = 's' + this.scale_factor + ',0,0';
         var translate = 't' + g.padding + ',' + g.padding;
+        console.log("scaling to " + this.scale_factor); 
         this.g.transform(translate + scale);
 
         // Resize the frame and highlight box

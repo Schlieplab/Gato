@@ -280,7 +280,9 @@ function window_resize(evt) {
     g.code_box.scale_and_translate();
     g.scaler.set_max_and_min_dimensions_of_graph_container();
     position_graph();
-    g.navbar.resize();
+    if (g.navbar) {
+        g.navbar.resize();
+    }
 }
 
 function NavBar() {
@@ -327,7 +329,7 @@ function NavBar() {
     this.backlink_g.prepend(this.backlink_rect);
     this.backlink_g.click(
         function() {
-            window.location = 'index.html';
+            window.location = 'index.html#chapter_' + chapter_number + '_div';
         }
     );
     this.g.append(this.backlink_g);
