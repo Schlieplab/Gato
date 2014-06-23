@@ -16,8 +16,11 @@ function Scaler() {
         */
         var bbox = g.master_graph_container.getBBox(),
             playback_bbox = g.playback_bar.g.getBBox();
-        var max_height = g.cont_height - g.padding*3 - g.playback_bar.frame.attr('height'),
-            max_width = g.cont_width - g.padding - get_graph_x_trans(),
+        var max_height = g.cont_height - g.padding*3 - g.playback_bar.frame.attr('height');
+        if (isiPhone()) {
+            max_height = g.cont_height - g.padding*2 - g.playback_bar.frame.attr('height');
+        }
+        var max_width = g.cont_width - g.padding - get_graph_x_trans(),
             min_height = 50,
             min_width = 50;
         var max_scale_factor_y = max_height / (bbox.height / this.curr_scale),
@@ -705,7 +708,11 @@ function ControlPanel(button_panel_height, y_trans) {
 function PlaybackBar() {
     /* Object to represent the whole playback bar at the bottom */
     this.g = snap.group();
-    this.width = g.cont_width * 3/4 - g.padding*2;
+    if (isiPhone()) {
+        this.width = g.cont_width;
+    } else {
+        this.width = g.cont_width * 3/4 - g.padding*2;
+    }
     this.min_width = 350;
     this.height = 40;
     this.padding_y = 5;
@@ -737,19 +744,29 @@ function PlaybackBar() {
     g.slider.g.transform('t' + this.slider_x_trans + ',' + this.padding_y)
     this.g.append(g.slider.g);
 
-    this.x_translate = g.cont_width/8 + g.padding;
-    this.y_translate = g.cont_height - this.height - g.padding;
+    this.compute_translate = function() {
+        if (isiPhone()) {
+            this.x_translate = 0;
+            this.y_translate = g.cont_height - this.height;
+        } else {
+            this.x_translate = g.cont_width/8 + g.padding;
+            this.y_translate = g.cont_height - this.height - g.padding;
+        }
+    };
+    this.compute_translate();
     this.g.transform('t' + this.x_translate + ',' + this.y_translate);
 }
 
 PlaybackBar.prototype.resize = function() {
     /* Called on window resize to redraw */
     var new_width = g.cont_width * 3/4 - g.padding*2;
+    if (isiPhone()) {
+        new_width = g.cont_width;
+    }
     if (new_width > this.min_width) {
-        this.width = g.cont_width * 3/4 - g.padding*2;
+        this.width = new_width;
         this.frame.attr({'width': this.width});
-        this.x_translate = g.cont_width/8 + g.padding;
-        this.y_translate = g.cont_height - this.height - g.padding;
+        this.compute_translate();
         this.g.transform('t' + this.x_translate + ',' + this.y_translate);
 
         this.control_panel_x = this.width - this.padding_x - g.control_panel.width;
