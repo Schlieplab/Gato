@@ -552,6 +552,7 @@ function show_algo_info() {
     /* Pops open the algorithm info iframe */
     algo_info_active = true;
     showPopWin(info_file, g.cont_width*1/2, g.cont_height*1/2);
+    document.getElementById('help_div').className = 'visible';
 }
 
 function create_algo_info_button() {
