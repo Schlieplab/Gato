@@ -127,7 +127,8 @@ function Scaler() {
     this.height = 20;
     this.x = bbox.width - this.width + g.graph_frame_stroke_width;
     this.y = bbox.height;   // TODO: commit this line
-    this.elem = snap.polygon([this.x, this.y, this.x+this.width, this.y, this.x+this.width, this.y-this.height, this.x, this.y]).attr({
+    this.elem = snap.polygon([this.x, this.y, this.x+this.width, this.y, this.x+this.width, this.y-this.height, this.x, this.y]).attr(
+    {
         'fill': '#cc3333',
         'stroke': '#330000',
         'cursor': 'move'
@@ -135,7 +136,8 @@ function Scaler() {
     var w = 15;
     var h = 15;
     var e = 15;
-    this.click_receiver = snap.polygon([this.x-w-e, this.y+h, this.x+this.width+w, this.y+h, this.x+this.width+w, this.y-this.height-h-e, this.x-w-e, this.y+h]).attr({
+    this.click_receiver = snap.polygon([this.x-w-e, this.y+h, this.x+this.width+w, this.y+h, this.x+this.width+w, this.y-this.height-h-e, this.x-w-e, this.y+h]).attr(
+    {
         'opacity': 0,
     }).mousedown(this.mousedown);
 }
@@ -828,17 +830,17 @@ function ButtonPanel() {
 
     this.buttons = {};
     this.buttons['start'] = new Button(start_click, 'M0,0 0,30 20,15 Z', true, [0,0], [20, 30]);
-    this.g.append(this.buttons['start'].button);
     this.g.append(this.buttons['start'].click_receiver);
+    this.g.append(this.buttons['start'].button);
     this.buttons['step'] = new Button(step_click, 'M0,0 0,30 20,15 Z M20,0 20,30 30,30 30,0 Z', false, [50,0], [30, 30]);
-    this.g.append(this.buttons['step'].button);
     this.g.append(this.buttons['step'].click_receiver);
+    this.g.append(this.buttons['step'].button);
     this.buttons['continue'] = new Button(continue_click, 'M0,0 0,30 10,30 10,0 Z M15,0 15,30 35,15 Z', false, [110,0], [35, 30]);
-    this.g.append(this.buttons['continue'].button);
     this.g.append(this.buttons['continue'].click_receiver);
+    this.g.append(this.buttons['continue'].button);
     this.buttons['stop'] = new Button(stop_click, 'M0,0 0,30 30,30 30,0 Z', false, [175,0], [30, 30]);
-    this.g.append(this.buttons['stop'].button);
     this.g.append(this.buttons['stop'].click_receiver);
+    this.g.append(this.buttons['stop'].button);
 
     this.button_states = {
         'animating': {'step': true, 'stop': true},
@@ -885,8 +887,9 @@ function Button(click_handler, path_str, active, translate, dim) {
     this.button = snap.path(path_str).click(click_handler).touchstart(click_handler);
     var extra_width = 20;
     var extra_height = 20;
-    this.click_receiver = snap.rect(extra_width/2.0*-1, extra_height/2.0*-1, dim[0]+extra_width, dim[1]+extra_height).attr({
-        'opacity': 0
+    this.click_receiver = snap.rect(extra_width/2.0*-1, extra_height/2.0*-1, dim[0]+extra_width, dim[1]+extra_height).attr(
+    {
+        'opacity': 0,
     }).click(click_handler).touchstart(click_handler);
     if (this.active) {
         this.button.attr(this.active_attr);
@@ -899,10 +902,12 @@ function Button(click_handler, path_str, active, translate, dim) {
     this.set_active = function() {
         this.active = true;
         this.button.animate({'fill-opacity': this.active_opacity}, 250);
+        this.button.attr({'cursor': 'pointer'});
     };
     this.set_inactive = function() {
         this.active = false;
-        this.button.animate({'fill-opacity': this.inactive_opacity}, 250);       
+        this.button.animate({'fill-opacity': this.inactive_opacity}, 250);  
+        this.button.attr({'cursor': 'default'});    
     };
     this.pulsate = function() {
         console.log('pulsating');
