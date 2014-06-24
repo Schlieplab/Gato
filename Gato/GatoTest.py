@@ -189,10 +189,10 @@ instance = {
     }
 
 
+# Production version:
 #
-#
-# TODO: Once the index page is being generated completely correctly come back to this svg_instance
-# list and give all of the algorithms names that more closely reflect the names in the book
+# List of algorithms and instances actually used in the book
+# and some extra instances
 svg_instance = [
     {
         'chapter_directory': '02-GraphsNetworks',
@@ -202,9 +202,336 @@ svg_instance = [
             {
                 'title': 'BFS-components',
                 'file': 'BFS-components.alg',
-                'description': 'bfs components description',
+                'description': 'Finds connected components in a graph using iterated ' \
+                'Breadth-First-Search (BFS).',
                 'graphs': [
-                    '02-GraphsNetworks/BFS.cat', '02-GraphsNetworks/3Components.cat',
+                    '02-GraphsNetworks/1Component.cat', '02-GraphsNetworks/2Components.cat',
+                    '02-GraphsNetworks/3Components.cat'
+                ]
+            },
+            {
+                'title': 'DFS Recursive',
+                'file': 'DFS-Recursive.alg',
+                'description': 'A recursive implementation of Depth-First-Search (DFS), ' \
+                'which computes a DFS labeling',
+                'graphs': [
+                    '02-GraphsNetworks/BFS.cat', '02-GraphsNetworks/3Components.cat'
+                ]
+            },
+            {
+                'title': 'Iterative BFS',
+                'file': 'BFS.alg',
+                'description': 'An iterative implementation of Breadth-First-Search ' \
+                '(BFS), which computes a BFS labeling',
+                'graphs': [
+                    '02-GraphsNetworks/BFS.cat', '02-GraphsNetworks/3Components.cat'
+                ]
+            },
+            {
+                'title': 'BFS to DFS',
+                'file': 'BFStoDFS.alg',
+                'description': 'Converting the iterative BFS implementation to an iterative ' \
+                'DFS implementation by exchanging the Queue by a Stack.',
+                'graphs': [
+                    '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
+                ]
+            },
+            {
+                'title': 'Iterative DFS',
+                'file': 'DFS.alg',
+                'description': 'An iterative implementation of Depth-First-Search (DFS), which ' \
+                'computes a DFS labeling',
+                'graphs': [
+                    '02-GraphsNetworks/BFS.cat', '02-GraphsNetworks/3Components.cat'
+                ]
+            }
+        ]
+    },
+    {
+        'chapter_directory': '03-MinimalSpanningTrees',
+        'chapter_number': 3,
+        'title': 'Minimum Spanning Trees',
+        'algorithms': [
+            {   
+                'title': 'Kruskal\'s Algorithm',
+                'file': 'Kruskal.alg',
+                'description': 'Kruskal\'s algorithm computes a minimum spanning tree in ' \
+                'a connected, weighted graph.',
+                'graphs': [
+                    '03-MinimalSpanningTrees/Kruskal1.cat','03-MinimalSpanningTrees/Kruskal2.cat',
+                    '03-MinimalSpanningTrees/Kruskal3.cat'
+                    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Prim2.cat'
+                ]
+            },
+            {
+                'title': 'Kruskal\'s Algorithm using FindCircuit',
+                'file': 'KruskalFindCircuit.alg',
+                'description': 'A more detailled, but naive implementation of Kruskal\'s '\
+                'algorithm, which checks for each edge to be added whether it completes a circuit.',
+                'graphs': [
+                    '03-MinimalSpanningTrees/Kruskal1.cat','03-MinimalSpanningTrees/Kruskal2.cat',
+                    '03-MinimalSpanningTrees/Kruskal3.cat'
+                    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Prim2.cat'
+                ]
+            },
+            {
+                'title': 'Inefficient Kruskal\'s Algorithm',
+                'file': 'KruskalInefficient.alg',
+                'description': 'An improved, but still somewhat naive implementation of ' \
+                'Kruskal\'s algorithm, which bypasses the explicit test for circuit ' \
+                'completion by maintaining component labels for vertices and testing for equality.',
+                'graphs': [
+                    '03-MinimalSpanningTrees/Kruskal1.cat','03-MinimalSpanningTrees/Kruskal2.cat',
+                    '03-MinimalSpanningTrees/Kruskal3.cat'
+                    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Prim2.cat'
+                ]
+            },
+            {
+                'title': 'Efficient Kruskal\'s Algorithm',
+                'file': 'KruskalTrace.alg',
+                'description': 'An efficient implementation of Kruskal\'s algorithm, which ' \
+                'minimizes the number of component label updates.',
+                'graphs': [
+                    '03-MinimalSpanningTrees/Kruskal1.cat','03-MinimalSpanningTrees/Kruskal2.cat',
+                    '03-MinimalSpanningTrees/Kruskal3.cat'
+                    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Prim2.cat'
+                ]   
+            },
+            {
+                'title': 'Prim\'s Algorithm',
+                'file': 'Prim.alg',
+                'description': 'Prim\'s Algorithm computes a minimum spanning tree in a ' \
+                'connected, weighted graph.',
+                'graphs': [
+                    '03-MinimalSpanningTrees/Kruskal1.cat','03-MinimalSpanningTrees/Kruskal2.cat',
+                    '03-MinimalSpanningTrees/Kruskal3.cat'
+                    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Prim2.cat'
+                ]
+            },
+            {
+                'title': 'Matroid Dual of Kruskal\'s Algorithm',
+                'file': 'MatroidDualKruskal.alg',
+                'description': 'An implementation of a matroid dual of Kruskal\'s Algorithm. ', 
+                'graphs': [
+                    '03-MinimalSpanningTrees/Kruskal1.cat','03-MinimalSpanningTrees/Kruskal2.cat',
+                    '03-MinimalSpanningTrees/Kruskal3.cat'
+                    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Prim2.cat'
+                ]
+            },
+        ]
+    },
+    {
+        'chapter_directory': '04-LPDuality',
+        'chapter_number': 4,
+        'title': 'Linear Programming Duality',
+        'algorithms': [
+            {
+                'title': 'Primal Dual of Kruskal\'s Algorithm',
+                'file': 'PrimalDualKruskal.alg',
+                'description': 'A primal dual version of Kruskal\'s Algorithm.',
+                'graphs': [
+                    '04-LPDuality/PD_Kruskal1.cat','04-LPDuality/PD_Kruskal2.cat',
+                    '04-LPDuality/PD_Kruskal3.cat', '04-LPDuality/PD_Kruskal4.cat',
+                    '04-LPDuality/PD_Kruskal5.cat'
+                ]
+            }
+        ]
+    },
+    {
+        'chapter_directory': '05-ShortestPaths',
+        'chapter_number': 5,
+        'title': 'Shortest Paths',
+        'algorithms': [
+            {
+                'title': 'Dijkstra\'s algorithm',
+                'file': 'Dijkstra.alg',
+                'description': 'Dijkstra\'s algorithm for finding a shortest path tree in ' \
+                'a graph. This is an example of a label setting algorithm.',
+                'graphs': [
+                    '05-ShortestPaths/ShortestPathUndirected02.cat',
+                    '05-ShortestPaths/ShortestPathUndirected03.cat',
+                    '05-ShortestPaths/7x7.cat'
+                ]
+            },
+            {
+                'title': 'Dijkstra\'s algorithm using a Priority Queue',
+                'file': 'DijkstraPQ.alg',
+                'description': 'Dijkstra\'s algorithm for finding a shortest path tree in a' \
+                'graph implemented using a Priority Queue.',
+                'graphs': [
+                    '05-ShortestPaths/ShortestPathUndirected02.cat',
+                    '05-ShortestPaths/ShortestPathUndirected03.cat',
+                    '05-ShortestPaths/7x7.cat'
+                ]
+            },
+            {
+                'title': 'Find Path',
+                'file': 'FindPath.alg',
+                'description': 'A variant of Dijkstra\'s algorithm for finding a shortest s-t ' \
+                'path in a graph. Terminates early, as soon as a shortest s-t path has been found.',
+                'graphs': [
+                    '05-ShortestPaths/ShortestPathUndirected03.cat',
+                    '05-ShortestPaths/ShortestPathsUndirected06.cat'
+                    '05-ShortestPaths/7x7.cat'
+                ]
+            },
+            {
+                'title': 'Find Path in an Euclidean Graph',
+                'file': 'FindPathEuclid.alg',
+                'description': 'A variant of Dijkstra\'s algorithm for finding a shortest s-t ' \
+                'path in an Euclidean graph (edge weights correspond to Euclidean distance ' \
+                'between vertices). Terminates early, as soon as a shortest s-t path has been ' \
+                'found and only visits a small part of the graph. Similar ideas are used in '\
+                'A*-type algorithms.',
+                'graphs': [
+                    '05-ShortestPaths/ShortestPathUndirected03.cat',
+                    '05-ShortestPaths/ShortestPathsUndirected06.cat'
+                    '05-ShortestPaths/7x7.cat'
+                 ]
+            },
+            {
+                'title': 'Bellman Ford',
+                'file': 'BellmanFord.alg',
+                'description': 'Bellman and Ford\'s algorithm for finding a shortest path tree in ' \
+                'a graph with a label correcting approach.',
+                'graphs': [
+                    '05-ShortestPaths/ShortestPathUndirected02.cat',
+                    '05-ShortestPaths/ShortestPathUndirected03.cat',
+                    '05-ShortestPaths/7x7.cat',
+                    '05-ShortestPaths/BellmanFordWC.cat'
+                ]
+            },
+            {
+                'title': 'Finding Negative Circuits',
+                'file': 'NegativeCircuits.alg',
+                'description': 'Most shortest path algorithms require that graphs do not have '\
+                    'negative circuits. This algorithms detects negative circuits in a graph.',
+                'graphs': [
+                    '05-ShortestPaths/NegCircuit.cat',
+                    '05-ShortestPaths/NegCircuit2.cat'
+                ]
+            },
+            # Could use highlighting of paths on this
+            {
+                'title': 'Find Path from Two Sources',
+                'file': 'TwoSources.alg',
+                'description': 'Finding a path can be accelerated by searching from start and' \
+                'destination simultaneously.',
+                'graphs': [
+                    '05-ShortestPaths/ShortestPathsUndirected06.cat'
+                ]
+            }
+        ]
+    },
+    {
+        'chapter_directory': '06-MaximalFlows',
+        'chapter_number': 6,
+        'title': 'Maximal flows in capacitated networks',
+        'algorithms': [
+            {
+                'title': 'The Ford Fulkerson algorithm',
+                'file': 'FordFulkerson.alg',
+                'description': 'The Ford-Fulkerson algorithm finds a maximal flow in a ' \
+                'capacitated network by successive shortest path applications.',
+                'graphs': [
+                    '06-MaximalFlows/FordFulkerson1.cat',
+                    '06-MaximalFlows/FordFulkerson4.cat',
+                    '06-MaximalFlows/FordFulkerson6.cat',
+                    '06-MaximalFlows/FordFulkersonBad.cat',
+                    '06-MaximalFlows/FordFulkersonWC.cat',
+                    '06-MaximalFlows/PreflowPushWC.cat'
+                    '06-MaximalFlows/EdmondsKarpWC.cat'
+                ]
+            },
+            {
+                'title': 'Preflow Push',
+                'file': 'PreflowPush.alg',
+                'description': 'The Preflow Push algorithm due to Goldberg and Tarjan ' \
+                'computes a maximal flow by saturating a network and correcting possible ' \
+                'excesses later',
+                'graphs': [
+                    '06-MaximalFlows/PreflowPush1.cat',
+                    '06-MaximalFlows/PreflowPush6.cat'
+                    '06-MaximalFlows/FordFulkerson1.cat',
+                    '06-MaximalFlows/FordFulkerson4.cat',
+                    '06-MaximalFlows/FordFulkerson6.cat',
+                    '06-MaximalFlows/FordFulkersonBad.cat',
+                    '06-MaximalFlows/FordFulkersonWC.cat',
+                    '06-MaximalFlows/PreflowPushWC.cat'
+                ]
+            }
+        ]
+    },
+    {
+        'chapter_directory': '07-MinimumCostFlows',
+        'chapter_number': 7,
+        'title': 'Minimum-cost Flows',
+        'algorithms': [
+            {
+                'title': 'SuccessiveShortestPath',
+                'file': 'SuccessiveShortestPath.alg',
+                'graphs': [
+                    '07-MinimumCostFlows/MCF4to1A.cat', '07-MinimumCostFlows/MCFCycle.cat'
+                ]
+            },
+        ]
+    },
+
+    {
+        'chapter_directory': '08-Matching',
+        'chapter_number': 8,
+        'title': 'Matching',
+        'algorithms': [
+            {
+                'title': 'Bipartite',
+                'file': 'Bipartite.alg',
+                'graphs': [
+                    '08-Matching/Bi003.cat', '08-Matching/Bi006.cat', '08-Matching/Bi008.cat',
+                    '08-Matching/Bi009.cat', '08-Matching/Bi010.cat'
+                ]
+            },
+            {
+                'title': 'CardinalityMatching',
+                'file': 'CardinalityMatching.alg',
+                'graphs': [
+                    '08-Matching/Edmonds1.cat', '08-Matching/Edmonds3.cat', '08-Matching/Edmonds6.cat'
+                ]
+            }
+        ]
+    },
+
+    {
+        'chapter_directory': '09-WeightedMatching',
+        'chapter_number': 9,
+        'title': 'Weighted Matching',
+        'algorithms': [
+            {
+                'title': 'WeightedMatching',
+                'file': 'WeightedMatching.alg',
+                'graphs': [
+                    '09-WeightedMatching/k4.cat', '09-WeightedMatching/var2zero.cat',
+                    '09-WeightedMatching/11vs13.cat'
+                ]
+            }
+        ]
+    }
+]
+
+# Copy of the original version
+#
+svg_instance_testing = [
+    {
+        'chapter_directory': '02-GraphsNetworks',
+        'chapter_number': 2,
+        'title': 'Basics, Notation and Data Structures',
+        'algorithms': [
+            {
+                'title': 'BFS-components',
+                'file': 'BFS-components.alg',
+                'description': 'Finding connected components using Breadth-First-Search (BFS)',
+                'graphs': [
+                    '02-GraphsNetworks/3Components.cat', '02-GraphsNetworks/2Components.cat',
+                    '02-GraphsNetworks/1Component.cat', 
                     '02-GraphsNetworks/DoubleSquare.cat', '02-GraphsNetworks/DoubleTriangle.cat',
                     '02-GraphsNetworks/K10-10.cat', '02-GraphsNetworks/K3-3.cat'
                 ]
@@ -330,44 +657,56 @@ svg_instance = [
         'title': 'Shortest Paths',
         'algorithms': [
             {
-                'title': 'Bellman Ford',
-                'file': 'BellmanFord.alg',
-                'graphs': [
-                    '05-ShortestPaths/BellmanFordWC.cat'
-                ]
-            },
-            {
                 'title': 'Dijkstra',
                 'file': 'Dijkstra.alg',
                 'graphs': [
-                    '05-ShortestPaths/ShortestPathsUndirected06.cat'
+                    '05-ShortestPaths/ShortestPathUndirected02.cat',
+                    '05-ShortestPaths/ShortestPathUndirected03.cat',
+                    '05-ShortestPaths/7x7.cat'
                 ]
             },
             {
                 'title': 'DijkstraPQ',
                 'file': 'DijkstraPQ.alg',
                 'graphs': [
-                    '05-ShortestPaths/ShortestPathsUndirected06.cat'
+                    '05-ShortestPaths/ShortestPathUndirected02.cat',
+                    '05-ShortestPaths/ShortestPathUndirected03.cat'
+                    '05-ShortestPaths/7x7.cat'
                 ]
             },
             {
                 'title': 'FindPath',
                 'file': 'FindPath.alg',
                 'graphs': [
+                    '05-ShortestPaths/ShortestPathUndirected03.cat',
                     '05-ShortestPaths/ShortestPathsUndirected06.cat'
-                ]
+                    '05-ShortestPaths/7x7.cat'
+               ]
             },
             {
                 'title': 'FindPathEuclid',
                 'file': 'FindPathEuclid.alg',
                 'graphs': [
-                    '05-ShortestPaths/ShortestPathsUndirected06.cat'
+                    '05-ShortestPaths/ShortestPathUndirected03.cat',
+                    '05-ShortestPaths/ShortestPathsUndirected06.cat',
+                    '05-ShortestPaths/7x7.cat'
+               ]
+            },
+            {
+                'title': 'Bellman Ford',
+                'file': 'BellmanFord.alg',
+                'graphs': [
+                    '05-ShortestPaths/ShortestPathUndirected02.cat',
+                    '05-ShortestPaths/ShortestPathUndirected03.cat',
+                    '05-ShortestPaths/7x7.cat',
+                    '05-ShortestPaths/BellmanFordWC.cat'
                 ]
             },
             {
                 'title': 'NegativeCircuits',
                 'file': 'NegativeCircuits.alg',
                 'graphs': [
+                    '05-ShortestPaths/NegCircuit.cat',
                     '05-ShortestPaths/NegCircuit2.cat'
                 ]
             },
@@ -376,6 +715,7 @@ svg_instance = [
                 'title': 'TwoSources',
                 'file': 'TwoSources.alg',
                 'graphs': [
+                    '05-ShortestPaths/ShortestPathUndirected03.cat',
                     '05-ShortestPaths/ShortestPathsUndirected06.cat'
                 ]
             }
@@ -458,7 +798,6 @@ svg_instance = [
         ]
     }
 ]
-
 # used for testing
 # svg_instance = [
 # {
@@ -492,154 +831,154 @@ graph_descriptions = {
 # These are the algorithm/graph combos that are used to generate their 
 # Webgato counterparts.  Each algorithm is marked with a "Good" or "Bad"
 # to signify whether it works or not.  Working on getting rid of the "Bad"s
-'''
-svg_instance = {
-    # Good
-    '02-GraphsNetworks/BFS-components.alg':[
-        '02-GraphsNetworks/BFS.cat', '02-GraphsNetworks/3Components.cat'
-    ],
+##'''
+##svg_instance = {
+##    # Good
+##    '02-GraphsNetworks/BFS-components.alg':[
+##        '02-GraphsNetworks/BFS.cat', '02-GraphsNetworks/3Components.cat'
+##    ],
 
-    # Good
-    '02-GraphsNetworks/BFS.alg':[
-        '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
-    ],
+##    # Good
+##    '02-GraphsNetworks/BFS.alg':[
+##        '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
+##    ],
 
-    # Good
-    '02-GraphsNetworks/BFStoDFS.alg':[
-        '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
-    ],
+##    # Good
+##    '02-GraphsNetworks/BFStoDFS.alg':[
+##        '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
+##    ],
 
-    # Good
-    '02-GraphsNetworks/DFS-Recursive.alg':[
-        '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
-    ],
+##    # Good
+##    '02-GraphsNetworks/DFS-Recursive.alg':[
+##        '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
+##    ],
 
-    # Good
-    '02-GraphsNetworks/DFS.alg':[
-        '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
-    ],
+##    # Good
+##    '02-GraphsNetworks/DFS.alg':[
+##        '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
+##    ],
 
-    # Good
-    '03-MinimalSpanningTrees/Kruskal.alg':[
-    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
-    ],
+##    # Good
+##    '03-MinimalSpanningTrees/Kruskal.alg':[
+##    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
+##    ],
 
-    # Good
-    '03-MinimalSpanningTrees/KruskalFindCircuit.alg':[
-    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
-    ],
+##    # Good
+##    '03-MinimalSpanningTrees/KruskalFindCircuit.alg':[
+##    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
+##    ],
 
-    # Good
-    '03-MinimalSpanningTrees/KruskalInefficient.alg':[
-    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
-    ],
+##    # Good
+##    '03-MinimalSpanningTrees/KruskalInefficient.alg':[
+##    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
+##    ],
 
-    # Good
-    '03-MinimalSpanningTrees/KruskalTrace.alg':[
-    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
-    ],
+##    # Good
+##    '03-MinimalSpanningTrees/KruskalTrace.alg':[
+##    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
+##    ],
 
-    # Good
-    '03-MinimalSpanningTrees/MSTInteractive.alg':[
-    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
-    ],
+##    # Good
+##    '03-MinimalSpanningTrees/MSTInteractive.alg':[
+##    '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
+##    ],
 
-    # Good
-    '03-MinimalSpanningTrees/MatroidDualKruskal.alg':[
-       '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
-    ],
+##    # Good
+##    '03-MinimalSpanningTrees/MatroidDualKruskal.alg':[
+##       '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
+##    ],
     
-    # Good
-    '03-MinimalSpanningTrees/Prim.alg':[
-        '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
-    ],
+##    # Good
+##    '03-MinimalSpanningTrees/Prim.alg':[
+##        '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Kruskal1.cat'
+##    ],
     
-    # Good
-    '04-LPDuality/PrimalDualKruskal.alg':[
-       '04-LPDuality/PD_Kruskal5.cat'
-    ],
+##    # Good
+##    '04-LPDuality/PrimalDualKruskal.alg':[
+##       '04-LPDuality/PD_Kruskal5.cat'
+##    ],
 
-    # Good
-    '05-ShortestPaths/BellmanFord.alg':[
-        '05-ShortestPaths/BellmanFordWC.cat'  #,'05-ShortestPaths/NegCircuit.cat'(BellmanFord doesn't finish on negcircuit)
-    ],
+##    # Good
+##    '05-ShortestPaths/BellmanFord.alg':[
+##        '05-ShortestPaths/BellmanFordWC.cat'  #,'05-ShortestPaths/NegCircuit.cat'(BellmanFord doesn't finish on negcircuit)
+##    ],
 
-    # Good
-    '05-ShortestPaths/Dijkstra.alg':[
-        '05-ShortestPaths/ShortestPathsUndirected06.cat'
-    ],
+##    # Good
+##    '05-ShortestPaths/Dijkstra.alg':[
+##        '05-ShortestPaths/ShortestPathsUndirected06.cat'
+##    ],
 
-    # Good
-    '05-ShortestPaths/DijkstraPQ.alg':[
-        '05-ShortestPaths/ShortestPathsUndirected06.cat'
-    ],
+##    # Good
+##    '05-ShortestPaths/DijkstraPQ.alg':[
+##        '05-ShortestPaths/ShortestPathsUndirected06.cat'
+##    ],
 
-    # Good
-    '05-ShortestPaths/FindPath.alg':[
-        '05-ShortestPaths/ShortestPathsUndirected06.cat'
-    ],
+##    # Good
+##    '05-ShortestPaths/FindPath.alg':[
+##        '05-ShortestPaths/ShortestPathsUndirected06.cat'
+##    ],
 
-    # Good
-    '05-ShortestPaths/FindPathEuclid.alg':[
-        '05-ShortestPaths/ShortestPathsUndirected06.cat'
-    ],
+##    # Good
+##    '05-ShortestPaths/FindPathEuclid.alg':[
+##        '05-ShortestPaths/ShortestPathsUndirected06.cat'
+##    ],
 
-    # Good
-    '05-ShortestPaths/NegativeCircuits.alg':[
-        '05-ShortestPaths/NegCircuit2.cat'
-    ],
+##    # Good
+##    '05-ShortestPaths/NegativeCircuits.alg':[
+##        '05-ShortestPaths/NegCircuit2.cat'
+##    ],
 
-    # Good -- Could use highlighting path in javascript
-    '05-ShortestPaths/TwoSources.alg':[
-        '05-ShortestPaths/ShortestPathsUndirected06.cat'
-    ],
+##    # Good -- Could use highlighting path in javascript
+##    '05-ShortestPaths/TwoSources.alg':[
+##        '05-ShortestPaths/ShortestPathsUndirected06.cat'
+##    ],
 
-    # Good
-    '06-MaximalFlows/FordFulkerson.alg':[
-        '06-MaximalFlows/FordFulkerson6.cat','06-MaximalFlows/FordFulkersonBad.cat'
-    ],
+##    # Good
+##    '06-MaximalFlows/FordFulkerson.alg':[
+##        '06-MaximalFlows/FordFulkerson6.cat','06-MaximalFlows/FordFulkersonBad.cat'
+##    ],
 
-    # Good
-    '06-MaximalFlows/PreflowPush.alg':[
-       '06-MaximalFlows/PreflowPush5.cat', '06-MaximalFlows/PreflowPush6.cat'
-    ],
+##    # Good
+##    '06-MaximalFlows/PreflowPush.alg':[
+##       '06-MaximalFlows/PreflowPush5.cat', '06-MaximalFlows/PreflowPush6.cat'
+##    ],
 
-    # Good
-    '07-MinimumCostFlows/CostScaling.alg':[
-        '07-MinimumCostFlows/MCFCycle.cat', '07-MinimumCostFlows/MCF4to4A.cat'
-    ],
+##    # Good
+##    '07-MinimumCostFlows/CostScaling.alg':[
+##        '07-MinimumCostFlows/MCFCycle.cat', '07-MinimumCostFlows/MCF4to4A.cat'
+##    ],
 
-    # BAD
-    #
-    #'07-MinimumCostFlows/NegativeCircuit.alg':[
-    #'07-MinimumCostFlows/MCF4to4A.cat',
-    #'05-ShortestPaths/NegCircuit2.cat',
-    #'07-MinimumCostFlows/MCFCycle.cat'
-    #],
+##    # BAD
+##    #
+##    #'07-MinimumCostFlows/NegativeCircuit.alg':[
+##    #'07-MinimumCostFlows/MCF4to4A.cat',
+##    #'05-ShortestPaths/NegCircuit2.cat',
+##    #'07-MinimumCostFlows/MCFCycle.cat'
+##    #],
 
-    # Good
-    '07-MinimumCostFlows/SuccessiveShortestPath.alg':[
-        '07-MinimumCostFlows/MCF4to1A.cat', '07-MinimumCostFlows/MCFCycle.cat'
-    ],
+##    # Good
+##    '07-MinimumCostFlows/SuccessiveShortestPath.alg':[
+##        '07-MinimumCostFlows/MCF4to1A.cat', '07-MinimumCostFlows/MCFCycle.cat'
+##    ],
 
-    # Good
-    '08-Matching/Bipartite.alg':[
-        '08-Matching/Bi003.cat', '08-Matching/Bi006.cat', '08-Matching/Bi008.cat',
-        '08-Matching/Bi009.cat', '08-Matching/Bi010.cat'
-    ],
+##    # Good
+##    '08-Matching/Bipartite.alg':[
+##        '08-Matching/Bi003.cat', '08-Matching/Bi006.cat', '08-Matching/Bi008.cat',
+##        '08-Matching/Bi009.cat', '08-Matching/Bi010.cat'
+##    ],
 
-    # Good
-    '08-Matching/CardinalityMatching.alg':[
-        '08-Matching/Edmonds1.cat', '08-Matching/Edmonds3.cat', '08-Matching/Edmonds6.cat'
-    ],
+##    # Good
+##    '08-Matching/CardinalityMatching.alg':[
+##        '08-Matching/Edmonds1.cat', '08-Matching/Edmonds3.cat', '08-Matching/Edmonds6.cat'
+##    ],
     
-    # Good
-    '09-WeightedMatching/WeightedMatching.alg':[
-       '09-WeightedMatching/k4.cat', '09-WeightedMatching/var2zero.cat',
-       '09-WeightedMatching/11vs13.cat'
-    ]
-}
-'''
+##    # Good
+##    '09-WeightedMatching/WeightedMatching.alg':[
+##       '09-WeightedMatching/k4.cat', '09-WeightedMatching/var2zero.cat',
+##       '09-WeightedMatching/11vs13.cat'
+##    ]
+##}
+##'''
 
 def create_svg_index_page(graph_pngs):
     ''' Creates an HTML index page that leads to the SVG 
@@ -662,7 +1001,7 @@ def create_svg_index_page(graph_pngs):
                 'graph_pngs': graph_pngs, 
                 'graph_descriptions': graph_descriptions,
                 'svg_locations': svg_locations
-            }))
+             }))
 
 #------------------------------------------------------------------
 def usage():
@@ -679,6 +1018,8 @@ if __name__ == '__main__':
     except getopt.GetoptError:
         usage()
         exit()
+
+    print "Welcome to GatoTest!"
 
     all = False
     svg = False
@@ -768,6 +1109,7 @@ if __name__ == '__main__':
                                     format='%(name)s %(levelname)s %(message)s')        
     
     if svg:
+        print "# Producing SVG output"
         if not os.path.exists('./svgs'):
             os.makedirs('./svgs')
 
