@@ -648,11 +648,17 @@ def ExportAlgoInfo(fileName, algorithm):
         color_div['class'] = 'color_div'
         dt.append(color_div)
 
+
     # Add a div with "clear: both" to make the next row
     for dd in soup.find_all('dd'):
         clear_div = soup.new_tag('div')
         clear_div['class'] = 'clear_div'
         dd.insert_after(clear_div)
+    
+    if len(soup.find_all('dt')) == 0:
+        # If there aren't any definitions add a "No algorithm info" label
+        body = soup.find('body')
+        body.append(soup.new_string('No algorithm info'))
 
     file.write(soup.prettify(formatter=None))
 

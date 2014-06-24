@@ -491,8 +491,8 @@ function Slider(width, height) {
 		})
 		.click(this.track_click)
 		.touchstart(this.track_click);
-		this.g.append(this.track);
 		this.g.append(this.track_click_receiver);
+		this.g.append(this.track);
 
 		// Construct the cursor
 		this.cursor_height = this.height;
