@@ -31,3 +31,11 @@ body {
 	max-width: 100%;
 	height: auto;
 }
+
+.invisible {
+	display: none;
+}
+
+.visible {
+	display: block;
+}

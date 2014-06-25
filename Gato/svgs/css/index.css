@@ -54,3 +54,11 @@ body {
 	padding-top: 0px;
 	border-radius: 0px;
 }
+
+.invisible {
+	display: none;
+}
+
+.visible {
+	display: block;
+}

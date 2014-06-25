@@ -548,6 +548,13 @@ svg_instance = [
     }
 ]
 
+#
+# Dictionary of graph name substitutes(e.g. if a graph name is too long we can map it to a different name here, and the sub will be used in the index page)
+#
+friendly_graph_names = {
+    
+}
+
 # Copy of the original version
 #
 svg_instance_testing = [
@@ -1011,6 +1018,34 @@ def create_svg_index_page(graph_pngs):
                 'svg_locations': svg_locations
              }))
 
+def should_generate_animation(algo_file_name, graph_file_name, svg_file_name):
+    # If the svg we have is more current than all it's component files then we don't
+    # have to generate the animation
+    catbox_path = os.path.split(algo_file_name)[0]
+    algo_pro_file_name = os.path.splitext(os.path.basename(algo_file_name))[0] + '.pro'
+    svg_age = os.path.getmtime(svg_file_name)
+    graph_age = os.path.getmtime(graph_file_name)
+    pro_age = os.path.getmtime(os.path.join(catbox_path, algo_pro_file_name))
+    algo_age = os.path.getmtime(algo_file_name)
+    webgato_js_age = os.path.getmtime('WebGatoJS.py')
+
+    if svg_age > max(graph_age, pro_age, algo_age, webgato_js_age):
+        return False
+    return True
+
+def should_generate_png(algo_file_name, graph_file_name, png_file_name):
+    # If the png we have is more current than the graph/algo combo it came from then we don't have to re-generate
+    catbox_path = os.path.split(algo_file_name)[0]
+    algo_pro_file_name = os.path.splitext(os.path.basename(algo_file_name))[0] + '.pro'
+    png_age = os.path.getmtime(png_file_name)
+    graph_age = os.path.getmtime(graph_file_name)
+    pro_age = os.path.getmtime(os.path.join(catbox_path, algo_pro_file_name))
+    algo_age = os.path.getmtime(algo_file_name)
+
+    if png_age > max(graph_age, pro_age, algo_age):
+        return False
+    return True
+
 #------------------------------------------------------------------
 def usage():
     print "Usage: GatoTest.py"
@@ -1141,32 +1176,39 @@ if __name__ == '__main__':
                 for graph_file in algo['graphs']:
                     log.info("=== TEST === "+algo['file']+" === "+graph_file+" ===")
                     print "=== TEST === "+algo['file']+" === "+graph_file+" ==="
-                    app.OpenAlgorithm(testPath + chapter_dict['chapter_directory'] + '/' + algo['file'])
-                    g.Interactive = 0 # This is set to 0 above.  Do we need to do it here as well?
-                    app.algorithm.ClearBreakpoints()
-                    app.update_idletasks()
-                    app.update()
-                    app.OpenGraph(testPath + graph_file)
-                    app.update_idletasks()
-                    app.update()
-                    # Run it ...
-                    app.after_idle(app.CmdContinue) # after idle needed since CmdStart
-                    # does not return
-                    app.CmdStart()
-                    app.update_idletasks()
+                    graph_name = os.path.splitext(os.path.basename(graph_file))[0]
+                    png_file_name = 'svgs/img/%s.png' % (graph_name)
+                    svg_file_name = 'svgs/%s--%s.html' % (os.path.splitext(algo['file'])[0], graph_name)
+                    algo_location = testPath + chapter_dict['chapter_directory'] + '/' + algo['file']
+                    if should_generate_animation(algo_location, testPath+graph_file, svg_file_name):
+                        app.OpenAlgorithm(algo_location)
+                        g.Interactive = 0 # This is set to 0 above.  Do we need to do it here as well?
+                        app.algorithm.ClearBreakpoints()
+                        app.update_idletasks()
+                        app.update()
+                        app.OpenGraph(testPath + graph_file)
+                        app.update_idletasks()
+                        app.update()
+                        # Run it ...
+                        app.after_idle(app.CmdContinue) # after idle needed since CmdStart
+                        # does not return
+                        app.CmdStart()
+                        app.update_idletasks()
 
-                    # Generate the SVG
-                    app.ExportSVGAnimation('svgs/%s--%s.html' %
-                        (os.path.splitext(algo['file'])[0], os.path.splitext(os.path.basename(graph_file))[0]),
-                        chapter_number=chapter_dict['chapter_number'])
-                    # Generate the PNG
-                    if graph_file not in graph_pngs and has_png_libs:
-                        file_name = 'svgs/img/%s.png' % (os.path.splitext(os.path.basename(graph_file))[0])
-                        png_dimensions = app.ExportSVG(file_name, write_to_png=True)
-                        graph_name = os.path.splitext(os.path.basename(graph_file))[0]
-                        graph_name = ' '.join([a for a in re.split(r'([A-Z][a-z]*)', graph_name) if a]) or graph_name
-                        path_from_index = '/'.join(file_name.split('/')[1:])
-                        graph_pngs[graph_file] = {'file': path_from_index, 'name': graph_name, 'width': png_dimensions['width'], 'height': png_dimensions['height']}
+                        # Generate the SVG
+                        app.ExportSVGAnimation(svg_file_name, chapter_number=chapter_dict['chapter_number'])
+
+                    if should_generate_png(algo_location, testPath+graph_file, png_file_name):
+                        # Generate the PNG
+                        if graph_file not in graph_pngs and has_png_libs:
+                            png_dimensions = app.ExportSVG(png_file_name, write_to_png=True)
+                            # graph_name = ' '.join([a for a in re.split(r'([A-Z][a-z]*)', graph_name) if a]) or graph_name
+                            path_from_index = '/'.join(png_file_name.split('/')[1:])
+                            graph_pngs[graph_file] = {'file': path_from_index, 'name': graph_name, 'width': png_dimensions['width'], 'height': png_dimensions['height']}
+                    else:
+                        from PIL import Image
+                        img = Image.open(png_file_name)
+                        graph_pngs[graph_file] = {'file': '/'.join(png_file_name.split('/')[1:]), 'name': graph_name, 'width': img.size[0], 'height': img.size[1]}
 
         if has_png_libs:
             create_svg_index_page(graph_pngs)
