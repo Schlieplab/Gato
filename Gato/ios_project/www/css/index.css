@@ -57,5 +57,8 @@ body {
 
 .invisible {
 	display: none;
-	visibility: hidden;
+}
+
+.visible {
+	display: block;
 }
