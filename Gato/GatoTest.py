@@ -258,8 +258,8 @@ svg_instance = [
                 'description': 'Kruskal\'s algorithm computes a minimum spanning tree in ' \
                 'a connected, weighted graph.',
                 'graphs': [
-                    '03-MinimalSpanningTrees/Kruskal1.cat','03-MinimalSpanningTrees/Kruskal2.cat',
-                    '03-MinimalSpanningTrees/Kruskal3.cat'
+                    '03-MinimalSpanningTrees/Kruskal1.cat', '03-MinimalSpanningTrees/Kruskal2.cat',
+                    '03-MinimalSpanningTrees/Kruskal3.cat',
                     '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Prim2.cat'
                 ]
             },
@@ -270,7 +270,7 @@ svg_instance = [
                 'algorithm, which checks for each edge to be added whether it completes a circuit.',
                 'graphs': [
                     '03-MinimalSpanningTrees/Kruskal1.cat','03-MinimalSpanningTrees/Kruskal2.cat',
-                    '03-MinimalSpanningTrees/Kruskal3.cat'
+                    '03-MinimalSpanningTrees/Kruskal3.cat',
                     '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Prim2.cat'
                 ]
             },
@@ -282,7 +282,7 @@ svg_instance = [
                 'completion by maintaining component labels for vertices and testing for equality.',
                 'graphs': [
                     '03-MinimalSpanningTrees/Kruskal1.cat','03-MinimalSpanningTrees/Kruskal2.cat',
-                    '03-MinimalSpanningTrees/Kruskal3.cat'
+                    '03-MinimalSpanningTrees/Kruskal3.cat',
                     '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Prim2.cat'
                 ]
             },
@@ -293,7 +293,7 @@ svg_instance = [
                 'minimizes the number of component label updates.',
                 'graphs': [
                     '03-MinimalSpanningTrees/Kruskal1.cat','03-MinimalSpanningTrees/Kruskal2.cat',
-                    '03-MinimalSpanningTrees/Kruskal3.cat'
+                    '03-MinimalSpanningTrees/Kruskal3.cat',
                     '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Prim2.cat'
                 ]   
             },
@@ -304,7 +304,7 @@ svg_instance = [
                 'connected, weighted graph.',
                 'graphs': [
                     '03-MinimalSpanningTrees/Kruskal1.cat','03-MinimalSpanningTrees/Kruskal2.cat',
-                    '03-MinimalSpanningTrees/Kruskal3.cat'
+                    '03-MinimalSpanningTrees/Kruskal3.cat',
                     '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Prim2.cat'
                 ]
             },
@@ -314,7 +314,7 @@ svg_instance = [
                 'description': 'An implementation of a matroid dual of Kruskal\'s Algorithm. ', 
                 'graphs': [
                     '03-MinimalSpanningTrees/Kruskal1.cat','03-MinimalSpanningTrees/Kruskal2.cat',
-                    '03-MinimalSpanningTrees/Kruskal3.cat'
+                    '03-MinimalSpanningTrees/Kruskal3.cat',
                     '03-MinimalSpanningTrees/Prim1.cat','03-MinimalSpanningTrees/Prim2.cat'
                 ]
             },
@@ -348,9 +348,9 @@ svg_instance = [
                 'description': 'Dijkstra\'s algorithm for finding a shortest path tree in ' \
                 'a graph. This is an example of a label setting algorithm.',
                 'graphs': [
-                    '05-ShortestPaths/ShortestPathUndirected02.cat',
-                    '05-ShortestPaths/ShortestPathUndirected03.cat',
-                    '05-ShortestPaths/7x7.cat'
+                    '05-ShortestPaths/ShortestPathsUndirected02.cat',
+                    '05-ShortestPaths/ShortestPathsUndirected03.cat',
+                    '05-ShortestPaths/7x7grid.cat'
                 ]
             },
             {
@@ -359,9 +359,9 @@ svg_instance = [
                 'description': 'Dijkstra\'s algorithm for finding a shortest path tree in a' \
                 'graph implemented using a Priority Queue.',
                 'graphs': [
-                    '05-ShortestPaths/ShortestPathUndirected02.cat',
-                    '05-ShortestPaths/ShortestPathUndirected03.cat',
-                    '05-ShortestPaths/7x7.cat'
+                    '05-ShortestPaths/ShortestPathsUndirected02.cat',
+                    '05-ShortestPaths/ShortestPathsUndirected03.cat',
+                    '05-ShortestPaths/7x7grid.cat'
                 ]
             },
             {
@@ -370,9 +370,9 @@ svg_instance = [
                 'description': 'A variant of Dijkstra\'s algorithm for finding a shortest s-t ' \
                 'path in a graph. Terminates early, as soon as a shortest s-t path has been found.',
                 'graphs': [
-                    '05-ShortestPaths/ShortestPathUndirected03.cat',
-                    '05-ShortestPaths/ShortestPathsUndirected06.cat'
-                    '05-ShortestPaths/7x7.cat'
+                    '05-ShortestPaths/ShortestPathsUndirected03.cat',
+                    '05-ShortestPaths/ShortestPathsUndirected06.cat',
+                    '05-ShortestPaths/7x7grid.cat'
                 ]
             },
             {
@@ -384,9 +384,9 @@ svg_instance = [
                 'found and only visits a small part of the graph. Similar ideas are used in '\
                 'A*-type algorithms.',
                 'graphs': [
-                    '05-ShortestPaths/ShortestPathUndirected03.cat',
-                    '05-ShortestPaths/ShortestPathsUndirected06.cat'
-                    '05-ShortestPaths/7x7.cat'
+                    '05-ShortestPaths/ShortestPathsUndirected03.cat',
+                    '05-ShortestPaths/ShortestPathsUndirected06.cat',
+                    '05-ShortestPaths/7x7grid.cat'
                  ]
             },
             {
@@ -395,9 +395,9 @@ svg_instance = [
                 'description': 'Bellman and Ford\'s algorithm for finding a shortest path tree in ' \
                 'a graph with a label correcting approach.',
                 'graphs': [
-                    '05-ShortestPaths/ShortestPathUndirected02.cat',
-                    '05-ShortestPaths/ShortestPathUndirected03.cat',
-                    '05-ShortestPaths/7x7.cat',
+                    '05-ShortestPaths/ShortestPathsUndirected02.cat',
+                    '05-ShortestPaths/ShortestPathsUndirected03.cat',
+                    '05-ShortestPaths/7x7grid.cat',
                     '05-ShortestPaths/BellmanFordWC.cat'
                 ]
             },
@@ -439,7 +439,7 @@ svg_instance = [
                     '06-MaximalFlows/FordFulkerson6.cat',
                     '06-MaximalFlows/FordFulkersonBad.cat',
                     '06-MaximalFlows/FordFulkersonWC.cat',
-                    '06-MaximalFlows/PreflowPushWC.cat'
+                    '06-MaximalFlows/PreflowPushWC.cat',
                     '06-MaximalFlows/EdmondsKarpWC.cat'
                 ]
             },
@@ -451,7 +451,7 @@ svg_instance = [
                 'excesses later',
                 'graphs': [
                     '06-MaximalFlows/PreflowPush1.cat',
-                    '06-MaximalFlows/PreflowPush6.cat'
+                    '06-MaximalFlows/PreflowPush6.cat',
                     '06-MaximalFlows/FordFulkerson1.cat',
                     '06-MaximalFlows/FordFulkerson4.cat',
                     '06-MaximalFlows/FordFulkerson6.cat',
@@ -468,8 +468,28 @@ svg_instance = [
         'title': 'Minimum-cost Flows',
         'algorithms': [
             {
-                'title': 'SuccessiveShortestPath',
+                'title': 'Negative Circuits',
+                'file': 'NegativeCircuit.alg',
+                'description': 'The Negative Circuits algorithms establishes a maximal flow ' \
+                'and reduces costs by finding negative circuits.',
+                'graphs': [
+                    '07-MinimumCostFlows/MCF4to1A.cat', '07-MinimumCostFlows/MCFCycle.cat'
+                ]
+            },
+            {
+                'title': 'Successive Shortest Paths',
                 'file': 'SuccessiveShortestPath.alg',
+                'description': 'This algorithm finds a minimum cost flow by  repeatedly ' \
+                ' finding shortest, augmenting paths ',
+                'graphs': [
+                    '07-MinimumCostFlows/MCF4to1A.cat', '07-MinimumCostFlows/MCFCycle.cat'
+                ]
+            },
+            {
+                'title': 'Cost Scaling',
+                'file': 'CostScaling.alg',
+                'description': 'The cost scaling algorithm directly operates on the bits ' \
+                'of the cost function',
                 'graphs': [
                     '07-MinimumCostFlows/MCF4to1A.cat', '07-MinimumCostFlows/MCFCycle.cat'
                 ]
@@ -485,16 +505,22 @@ svg_instance = [
             {
                 'title': 'Bipartite',
                 'file': 'Bipartite.alg',
+                'description': 'This algorithm finds a maximal cardinality matching' \
+                'in a bipartite graph. In other words it maximes the number of matched ' \
+                'vertices',
                 'graphs': [
                     '08-Matching/Bi003.cat', '08-Matching/Bi006.cat', '08-Matching/Bi008.cat',
                     '08-Matching/Bi009.cat', '08-Matching/Bi010.cat'
                 ]
             },
             {
-                'title': 'CardinalityMatching',
+                'title': 'Cardinality Matching',
                 'file': 'CardinalityMatching.alg',
+                'description': 'This algorithm finds a maximal cardinality matching in graphs ' \
+                'which are not necessarily bipartite.',
                 'graphs': [
-                    '08-Matching/Edmonds1.cat', '08-Matching/Edmonds3.cat', '08-Matching/Edmonds6.cat'
+                    '08-Matching/Edmonds1.cat', '08-Matching/Edmonds3.cat',
+                    '08-Matching/Edmonds6.cat', '08-Matching/Koenig.cat'
                 ]
             }
         ]
@@ -506,10 +532,14 @@ svg_instance = [
         'title': 'Weighted Matching',
         'algorithms': [
             {
-                'title': 'WeightedMatching',
+                'title': 'Weighted Matching',
                 'file': 'WeightedMatching.alg',
+                'description': 'This algorithm considers vertices as points in 2-dimensional ' \
+                'space and implicitely assumes the existence of all edges in the complete ' \
+                'graph. Furthermore, edge weights are Euclidean. It finds a matching of minimal ' \
+                'weight. The matching is perfect if the number of vertices is even', 
                 'graphs': [
-                    '09-WeightedMatching/k4.cat', '09-WeightedMatching/var2zero.cat',
+                    '09-WeightedMatching/twotriangles.cat', '09-WeightedMatching/3223.cat',
                     '09-WeightedMatching/11vs13.cat'
                 ]
             }
@@ -660,45 +690,45 @@ svg_instance_testing = [
                 'title': 'Dijkstra',
                 'file': 'Dijkstra.alg',
                 'graphs': [
-                    '05-ShortestPaths/ShortestPathUndirected02.cat',
-                    '05-ShortestPaths/ShortestPathUndirected03.cat',
-                    '05-ShortestPaths/7x7.cat'
+                    '05-ShortestPaths/ShortestPathsUndirected02.cat',
+                    '05-ShortestPaths/ShortestPathsUndirected03.cat',
+                    '05-ShortestPaths/7x7grid.cat'
                 ]
             },
             {
                 'title': 'DijkstraPQ',
                 'file': 'DijkstraPQ.alg',
                 'graphs': [
-                    '05-ShortestPaths/ShortestPathUndirected02.cat',
-                    '05-ShortestPaths/ShortestPathUndirected03.cat'
-                    '05-ShortestPaths/7x7.cat'
+                    '05-ShortestPaths/ShortestPathsUndirected02.cat',
+                    '05-ShortestPaths/ShortestPathsUndirected03.cat'
+                    '05-ShortestPaths/7x7grid.cat'
                 ]
             },
             {
                 'title': 'FindPath',
                 'file': 'FindPath.alg',
                 'graphs': [
-                    '05-ShortestPaths/ShortestPathUndirected03.cat',
-                    '05-ShortestPaths/ShortestPathsUndirected06.cat'
-                    '05-ShortestPaths/7x7.cat'
+                    '05-ShortestPaths/ShortestPathsUndirected03.cat',
+                    '05-ShortestPaths/ShortestPathsUndirected06.cat',
+                    '05-ShortestPaths/7x7grid.cat'
                ]
             },
             {
                 'title': 'FindPathEuclid',
                 'file': 'FindPathEuclid.alg',
                 'graphs': [
-                    '05-ShortestPaths/ShortestPathUndirected03.cat',
+                    '05-ShortestPaths/ShortestPathsUndirected03.cat',
                     '05-ShortestPaths/ShortestPathsUndirected06.cat',
-                    '05-ShortestPaths/7x7.cat'
+                    '05-ShortestPaths/7x7grid.cat'
                ]
             },
             {
                 'title': 'Bellman Ford',
                 'file': 'BellmanFord.alg',
                 'graphs': [
-                    '05-ShortestPaths/ShortestPathUndirected02.cat',
-                    '05-ShortestPaths/ShortestPathUndirected03.cat',
-                    '05-ShortestPaths/7x7.cat',
+                    '05-ShortestPaths/ShortestPathsUndirected02.cat',
+                    '05-ShortestPaths/ShortestPathsUndirected03.cat',
+                    '05-ShortestPaths/7x7grid.cat',
                     '05-ShortestPaths/BellmanFordWC.cat'
                 ]
             },
@@ -715,7 +745,7 @@ svg_instance_testing = [
                 'title': 'TwoSources',
                 'file': 'TwoSources.alg',
                 'graphs': [
-                    '05-ShortestPaths/ShortestPathUndirected03.cat',
+                    '05-ShortestPaths/ShortestPathsUndirected03.cat',
                     '05-ShortestPaths/ShortestPathsUndirected06.cat'
                 ]
             }
