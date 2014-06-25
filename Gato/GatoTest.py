@@ -552,7 +552,12 @@ svg_instance = [
 # Dictionary of graph name substitutes(e.g. if a graph name is too long we can map it to a different name here, and the sub will be used in the index page)
 #
 friendly_graph_names = {
-    
+    'ShortestPathsUndirected01': 'Shortest Paths Undirected 01',
+    'ShortestPathsUndirected02': 'Shortest Paths Undirected 02',
+    'ShortestPathsUndirected03': 'Shortest Paths Undirected 03',
+    'ShortestPathsUndirected04': 'Shortest Paths Undirected 04',
+    'ShortestPathsUndirected05': 'Shortest Paths Undirected 05',
+    'ShortestPathsUndirected06': 'Shortest Paths Undirected 06',
 }
 
 # Copy of the original version
@@ -1198,17 +1203,17 @@ if __name__ == '__main__':
                         # Generate the SVG
                         app.ExportSVGAnimation(svg_file_name, chapter_number=chapter_dict['chapter_number'])
 
+                    index_graph_name = friendly_graph_names.get(graph_name, graph_name)
                     if should_generate_png(algo_location, testPath+graph_file, png_file_name):
                         # Generate the PNG
                         if graph_file not in graph_pngs and has_png_libs:
                             png_dimensions = app.ExportSVG(png_file_name, write_to_png=True)
-                            # graph_name = ' '.join([a for a in re.split(r'([A-Z][a-z]*)', graph_name) if a]) or graph_name
                             path_from_index = '/'.join(png_file_name.split('/')[1:])
-                            graph_pngs[graph_file] = {'file': path_from_index, 'name': graph_name, 'width': png_dimensions['width'], 'height': png_dimensions['height']}
+                            graph_pngs[graph_file] = {'file': path_from_index, 'name': index_graph_name, 'width': png_dimensions['width'], 'height': png_dimensions['height']}
                     else:
                         from PIL import Image
                         img = Image.open(png_file_name)
-                        graph_pngs[graph_file] = {'file': '/'.join(png_file_name.split('/')[1:]), 'name': graph_name, 'width': img.size[0], 'height': img.size[1]}
+                        graph_pngs[graph_file] = {'file': '/'.join(png_file_name.split('/')[1:]), 'name': index_graph_name, 'width': img.size[0], 'height': img.size[1]}
 
         if has_png_libs:
             create_svg_index_page(graph_pngs)
