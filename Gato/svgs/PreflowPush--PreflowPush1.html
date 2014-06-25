@@ -1,0 +1,665 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" type="text/css" href="js/subModal/subModal.css" />
+        <script type="text/javascript" src="js/subModal/common.js"></script>
+        <script type="text/javascript" src="js/subModal/subModal.js"></script>
+        <script src="js/snap.svg.js" type="text/javascript"></script>
+        <style>
+            html, body {
+                margin: 0 auto;
+                overflow-y: hidden;
+                background-image:url('img/white_wall.png')
+            }
+            * {
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                -khtml-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+            .edge {
+                cursor: pointer;
+            }
+            #nav_bar {
+                /* background-color: #10347D; */
+                background-color: white;
+                width: 100%;
+            }
+            .inactive_nav {
+                height: 0px;
+                border-bottom: 0px;
+            }
+            .active_nav {
+                border-bottom: 2px solid #ccc;
+                height: 60px;
+            }
+            #help_div {
+                position: absolute;
+                width: 100%;
+                height: 2.5em;
+                top: 0px;
+                left: 0px;
+                background-color: white;
+                border-bottom: 1px solid #aaa;
+                color: #333;
+            }
+            .invisible {
+                visibility: hidden;
+            }
+            .visible {
+                visibility: visible;
+                z-index: 1000;
+            }
+            .help_link {
+                font-family: Helvetica;
+                font-size: 1.5em;
+                text-decoration: none;
+                color: #87afff;
+            }
+            .help_link:visited {
+                color: #1354D6;
+            }
+            .help_link:hover {
+                color: #1354D6;
+            }
+            .left_link {
+                border-right: 1px solid #aaa;
+                padding-right: 15px;
+                margin-right: 0px;
+            }
+            .right_link {
+                margin-left: 0px;
+                padding-left: 15px;
+            }
+        </style>
+        <title>Gato -- PreflowPush algorithm on PreflowPush1 graph</title>
+    </head>
+    <body>
+        <div id="help_div" class="invisible">
+            <div style="padding: .5em">
+                <a class="help_link left_link" href="./index.html#chapter_6_div" target="_blank">Index</a><a class="help_link right_link" href="./help.html" target="_blank">Help</a>
+            </div>
+        </div>
+        <div id="nav_bar" class="inactive_nav">
+            <svg id="nav_svg">
+
+            </svg>
+        </div>
+        <div id="base_container">
+        <svg id="svg">
+            <filter id="dropshadow" height="130%">
+              <feGaussianBlur in="SourceAlpha" stdDeviation="1"/> <!-- stdDeviation is how much to blur -->
+                <feOffset dx="2.5" dy="2.5" result="offsetblur"/> <!-- how much to offset -->
+                <feMerge> 
+                  <feMergeNode/> <!-- this contains the offset blurred image -->
+                  <feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->
+               </feMerge>
+            </filter>
+            <filter id="tooltip_dropshadow" height="130%">
+              <feGaussianBlur in="SourceAlpha" stdDeviation="1"/> <!-- stdDeviation is how much to blur -->
+                <feOffset dx="2" dy="2" result="offsetblur"/> <!-- how much to offset -->
+                <feMerge> 
+                  <feMergeNode/> <!-- this contains the offset blurred image -->
+                  <feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->
+               </feMerge>
+            </filter>
+            <g id="g1" type="directed">
+
+<g id="g1_1-2_group" class="edge_group" style="cursor: pointer">
+<line id="g1_1-2" class="edge" x1="0.0" y1="0.0" x2="73.000000" y2="0.000000" stroke="#DDDDDD" stroke-width="7.699999999999999" />
+
+<polyline id="eag1_1-2" class="arrowhead" points="0.000000 0.000000 0.000000 31.497800 14.0 15.748900" fill="#DDDDDD" transform="translate(72.000000,-15.748900) rotate(0.000000 0.000000 15.748900)" />
+
+</g>
+<g id="g1_2-3_group" class="edge_group" style="cursor: pointer">
+<line id="g1_2-3" class="edge" x1="100.0" y1="0.0" x2="173.000000" y2="0.000000" stroke="#DDDDDD" stroke-width="11.2" />
+
+<polyline id="eag1_2-3" class="arrowhead" points="0.000000 0.000000 0.000000 23.792583 14.0 11.896292" fill="#DDDDDD" transform="translate(172.000000,-11.896292) rotate(0.000000 0.000000 11.896292)" />
+
+</g>
+<g id="g1_3-4_group" class="edge_group" style="cursor: pointer">
+<line id="g1_3-4" class="edge" x1="200.0" y1="0.0" x2="273.000000" y2="0.000000" stroke="#DDDDDD" stroke-width="14.7" />
+
+<polyline id="eag1_3-4" class="arrowhead" points="0.000000 0.000000 0.000000 23.415152 14.0 11.707576" fill="#DDDDDD" transform="translate(272.000000,-11.707576) rotate(0.000000 0.000000 11.707576)" />
+
+</g>
+<g id="g1_4-5_group" class="edge_group" style="cursor: pointer">
+<line id="g1_4-5" class="edge" x1="300.0" y1="0.0" x2="373.000000" y2="0.000000" stroke="#DDDDDD" stroke-width="18.2" />
+
+<polyline id="eag1_4-5" class="arrowhead" points="0.000000 0.000000 0.000000 25.020116 14.0 12.510058" fill="#DDDDDD" transform="translate(372.000000,-12.510058) rotate(0.000000 0.000000 12.510058)" />
+
+</g>
+<g id="g1_5-6_group" class="edge_group" style="cursor: pointer">
+<line id="g1_5-6" class="edge" x1="400.0" y1="0.0" x2="473.000000" y2="0.000000" stroke="#DDDDDD" stroke-width="21.7" />
+
+<polyline id="eag1_5-6" class="arrowhead" points="0.000000 0.000000 0.000000 27.412362 14.0 13.706181" fill="#DDDDDD" transform="translate(472.000000,-13.706181) rotate(0.000000 0.000000 13.706181)" />
+
+</g>
+<g id="g1_6-7_group" class="edge_group" style="cursor: pointer">
+<line id="g1_6-7" class="edge" x1="500.0" y1="0.0" x2="573.000000" y2="0.000000" stroke="#DDDDDD" stroke-width="25.2" />
+
+<polyline id="eag1_6-7" class="arrowhead" points="0.000000 0.000000 0.000000 30.190202 14.0 15.095101" fill="#DDDDDD" transform="translate(572.000000,-15.095101) rotate(0.000000 0.000000 15.095101)" />
+
+</g>
+<g id="g1_pre_vertices_group"></g>
+<g id="g1_1_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_1" class="vertex" cx="0.0" cy="0.0" r="14.0" fill="#000099" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_1" x="0.0" y="4.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >1</text>
+
+</g>
+<g id="g1_2_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_2" class="vertex" cx="100.0" cy="0.0" r="14.0" fill="#000099" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_2" x="100.0" y="4.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >2</text>
+
+</g>
+<g id="g1_3_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_3" class="vertex" cx="200.0" cy="0.0" r="14.0" fill="#000099" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_3" x="200.0" y="4.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >3</text>
+
+</g>
+<g id="g1_4_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_4" class="vertex" cx="300.0" cy="0.0" r="14.0" fill="#000099" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_4" x="300.0" y="4.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >4</text>
+
+</g>
+<g id="g1_5_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_5" class="vertex" cx="400.0" cy="0.0" r="14.0" fill="#000099" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_5" x="400.0" y="4.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >5</text>
+
+</g>
+<g id="g1_6_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_6" class="vertex" cx="500.0" cy="0.0" r="14.0" fill="#000099" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_6" x="500.0" y="4.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >6</text>
+
+</g>
+<g id="g1_7_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_7" class="vertex" cx="600.0" cy="0.0" r="14.0" fill="#000099" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_7" x="600.0" y="4.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >7</text>
+
+</g>
+</g>
+
+<g id="g2" type="directed">
+
+<g id="g2_1-2_group" class="edge_group" style="cursor: pointer">
+<line id="g2_1-2" class="edge" x1="0.0" y1="0.0" x2="73.000000" y2="0.000000" stroke="#DDDDDD" stroke-width="4.0" />
+
+<polyline id="eag2_1-2" class="arrowhead" points="0.000000 0.000000 0.000000 20.000000 14.0 10.000000" fill="#DDDDDD" transform="translate(72.000000,-10.000000) rotate(0.000000 0.000000 10.000000)" />
+
+</g>
+<g id="g2_2-3_group" class="edge_group" style="cursor: pointer">
+<line id="g2_2-3" class="edge" x1="100.0" y1="0.0" x2="173.000000" y2="0.000000" stroke="#DDDDDD" stroke-width="4.0" />
+
+<polyline id="eag2_2-3" class="arrowhead" points="0.000000 0.000000 0.000000 20.000000 14.0 10.000000" fill="#DDDDDD" transform="translate(172.000000,-10.000000) rotate(0.000000 0.000000 10.000000)" />
+
+</g>
+<g id="g2_3-4_group" class="edge_group" style="cursor: pointer">
+<line id="g2_3-4" class="edge" x1="200.0" y1="0.0" x2="273.000000" y2="0.000000" stroke="#DDDDDD" stroke-width="4.0" />
+
+<polyline id="eag2_3-4" class="arrowhead" points="0.000000 0.000000 0.000000 20.000000 14.0 10.000000" fill="#DDDDDD" transform="translate(272.000000,-10.000000) rotate(0.000000 0.000000 10.000000)" />
+
+</g>
+<g id="g2_4-5_group" class="edge_group" style="cursor: pointer">
+<line id="g2_4-5" class="edge" x1="300.0" y1="0.0" x2="373.000000" y2="0.000000" stroke="#DDDDDD" stroke-width="4.0" />
+
+<polyline id="eag2_4-5" class="arrowhead" points="0.000000 0.000000 0.000000 20.000000 14.0 10.000000" fill="#DDDDDD" transform="translate(372.000000,-10.000000) rotate(0.000000 0.000000 10.000000)" />
+
+</g>
+<g id="g2_5-6_group" class="edge_group" style="cursor: pointer">
+<line id="g2_5-6" class="edge" x1="400.0" y1="0.0" x2="473.000000" y2="0.000000" stroke="#DDDDDD" stroke-width="4.0" />
+
+<polyline id="eag2_5-6" class="arrowhead" points="0.000000 0.000000 0.000000 20.000000 14.0 10.000000" fill="#DDDDDD" transform="translate(472.000000,-10.000000) rotate(0.000000 0.000000 10.000000)" />
+
+</g>
+<g id="g2_6-7_group" class="edge_group" style="cursor: pointer">
+<line id="g2_6-7" class="edge" x1="500.0" y1="0.0" x2="573.000000" y2="0.000000" stroke="#DDDDDD" stroke-width="4.0" />
+
+<polyline id="eag2_6-7" class="arrowhead" points="0.000000 0.000000 0.000000 20.000000 14.0 10.000000" fill="#DDDDDD" transform="translate(572.000000,-10.000000) rotate(0.000000 0.000000 10.000000)" />
+
+</g>
+<g id="g2_pre_vertices_group"></g>
+<g id="g2_1_group" class="vertex_g" style="cursor: pointer">
+<circle id="g2_1" class="vertex" cx="0.0" cy="0.0" r="14.0" fill="grey" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg2_1" x="0.0" y="4.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >1</text>
+
+</g>
+<g id="g2_2_group" class="vertex_g" style="cursor: pointer">
+<circle id="g2_2" class="vertex" cx="100.0" cy="0.0" r="14.0" fill="grey" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg2_2" x="100.0" y="4.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >2</text>
+
+</g>
+<g id="g2_3_group" class="vertex_g" style="cursor: pointer">
+<circle id="g2_3" class="vertex" cx="200.0" cy="0.0" r="14.0" fill="grey" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg2_3" x="200.0" y="4.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >3</text>
+
+</g>
+<g id="g2_4_group" class="vertex_g" style="cursor: pointer">
+<circle id="g2_4" class="vertex" cx="300.0" cy="0.0" r="14.0" fill="grey" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg2_4" x="300.0" y="4.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >4</text>
+
+</g>
+<g id="g2_5_group" class="vertex_g" style="cursor: pointer">
+<circle id="g2_5" class="vertex" cx="400.0" cy="0.0" r="14.0" fill="grey" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg2_5" x="400.0" y="4.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >5</text>
+
+</g>
+<g id="g2_6_group" class="vertex_g" style="cursor: pointer">
+<circle id="g2_6" class="vertex" cx="500.0" cy="0.0" r="14.0" fill="grey" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg2_6" x="500.0" y="4.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >6</text>
+
+</g>
+<g id="g2_7_group" class="vertex_g" style="cursor: pointer">
+<circle id="g2_7" class="vertex" cx="600.0" cy="0.0" r="14.0" fill="grey" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg2_7" x="600.0" y="4.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >7</text>
+
+</g>
+</g>
+
+            <text blank = "false" id="l_1" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">s = PickSource()</text>
+<text blank = "false" id="l_2" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">t = PickSink()</text>
+<text blank = "true" id="l_3" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"></text>
+<text blank = "false" id="l_4" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">InitPotential(s,t)</text>
+<text blank = "false" id="l_5" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">for</tspan> v<tspan font-weight="bold"> in</tspan> G.Neighborhood(s):</text>
+<text blank = "false" id="l_6" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">flow[(s,v)] = cap((s,v))</text>
+<text blank = "true" id="l_7" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"></text>
+<text blank = "false" id="l_8" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">feasible = False</text>
+<text blank = "false" id="l_9" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">while</tspan><tspan font-weight="bold"> not</tspan> feasible:</text>
+<text blank = "false" id="l_10" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">pushed = False</text>
+<text blank = "false" id="l_11" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">v = FindExcessVertex()</text>
+<text blank = "false" id="l_12" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan><tspan font-weight="bold"> not</tspan> v:</text>
+<text blank = "false" id="l_13" class="code_line" x="0" y="0" dx="32" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">feasible = True</text>
+<text blank = "false" id="l_14" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">else</tspan>:</text>
+<text blank = "false" id="l_15" class="code_line" x="0" y="0" dx="32" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">for</tspan> u<tspan font-weight="bold"> in</tspan> Neighborhood(v):</text>
+<text blank = "false" id="l_16" class="code_line" x="0" y="0" dx="48" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan> pot[v] > pot[u]:</text>
+<text blank = "false" id="l_17" class="code_line" x="0" y="0" dx="64" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">delta = Min(res((v,u)),excess(v))</text>
+<text blank = "false" id="l_18" class="code_line" x="0" y="0" dx="64" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan> ForwardEdge(v,u):</text>
+<text blank = "false" id="l_19" class="code_line" x="0" y="0" dx="80" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">flow[(v,u)] = flow[(v,u)] + delta</text>
+<text blank = "false" id="l_20" class="code_line" x="0" y="0" dx="64" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">else</tspan>:</text>
+<text blank = "false" id="l_21" class="code_line" x="0" y="0" dx="80" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">flow[(u,v)] = flow[(u,v)] - delta</text>
+<text blank = "false" id="l_22" class="code_line" x="0" y="0" dx="64" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">pushed = True</text>
+<text blank = "false" id="l_23" class="code_line" x="0" y="0" dx="64" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">break</tspan></text>
+<text blank = "false" id="l_24" class="code_line" x="0" y="0" dx="32" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan><tspan font-weight="bold"> not</tspan> pushed:</text>
+<text blank = "false" id="l_25" class="code_line" x="0" y="0" dx="48" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">pot[v] = minResNeighborPot(v) + 1</text>
+<text blank = "true" id="l_26" class="code_line" x="0" y="0" dx="48" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"></text>
+<text blank = "false" id="l_27" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">ShowCut(s)</text>
+
+        </svg>
+        </div>
+
+        <script type="text/javascript">
+            var chapter_number = 6;
+            var info_file = "infos/PreflowPush--PreflowPush1.html";
+            var animation_name = "PreflowPush algorithm on PreflowPush1 graph";
+            var g1_x_add = 50;
+            var g1_y_add = 50;
+            var g2_x_add = 50;
+            var g2_y_add = 50;
+            var g1_init_edge_info = {
+"g1_27-26": "Edge (27,26)",
+"g1_1-4": "Edge (1,4)",
+"g1_27-30": "Edge (27,30)",
+"g1_28-29": "Edge (28,29)",
+"g1_23-22": "Edge (23,22)",
+"g1_24-26": "Edge (24,26)",
+"g1_18-19": "Edge (18,19)",
+"g1_32-31": "Edge (32,31)",
+"g1_12-16": "Edge (12,16)",
+"g1_29-30": "Edge (29,30)",
+"g1_7-11": "Edge (7,11)",
+"g1_33-32": "Edge (33,32)",
+"g1_8-5": "Edge (8,5)",
+"g1_29-27": "Edge (29,27)",
+"g1_1-2": "Edge (1,2)",
+"g1_22-20": "Edge (22,20)",
+"g1_15-23": "Edge (15,23)",
+"g1_31-27": "Edge (31,27)",
+"g1_31-36": "Edge (31,36)",
+"g1_19-20": "Edge (19,20)",
+"g1_12-6": "Edge (12,6)",
+"g1_30-28": "Edge (30,28)",
+"g1_26-36": "Edge (26,36)",
+"g1_3-6": "Edge (3,6)",
+"g1_25-22": "Edge (25,22)",
+"g1_11-27": "Edge (11,27)",
+"g1_7-14": "Edge (7,14)",
+"g1_17-19": "Edge (17,19)",
+"g1_28-27": "Edge (28,27)",
+"g1_26-33": "Edge (26,33)",
+"g1_4-5": "Edge (4,5)",
+"g1_34-30": "Edge (34,30)",
+"g1_20-23": "Edge (20,23)",
+"g1_18-17": "Edge (18,17)",
+"g1_9-10": "Edge (9,10)",
+"g1_35-31": "Edge (35,31)",
+"g1_21-18": "Edge (21,18)",
+"g1_2-3": "Edge (2,3)",
+"g1_24-15": "Edge (24,15)",
+"g1_6-8": "Edge (6,8)",
+"g1_26-31": "Edge (26,31)",
+"g1_23-24": "Edge (23,24)",
+"g1_7-9": "Edge (7,9)",
+"g1_14-11": "Edge (14,11)",
+"g1_16-13": "Edge (16,13)",
+"g1_10-5": "Edge (10,5)",
+"g1_3-12": "Edge (3,12)",
+"g1_4-6": "Edge (4,6)",
+"g1_21-22": "Edge (21,22)",
+"g1_3-4": "Edge (3,4)",
+"g1_24-25": "Edge (24,25)",
+"g1_13-14": "Edge (13,14)",
+"g1_11-9": "Edge (11,9)",
+"g1_6-13": "Edge (6,13)",
+"g1_5-1": "Edge (5,1)",
+"g1_30-31": "Edge (30,31)",
+"g1_26-32": "Edge (26,32)",
+"g1_19-21": "Edge (19,21)",
+"g1_7-8": "Edge (7,8)",
+"g1_34-35": "Edge (34,35)",
+"g1_8-4": "Edge (8,4)",
+};
+            var g2_init_edge_info = {
+"g2_1-2": "Edge (1,2) - residual capacity: 141",
+"g2_4-5": "Edge (4,5) - residual capacity: 74",
+"g2_1-4": "Edge (1,4) - residual capacity: 145",
+"g2_5-6": "Edge (5,6) - residual capacity: 146",
+"g2_2-3": "Edge (2,3) - residual capacity: 124",
+"g2_3-6": "Edge (3,6) - residual capacity: 121",
+};
+            var g1_init_graph_info = "";
+            var g2_init_graph_info = "";
+            var g1_init_vertex_info = {
+"g1_1": "Vertex 1 - not visited yet",
+"g1_2": "Vertex 2 - not visited yet",
+"g1_3": "Vertex 3 - not visited yet",
+"g1_4": "Vertex 4 - not visited yet",
+"g1_5": "Vertex 5 - not visited yet",
+"g1_6": "Vertex 6 - not visited yet",
+"g1_7": "Vertex 7 - not visited yet",
+"g1_8": "Vertex 8 - not visited yet",
+"g1_9": "Vertex 9 - not visited yet",
+"g1_10": "Vertex 10 - not visited yet",
+"g1_11": "Vertex 11 - not visited yet",
+"g1_12": "Vertex 12 - not visited yet",
+"g1_13": "Vertex 13 - not visited yet",
+"g1_14": "Vertex 14 - not visited yet",
+"g1_15": "Vertex 15 - not visited yet",
+"g1_16": "Vertex 16 - not visited yet",
+"g1_17": "Vertex 17 - not visited yet",
+"g1_18": "Vertex 18 - not visited yet",
+"g1_19": "Vertex 19 - not visited yet",
+"g1_20": "Vertex 20 - not visited yet",
+"g1_21": "Vertex 21 - not visited yet",
+"g1_22": "Vertex 22 - not visited yet",
+"g1_23": "Vertex 23 - not visited yet",
+"g1_24": "Vertex 24 - not visited yet",
+"g1_25": "Vertex 25 - not visited yet",
+"g1_26": "Vertex 26 - not visited yet",
+"g1_27": "Vertex 27 - not visited yet",
+"g1_28": "Vertex 28 - not visited yet",
+"g1_29": "Vertex 29 - not visited yet",
+"g1_30": "Vertex 30 - not visited yet",
+"g1_31": "Vertex 31 - not visited yet",
+"g1_32": "Vertex 32 - not visited yet",
+"g1_33": "Vertex 33 - not visited yet",
+"g1_34": "Vertex 34 - not visited yet",
+"g1_35": "Vertex 35 - not visited yet",
+"g1_36": "Vertex 36 - not visited yet",
+};
+            var g2_init_vertex_info = {
+"g2_1": "Vertex 1 - excess: 0",
+"g2_2": "Vertex 2 - excess: 0",
+"g2_3": "Vertex 3 - excess: 0",
+"g2_4": "Vertex 4 - excess: 0",
+"g2_5": "Vertex 5 - excess: 0",
+"g2_6": "Vertex 6 - excess: 0",
+};
+        </script>
+
+        <script type="text/javascript" src="js/util.js"></script>
+        <script type="text/javascript" src="js/animation_functions.js"></script>
+        <script type="text/javascript" src="js/display_functions.js"></script>
+        <script type="text/javascript" src="js/webgato_main.js"></script>
+        
+        <script type="text/javascript">
+            var anim_array = Array(Array(1, SetAllVerticesColor, "g2_grey"),
+Array(2, ShowActive, "l_1"),
+Array(1, UpdateGraphInfo, "g2_()", ""),
+Array(1, UpdateEdgeInfo, "g1_1-2", "Edge (1,2) - flow: 0 of 100"),
+Array(1, UpdateEdgeInfo, "g1_6-7", "Edge (6,7) - flow: 0 of 350"),
+Array(1, UpdateEdgeInfo, "g1_5-6", "Edge (5,6) - flow: 0 of 300"),
+Array(1, UpdateEdgeInfo, "g1_4-5", "Edge (4,5) - flow: 0 of 250"),
+Array(1, UpdateEdgeInfo, "g1_2-3", "Edge (2,3) - flow: 0 of 150"),
+Array(1, UpdateEdgeInfo, "g1_3-4", "Edge (3,4) - flow: 0 of 200"),
+Array(1, UpdateEdgeInfo, "g2_1-2", "Edge (1,2) - residual capacity: 100"),
+Array(1, UpdateEdgeInfo, "g2_6-7", "Edge (6,7) - residual capacity: 350"),
+Array(1, UpdateEdgeInfo, "g2_5-6", "Edge (5,6) - residual capacity: 300"),
+Array(1, UpdateEdgeInfo, "g2_4-5", "Edge (4,5) - residual capacity: 250"),
+Array(1, UpdateEdgeInfo, "g2_2-3", "Edge (2,3) - residual capacity: 150"),
+Array(1, UpdateEdgeInfo, "g2_3-4", "Edge (3,4) - residual capacity: 200"),
+Array(1, UpdateVertexInfo, "g1_1", "Vertex 1 - excess: 0"),
+Array(1, UpdateVertexInfo, "g2_1", "Vertex 1"),
+Array(1, UpdateVertexInfo, "g2_2", "Vertex 2"),
+Array(1, UpdateVertexInfo, "g2_3", "Vertex 3"),
+Array(1, UpdateVertexInfo, "g2_4", "Vertex 4"),
+Array(1, UpdateVertexInfo, "g2_5", "Vertex 5"),
+Array(1, UpdateVertexInfo, "g2_6", "Vertex 6"),
+Array(1, UpdateVertexInfo, "g2_7", "Vertex 7"),
+Array(4, SetVertexAnnotation, "g1_1", "s"),
+Array(5, SetVertexColor, "g2_1", "green"),
+Array(1, ShowActive, "l_2"),
+Array(1, UpdateVertexInfo, "g1_1", "Vertex 1 - excess: Infinity"),
+Array(4, SetVertexAnnotation, "g1_7", "t"),
+Array(5, SetVertexColor, "g2_7", "red"),
+Array(1, ShowActive, "l_4"),
+Array(1, UpdateVertexInfo, "g1_7", "Vertex 7 - excess: -Infinity"),
+Array(5, SetVertexAnnotation, "g2_1", "6"),
+Array(5, SetVertexColor, "g1_1", "#55AA00"),
+Array(1, SetVertexAnnotation, "g2_2", "5"),
+Array(5, SetVertexColor, "g1_2", "#44BB00"),
+Array(1, SetVertexAnnotation, "g2_3", "4"),
+Array(5, SetVertexColor, "g1_3", "#33CC00"),
+Array(1, SetVertexAnnotation, "g2_4", "3"),
+Array(5, SetVertexColor, "g1_4", "#22DD00"),
+Array(7, SetVertexAnnotation, "g2_5", "2"),
+Array(5, SetVertexColor, "g1_5", "#11EE00"),
+Array(1, SetVertexAnnotation, "g2_6", "1"),
+Array(5, SetVertexColor, "g1_6", "#00FF00"),
+Array(1, SetVertexAnnotation, "g2_7", "0"),
+Array(5, SetVertexColor, "g1_7", "#00FF00"),
+Array(1, SetVertexAnnotation, "g2_1", "7"),
+Array(7, SetVertexColor, "g1_1", "#669900"),
+Array(2, ShowActive, "l_5"),
+Array(1, UpdateVertexInfo, "g2_1", "Vertex 1 - excess: Infinity - potential: 7"),
+Array(1, UpdateVertexInfo, "g2_2", "Vertex 2 - excess: 0 - potential: 5"),
+Array(1, UpdateVertexInfo, "g2_3", "Vertex 3 - excess: 0 - potential: 4"),
+Array(1, UpdateVertexInfo, "g2_4", "Vertex 4 - excess: 0 - potential: 3"),
+Array(1, UpdateVertexInfo, "g2_5", "Vertex 5 - excess: 0 - potential: 2"),
+Array(1, UpdateVertexInfo, "g2_6", "Vertex 6 - excess: 0 - potential: 1"),
+Array(1, UpdateVertexInfo, "g2_7", "Vertex 7 - excess: -Infinity - potential: 0"),
+Array(5, ShowActive, "l_6"),
+Array(5, SetVertexColor, "g2_1", "green"),
+Array(1, SetVertexColor, "g2_2", "green"),
+Array(1, SetEdgeColor, "g1_1-2", "blue"),
+Array(6, DeleteEdge, "g2_1-2", "1"),
+Array(1, AddEdge, "g2_2-1"),
+Array(2, ShowActive, "l_5"),
+Array(1, UpdateEdgeInfo, "g1_1-2", "Edge (1,2) - flow: 100 of 100"),
+Array(1, UpdateEdgeInfo, "g2_2-1", "Edge (2,1) - residual capacity: 100"),
+Array(1, UpdateVertexInfo, "g1_2", "Vertex 2 - excess: 100"),
+Array(1, UpdateVertexInfo, "g2_2", "Vertex 2 - excess: 100 - potential: 5"),
+Array(5, ShowActive, "l_8"),
+Array(5, ShowActive, "l_9"),
+Array(5, ShowActive, "l_10"),
+Array(5, ShowActive, "l_11"),
+Array(4, SetAllEdgesColor, "g2_black"),
+Array(1, SetVertexFrameWidth, "g2_1", "2"),
+Array(1, SetVertexFrameWidth, "g2_2", "6"),
+Array(1, ShowActive, "l_12"),
+Array(5, ShowActive, "l_15"),
+Array(5, SetVertexFrameWidth, "g2_2", "6"),
+Array(1, SetEdgeColor, "g2_2-3", "yellow"),
+Array(1, ShowActive, "l_16"),
+Array(6, ShowActive, "l_17"),
+Array(6, ShowActive, "l_18"),
+Array(1, UpdateGraphInfo, "g2_()", "delta = 100"),
+Array(5, ShowActive, "l_19"),
+Array(5, SetVertexColor, "g2_2", "gray"),
+Array(1, SetVertexColor, "g2_3", "green"),
+Array(1, SetEdgeColor, "g1_2-3", "#9999FF"),
+Array(6, AddEdge, "g2_3-2"),
+Array(3, ShowActive, "l_22"),
+Array(1, UpdateEdgeInfo, "g1_2-3", "Edge (2,3) - flow: 100 of 150"),
+Array(1, UpdateEdgeInfo, "g2_3-2", "Edge (3,2) - residual capacity: 100"),
+Array(1, UpdateEdgeInfo, "g2_2-3", "Edge (2,3) - residual capacity: 50"),
+Array(1, UpdateVertexInfo, "g1_2", "Vertex 2 - excess: 0"),
+Array(1, UpdateVertexInfo, "g1_3", "Vertex 3 - excess: 100"),
+Array(1, UpdateVertexInfo, "g2_2", "Vertex 2 - excess: 0 - potential: 5"),
+Array(1, UpdateVertexInfo, "g2_3", "Vertex 3 - excess: 100 - potential: 4"),
+Array(5, ShowActive, "l_23"),
+Array(5, ShowActive, "l_24"),
+Array(5, ShowActive, "l_9"),
+Array(5, ShowActive, "l_10"),
+Array(5, ShowActive, "l_11"),
+Array(5, SetAllEdgesColor, "g2_black"),
+Array(1, SetVertexFrameWidth, "g2_2", "2"),
+Array(1, SetVertexFrameWidth, "g2_3", "6"),
+Array(1, ShowActive, "l_12"),
+Array(5, ShowActive, "l_15"),
+Array(5, SetVertexFrameWidth, "g2_3", "6"),
+Array(1, SetEdgeColor, "g2_3-4", "yellow"),
+Array(1, ShowActive, "l_16"),
+Array(5, ShowActive, "l_17"),
+Array(6, ShowActive, "l_18"),
+Array(5, ShowActive, "l_19"),
+Array(5, SetVertexColor, "g2_3", "gray"),
+Array(1, SetVertexColor, "g2_4", "green"),
+Array(1, SetEdgeColor, "g1_3-4", "#9999FF"),
+Array(5, AddEdge, "g2_4-3"),
+Array(3, ShowActive, "l_22"),
+Array(1, UpdateEdgeInfo, "g1_3-4", "Edge (3,4) - flow: 100 of 200"),
+Array(1, UpdateEdgeInfo, "g2_4-3", "Edge (4,3) - residual capacity: 100"),
+Array(1, UpdateEdgeInfo, "g2_3-4", "Edge (3,4) - residual capacity: 100"),
+Array(1, UpdateVertexInfo, "g1_3", "Vertex 3 - excess: 0"),
+Array(1, UpdateVertexInfo, "g1_4", "Vertex 4 - excess: 100"),
+Array(1, UpdateVertexInfo, "g2_3", "Vertex 3 - excess: 0 - potential: 4"),
+Array(1, UpdateVertexInfo, "g2_4", "Vertex 4 - excess: 100 - potential: 3"),
+Array(5, ShowActive, "l_23"),
+Array(5, ShowActive, "l_24"),
+Array(5, ShowActive, "l_9"),
+Array(5, ShowActive, "l_10"),
+Array(5, ShowActive, "l_11"),
+Array(5, SetAllEdgesColor, "g2_black"),
+Array(1, SetVertexFrameWidth, "g2_3", "2"),
+Array(1, SetVertexFrameWidth, "g2_4", "6"),
+Array(1, ShowActive, "l_12"),
+Array(5, ShowActive, "l_15"),
+Array(5, SetVertexFrameWidth, "g2_4", "6"),
+Array(1, SetEdgeColor, "g2_4-5", "yellow"),
+Array(1, ShowActive, "l_16"),
+Array(5, ShowActive, "l_17"),
+Array(6, ShowActive, "l_18"),
+Array(5, ShowActive, "l_19"),
+Array(5, SetVertexColor, "g2_4", "gray"),
+Array(1, SetVertexColor, "g2_5", "green"),
+Array(1, SetEdgeColor, "g1_4-5", "#9999FF"),
+Array(6, AddEdge, "g2_5-4"),
+Array(3, ShowActive, "l_22"),
+Array(1, UpdateEdgeInfo, "g1_4-5", "Edge (4,5) - flow: 100 of 250"),
+Array(1, UpdateEdgeInfo, "g2_5-4", "Edge (5,4) - residual capacity: 100"),
+Array(1, UpdateEdgeInfo, "g2_4-5", "Edge (4,5) - residual capacity: 150"),
+Array(1, UpdateVertexInfo, "g1_4", "Vertex 4 - excess: 0"),
+Array(1, UpdateVertexInfo, "g1_5", "Vertex 5 - excess: 100"),
+Array(1, UpdateVertexInfo, "g2_4", "Vertex 4 - excess: 0 - potential: 3"),
+Array(1, UpdateVertexInfo, "g2_5", "Vertex 5 - excess: 100 - potential: 2"),
+Array(5, ShowActive, "l_23"),
+Array(5, ShowActive, "l_24"),
+Array(5, ShowActive, "l_9"),
+Array(5, ShowActive, "l_10"),
+Array(5, ShowActive, "l_11"),
+Array(5, SetAllEdgesColor, "g2_black"),
+Array(1, SetVertexFrameWidth, "g2_4", "2"),
+Array(1, SetVertexFrameWidth, "g2_5", "6"),
+Array(2, ShowActive, "l_12"),
+Array(5, ShowActive, "l_15"),
+Array(5, SetVertexFrameWidth, "g2_5", "6"),
+Array(2, SetEdgeColor, "g2_5-6", "yellow"),
+Array(1, ShowActive, "l_16"),
+Array(5, ShowActive, "l_17"),
+Array(6, ShowActive, "l_18"),
+Array(5, ShowActive, "l_19"),
+Array(5, SetVertexColor, "g2_5", "gray"),
+Array(1, SetVertexColor, "g2_6", "green"),
+Array(1, SetEdgeColor, "g1_5-6", "#9999FF"),
+Array(5, AddEdge, "g2_6-5"),
+Array(2, ShowActive, "l_22"),
+Array(1, UpdateEdgeInfo, "g1_5-6", "Edge (5,6) - flow: 100 of 300"),
+Array(1, UpdateEdgeInfo, "g2_5-6", "Edge (5,6) - residual capacity: 200"),
+Array(1, UpdateEdgeInfo, "g2_6-5", "Edge (6,5) - residual capacity: 100"),
+Array(1, UpdateVertexInfo, "g1_5", "Vertex 5 - excess: 0"),
+Array(1, UpdateVertexInfo, "g1_6", "Vertex 6 - excess: 100"),
+Array(1, UpdateVertexInfo, "g2_5", "Vertex 5 - excess: 0 - potential: 2"),
+Array(1, UpdateVertexInfo, "g2_6", "Vertex 6 - excess: 100 - potential: 1"),
+Array(5, ShowActive, "l_23"),
+Array(5, ShowActive, "l_24"),
+Array(5, ShowActive, "l_9"),
+Array(5, ShowActive, "l_10"),
+Array(5, ShowActive, "l_11"),
+Array(5, SetAllEdgesColor, "g2_black"),
+Array(1, SetVertexFrameWidth, "g2_5", "2"),
+Array(1, SetVertexFrameWidth, "g2_6", "6"),
+Array(1, ShowActive, "l_12"),
+Array(5, ShowActive, "l_15"),
+Array(5, SetVertexFrameWidth, "g2_6", "6"),
+Array(1, SetEdgeColor, "g2_6-7", "yellow"),
+Array(1, ShowActive, "l_16"),
+Array(5, ShowActive, "l_17"),
+Array(6, ShowActive, "l_18"),
+Array(5, ShowActive, "l_19"),
+Array(5, SetVertexColor, "g2_6", "gray"),
+Array(1, SetVertexColor, "g2_7", "red"),
+Array(1, SetEdgeColor, "g1_6-7", "#9999FF"),
+Array(6, AddEdge, "g2_7-6"),
+Array(2, ShowActive, "l_22"),
+Array(1, UpdateEdgeInfo, "g1_6-7", "Edge (6,7) - flow: 100 of 350"),
+Array(1, UpdateEdgeInfo, "g2_6-7", "Edge (6,7) - residual capacity: 250"),
+Array(1, UpdateEdgeInfo, "g2_7-6", "Edge (7,6) - residual capacity: 100"),
+Array(1, UpdateVertexInfo, "g1_6", "Vertex 6 - excess: 0"),
+Array(1, UpdateVertexInfo, "g2_6", "Vertex 6 - excess: 0 - potential: 1"),
+Array(5, ShowActive, "l_23"),
+Array(5, ShowActive, "l_24"),
+Array(5, ShowActive, "l_9"),
+Array(5, ShowActive, "l_10"),
+Array(5, ShowActive, "l_11"),
+Array(5, SetAllEdgesColor, "g2_black"),
+Array(2, ShowActive, "l_12"),
+Array(5, ShowActive, "l_13"),
+Array(5, ShowActive, "l_9"),
+Array(5, ShowActive, "l_27"),
+Array(5, SetAllVerticesColor, "g1_red"),
+Array(1, SetVertexColor, "g1_1", "green"),
+Array(1, SetEdgeColor, "g1_1-2", "yellow"));
+            init();
+        </script>
+
+    </body>
+</html>

@@ -1,0 +1,672 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" type="text/css" href="js/subModal/subModal.css" />
+        <script type="text/javascript" src="js/subModal/common.js"></script>
+        <script type="text/javascript" src="js/subModal/subModal.js"></script>
+        <script src="js/snap.svg.js" type="text/javascript"></script>
+        <style>
+            html, body {
+                margin: 0 auto;
+                overflow-y: hidden;
+                background-image:url('img/white_wall.png')
+            }
+            * {
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                -khtml-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+            .edge {
+                cursor: pointer;
+            }
+            #nav_bar {
+                /* background-color: #10347D; */
+                background-color: white;
+                width: 100%;
+            }
+            .inactive_nav {
+                height: 0px;
+                border-bottom: 0px;
+            }
+            .active_nav {
+                border-bottom: 2px solid #ccc;
+                height: 60px;
+            }
+            #help_div {
+                position: absolute;
+                width: 100%;
+                height: 2.5em;
+                top: 0px;
+                left: 0px;
+                background-color: white;
+                border-bottom: 1px solid #aaa;
+                color: #333;
+            }
+            .invisible {
+                visibility: hidden;
+            }
+            .visible {
+                visibility: visible;
+                z-index: 1000;
+            }
+            .help_link {
+                font-family: Helvetica;
+                font-size: 1.5em;
+                text-decoration: none;
+                color: #87afff;
+            }
+            .help_link:visited {
+                color: #1354D6;
+            }
+            .help_link:hover {
+                color: #1354D6;
+            }
+            .left_link {
+                border-right: 1px solid #aaa;
+                padding-right: 15px;
+                margin-right: 0px;
+            }
+            .right_link {
+                margin-left: 0px;
+                padding-left: 15px;
+            }
+        </style>
+        <title>Gato -- MatroidDualKruskal algorithm on Kruskal3 graph</title>
+    </head>
+    <body>
+        <div id="help_div" class="invisible">
+            <div style="padding: .5em">
+                <a class="help_link left_link" href="./index.html#chapter_3_div" target="_blank">Index</a><a class="help_link right_link" href="./help.html" target="_blank">Help</a>
+            </div>
+        </div>
+        <div id="nav_bar" class="inactive_nav">
+            <svg id="nav_svg">
+
+            </svg>
+        </div>
+        <div id="base_container">
+        <svg id="svg">
+            <filter id="dropshadow" height="130%">
+              <feGaussianBlur in="SourceAlpha" stdDeviation="1"/> <!-- stdDeviation is how much to blur -->
+                <feOffset dx="2.5" dy="2.5" result="offsetblur"/> <!-- how much to offset -->
+                <feMerge> 
+                  <feMergeNode/> <!-- this contains the offset blurred image -->
+                  <feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->
+               </feMerge>
+            </filter>
+            <filter id="tooltip_dropshadow" height="130%">
+              <feGaussianBlur in="SourceAlpha" stdDeviation="1"/> <!-- stdDeviation is how much to blur -->
+                <feOffset dx="2" dy="2" result="offsetblur"/> <!-- how much to offset -->
+                <feMerge> 
+                  <feMergeNode/> <!-- this contains the offset blurred image -->
+                  <feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->
+               </feMerge>
+            </filter>
+            <g id="g1" type="undirected">
+
+<g id="g1_1-6_group" class="edge_group" style="cursor: pointer">
+<line id="g1_1-6" class="edge" x1="0.0" y1="92.0" x2="2.0" y2="172.0" stroke="blue" stroke-width="4.0"/>
+
+</g>
+<g id="g1_1-5_group" class="edge_group" style="cursor: pointer">
+<line id="g1_1-5" class="edge" x1="0.0" y1="92.0" x2="72.0" y2="142.0" stroke="blue" stroke-width="4.0"/>
+
+</g>
+<g id="g1_2-1_group" class="edge_group" style="cursor: pointer">
+<line id="g1_2-1" class="edge" x1="19.0" y1="56.0" x2="0.0" y2="92.0" stroke="blue" stroke-width="4.0"/>
+
+</g>
+<g id="g1_2-4_group" class="edge_group" style="cursor: pointer">
+<line id="g1_2-4" class="edge" x1="19.0" y1="56.0" x2="91.0" y2="85.0" stroke="blue" stroke-width="4.0"/>
+
+</g>
+<g id="g1_3-2_group" class="edge_group" style="cursor: pointer">
+<line id="g1_3-2" class="edge" x1="61.0" y1="19.0" x2="19.0" y2="56.0" stroke="blue" stroke-width="4.0"/>
+
+</g>
+<g id="g1_3-4_group" class="edge_group" style="cursor: pointer">
+<line id="g1_3-4" class="edge" x1="61.0" y1="19.0" x2="91.0" y2="85.0" stroke="blue" stroke-width="4.0"/>
+
+</g>
+<g id="g1_4-1_group" class="edge_group" style="cursor: pointer">
+<line id="g1_4-1" class="edge" x1="91.0" y1="85.0" x2="0.0" y2="92.0" stroke="blue" stroke-width="4.0"/>
+
+</g>
+<g id="g1_4-9_group" class="edge_group" style="cursor: pointer">
+<line id="g1_4-9" class="edge" x1="91.0" y1="85.0" x2="155.0" y2="43.0" stroke="blue" stroke-width="4.0"/>
+
+</g>
+<g id="g1_4-7_group" class="edge_group" style="cursor: pointer">
+<line id="g1_4-7" class="edge" x1="91.0" y1="85.0" x2="120.0" y2="181.0" stroke="blue" stroke-width="4.0"/>
+
+</g>
+<g id="g1_5-4_group" class="edge_group" style="cursor: pointer">
+<line id="g1_5-4" class="edge" x1="72.0" y1="142.0" x2="91.0" y2="85.0" stroke="blue" stroke-width="4.0"/>
+
+</g>
+<g id="g1_5-7_group" class="edge_group" style="cursor: pointer">
+<line id="g1_5-7" class="edge" x1="72.0" y1="142.0" x2="120.0" y2="181.0" stroke="blue" stroke-width="4.0"/>
+
+</g>
+<g id="g1_6-5_group" class="edge_group" style="cursor: pointer">
+<line id="g1_6-5" class="edge" x1="2.0" y1="172.0" x2="72.0" y2="142.0" stroke="blue" stroke-width="4.0"/>
+
+</g>
+<g id="g1_7-8_group" class="edge_group" style="cursor: pointer">
+<line id="g1_7-8" class="edge" x1="120.0" y1="181.0" x2="169.0" y2="109.0" stroke="blue" stroke-width="4.0"/>
+
+</g>
+<g id="g1_8-4_group" class="edge_group" style="cursor: pointer">
+<line id="g1_8-4" class="edge" x1="169.0" y1="109.0" x2="91.0" y2="85.0" stroke="blue" stroke-width="4.0"/>
+
+</g>
+<g id="g1_9-10_group" class="edge_group" style="cursor: pointer">
+<line id="g1_9-10" class="edge" x1="155.0" y1="43.0" x2="108.0" y2="0.0" stroke="blue" stroke-width="4.0"/>
+
+</g>
+<g id="g1_10-3_group" class="edge_group" style="cursor: pointer">
+<line id="g1_10-3" class="edge" x1="108.0" y1="0.0" x2="61.0" y2="19.0" stroke="blue" stroke-width="4.0"/>
+
+</g>
+<g id="g1_10-4_group" class="edge_group" style="cursor: pointer">
+<line id="g1_10-4" class="edge" x1="108.0" y1="0.0" x2="91.0" y2="85.0" stroke="blue" stroke-width="4.0"/>
+
+</g>
+<g id="g1_pre_vertices_group"></g>
+<g id="g1_1_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_1" class="vertex" cx="0.0" cy="92.0" r="14.0" fill="blue" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_1" x="0.0" y="96.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >1</text>
+
+</g>
+<g id="g1_2_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_2" class="vertex" cx="19.0" cy="56.0" r="14.0" fill="blue" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_2" x="19.0" y="60.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >2</text>
+
+</g>
+<g id="g1_3_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_3" class="vertex" cx="61.0" cy="19.0" r="14.0" fill="blue" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_3" x="61.0" y="23.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >3</text>
+
+</g>
+<g id="g1_4_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_4" class="vertex" cx="91.0" cy="85.0" r="14.0" fill="blue" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_4" x="91.0" y="89.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >4</text>
+
+</g>
+<g id="g1_5_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_5" class="vertex" cx="72.0" cy="142.0" r="14.0" fill="blue" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_5" x="72.0" y="146.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >5</text>
+
+</g>
+<g id="g1_6_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_6" class="vertex" cx="2.0" cy="172.0" r="14.0" fill="blue" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_6" x="2.0" y="176.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >6</text>
+
+</g>
+<g id="g1_7_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_7" class="vertex" cx="120.0" cy="181.0" r="14.0" fill="blue" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_7" x="120.0" y="185.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >7</text>
+
+</g>
+<g id="g1_8_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_8" class="vertex" cx="169.0" cy="109.0" r="14.0" fill="blue" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_8" x="169.0" y="113.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >8</text>
+
+</g>
+<g id="g1_9_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_9" class="vertex" cx="155.0" cy="43.0" r="14.0" fill="blue" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_9" x="155.0" y="47.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >9</text>
+
+</g>
+<g id="g1_10_group" class="vertex_g" style="cursor: pointer">
+<circle id="g1_10" class="vertex" cx="108.0" cy="0.0" r="14.0" fill="blue" stroke="black" stroke-width="0.0" style="filter:url(#dropshadow)"/>
+
+<text id="vlg1_10" x="108.0" y="4.62" text-anchor="middle" fill="white" font-family="Helvetica" font-size="14.0" font-style="normal" font-weight="bold" >10</text>
+
+</g>
+</g>
+
+            <text blank = "false" id="l_1" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">E = Sort(Edges,byDecreasingWeight)</text>
+<text blank = "true" id="l_2" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"></text>
+<text blank = "false" id="l_3" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">for</tspan> e<tspan font-weight="bold"> in</tspan> E:</text>
+<text blank = "false" id="l_4" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan><tspan font-weight="bold"> not</tspan> DisconnectingGraph(e):</text>
+<text blank = "false" id="l_5" class="code_line" x="0" y="0" dx="32" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">RemoveEdge(e)</text>
+<text blank = "true" id="l_6" class="code_line" x="0" y="0" dx="32" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"></text>
+<text blank = "true" id="l_7" class="code_line" x="0" y="0" dx="32" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"></text>
+<text blank = "true" id="l_8" class="code_line" x="0" y="0" dx="32" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"></text>
+<text blank = "true" id="l_9" class="code_line" x="0" y="0" dx="32" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"></text>
+<text blank = "true" id="l_10" class="code_line" x="0" y="0" dx="32" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"></text>
+<text blank = "true" id="l_11" class="code_line" x="0" y="0" dx="32" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"></text>
+<text blank = "true" id="l_12" class="code_line" x="0" y="0" dx="32" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"></text>
+<text blank = "true" id="l_13" class="code_line" x="0" y="0" dx="32" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"></text>
+
+        </svg>
+        </div>
+
+        <script type="text/javascript">
+            var chapter_number = 3;
+            var info_file = "infos/MatroidDualKruskal--Kruskal3.html";
+            var animation_name = "MatroidDualKruskal algorithm on Kruskal3 graph";
+            var g1_x_add = 111;
+            var g1_y_add = 49;
+            var g2_x_add = 0;
+            var g2_y_add = 0;
+            var g1_init_edge_info = {
+"g1_27-26": "Edge (27,26)",
+"g1_1-4": "Edge (1,4)",
+"g1_27-30": "Edge (27,30)",
+"g1_28-29": "Edge (28,29)",
+"g1_23-22": "Edge (23,22)",
+"g1_24-26": "Edge (24,26)",
+"g1_18-19": "Edge (18,19)",
+"g1_32-31": "Edge (32,31)",
+"g1_12-16": "Edge (12,16)",
+"g1_29-30": "Edge (29,30)",
+"g1_7-11": "Edge (7,11)",
+"g1_33-32": "Edge (33,32)",
+"g1_8-5": "Edge (8,5)",
+"g1_29-27": "Edge (29,27)",
+"g1_1-2": "Edge (1,2)",
+"g1_22-20": "Edge (22,20)",
+"g1_15-23": "Edge (15,23)",
+"g1_31-27": "Edge (31,27)",
+"g1_31-36": "Edge (31,36)",
+"g1_19-20": "Edge (19,20)",
+"g1_12-6": "Edge (12,6)",
+"g1_30-28": "Edge (30,28)",
+"g1_26-36": "Edge (26,36)",
+"g1_3-6": "Edge (3,6)",
+"g1_25-22": "Edge (25,22)",
+"g1_11-27": "Edge (11,27)",
+"g1_7-14": "Edge (7,14)",
+"g1_17-19": "Edge (17,19)",
+"g1_28-27": "Edge (28,27)",
+"g1_26-33": "Edge (26,33)",
+"g1_4-5": "Edge (4,5)",
+"g1_34-30": "Edge (34,30)",
+"g1_20-23": "Edge (20,23)",
+"g1_18-17": "Edge (18,17)",
+"g1_9-10": "Edge (9,10)",
+"g1_35-31": "Edge (35,31)",
+"g1_21-18": "Edge (21,18)",
+"g1_2-3": "Edge (2,3)",
+"g1_24-15": "Edge (24,15)",
+"g1_6-8": "Edge (6,8)",
+"g1_26-31": "Edge (26,31)",
+"g1_23-24": "Edge (23,24)",
+"g1_7-9": "Edge (7,9)",
+"g1_14-11": "Edge (14,11)",
+"g1_16-13": "Edge (16,13)",
+"g1_10-5": "Edge (10,5)",
+"g1_3-12": "Edge (3,12)",
+"g1_4-6": "Edge (4,6)",
+"g1_21-22": "Edge (21,22)",
+"g1_3-4": "Edge (3,4)",
+"g1_24-25": "Edge (24,25)",
+"g1_13-14": "Edge (13,14)",
+"g1_11-9": "Edge (11,9)",
+"g1_6-13": "Edge (6,13)",
+"g1_5-1": "Edge (5,1)",
+"g1_30-31": "Edge (30,31)",
+"g1_26-32": "Edge (26,32)",
+"g1_19-21": "Edge (19,21)",
+"g1_7-8": "Edge (7,8)",
+"g1_34-35": "Edge (34,35)",
+"g1_8-4": "Edge (8,4)",
+};
+            var g2_init_edge_info = null;
+            var g1_init_graph_info = "";
+            var g2_init_graph_info = "";
+            var g1_init_vertex_info = {
+"g1_1": "Vertex 1 - not visited yet",
+"g1_2": "Vertex 2 - not visited yet",
+"g1_3": "Vertex 3 - not visited yet",
+"g1_4": "Vertex 4 - not visited yet",
+"g1_5": "Vertex 5 - not visited yet",
+"g1_6": "Vertex 6 - not visited yet",
+"g1_7": "Vertex 7 - not visited yet",
+"g1_8": "Vertex 8 - not visited yet",
+"g1_9": "Vertex 9 - not visited yet",
+"g1_10": "Vertex 10 - not visited yet",
+"g1_11": "Vertex 11 - not visited yet",
+"g1_12": "Vertex 12 - not visited yet",
+"g1_13": "Vertex 13 - not visited yet",
+"g1_14": "Vertex 14 - not visited yet",
+"g1_15": "Vertex 15 - not visited yet",
+"g1_16": "Vertex 16 - not visited yet",
+"g1_17": "Vertex 17 - not visited yet",
+"g1_18": "Vertex 18 - not visited yet",
+"g1_19": "Vertex 19 - not visited yet",
+"g1_20": "Vertex 20 - not visited yet",
+"g1_21": "Vertex 21 - not visited yet",
+"g1_22": "Vertex 22 - not visited yet",
+"g1_23": "Vertex 23 - not visited yet",
+"g1_24": "Vertex 24 - not visited yet",
+"g1_25": "Vertex 25 - not visited yet",
+"g1_26": "Vertex 26 - not visited yet",
+"g1_27": "Vertex 27 - not visited yet",
+"g1_28": "Vertex 28 - not visited yet",
+"g1_29": "Vertex 29 - not visited yet",
+"g1_30": "Vertex 30 - not visited yet",
+"g1_31": "Vertex 31 - not visited yet",
+"g1_32": "Vertex 32 - not visited yet",
+"g1_33": "Vertex 33 - not visited yet",
+"g1_34": "Vertex 34 - not visited yet",
+"g1_35": "Vertex 35 - not visited yet",
+"g1_36": "Vertex 36 - not visited yet",
+};
+            var g2_init_vertex_info = null;
+        </script>
+
+        <script type="text/javascript" src="js/util.js"></script>
+        <script type="text/javascript" src="js/animation_functions.js"></script>
+        <script type="text/javascript" src="js/display_functions.js"></script>
+        <script type="text/javascript" src="js/webgato_main.js"></script>
+        
+        <script type="text/javascript">
+            var anim_array = Array(Array(1, SetVertexColor, "g1_1", "blue"),
+Array(2, SetVertexColor, "g1_6", "blue"),
+Array(1, SetEdgeColor, "g1_1-6", "blue"),
+Array(1, SetVertexColor, "g1_5", "blue"),
+Array(1, SetEdgeColor, "g1_1-5", "blue"),
+Array(2, SetVertexColor, "g1_2", "blue"),
+Array(1, SetEdgeColor, "g1_2-1", "blue"),
+Array(2, SetVertexColor, "g1_4", "blue"),
+Array(1, SetEdgeColor, "g1_2-4", "blue"),
+Array(1, SetVertexColor, "g1_3", "blue"),
+Array(1, SetEdgeColor, "g1_3-2", "blue"),
+Array(1, SetEdgeColor, "g1_3-4", "blue"),
+Array(1, SetEdgeColor, "g1_4-1", "blue"),
+Array(1, SetVertexColor, "g1_9", "blue"),
+Array(1, SetEdgeColor, "g1_4-9", "blue"),
+Array(1, SetVertexColor, "g1_7", "blue"),
+Array(1, SetEdgeColor, "g1_4-7", "blue"),
+Array(1, SetEdgeColor, "g1_5-4", "blue"),
+Array(1, SetEdgeColor, "g1_5-7", "blue"),
+Array(1, SetEdgeColor, "g1_6-5", "blue"),
+Array(1, SetVertexColor, "g1_8", "blue"),
+Array(1, SetEdgeColor, "g1_7-8", "blue"),
+Array(1, SetEdgeColor, "g1_8-4", "blue"),
+Array(1, SetVertexColor, "g1_10", "blue"),
+Array(1, SetEdgeColor, "g1_9-10", "blue"),
+Array(1, SetEdgeColor, "g1_10-3", "blue"),
+Array(1, SetEdgeColor, "g1_10-4", "blue"),
+Array(2, ShowActive, "l_1"),
+Array(1, UpdateGraphInfo, "g1_()", "Weight of spanning graph: 1252.00"),
+Array(1, UpdateEdgeInfo, "g1_3-2", "Weight of edge (3,2): 56 - Weight of spanninggraph: 1252"),
+Array(1, UpdateEdgeInfo, "g1_4-9", "Weight of edge (4,9): 77 - Weight of spanninggraph: 1252"),
+Array(1, UpdateEdgeInfo, "g1_10-4", "Weight of edge (10,4): 87 - Weight of spanninggraph: 1252"),
+Array(1, UpdateEdgeInfo, "g1_7-8", "Weight of edge (7,8): 87 - Weight of spanninggraph: 1252"),
+Array(1, UpdateEdgeInfo, "g1_5-7", "Weight of edge (5,7): 62 - Weight of spanninggraph: 1252"),
+Array(1, UpdateEdgeInfo, "g1_4-7", "Weight of edge (4,7): 100 - Weight of spanninggraph: 1252"),
+Array(1, UpdateEdgeInfo, "g1_2-1", "Weight of edge (2,1): 41 - Weight of spanninggraph: 1252"),
+Array(1, UpdateEdgeInfo, "g1_9-10", "Weight of edge (9,10): 64 - Weight of spanninggraph: 1252"),
+Array(1, UpdateEdgeInfo, "g1_1-5", "Weight of edge (1,5): 88 - Weight of spanninggraph: 1252"),
+Array(1, UpdateEdgeInfo, "g1_1-6", "Weight of edge (1,6): 80 - Weight of spanninggraph: 1252"),
+Array(1, UpdateEdgeInfo, "g1_10-3", "Weight of edge (10,3): 51 - Weight of spanninggraph: 1252"),
+Array(1, UpdateEdgeInfo, "g1_5-4", "Weight of edge (5,4): 60 - Weight of spanninggraph: 1252"),
+Array(1, UpdateEdgeInfo, "g1_3-4", "Weight of edge (3,4): 72 - Weight of spanninggraph: 1252"),
+Array(1, UpdateEdgeInfo, "g1_4-1", "Weight of edge (4,1): 91 - Weight of spanninggraph: 1252"),
+Array(1, UpdateEdgeInfo, "g1_2-4", "Weight of edge (2,4): 78 - Weight of spanninggraph: 1252"),
+Array(1, UpdateEdgeInfo, "g1_6-5", "Weight of edge (6,5): 76 - Weight of spanninggraph: 1252"),
+Array(1, UpdateEdgeInfo, "g1_8-4", "Weight of edge (8,4): 82 - Weight of spanninggraph: 1252"),
+Array(1, UpdateVertexInfo, "g1_1", "Vertex 1 at position (111,141)"),
+Array(1, UpdateVertexInfo, "g1_2", "Vertex 2 at position (130,105)"),
+Array(1, UpdateVertexInfo, "g1_3", "Vertex 3 at position (172,68)"),
+Array(1, UpdateVertexInfo, "g1_4", "Vertex 4 at position (202,134)"),
+Array(1, UpdateVertexInfo, "g1_5", "Vertex 5 at position (183,191)"),
+Array(1, UpdateVertexInfo, "g1_6", "Vertex 6 at position (113,221)"),
+Array(1, UpdateVertexInfo, "g1_7", "Vertex 7 at position (231,230)"),
+Array(1, UpdateVertexInfo, "g1_8", "Vertex 8 at position (280,158)"),
+Array(1, UpdateVertexInfo, "g1_9", "Vertex 9 at position (266,92)"),
+Array(1, UpdateVertexInfo, "g1_10", "Vertex 10 at position (219,49)"),
+Array(7, ShowActive, "l_3"),
+Array(5, SetEdgeColor, "g1_4-7", "yellow"),
+Array(1, ShowActive, "l_4"),
+Array(6, ShowActive, "l_5"),
+Array(6, SetEdgeColor, "g1_4-7", "black"),
+Array(1, SetEdgeColor, "g1_4-7", "grey"),
+Array(2, ShowActive, "l_3"),
+Array(1, UpdateGraphInfo, "g1_()", "Weight of spanning graph: 1152.00"),
+Array(1, UpdateEdgeInfo, "g1_3-2", "Weight of edge (3,2): 56 - Weight of spanninggraph: 1152"),
+Array(1, UpdateEdgeInfo, "g1_4-9", "Weight of edge (4,9): 77 - Weight of spanninggraph: 1152"),
+Array(1, UpdateEdgeInfo, "g1_10-4", "Weight of edge (10,4): 87 - Weight of spanninggraph: 1152"),
+Array(1, UpdateEdgeInfo, "g1_7-8", "Weight of edge (7,8): 87 - Weight of spanninggraph: 1152"),
+Array(1, UpdateEdgeInfo, "g1_5-7", "Weight of edge (5,7): 62 - Weight of spanninggraph: 1152"),
+Array(1, UpdateEdgeInfo, "g1_4-7", "Weight of edge (4,7): 100 - Weight of spanninggraph: 1152"),
+Array(1, UpdateEdgeInfo, "g1_2-1", "Weight of edge (2,1): 41 - Weight of spanninggraph: 1152"),
+Array(1, UpdateEdgeInfo, "g1_9-10", "Weight of edge (9,10): 64 - Weight of spanninggraph: 1152"),
+Array(1, UpdateEdgeInfo, "g1_1-5", "Weight of edge (1,5): 88 - Weight of spanninggraph: 1152"),
+Array(1, UpdateEdgeInfo, "g1_1-6", "Weight of edge (1,6): 80 - Weight of spanninggraph: 1152"),
+Array(1, UpdateEdgeInfo, "g1_10-3", "Weight of edge (10,3): 51 - Weight of spanninggraph: 1152"),
+Array(1, UpdateEdgeInfo, "g1_5-4", "Weight of edge (5,4): 60 - Weight of spanninggraph: 1152"),
+Array(1, UpdateEdgeInfo, "g1_3-4", "Weight of edge (3,4): 72 - Weight of spanninggraph: 1152"),
+Array(1, UpdateEdgeInfo, "g1_4-1", "Weight of edge (4,1): 91 - Weight of spanninggraph: 1152"),
+Array(1, UpdateEdgeInfo, "g1_2-4", "Weight of edge (2,4): 78 - Weight of spanninggraph: 1152"),
+Array(1, UpdateEdgeInfo, "g1_6-5", "Weight of edge (6,5): 76 - Weight of spanninggraph: 1152"),
+Array(1, UpdateEdgeInfo, "g1_8-4", "Weight of edge (8,4): 82 - Weight of spanninggraph: 1152"),
+Array(5, SetEdgeColor, "g1_4-1", "yellow"),
+Array(1, ShowActive, "l_4"),
+Array(6, ShowActive, "l_5"),
+Array(5, SetEdgeColor, "g1_4-1", "black"),
+Array(1, SetEdgeColor, "g1_4-1", "grey"),
+Array(2, ShowActive, "l_3"),
+Array(1, UpdateGraphInfo, "g1_()", "Weight of spanning graph: 1061.00"),
+Array(1, UpdateEdgeInfo, "g1_3-2", "Weight of edge (3,2): 56 - Weight of spanninggraph: 1061"),
+Array(1, UpdateEdgeInfo, "g1_4-9", "Weight of edge (4,9): 77 - Weight of spanninggraph: 1061"),
+Array(1, UpdateEdgeInfo, "g1_10-4", "Weight of edge (10,4): 87 - Weight of spanninggraph: 1061"),
+Array(1, UpdateEdgeInfo, "g1_7-8", "Weight of edge (7,8): 87 - Weight of spanninggraph: 1061"),
+Array(1, UpdateEdgeInfo, "g1_5-7", "Weight of edge (5,7): 62 - Weight of spanninggraph: 1061"),
+Array(1, UpdateEdgeInfo, "g1_4-7", "Weight of edge (4,7): 100 - Weight of spanninggraph: 1061"),
+Array(1, UpdateEdgeInfo, "g1_2-1", "Weight of edge (2,1): 41 - Weight of spanninggraph: 1061"),
+Array(1, UpdateEdgeInfo, "g1_9-10", "Weight of edge (9,10): 64 - Weight of spanninggraph: 1061"),
+Array(1, UpdateEdgeInfo, "g1_1-5", "Weight of edge (1,5): 88 - Weight of spanninggraph: 1061"),
+Array(1, UpdateEdgeInfo, "g1_1-6", "Weight of edge (1,6): 80 - Weight of spanninggraph: 1061"),
+Array(1, UpdateEdgeInfo, "g1_10-3", "Weight of edge (10,3): 51 - Weight of spanninggraph: 1061"),
+Array(1, UpdateEdgeInfo, "g1_5-4", "Weight of edge (5,4): 60 - Weight of spanninggraph: 1061"),
+Array(1, UpdateEdgeInfo, "g1_3-4", "Weight of edge (3,4): 72 - Weight of spanninggraph: 1061"),
+Array(1, UpdateEdgeInfo, "g1_4-1", "Weight of edge (4,1): 91 - Weight of spanninggraph: 1061"),
+Array(1, UpdateEdgeInfo, "g1_2-4", "Weight of edge (2,4): 78 - Weight of spanninggraph: 1061"),
+Array(1, UpdateEdgeInfo, "g1_6-5", "Weight of edge (6,5): 76 - Weight of spanninggraph: 1061"),
+Array(1, UpdateEdgeInfo, "g1_8-4", "Weight of edge (8,4): 82 - Weight of spanninggraph: 1061"),
+Array(5, SetEdgeColor, "g1_1-5", "yellow"),
+Array(1, ShowActive, "l_4"),
+Array(6, ShowActive, "l_5"),
+Array(5, SetEdgeColor, "g1_1-5", "black"),
+Array(1, SetEdgeColor, "g1_1-5", "grey"),
+Array(2, ShowActive, "l_3"),
+Array(1, UpdateGraphInfo, "g1_()", "Weight of spanning graph: 973.00"),
+Array(1, UpdateEdgeInfo, "g1_3-2", "Weight of edge (3,2): 56 - Weight of spanninggraph: 973"),
+Array(1, UpdateEdgeInfo, "g1_4-9", "Weight of edge (4,9): 77 - Weight of spanninggraph: 973"),
+Array(1, UpdateEdgeInfo, "g1_10-4", "Weight of edge (10,4): 87 - Weight of spanninggraph: 973"),
+Array(1, UpdateEdgeInfo, "g1_7-8", "Weight of edge (7,8): 87 - Weight of spanninggraph: 973"),
+Array(1, UpdateEdgeInfo, "g1_5-7", "Weight of edge (5,7): 62 - Weight of spanninggraph: 973"),
+Array(1, UpdateEdgeInfo, "g1_4-7", "Weight of edge (4,7): 100 - Weight of spanninggraph: 973"),
+Array(1, UpdateEdgeInfo, "g1_2-1", "Weight of edge (2,1): 41 - Weight of spanninggraph: 973"),
+Array(1, UpdateEdgeInfo, "g1_9-10", "Weight of edge (9,10): 64 - Weight of spanninggraph: 973"),
+Array(1, UpdateEdgeInfo, "g1_1-5", "Weight of edge (1,5): 88 - Weight of spanninggraph: 973"),
+Array(1, UpdateEdgeInfo, "g1_1-6", "Weight of edge (1,6): 80 - Weight of spanninggraph: 973"),
+Array(1, UpdateEdgeInfo, "g1_10-3", "Weight of edge (10,3): 51 - Weight of spanninggraph: 973"),
+Array(1, UpdateEdgeInfo, "g1_5-4", "Weight of edge (5,4): 60 - Weight of spanninggraph: 973"),
+Array(1, UpdateEdgeInfo, "g1_3-4", "Weight of edge (3,4): 72 - Weight of spanninggraph: 973"),
+Array(1, UpdateEdgeInfo, "g1_4-1", "Weight of edge (4,1): 91 - Weight of spanninggraph: 973"),
+Array(1, UpdateEdgeInfo, "g1_2-4", "Weight of edge (2,4): 78 - Weight of spanninggraph: 973"),
+Array(1, UpdateEdgeInfo, "g1_6-5", "Weight of edge (6,5): 76 - Weight of spanninggraph: 973"),
+Array(1, UpdateEdgeInfo, "g1_8-4", "Weight of edge (8,4): 82 - Weight of spanninggraph: 973"),
+Array(5, SetEdgeColor, "g1_7-8", "yellow"),
+Array(2, ShowActive, "l_4"),
+Array(6, ShowActive, "l_5"),
+Array(7, SetEdgeColor, "g1_7-8", "black"),
+Array(2, SetEdgeColor, "g1_7-8", "grey"),
+Array(3, ShowActive, "l_3"),
+Array(1, UpdateGraphInfo, "g1_()", "Weight of spanning graph: 886.00"),
+Array(1, UpdateEdgeInfo, "g1_3-2", "Weight of edge (3,2): 56 - Weight of spanninggraph: 886"),
+Array(1, UpdateEdgeInfo, "g1_4-9", "Weight of edge (4,9): 77 - Weight of spanninggraph: 886"),
+Array(1, UpdateEdgeInfo, "g1_10-4", "Weight of edge (10,4): 87 - Weight of spanninggraph: 886"),
+Array(1, UpdateEdgeInfo, "g1_7-8", "Weight of edge (7,8): 87 - Weight of spanninggraph: 886"),
+Array(1, UpdateEdgeInfo, "g1_5-7", "Weight of edge (5,7): 62 - Weight of spanninggraph: 886"),
+Array(1, UpdateEdgeInfo, "g1_4-7", "Weight of edge (4,7): 100 - Weight of spanninggraph: 886"),
+Array(1, UpdateEdgeInfo, "g1_2-1", "Weight of edge (2,1): 41 - Weight of spanninggraph: 886"),
+Array(1, UpdateEdgeInfo, "g1_9-10", "Weight of edge (9,10): 64 - Weight of spanninggraph: 886"),
+Array(1, UpdateEdgeInfo, "g1_1-5", "Weight of edge (1,5): 88 - Weight of spanninggraph: 886"),
+Array(1, UpdateEdgeInfo, "g1_1-6", "Weight of edge (1,6): 80 - Weight of spanninggraph: 886"),
+Array(1, UpdateEdgeInfo, "g1_10-3", "Weight of edge (10,3): 51 - Weight of spanninggraph: 886"),
+Array(1, UpdateEdgeInfo, "g1_5-4", "Weight of edge (5,4): 60 - Weight of spanninggraph: 886"),
+Array(1, UpdateEdgeInfo, "g1_3-4", "Weight of edge (3,4): 72 - Weight of spanninggraph: 886"),
+Array(1, UpdateEdgeInfo, "g1_4-1", "Weight of edge (4,1): 91 - Weight of spanninggraph: 886"),
+Array(1, UpdateEdgeInfo, "g1_2-4", "Weight of edge (2,4): 78 - Weight of spanninggraph: 886"),
+Array(1, UpdateEdgeInfo, "g1_6-5", "Weight of edge (6,5): 76 - Weight of spanninggraph: 886"),
+Array(1, UpdateEdgeInfo, "g1_8-4", "Weight of edge (8,4): 82 - Weight of spanninggraph: 886"),
+Array(5, SetEdgeColor, "g1_10-4", "yellow"),
+Array(1, ShowActive, "l_4"),
+Array(11, ShowActive, "l_5"),
+Array(5, SetEdgeColor, "g1_10-4", "black"),
+Array(1, SetEdgeColor, "g1_10-4", "grey"),
+Array(1, ShowActive, "l_3"),
+Array(1, UpdateGraphInfo, "g1_()", "Weight of spanning graph: 799.00"),
+Array(1, UpdateEdgeInfo, "g1_3-2", "Weight of edge (3,2): 56 - Weight of spanninggraph: 799"),
+Array(1, UpdateEdgeInfo, "g1_4-9", "Weight of edge (4,9): 77 - Weight of spanninggraph: 799"),
+Array(1, UpdateEdgeInfo, "g1_10-4", "Weight of edge (10,4): 87 - Weight of spanninggraph: 799"),
+Array(1, UpdateEdgeInfo, "g1_7-8", "Weight of edge (7,8): 87 - Weight of spanninggraph: 799"),
+Array(1, UpdateEdgeInfo, "g1_5-7", "Weight of edge (5,7): 62 - Weight of spanninggraph: 799"),
+Array(1, UpdateEdgeInfo, "g1_4-7", "Weight of edge (4,7): 100 - Weight of spanninggraph: 799"),
+Array(1, UpdateEdgeInfo, "g1_2-1", "Weight of edge (2,1): 41 - Weight of spanninggraph: 799"),
+Array(1, UpdateEdgeInfo, "g1_9-10", "Weight of edge (9,10): 64 - Weight of spanninggraph: 799"),
+Array(1, UpdateEdgeInfo, "g1_1-5", "Weight of edge (1,5): 88 - Weight of spanninggraph: 799"),
+Array(1, UpdateEdgeInfo, "g1_1-6", "Weight of edge (1,6): 80 - Weight of spanninggraph: 799"),
+Array(1, UpdateEdgeInfo, "g1_10-3", "Weight of edge (10,3): 51 - Weight of spanninggraph: 799"),
+Array(1, UpdateEdgeInfo, "g1_5-4", "Weight of edge (5,4): 60 - Weight of spanninggraph: 799"),
+Array(1, UpdateEdgeInfo, "g1_3-4", "Weight of edge (3,4): 72 - Weight of spanninggraph: 799"),
+Array(1, UpdateEdgeInfo, "g1_4-1", "Weight of edge (4,1): 91 - Weight of spanninggraph: 799"),
+Array(1, UpdateEdgeInfo, "g1_2-4", "Weight of edge (2,4): 78 - Weight of spanninggraph: 799"),
+Array(1, UpdateEdgeInfo, "g1_6-5", "Weight of edge (6,5): 76 - Weight of spanninggraph: 799"),
+Array(1, UpdateEdgeInfo, "g1_8-4", "Weight of edge (8,4): 82 - Weight of spanninggraph: 799"),
+Array(5, SetEdgeColor, "g1_8-4", "yellow"),
+Array(1, ShowActive, "l_4"),
+Array(6, ShowActive, "l_3"),
+Array(5, SetEdgeColor, "g1_8-4", "blue"),
+Array(1, SetEdgeColor, "g1_1-6", "yellow"),
+Array(1, ShowActive, "l_4"),
+Array(6, ShowActive, "l_5"),
+Array(5, SetEdgeColor, "g1_1-6", "black"),
+Array(1, SetEdgeColor, "g1_1-6", "grey"),
+Array(1, ShowActive, "l_3"),
+Array(1, UpdateGraphInfo, "g1_()", "Weight of spanning graph: 719.00"),
+Array(1, UpdateEdgeInfo, "g1_3-2", "Weight of edge (3,2): 56 - Weight of spanninggraph: 719"),
+Array(1, UpdateEdgeInfo, "g1_4-9", "Weight of edge (4,9): 77 - Weight of spanninggraph: 719"),
+Array(1, UpdateEdgeInfo, "g1_10-4", "Weight of edge (10,4): 87 - Weight of spanninggraph: 719"),
+Array(1, UpdateEdgeInfo, "g1_7-8", "Weight of edge (7,8): 87 - Weight of spanninggraph: 719"),
+Array(1, UpdateEdgeInfo, "g1_5-7", "Weight of edge (5,7): 62 - Weight of spanninggraph: 719"),
+Array(1, UpdateEdgeInfo, "g1_4-7", "Weight of edge (4,7): 100 - Weight of spanninggraph: 719"),
+Array(1, UpdateEdgeInfo, "g1_2-1", "Weight of edge (2,1): 41 - Weight of spanninggraph: 719"),
+Array(1, UpdateEdgeInfo, "g1_9-10", "Weight of edge (9,10): 64 - Weight of spanninggraph: 719"),
+Array(1, UpdateEdgeInfo, "g1_1-5", "Weight of edge (1,5): 88 - Weight of spanninggraph: 719"),
+Array(1, UpdateEdgeInfo, "g1_1-6", "Weight of edge (1,6): 80 - Weight of spanninggraph: 719"),
+Array(1, UpdateEdgeInfo, "g1_10-3", "Weight of edge (10,3): 51 - Weight of spanninggraph: 719"),
+Array(1, UpdateEdgeInfo, "g1_5-4", "Weight of edge (5,4): 60 - Weight of spanninggraph: 719"),
+Array(1, UpdateEdgeInfo, "g1_3-4", "Weight of edge (3,4): 72 - Weight of spanninggraph: 719"),
+Array(1, UpdateEdgeInfo, "g1_4-1", "Weight of edge (4,1): 91 - Weight of spanninggraph: 719"),
+Array(1, UpdateEdgeInfo, "g1_2-4", "Weight of edge (2,4): 78 - Weight of spanninggraph: 719"),
+Array(1, UpdateEdgeInfo, "g1_6-5", "Weight of edge (6,5): 76 - Weight of spanninggraph: 719"),
+Array(1, UpdateEdgeInfo, "g1_8-4", "Weight of edge (8,4): 82 - Weight of spanninggraph: 719"),
+Array(4, SetEdgeColor, "g1_2-4", "yellow"),
+Array(1, ShowActive, "l_4"),
+Array(5, ShowActive, "l_5"),
+Array(5, SetEdgeColor, "g1_2-4", "black"),
+Array(1, SetEdgeColor, "g1_2-4", "grey"),
+Array(1, ShowActive, "l_3"),
+Array(1, UpdateGraphInfo, "g1_()", "Weight of spanning graph: 641.00"),
+Array(1, UpdateEdgeInfo, "g1_3-2", "Weight of edge (3,2): 56 - Weight of spanninggraph: 641"),
+Array(1, UpdateEdgeInfo, "g1_4-9", "Weight of edge (4,9): 77 - Weight of spanninggraph: 641"),
+Array(1, UpdateEdgeInfo, "g1_10-4", "Weight of edge (10,4): 87 - Weight of spanninggraph: 641"),
+Array(1, UpdateEdgeInfo, "g1_7-8", "Weight of edge (7,8): 87 - Weight of spanninggraph: 641"),
+Array(1, UpdateEdgeInfo, "g1_5-7", "Weight of edge (5,7): 62 - Weight of spanninggraph: 641"),
+Array(1, UpdateEdgeInfo, "g1_4-7", "Weight of edge (4,7): 100 - Weight of spanninggraph: 641"),
+Array(1, UpdateEdgeInfo, "g1_2-1", "Weight of edge (2,1): 41 - Weight of spanninggraph: 641"),
+Array(1, UpdateEdgeInfo, "g1_9-10", "Weight of edge (9,10): 64 - Weight of spanninggraph: 641"),
+Array(1, UpdateEdgeInfo, "g1_1-5", "Weight of edge (1,5): 88 - Weight of spanninggraph: 641"),
+Array(1, UpdateEdgeInfo, "g1_1-6", "Weight of edge (1,6): 80 - Weight of spanninggraph: 641"),
+Array(1, UpdateEdgeInfo, "g1_10-3", "Weight of edge (10,3): 51 - Weight of spanninggraph: 641"),
+Array(1, UpdateEdgeInfo, "g1_5-4", "Weight of edge (5,4): 60 - Weight of spanninggraph: 641"),
+Array(1, UpdateEdgeInfo, "g1_3-4", "Weight of edge (3,4): 72 - Weight of spanninggraph: 641"),
+Array(1, UpdateEdgeInfo, "g1_4-1", "Weight of edge (4,1): 91 - Weight of spanninggraph: 641"),
+Array(1, UpdateEdgeInfo, "g1_2-4", "Weight of edge (2,4): 78 - Weight of spanninggraph: 641"),
+Array(1, UpdateEdgeInfo, "g1_6-5", "Weight of edge (6,5): 76 - Weight of spanninggraph: 641"),
+Array(1, UpdateEdgeInfo, "g1_8-4", "Weight of edge (8,4): 82 - Weight of spanninggraph: 641"),
+Array(4, SetEdgeColor, "g1_4-9", "yellow"),
+Array(1, ShowActive, "l_4"),
+Array(6, ShowActive, "l_5"),
+Array(5, SetEdgeColor, "g1_4-9", "black"),
+Array(1, SetEdgeColor, "g1_4-9", "grey"),
+Array(1, ShowActive, "l_3"),
+Array(1, UpdateGraphInfo, "g1_()", "Weight of spanning graph: 564.00"),
+Array(1, UpdateEdgeInfo, "g1_3-2", "Weight of edge (3,2): 56 - Weight of spanninggraph: 564"),
+Array(1, UpdateEdgeInfo, "g1_4-9", "Weight of edge (4,9): 77 - Weight of spanninggraph: 564"),
+Array(1, UpdateEdgeInfo, "g1_10-4", "Weight of edge (10,4): 87 - Weight of spanninggraph: 564"),
+Array(1, UpdateEdgeInfo, "g1_7-8", "Weight of edge (7,8): 87 - Weight of spanninggraph: 564"),
+Array(1, UpdateEdgeInfo, "g1_5-7", "Weight of edge (5,7): 62 - Weight of spanninggraph: 564"),
+Array(1, UpdateEdgeInfo, "g1_4-7", "Weight of edge (4,7): 100 - Weight of spanninggraph: 564"),
+Array(1, UpdateEdgeInfo, "g1_2-1", "Weight of edge (2,1): 41 - Weight of spanninggraph: 564"),
+Array(1, UpdateEdgeInfo, "g1_9-10", "Weight of edge (9,10): 64 - Weight of spanninggraph: 564"),
+Array(1, UpdateEdgeInfo, "g1_1-5", "Weight of edge (1,5): 88 - Weight of spanninggraph: 564"),
+Array(1, UpdateEdgeInfo, "g1_1-6", "Weight of edge (1,6): 80 - Weight of spanninggraph: 564"),
+Array(1, UpdateEdgeInfo, "g1_10-3", "Weight of edge (10,3): 51 - Weight of spanninggraph: 564"),
+Array(1, UpdateEdgeInfo, "g1_5-4", "Weight of edge (5,4): 60 - Weight of spanninggraph: 564"),
+Array(1, UpdateEdgeInfo, "g1_3-4", "Weight of edge (3,4): 72 - Weight of spanninggraph: 564"),
+Array(1, UpdateEdgeInfo, "g1_4-1", "Weight of edge (4,1): 91 - Weight of spanninggraph: 564"),
+Array(1, UpdateEdgeInfo, "g1_2-4", "Weight of edge (2,4): 78 - Weight of spanninggraph: 564"),
+Array(1, UpdateEdgeInfo, "g1_6-5", "Weight of edge (6,5): 76 - Weight of spanninggraph: 564"),
+Array(1, UpdateEdgeInfo, "g1_8-4", "Weight of edge (8,4): 82 - Weight of spanninggraph: 564"),
+Array(5, SetEdgeColor, "g1_6-5", "yellow"),
+Array(1, ShowActive, "l_4"),
+Array(5, ShowActive, "l_3"),
+Array(5, SetEdgeColor, "g1_6-5", "blue"),
+Array(1, SetEdgeColor, "g1_3-4", "yellow"),
+Array(1, ShowActive, "l_4"),
+Array(5, ShowActive, "l_3"),
+Array(5, SetEdgeColor, "g1_3-4", "blue"),
+Array(1, SetEdgeColor, "g1_9-10", "yellow"),
+Array(1, ShowActive, "l_4"),
+Array(5, ShowActive, "l_3"),
+Array(5, SetEdgeColor, "g1_9-10", "blue"),
+Array(1, SetEdgeColor, "g1_5-7", "yellow"),
+Array(1, ShowActive, "l_4"),
+Array(6, ShowActive, "l_3"),
+Array(5, SetEdgeColor, "g1_5-7", "blue"),
+Array(1, SetEdgeColor, "g1_5-4", "yellow"),
+Array(1, ShowActive, "l_4"),
+Array(5, ShowActive, "l_3"),
+Array(5, SetEdgeColor, "g1_5-4", "blue"),
+Array(1, SetEdgeColor, "g1_3-2", "yellow"),
+Array(2, ShowActive, "l_4"),
+Array(5, ShowActive, "l_3"),
+Array(5, SetEdgeColor, "g1_3-2", "blue"),
+Array(1, SetEdgeColor, "g1_10-3", "yellow"),
+Array(1, ShowActive, "l_4"),
+Array(5, ShowActive, "l_3"),
+Array(5, SetEdgeColor, "g1_10-3", "blue"),
+Array(1, SetEdgeColor, "g1_2-1", "yellow"),
+Array(1, ShowActive, "l_4"),
+Array(5, ShowActive, "l_3"),
+Array(5, SetEdgeColor, "g1_2-1", "blue"));
+            init();
+        </script>
+
+    </body>
+</html>
