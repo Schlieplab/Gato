@@ -37,6 +37,7 @@
 import getopt
 import sys
 import os
+import re
 import fnmatch
 import logging
 from Gato import *
@@ -1163,6 +1164,7 @@ if __name__ == '__main__':
                         file_name = 'svgs/img/%s.png' % (os.path.splitext(os.path.basename(graph_file))[0])
                         png_dimensions = app.ExportSVG(file_name, write_to_png=True)
                         graph_name = os.path.splitext(os.path.basename(graph_file))[0]
+                        graph_name = ' '.join([a for a in re.split(r'([A-Z][a-z]*)', graph_name) if a]) or graph_name
                         path_from_index = '/'.join(file_name.split('/')[1:])
                         graph_pngs[graph_file] = {'file': path_from_index, 'name': graph_name, 'width': png_dimensions['width'], 'height': png_dimensions['height']}
 
