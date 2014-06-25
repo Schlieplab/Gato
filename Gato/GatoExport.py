@@ -655,9 +655,9 @@ def ExportAlgoInfo(fileName, algorithm):
         clear_div['class'] = 'clear_div'
         dd.insert_after(clear_div)
     
-    if len(soup.find_all('dt')) == 0:
-        # If there aren't any definitions add a "No algorithm info" label
-        body = soup.find('body')
+    body = soup.find('body')
+    if not body.contents:
+        # If there isn't any content add "No algorithm info"
         body.append(soup.new_string('No algorithm info'))
 
     file.write(soup.prettify(formatter=None))
