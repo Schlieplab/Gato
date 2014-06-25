@@ -851,10 +851,10 @@ class AlgoWin(Frame):
             import GatoExport
 
             if not self.secondaryGraphDisplay or self.algorithm.graphDisplays == None or self.algorithm.graphDisplays == 1:
-                GatoExport.ExportSVG(fileName, self, self.algorithm, self.graphDisplay, 
+                return GatoExport.ExportSVG(fileName, self, self.algorithm, self.graphDisplay, 
                     showAnimation=False, write_to_png=write_to_png)
             else:
-                GatoExport.ExportSVG(fileName, self, self.algorithm, self.graphDisplay,
+                return GatoExport.ExportSVG(fileName, self, self.algorithm, self.graphDisplay,
                     self.secondaryGraphDisplay.animator, showAnimation=False, write_to_png=write_to_png)
 
     def ExportSVGAnimation(self, fileName=None, chapter_number=None):
