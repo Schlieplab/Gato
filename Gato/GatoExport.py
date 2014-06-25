@@ -855,4 +855,5 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
         handler= rsvg.Handle(None, svg_str)
         handler.render_cairo(ctx)
         img.write_to_png(fileName)
+        return {'width': width*scale, 'height': height*scale}
 

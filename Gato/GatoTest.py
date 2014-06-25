@@ -828,30 +828,7 @@ svg_instance_testing = [
         ]
     }
 ]
-# used for testing
-# svg_instance = [
-# {
-#         'chapter_directory': '08-Matching',
-#         'chapter_number': 8,
-#         'title': 'Matching',
-#         'algorithms': [
-#             {
-#                 'title': 'Bipartite',
-#                 'file': 'Bipartite.alg',
-#                 'graphs': [
-#                     '08-Matching/Bi003.cat', '08-Matching/Bi006.cat', '08-Matching/Bi008.cat',
-#                     '08-Matching/Bi009.cat', '08-Matching/Bi010.cat'
-#                 ]
-#             },
-#             {
-#                 'title': 'CardinalityMatching',
-#                 'file': 'CardinalityMatching.alg',
-#                 'graphs': [
-#                     '08-Matching/Edmonds1.cat', '08-Matching/Edmonds3.cat', '08-Matching/Edmonds6.cat'
-#                 ]
-#             }
-#         ]
-#     },]
+
 
 # Keys: e.g. '09-WeightedMatching/k4.cat', values: graph description
 graph_descriptions = {
@@ -1184,10 +1161,10 @@ if __name__ == '__main__':
                     # Generate the PNG
                     if graph_file not in graph_pngs and has_png_libs:
                         file_name = 'svgs/img/%s.png' % (os.path.splitext(os.path.basename(graph_file))[0])
-                        png_file = app.ExportSVG(file_name, write_to_png=True)
+                        png_dimensions = app.ExportSVG(file_name, write_to_png=True)
                         graph_name = os.path.splitext(os.path.basename(graph_file))[0]
                         path_from_index = '/'.join(file_name.split('/')[1:])
-                        graph_pngs[graph_file] = {'file': path_from_index, 'name': graph_name}
+                        graph_pngs[graph_file] = {'file': path_from_index, 'name': graph_name, 'width': png_dimensions['width'], 'height': png_dimensions['height']}
 
         if has_png_libs:
             create_svg_index_page(graph_pngs)
