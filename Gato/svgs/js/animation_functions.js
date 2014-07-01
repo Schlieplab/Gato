@@ -308,14 +308,27 @@ function Animation() {
 
 		this.graph_states = states;
 
+		localStorage.setItem(this.storage_key_name, JSON.stringify(this.graph_states));
+
 		this.jump_to_step(0);
 	};
 
+	this.retrieve_graph_states = function() {
+		var states = localStorage.getItem(this.storage_key_name);
+		if (states) {
+			console.log("Retrieving graph states");
+			this.graph_states = JSON.parse(states);
+		} else {
+			this.graph_states = null;
+		}
+	};
 
 	this.initialize_variables = function() {
 		// State of animation		
 		this.states = ['animating', 'stopped', 'stepping', 'waiting', 'done'];
 		this.state = 'stopped';
+
+		this.storage_key_name = animation_name + '_graph_states';
 		
 		// Our step interval in milliseconds
 		this.step_ms = .8;
@@ -326,7 +339,12 @@ function Animation() {
 		// How many steps we take between each saved graph state
 		this.state_interval = 500; 
 
-		this.construct_graph_states();
+		// Try to retrieve the graph states from local storage before constructing them anew
+		this.retrieve_graph_states();
+		if (this.graph_states === null) {
+			console.log('constructing graph states');
+			this.construct_graph_states();
+		}
 	};
 	this.initialize_variables();
 }

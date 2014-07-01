@@ -363,6 +363,7 @@ function add_graph_frame() {
     }
 
     // Normalize the frame width.  If there is only a small discrepancy in widths between graphs then make them the same
+    console.log(graph_frame_dim);
     if (graph_frame_dim[0]['width'] && graph_frame_dim[1]['width']) {
         if (Math.abs(graph_frame_dim[0]['width'] - graph_frame_dim[1]['width']) < g.graph_frame_normalize_diff) {
             var same_width = Math.max(graph_frame_dim[0]['width'], graph_frame_dim[1]['width']);

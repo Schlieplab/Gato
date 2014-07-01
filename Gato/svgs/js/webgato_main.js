@@ -39,7 +39,7 @@ function fill_global() {
         speed_menu_close_timeout: 1200,
         playback_bar_fill: '#606060',
         playback_bar_stroke: '#333',
-        graph_frame_normalize_diff: 10,
+        graph_frame_normalize_diff: 25,
         jump_ready: true,
         jump_interval: jump_interval,
         // Location in the file system of the algorithm info file
