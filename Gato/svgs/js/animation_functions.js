@@ -364,6 +364,8 @@ function Animation() {
 		this.graph_states = states;
 
 		localStorage.setItem(this.storage_key_name, JSON.stringify(this.graph_states));
+		localStorage.setItem(this.max_size_storage_key_name, JSON.stringify(g.max_graph_sizes));
+		localStorage.setItem(this.max_size_storage_key_name+'frame', JSON.stringify(g.max_container_sizes));
 
 		this.jump_to_step(0);
 	};
@@ -372,6 +374,8 @@ function Animation() {
 		var states = localStorage.getItem(this.storage_key_name);
 		if (states) {
 			this.graph_states = JSON.parse(states);
+			g.max_graph_sizes = JSON.parse(localStorage.getItem(this.max_size_storage_key_name));
+			g.max_container_sizes = JSON.parse(localStorage.getItem(this.max_size_storage_key_name+'frame'));
 		} else {
 			this.graph_states = null;
 		}
@@ -383,6 +387,7 @@ function Animation() {
 		this.state = 'stopped';
 
 		this.storage_key_name = animation_name + '_graph_states';
+		this.max_size_storage_key_name = animation_name + '_max_sizes';
 		
 		// Our step interval in milliseconds
 		this.step_ms = 5;
@@ -396,7 +401,7 @@ function Animation() {
 
 		// Try to retrieve the graph states from local storage before constructing them anew
 		this.retrieve_graph_states();
-		if (this.graph_states === null) {
+		if (!this.graph_states) {
 			this.construct_graph_states();
 		}
 		this.compute_animation_schedules();
