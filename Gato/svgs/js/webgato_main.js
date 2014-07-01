@@ -36,7 +36,7 @@ function fill_global() {
         rect_r: 1, 
         playback_bar_stroke_width: 2,
         codebox_stroke_width: 2,
-        speed_menu_close_timeout: 1200,
+        speed_menu_close_timeout: 2000,
         playback_bar_fill: '#606060',
         playback_bar_stroke: '#333',
         graph_frame_normalize_diff: 25,

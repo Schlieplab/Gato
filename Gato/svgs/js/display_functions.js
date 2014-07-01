@@ -349,15 +349,18 @@ function add_graph_frame() {
                     'width': Math.max(max_graph_size.width, max_container_size.width) + pad, 
                     'height':  Math.max(max_graph_size.height, max_container_size.height) + pad + g.graph_info_height};
             } else {
+                console.log('boourns');
                 graph_frame_dim[g_num] = {
                     'width': max_graph_size.width + pad, 
                     'height': max_graph_size.height + pad + g.graph_info_height};
             }
         } else if (max_container_size.width && max_container_size.height) {
+            console.log('moo');
             graph_frame_dim[g_num] = {
                 'width': Math.max(graph_bbox.width, max_container_size.width)+pad, 
                 'height': Math.max(graph_bbox.height, max_container_size.height)+pad+g.graph_info_height};
         } else {
+            console.log('marginal utility');
             graph_frame_dim[g_num] = {'width': graph_bbox.width+pad, 'height': graph_bbox.height+pad+g.graph_info_height};
         }
     }
@@ -464,7 +467,8 @@ function click_speed_button(evt) {
     // Iterate over the buttons, finding the one that was clicked
     for (var i=0; i<buttons.length; i++) {
         if (button_types[i].label === target_label) {
-            g.animation.step_ms = button_types[i]['speed'];
+            g.animation.change_speed(button_types[i]['speed']);
+            // g.animation.step_ms = button_types[i]['speed'];
             buttons[i].attr({'opacity': speed_controls.button_settings.active_opacity});
             g.control_panel.set_text(target_label);
         } else {
@@ -472,6 +476,7 @@ function click_speed_button(evt) {
         }
     }
     g.control_panel.start_speed_menu_close_timeout();
+
 }
 
 function HelpPanel(y_trans, padding, button_panel_height) {
@@ -515,7 +520,7 @@ function SpeedControls(width, height) {
         {'label': '.5x', 'speed': 37, 'default_selected': false},
         {'label': '1x', 'speed': 22, 'default_selected': false},
         {'label': '2x', 'speed': 10, 'default_selected': false},
-        {'label': '4x', 'speed': .8, 'default_selected': true},
+        {'label': '4x', 'speed': 5, 'default_selected': true},
     ];
     this.button_settings = {
         'width': this.width,

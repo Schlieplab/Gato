@@ -24,6 +24,7 @@ function Animation() {
 	};
 	this.animator = function() {
 		if (this.state !== 'animating') {
+			console.log(this.state);
 			return;
 		}
 		if (g.slider.sliding === true) {
@@ -47,10 +48,55 @@ function Animation() {
 			var anim = anim_array[this.step_num];
 			this.do_command(anim);
 			this.step_num ++;
-			g.slider.go_to_step(this.step_num, anim[0]*this.step_ms);
-			var self = this;
-			this.scheduled_animation = setTimeout(function() {self.animator()}, anim[0]*this.step_ms);
+			// console.log(String(anim[1]).split(' ')[1] + ' ' + anim[0]*this.step_ms);
+			var curr_time = new Date().getTime();
+			var runtime_ms = curr_time - this.start_time;	// The time the animation has been running in ms
+			var offset = this.anim_schedule[this.start_at_step];
+			var next_anim_time = this.anim_schedule[this.step_num] - runtime_ms - offset; 	// The offset in ms of the next animation command
+			if (next_anim_time < 0) {
+				if (!this.immediate_calls) {
+					this.immediate_calls = 0;
+				}
+				this.immediate_calls += 1;
+				g.slider.go_to_step(this.step_num);
+				// console.log("going immediately with start_at " + this.start_at_step);
+				this.animator();
+			} else {
+				g.slider.go_to_step(this.step_num, next_anim_time);
+				var self = this;
+				console.log('waiting ' + next_anim_time + ' with start step ' + this.start_at_step);
+				this.scheduled_animation = setTimeout(function() {self.animator()}, next_anim_time);
+			}
+			// this.scheduled_animation = setTimeout(function() {self.animator()}, anim[0]*this.step_ms);
 		}
+	};
+
+	this.compute_animation_schedules = function() {
+		/*  Computes an array anim_schedule of the same length as anim_array
+			where each item is the time which the corresponding command in 
+			anim_array should be executed
+		*/
+
+		this.anim_schedules = {};
+		var button_types = g.control_panel.speed_controls.button_types;
+		for (var key in button_types) {
+			var anim_schedule = [];
+			var step_ms = button_types[key]['speed'];
+			var curr_time = 0;
+			for (var i=0; i<anim_array.length; i++) {
+				anim_schedule.push(curr_time);
+				curr_time += anim_array[i][0]*step_ms;
+			}
+			this.anim_schedules[step_ms] = anim_schedule;
+		}
+		this.anim_schedule = this.anim_schedules[this.step_ms];
+	};
+
+	this.change_speed = function(step_ms) {
+		this.step_ms = step_ms;
+		this.anim_schedule = this.anim_schedules[this.step_ms];
+		this.start_at_step = this.step_num;
+		this.start_time = new Date().getTime();
 	};
 
 	/* Animator that executes animation commands until 
@@ -76,6 +122,7 @@ function Animation() {
 	};
 
 	this.start = function() {
+		this.start_time = new Date();
 		if (this.state === 'stopped' || this.state === 'done') {
 			if (this.state === 'done') {
 				// If we are done then reset the animation
@@ -84,7 +131,9 @@ function Animation() {
 			}
 
 			this.state = 'animating';
-			this.animator();
+			this.start_time = new Date().getTime();
+			this.start_at_step = 0;
+			this.animator(this.step_num);
 		}
 	};
 
@@ -108,7 +157,9 @@ function Animation() {
 			this.step_num ++;
 		}
 		this.state = 'animating';
-		this.animator();
+		this.start_time = new Date().getTime();
+		this.start_at_step = this.step_num;
+		this.animator(this.step_num);
 	};
 
 	this.step = function() {
@@ -221,6 +272,7 @@ function Animation() {
 			this.step_num = state.step_num;
 			this.animate_until(n);
 		}
+		this.start_at_step = this.step_num;
 
 		if (move_slider !== false) {
 			g.slider.go_to_step(n);
@@ -231,6 +283,8 @@ function Animation() {
 		setTimeout(function() {
 			g.jump_ready = true;
 		}, g.jump_interval);
+
+		this.start_time = new Date().getTime();
 	};
 
 	/*
@@ -300,6 +354,7 @@ function Animation() {
 			this.do_command(anim_array[i]);
 			if (anim_array[i][1] === AddVertex || anim_array[i][1] === AddEdge || anim_array[i][1] === ResizeBubble) {
 				// If the graph has potentially changed sizes then record the size to use for the frame
+				console.log('recording size');
 				record_max_graph_size(parseInt(anim_array[i][2].substring(1,2))-1);
 			} else if (anim_array[i][1] === UpdateGraphInfo) {
 				record_max_container_size(parseInt(anim_array[i][2].substring(1,2))-1);
@@ -316,7 +371,6 @@ function Animation() {
 	this.retrieve_graph_states = function() {
 		var states = localStorage.getItem(this.storage_key_name);
 		if (states) {
-			console.log("Retrieving graph states");
 			this.graph_states = JSON.parse(states);
 		} else {
 			this.graph_states = null;
@@ -331,8 +385,9 @@ function Animation() {
 		this.storage_key_name = animation_name + '_graph_states';
 		
 		// Our step interval in milliseconds
-		this.step_ms = .8;
-		
+		this.step_ms = 5;
+		this.start_at_step = 0;
+
 		// Current step in the animation
 		this.step_num = 0;
 
@@ -342,9 +397,9 @@ function Animation() {
 		// Try to retrieve the graph states from local storage before constructing them anew
 		this.retrieve_graph_states();
 		if (this.graph_states === null) {
-			console.log('constructing graph states');
 			this.construct_graph_states();
 		}
+		this.compute_animation_schedules();
 	};
 	this.initialize_variables();
 }
@@ -376,8 +431,6 @@ function Slider(width, height) {
 		*/
 		var clientX = evt.clientX;
 		if (Object.prototype.toString.call(evt) === '[object TouchEvent]') {
-			console.log('mousedown event');
-			console.log(evt);
 			clientX = evt.changedTouches[0].clientX;
 		}
 		g.slider.sliding = true;
@@ -413,8 +466,6 @@ function Slider(width, height) {
 	};
 	this.cursor_mouseup = function(evt) {
 		/* Ends cursor sliding behavior */
-		console.log('in mouseup');
-		console.log(evt);
 		var clientX = parseInt(evt.clientX);
 		if (Object.prototype.toString.call(evt) === '[object TouchEvent]') {
 			clientX = parseInt(evt.changedTouches[0].clientX);
@@ -431,7 +482,6 @@ function Slider(width, height) {
 		} else {
 			step = self.get_step_for_position(new_x / self.step_width);
 		}
-		console.log("jumping to step");
 		g.animation.jump_to_step(step, false);
 		self.go_to_step(step);
 		this.sliding = false;
@@ -442,8 +492,19 @@ function Slider(width, height) {
 		var x = position*this.step_width;
 		if (time) {
 			// var diff = position*this.step_width - parseInt(this.cursor.attr('x'));
+			var rate = ((x - this.cursor.attr('x')) / time);
+			if (rate > 3) {
+				// console.log('Moving to ' + x + ' with distance ' + (x - this.cursor.attr('x')) + ' over ' + time + ' for step ' + n);
+				// console.log('Moving at rate of ' + rate + ' for step ' + n);
+			}
+			// console.log('moving at rate ' + rate);
+			// console.log("Moving to " + x + " in " + time);
 			this.cursor.animate({'x': x}, time);
+			// this.cursor.attr({'x': x});
+			// console.log("Moving to " + x);
 		} else {
+			console.log("Moving immediately to " + x);
+			this.cursor.stop();
 			this.cursor.attr({'x': x});
 		}
 		this.cursor_click_receiver.attr({'x': x-this.cursor_extra_click_width/2.0});

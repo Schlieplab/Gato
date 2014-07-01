@@ -1,3 +1,26 @@
+function do_interval(func, speed_ms) {
+    /*  Given speed in ms and a function to execute this 
+        is the same as setInterval(), but it is more accurate
+    */
+    var start = (new Date()).getTime();
+    var steps = 0;
+
+    function instance()
+    {
+        if (g.animation.state !== 'animating') {
+            return;
+        }
+        func();
+        var now = (new Date()).getTime();
+        steps += 1;
+        var should_run_at = start + speed_ms*steps;
+        var next_run_ms = should_run_at - now;
+        window.setTimeout(instance, next_run_ms);
+    }
+
+    window.setTimeout(instance, speed_ms);
+}
+
 function isiPhone(){
     return (
         //Detect iPhone
