@@ -20,12 +20,17 @@ function Scaler() {
         if (isiPhone()) {
             max_height = g.cont_height - g.padding*2 - g.playback_bar.frame.attr('height');
         }
+        if (this.min_scale_factor) {
+            // If this isn't the first computation then add the click_receiver extra height to the max_height
+            max_height += this.click_receiver_extra_height;
+        }
         var max_width = g.cont_width - g.padding - get_graph_x_trans(),
             min_height = 50,
             min_width = 50;
         var max_scale_factor_y = max_height / (bbox.height / this.curr_scale),
             max_scale_factor_x = max_width / (bbox.width / this.curr_scale);
         
+
         this.max_scale_factor = Math.min(max_scale_factor_x, max_scale_factor_y);
         if (isiPhone()) {
             this.min_scale_factor = .5;
@@ -140,6 +145,7 @@ function Scaler() {
     {
         'opacity': 0,
     }).mousedown(this.mousedown);
+    this.click_receiver_extra_height = 7.5;
 }
 
 function ToolTip(elem, elem_type) {

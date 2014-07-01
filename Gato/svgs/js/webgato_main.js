@@ -281,6 +281,7 @@ function window_resize(evt) {
     g.cont_height = window.innerHeight - g.navbar_height - g.navbar_border_height;
     g.cont_width = window.innerWidth;
     document.getElementById('svg').setAttribute('style', 'width: ' + g.cont_width + 'px; height: ' + g.cont_height + 'px');
+    document.getElementById('base_container').setAttribute('style', 'width: ' + g.cont_width + 'px; height: ' + g.cont_height + 'px');
     g.playback_bar.resize();
     g.code_box.scale_and_translate();
     g.scaler.set_max_and_min_dimensions_of_graph_container();
