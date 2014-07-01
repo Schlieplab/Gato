@@ -166,6 +166,25 @@ function record_max_graph_size(g_num) {
     }
 }
 
+function record_max_container_size(g_num) {
+    for (var i=0; i<g.num_graphs; i++) {
+        var bbox = g.graph_containers[i].getBBox();
+        var width = bbox.width;
+        var height = bbox.height;
+        var x = bbox.x;
+        var max_sizes = g.max_container_sizes[i];
+        if (!max_sizes.width || width > max_sizes.width) {
+            max_sizes.width = width;
+        }
+        if (!max_sizes.height || height > max_sizes.height) {
+            max_sizes.height = height;
+        }
+        if (!max_sizes.min_left || x < max_sizes.min_left) {
+            max_sizes.min_left = x;
+        }
+    }
+}
+
 
 function remove_trailing_whitespace_lines() {
     // This function will remove any line elements from the g.code_lines object 

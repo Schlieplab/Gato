@@ -297,7 +297,7 @@ function add_graph_info() {
     /* Adds graph info elements to the canvas */
     function build_graph_info(group, g_num) {
         var text_elem = snap.text(5, 0, 'No Info').attr({'id': 'g' + g_num + '_info'}).attr({
-            'font-family': 'Helvetica'
+            'font-family': 'Helvetica',
         });     // Set this to "No Info"(or any text) at first so the bbox has a height
         text_elem.attr({'y': text_elem.getBBox().height-1});    
         text_elem.attr({'text': g.init_graph_infos[g_num-1]}); // TODO: commit this line    /* This line fixes the safari issue */
@@ -329,21 +329,34 @@ function add_graph_frame() {
         // Add the graph and graph info to the graph container
         g.graph_containers[g_num].prepend(g.graphs[g_num]);
         
-        var max_size = g.max_graph_sizes[g_num];
+        var max_graph_size = g.max_graph_sizes[g_num];
+        var max_container_size = g.max_container_sizes[g_num];
         
         // reposition the graph info
         var y_trans = graph_bbox.height + pad;
-        if (max_size.height) {
-            y_trans = max_size.height + pad;
+        if (max_graph_size.height) {
+            y_trans = max_graph_size.height + pad;
         }
         g.graph_info_containers[g_num].transform('t0,' + y_trans);
 
         // Create the frame
         var frame = null;
         //  TODO: THIS IS MESSY.  Max size should always be set here.
-        if (max_size.width && max_size.height) {
+        if (max_graph_size.width && max_graph_size.height) {
             // If we added any vertices or edges then max_size will be set and we should use that
-            graph_frame_dim[g_num] = {'width': max_size.width+pad, 'height':  max_size.height+pad+g.graph_info_height};
+            if (max_container_size.width && max_container_size.height) {
+                graph_frame_dim[g_num] = {
+                    'width': Math.max(max_graph_size.width, max_container_size.width) + pad, 
+                    'height':  Math.max(max_graph_size.height, max_container_size.height) + pad + g.graph_info_height};
+            } else {
+                graph_frame_dim[g_num] = {
+                    'width': max_graph_size.width + pad, 
+                    'height': max_graph_size.height + pad + g.graph_info_height};
+            }
+        } else if (max_container_size.width && max_container_size.height) {
+            graph_frame_dim[g_num] = {
+                'width': Math.max(graph_bbox.width, max_container_size.width)+pad, 
+                'height': Math.max(graph_bbox.height, max_container_size.height)+pad+g.graph_info_height};
         } else {
             graph_frame_dim[g_num] = {'width': graph_bbox.width+pad, 'height': graph_bbox.height+pad+g.graph_info_height};
         }

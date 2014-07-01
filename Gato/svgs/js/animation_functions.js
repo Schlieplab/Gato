@@ -302,6 +302,8 @@ function Animation() {
 			if (anim_array[i][1] === AddVertex || anim_array[i][1] === AddEdge || anim_array[i][1] === ResizeBubble) {
 				// If the graph has potentially changed sizes then record the size to use for the frame
 				record_max_graph_size(parseInt(anim_array[i][2].substring(1,2))-1);
+			} else if (anim_array[i][1] === UpdateGraphInfo) {
+				record_max_container_size(parseInt(anim_array[i][2].substring(1,2))-1);
 			}
 		}
 
