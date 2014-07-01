@@ -222,12 +222,12 @@ function global_mouseup(evt) {
     if (g.slider.sliding === true) {
         g.slider.cursor_mouseup(evt);
     }
-    // TODO: Come up with a solution that isn't covering this up
-    // if (g.control_panel.frame_visibility === true) {
-    //     if (!g.control_panel.cursor_in_control_panel(evt)) {
-    //         g.control_panel.toggle_visibility();
-    //     }
-    // }
+    if (g.control_panel.frame_visibility === true) {
+        // Was this breaking something before?
+         if (!g.control_panel.cursor_in_control_panel(evt)) {
+             g.control_panel.toggle_visibility();
+         }
+    }
     if (g.active_tooltip !== undefined) {
         if (g.new_active_tooltip !== true) {
             // If this tooltip wasn't triggered by this event

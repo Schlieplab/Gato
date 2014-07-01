@@ -721,11 +721,15 @@ function ControlPanel(button_panel_height, y_trans) {
             if (self.speed_frame_open) {
                 g.control_panel.speed_controls.g.attr({'visibility': 'visible'});
                 self.speed_frame.attr({'y': self.speed_frame_y_open, 'height': self.speed_frame_height_open});
-                self.start_speed_menu_close_timeout();
+                self.frame_visibility = true;
             } else {
                 g.control_panel.speed_controls.g.attr({'visibility': 'hidden'});
                 self.speed_frame.attr({'y': self.speed_frame_y_closed, 'height': self.speed_frame_height_closed});
-                self.close_timeout = null;
+                self.frame_visibility = false;
+                if (self.close_timeout) {
+                    clearTimeout(self.close_timeout);
+                    self.close_timeout = null;
+                }
             }
         }
     })(this);
