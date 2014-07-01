@@ -130,6 +130,8 @@ animationhead = '''
             var g2_init_vertex_info = %(g2_init_vertex_info)s;
         </script>
 
+        <script type="text/javascript" src="js/spin.min.js"></script>
+        <script type="text/javascript" src="js/spinner_adder.js"></script>
         <script type="text/javascript" src="js/util.js"></script>
         <script type="text/javascript" src="js/animation_functions.js"></script>
         <script type="text/javascript" src="js/display_functions.js"></script>

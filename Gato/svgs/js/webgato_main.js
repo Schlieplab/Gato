@@ -364,9 +364,6 @@ function NavBar() {
     this.help_link.attr({'x': this.width - this.cog_dim - this.help_link.getBBox().width - 5});
     this.g.append(this.help_link);
 
-    // This creates a line directly in middle of nav bar
-    // navbar_g.append(nav_snap.rect(0, 15, g.cont_width, 1));
-
     this.g.transform('t' + g.padding + ',' + (g.ios_statusbar_height+g.navbar_padding));
 
     this.resize = function() {
@@ -376,7 +373,6 @@ function NavBar() {
         this.help_link.attr({'x': this.width - this.cog_dim - this.help_link.getBBox().width - 5});
     };
 
-    //nav_snap.rect(g.cont_width/2, 0, 1, 500);
 }
 
 function show_everything() {
@@ -420,5 +416,6 @@ function init() {
     } else {
         g.navbar = null;
     }
+    hide_spinner();
     show_everything();
 }
