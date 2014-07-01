@@ -1028,7 +1028,10 @@ def should_generate_animation(algo_file_name, graph_file_name, svg_file_name):
     # have to generate the animation
     catbox_path = os.path.split(algo_file_name)[0]
     algo_pro_file_name = os.path.splitext(os.path.basename(algo_file_name))[0] + '.pro'
-    svg_age = os.path.getmtime(svg_file_name)
+    if os.path.isfile(svg_file_name):
+        svg_age = os.path.getmtime(svg_file_name)
+    else: # File does not exist, so generate 
+        return True
     graph_age = os.path.getmtime(graph_file_name)
     pro_age = os.path.getmtime(os.path.join(catbox_path, algo_pro_file_name))
     algo_age = os.path.getmtime(algo_file_name)
@@ -1042,7 +1045,10 @@ def should_generate_png(algo_file_name, graph_file_name, png_file_name):
     # If the png we have is more current than the graph/algo combo it came from then we don't have to re-generate
     catbox_path = os.path.split(algo_file_name)[0]
     algo_pro_file_name = os.path.splitext(os.path.basename(algo_file_name))[0] + '.pro'
-    png_age = os.path.getmtime(png_file_name)
+    if os.path.isfile(png_file_name):
+        png_age = os.path.getmtime(png_file_name)
+    else: # File does not exist, so generate 
+        return True
     graph_age = os.path.getmtime(graph_file_name)
     pro_age = os.path.getmtime(os.path.join(catbox_path, algo_pro_file_name))
     algo_age = os.path.getmtime(algo_file_name)
