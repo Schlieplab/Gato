@@ -1061,8 +1061,8 @@ def usage():
 
 if __name__ == '__main__':
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "asdvt",
-                                   ["all", "svg","debug","verbose", "test"])
+        opts, args = getopt.getopt(sys.argv[1:], "asdvtf",
+                                   ["all", "svg","debug","verbose", "test", "force_animation"])
     except getopt.GetoptError:
         usage()
         exit()
@@ -1071,6 +1071,7 @@ if __name__ == '__main__':
 
     all = False
     svg = False
+    force_animation = False
     debug = False
     verbose = False
     test = False
@@ -1085,6 +1086,8 @@ if __name__ == '__main__':
             svg = True
         if o in ("-t", "--test"):
             test = True
+        if o in ("-f", "--force_animation"):
+            force_animation = True
             
             
     if test:
@@ -1185,7 +1188,7 @@ if __name__ == '__main__':
                     png_file_name = 'svgs/img/%s.png' % (graph_name)
                     svg_file_name = 'svgs/%s--%s.html' % (os.path.splitext(algo['file'])[0], graph_name)
                     algo_location = testPath + chapter_dict['chapter_directory'] + '/' + algo['file']
-                    if should_generate_animation(algo_location, testPath+graph_file, svg_file_name):
+                    if should_generate_animation(algo_location, testPath+graph_file, svg_file_name) or force_animation:
                         app.OpenAlgorithm(algo_location)
                         g.Interactive = 0 # This is set to 0 above.  Do we need to do it here as well?
                         app.algorithm.ClearBreakpoints()

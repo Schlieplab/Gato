@@ -36,6 +36,7 @@ function fill_global() {
         rect_r: 1, 
         playback_bar_stroke_width: 2,
         codebox_stroke_width: 2,
+        speed_menu_close_timeout: 1200,
         playback_bar_fill: '#606060',
         playback_bar_stroke: '#333',
         graph_frame_normalize_diff: 10,
@@ -313,21 +314,18 @@ function NavBar() {
         k, h/2.0,
         h/2.0 + k/2.0, Math.pow(p,2) / k,
         h/2.0, 0
-    ])
-    .attr({
+    ]).attr({
         'fill': '#ccc'
     });
     this.backlink_g.append(this.backlink_poly);
-    this.backlink_text = nav_snap.text(h/2.0 + k/2.0 + this.padding, h/2.0 + 5, "Animation Index")
-    .attr({
+    this.backlink_text = nav_snap.text(h/2.0 + k/2.0 + this.padding, h/2.0 + 5, "Animation Index").attr({
         'fill': '#ccc',
         'font-family': 'Helvetica',
         'font-size': 14,
     });
     this.backlink_g.append(this.backlink_text);
     var backlink_bbox = this.backlink_g.getBBox();
-    this.backlink_rect = nav_snap.rect(0, 0, backlink_bbox.width, backlink_bbox.height)
-    .attr({
+    this.backlink_rect = nav_snap.rect(0, 0, backlink_bbox.width, backlink_bbox.height).attr({
         'fill': 'white'
     });
     this.backlink_g.prepend(this.backlink_rect);
@@ -339,8 +337,7 @@ function NavBar() {
     this.g.append(this.backlink_g);
 
     // Create the title
-    this.anim_title = nav_snap.text(this.width/2, h/2.0 + 5, animation_name)
-    .attr({
+    this.anim_title = nav_snap.text(this.width/2, h/2.0 + 5, animation_name).attr({
         'fill': '#ccc',
         'font-family': 'Helvetica',
         'font-size': 15,
@@ -349,15 +346,13 @@ function NavBar() {
     this.g.append(this.anim_title);
 
     this.cog_dim = 30;
-    this.cog = nav_snap.image('img/cog_grey.png', this.width - this.cog_dim, 0, this.cog_dim, this.cog_dim)
-    .attr({
+    this.cog = nav_snap.image('img/cog_grey.png', this.width - this.cog_dim, 0, this.cog_dim, this.cog_dim).attr({
         'cursor': 'pointer'
     }).click(show_algo_info);
     // TODO: Add a click handler to this
     this.g.append(this.cog);
 
-    this.help_link = nav_snap.text(0, h/2.0 + 5, "Help")
-    .attr({
+    this.help_link = nav_snap.text(0, h/2.0 + 5, "Help").attr({
         'fill': '#ccc',
         'font-family': 'Helvetica',
         'font-size': 15,
@@ -382,6 +377,15 @@ function NavBar() {
     };
 
     //nav_snap.rect(g.cont_width/2, 0, 1, 500);
+}
+
+function show_everything() {
+    g.playback_bar.g.attr({'visibility': 'visible'});
+    g.code_box.g.attr({'visibility': 'visible'});
+    snap.select("#codelines").attr({'visibility': 'visible'});
+    for (var i=0; i<g.num_graphs; i++) {
+        g.graphs[i].attr({'visibility': 'visible'});
+    }
 }
 
 function init() {
@@ -416,4 +420,5 @@ function init() {
     } else {
         g.navbar = null;
     }
+    show_everything();
 }

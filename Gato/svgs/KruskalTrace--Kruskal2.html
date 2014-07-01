@@ -36,7 +36,7 @@
                 border-bottom: 0px;
             }
             .active_nav {
-                border-bottom: 2px solid #ccc;
+                border-bottom: 2px solid #333;
                 height: 60px;
             }
             #help_div {
@@ -109,7 +109,7 @@
                   <feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->
                </feMerge>
             </filter>
-            <g id="g1" type="undirected">
+            <g id="g1" type="undirected" style="visibility: hidden">
 
 <g id="g1_1-6_group" class="edge_group" style="cursor: pointer">
 <line id="g1_1-6" class="edge" x1="0.0" y1="115.0" x2="37.0" y2="186.0" stroke="#DDDDDD" stroke-width="4.0"/>
@@ -184,7 +184,7 @@
 </g>
 </g>
 
-            <text blank = "false" id="l_1" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">def</tspan> AddEdge(u,v):</text>
+            <g id="codelines" style="visibility: hidden"><text blank = "false" id="l_1" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">def</tspan> AddEdge(u,v):</text>
 <text blank = "false" id="l_2" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">C = component[u]</text>
 <text blank = "false" id="l_3" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">D = component[v]</text>
 <text blank = "false" id="l_4" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan> Order(C) &lt; Order(D):</text>
@@ -207,7 +207,7 @@
 <text blank = "false" id="l_21" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">for</tspan>(u,v)<tspan font-weight="bold"> in</tspan> E:</text>
 <text blank = "false" id="l_22" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan><tspan font-weight="bold"> not</tspan> CreatingCircuit(u,v):</text>
 <text blank = "false" id="l_23" class="code_line" x="0" y="0" dx="32" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">AddEdge(u,v)</text>
-
+</g>
         </svg>
         </div>
 
@@ -334,26 +334,26 @@
         <script type="text/javascript">
             var anim_array = Array(Array(1, SetVertexColor, "g1_1", "#FF0000"),
 Array(1, BlinkVertex, "g1_1", "None"),
-Array(10, SetVertexColor, "g1_1", "#FF0000"),
+Array(8, SetVertexColor, "g1_1", "#FF0000"),
 Array(1, SetVertexColor, "g1_2", "#00FF00"),
 Array(1, BlinkVertex, "g1_2", "None"),
-Array(9, SetVertexColor, "g1_2", "#00FF00"),
+Array(8, SetVertexColor, "g1_2", "#00FF00"),
 Array(1, SetVertexColor, "g1_3", "#0000FF"),
 Array(1, BlinkVertex, "g1_3", "None"),
-Array(9, SetVertexColor, "g1_3", "#0000FF"),
+Array(7, SetVertexColor, "g1_3", "#0000FF"),
 Array(1, SetVertexColor, "g1_4", "#009999"),
 Array(1, BlinkVertex, "g1_4", "None"),
-Array(9, SetVertexColor, "g1_4", "#009999"),
+Array(8, SetVertexColor, "g1_4", "#009999"),
 Array(1, SetVertexColor, "g1_5", "#990099"),
 Array(1, BlinkVertex, "g1_5", "None"),
-Array(9, SetVertexColor, "g1_5", "#990099"),
+Array(8, SetVertexColor, "g1_5", "#990099"),
 Array(1, SetVertexColor, "g1_6", "#999900"),
 Array(1, BlinkVertex, "g1_6", "None"),
-Array(10, SetVertexColor, "g1_6", "#999900"),
+Array(7, SetVertexColor, "g1_6", "#999900"),
 Array(1, SetVertexColor, "g1_7", "#996666"),
 Array(1, BlinkVertex, "g1_7", "None"),
-Array(9, SetVertexColor, "g1_7", "#996666"),
-Array(2, ShowActive, "l_1"),
+Array(7, SetVertexColor, "g1_7", "#996666"),
+Array(1, ShowActive, "l_1"),
 Array(1, UpdateEdgeInfo, "g1_5-7", "Edge (5,7) weight: 83"),
 Array(1, UpdateEdgeInfo, "g1_2-1", "Edge (2,1) weight: 199"),
 Array(1, UpdateEdgeInfo, "g1_7-4", "Edge (7,4) weight: 48"),
@@ -370,72 +370,72 @@ Array(1, UpdateVertexInfo, "g1_6", "Vertex 6 at position (200,240)"),
 Array(1, UpdateVertexInfo, "g1_7", "Vertex 7 at position (368,236)"),
 Array(5, ShowActive, "l_13"),
 Array(5, ShowActive, "l_19"),
-Array(6, ShowActive, "l_21"),
-Array(5, SetEdgeColor, "g1_7-4", "yellow"),
+Array(5, ShowActive, "l_21"),
+Array(4, SetEdgeColor, "g1_7-4", "yellow"),
 Array(1, ShowActive, "l_22"),
-Array(6, ShowActive, "l_23"),
-Array(5, SetVertexColor, "g1_4", "#996666"),
+Array(5, ShowActive, "l_23"),
+Array(4, SetVertexColor, "g1_4", "#996666"),
 Array(1, BlinkVertex, "g1_4", "None"),
-Array(10, SetVertexColor, "g1_4", "#996666"),
+Array(8, SetVertexColor, "g1_4", "#996666"),
 Array(1, SetEdgeColor, "g1_7-4", "#996666"),
 Array(1, SetAllVerticesColor, "g1_#996666", "4"),
-Array(2, ShowActive, "l_21"),
-Array(5, SetEdgeColor, "g1_2-3", "yellow"),
+Array(1, ShowActive, "l_21"),
+Array(4, SetEdgeColor, "g1_2-3", "yellow"),
 Array(1, ShowActive, "l_22"),
 Array(5, ShowActive, "l_23"),
-Array(5, SetVertexColor, "g1_3", "#00FF00"),
+Array(4, SetVertexColor, "g1_3", "#00FF00"),
 Array(1, BlinkVertex, "g1_3", "None"),
-Array(10, SetVertexColor, "g1_3", "#00FF00"),
-Array(2, SetEdgeColor, "g1_2-3", "#00FF00"),
+Array(8, SetVertexColor, "g1_3", "#00FF00"),
+Array(1, SetEdgeColor, "g1_2-3", "#00FF00"),
 Array(1, SetAllVerticesColor, "g1_#00FF00", "3"),
-Array(2, ShowActive, "l_21"),
-Array(5, SetEdgeColor, "g1_1-6", "yellow"),
+Array(1, ShowActive, "l_21"),
+Array(4, SetEdgeColor, "g1_1-6", "yellow"),
 Array(1, ShowActive, "l_22"),
 Array(5, ShowActive, "l_23"),
-Array(5, SetVertexColor, "g1_6", "#FF0000"),
+Array(4, SetVertexColor, "g1_6", "#FF0000"),
 Array(1, BlinkVertex, "g1_6", "None"),
-Array(10, SetVertexColor, "g1_6", "#FF0000"),
+Array(8, SetVertexColor, "g1_6", "#FF0000"),
 Array(1, SetEdgeColor, "g1_1-6", "#FF0000"),
 Array(1, SetAllVerticesColor, "g1_#FF0000", "6"),
-Array(2, ShowActive, "l_21"),
-Array(5, SetEdgeColor, "g1_5-7", "yellow"),
+Array(1, ShowActive, "l_21"),
+Array(4, SetEdgeColor, "g1_5-7", "yellow"),
 Array(1, ShowActive, "l_22"),
 Array(5, ShowActive, "l_23"),
-Array(5, SetVertexColor, "g1_5", "#996666"),
+Array(4, SetVertexColor, "g1_5", "#996666"),
 Array(1, BlinkVertex, "g1_5", "None"),
-Array(10, SetVertexColor, "g1_5", "#996666"),
+Array(8, SetVertexColor, "g1_5", "#996666"),
 Array(1, SetEdgeColor, "g1_5-7", "#996666"),
 Array(1, SetAllVerticesColor, "g1_#996666", "5"),
-Array(2, ShowActive, "l_21"),
-Array(5, SetEdgeColor, "g1_6-5", "yellow"),
+Array(1, ShowActive, "l_21"),
+Array(4, SetEdgeColor, "g1_6-5", "yellow"),
 Array(1, ShowActive, "l_22"),
 Array(5, ShowActive, "l_23"),
-Array(5, SetVertexColor, "g1_1", "#996666"),
+Array(4, SetVertexColor, "g1_1", "#996666"),
 Array(1, BlinkVertex, "g1_1", "None"),
-Array(10, SetVertexColor, "g1_6", "#996666"),
+Array(8, SetVertexColor, "g1_6", "#996666"),
 Array(1, BlinkVertex, "g1_6", "None"),
-Array(9, SetVertexColor, "g1_6", "#996666"),
+Array(8, SetVertexColor, "g1_6", "#996666"),
 Array(1, SetEdgeColor, "g1_6-5", "#996666"),
 Array(1, SetVertexColor, "g1_1", "#996666"),
 Array(1, SetEdgeColor, "g1_6-1", "#996666"),
 Array(1, SetAllVerticesColor, "g1_#996666", "1", "6"),
-Array(2, ShowActive, "l_21"),
-Array(5, SetEdgeColor, "g1_3-4", "yellow"),
+Array(1, ShowActive, "l_21"),
+Array(4, SetEdgeColor, "g1_3-4", "yellow"),
 Array(1, ShowActive, "l_22"),
 Array(5, ShowActive, "l_23"),
-Array(5, SetVertexColor, "g1_2", "#996666"),
+Array(4, SetVertexColor, "g1_2", "#996666"),
 Array(1, BlinkVertex, "g1_2", "None"),
-Array(10, SetVertexColor, "g1_3", "#996666"),
+Array(9, SetVertexColor, "g1_3", "#996666"),
 Array(1, BlinkVertex, "g1_3", "None"),
-Array(10, SetVertexColor, "g1_3", "#996666"),
+Array(8, SetVertexColor, "g1_3", "#996666"),
 Array(1, SetEdgeColor, "g1_3-4", "#996666"),
 Array(1, SetVertexColor, "g1_2", "#996666"),
 Array(1, SetEdgeColor, "g1_3-2", "#996666"),
 Array(1, SetAllVerticesColor, "g1_#996666", "2", "3"),
-Array(2, ShowActive, "l_21"),
-Array(5, SetEdgeColor, "g1_2-1", "yellow"),
+Array(1, ShowActive, "l_21"),
+Array(4, SetEdgeColor, "g1_2-1", "yellow"),
 Array(1, ShowActive, "l_22"),
-Array(5, SetEdgeColor, "g1_2-1", "grey"),
+Array(4, SetEdgeColor, "g1_2-1", "grey"),
 Array(1, ShowActive, "l_21"));
             init();
         </script>

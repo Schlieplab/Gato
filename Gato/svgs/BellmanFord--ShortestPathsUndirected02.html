@@ -36,7 +36,7 @@
                 border-bottom: 0px;
             }
             .active_nav {
-                border-bottom: 2px solid #ccc;
+                border-bottom: 2px solid #333;
                 height: 60px;
             }
             #help_div {
@@ -109,7 +109,7 @@
                   <feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->
                </feMerge>
             </filter>
-            <g id="g1" type="undirected">
+            <g id="g1" type="undirected" style="visibility: hidden">
 
 <g id="g1_1-2_group" class="edge_group" style="cursor: pointer">
 <line id="g1_1-2" class="edge" x1="0.0" y1="50.0" x2="100.0" y2="0.0" stroke="#DDDDDD" stroke-width="4.0"/>
@@ -174,7 +174,7 @@
 </g>
 </g>
 
-            <text blank = "false" id="l_1" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">s = PickVertex()</text>
+            <g id="codelines" style="visibility: hidden"><text blank = "false" id="l_1" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">s = PickVertex()</text>
 <text blank = "false" id="l_2" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">dist[s] = 0</text>
 <text blank = "false" id="l_3" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">pred[s] = None</text>
 <text blank = "false" id="l_4" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">Q.Append(s)</text>
@@ -187,7 +187,7 @@
 <text blank = "false" id="l_11" class="code_line" x="0" y="0" dx="52" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">dist[w] = dist[v] + length[(v,w)]</text>
 <text blank = "false" id="l_12" class="code_line" x="0" y="0" dx="52" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan><tspan font-weight="bold"> not</tspan> Q.Contains(w):</text>
 <text blank = "false" id="l_13" class="code_line" x="0" y="0" dx="68" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">Q.Append(w)</text>
-
+</g>
         </svg>
         </div>
 
@@ -313,7 +313,7 @@
         
         <script type="text/javascript">
             var anim_array = Array(Array(1, SetAllVerticesColor, "g1_#EEEEEE"),
-Array(2, ShowActive, "l_1"),
+Array(3, ShowActive, "l_1"),
 Array(1, UpdateEdgeInfo, "g1_1-2", "Edge (1,2) length: 112"),
 Array(1, UpdateEdgeInfo, "g1_4-6", "Edge (4,6) length: 112"),
 Array(1, UpdateEdgeInfo, "g1_3-1", "Edge (3,1) length: 112"),
@@ -327,22 +327,22 @@ Array(1, UpdateVertexInfo, "g1_4", "Vertex 4 is not in tree"),
 Array(1, UpdateVertexInfo, "g1_5", "Vertex 5 is not in tree"),
 Array(1, UpdateVertexInfo, "g1_6", "Vertex 6 is not in tree"),
 Array(4, SetVertexAnnotation, "g1_1", "s"),
-Array(7, ShowActive, "l_2"),
+Array(3, ShowActive, "l_2"),
 Array(1, UpdateVertexInfo, "g1_1", "Vertex 1 is root of tree"),
 Array(5, ShowActive, "l_3"),
 Array(5, ShowActive, "l_4"),
-Array(5, SetVertexColor, "g1_1", "blue"),
-Array(2, ShowActive, "l_6"),
+Array(4, SetVertexColor, "g1_1", "blue"),
+Array(1, ShowActive, "l_6"),
 Array(5, ShowActive, "l_7"),
 Array(5, SetVertexColor, "g1_1", "red"),
 Array(1, SetVertexFrameWidth, "g1_1", "6"),
-Array(2, ShowActive, "l_8"),
-Array(5, SetVertexFrameWidth, "g1_1", "6"),
+Array(1, ShowActive, "l_8"),
+Array(4, SetVertexFrameWidth, "g1_1", "6"),
 Array(1, SetEdgeColor, "g1_3-1", "yellow"),
 Array(1, ShowActive, "l_9"),
 Array(5, ShowActive, "l_10"),
 Array(5, SetEdgeColor, "g1_3-1", "red"),
-Array(1, ShowActive, "l_11"),
+Array(2, ShowActive, "l_11"),
 Array(5, ShowActive, "l_12"),
 Array(1, UpdateVertexInfo, "g1_3", "Vertex 3 has predecessor 1 and distance 112"),
 Array(5, ShowActive, "l_13"),
@@ -352,11 +352,11 @@ Array(5, SetEdgeColor, "g1_1-2", "yellow"),
 Array(1, ShowActive, "l_9"),
 Array(5, ShowActive, "l_10"),
 Array(5, SetEdgeColor, "g1_1-2", "red"),
-Array(1, ShowActive, "l_11"),
+Array(2, ShowActive, "l_11"),
 Array(5, ShowActive, "l_12"),
 Array(1, UpdateVertexInfo, "g1_2", "Vertex 2 has predecessor 1 and distance 112"),
 Array(5, ShowActive, "l_13"),
-Array(5, SetVertexColor, "g1_2", "blue"),
+Array(4, SetVertexColor, "g1_2", "blue"),
 Array(2, ShowActive, "l_8"),
 Array(5, SetVertexFrameWidth, "g1_1", "0"),
 Array(2, ShowActive, "l_6"),
@@ -364,7 +364,7 @@ Array(5, ShowActive, "l_7"),
 Array(5, SetVertexColor, "g1_3", "red"),
 Array(1, SetVertexFrameWidth, "g1_1", "0"),
 Array(1, SetVertexFrameWidth, "g1_3", "6"),
-Array(2, ShowActive, "l_8"),
+Array(1, ShowActive, "l_8"),
 Array(5, SetVertexFrameWidth, "g1_3", "6"),
 Array(1, SetEdgeColor, "g1_5-3", "yellow"),
 Array(1, ShowActive, "l_9"),
@@ -375,23 +375,23 @@ Array(5, ShowActive, "l_12"),
 Array(1, UpdateVertexInfo, "g1_5", "Vertex 5 has predecessor 3 and distance 212"),
 Array(5, ShowActive, "l_13"),
 Array(5, SetVertexColor, "g1_5", "blue"),
-Array(1, ShowActive, "l_8"),
+Array(2, ShowActive, "l_8"),
 Array(5, SetEdgeColor, "g1_3-1", "yellow"),
 Array(1, ShowActive, "l_9"),
 Array(5, ShowActive, "l_8"),
 Array(5, SetEdgeColor, "g1_3-1", "red"),
 Array(1, SetVertexFrameWidth, "g1_3", "0"),
-Array(2, ShowActive, "l_6"),
+Array(1, ShowActive, "l_6"),
 Array(5, ShowActive, "l_7"),
-Array(5, SetVertexColor, "g1_2", "red"),
+Array(4, SetVertexColor, "g1_2", "red"),
 Array(1, SetVertexFrameWidth, "g1_3", "0"),
 Array(1, SetVertexFrameWidth, "g1_2", "6"),
-Array(2, ShowActive, "l_8"),
+Array(1, ShowActive, "l_8"),
 Array(5, SetVertexFrameWidth, "g1_2", "6"),
 Array(1, SetEdgeColor, "g1_1-2", "yellow"),
 Array(1, ShowActive, "l_9"),
 Array(5, ShowActive, "l_8"),
-Array(5, SetEdgeColor, "g1_1-2", "red"),
+Array(4, SetEdgeColor, "g1_1-2", "red"),
 Array(1, SetEdgeColor, "g1_2-4", "yellow"),
 Array(1, ShowActive, "l_9"),
 Array(5, ShowActive, "l_10"),
@@ -402,26 +402,26 @@ Array(1, UpdateVertexInfo, "g1_4", "Vertex 4 has predecessor 2 and distance 262"
 Array(5, ShowActive, "l_13"),
 Array(5, SetVertexColor, "g1_4", "blue"),
 Array(1, ShowActive, "l_8"),
-Array(5, SetVertexFrameWidth, "g1_2", "0"),
-Array(2, ShowActive, "l_6"),
+Array(4, SetVertexFrameWidth, "g1_2", "0"),
+Array(1, ShowActive, "l_6"),
 Array(5, ShowActive, "l_7"),
 Array(5, SetVertexColor, "g1_5", "red"),
-Array(1, SetVertexFrameWidth, "g1_2", "0"),
+Array(2, SetVertexFrameWidth, "g1_2", "0"),
 Array(1, SetVertexFrameWidth, "g1_5", "6"),
 Array(1, ShowActive, "l_8"),
 Array(5, SetVertexFrameWidth, "g1_5", "6"),
 Array(1, SetEdgeColor, "g1_6-5", "yellow"),
-Array(1, ShowActive, "l_9"),
+Array(2, ShowActive, "l_9"),
 Array(5, ShowActive, "l_10"),
 Array(5, SetEdgeColor, "g1_6-5", "red"),
 Array(1, ShowActive, "l_11"),
-Array(5, ShowActive, "l_12"),
+Array(6, ShowActive, "l_12"),
 Array(1, UpdateVertexInfo, "g1_6", "Vertex 6 has predecessor 5 and distance 370"),
-Array(5, ShowActive, "l_13"),
+Array(6, ShowActive, "l_13"),
 Array(5, SetVertexColor, "g1_6", "blue"),
 Array(1, ShowActive, "l_8"),
 Array(5, SetEdgeColor, "g1_5-3", "yellow"),
-Array(1, ShowActive, "l_9"),
+Array(2, ShowActive, "l_9"),
 Array(5, ShowActive, "l_8"),
 Array(5, SetEdgeColor, "g1_5-3", "red"),
 Array(1, SetVertexFrameWidth, "g1_5", "0"),
@@ -433,24 +433,24 @@ Array(1, SetVertexFrameWidth, "g1_4", "6"),
 Array(1, ShowActive, "l_8"),
 Array(5, SetVertexFrameWidth, "g1_4", "6"),
 Array(1, SetEdgeColor, "g1_2-4", "yellow"),
-Array(1, ShowActive, "l_9"),
+Array(3, ShowActive, "l_9"),
 Array(5, ShowActive, "l_8"),
 Array(5, SetEdgeColor, "g1_2-4", "red"),
 Array(1, SetEdgeColor, "g1_4-6", "yellow"),
 Array(1, ShowActive, "l_9"),
-Array(5, ShowActive, "l_8"),
+Array(6, ShowActive, "l_8"),
 Array(5, SetEdgeColor, "g1_4-6", "grey"),
 Array(1, SetVertexFrameWidth, "g1_4", "0"),
-Array(2, ShowActive, "l_6"),
+Array(1, ShowActive, "l_6"),
 Array(5, ShowActive, "l_7"),
 Array(5, SetVertexColor, "g1_6", "red"),
 Array(1, SetVertexFrameWidth, "g1_4", "0"),
 Array(1, SetVertexFrameWidth, "g1_6", "6"),
-Array(2, ShowActive, "l_8"),
+Array(1, ShowActive, "l_8"),
 Array(5, SetVertexFrameWidth, "g1_6", "6"),
 Array(1, SetEdgeColor, "g1_4-6", "yellow"),
 Array(1, ShowActive, "l_9"),
-Array(5, ShowActive, "l_8"),
+Array(6, ShowActive, "l_8"),
 Array(5, SetEdgeColor, "g1_4-6", "grey"),
 Array(1, SetEdgeColor, "g1_6-5", "yellow"),
 Array(1, ShowActive, "l_9"),

@@ -36,7 +36,7 @@ animationhead = '''
                 border-bottom: 0px;
             }
             .active_nav {
-                border-bottom: 2px solid #ccc;
+                border-bottom: 2px solid #333;
                 height: 60px;
             }
             #help_div {

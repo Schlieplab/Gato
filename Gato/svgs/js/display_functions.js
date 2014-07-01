@@ -470,6 +470,7 @@ function click_speed_button(evt) {
             buttons[i].attr({'opacity': speed_controls.button_settings.inactive_opacity});
         }
     }
+    g.control_panel.start_speed_menu_close_timeout();
 }
 
 function HelpPanel(y_trans, padding, button_panel_height) {
@@ -511,9 +512,9 @@ function SpeedControls(width, height) {
     this.button_types = [
         {'label': '.25x', 'speed': 200, 'default_selected': false},
         {'label': '.5x', 'speed': 37, 'default_selected': false},
-        {'label': '1x', 'speed': 22, 'default_selected': true},
+        {'label': '1x', 'speed': 22, 'default_selected': false},
         {'label': '2x', 'speed': 10, 'default_selected': false},
-        {'label': '4x', 'speed': .8, 'default_selected': false},
+        {'label': '4x', 'speed': .8, 'default_selected': true},
     ];
     this.button_settings = {
         'width': this.width,
@@ -638,6 +639,12 @@ function ControlPanel(button_panel_height, y_trans) {
         this.speed_menu_text_content = txt;
         this.speed_menu_text_elem.node.textContent = txt;
     };
+    this.start_speed_menu_close_timeout = function() {
+        if (this.close_timeout) {
+            clearTimeout(this.close_timeout);
+        }
+        this.close_timeout = setTimeout(this.toggle_visibility, g.speed_menu_close_timeout);
+    };
 
     this.button_panel_height = button_panel_height;
     this.padding = 5;
@@ -646,8 +653,7 @@ function ControlPanel(button_panel_height, y_trans) {
     
     this.open_group = snap.group().attr({'id': 'open_group'});
     this.speed_menu_text_content = '.25x';
-    this.speed_menu_text_elem = snap.text(0, 20, this.speed_menu_text_content)
-    .attr({
+    this.speed_menu_text_elem = snap.text(0, 20, this.speed_menu_text_content).attr({
         'fill': 'white',
         'font-family': 'Helvetica',
         'font-size': 16,
@@ -669,7 +675,7 @@ function ControlPanel(button_panel_height, y_trans) {
     this.g.append(this.open_group);
 
     this.width = this.g.getBBox().width;
-    this.set_text('1x');
+    this.set_text('4x');
     this.speed_frame_width = this.width + this.padding*2;
     this.speed_frame_height_closed = this.button_panel_height;
     this.speed_frame_height_open = 200;
@@ -706,6 +712,7 @@ function ControlPanel(button_panel_height, y_trans) {
         this.width = this.speed_controls.width + this.help_panel.width-this.padding;
     }
 
+    this.close_timeout = null;
     this.toggle_visibility = (function(self) {
         var anim_speed = 300;
         return function() {
@@ -713,9 +720,11 @@ function ControlPanel(button_panel_height, y_trans) {
             if (self.speed_frame_open) {
                 g.control_panel.speed_controls.g.attr({'visibility': 'visible'});
                 self.speed_frame.attr({'y': self.speed_frame_y_open, 'height': self.speed_frame_height_open});
+                self.start_speed_menu_close_timeout();
             } else {
                 g.control_panel.speed_controls.g.attr({'visibility': 'hidden'});
                 self.speed_frame.attr({'y': self.speed_frame_y_closed, 'height': self.speed_frame_height_closed});
+                self.close_timeout = null;
             }
         }
     })(this);
@@ -724,7 +733,7 @@ function ControlPanel(button_panel_height, y_trans) {
 
 function PlaybackBar() {
     /* Object to represent the whole playback bar at the bottom */
-    this.g = snap.group();
+    this.g = snap.group().attr({'visibility': 'hidden'}); // hide the playback bar at start
     if (isiPhone()) {
         this.width = g.cont_width;
     } else {
@@ -1062,7 +1071,6 @@ function CodeBox() {
         }
         var scale = 's' + this.scale_factor + ',0,0';
         var translate = 't' + g.padding + ',' + g.padding;
-        console.log("scaling to " + this.scale_factor); 
         this.g.transform(translate + scale);
 
         // Resize the frame and highlight box
@@ -1088,7 +1096,7 @@ function CodeBox() {
     var curr_y = this.line_padding;
     var min_bbox_x = 99999;
     this.widest_line = 0;
-    this.g = snap.group();
+    this.g = snap.group().attr({'visibility': 'hidden'}); // hide the codebox at start
     for (var key in g.code_lines) {
         var curr_line = g.code_lines[key];
         this.g.append(curr_line);

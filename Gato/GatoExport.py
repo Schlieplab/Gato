@@ -751,14 +751,14 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
         # Build the SVG graph string
         graph_strs = []
         graph_type = "undirected" if graphDisplay.G.directed == 0 else "directed"
-        graph_strs.append('<g id="g1" type="%s">\n' % (graph_type))
+        graph_strs.append('<g id="g1" type="%s" style="visibility: hidden">\n' % (graph_type))
 
         g1_str = get_graph_as_svg_str_for_animation(graphDisplay, g1_x_add, g1_y_add, file, idPrefix=id_prefixes[0])
         graph_strs.append(g1_str)
         graph_strs.append('</g>\n')
         if secondaryGraphDisplay:
             graph_type = "undirected" if secondaryGraphDisplay.G.directed == 0 else "directed"
-            graph_strs.append('<g id="g2" type="%s">\n' % (graph_type))
+            graph_strs.append('<g id="g2" type="%s" style="visibility: hidden">\n' % (graph_type))
             g2_str = get_graph_as_svg_str_for_animation(secondaryGraphDisplay, g2_x_add, g2_y_add, file, idPrefix=id_prefixes[1])
             graph_strs.append(g2_str)
             graph_strs.append('</g>\n')
@@ -776,7 +776,7 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
             'info_file': 'infos/' + fileName[fileName.rindex('/') + 1:], 
             'animation': format_animation(animation),
             'graph_str': '\n'.join(graph_strs), 
-            'algo_str': ''.join(algo_lines),
+            'algo_str': '<g id="codelines" style="visibility: hidden">' + ''.join(algo_lines) + "</g>",
             'g1_x_add': g1_x_add,
             'g1_y_add': g1_y_add,
             'g2_x_add': g2_x_add,
