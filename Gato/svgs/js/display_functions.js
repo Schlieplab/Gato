@@ -29,11 +29,10 @@ function Scaler() {
             min_width = 50;
         var max_scale_factor_y = max_height / (bbox.height / this.curr_scale),
             max_scale_factor_x = max_width / (bbox.width / this.curr_scale);
-        
 
         this.max_scale_factor = Math.min(max_scale_factor_x, max_scale_factor_y);
         if (isiPhone()) {
-            this.min_scale_factor = .5;
+            this.min_scale_factor = Math.min(.5, Math.max(this.max_scale_factor-.1, .15));
         } else {
             this.min_scale_factor = .15;    
         }
@@ -302,8 +301,10 @@ function add_tooltip(elem, element_type) {
 function add_graph_info() {
     /* Adds graph info elements to the canvas */
     function build_graph_info(group, g_num) {
-        var text_elem = snap.text(5, 0, 'No Info').attr({'id': 'g' + g_num + '_info'}).attr({
+        var text_elem = snap.text(5, 0, 'No Info').attr({
+            'id': 'g' + g_num + '_info',
             'font-family': 'Helvetica',
+            'visibility': 'hidden'
         });     // Set this to "No Info"(or any text) at first so the bbox has a height
         text_elem.attr({'y': text_elem.getBBox().height-1});    
         text_elem.attr({'text': g.init_graph_infos[g_num-1]}); // TODO: commit this line    /* This line fixes the safari issue */
@@ -865,7 +866,7 @@ function ButtonPanel() {
     /*  This object represents the animation control buttons at 
         the left side of the playback bar
     */
-    this.g = snap.group();
+    this.g = snap.group().attr({'visibility': 'hidden'});
     this.width = 205;
 
     this.buttons = {};
@@ -1153,6 +1154,15 @@ function CodeBox() {
         'opacity': .35,
         'cursor': 'pointer'
     });
+    var line_id = "";
+    for (var key in g.code_lines) {
+        line_id = key;
+        break;
+    }
+    this.current_highlight_box_click = function() {
+        g.code_box.breakpoints[line_id].click();
+    };
+    this.highlight_box.click(this.current_highlight_box_click).touchstart(this.current_highlight_box_click);
     g.highlight_boxes[0] = {'highlight_box': this.highlight_box};
     this.g.append(this.highlight_box);
     this.remove_highlighting();

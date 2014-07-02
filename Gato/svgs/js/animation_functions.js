@@ -816,6 +816,9 @@ function SetVertexAnnotation(vertex_id, annotation, color) {
 	}
 	var annotation_id = 'va' + vertex_id;
 	delete_vertex_annotation(annotation_id);
+	console.log(vertex);
+	console.log(vertex_id);
+	console.log(annotation);
 	var text = snap.text(parseInt(vertex.attr('cx')) + g.vertex_r+1, parseInt(vertex.attr('cy')) + g.vertex_r*1.5 + 2.62, annotation).attr({
 		'id': annotation_id,
 		'class': 'vertex_annotation',

@@ -380,8 +380,12 @@ function show_everything() {
     g.playback_bar.g.attr({'visibility': 'visible'});
     g.code_box.g.attr({'visibility': 'visible'});
     snap.select("#codelines").attr({'visibility': 'visible'});
+    g.button_panel.g.attr({'visibility': 'visible'});
     for (var i=0; i<g.num_graphs; i++) {
         g.graphs[i].attr({'visibility': 'visible'});
+    }
+    for (var key in g.graph_infos) {
+        g.graph_infos[key].attr({'visibility': 'visible'});
     }
 }
 
