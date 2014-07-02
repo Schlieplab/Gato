@@ -191,11 +191,14 @@ class MergedHistories:
         self._check_animator_set(animator, display)
         if v:
             animation = AnimationHistory.AnimationCommand(animator.AddVertex, (x,y), (v,),
-                                                                                        canUndo=False)
+                canUndo=False)
         else:
             animation = AnimationHistory.AnimationCommand(animator.AddVertex, (x,y), (),
-                                         canUndo=False)
+                canUndo=False)
         result = animation.Do()
+        if not v and result:
+            animation = AnimationHistory.AnimationCommand(animator.AddVertex, (x,y), (result,),
+                canUndo=False)
         self.append(animation, display)
         return result
         

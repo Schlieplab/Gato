@@ -1134,7 +1134,7 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
     #				       
     # edit commands
     #
-    def AddVertex(self, x, y, v = None):
+    def AddVertex(self, x, y, v=None):
         """ *Internal* Add a new vertex at (x,y) 
             NOTE: Assumes x,y to be in embedding coordinates
         

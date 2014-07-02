@@ -243,7 +243,7 @@ class AnimationHistory:
             AnimationHistory.merged.auto_print = 1
         AnimationHistory.merged.SetVertexAnnotation(v, annotation, self.animator, self.displayNum, color)
         
-    def AddVertex(self, x, y, v = None):
+    def AddVertex(self, x, y, v=None):
         if self.auto_print == 1:
             AnimationHistory.merged.auto_print = 1
         return AnimationHistory.merged.AddVertex(x, y, self.animator, self.displayNum, v)  
