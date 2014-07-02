@@ -99,12 +99,12 @@ function fill_global() {
         // min_left is useful for things like WeightedMatching of PrimalDualKruskal which have big bubbles
         // that must be accounted for with graph translations
         max_graph_sizes: [
-            {'width': null, 'height': null, 'min_left': null},
-            {'width': null, 'height': null, 'min_left': null}
+            {'width': null, 'height': null, 'min_left': null, 'min_top': null},
+            {'width': null, 'height': null, 'min_left': null, 'min_top': null}
         ],
         max_container_sizes: [
-            {'width': null, 'height': null, 'min_left': null},
-            {'width': null, 'height': null, 'min_left': null},
+            {'width': null, 'height': null, 'min_left': null, 'min_top': null},
+            {'width': null, 'height': null, 'min_left': null, 'min_top': null},
         ],
         // All of the different elem types that we have to keep track of the history of in animation_functions.Animation
         graph_elem_types: ['vertices', 'edges', 'code_lines', 'edge_arrows', 'highlight_boxes', 'annotations', 'moats', 'bubbles', 'highlighted_paths'],

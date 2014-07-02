@@ -439,16 +439,21 @@ function position_graph(initial) {
         if (initial === true) {
             var graph_bbox = g.graphs[i].getBBox();
             if (max_size.height) {
-                var diff = max_size.height - graph_bbox.height;
-                if (diff > 0 && graph_bbox.height != 0) {
-                    g.graph_translate[i].y += diff/2; 
+                var diff = 0;
+                if (graph_bbox.height != 0) {
+                    if (max_size.min_top && max_size.min_top < g.frame_padding) {
+                        diff -= max_size.min_top;
+                    }
+                }
+                if (diff > 0) {
+                    g.graph_translate[i]['y'] += diff - g.vertex_r;
                 }
             }
             if (max_size.width) {
                 var diff = 0;
                 if (graph_bbox.width != 0) {
                     if (max_size.min_left && max_size.min_left < g.frame_padding) {
-                        diff += -1*max_size.min_left;
+                        diff -= max_size.min_left;
                     }
                 }
                 if (diff > 0) {
@@ -459,7 +464,8 @@ function position_graph(initial) {
 
         container_translate.x = container_translate.x / curr_scale;
         g.graph_containers[i].transform('t' + container_translate.x + ',' + container_translate.y);
-        g.graphs[i].transform('t' + g.graph_translate[i]['x'] + ',' + g.graph_translate[i]['y']);   
+        g.graphs[i].transform('t' + g.graph_translate[i]['x'] + ',' + g.graph_translate[i]['y']); 
+        console.log("Translating graph " + i + ": " + 't' + g.graph_translate[i]['x'] + ',' + g.graph_translate[i]['y']);  
     }
 }
 

@@ -496,19 +496,8 @@ function Slider(width, height) {
 		var position = this.slider_positions[n];
 		var x = position*this.step_width;
 		if (time) {
-			// var diff = position*this.step_width - parseInt(this.cursor.attr('x'));
-			var rate = ((x - this.cursor.attr('x')) / time);
-			if (rate > 3) {
-				// console.log('Moving to ' + x + ' with distance ' + (x - this.cursor.attr('x')) + ' over ' + time + ' for step ' + n);
-				// console.log('Moving at rate of ' + rate + ' for step ' + n);
-			}
-			// console.log('moving at rate ' + rate);
-			// console.log("Moving to " + x + " in " + time);
 			this.cursor.animate({'x': x}, time);
-			// this.cursor.attr({'x': x});
-			// console.log("Moving to " + x);
 		} else {
-			console.log("Moving immediately to " + x);
 			this.cursor.stop();
 			this.cursor.attr({'x': x});
 		}
@@ -816,9 +805,6 @@ function SetVertexAnnotation(vertex_id, annotation, color) {
 	}
 	var annotation_id = 'va' + vertex_id;
 	delete_vertex_annotation(annotation_id);
-	console.log(vertex);
-	console.log(vertex_id);
-	console.log(annotation);
 	var text = snap.text(parseInt(vertex.attr('cx')) + g.vertex_r+1, parseInt(vertex.attr('cy')) + g.vertex_r*1.5 + 2.62, annotation).attr({
 		'id': annotation_id,
 		'class': 'vertex_annotation',

@@ -186,6 +186,9 @@ function record_max_graph_size(g_num) {
         if (!max_sizes.min_left || x < max_sizes.min_left) {
             max_sizes.min_left = x;
         }
+        if (!max_sizes.min_top || bbox.y < max_sizes.min_top) {
+            max_sizes.min_top = bbox.y;
+        }
     }
 }
 
