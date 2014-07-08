@@ -1,3 +1,21 @@
+/*
+    Copyright 2014 Scott Merkling
+    This file is part of WebGato.
+
+    WebGato is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    WebGato is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with WebGato.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 function do_interval(func, speed_ms) {
     /*  Given speed in ms and a function to execute this 
         is the same as setInterval(), but it is more accurate

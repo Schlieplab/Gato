@@ -38,7 +38,7 @@
 				</div>
 					
 				{% for algo in chapter_dict['algorithms'] %}
-				<div class="algo_div row">
+				<div id="{{ algo['algo_div_id'] }}" class="algo_div row">
 					<div class="col-xs-12">
 						<div class="row">
 							<div class="col-xs-12">
@@ -73,6 +73,10 @@
 		</div>
 
 	{% endfor %}
+	<div style="margin-top: 20px; font-size: 12px">
+				The Javascript that powers WebGato was created by Scott Merkling and Matthew Mitsui.  Each animation 
+				is created with <a href="http://gato.sourceforge.net/">Gato</a>, the original desktop version of this software.
+			</div>
 	</div>
 	<script type="text/javascript" src="js/util.js"></script>
 	<script type="text/javascript">
@@ -84,5 +88,9 @@
 			document.getElementById('touch_header').className = 'visible';
 		}
 	</script>
+	<div style="width: 40%;">
+		The Javascript that powers WebGato was created by Scott Merkling and Matthew Mitsui.  Each animation 
+		is created with <a href="http://gato.sourceforge.net/">Gato</a>, the original desktop version of this software.
+	</div>
 </body>
 </html>

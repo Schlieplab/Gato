@@ -842,7 +842,6 @@ svg_instance_testing = [
     }
 ]
 
-
 # Keys: e.g. '09-WeightedMatching/k4.cat', values: graph description
 graph_descriptions = {
     '02-GraphsNetworks/BFS.cat': 'BFS Graph Description'
@@ -1009,6 +1008,7 @@ def create_svg_index_page(graph_pngs):
     for chapter_dict in svg_instance:
         for algo in chapter_dict['algorithms']:
             algo_name = os.path.splitext(algo['file'])[0]
+            algo['algo_div_id'] = algo['title'].replace(' ', '').replace('-', '')
             for graph in algo['graphs']:
                 graph_name = os.path.splitext(os.path.basename(graph))[0]
                 svg_locations[algo['title'] + graph] = algo_name + '--' + graph_name + '.html'
@@ -1210,7 +1210,7 @@ if __name__ == '__main__':
                         app.update_idletasks()
 
                         # Generate the SVG
-                        app.ExportSVGAnimation(svg_file_name, chapter_number=chapter_dict['chapter_number'])
+                        app.ExportSVGAnimation(svg_file_name, chapter_number=chapter_dict['chapter_number'], algo_div=algo['title'].replace(' ', '').replace('-',''))
 
                     index_graph_name = friendly_graph_names.get(graph_name, graph_name)
                     if should_generate_png(algo_location, testPath+graph_file, png_file_name):

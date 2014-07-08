@@ -1,5 +1,22 @@
 animationhead = '''
 <!DOCTYPE html>
+<!--
+    Copyright 2014 Scott Merkling
+    This file is part of WebGato.
+
+    WebGato is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    WebGato is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with WebGato.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <html>
     <head>
         <meta charset="utf-8" />
@@ -83,7 +100,7 @@ animationhead = '''
     <body>
         <div id="help_div" class="invisible">
             <div style="padding: .5em">
-                <a class="help_link left_link" href="./index.html#chapter_%(chapter_number)d_div" target="_blank">Index</a><a class="help_link right_link" href="./help.html" target="_blank">Help</a>
+                <a class="help_link left_link" href="./index.html#%(algo_div)s" target="_blank">Index</a><a class="help_link right_link" href="./help.html" target="_blank">Help</a>
             </div>
         </div>
         <div id="nav_bar" class="inactive_nav">
@@ -116,6 +133,7 @@ animationhead = '''
 
         <script type="text/javascript">
             var chapter_number = %(chapter_number)d;
+            var algo_div = "%(algo_div)s";
             var info_file = "%(info_file)s";
             var animation_name = "%(animation_name)s";
             var g1_x_add = %(g1_x_add)d;

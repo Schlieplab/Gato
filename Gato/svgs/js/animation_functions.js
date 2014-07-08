@@ -1,3 +1,20 @@
+/*
+	Copyright 2014 Scott Merkling
+    This file is part of WebGato.
+
+    WebGato is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    WebGato is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with WebGato.  If not, see <http://www.gnu.org/licenses/>.
+*/
 function Animation() {
 	this.do_command = function(anim) {
 		// Handle growing of moats
@@ -230,6 +247,10 @@ function Animation() {
 							}
 						}
 
+						if (elem_type === 'annotations') {
+							elem.node.textContent = elem_state[id]['text_content'];
+						}
+
 						// Apply the attributes to the element. 
 						if ('style' in elem_state[id]) {
 							// If style is present apply it first.  It will overwrite stroke-width
@@ -427,7 +448,7 @@ function Animation() {
 		this.state_interval = 500; 
 
 		// Try to retrieve the graph states from local storage before constructing them anew
-		//this.retrieve_graph_states();
+		this.retrieve_graph_states();
 		if (!this.graph_states) {
 			this.construct_graph_states();
 		}

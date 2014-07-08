@@ -566,7 +566,7 @@ def get_graph_as_svg_str_for_animation(graphDisplay, x_add, y_add, file, idPrefi
         col = 'black'
         if text != "":
             ret_strs.append('<text id="va%s" class="vertex_annotation" x="%s" y="%s" text-anchor="left" fill="%s" font-weight="bold" font-family="Helvetica" '\
-                       'font-size="%s" font-style="normal">%s</text>\n' % (idPrefix+str(v),x+r+1,y+r*1.5+2.5,col,size,text))
+                       'font-size="%s" font-style="normal" text_content="%s">%s</text>\n' % (idPrefix+str(v),x+r+1,y+r*1.5+2.5,col,size,text,text))
 
     return '\n'.join(ret_strs)
     
@@ -688,7 +688,7 @@ def construct_animation_name(fileName):
 def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=None, 
     secondaryGraphDisplayAnimationHistory=None, showAnimation=False, 
     init_edge_infos=None, init_vertex_infos=None, init_graph_infos=None,
-    write_to_png=False, chapter_number=None):
+    write_to_png=False, chapter_number=None, algo_div=None):
     """ Export either the current graphs or the complete animation
         (showAnimation=True) to the file fileName.
 
@@ -773,6 +773,7 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
             'title': construct_title(fileName),
             'animation_name': construct_animation_name(fileName),
             'chapter_number': chapter_number or 0,
+            'algo_div': algo_div or '',
             'info_file': 'infos/' + fileName[fileName.rindex('/') + 1:], 
             'animation': format_animation(animation),
             'graph_str': '\n'.join(graph_strs), 

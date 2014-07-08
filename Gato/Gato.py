@@ -857,7 +857,7 @@ class AlgoWin(Frame):
                 return GatoExport.ExportSVG(fileName, self, self.algorithm, self.graphDisplay,
                     self.secondaryGraphDisplay.animator, showAnimation=False, write_to_png=write_to_png)
 
-    def ExportSVGAnimation(self, fileName=None, chapter_number=None):
+    def ExportSVGAnimation(self, fileName=None, chapter_number=None, algo_div=None):
         """ GUI to control export of SVG file  """
         if not fileName:
             fileName = asksaveasfilename(title="Export SVG",
@@ -871,12 +871,12 @@ class AlgoWin(Frame):
             if not self.secondaryGraphDisplay or self.algorithm.graphDisplays == None or self.algorithm.graphDisplays == 1:
                 GatoExport.ExportSVG(fileName, self, self.algorithm, self.graphDisplay, None, None, showAnimation=True, 
                     init_edge_infos=self.algorithm.DB.init_edge_infos, init_vertex_infos=self.algorithm.DB.init_vertex_infos,
-                    init_graph_infos=self.algorithm.DB.init_graph_infos, chapter_number=chapter_number)
+                    init_graph_infos=self.algorithm.DB.init_graph_infos, chapter_number=chapter_number, algo_div=algo_div)
             else:
                 GatoExport.ExportSVG(fileName, self, self.algorithm, self.graphDisplay,
                     self.secondaryGraphDisplay.animator, self.secondaryGraphDisplay, showAnimation=True,
                     init_edge_infos=self.algorithm.DB.init_edge_infos, init_vertex_infos=self.algorithm.DB.init_vertex_infos,
-                    init_graph_infos=self.algorithm.DB.init_graph_infos, chapter_number=chapter_number)
+                    init_graph_infos=self.algorithm.DB.init_graph_infos, chapter_number=chapter_number, algo_div=algo_div)
 
     def Quit(self,event=None):
         if self.algorithmIsRunning == 1:
