@@ -24,7 +24,6 @@ function Animation() {
 	};
 	this.animator = function() {
 		if (this.state !== 'animating') {
-			console.log(this.state);
 			return;
 		}
 		if (g.slider.sliding === true) {
@@ -48,7 +47,6 @@ function Animation() {
 			var anim = anim_array[this.step_num];
 			this.do_command(anim);
 			this.step_num ++;
-			// console.log(String(anim[1]).split(' ')[1] + ' ' + anim[0]*this.step_ms);
 			var curr_time = new Date().getTime();
 			var runtime_ms = curr_time - this.start_time;	// The time the animation has been running in ms
 			var offset = this.anim_schedule[this.start_at_step];
@@ -59,12 +57,10 @@ function Animation() {
 				}
 				this.immediate_calls += 1;
 				g.slider.go_to_step(this.step_num);
-				// console.log("going immediately with start_at " + this.start_at_step);
 				this.animator();
 			} else {
 				g.slider.go_to_step(this.step_num, next_anim_time);
 				var self = this;
-				console.log('waiting ' + next_anim_time + ' with start step ' + this.start_at_step);
 				this.scheduled_animation = setTimeout(function() {self.animator()}, next_anim_time);
 			}
 			// this.scheduled_animation = setTimeout(function() {self.animator()}, anim[0]*this.step_ms);
@@ -174,16 +170,24 @@ function Animation() {
 		if (!g.jump_ready) {
 			return;
 		}
+		if (n === this.step_num) {
+			return;
+		}
 		g.jumping = true;
-		var state_ind = parseInt(n/this.state_interval);
-		var state = this.graph_states[state_ind];
+		var curr_state_ind = parseInt(this.step_num/this.state_interval);
+		var new_state_ind = parseInt(n/this.state_interval);
+		var state = this.graph_states[new_state_ind];
 
-		if (n > this.step_num && n < (state_ind+1)*this.state_interval) {
+		var start_time = new Date().getTime();
+
+		// TODO: Test to see whether it is faster to jump 500 then animate 500 vs animation 1000
+		if (n > this.step_num && n - this.step_num <= this.state_interval) {
 			// If we are animating between now and next state then just animate until, don't go to any state
 			this.animate_until(n);
 		} else {
 			// We are moving backwards, or past the next state.  
 			// Iterate over the graph element types, and the graphs
+			// console.log("jumping from " + this.step_num + " to " + n);
 			for (var i=0; i<g.graph_elem_types.length; i++) {
 				var elem_type = g.graph_elem_types[i];
 				for (var g_num=0; g_num<g.num_graphs; g_num++) {
@@ -214,7 +218,15 @@ function Animation() {
 								var arg = construct_AddVertex_argument_from_state(elem_state[id]);
 								elem = AddVertex(arg, elem_state[id]['id'].substring(3));
 							} else if (elem_type === 'moats') {
-
+								elem = CreateMoatWithId(id);
+							} else if (elem_type === 'highlighted_paths') {
+								// If vertex state hasn't been restored yet then this function will likely bomb, as the vertices it 
+								// depends on for coordinates may not be on the graph
+								elem = CreateHighlightedPathWithId(id, elem_state[id]['closed']);
+							} else if (elem_type === 'bubbles') {
+								elem = CreateBubbleWithId(id, elem_state[id]['offset']);
+							} else if (elem_type === 'annotations') {
+								elem = CreateVertexAnnotationWithId(id, elem_state[id]['text_content']);
 							}
 						}
 
@@ -285,6 +297,10 @@ function Animation() {
 		}, g.jump_interval);
 
 		this.start_time = new Date().getTime();
+
+		var end_time = new Date().getTime();
+		var diff = end_time - start_time;
+		console.log(diff);
 	};
 
 	/*
@@ -354,7 +370,6 @@ function Animation() {
 			this.do_command(anim_array[i]);
 			if (anim_array[i][1] === AddVertex || anim_array[i][1] === AddEdge || anim_array[i][1] === ResizeBubble) {
 				// If the graph has potentially changed sizes then record the size to use for the frame
-				console.log('recording size');
 				record_max_graph_size(parseInt(anim_array[i][2].substring(1,2))-1);
 			} else if (anim_array[i][1] === UpdateGraphInfo) {
 				record_max_container_size(parseInt(anim_array[i][2].substring(1,2))-1);
@@ -363,19 +378,31 @@ function Animation() {
 
 		this.graph_states = states;
 
-		localStorage.setItem(this.storage_key_name, JSON.stringify(this.graph_states));
-		localStorage.setItem(this.max_size_storage_key_name, JSON.stringify(g.max_graph_sizes));
-		localStorage.setItem(this.max_size_storage_key_name+'frame', JSON.stringify(g.max_container_sizes));
+		try {
+			localStorage.setItem(this.storage_key_name, JSON.stringify(this.graph_states));
+			localStorage.setItem(this.max_size_storage_key_name, JSON.stringify(g.max_graph_sizes));
+			localStorage.setItem(this.max_size_storage_key_name+'frame', JSON.stringify(g.max_container_sizes));
+		} catch(e) {
+			if(e.code == 22) {
+				// If we have a quota exceeded error then skip writing
+				console.log("Local storage is full, skipping storage.");
+				localStorage.removeItem(this.storage_key_name);
+				localStorage.removeItem(this.max_size_storage_key_name);
+				localStorage.removeItem(this.max_size_storage_key_name+'frame');
+			}
+		}
 
 		this.jump_to_step(0);
 	};
 
 	this.retrieve_graph_states = function() {
 		var states = localStorage.getItem(this.storage_key_name);
-		if (states) {
+		var graph_sizes = localStorage.getItem(this.max_size_storage_key_name);
+		var container_sizes = localStorage.getItem(this.max_size_storage_key_name+'frame');
+		if (states && graph_sizes && container_sizes) {
 			this.graph_states = JSON.parse(states);
-			g.max_graph_sizes = JSON.parse(localStorage.getItem(this.max_size_storage_key_name));
-			g.max_container_sizes = JSON.parse(localStorage.getItem(this.max_size_storage_key_name+'frame'));
+			g.max_graph_sizes = JSON.parse(graph_sizes);
+			g.max_container_sizes = JSON.parse(container_sizes);
 		} else {
 			this.graph_states = null;
 		}
@@ -400,7 +427,7 @@ function Animation() {
 		this.state_interval = 500; 
 
 		// Try to retrieve the graph states from local storage before constructing them anew
-		this.retrieve_graph_states();
+		//this.retrieve_graph_states();
 		if (!this.graph_states) {
 			this.construct_graph_states();
 		}
@@ -812,10 +839,31 @@ function SetVertexAnnotation(vertex_id, annotation, color) {
 		'text-anchor': 'middle',
 		'font-weight': 'bold',
 		'font-family': 'Helvetica',
-		'font-size': 14
+		'font-size': 14,
+		'text_content': annotation
 	});
 	g.graphs[g_num-1].append(text);
 	g.annotations[g_num-1][annotation_id] = text;
+}
+
+function CreateVertexAnnotationWithId(annotation_id, annotation) {
+	var vertex_id = annotation_id.substring(2);
+	var g_num = parseInt(annotation_id.substring(3,4));
+	var vertex = g.vertices[g_num-1][vertex_id];
+	delete_vertex_annotation(annotation_id);
+	var text = snap.text(parseInt(vertex.attr('cx')) + g.vertex_r+1, parseInt(vertex.attr('cy')) + g.vertex_r*1.5 + 2.62, annotation).attr({
+		'id': annotation_id,
+		'class': 'vertex_annotation',
+		'fill': 'black',
+		'text-anchor': 'middle',
+		'font-weight': 'bold',
+		'font-family': 'Helvetica',
+		'font-size': 14,
+		'text_content': annotation
+	});
+	g.graphs[g_num-1].append(text);
+	g.annotations[g_num-1][annotation_id] = text;
+	return text;
 }
 
 function delete_vertex_annotation(annotation_id) {
@@ -1111,6 +1159,17 @@ function CreateMoat(moat_id, radius, color) {
 	g.graphs[g_num-1].prepend(moat);
 }
 
+function CreateMoatWithId(moat_id) {
+	var g_num = parseInt(moat_id.substring(1,2));
+	var moat = snap.circle(0, 0, 0).attr({
+		'id': moat_id,
+		'class': 'moats'
+	});
+	g.moats[g_num-1][moat_id] = moat;
+	g.graphs[g_num-1].prepend(moat);
+	return moat;
+}
+
 function GrowMoat(moat_id, radius) {
 	radius = parseFloat(radius);
 	var g_num = parseInt(moat_id.substring(1,2));
@@ -1142,12 +1201,29 @@ function CreateBubble(which_graph, vertex_nums_str, offset_values_str, color) {
 		var bubble = snap.circle(vertex.attr('cx'), vertex.attr('cy'), 0).attr({
 			'id': bubble_id,
 			'class': 'bubbles',
-			'fill': color
+			'fill': color,
+			'offset': offset_values[i]
 		});
 		g.bubbles[g_num-1][bubble_id] = bubble;
 		g.bubble_offsets[g_num-1][bubble_id] = offset_values[i];
 		g.graphs[g_num-1].prepend(bubble);
 	}
+}
+
+function CreateBubbleWithId(bubble_id, offset_value) {
+	var g_num = parseInt(bubble_id.substring(1, 2));
+	var sp = bubble_id.split('_bubble_');
+	var vertex_id = sp[0];
+	var vertex_nums = sp[1].split('-');
+	var vertex = g.vertices[g_num-1][vertex_id];
+	var bubble = snap.circle(vertex.attr('cx'), vertex.attr('cy'), 0).attr({
+		'id': bubble_id,
+		'class': 'bubbles'
+	});
+	g.bubbles[g_num-1][bubble_id] = bubble;
+	g.bubble_offsets[g_num-1][bubble_id] = offset_value;
+	g.graphs[g_num-1].prepend(bubble);
+	return bubble;
 }
 
 function ResizeBubble(which_graph, vertex_nums_str, new_radius) {
@@ -1214,10 +1290,40 @@ function HighlightPath(graph_and_path, color, closed) {
 		'id': path_id,
 		'stroke': color,
 		'stroke-width': 16,
-		'fill': 'none'
+		'fill': 'none',
+		'closed': closed
 	});
 	g.graphs[g_num-1].prepend(path);
 	g.highlighted_paths[g_num-1][path_id] = path;
+}
+
+function CreateHighlightedPathWithId(id, closed) {
+	var g_num = parseInt(id.substring(1,2));
+	var vertex_nums = get_ints_from_str(id.split('_')[1]);
+
+	var coords = [];	// Holds 2-tuples of coordinates
+	for (var i=0; i<vertex_nums.length; i++) {
+		var vertex = g.vertices[g_num-1][get_vertex_id(g_num, vertex_nums[i])];
+		coords.push([vertex.attr('cx'), vertex.attr('cy')]);
+	}
+	if (closed !== "0") {	
+		var vertex = g.vertices[g_num-1][get_vertex_id(g_num, vertex_nums[0])];
+		coords.push([vertex.attr('cx'), vertex.attr('cy')]);
+	}
+
+	var path_str = 'M' + coords[0][0] + ',' + coords[0][1];
+	for (var i=1; i<coords.length; i++) {
+		path_str += 'L' + coords[i][0] + ',' + coords[i][1];
+	}
+	var path = snap.path(path_str).attr({
+		'id': id,
+		'stroke-width': 16,
+		'fill': 'none',
+		'closed': closed
+	});
+	g.graphs[g_num-1].prepend(path);
+	g.highlighted_paths[g_num-1][id] = path;
+	return path;
 }
 
 function DeleteHighlightedPath(path_id) {

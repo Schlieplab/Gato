@@ -356,24 +356,20 @@ function add_graph_frame() {
                     'width': Math.max(max_graph_size.width, max_container_size.width) + pad, 
                     'height':  Math.max(max_graph_size.height, max_container_size.height) + pad + g.graph_info_height};
             } else {
-                console.log('boourns');
                 graph_frame_dim[g_num] = {
                     'width': max_graph_size.width + pad, 
                     'height': max_graph_size.height + pad + g.graph_info_height};
             }
         } else if (max_container_size.width && max_container_size.height) {
-            console.log('moo');
             graph_frame_dim[g_num] = {
                 'width': Math.max(graph_bbox.width, max_container_size.width)+pad, 
                 'height': Math.max(graph_bbox.height, max_container_size.height)+pad+g.graph_info_height};
         } else {
-            console.log('marginal utility');
             graph_frame_dim[g_num] = {'width': graph_bbox.width+pad, 'height': graph_bbox.height+pad+g.graph_info_height};
         }
     }
 
     // Normalize the frame width.  If there is only a small discrepancy in widths between graphs then make them the same
-    console.log(graph_frame_dim);
     if (graph_frame_dim[0]['width'] && graph_frame_dim[1]['width']) {
         if (Math.abs(graph_frame_dim[0]['width'] - graph_frame_dim[1]['width']) < g.graph_frame_normalize_diff) {
             var same_width = Math.max(graph_frame_dim[0]['width'], graph_frame_dim[1]['width']);
@@ -465,7 +461,6 @@ function position_graph(initial) {
         container_translate.x = container_translate.x / curr_scale;
         g.graph_containers[i].transform('t' + container_translate.x + ',' + container_translate.y);
         g.graphs[i].transform('t' + g.graph_translate[i]['x'] + ',' + g.graph_translate[i]['y']); 
-        console.log("Translating graph " + i + ": " + 't' + g.graph_translate[i]['x'] + ',' + g.graph_translate[i]['y']);  
     }
 }
 
