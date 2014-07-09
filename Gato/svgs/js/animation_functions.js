@@ -145,7 +145,7 @@ function Animation() {
 
 			this.state = 'animating';
 			this.start_time = new Date().getTime();
-			this.start_at_step = 0;
+			this.start_at_step = this.step_num;
 			this.animator(this.step_num);
 		}
 	};
