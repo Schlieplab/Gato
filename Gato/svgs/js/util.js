@@ -40,12 +40,14 @@ function do_interval(func, speed_ms) {
 }
 
 function isiPhone(){
+    /* This is poorly named, it detects mobile generally */
     return (
         //Detect iPhone
         (navigator.platform.indexOf("iPhone") != -1) ||
         //Detect iPod
         (navigator.platform.indexOf("iPod") != -1) ||
-        (navigator.platform.indexOf("iPad") != -1)
+        (navigator.platform.indexOf("iPad") != -1) ||
+        (navigator.userAgent.toLowerCase().indexOf('android') != -1)
     );
 }
 
