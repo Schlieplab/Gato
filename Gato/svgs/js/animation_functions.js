@@ -154,7 +154,6 @@ function Animation() {
 		if (this.state === 'animating' || this.state === 'stopped' || this.state === 'stepping') {
 			this.state = 'stopped';
 			clearTimeout(this.scheduled_animation);
-			this.step_num = 0;
 			g.slider.stop_animating();
 			this.jump_to_step(0);
 		}
@@ -188,6 +187,7 @@ function Animation() {
 			return;
 		}
 		if (n === this.step_num) {
+			console.log("returning");
 			return;
 		}
 		g.jumping = true;
