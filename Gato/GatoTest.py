@@ -548,6 +548,7 @@ svg_instance = [
     }
 ]
 
+
 #
 # Dictionary of graph name substitutes(e.g. if a graph name is too long we can map it to a different name here, and the sub will be used in the index page)
 #
