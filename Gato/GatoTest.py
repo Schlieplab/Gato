@@ -351,7 +351,9 @@ svg_instance = [
                 'graphs': [
                     '05-ShortestPaths/ShortestPathsUndirected02.cat',
                     '05-ShortestPaths/ShortestPathsUndirected03.cat',
-                    '05-ShortestPaths/7x7grid.cat'
+                    '05-ShortestPaths/7x7grid.cat',
+                    '05-ShortestPaths/NegArc.cat',
+                    '05-ShortestPaths/NegCircuit.cat'                   
                 ]
             },
             {
@@ -362,7 +364,9 @@ svg_instance = [
                 'graphs': [
                     '05-ShortestPaths/ShortestPathsUndirected02.cat',
                     '05-ShortestPaths/ShortestPathsUndirected03.cat',
-                    '05-ShortestPaths/7x7grid.cat'
+                    '05-ShortestPaths/7x7grid.cat',      
+                    '05-ShortestPaths/NegArc.cat',
+                    '05-ShortestPaths/NegCircuit.cat'                   
                 ]
             },
             {
@@ -399,7 +403,8 @@ svg_instance = [
                     '05-ShortestPaths/ShortestPathsUndirected02.cat',
                     '05-ShortestPaths/ShortestPathsUndirected03.cat',
                     '05-ShortestPaths/7x7grid.cat',
-                    '05-ShortestPaths/BellmanFordWC.cat'
+                    '05-ShortestPaths/BellmanFordWC.cat',
+                    '05-ShortestPaths/NegArc.cat'
                 ]
             },
             {
@@ -521,7 +526,7 @@ svg_instance = [
                 'which are not necessarily bipartite.',
                 'graphs': [
                     '08-Matching/Edmonds1.cat', '08-Matching/Edmonds3.cat',
-                    '08-Matching/Edmonds6.cat', '08-Matching/Koenig.cat'
+                    '08-Matching/Edmonds6.cat', '08-Matching/Edmonds8.cat', '08-Matching/Koenig.cat'
                 ]
             }
         ]
