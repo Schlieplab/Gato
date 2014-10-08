@@ -6,7 +6,7 @@
 #	file:   ProbEditorBasics.py
 #	author: Achim Gaedke (achim.gaedke@zpr.uni-koeln.de)
 #
-#       Copyright (C) 1998-2013, Alexander Schliep, Winfried Hochstaettler and 
+#       Copyright (C) 1998-2014, Alexander Schliep, Winfried Hochstaettler and 
 #       Copyright 1998-2001 ZAIK/ZPR, Universitaet zu Koeln
 #                                   
 #       Contact: alexander@schliep.org, winfried.hochstaettler@fernuni-hagen.de             

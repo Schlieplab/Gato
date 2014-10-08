@@ -966,7 +966,7 @@ class plot_canvas(Tkinter.Canvas):
                                  self.scale_offset_y+2)
             text=self.create_text(pixel_x,self.scale_offset_y+2,
                                   anchor=Tkinter.N,
-                                  text=str(round(pos_x,prec)))
+                                  text=str(round(pos_x,int(prec))))
             self.tic_list.append(tic)
             self.tic_list.append(text)
             pos_x+=dist

@@ -6,7 +6,7 @@
 #	file:   ObjectGred.py
 #	author: Alexander Schliep (alexander@schliep.org)
 #
-#       Copyright (C) 2013-2013 Alexander Schliep, Winfried Hochstaettler
+#       Copyright (C) 2007-2014 Alexander Schliep, Winfried Hochstaettler
 #                                   
 #       Contact: alexander@schliep.org
 #

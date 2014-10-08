@@ -1,5 +1,10 @@
 Gato Release notes
 
+Gato 1.1.3 from 5/10/13
+- Lots of internal improvements for upcoming release with SVG export
+- AnimationHistory almost feature complete for undo/redo 
+- Bugfixes in ProbEditor* as round() now requires integer decimal arguments
+- Lot's of minor bug fixes
 
 Gato 1.1.2 from 8/25/11
 

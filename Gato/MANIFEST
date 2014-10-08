@@ -42,6 +42,7 @@ ProbEditorWidgets.py
 README
 TextTreeWidget.py
 TreeWidget.py
+WebGatoJS.py
 __init__.py
 linecacheCopy.py
 sample.cat

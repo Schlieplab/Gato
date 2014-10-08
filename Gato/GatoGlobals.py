@@ -5,7 +5,7 @@
 #	file:   GatoGlobals.py
 #	author: Alexander Schliep (alexander@schliep.org)
 #
-#       Copyright (C) 1998-2013, Alexander Schliep, Winfried Hochstaettler and 
+#       Copyright (C) 1998-2014, Alexander Schliep, Winfried Hochstaettler and 
 #       Copyright 1998-2001 ZAIK/ZPR, Universitaet zu Koeln
 #                                   
 #       Contact: alexander@schliep.org, winfried.hochstaettler@fernuni-hagen.de             
@@ -37,8 +37,8 @@
 
 import tkFont
 
-gatoVersion = '1.1.2'
-gatoBuildDate = '8/25/2011'
+gatoVersion = '1.2.1'
+gatoBuildDate = '10/08/2014'
 
 class AnimationParameters:
     """ Convenience class to collect all globals. 

@@ -6,7 +6,7 @@
 #	file:   Gato.py
 #	author: Janne Grunau
 #
-#       Copyright (C) 1998-2013, Alexander Schliep, Winfried Hochstaettler and 
+#       Copyright (C) 1998-2014, Alexander Schliep, Winfried Hochstaettler and 
 #       Copyright 1998-2001 ZAIK/ZPR, Universitaet zu Koeln
 #                                   
 #       Contact: alexander@schliep.org, winfried.hochstaettler@fernuni-hagen.de
@@ -42,7 +42,7 @@ from distutils.core import setup,Extension
 import py2exe
 
 setup(name="Gato",
-      version="0.999",
+      version="1.2.1",
       description="the Graph Animation Toolbox",
       author="Gato authors",
       author_email="Gato",
