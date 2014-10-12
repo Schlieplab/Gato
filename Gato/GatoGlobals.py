@@ -61,6 +61,9 @@ class AnimationParameters:
     BlinkRepeat = 3 # One more than you want
     Interactive = 1
 
+    # Other
+    GeneratingSVG = 0
+
     # Printing
     PaperHeight = 1500 # "20i" XXX Should be real paper size
     PaperWidth = 1500 # "20i"

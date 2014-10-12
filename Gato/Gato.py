@@ -1975,7 +1975,7 @@ class Algorithm:
             
             if failed or value == 'Unknown':
                 # For GatoTest: Abort if needed property is missing from graph 
-                if not g.Interactive:
+                if not g.Interactive and not g.GeneratingSVG:
                     raise AbortProlog, "Not running interactively. Aborting due to" \
                           " check for property %s" % property                    
                 errMsg = "The algorithm %s requires that the graph %s has %s" % \
@@ -1988,6 +1988,12 @@ class Algorithm:
                     errMsg += " of %s or more" % str(requiredValue)
                 if value == "Unknown":
                     errMsg += ". This is not known"
+
+                if g.GeneratingSVG:
+                    # If we are generating SVG animations with GatoTest.py we want to proceed even if NeededProperties aren't met
+                    print "Warning: " + errMsg
+                    return
+
                 errMsg += ".\nDo you still want to proceed ?"                          
                 r = askokcancel("Gato - Error", errMsg)
                 if r == False:

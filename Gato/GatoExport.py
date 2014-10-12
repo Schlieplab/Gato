@@ -718,8 +718,9 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
                 animation = collectAnimations([algorithm.animation_history.getHistoryOne(),
                                                algowin.codeLineHistory],
                                               ['g1_', 'l_'])
-        except IndexError:
+        except IndexError as e:
             print "Error:"
+            print e
             print "Filename: ", fileName
             print "Algowin: ", algowin
             print "Algorithm: ", algorithm
