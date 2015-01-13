@@ -70,7 +70,7 @@ biology at Rutgers University.
 
 
 setup(name="Gato",
-      version="1.2.1",
+      version="1.2.2",
       description="Graph Animation Toolbox: animating algorithms on graphs",
       long_description = long_description,
       author="Alexander Schliep and Winfried Hochstaettler",

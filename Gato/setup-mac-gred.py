@@ -77,7 +77,7 @@ biology at Rutgers University.
 
 setup(name="Gred",
       app=['Gred.py'],
-      version="1.2.1",
+      version="1.2.2",
       setup_requires=["py2app"],
       options=dict(py2app=dict(semi_standalone=None,
                                argv_emulation=True,
@@ -108,7 +108,7 @@ setup(name="Gred",
                                plist=dict(CFBundleIdentifier='org.schliep.gred',
                                           CFBundleGetInfoString='Graph Animation Toolbox',
                                           NSHumanReadableCopyright= \
-                                          u"\u00A9 Alexander Schliep and Winfried Hochst\u00E4ttler 2011")
+                                          u"\u00A9 Alexander Schliep and Winfried Hochst\u00E4ttler 2014")
                                )
                                ),
       description="Graph Animation Toolbox: animating algorithms on graphs",
