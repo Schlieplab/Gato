@@ -1,5 +1,11 @@
 Gato Release notes
 
+Gato 1.2.2 from 1/13/15
+- Finished work on SVG export
+- Lot's of minor bug fixes
+- Binaries now work on MacOS 10.9. There are display issues on Retina displays 
+
+
 Gato 1.1.3 from 5/10/13
 - Lots of internal improvements for upcoming release with SVG export
 - AnimationHistory almost feature complete for undo/redo 
