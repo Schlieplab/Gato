@@ -42,7 +42,7 @@ from distutils.core import setup,Extension
 import py2exe
 
 setup(name="Gato",
-      version="1.2.1",
+      version="1.2.2",
       description="the Graph Animation Toolbox",
       author="Gato authors",
       author_email="Gato",
