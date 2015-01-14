@@ -7,7 +7,7 @@
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{F8099CCA-6482-4114-9A3C-4A9BE6D68A95}
 AppName=CATBox
-AppVerName=CATBox 1.0RC1
+AppVerName=CATBox 1.2.2
 AppPublisher=Schliep & Hochstaettler
 AppPublisherURL=http://schliep.org/CATBox
 AppSupportURL=http://schliep.org/CATBox
@@ -15,13 +15,13 @@ AppUpdatesURL=http://schliep.org/CATBox
 DefaultDirName={pf}\Gato
 DefaultGroupName=CATBox
 AllowNoIcons=true
-LicenseFile=C:\Users\schliep\Projects\Gato\LGPL.txt
-InfoBeforeFile=C:\Users\schliep\Projects\Gato\installer-before.txt
-InfoAfterFile=C:\Users\schliep\Projects\Gato\installer-after.txt
+LicenseFile=LGPL.txt
+InfoBeforeFile=installer-before.txt
+InfoAfterFile=installer-after.txt
 OutputBaseFilename=CATBox-setup
 Compression=lzma
 SolidCompression=true
-AppCopyright=© 2010 Alexander Schliep & Winfried Hochstaettler
+AppCopyright=© 2015 Alexander Schliep & Winfried Hochstaettler
 ShowLanguageDialog=no
 
 [Languages]
@@ -31,8 +31,8 @@ Name: english; MessagesFile: compiler:Default.isl
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
 
 [Files]
-Source: C:\Users\schliep\Projects\Gato\dist\Gato.exe; DestDir: {app}; Flags: ignoreversion
-Source: C:\Users\schliep\Projects\Gato\dist\Gred.exe; DestDir: {app}; Flags: ignoreversion
+Source: dist\Gato.exe; DestDir: {app}; Flags: ignoreversion
+Source: dist\Gred.exe; DestDir: {app}; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 Source: dist\Gato.zip; DestDir: {app}
 Source: dist\pyexpat.pyd; DestDir: {app}
@@ -1002,6 +1002,16 @@ Source: dist\bz2.pyd; DestDir: {app}
 Source: sample.cat; DestDir: {userdocs}\CATBox; Tasks: ; Languages: 
 Source: BFS.alg; DestDir: {userdocs}\CATBox
 Source: BFS.pro; DestDir: {userdocs}\CATBox
+Source: ..\CATBox\02-GraphsNetworks\*; DestDir: {userdocs}\CATBox\02-GraphsNetworks\
+Source: ..\CATBox\03-MinimalSpanningTrees\*; DestDir: {userdocs}\CATBox\03-MinimalSpanningTrees\
+Source: ..\CATBox\04-LPDuality\*; DestDir: {userdocs}\CATBox\04-LPDuality\
+Source: ..\CATBox\05-ShortestPaths\*; DestDir: {userdocs}\CATBox\05-ShortestPaths\
+Source: ..\CATBox\06-MaximalFlows\*; DestDir: {userdocs}\CATBox\06-MaximalFlows\
+Source: ..\CATBox\07-MinimumCostFlows\*; DestDir: {userdocs}\CATBox\07-MinimumCostFlows\
+Source: ..\CATBox\08-Matching\*; DestDir: {userdocs}\CATBox\08-Matching\
+Source: ..\CATBox\09-WeightedMatching\*; DestDir: {userdocs}\CATBox\09-WeightedMatching\
+Source: ..\CATBox\Appendix\*; DestDir: {userdocs}\CATBox\Appendix\
+
 
 [Icons]
 Name: {group}\CATBox; Filename: {app}\Gato.exe
@@ -1012,3 +1022,13 @@ Filename: {app}\Gato.exe; Description: {cm:LaunchProgram,CATBox}; Flags: nowait 
 
 [Dirs]
 Name: {app}\tcl
+Name: {userdocs}\CATBox; Flags: uninsalwaysuninstall
+Name: {userdocs}\CATBox\02-GraphsNetworks
+Name: {userdocs}\CATBox\09-WeightedMatching
+Name: {userdocs}\CATBox\03-MinimalSpanningTrees
+Name: {userdocs}\CATBox\04-LPDuality
+Name: {userdocs}\CATBox\05-ShortestPaths
+Name: {userdocs}\CATBox\06-MaximalFlows
+Name: {userdocs}\CATBox\07-MinimumCostFlows
+Name: {userdocs}\CATBox\08-Matching
+Name: {userdocs}\CATBox\Appendix
