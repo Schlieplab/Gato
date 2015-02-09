@@ -1099,7 +1099,9 @@ function DeleteEdge(edge_id) {
 
     // Remove the tooltip if needed
 	var tooltip = g.tooltip_objects[edge_id + '_group_tooltip'];
-	tooltip.delete_self();	
+	if (tooltip) {
+		tooltip.delete_self();	
+	}
 }
 
 //Adds vertex of into specified graph and coordinates in graph
@@ -1154,6 +1156,10 @@ function DeleteVertex(vertex_id) {
 	vertex.remove()
 	if (vertex_label) {
 		vertex_label.remove()
+	}
+	var tooltip = g.tooltip_objects[group_id + '_tooltip'];
+	if (tooltip) {
+		tooltip.delete_self();
 	}
 	delete_vertex_annotation('va' + vertex_id);
 	delete g.vertices[g_num-1][vertex_id];
