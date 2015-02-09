@@ -143,10 +143,10 @@ instance = {
     '04-LPDuality/PD_Kruskal3.cat'
     ],
     '05-ShortestPaths/BellmanFord.alg':[
-    '05-ShortestPaths/BellmanFordWC.cat'
+    '05-ShortestPaths/BellmanFordWC.cat', 
     ],
     '05-ShortestPaths/Dijkstra.alg':[
-    '05-ShortestPaths/DijkstraRelabel.cat'
+    '05-ShortestPaths/DijkstraRelabel.cat', 
     ],
     '05-ShortestPaths/DijkstraPQ.alg':[
     '05-ShortestPaths/DijkstraRelabel.cat'
@@ -352,8 +352,8 @@ svg_instance = [
                     '05-ShortestPaths/ShortestPathsUndirected02.cat',
                     '05-ShortestPaths/ShortestPathsUndirected03.cat',
                     '05-ShortestPaths/7x7grid.cat',
-                    '05-ShortestPaths/NegArc.cat',
-                    '05-ShortestPaths/NegCircuit.cat'                   
+                    '05-ShortestPaths/NegCircuit.cat', 
+                    '05-ShortestPaths/NegArc.cat'
                 ]
             },
             {
@@ -552,7 +552,6 @@ svg_instance = [
         ]
     }
 ]
-
 
 #
 # Dictionary of graph name substitutes(e.g. if a graph name is too long we can map it to a different name here, and the sub will be used in the index page)

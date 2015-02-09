@@ -165,13 +165,18 @@ function ToolTip(elem, elem_type) {
     this.mouseover = function(evt) {
         // Move the tooltip to the cursor and make visible
         if (!this.frame_is_sized) {
-            var text_bbox = this.text_elem.getBBox();
-            this.frame_width = text_bbox.width + this.frame_padding_x;
-            this.frame_height = text_bbox.height*2 + 5;
-            this.frame.attr({'width': this.frame_width, 'height': this.frame_height});
+            this.size_frame();
         }
         this.g.attr({'visibility': 'visible'});
+        this.visible = true;
         this.mousemove(evt);
+    };
+
+    this.size_frame = function() {
+        var text_bbox = this.text_elem.getBBox();
+        this.frame_width = text_bbox.width + this.frame_padding_x;
+        this.frame_height = text_bbox.height*2 + 5;
+        this.frame.attr({'width': this.frame_width, 'height': this.frame_height});
     };
 
     this.mousemove = function(evt) {
@@ -189,13 +194,18 @@ function ToolTip(elem, elem_type) {
 
     this.mouseout = function(evt) {
         // Hide the tooltip
+        this.visible = false;
         this.g.attr({'visibility': 'hidden'});
     };
     this.change_text = function(text) {
         // Change the content of the ToolTip text node
         this.text_content = text;
         this.text_elem.node.textContent = text;
-        this.frame_is_sized = false;
+        if (this.visible) {
+            this.size_frame();
+        } else {
+            this.frame_is_sized = false;
+        }
     };
 
     this.delete_self = function() {
@@ -219,7 +229,8 @@ function ToolTip(elem, elem_type) {
         'id': this.id,
     });
     this.elem = elem;
-    this.frame_is_sized = true;     
+    this.frame_is_sized = true;
+    this.visible = false;
 
     // Build the tooltip
     if (elem_type === 'edge') {

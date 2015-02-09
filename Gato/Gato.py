@@ -1811,7 +1811,7 @@ class Algorithm:
             for m in modules:
                 exec("from Gato.%s import *" % m, self.algoGlobals, self.algoGlobals)
             
-            
+
         # transfer required globals
         self.algoGlobals['gInteractive'] = g.Interactive
         # Read in prolog and execute it
@@ -1835,7 +1835,7 @@ class Algorithm:
             self.GUI.HandleError(short_msg, long_msg, log.exception)            
             self.GUI.CommitStop()
             return
-        
+
         if prologOnly:
             return
         # Read in algo and execute it in the debugger

@@ -68,6 +68,9 @@ class AnimationParameters:
     PaperHeight = 1500 # "20i" XXX Should be real paper size
     PaperWidth = 1500 # "20i"
 
+    # Other
+    GeneratingSVG = 0
+
     # Editing
     GridSize = 50 # Grid size for editor
 
