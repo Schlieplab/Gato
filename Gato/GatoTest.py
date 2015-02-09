@@ -768,14 +768,17 @@ if __name__ == '__main__':
                     png_file_name = 'svgs/img/%s.png' % (graph_name)
                     svg_file_name = 'svgs/%s--%s.html' % (os.path.splitext(algo['file'])[0], graph_name)
                     algo_location = testPath + chapter_dict['chapter_directory'] + '/' + algo['file']
-                    if should_generate_animation(algo_location, testPath+graph_file, svg_file_name) or force_animation:
+                    generate_anim = should_generate_animation(algo_location, testPath+graph_file, svg_file_name)
+                    generate_png = should_generate_png(algo_location, testPath+graph_file, png_file_name)
+                    if generate_anim or generate_png or force_animation:
                         app.OpenAlgorithm(algo_location)
+                        app.OpenGraph(testPath + graph_file)
+                    if generate_anim or force_animation:
                         g.Interactive = 0 # This is set to 0 above.  Do we need to do it here as well?
                         g.GeneratingSVG = 1
                         app.algorithm.ClearBreakpoints()
                         app.update_idletasks()
                         app.update()
-                        app.OpenGraph(testPath + graph_file)
                         app.update_idletasks()
                         app.update()
                         # Run it ...
@@ -783,12 +786,13 @@ if __name__ == '__main__':
                         # does not return
                         app.CmdStart()
                         app.update_idletasks()
-
                         # Generate the SVG
                         app.ExportSVGAnimation(svg_file_name, chapter_number=chapter_dict['chapter_number'], algo_div=algo['title'].replace(' ', '').replace('-',''))
+                    else:
+                        print "Animation already generated, skipping."
 
                     index_graph_name = friendly_graph_names.get(graph_name, graph_name)
-                    if should_generate_png(algo_location, testPath+graph_file, png_file_name):
+                    if generate_png:
                         # Generate the PNG
                         if graph_file not in graph_pngs and has_png_libs:
                             png_dimensions = app.ExportSVG(png_file_name, write_to_png=True)
