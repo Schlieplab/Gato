@@ -139,8 +139,7 @@ function Animation() {
 		if (this.state === 'stopped' || this.state === 'done') {
 			if (this.state === 'done') {
 				// If we are done then reset the animation
-				this.step_num = 0;
-				this.jump_to_step(this.step_num);
+				this.jump_to_step(0);
 			}
 
 			this.state = 'animating';
@@ -184,6 +183,7 @@ function Animation() {
 
 	this.jump_to_step = function(n, move_slider) {
 		if (!g.jump_ready) {
+			console.log('returning');
 			return;
 		}
 		if (n === this.step_num) {

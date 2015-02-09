@@ -73,7 +73,6 @@ function Scaler() {
     };
 
     this.mousedown = function(evt) {
-        console.log('in scaler')
         g.scaler.scaling = true;
         var bbox = g.master_graph_container.getBBox();
         g.scaler.start_width = bbox.width * g.scaler.initial_scale;
@@ -424,7 +423,7 @@ function get_graph_x_trans() {
 }
 
 function position_graph(initial) {
-    // Used for initial translations, and also scaling of graph
+    /* Used for initial translations, and also scaling of graph */
     
     // Record the current scale
     var curr_scale = 1;
