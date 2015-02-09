@@ -151,7 +151,7 @@ function Animation() {
 	};
 
 	this.stop = function() {
-		if (this.state === 'animating' || this.state === 'stopped' || this.state === 'stepping') {
+		if (this.state === 'animating' || this.state === 'stopped' || this.state === 'stepping' || this.state === 'waiting') {
 			this.state = 'stopped';
 			clearTimeout(this.scheduled_animation);
 			g.slider.stop_animating();
@@ -187,7 +187,6 @@ function Animation() {
 			return;
 		}
 		if (n === this.step_num) {
-			console.log("returning");
 			return;
 		}
 		g.jumping = true;
@@ -204,7 +203,6 @@ function Animation() {
 		} else {
 			// We are moving backwards, or past the next state.  
 			// Iterate over the graph element types, and the graphs
-			// console.log("jumping from " + this.step_num + " to " + n);
 			for (var i=0; i<g.graph_elem_types.length; i++) {
 				var elem_type = g.graph_elem_types[i];
 				for (var g_num=0; g_num<g.num_graphs; g_num++) {
@@ -321,7 +319,6 @@ function Animation() {
 
 		var end_time = new Date().getTime();
 		var diff = end_time - start_time;
-		console.log(diff);
 	};
 
 	/*
