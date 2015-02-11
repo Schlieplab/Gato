@@ -183,7 +183,6 @@ function Animation() {
 
 	this.jump_to_step = function(n, move_slider) {
 		if (!g.jump_ready) {
-			console.log('returning');
 			return;
 		}
 		if (n === this.step_num) {
@@ -193,8 +192,6 @@ function Animation() {
 		var curr_state_ind = parseInt(this.step_num/this.state_interval);
 		var new_state_ind = parseInt(n/this.state_interval);
 		var state = this.graph_states[new_state_ind];
-
-		var start_time = new Date().getTime();
 
 		// TODO: Test to see whether it is faster to jump 500 then animate 500 vs animation 1000
 		if (n > this.step_num && n - this.step_num <= this.state_interval) {
@@ -316,9 +313,6 @@ function Animation() {
 		}, g.jump_interval);
 
 		this.start_time = new Date().getTime();
-
-		var end_time = new Date().getTime();
-		var diff = end_time - start_time;
 	};
 
 	/*

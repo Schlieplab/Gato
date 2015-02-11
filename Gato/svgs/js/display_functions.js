@@ -975,7 +975,6 @@ function Button(click_handler, path_str, active, translate, dim) {
         this.button.attr({'cursor': 'default'});    
     };
     this.pulsate = function() {
-        console.log('pulsating');
         this.button.animate({'fill': this.pulse_color}, 125);
         var self = this;
         setTimeout(function() {
