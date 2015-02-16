@@ -817,14 +817,19 @@ function BlinkEdge(edge_id, color){
 }
 
 function SetVertexFrameWidth(vertex_id, val) {
-	// Sets the stroke-width of a vertex
+	/* Sets the stroke-width of a vertex */
 
 	// Take away dropshadow(this get's messed up by changing stroke-width)
     var vertex = g.vertices[graph_num_from_id(vertex_id)][vertex_id];
+    var stroke_color = '';
 	if (val !== '0') {
+		stroke_color = vertex.attr('stroke');
         vertex.attr({"style": ""});
 	}
-    vertex.attr({'stroke-width': val});
+	if (!stroke_color || stroke_color === 'none') {
+		stroke_color = 'black';
+	}
+    vertex.attr({'stroke-width': val, 'stroke': stroke_color});
 
     // Add back in dropshadow
     if (val === "0") {
