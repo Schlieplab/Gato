@@ -267,7 +267,7 @@ svg_instance = [
             {
                 'title': 'Kruskal\'s Algorithm using FindCircuit',
                 'file': 'KruskalFindCircuit.alg',
-                'description': 'A more detailled, but naive implementation of Kruskal\'s '\
+                'description': 'A more detailled, but naive implementation of Kruskal\'s ' \
                 'algorithm, which checks for each edge to be added whether it completes a circuit.',
                 'graphs': [
                     '03-MinimalSpanningTrees/Kruskal1.cat','03-MinimalSpanningTrees/Kruskal2.cat',
@@ -359,7 +359,7 @@ svg_instance = [
             {
                 'title': 'Dijkstra\'s algorithm using a Priority Queue',
                 'file': 'DijkstraPQ.alg',
-                'description': 'Dijkstra\'s algorithm for finding a shortest path tree in a' \
+                'description': 'Dijkstra\'s algorithm for finding a shortest path tree in a ' \
                 'graph implemented using a Priority Queue.',
                 'graphs': [
                     '05-ShortestPaths/ShortestPathsUndirected02.cat',
@@ -386,7 +386,7 @@ svg_instance = [
                 'description': 'A variant of Dijkstra\'s algorithm for finding a shortest s-t ' \
                 'path in an Euclidean graph (edge weights correspond to Euclidean distance ' \
                 'between vertices). Terminates early, as soon as a shortest s-t path has been ' \
-                'found and only visits a small part of the graph. Similar ideas are used in '\
+                'found and only visits a small part of the graph. Similar ideas are used in ' \
                 'A*-type algorithms.',
                 'graphs': [
                     '05-ShortestPaths/ShortestPathsUndirected03.cat',
@@ -410,7 +410,7 @@ svg_instance = [
             {
                 'title': 'Finding Negative Circuits',
                 'file': 'NegativeCircuits.alg',
-                'description': 'Most shortest path algorithms require that graphs do not have '\
+                'description': 'Most shortest path algorithms require that graphs do not have ' \
                     'negative circuits. This algorithms detects negative circuits in a graph.',
                 'graphs': [
                     '05-ShortestPaths/NegCircuit.cat',
@@ -421,7 +421,7 @@ svg_instance = [
             {
                 'title': 'Find Path from Two Sources',
                 'file': 'TwoSources.alg',
-                'description': 'Finding a path can be accelerated by searching from start and' \
+                'description': 'Finding a path can be accelerated by searching from start and ' \
                 'destination simultaneously.',
                 'graphs': [
                     '05-ShortestPaths/ShortestPathsUndirected06.cat'
@@ -511,7 +511,7 @@ svg_instance = [
             {
                 'title': 'Bipartite',
                 'file': 'Bipartite.alg',
-                'description': 'This algorithm finds a maximal cardinality matching' \
+                'description': 'This algorithm finds a maximal cardinality matching ' \
                 'in a bipartite graph. In other words it maximes the number of matched ' \
                 'vertices',
                 'graphs': [
