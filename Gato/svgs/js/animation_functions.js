@@ -80,7 +80,6 @@ function Animation() {
 				var self = this;
 				this.scheduled_animation = setTimeout(function() {self.animator()}, next_anim_time);
 			}
-			// this.scheduled_animation = setTimeout(function() {self.animator()}, anim[0]*this.step_ms);
 		}
 	};
 
@@ -166,6 +165,7 @@ function Animation() {
 			// Get past the blocking command
 			this.do_command(anim_array[this.step_num]);
 			this.step_num ++;
+			g.slider.go_to_step(this.step_num);
 		}
 		this.state = 'animating';
 		this.start_time = new Date().getTime();
@@ -588,6 +588,8 @@ function Slider(width, height) {
 		this.width = width;
 		this.height = height;
 		this.g = snap.group();
+		this.slider_positions = [];
+		this.position_to_step = {};
 
 		// Construct the slider track
 		this.track_width = this.width;

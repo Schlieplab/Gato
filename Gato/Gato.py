@@ -1562,7 +1562,6 @@ class AlgorithmDebugger(bdb.Bdb):
             
         self.forget()
         
-        
     def do_next(self):
         self.set_next(self.curframe)
         

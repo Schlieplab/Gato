@@ -90,6 +90,16 @@ function get_ints_from_str(list_str) {
     }
 }
 
+function get_int_from_str(str) {
+    var re = /\d+/g;
+    var match = str.match(re);
+    if (match) {
+        return parseInt(match[0]);
+    } else {
+        return nil;
+    }
+}
+
 function get_floats_from_str(list_str) {
     // Given a python list of floats, return a javascript array of floats
     var re = /[+-]?\d+(\.\d+)?/g;
