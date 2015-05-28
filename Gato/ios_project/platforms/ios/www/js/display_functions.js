@@ -536,7 +536,7 @@ function SpeedControls(width, height) {
         {'label': '.5x', 'speed': 22, 'default_selected': false},
         {'label': '1x', 'speed': 10, 'default_selected': false},
         {'label': '2x', 'speed': 5, 'default_selected': false},
-        {'label': '4x', 'speed': .8, 'default_selected': true},
+        {'label': '4x', 'speed': 2, 'default_selected': true},
     ];
     this.button_settings = {
         'width': this.width,
