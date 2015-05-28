@@ -370,7 +370,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				"ARCHS[sdk=iphoneos*]" = armv7;
+				"ARCHS[sdk=iphoneos*]" = "$(ARCHS_STANDARD)";
 				"ARCHS[sdk=iphoneos6.*]" = (
 					armv7,
 					armv7s,
@@ -390,6 +390,7 @@
 				GCC_VERSION = "";
 				INSTALL_PATH = /usr/local/lib;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = Cordova;
 				PROVISIONING_PROFILE = "F53D72A4-34D4-4AC3-BF88-11D992FFBC1E";
 				PUBLIC_HEADERS_FOLDER_PATH = include/Cordova;
@@ -419,6 +420,8 @@
 				GCC_VERSION = "";
 				INSTALL_PATH = /usr/local/lib;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				"IPHONEOS_DEPLOYMENT_TARGET[sdk=iphoneos6.*]" = 5.1.1;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = Cordova;
 				PROVISIONING_PROFILE = "F53D72A4-34D4-4AC3-BF88-11D992FFBC1E";
 				PUBLIC_HEADERS_FOLDER_PATH = include/Cordova;
