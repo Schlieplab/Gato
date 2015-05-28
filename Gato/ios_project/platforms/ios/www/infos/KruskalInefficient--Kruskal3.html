@@ -1,0 +1,85 @@
+<html>
+ <head>
+  <link href="../css/info_page_style.css" rel="stylesheet"/>
+  <title>
+   Minimal Spanning Tree - Kruskal Inefficient
+  </title>
+ </head>
+ <body>
+  <h1>
+   Minimal Spanning Tree - Kruskal Inefficient
+  </h1>
+  This algorithm computes a minimal spanning tree in an undirected graph
+while allowing tracing into the relevant subroutines. Implementation
+does not merge the smaller component to the larger one resulting
+in a worse amortized complexity.
+  <h3>
+   Visualization (Main Graph)
+  </h3>
+  <h5>
+   Vertex Colors
+  </h5>
+  <dl>
+   <dt>
+    <div class="color_div" style="background-color: red">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    Vertex (and edge) colors designate the connected
+components in the subgraph induced by the trees during the
+computation. Therefore, each vertex has its own colors initially.
+   </dd>
+   <div class="clear_div">
+   </div>
+  </dl>
+  <h5>
+   Edge Colors
+  </h5>
+  <dl>
+   <dt>
+    <div class="color_div" style="background-color: #EEEEEE">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    Initial color for edges. Edges
+of this color have not been considered for inclusion in the MST yet.
+   </dd>
+   <div class="clear_div">
+   </div>
+   <dt>
+    <div class="color_div" style="background-color: yellow">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    Color of the edge being
+considered. (transient)
+   </dd>
+   <div class="clear_div">
+   </div>
+   <dt>
+    <div class="color_div" style="background-color: grey">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    Color of edges which are not part
+of the MST.
+   </dd>
+   <div class="clear_div">
+   </div>
+   <dt>
+    <div class="color_div" style="background-color: red">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    Edges which are part of the MST..
+   </dd>
+   <div class="clear_div">
+   </div>
+  </dl>
+ </body>
+</html>

@@ -1,0 +1,193 @@
+<html>
+ <head>
+  <link href="../css/info_page_style.css" rel="stylesheet"/>
+  <title>
+   Matching - Bipartite
+  </title>
+ </head>
+ <body>
+  This algorithm finds a maximum matching in a bipartite graph with
+partition V (red) and W (green). To proove the result it will show a
+minimum edge cover that has (in bipartite graphs) the same cardinality
+as the maximum matching (see Chapter 8 of the book).
+  <h3>
+   Visualization
+  </h3>
+  <h5>
+   Vertex Colors
+  </h5>
+  <dl>
+   <dt>
+    <div class="color_div" style="background-color: #ff9999">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    Initial color of the vertices. Color of one color class when the bipartition has been computed.
+   </dd>
+   <div class="clear_div">
+   </div>
+   <dt>
+    <div class="color_div" style="background-color: #99ff99">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    Color of the other color class when the bipartition has been computed.
+   </dd>
+   <div class="clear_div">
+   </div>
+   <dt>
+    <div class="color_div" style="background-color: #00cc00">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    Color of vertices that are in
+the queue Q or have been removed from the queue in the present
+procedure to search for an augmenting path.
+   </dd>
+   <div class="clear_div">
+   </div>
+   <dt>
+    <div class="color_div" style="background-color: red">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    Vertices of the red color class that have been marked in the present
+procedure to search for an augmenting path.
+   </dd>
+   <div class="clear_div">
+   </div>
+   <dt>
+    <div class="color_div" style="background-color: black">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    The vertex being
+    <em>
+     processed
+    </em>
+    is
+displayed with a wide outline in this color.
+   </dd>
+   <div class="clear_div">
+   </div>
+  </dl>
+  When a maximum matching has been found we use the following colors 
+show the vertex cover.
+  <dl>
+   <dt>
+    <div class="color_div" style="background-color: red">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    <em>
+     Covering
+    </em>
+    vertices from the red color class.
+   </dd>
+   <div class="clear_div">
+   </div>
+   <dt>
+    <div class="color_div" style="background-color: #99ff99">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    Covering vertices from the green color class.
+   </dd>
+   <div class="clear_div">
+   </div>
+   <dt>
+    <div class="color_div" style="background-color: black">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    All covering vertices
+are displayed with a wide outline in this color.
+   </dd>
+   <div class="clear_div">
+   </div>
+  </dl>
+  <p>
+   <h5>
+    Edge Colors
+   </h5>
+   <dl>
+    <dt>
+     <div class="color_div" style="background-color: #EEEEEE">
+      &nbsp;&nbsp;&nbsp;&nbsp;
+     </div>
+    </dt>
+    Initial color for all edges in the very beginning.
+   </dl>
+  </p>
+ </body>
+</html>
+<dt>
+ <div class="color_div" style="background-color: black">
+  &nbsp;&nbsp;&nbsp;&nbsp;
+ </div>
+</dt>
+Initial color for all edges when a search forest is grown.
+<dt>
+ <div class="color_div" style="background-color: blue">
+  &nbsp;&nbsp;&nbsp;&nbsp;
+ </div>
+</dt>
+<dd>
+ Edges in a matching.
+</dd>
+<div class="clear_div">
+</div>
+<dt>
+ <div class="color_div" style="background-color: yellow">
+  &nbsp;&nbsp;&nbsp;&nbsp;
+ </div>
+</dt>
+<dd>
+ Edge that is currently processed.
+</dd>
+<div class="clear_div">
+</div>
+<dt>
+ <div class="color_div" style="background-color: #ccccff">
+  &nbsp;&nbsp;&nbsp;&nbsp;
+ </div>
+</dt>
+<dd>
+ Non-matching edges in the search forest.
+</dd>
+<div class="clear_div">
+</div>
+<dt>
+ <div class="color_div" style="background-color: grey">
+  &nbsp;&nbsp;&nbsp;&nbsp;
+ </div>
+</dt>
+<dd>
+ Edges that have been processed but are not in the search forest.
+</dd>
+<div class="clear_div">
+</div>
+<h5>
+ Further elements
+</h5>
+<dl>
+ <dt>
+  <div class="color_div" style="background-color: yellow">
+   &nbsp;&nbsp;&nbsp;&nbsp;
+  </div>
+ </dt>
+ <dd>
+  When an augmenting path is found we indicate this by a yellow shade around the
+edges of the path.
+ </dd>
+ <div class="clear_div">
+ </div>
+</dl>

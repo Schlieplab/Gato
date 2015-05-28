@@ -1,0 +1,864 @@
+THelloCordova
+v6
+r1
+cCheck dependencies
+cProcessInfoPlistFile /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/Info.plist /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/HelloCordova-Info.plist
+cPhaseScriptExecution Copy\ www\ directory /Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Script-304B58A110DAC018002A0835.sh
+cCpResource HelloCordova/Resources/icons/icon-76.png build/emulator/HelloCordova.app/icon-76.png
+cCpResource HelloCordova/Resources/icons/icon-40@2x.png build/emulator/HelloCordova.app/icon-40@2x.png
+cCpResource HelloCordova/Resources/icons/icon-72.png build/emulator/HelloCordova.app/icon-72.png
+cCpResource HelloCordova/Resources/icons/icon.png build/emulator/HelloCordova.app/icon.png
+cCpResource HelloCordova/Resources/icons/icon@2x.png build/emulator/HelloCordova.app/icon@2x.png
+cCopyStringsFile /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/en.lproj/Localizable.strings HelloCordova/Resources/en.lproj/Localizable.strings
+cCompileXIB /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Classes/MainViewController.xib
+cCpResource HelloCordova/Resources/icons/icon-50.png build/emulator/HelloCordova.app/icon-50.png
+cCpResource HelloCordova/Resources/icons/icon-60@2x.png build/emulator/HelloCordova.app/icon-60@2x.png
+cCopyStringsFile /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/de.lproj/Localizable.strings HelloCordova/Resources/de.lproj/Localizable.strings
+cCpResource HelloCordova/Resources/icons/icon-small.png build/emulator/HelloCordova.app/icon-small.png
+cCpResource HelloCordova/Resources/splash/Default-Landscape@2x~ipad.png build/emulator/HelloCordova.app/Default-Landscape@2x~ipad.png
+cCpResource HelloCordova/Resources/splash/Default-Landscape~ipad.png build/emulator/HelloCordova.app/Default-Landscape~ipad.png
+cCpResource HelloCordova/Resources/splash/Default-Portrait@2x~ipad.png build/emulator/HelloCordova.app/Default-Portrait@2x~ipad.png
+cCpResource HelloCordova/Resources/icons/icon-small@2x.png build/emulator/HelloCordova.app/icon-small@2x.png
+cCpResource HelloCordova/Resources/splash/Default-Portrait~ipad.png build/emulator/HelloCordova.app/Default-Portrait~ipad.png
+cCpResource HelloCordova/Resources/icons/icon-40.png build/emulator/HelloCordova.app/icon-40.png
+cCpResource HelloCordova/Resources/splash/Default@2x~iphone.png build/emulator/HelloCordova.app/Default@2x~iphone.png
+cCpResource HelloCordova/Resources/icons/icon-60.png build/emulator/HelloCordova.app/icon-60.png
+cCpResource HelloCordova/Resources/splash/Default~iphone.png build/emulator/HelloCordova.app/Default~iphone.png
+cCpResource HelloCordova/Resources/splash/Default-568h@2x~iphone.png build/emulator/HelloCordova.app/Default-568h@2x~iphone.png
+cCpResource HelloCordova/Resources/icons/icon-76@2x.png build/emulator/HelloCordova.app/icon-76@2x.png
+cCpResource HelloCordova/Resources/icons/icon-50@2x.png build/emulator/HelloCordova.app/icon-50@2x.png
+cCpResource HelloCordova/Resources/icons/icon-72@2x.png build/emulator/HelloCordova.app/icon-72@2x.png
+cProcessPCH /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/HelloCordova-Prefix-dyucdqdstgwoivacghxkqytyeurk/HelloCordova-Prefix.pch.pch HelloCordova/HelloCordova-Prefix.pch normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+cCompileC build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/main.o /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/main.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+cCompileC build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/AppDelegate.o /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Classes/AppDelegate.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+cCompileC build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/MainViewController.o /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Classes/MainViewController.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+cCompileC build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/CDVLogger.o /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Plugins/org.apache.cordova.console/CDVLogger.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+cLd /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/HelloCordova normal i386
+cGenerateDSYMFile /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app.dSYM /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/HelloCordova
+cTouch /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app
+
+N/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk
+c0000000053626D0E0000000000000198
+t1398959374
+s408
+
+N/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/SDKSettings.plist
+c00000000533047F100000000000003B4
+t1395673073
+s948
+
+N/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/CoreServices/SystemVersion.plist
+c00000000533047FB000000000000019E
+t1395673083
+s414
+
+N/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/Frameworks/AssetsLibrary.framework/AssetsLibrary
+c00000000533047FD0000000000059340
+t1395673085
+s365376
+
+N/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics
+c0000000053626CA30000000000446820
+t1398959267
+s4483104
+
+N/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/Frameworks/CoreLocation.framework/CoreLocation
+c00000000533047FE00000000000F1A80
+t1395673086
+s989824
+
+N/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/Frameworks/MobileCoreServices.framework/MobileCoreServices
+c000000005330480200000000001BE790
+t1395673090
+s1828752
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Classes/AppDelegate.m
+c000000005370F2FD00000000000013AF
+t1399911165
+s5039
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Classes/MainViewController.m
+c000000005370F2FD000000000000126D
+t1399911165
+s4717
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Classes/MainViewController.xib
+c000000005370F2FD0000000000001759
+t1399911165
+s5977
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/HelloCordova-Info.plist
+c0000000053BD9F2C00000000000009D7
+t1404935980
+s2519
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/HelloCordova-Prefix.pch
+c000000005370F2FD00000000000003C9
+t1399911165
+s969
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Plugins/org.apache.cordova.console/CDVLogger.m
+c000000005370FACA0000000000000490
+t1399913162
+s1168
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/de.lproj/Localizable.strings
+c000000005370F2FD00000000000004C0
+t1399911165
+s1216
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/en.lproj/Localizable.strings
+c000000005370F2FD00000000000004AB
+t1399911165
+s1195
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/icons/icon-40.png
+c000000005370F2FD0000000000000FF2
+t1399911165
+s4082
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/icons/icon-40@2x.png
+c000000005370F2FD0000000000001CF3
+t1399911165
+s7411
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/icons/icon-50.png
+c000000005370F2FD000000000000130A
+t1399911165
+s4874
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/icons/icon-50@2x.png
+c000000005370F2FD000000000000258B
+t1399911165
+s9611
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/icons/icon-60.png
+c000000005370F2FD00000000000016B3
+t1399911165
+s5811
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/icons/icon-60@2x.png
+c000000005370F2FD0000000000002E94
+t1399911165
+s11924
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/icons/icon-72.png
+c000000005370F2FD0000000000001350
+t1399911165
+s4944
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/icons/icon-72@2x.png
+c000000005370F2FD0000000000002DBA
+t1399911165
+s11706
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/icons/icon-76.png
+c000000005370F2FD0000000000001B71
+t1399911165
+s7025
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/icons/icon-76@2x.png
+c000000005370F2FD0000000000003B9E
+t1399911165
+s15262
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/icons/icon-small.png
+c000000005370F2FD0000000000000CDE
+t1399911165
+s3294
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/icons/icon-small@2x.png
+c000000005370F2FD00000000000015E8
+t1399911165
+s5608
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/icons/icon.png
+c000000005370F2FD0000000000000F3E
+t1399911165
+s3902
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/icons/icon@2x.png
+c000000005370F2FD0000000000001EBD
+t1399911165
+s7869
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/splash/Default-568h@2x~iphone.png
+c000000005370F2FD00000000000085B1
+t1399911165
+s34225
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/splash/Default-Landscape@2x~ipad.png
+c000000005370F2FD0000000000033D0A
+t1399911165
+s212234
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/splash/Default-Landscape~ipad.png
+c000000005370F2FD00000000000166A2
+t1399911165
+s91810
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/splash/Default-Portrait@2x~ipad.png
+c000000005370F2FD0000000000033F7C
+t1399911165
+s212860
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/splash/Default-Portrait~ipad.png
+c000000005370F2FD0000000000016641
+t1399911165
+s91713
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/splash/Default@2x~iphone.png
+c000000005370F2FD0000000000007323
+t1399911165
+s29475
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/splash/Default~iphone.png
+c000000005370F2FD000000000000289A
+t1399911165
+s10394
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/main.m
+c000000005370F2FD000000000000045E
+t1399911165
+s1118
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/AppDelegate.o
+t1404936084
+s73964
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/CDVLogger.o
+t1404936084
+s41508
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/HelloCordova.LinkFileList
+c0000000053BD9F380000000000000252
+t1404935992
+s594
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/MainViewController.o
+t1404936084
+s51544
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/main.o
+t1404936084
+s2972
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Script-304B58A110DAC018002A0835.sh
+c0000000053BD9F38000000000000002D
+t1404935992
+s45
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app
+t1404936087
+s1020
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app.dSYM
+t2
+s0
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/Default-568h@2x~iphone.png
+t1404935993
+s34225
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/Default-Landscape@2x~ipad.png
+t1404935993
+s212234
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/Default-Landscape~ipad.png
+t1404935993
+s91810
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/Default-Portrait@2x~ipad.png
+t1404935993
+s212860
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/Default-Portrait~ipad.png
+t1404935993
+s91713
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/Default@2x~iphone.png
+t1404935993
+s29475
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/Default~iphone.png
+t1404935993
+s10394
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/HelloCordova
+t1404936087
+s285784
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/Info.plist
+t1404935992
+s1249
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/MainViewController.nib
+t1404936061
+s1332
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/PkgInfo
+t2
+s0
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/de.lproj/Localizable.strings
+t1404935993
+s280
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/en.lproj/Localizable.strings
+t1404935993
+s166
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/icon-40.png
+t1404935993
+s4082
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/icon-40@2x.png
+t1404935993
+s7411
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/icon-50.png
+t1404935993
+s4874
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/icon-50@2x.png
+t1404935993
+s9611
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/icon-60.png
+t1404935993
+s5811
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/icon-60@2x.png
+t1404935993
+s11924
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/icon-72.png
+t1404935993
+s4944
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/icon-72@2x.png
+t1404935993
+s11706
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/icon-76.png
+t1404935993
+s7025
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/icon-76@2x.png
+t1404935993
+s15262
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/icon-small.png
+t1404935993
+s3294
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/icon-small@2x.png
+t1404935993
+s5608
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/icon.png
+t1404935993
+s3902
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/icon@2x.png
+t1404935993
+s7869
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/libCordova.a
+c0000000053BD9F3800000000000D3760
+t1404935992
+s866144
+
+N/var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/HelloCordova-Prefix-dyucdqdstgwoivacghxkqytyeurk/HelloCordova-Prefix.pch.pch
+t1404936083
+s5373968
+
+CCheck dependencies
+r0
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection18"Check dependencies18"Check dependenciesa37673b8d66db941^1ac374b8d66db941^---0#1#1#--18"Check dependencies36"894FC62A-C2E9-41B9-ACA5-68771BF3D56A-
+
+CCompileC build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/AppDelegate.o /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Classes/AppDelegate.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+s426628884.501695
+e426628884.710434
+r1
+xCompileC
+xbuild/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/AppDelegate.o
+x/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Classes/AppDelegate.m
+xnormal
+xi386
+xobjective-c
+xcom.apple.compilers.llvm.clang.1_0.compiler
+d/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Classes/AppDelegate.m
+d/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Classes/AppDelegate.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVViewController.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVAvailability.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVInvokedUrlCommand.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVCommandDelegate.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVCommandQueue.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVWhitelist.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVScreenOrientationDelegate.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVPlugin.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVPluginResult.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSMutableArray+QueueAdditions.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Classes/MainViewController.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVCommandDelegateImpl.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection91"Compile /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Classes/AppDelegate.m227"[1mCompileC[0m build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/AppDelegate.o [1mHelloCordova/Classes/AppDelegate.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compilerba878014d76db941^cdeab514d76db941^---0#0#1#-19%DVTDocumentLocation2@90"file:///Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Classes/AppDelegate.m0000000000000000^3864"[1mCompileC[0m build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/AppDelegate.o [1mHelloCordova/Classes/AppDelegate.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler    cd /Users/smerk/workspace/mobile-gato/platforms/ios    export LANG=en_US.US-ASCII    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x objective-c -arch i386 -fmessage-length=80 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit=0 -fcolor-diagnostics -std=c99 -fobjc-arc -Wno-trigraphs -fpascal-strings -O0 -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-implicit-atomic-properties -Wno-receiver-is-weak -Wno-arc-repeated-use-of-weak -Wduplicate-method-match -Wno-missing-braces -Wparentheses -Wswitch -Wunused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wempty-body -Wuninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wno-shorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wundeclared-selector -Wno-deprecated-implementations -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk -fexceptions -fasm-blocks -fstrict-aliasing -Wprotocol -Wdeprecated-declarations -g -fvisibility=hidden -Wno-sign-conversion -fobjc-abi-version=2 -fobjc-legacy-dispatch -mios-simulator-version-min=5.1 -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/HelloCordova-generated-files.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/HelloCordova-own-target-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/HelloCordova-all-target-headers.hmap -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/HelloCordova-project-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/usr/local/lib/include -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/UninstalledProducts/include -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/DerivedSources/i386 -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/DerivedSources -F/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator -include /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/HelloCordova-Prefix-dyucdqdstgwoivacghxkqytyeurk/HelloCordova-Prefix.pch -MMD -MT dependencies -MF /Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/AppDelegate.d --serialize-diagnostics /Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/AppDelegate.dia -c /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Classes/AppDelegate.m -o /Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/AppDelegate.o36"239B8C36-C0C4-4E4A-9B17-A604B4C6C7C4-
+b9BA368E8-4FC9-40E7-8D40-B85F3DD878A9
+
+CCompileC build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/CDVLogger.o /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Plugins/org.apache.cordova.console/CDVLogger.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+s426628884.803254
+e426628884.959701
+r1
+xCompileC
+xbuild/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/CDVLogger.o
+x/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Plugins/org.apache.cordova.console/CDVLogger.m
+xnormal
+xi386
+xobjective-c
+xcom.apple.compilers.llvm.clang.1_0.compiler
+d/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Plugins/org.apache.cordova.console/CDVLogger.m
+d/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Plugins/org.apache.cordova.console/CDVLogger.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVPlugin.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVPluginResult.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSMutableArray+QueueAdditions.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVCommandDelegate.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVAvailability.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVInvokedUrlCommand.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDV.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVViewController.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVCommandQueue.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVWhitelist.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVScreenOrientationDelegate.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVURLProtocol.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVDebug.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVLocalStorage.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVTimer.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSArray+Comparisons.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSData+Base64.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSDictionary+Extensions.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/UIDevice+Extensions.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVJSON.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection116"Compile /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Plugins/org.apache.cordova.console/CDVLogger.m250"[1mCompileC[0m build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/CDVLogger.o [1mHelloCordova/Plugins/org.apache.cordova.console/CDVLogger.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler5abbcd14d76db941^68b0f514d76db941^---0#0#1#-19%DVTDocumentLocation2@115"file:///Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Plugins/org.apache.cordova.console/CDVLogger.m0000000000000000^3906"[1mCompileC[0m build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/CDVLogger.o [1mHelloCordova/Plugins/org.apache.cordova.console/CDVLogger.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler    cd /Users/smerk/workspace/mobile-gato/platforms/ios    export LANG=en_US.US-ASCII    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x objective-c -arch i386 -fmessage-length=80 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit=0 -fcolor-diagnostics -std=c99 -fobjc-arc -Wno-trigraphs -fpascal-strings -O0 -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-implicit-atomic-properties -Wno-receiver-is-weak -Wno-arc-repeated-use-of-weak -Wduplicate-method-match -Wno-missing-braces -Wparentheses -Wswitch -Wunused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wempty-body -Wuninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wno-shorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wundeclared-selector -Wno-deprecated-implementations -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk -fexceptions -fasm-blocks -fstrict-aliasing -Wprotocol -Wdeprecated-declarations -g -fvisibility=hidden -Wno-sign-conversion -fobjc-abi-version=2 -fobjc-legacy-dispatch -mios-simulator-version-min=5.1 -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/HelloCordova-generated-files.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/HelloCordova-own-target-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/HelloCordova-all-target-headers.hmap -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/HelloCordova-project-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/usr/local/lib/include -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/UninstalledProducts/include -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/DerivedSources/i386 -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/DerivedSources -F/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator -include /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/HelloCordova-Prefix-dyucdqdstgwoivacghxkqytyeurk/HelloCordova-Prefix.pch -MMD -MT dependencies -MF /Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/CDVLogger.d --serialize-diagnostics /Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/CDVLogger.dia -c /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Plugins/org.apache.cordova.console/CDVLogger.m -o /Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/CDVLogger.o36"1BA169D1-9FF8-4DCC-80B9-5968A3E311AF-
+b9BA368E8-4FC9-40E7-8D40-B85F3DD878A9
+
+CCompileC build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/MainViewController.o /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Classes/MainViewController.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+s426628884.711015
+e426628884.802882
+r1
+xCompileC
+xbuild/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/MainViewController.o
+x/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Classes/MainViewController.m
+xnormal
+xi386
+xobjective-c
+xcom.apple.compilers.llvm.clang.1_0.compiler
+d/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Classes/MainViewController.m
+d/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Classes/MainViewController.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVViewController.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVAvailability.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVInvokedUrlCommand.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVCommandDelegate.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVCommandQueue.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVWhitelist.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVScreenOrientationDelegate.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVPlugin.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVPluginResult.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSMutableArray+QueueAdditions.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVCommandDelegateImpl.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection98"Compile /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Classes/MainViewController.m241"[1mCompileC[0m build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/MainViewController.o [1mHelloCordova/Classes/MainViewController.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler8a1cb614d76db941^1e8bcd14d76db941^---0#0#1#-19%DVTDocumentLocation2@97"file:///Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Classes/MainViewController.m0000000000000000^3906"[1mCompileC[0m build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/MainViewController.o [1mHelloCordova/Classes/MainViewController.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler    cd /Users/smerk/workspace/mobile-gato/platforms/ios    export LANG=en_US.US-ASCII    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x objective-c -arch i386 -fmessage-length=80 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit=0 -fcolor-diagnostics -std=c99 -fobjc-arc -Wno-trigraphs -fpascal-strings -O0 -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-implicit-atomic-properties -Wno-receiver-is-weak -Wno-arc-repeated-use-of-weak -Wduplicate-method-match -Wno-missing-braces -Wparentheses -Wswitch -Wunused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wempty-body -Wuninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wno-shorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wundeclared-selector -Wno-deprecated-implementations -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk -fexceptions -fasm-blocks -fstrict-aliasing -Wprotocol -Wdeprecated-declarations -g -fvisibility=hidden -Wno-sign-conversion -fobjc-abi-version=2 -fobjc-legacy-dispatch -mios-simulator-version-min=5.1 -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/HelloCordova-generated-files.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/HelloCordova-own-target-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/HelloCordova-all-target-headers.hmap -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/HelloCordova-project-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/usr/local/lib/include -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/UninstalledProducts/include -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/DerivedSources/i386 -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/DerivedSources -F/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator -include /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/HelloCordova-Prefix-dyucdqdstgwoivacghxkqytyeurk/HelloCordova-Prefix.pch -MMD -MT dependencies -MF /Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/MainViewController.d --serialize-diagnostics /Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/MainViewController.dia -c /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Classes/MainViewController.m -o /Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/MainViewController.o36"D2FEE2B7-85DB-40FE-AB3C-11B71182F093-
+b9BA368E8-4FC9-40E7-8D40-B85F3DD878A9
+
+CCompileC build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/main.o /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/main.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+s426628883.953133
+e426628884.501312
+r1
+xCompileC
+xbuild/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/main.o
+x/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/main.m
+xnormal
+xi386
+xobjective-c
+xcom.apple.compilers.llvm.clang.1_0.compiler
+d/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/main.m
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection76"Compile /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/main.m205"[1mCompileC[0m build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/main.o [1mHelloCordova/main.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler3b1df413d76db941^eb558014d76db941^---0#0#1#-19%DVTDocumentLocation2@75"file:///Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/main.m0000000000000000^3806"[1mCompileC[0m build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/main.o [1mHelloCordova/main.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler    cd /Users/smerk/workspace/mobile-gato/platforms/ios    export LANG=en_US.US-ASCII    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x objective-c -arch i386 -fmessage-length=80 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit=0 -fcolor-diagnostics -std=c99 -fobjc-arc -Wno-trigraphs -fpascal-strings -O0 -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-implicit-atomic-properties -Wno-receiver-is-weak -Wno-arc-repeated-use-of-weak -Wduplicate-method-match -Wno-missing-braces -Wparentheses -Wswitch -Wunused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wempty-body -Wuninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wno-shorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wundeclared-selector -Wno-deprecated-implementations -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk -fexceptions -fasm-blocks -fstrict-aliasing -Wprotocol -Wdeprecated-declarations -g -fvisibility=hidden -Wno-sign-conversion -fobjc-abi-version=2 -fobjc-legacy-dispatch -mios-simulator-version-min=5.1 -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/HelloCordova-generated-files.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/HelloCordova-own-target-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/HelloCordova-all-target-headers.hmap -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/HelloCordova-project-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/usr/local/lib/include -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/UninstalledProducts/include -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/DerivedSources/i386 -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/DerivedSources -F/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator -include /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/HelloCordova-Prefix-dyucdqdstgwoivacghxkqytyeurk/HelloCordova-Prefix.pch -MMD -MT dependencies -MF /Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/main.d --serialize-diagnostics /Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/main.dia -c /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/main.m -o /Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/main.o36"BA2447B3-6E91-41BD-AD54-2BA9F66CFDD0-
+b9BA368E8-4FC9-40E7-8D40-B85F3DD878A9
+
+CCompileXIB /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Classes/MainViewController.xib
+s426628793.460952
+e426628873.565577
+r1
+xCompileXIB
+x/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Classes/MainViewController.xib
+o2014-07-09 16:00:53.014 Interface Builder Cocoa Touch Tool[14851:303] CFPreferences: user home directory at file:///Users/smerk/Library/Application%20Support/iPhone%20Simulator/User/ is unavailable. User domains will be volatile.
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection102"Compiling /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Classes/MainViewController.xib70"[1mCompileXIB[0m [1mHelloCordova/Classes/MainViewController.xib[0md61a76b9d66db941^43e49009d76db941^-230"2014-07-09 16:00:53.014 Interface Builder Cocoa Touch Tool[14851:303] CFPreferences: user home directory at file:///Users/smerk/Library/Application%20Support/iPhone%20Simulator/User/ is unavailable. User domains will be volatile.-0#0#1#-19%DVTDocumentLocation2@99"file:///Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Classes/MainViewController.xib0000000000000000^883"[1mCompileXIB[0m [1mHelloCordova/Classes/MainViewController.xib[0m    cd /Users/smerk/workspace/mobile-gato/platforms/ios    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    export XCODE_DEVELOPER_USR_PATH=/Applications/Xcode.app/Contents/Developer/usr/bin/..    /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/ibtool --errors --warnings --notices --minimum-deployment-target 5.1 --output-format human-readable-text --compile /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/MainViewController.nib /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Classes/MainViewController.xib36"CE336F3D-4AA9-4E22-9030-05B018B0E417-
+b9BA368E8-4FC9-40E7-8D40-B85F3DD878A9
+
+CCopyStringsFile /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/de.lproj/Localizable.strings HelloCordova/Resources/de.lproj/Localizable.strings
+s426628793.463926
+e426628793.489376
+r1
+xCopyStringsFile
+x/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/de.lproj/Localizable.strings
+xHelloCordova/Resources/de.lproj/Localizable.strings
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection56"Copy HelloCordova/Resources/de.lproj/Localizable.strings136"[1mCopyStringsFile[0m build/emulator/HelloCordova.app/de.lproj/Localizable.strings HelloCordova/Resources/de.lproj/Localizable.stringsbbf176b9d66db941^cb487db9d66db941^---0#0#1#-19%DVTDocumentLocation2@107"file:///Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/de.lproj/Localizable.strings0000000000000000^682"[1mCopyStringsFile[0m build/emulator/HelloCordova.app/de.lproj/Localizable.strings HelloCordova/Resources/de.lproj/Localizable.strings    cd /Users/smerk/workspace/mobile-gato/platforms/ios    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copyStrings --validate --inputencoding utf-8 --outputencoding binary --outdir /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/de.lproj -- HelloCordova/Resources/de.lproj/Localizable.strings36"26A3ABA8-5829-4EF3-9EF4-C1846718EBF7-
+b9BA368E8-4FC9-40E7-8D40-B85F3DD878A9
+
+CCopyStringsFile /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/en.lproj/Localizable.strings HelloCordova/Resources/en.lproj/Localizable.strings
+s426628793.460421
+e426628793.464047
+r1
+xCopyStringsFile
+x/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/en.lproj/Localizable.strings
+xHelloCordova/Resources/en.lproj/Localizable.strings
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection56"Copy HelloCordova/Resources/en.lproj/Localizable.strings136"[1mCopyStringsFile[0m build/emulator/HelloCordova.app/en.lproj/Localizable.strings HelloCordova/Resources/en.lproj/Localizable.strings292376b9d66db941^60cc76b9d66db941^---0#0#1#-19%DVTDocumentLocation2@107"file:///Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/en.lproj/Localizable.strings0000000000000000^682"[1mCopyStringsFile[0m build/emulator/HelloCordova.app/en.lproj/Localizable.strings HelloCordova/Resources/en.lproj/Localizable.strings    cd /Users/smerk/workspace/mobile-gato/platforms/ios    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copyStrings --validate --inputencoding utf-8 --outputencoding binary --outdir /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/en.lproj -- HelloCordova/Resources/en.lproj/Localizable.strings36"9A555F6B-EE25-4411-91A2-F040A52DC717-
+b9BA368E8-4FC9-40E7-8D40-B85F3DD878A9
+
+CCpResource HelloCordova/Resources/icons/icon-40.png build/emulator/HelloCordova.app/icon-40.png
+s426628793.492844
+e426628793.494069
+r1
+xCpResource
+xHelloCordova/Resources/icons/icon-40.png
+xbuild/emulator/HelloCordova.app/icon-40.png
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection48"Copy build/emulator/HelloCordova.app/icon-40.png103"[1mCpResource[0m HelloCordova/Resources/icons/icon-40.png build/emulator/HelloCordova.app/icon-40.png683f7eb9d66db941^317a7eb9d66db941^---0#0#1#-19%DVTDocumentLocation2@99"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/icon-40.png00349454ddffdf42^697"[1mCpResource[0m HelloCordova/Resources/icons/icon-40.png build/emulator/HelloCordova.app/icon-40.png    cd /Users/smerk/workspace/mobile-gato/platforms/ios    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/icons/icon-40.png /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app36"47F85505-821D-4E61-91D7-7D7EE42C8359-
+b9BA368E8-4FC9-40E7-8D40-B85F3DD878A9
+
+CCpResource HelloCordova/Resources/icons/icon-40@2x.png build/emulator/HelloCordova.app/icon-40@2x.png
+s426628793.445660
+e426628793.459881
+r1
+xCpResource
+xHelloCordova/Resources/icons/icon-40@2x.png
+xbuild/emulator/HelloCordova.app/icon-40@2x.png
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection51"Copy build/emulator/HelloCordova.app/icon-40@2x.png109"[1mCpResource[0m HelloCordova/Resources/icons/icon-40@2x.png build/emulator/HelloCordova.app/icon-40@2x.pngd73172b9d66db941^b2be75b9d66db941^---0#0#1#-19%DVTDocumentLocation2@102"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/icon-40@2x.png00349454ddffdf42^706"[1mCpResource[0m HelloCordova/Resources/icons/icon-40@2x.png build/emulator/HelloCordova.app/icon-40@2x.png    cd /Users/smerk/workspace/mobile-gato/platforms/ios    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/icons/icon-40@2x.png /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app36"E371CF3A-C32D-4AE7-A386-86C74EF4CD58-
+b9BA368E8-4FC9-40E7-8D40-B85F3DD878A9
+
+CCpResource HelloCordova/Resources/icons/icon-50.png build/emulator/HelloCordova.app/icon-50.png
+s426628793.461874
+e426628793.463443
+r1
+xCpResource
+xHelloCordova/Resources/icons/icon-50.png
+xbuild/emulator/HelloCordova.app/icon-50.png
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection48"Copy build/emulator/HelloCordova.app/icon-50.png103"[1mCpResource[0m HelloCordova/Resources/icons/icon-50.png build/emulator/HelloCordova.app/icon-50.pngca5376b9d66db941^dba476b9d66db941^---0#0#1#-19%DVTDocumentLocation2@99"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/icon-50.png00349454ddffdf42^697"[1mCpResource[0m HelloCordova/Resources/icons/icon-50.png build/emulator/HelloCordova.app/icon-50.png    cd /Users/smerk/workspace/mobile-gato/platforms/ios    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/icons/icon-50.png /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app36"DE6B201A-5024-430A-97D5-DC25FC1F0820-
+b9BA368E8-4FC9-40E7-8D40-B85F3DD878A9
+
+CCpResource HelloCordova/Resources/icons/icon-50@2x.png build/emulator/HelloCordova.app/icon-50@2x.png
+s426628793.506816
+e426628793.513229
+r1
+xCpResource
+xHelloCordova/Resources/icons/icon-50@2x.png
+xbuild/emulator/HelloCordova.app/icon-50@2x.png
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection51"Copy build/emulator/HelloCordova.app/icon-50@2x.png109"[1mCpResource[0m HelloCordova/Resources/icons/icon-50@2x.png build/emulator/HelloCordova.app/icon-50@2x.png8bde81b9d66db941^566583b9d66db941^---0#0#1#-19%DVTDocumentLocation2@102"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/icon-50@2x.png00349454ddffdf42^706"[1mCpResource[0m HelloCordova/Resources/icons/icon-50@2x.png build/emulator/HelloCordova.app/icon-50@2x.png    cd /Users/smerk/workspace/mobile-gato/platforms/ios    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/icons/icon-50@2x.png /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app36"19E2EAD1-0AED-431F-B843-B8AA306552AC-
+b9BA368E8-4FC9-40E7-8D40-B85F3DD878A9
+
+CCpResource HelloCordova/Resources/icons/icon-60.png build/emulator/HelloCordova.app/icon-60.png
+s426628793.504348
+e426628793.506302
+r1
+xCpResource
+xHelloCordova/Resources/icons/icon-60.png
+xbuild/emulator/HelloCordova.app/icon-60.png
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection48"Copy build/emulator/HelloCordova.app/icon-60.png103"[1mCpResource[0m HelloCordova/Resources/icons/icon-60.png build/emulator/HelloCordova.app/icon-60.pngd93d81b9d66db941^679d81b9d66db941^---0#0#1#-19%DVTDocumentLocation2@99"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/icon-60.png00349454ddffdf42^697"[1mCpResource[0m HelloCordova/Resources/icons/icon-60.png build/emulator/HelloCordova.app/icon-60.png    cd /Users/smerk/workspace/mobile-gato/platforms/ios    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/icons/icon-60.png /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app36"7080CC39-E0A6-4832-A385-699F3D2AAB48-
+b9BA368E8-4FC9-40E7-8D40-B85F3DD878A9
+
+CCpResource HelloCordova/Resources/icons/icon-60@2x.png build/emulator/HelloCordova.app/icon-60@2x.png
+s426628793.462761
+e426628793.464682
+r1
+xCpResource
+xHelloCordova/Resources/icons/icon-60@2x.png
+xbuild/emulator/HelloCordova.app/icon-60@2x.png
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection51"Copy build/emulator/HelloCordova.app/icon-60@2x.png109"[1mCpResource[0m HelloCordova/Resources/icons/icon-60@2x.png build/emulator/HelloCordova.app/icon-60@2x.pngbaa076b9d66db941^c3ef76b9d66db941^---0#0#1#-19%DVTDocumentLocation2@102"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/icon-60@2x.png00349454ddffdf42^706"[1mCpResource[0m HelloCordova/Resources/icons/icon-60@2x.png build/emulator/HelloCordova.app/icon-60@2x.png    cd /Users/smerk/workspace/mobile-gato/platforms/ios    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/icons/icon-60@2x.png /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app36"D65E5F1F-B363-4871-A782-C3B096D6EF1D-
+b9BA368E8-4FC9-40E7-8D40-B85F3DD878A9
+
+CCpResource HelloCordova/Resources/icons/icon-72.png build/emulator/HelloCordova.app/icon-72.png
+s426628793.445878
+e426628793.460252
+r1
+xCpResource
+xHelloCordova/Resources/icons/icon-72.png
+xbuild/emulator/HelloCordova.app/icon-72.png
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection48"Copy build/emulator/HelloCordova.app/icon-72.png103"[1mCpResource[0m HelloCordova/Resources/icons/icon-72.png build/emulator/HelloCordova.app/icon-72.png323c72b9d66db941^5ed575b9d66db941^---0#0#1#-19%DVTDocumentLocation2@99"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/icon-72.png00349454ddffdf42^697"[1mCpResource[0m HelloCordova/Resources/icons/icon-72.png build/emulator/HelloCordova.app/icon-72.png    cd /Users/smerk/workspace/mobile-gato/platforms/ios    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/icons/icon-72.png /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app36"AC480A92-EA90-4491-95A4-4C7B053A3787-
+b9BA368E8-4FC9-40E7-8D40-B85F3DD878A9
+
+CCpResource HelloCordova/Resources/icons/icon-72@2x.png build/emulator/HelloCordova.app/icon-72@2x.png
+s426628793.507130
+e426628793.513270
+r1
+xCpResource
+xHelloCordova/Resources/icons/icon-72@2x.png
+xbuild/emulator/HelloCordova.app/icon-72@2x.png
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection51"Copy build/emulator/HelloCordova.app/icon-72@2x.png109"[1mCpResource[0m HelloCordova/Resources/icons/icon-72@2x.png build/emulator/HelloCordova.app/icon-72@2x.pngace681b9d66db941^336d83b9d66db941^---0#0#1#-19%DVTDocumentLocation2@102"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/icon-72@2x.png00349454ddffdf42^706"[1mCpResource[0m HelloCordova/Resources/icons/icon-72@2x.png build/emulator/HelloCordova.app/icon-72@2x.png    cd /Users/smerk/workspace/mobile-gato/platforms/ios    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/icons/icon-72@2x.png /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app36"9A7995F2-87F8-47EF-ADA5-0B0162396F71-
+b9BA368E8-4FC9-40E7-8D40-B85F3DD878A9
+
+CCpResource HelloCordova/Resources/icons/icon-76.png build/emulator/HelloCordova.app/icon-76.png
+s426628793.445471
+e426628793.460457
+r1
+xCpResource
+xHelloCordova/Resources/icons/icon-76.png
+xbuild/emulator/HelloCordova.app/icon-76.png
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection48"Copy build/emulator/HelloCordova.app/icon-76.png103"[1mCpResource[0m HelloCordova/Resources/icons/icon-76.png build/emulator/HelloCordova.app/icon-76.png6d1b72b9d66db941^efe275b9d66db941^---0#0#1#-19%DVTDocumentLocation2@99"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/icon-76.png00349454ddffdf42^697"[1mCpResource[0m HelloCordova/Resources/icons/icon-76.png build/emulator/HelloCordova.app/icon-76.png    cd /Users/smerk/workspace/mobile-gato/platforms/ios    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/icons/icon-76.png /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app36"AC01DDE4-8EDB-4AF5-9CDB-345378427164-
+b9BA368E8-4FC9-40E7-8D40-B85F3DD878A9
+
+CCpResource HelloCordova/Resources/icons/icon-76@2x.png build/emulator/HelloCordova.app/icon-76@2x.png
+s426628793.506778
+e426628793.513247
+r1
+xCpResource
+xHelloCordova/Resources/icons/icon-76@2x.png
+xbuild/emulator/HelloCordova.app/icon-76@2x.png
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection51"Copy build/emulator/HelloCordova.app/icon-76@2x.png109"[1mCpResource[0m HelloCordova/Resources/icons/icon-76@2x.png build/emulator/HelloCordova.app/icon-76@2x.png62d881b9d66db941^227183b9d66db941^---0#0#1#-19%DVTDocumentLocation2@102"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/icon-76@2x.png00349454ddffdf42^706"[1mCpResource[0m HelloCordova/Resources/icons/icon-76@2x.png build/emulator/HelloCordova.app/icon-76@2x.png    cd /Users/smerk/workspace/mobile-gato/platforms/ios    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/icons/icon-76@2x.png /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app36"75F2E909-CA78-44C8-A45F-B8F102E91A12-
+b9BA368E8-4FC9-40E7-8D40-B85F3DD878A9
+
+CCpResource HelloCordova/Resources/icons/icon-small.png build/emulator/HelloCordova.app/icon-small.png
+s426628793.464441
+e426628793.477935
+r1
+xCpResource
+xHelloCordova/Resources/icons/icon-small.png
+xbuild/emulator/HelloCordova.app/icon-small.png
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection51"Copy build/emulator/HelloCordova.app/icon-small.png109"[1mCpResource[0m HelloCordova/Resources/icons/icon-small.png build/emulator/HelloCordova.app/icon-small.png2aff76b9d66db941^ee5a7ab9d66db941^---0#0#1#-19%DVTDocumentLocation2@102"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/icon-small.png00349454ddffdf42^706"[1mCpResource[0m HelloCordova/Resources/icons/icon-small.png build/emulator/HelloCordova.app/icon-small.png    cd /Users/smerk/workspace/mobile-gato/platforms/ios    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/icons/icon-small.png /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app36"89046181-937E-44CA-BA88-5B5BF04A9FA0-
+b9BA368E8-4FC9-40E7-8D40-B85F3DD878A9
+
+CCpResource HelloCordova/Resources/icons/icon-small@2x.png build/emulator/HelloCordova.app/icon-small@2x.png
+s426628793.490691
+e426628793.492636
+r1
+xCpResource
+xHelloCordova/Resources/icons/icon-small@2x.png
+xbuild/emulator/HelloCordova.app/icon-small@2x.png
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection54"Copy build/emulator/HelloCordova.app/icon-small@2x.png115"[1mCpResource[0m HelloCordova/Resources/icons/icon-small@2x.png build/emulator/HelloCordova.app/icon-small@2x.png5abb7db9d66db941^1d1e7eb9d66db941^---0#0#1#-19%DVTDocumentLocation2@105"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/icon-small@2x.png00349454ddffdf42^715"[1mCpResource[0m HelloCordova/Resources/icons/icon-small@2x.png build/emulator/HelloCordova.app/icon-small@2x.png    cd /Users/smerk/workspace/mobile-gato/platforms/ios    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/icons/icon-small@2x.png /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app36"9148BEF3-AB21-4747-BC70-ABF9B772BA6C-
+b9BA368E8-4FC9-40E7-8D40-B85F3DD878A9
+
+CCpResource HelloCordova/Resources/icons/icon.png build/emulator/HelloCordova.app/icon.png
+s426628793.447216
+e426628793.460917
+r1
+xCpResource
+xHelloCordova/Resources/icons/icon.png
+xbuild/emulator/HelloCordova.app/icon.png
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection45"Copy build/emulator/HelloCordova.app/icon.png97"[1mCpResource[0m HelloCordova/Resources/icons/icon.png build/emulator/HelloCordova.app/icon.png9f8f72b9d66db941^7e0076b9d66db941^---0#0#1#-19%DVTDocumentLocation2@96"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/icon.png00349454ddffdf42^688"[1mCpResource[0m HelloCordova/Resources/icons/icon.png build/emulator/HelloCordova.app/icon.png    cd /Users/smerk/workspace/mobile-gato/platforms/ios    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/icons/icon.png /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app36"8B625EBE-AD7B-4E5F-B9BB-498B0175C030-
+b9BA368E8-4FC9-40E7-8D40-B85F3DD878A9
+
+CCpResource HelloCordova/Resources/icons/icon@2x.png build/emulator/HelloCordova.app/icon@2x.png
+s426628793.460065
+e426628793.462556
+r1
+xCpResource
+xHelloCordova/Resources/icons/icon@2x.png
+xbuild/emulator/HelloCordova.app/icon@2x.png
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection48"Copy build/emulator/HelloCordova.app/icon@2x.png103"[1mCpResource[0m HelloCordova/Resources/icons/icon@2x.png build/emulator/HelloCordova.app/icon@2x.png57ea75b9d66db941^346676b9d66db941^---0#0#1#-19%DVTDocumentLocation2@99"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/icon@2x.png00349454ddffdf42^697"[1mCpResource[0m HelloCordova/Resources/icons/icon@2x.png build/emulator/HelloCordova.app/icon@2x.png    cd /Users/smerk/workspace/mobile-gato/platforms/ios    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/icons/icon@2x.png /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app36"1112019A-BF9C-4B10-BD71-2211568A84A1-
+b9BA368E8-4FC9-40E7-8D40-B85F3DD878A9
+
+CCpResource HelloCordova/Resources/splash/Default-568h@2x~iphone.png build/emulator/HelloCordova.app/Default-568h@2x~iphone.png
+s426628793.504787
+e426628793.506846
+r1
+xCpResource
+xHelloCordova/Resources/splash/Default-568h@2x~iphone.png
+xbuild/emulator/HelloCordova.app/Default-568h@2x~iphone.png
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection63"Copy build/emulator/HelloCordova.app/Default-568h@2x~iphone.png134"[1mCpResource[0m HelloCordova/Resources/splash/Default-568h@2x~iphone.png build/emulator/HelloCordova.app/Default-568h@2x~iphone.png0d5181b9d66db941^f8c181b9d66db941^---0#0#1#-19%DVTDocumentLocation2@114"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/Default-568h@2x~iphone.png00349454ddffdf42^744"[1mCpResource[0m HelloCordova/Resources/splash/Default-568h@2x~iphone.png build/emulator/HelloCordova.app/Default-568h@2x~iphone.png    cd /Users/smerk/workspace/mobile-gato/platforms/ios    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/splash/Default-568h@2x~iphone.png /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app36"CAE20B3E-9613-4708-8362-27F977DE0D2F-
+b9BA368E8-4FC9-40E7-8D40-B85F3DD878A9
+
+CCpResource HelloCordova/Resources/splash/Default-Landscape@2x~ipad.png build/emulator/HelloCordova.app/Default-Landscape@2x~ipad.png
+s426628793.465192
+e426628793.490193
+r1
+xCpResource
+xHelloCordova/Resources/splash/Default-Landscape@2x~ipad.png
+xbuild/emulator/HelloCordova.app/Default-Landscape@2x~ipad.png
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection66"Copy build/emulator/HelloCordova.app/Default-Landscape@2x~ipad.png140"[1mCpResource[0m HelloCordova/Resources/splash/Default-Landscape@2x~ipad.png build/emulator/HelloCordova.app/Default-Landscape@2x~ipad.png1c2977b9d66db941^ff917db9d66db941^---0#0#1#-19%DVTDocumentLocation2@117"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/Default-Landscape@2x~ipad.png00349454ddffdf42^753"[1mCpResource[0m HelloCordova/Resources/splash/Default-Landscape@2x~ipad.png build/emulator/HelloCordova.app/Default-Landscape@2x~ipad.png    cd /Users/smerk/workspace/mobile-gato/platforms/ios    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/splash/Default-Landscape@2x~ipad.png /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app36"8AEA5CD4-380C-456E-A9E8-E03417547CE4-
+b9BA368E8-4FC9-40E7-8D40-B85F3DD878A9
+
+CCpResource HelloCordova/Resources/splash/Default-Landscape~ipad.png build/emulator/HelloCordova.app/Default-Landscape~ipad.png
+s426628793.478401
+e426628793.490187
+r1
+xCpResource
+xHelloCordova/Resources/splash/Default-Landscape~ipad.png
+xbuild/emulator/HelloCordova.app/Default-Landscape~ipad.png
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection63"Copy build/emulator/HelloCordova.app/Default-Landscape~ipad.png134"[1mCpResource[0m HelloCordova/Resources/splash/Default-Landscape~ipad.png build/emulator/HelloCordova.app/Default-Landscape~ipad.png65897ab9d66db941^d87f7db9d66db941^---0#0#1#-19%DVTDocumentLocation2@114"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/Default-Landscape~ipad.png00349454ddffdf42^744"[1mCpResource[0m HelloCordova/Resources/splash/Default-Landscape~ipad.png build/emulator/HelloCordova.app/Default-Landscape~ipad.png    cd /Users/smerk/workspace/mobile-gato/platforms/ios    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/splash/Default-Landscape~ipad.png /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app36"3973833C-2FFF-4863-B007-77CCD99A2E6D-
+b9BA368E8-4FC9-40E7-8D40-B85F3DD878A9
+
+CCpResource HelloCordova/Resources/splash/Default-Portrait@2x~ipad.png build/emulator/HelloCordova.app/Default-Portrait@2x~ipad.png
+s426628793.489697
+e426628793.504494
+r1
+xCpResource
+xHelloCordova/Resources/splash/Default-Portrait@2x~ipad.png
+xbuild/emulator/HelloCordova.app/Default-Portrait@2x~ipad.png
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection65"Copy build/emulator/HelloCordova.app/Default-Portrait@2x~ipad.png138"[1mCpResource[0m HelloCordova/Resources/splash/Default-Portrait@2x~ipad.png build/emulator/HelloCordova.app/Default-Portrait@2x~ipad.png9a7a7db9d66db941^bb2581b9d66db941^---0#0#1#-19%DVTDocumentLocation2@116"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/Default-Portrait@2x~ipad.png00349454ddffdf42^750"[1mCpResource[0m HelloCordova/Resources/splash/Default-Portrait@2x~ipad.png build/emulator/HelloCordova.app/Default-Portrait@2x~ipad.png    cd /Users/smerk/workspace/mobile-gato/platforms/ios    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/splash/Default-Portrait@2x~ipad.png /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app36"3946A423-91FC-4EEE-A8B8-417E9348F661-
+b9BA368E8-4FC9-40E7-8D40-B85F3DD878A9
+
+CCpResource HelloCordova/Resources/splash/Default-Portrait~ipad.png build/emulator/HelloCordova.app/Default-Portrait~ipad.png
+s426628793.490953
+e426628793.503956
+r1
+xCpResource
+xHelloCordova/Resources/splash/Default-Portrait~ipad.png
+xbuild/emulator/HelloCordova.app/Default-Portrait~ipad.png
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection62"Copy build/emulator/HelloCordova.app/Default-Portrait~ipad.png132"[1mCpResource[0m HelloCordova/Resources/splash/Default-Portrait~ipad.png build/emulator/HelloCordova.app/Default-Portrait~ipad.png7fc27db9d66db941^a30481b9d66db941^---0#0#1#-19%DVTDocumentLocation2@113"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/Default-Portrait~ipad.png00349454ddffdf42^741"[1mCpResource[0m HelloCordova/Resources/splash/Default-Portrait~ipad.png build/emulator/HelloCordova.app/Default-Portrait~ipad.png    cd /Users/smerk/workspace/mobile-gato/platforms/ios    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/splash/Default-Portrait~ipad.png /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app36"8485B956-C722-4019-8854-DC1291501D31-
+b9BA368E8-4FC9-40E7-8D40-B85F3DD878A9
+
+CCpResource HelloCordova/Resources/splash/Default@2x~iphone.png build/emulator/HelloCordova.app/Default@2x~iphone.png
+s426628793.494269
+e426628793.504037
+r1
+xCpResource
+xHelloCordova/Resources/splash/Default@2x~iphone.png
+xbuild/emulator/HelloCordova.app/Default@2x~iphone.png
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection58"Copy build/emulator/HelloCordova.app/Default@2x~iphone.png124"[1mCpResource[0m HelloCordova/Resources/splash/Default@2x~iphone.png build/emulator/HelloCordova.app/Default@2x~iphone.png29977eb9d66db941^f20981b9d66db941^---0#0#1#-19%DVTDocumentLocation2@109"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/Default@2x~iphone.png00349454ddffdf42^729"[1mCpResource[0m HelloCordova/Resources/splash/Default@2x~iphone.png build/emulator/HelloCordova.app/Default@2x~iphone.png    cd /Users/smerk/workspace/mobile-gato/platforms/ios    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/splash/Default@2x~iphone.png /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app36"2B28D0BF-BABF-4CBF-B884-18B578A58031-
+b9BA368E8-4FC9-40E7-8D40-B85F3DD878A9
+
+CCpResource HelloCordova/Resources/splash/Default~iphone.png build/emulator/HelloCordova.app/Default~iphone.png
+s426628793.504448
+e426628793.506420
+r1
+xCpResource
+xHelloCordova/Resources/splash/Default~iphone.png
+xbuild/emulator/HelloCordova.app/Default~iphone.png
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection55"Copy build/emulator/HelloCordova.app/Default~iphone.png118"[1mCpResource[0m HelloCordova/Resources/splash/Default~iphone.png build/emulator/HelloCordova.app/Default~iphone.png534181b9d66db941^44a581b9d66db941^---0#0#1#-19%DVTDocumentLocation2@106"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/Default~iphone.png00349454ddffdf42^720"[1mCpResource[0m HelloCordova/Resources/splash/Default~iphone.png build/emulator/HelloCordova.app/Default~iphone.png    cd /Users/smerk/workspace/mobile-gato/platforms/ios    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/Resources/splash/Default~iphone.png /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app36"47D41782-95B7-44BF-8287-3605F42168D8-
+b9BA368E8-4FC9-40E7-8D40-B85F3DD878A9
+
+CGenerateDSYMFile /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app.dSYM /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/HelloCordova
+s426628888.091087
+e426628888.339394
+r1
+xGenerateDSYMFile
+x/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app.dSYM
+x/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/HelloCordova
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection94"Generate /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app.dSYM114"[1mGenerateDSYMFile[0m [1mbuild/emulator/HelloCordova.app.dSYM[0m build/emulator/HelloCordova.app/HelloCordova52621718d76db941^f5f35618d76db941^---0#0#1#-19%DVTDocumentLocation2@92"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app.dSYM00349454ddffdf42^708"[1mGenerateDSYMFile[0m [1mbuild/emulator/HelloCordova.app.dSYM[0m build/emulator/HelloCordova.app/HelloCordova    cd /Users/smerk/workspace/mobile-gato/platforms/ios    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/dsymutil /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/HelloCordova -o /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app.dSYM36"E6DE83E9-B4F8-42D8-B84F-A32D8FBE578A-
+b9BA368E8-4FC9-40E7-8D40-B85F3DD878A9
+
+CLd /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/HelloCordova normal i386
+s426628885.058610
+e426628888.089985
+r1
+xLd
+x/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/HelloCordova
+xnormal
+xi386
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/HelloCordova.LinkFileList
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/libCordova.a
+d/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/usr/lib/crt1.o
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/main.o
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/AppDelegate.o
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/MainViewController.o
+d/Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/CDVLogger.o
+d/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation
+d/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/Frameworks/UIKit.framework/UIKit
+d/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/Frameworks/AVFoundation.framework/AVFoundation
+d/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/Frameworks/CoreMedia.framework/CoreMedia
+d/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/usr/lib/libSystem.dylib
+d/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/Frameworks/AssetsLibrary.framework/AssetsLibrary
+d/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics
+d/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/Frameworks/MobileCoreServices.framework/MobileCoreServices
+d/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/Frameworks/CoreLocation.framework/CoreLocation
+d/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/arc/libarclite_iphonesimulator.a
+d/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/Frameworks/Foundation.framework/Foundation
+d/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/usr/lib/libobjc.dylib
+d/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/5.1/lib/darwin/libclang_rt.ios.a
+d/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/PrivateFrameworks/UIFoundation.framework/UIFoundation
+d/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/usr/lib/system/libsystem_override.dylib
+d/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/usr/lib/system/libcache_sim.dylib
+d/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/usr/lib/system/libcommonCrypto_sim.dylib
+d/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/usr/lib/system/libcorecrypto_sim.dylib
+d/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/usr/lib/system/libcompiler_rt_sim.dylib
+d/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/usr/lib/system/libcopyfile_sim.dylib
+d/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/usr/lib/system/libdispatch.dylib
+d/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/usr/lib/system/libdyld_sim.dylib
+d/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/usr/lib/system/libmacho_sim.dylib
+d/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/usr/lib/system/libnotify_sim.dylib
+d/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/usr/lib/system/libremovefile_sim.dylib
+d/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/usr/lib/system/libsystem_sim_blocks.dylib
+d/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/usr/lib/system/libsystem_sim_c.dylib
+d/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/usr/lib/system/libsystem_sim_dnssd.dylib
+d/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/usr/lib/system/libsystem_sim_info.dylib
+d/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/usr/lib/system/libsystem_sim_m.dylib
+d/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/usr/lib/system/libsystem_network.dylib
+d/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/usr/lib/system/libunwind_sim.dylib
+d/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/usr/lib/system/libxpc.dylib
+d/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/usr/lib/system/libsystem_sim_configuration.dylib
+d/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/usr/lib/system/libsystem_sim_asl.dylib
+d/usr/lib/libSystem.B.dylib
+d/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/Frameworks/AVFoundation.framework/libAVFAudio.dylib
+d/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/usr/lib/system/host/libdyld.dylib
+d/usr/lib/system/libcache.dylib
+d/usr/lib/system/libcommonCrypto.dylib
+d/usr/lib/system/libcompiler_rt.dylib
+d/usr/lib/system/libcopyfile.dylib
+d/usr/lib/system/libcorecrypto.dylib
+d/usr/lib/system/libkeymgr.dylib
+d/usr/lib/system/liblaunch.dylib
+d/usr/lib/system/libmacho.dylib
+d/usr/lib/system/libquarantine.dylib
+d/usr/lib/system/libremovefile.dylib
+d/usr/lib/system/libsystem_asl.dylib
+d/usr/lib/system/libsystem_blocks.dylib
+d/usr/lib/system/libsystem_c.dylib
+d/usr/lib/system/libsystem_configuration.dylib
+d/usr/lib/system/libsystem_dnssd.dylib
+d/usr/lib/system/libsystem_info.dylib
+d/usr/lib/system/libsystem_kernel.dylib
+d/usr/lib/system/libsystem_m.dylib
+d/usr/lib/system/libsystem_malloc.dylib
+d/usr/lib/system/libsystem_notify.dylib
+d/usr/lib/system/libsystem_platform.dylib
+d/usr/lib/system/libsystem_pthread.dylib
+d/usr/lib/system/libsystem_sandbox.dylib
+d/usr/lib/system/libunc.dylib
+d/usr/lib/system/libunwind.dylib
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection98"Link /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/HelloCordova67"[1mLd[0m build/emulator/HelloCordova.app/HelloCordova normal i38621200f15d76db941^85091718d76db941^---0#0#1#--1784"[1mLd[0m build/emulator/HelloCordova.app/HelloCordova normal i386    cd /Users/smerk/workspace/mobile-gato/platforms/ios    export IPHONEOS_DEPLOYMENT_TARGET=5.1    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -arch i386 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk -L/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator -F/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator -filelist /Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/HelloCordova.LinkFileList -Xlinker -objc_abi_version -Xlinker 2 -weak_framework CoreFoundation -weak_framework UIKit -weak_framework AVFoundation -weak_framework CoreMedia -weak-lSystem -force_load /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/libCordova.a -ObjC -fobjc-arc -fobjc-link-runtime -Xlinker -no_implicit_dylibs -mios-simulator-version-min=5.1 -framework AssetsLibrary /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/libCordova.a -framework CoreGraphics -framework MobileCoreServices -framework CoreLocation -Xlinker -dependency_info -Xlinker /Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Objects-normal/i386/HelloCordova_dependency_info.dat -o /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/HelloCordova36"F2EA8418-5983-4A39-B579-9B466FBA725C-
+b9BA368E8-4FC9-40E7-8D40-B85F3DD878A9
+
+CPhaseScriptExecution Copy\ www\ directory /Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Script-304B58A110DAC018002A0835.sh
+s426628792.466494
+e426628793.444892
+r1
+xPhaseScriptExecution
+xCopy www directory
+x/Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Script-304B58A110DAC018002A0835.sh
+o
+oreal	0m0.862s
+ouser	0m0.293s
+osys	0m0.465s
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection44"Run custom shell script 'Copy www directory'150"[1mPhaseScriptExecution[0m Copy\ www\ directory build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Script-304B58A110DAC018002A0835.sh721478b8d66db941^91f071b9d66db941^-42"real	0m0.862suser	0m0.293ssys	0m0.465s3(21%IDEActivityLogMessage2@14"real	0m0.862s-426628793#1#14#-0#-----2@14"user	0m0.293s-426628793#15#14#-0#-----2@13"sys	0m0.465s-426628793#29#13#-0#-----0#0#1#--372"[1mPhaseScriptExecution[0m Copy\ www\ directory build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Script-304B58A110DAC018002A0835.sh    cd /Users/smerk/workspace/mobile-gato/platforms/ios    /bin/sh -c /Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/Script-304B58A110DAC018002A0835.sh36"CB79E7CE-30D5-4042-B7F1-A56045C0313D-
+b9BA368E8-4FC9-40E7-8D40-B85F3DD878A9
+
+CProcessInfoPlistFile /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/Info.plist /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/HelloCordova-Info.plist
+s426628792.458913
+e426628792.464319
+r1
+xProcessInfoPlistFile
+x/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/Info.plist
+x/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/HelloCordova-Info.plist
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection93"Process /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/HelloCordova-Info.plist116"[1mProcessInfoPlistFile[0m build/emulator/HelloCordova.app/Info.plist [1mHelloCordova/HelloCordova-Info.plist[0m2d9775b8d66db941^168476b8d66db941^---0#0#1#-19%DVTDocumentLocation2@92"file:///Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/HelloCordova-Info.plist0000000000000000^800"[1mProcessInfoPlistFile[0m build/emulator/HelloCordova.app/Info.plist [1mHelloCordova/HelloCordova-Info.plist[0m    cd /Users/smerk/workspace/mobile-gato/platforms/ios    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-infoPlistUtility /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/HelloCordova-Info.plist -genpkginfo /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/PkgInfo -expandbuildsettings -format binary -platform iphonesimulator -o /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app/Info.plist36"F9B4F3A7-5ADE-4ACF-BB93-92433BBDE78A-
+b9BA368E8-4FC9-40E7-8D40-B85F3DD878A9
+
+CProcessPCH /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/HelloCordova-Prefix-dyucdqdstgwoivacghxkqytyeurk/HelloCordova-Prefix.pch.pch HelloCordova/HelloCordova-Prefix.pch normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+s426628873.621575
+e426628883.952143
+r1
+xProcessPCH
+x/var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/HelloCordova-Prefix-dyucdqdstgwoivacghxkqytyeurk/HelloCordova-Prefix.pch.pch
+xHelloCordova/HelloCordova-Prefix.pch
+xnormal
+xi386
+xobjective-c
+xcom.apple.compilers.llvm.clang.1_0.compiler
+d/Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/HelloCordova-Prefix.pch
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection47"Precompile HelloCordova/HelloCordova-Prefix.pch318"[1mProcessPCH[0m /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/HelloCordova-Prefix-dyucdqdstgwoivacghxkqytyeurk/HelloCordova-Prefix.pch.pch HelloCordova/HelloCordova-Prefix.pch normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler774a9f09d76db941^4dc0f313d76db941^---0#0#1#-19%DVTDocumentLocation2@92"file:///Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/HelloCordova-Prefix.pch0000000000000000^3898"[1mProcessPCH[0m /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/HelloCordova-Prefix-dyucdqdstgwoivacghxkqytyeurk/HelloCordova-Prefix.pch.pch HelloCordova/HelloCordova-Prefix.pch normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler    cd /Users/smerk/workspace/mobile-gato/platforms/ios    export LANG=en_US.US-ASCII    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x objective-c-header -arch i386 -fmessage-length=80 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit=0 -fcolor-diagnostics -std=c99 -fobjc-arc -Wno-trigraphs -fpascal-strings -O0 -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-implicit-atomic-properties -Wno-receiver-is-weak -Wno-arc-repeated-use-of-weak -Wduplicate-method-match -Wno-missing-braces -Wparentheses -Wswitch -Wunused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wempty-body -Wuninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wno-shorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wundeclared-selector -Wno-deprecated-implementations -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk -fexceptions -fasm-blocks -fstrict-aliasing -Wprotocol -Wdeprecated-declarations -g -fvisibility=hidden -Wno-sign-conversion -fobjc-abi-version=2 -fobjc-legacy-dispatch -mios-simulator-version-min=5.1 -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/HelloCordova-generated-files.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/HelloCordova-own-target-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/HelloCordova-all-target-headers.hmap -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/HelloCordova-project-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/usr/local/lib/include -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/UninstalledProducts/include -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/DerivedSources/i386 -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/HelloCordova.build/Debug-iphonesimulator/HelloCordova.build/DerivedSources -F/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator --serialize-diagnostics /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/HelloCordova-Prefix-dyucdqdstgwoivacghxkqytyeurk/HelloCordova-Prefix.pch.dia -MMD -MT dependencies -MF /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/HelloCordova-Prefix-dyucdqdstgwoivacghxkqytyeurk/HelloCordova-Prefix.pch.d -c /Users/smerk/workspace/mobile-gato/platforms/ios/HelloCordova/HelloCordova-Prefix.pch -o /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/HelloCordova-Prefix-dyucdqdstgwoivacghxkqytyeurk/HelloCordova-Prefix.pch.pch36"A0FFA5BE-6406-47D6-AACF-64BB9B5D64F0-
+b9BA368E8-4FC9-40E7-8D40-B85F3DD878A9
+
+CTouch /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app
+s426628888.341054
+e426628888.399346
+r1
+xTouch
+x/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection86"Touch /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app45"[1mTouch[0m build/emulator/HelloCordova.app88655718d76db941^003c6618d76db941^---0#0#1#--459"[1mTouch[0m build/emulator/HelloCordova.app    cd /Users/smerk/workspace/mobile-gato/platforms/ios    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    /usr/bin/touch -c /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/HelloCordova.app36"2D6D4B9D-8C50-4E73-B6BC-291D0CB04BB1-
+b9BA368E8-4FC9-40E7-8D40-B85F3DD878A9
+

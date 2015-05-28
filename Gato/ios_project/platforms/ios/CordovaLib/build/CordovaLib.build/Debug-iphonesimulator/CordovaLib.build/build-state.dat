@@ -1,0 +1,1184 @@
+TCordovaLib
+v6
+r1
+cCheck dependencies
+cCpHeader Classes/NSDictionary+Extensions.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSDictionary+Extensions.h
+cCpHeader Classes/CDVInvokedUrlCommand.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVInvokedUrlCommand.h
+cCpHeader Classes/NSData+Base64.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSData+Base64.h
+cCpHeader Classes/CDVPluginResult.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVPluginResult.h
+cCpHeader Classes/CDVPlugin.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVPlugin.h
+cCpHeader Classes/CDVDebug.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVDebug.h
+cCpHeader Classes/NSMutableArray+QueueAdditions.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSMutableArray+QueueAdditions.h
+cCpHeader Classes/CDVWhitelist.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVWhitelist.h
+cCpHeader Classes/CDVURLProtocol.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVURLProtocol.h
+cCpHeader Classes/CDVViewController.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVViewController.h
+cCpHeader Classes/CDVCommandDelegate.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVCommandDelegate.h
+cCpHeader Classes/CDV.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDV.h
+cCpHeader Classes/CDVAvailability.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVAvailability.h
+cCpHeader Classes/CDVLocalStorage.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVLocalStorage.h
+cCpHeader Classes/UIDevice+Extensions.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/UIDevice+Extensions.h
+cCpHeader Classes/NSArray+Comparisons.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSArray+Comparisons.h
+cCpHeader Classes/CDVCommandQueue.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVCommandQueue.h
+cCpHeader Classes/CDVCommandDelegateImpl.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVCommandDelegateImpl.h
+cCpHeader Classes/CDVShared.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVShared.h
+cCpHeader Classes/CDVScreenOrientationDelegate.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVScreenOrientationDelegate.h
+cCpHeader Classes/CDVConfigParser.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVConfigParser.h
+cCpHeader Classes/CDVJSON.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVJSON.h
+cCpHeader Classes/CDVWebViewDelegate.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVWebViewDelegate.h
+cCpHeader Classes/CDVUserAgentUtil.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVUserAgentUtil.h
+cCpHeader Classes/CDVTimer.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVTimer.h
+cProcessPCH /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/CordovaLib_Prefix-gwnzeytolprvftgyoqbofcitvwag/CordovaLib_Prefix.pch.pch CordovaLib_Prefix.pch normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+cCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/NSDictionary+Extensions.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSDictionary+Extensions.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+cCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVInvokedUrlCommand.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVInvokedUrlCommand.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+cCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/NSData+Base64.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSData+Base64.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+cCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVPluginResult.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVPluginResult.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+cCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVPlugin.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVPlugin.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+cCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/NSMutableArray+QueueAdditions.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSMutableArray+QueueAdditions.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+cCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVWhitelist.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVWhitelist.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+cCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVURLProtocol.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVURLProtocol.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+cCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVViewController.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVViewController.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+cCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVLocalStorage.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVLocalStorage.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+cCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/UIDevice+Extensions.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/UIDevice+Extensions.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+cCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/NSArray+Comparisons.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSArray+Comparisons.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+cCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVCommandQueue.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVCommandQueue.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+cCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVCommandDelegateImpl.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVCommandDelegateImpl.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+cCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVConfigParser.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVConfigParser.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+cCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVJSON.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVJSON.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+cCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVUserAgentUtil.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVUserAgentUtil.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+cCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVWebViewDelegate.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVWebViewDelegate.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+cCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVTimer.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVTimer.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+cCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVShared.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVShared.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+cLibtool /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/libCordova.a normal i386
+
+N/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk
+c0000000053626D0E0000000000000198
+t1398959374
+s408
+
+N/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/SDKSettings.plist
+c00000000533047F100000000000003B4
+t1395673073
+s948
+
+N/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/CoreServices/SystemVersion.plist
+c00000000533047FB000000000000019E
+t1395673083
+s414
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDV.h
+c000000005370F2FD0000000000000516
+t1399911165
+s1302
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVAvailability.h
+c000000005370F2FD0000000000000CFB
+t1399911165
+s3323
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVCommandDelegate.h
+c000000005370F2FD00000000000008BA
+t1399911165
+s2234
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVCommandDelegateImpl.h
+c000000005370F2FD00000000000004E2
+t1399911165
+s1250
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVCommandDelegateImpl.m
+c000000005370F2FD000000000000183A
+t1399911165
+s6202
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVCommandQueue.h
+c000000005370F2FD0000000000000503
+t1399911165
+s1283
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVCommandQueue.m
+c000000005370F2FD0000000000001ED0
+t1399911165
+s7888
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVConfigParser.h
+c000000005370F2FD00000000000004CB
+t1399911165
+s1227
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVConfigParser.m
+c000000005370F2FD0000000000000EBF
+t1399911165
+s3775
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVDebug.h
+c000000005370F2FD0000000000000401
+t1399911165
+s1025
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVInvokedUrlCommand.h
+c000000005370F2FD00000000000007E6
+t1399911165
+s2022
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVInvokedUrlCommand.m
+c000000005370F2FD0000000000000DDE
+t1399911165
+s3550
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVJSON.h
+c000000005370F2FD00000000000003DA
+t1399911165
+s986
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVJSON.m
+c000000005370F2FD00000000000009A1
+t1399911165
+s2465
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVLocalStorage.h
+c000000005370F2FD00000000000006CF
+t1399911165
+s1743
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVLocalStorage.m
+c000000005370F2FD0000000000004C7E
+t1399911165
+s19582
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVPlugin.h
+c000000005370F2FD0000000000000892
+t1399911165
+s2194
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVPlugin.m
+c000000005370F2FD00000000000016AE
+t1399911165
+s5806
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVPluginResult.h
+c000000005370F2FD0000000000000C13
+t1399911165
+s3091
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVPluginResult.m
+c000000005370F2FD0000000000001B29
+t1399911165
+s6953
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVScreenOrientationDelegate.h
+c000000005370F2FD0000000000000408
+t1399911165
+s1032
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVShared.h
+c000000005370F2FD00000000000003E6
+t1399911165
+s998
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVShared.m
+c000000005370F2FD00000000000006BD
+t1399911165
+s1725
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVTimer.h
+c000000005370F2FD000000000000038D
+t1399911165
+s909
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVTimer.m
+c000000005370F2FD0000000000000AA2
+t1399911165
+s2722
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVURLProtocol.h
+c000000005370F2FD000000000000041C
+t1399911165
+s1052
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVURLProtocol.m
+c000000005370F2FD000000000000259E
+t1399911165
+s9630
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVUserAgentUtil.h
+c000000005370F2FD0000000000000421
+t1399911165
+s1057
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVUserAgentUtil.m
+c000000005370F2FD0000000000001361
+t1399911165
+s4961
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVViewController.h
+c000000005370F2FD0000000000000ACC
+t1399911165
+s2764
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVViewController.m
+c000000005370F2FD0000000000008FD2
+t1399911165
+s36818
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVWebViewDelegate.h
+c000000005370F2FD00000000000005A2
+t1399911165
+s1442
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVWebViewDelegate.m
+c000000005370F2FD0000000000003795
+t1399911165
+s14229
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVWhitelist.h
+c000000005370F2FD00000000000004B4
+t1399911165
+s1204
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVWhitelist.m
+c000000005370F2FD0000000000002814
+t1399911165
+s10260
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSArray+Comparisons.h
+c000000005370F2FD0000000000000392
+t1399911165
+s914
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSArray+Comparisons.m
+c000000005370F2FD00000000000004D8
+t1399911165
+s1240
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSData+Base64.h
+c000000005370F2FD000000000000037D
+t1399911165
+s893
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSData+Base64.m
+c000000005370F2FD00000000000022CC
+t1399911165
+s8908
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSDictionary+Extensions.h
+c000000005370F2FD00000000000005DA
+t1399911165
+s1498
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSDictionary+Extensions.m
+c000000005370F2FD0000000000001059
+t1399911165
+s4185
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSMutableArray+QueueAdditions.h
+c000000005370F2FD00000000000003A0
+t1399911165
+s928
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSMutableArray+QueueAdditions.m
+c000000005370F2FD0000000000000584
+t1399911165
+s1412
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/UIDevice+Extensions.h
+c000000005370F2FD0000000000000476
+t1399911165
+s1142
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/UIDevice+Extensions.m
+c000000005370F2FD0000000000000620
+t1399911165
+s1568
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/CordovaLib_Prefix.pch
+c000000005370F2FD0000000000000346
+t1399911165
+s838
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVCommandDelegateImpl.o
+t1404935991
+s64856
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVCommandQueue.o
+t1404935991
+s61348
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVConfigParser.o
+t1404935991
+s27432
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVInvokedUrlCommand.o
+t1404935990
+s18232
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVJSON.o
+t1404935991
+s10552
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVLocalStorage.o
+t1404935991
+s106420
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVPlugin.o
+t1404935991
+s57096
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVPluginResult.o
+t1404935990
+s36616
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVShared.o
+t1404935992
+s9024
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVTimer.o
+t1404935992
+s22584
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVURLProtocol.o
+t1404935991
+s68864
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVUserAgentUtil.o
+t1404935992
+s50744
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVViewController.o
+t1404935992
+s162984
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVWebViewDelegate.o
+t1404935992
+s67884
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVWhitelist.o
+t1404935990
+s42404
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/Cordova.LinkFileList
+c0000000053BD9F320000000000000C8F
+t1404935986
+s3215
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/NSArray+Comparisons.o
+t1404935991
+s7196
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/NSData+Base64.o
+t1404935990
+s10892
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/NSDictionary+Extensions.o
+t1404935990
+s17312
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/NSMutableArray+QueueAdditions.o
+t1404935990
+s6756
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/UIDevice+Extensions.o
+t1404935991
+s9180
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDV.h
+t2
+s0
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVAvailability.h
+t2
+s0
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVCommandDelegate.h
+t2
+s0
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVCommandDelegateImpl.h
+t2
+s0
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVCommandQueue.h
+t2
+s0
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVConfigParser.h
+t2
+s0
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVDebug.h
+t2
+s0
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVInvokedUrlCommand.h
+t2
+s0
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVJSON.h
+t2
+s0
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVLocalStorage.h
+t2
+s0
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVPlugin.h
+t2
+s0
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVPluginResult.h
+t2
+s0
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVScreenOrientationDelegate.h
+t2
+s0
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVShared.h
+t2
+s0
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVTimer.h
+t2
+s0
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVURLProtocol.h
+t2
+s0
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVUserAgentUtil.h
+t2
+s0
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVViewController.h
+t2
+s0
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVWebViewDelegate.h
+t2
+s0
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVWhitelist.h
+t2
+s0
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSArray+Comparisons.h
+t2
+s0
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSData+Base64.h
+t2
+s0
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSDictionary+Extensions.h
+t2
+s0
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSMutableArray+QueueAdditions.h
+t2
+s0
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/UIDevice+Extensions.h
+t2
+s0
+
+N/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/libCordova.a
+t2
+s0
+
+N/var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/CordovaLib_Prefix-gwnzeytolprvftgyoqbofcitvwag/CordovaLib_Prefix.pch.pch
+t1404935989
+s3239104
+
+CCheck dependencies
+r0
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection18"Check dependencies18"Check dependenciesfa29feb1d66db941^3fadb2b2d66db941^---0#1#1#--18"Check dependencies36"962D3304-1C84-471A-A3D4-A55BF0F85748-
+
+CCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVCommandDelegateImpl.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVCommandDelegateImpl.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+s426628791.559201
+e426628791.809813
+r1
+xCompileC
+xbuild/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVCommandDelegateImpl.o
+x/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVCommandDelegateImpl.m
+xnormal
+xi386
+xobjective-c
+xcom.apple.compilers.llvm.clang.1_0.compiler
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVCommandDelegateImpl.m
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVCommandDelegateImpl.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVCommandDelegate.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVAvailability.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVInvokedUrlCommand.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVJSON.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVCommandQueue.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVPluginResult.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVViewController.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVWhitelist.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVScreenOrientationDelegate.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVPlugin.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSMutableArray+QueueAdditions.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection100"Compile /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVCommandDelegateImpl.m232"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVCommandDelegateImpl.o [1mClasses/CDVCommandDelegateImpl.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compilera0508fb7d66db941^724fcfb7d66db941^---0#0#1#-19%DVTDocumentLocation2@99"file:///Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVCommandDelegateImpl.m0000000000000000^3803"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVCommandDelegateImpl.o [1mClasses/CDVCommandDelegateImpl.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export LANG=en_US.US-ASCII    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x objective-c -arch i386 -fmessage-length=80 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit=0 -fcolor-diagnostics -std=c99 -fobjc-arc -Wno-trigraphs -fpascal-strings -O0 -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-implicit-atomic-properties -Wno-receiver-is-weak -Wno-arc-repeated-use-of-weak -Wduplicate-method-match -Wno-missing-braces -Wparentheses -Wswitch -Wunused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wempty-body -Wuninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wno-shorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wundeclared-selector -Wno-deprecated-implementations -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk -fexceptions -fasm-blocks -fstrict-aliasing -Wprotocol -Wdeprecated-declarations -g -Wno-sign-conversion -fobjc-abi-version=2 -fobjc-legacy-dispatch -mios-simulator-version-min=5.1 -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-generated-files.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-own-target-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-all-target-headers.hmap -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-project-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources/i386 -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources -F/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator -DDEBUG -include /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/CordovaLib_Prefix-gwnzeytolprvftgyoqbofcitvwag/CordovaLib_Prefix.pch -MMD -MT dependencies -MF /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVCommandDelegateImpl.d --serialize-diagnostics /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVCommandDelegateImpl.dia -c /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVCommandDelegateImpl.m -o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVCommandDelegateImpl.o36"F5486007-8CBF-4761-906D-06D44976DFCF-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVCommandQueue.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVCommandQueue.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+s426628791.508681
+e426628791.810729
+r1
+xCompileC
+xbuild/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVCommandQueue.o
+x/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVCommandQueue.m
+xnormal
+xi386
+xobjective-c
+xcom.apple.compilers.llvm.clang.1_0.compiler
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVCommandQueue.m
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDV.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVAvailability.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVPlugin.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVPluginResult.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSMutableArray+QueueAdditions.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVCommandDelegate.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVInvokedUrlCommand.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVViewController.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVCommandQueue.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVWhitelist.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVScreenOrientationDelegate.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVURLProtocol.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVDebug.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVLocalStorage.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVTimer.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSArray+Comparisons.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSData+Base64.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSDictionary+Extensions.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/UIDevice+Extensions.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVJSON.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVCommandDelegateImpl.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection93"Compile /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVCommandQueue.m218"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVCommandQueue.o [1mClasses/CDVCommandQueue.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler166d82b7d66db941^008ccfb7d66db941^---0#0#1#-19%DVTDocumentLocation2@92"file:///Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVCommandQueue.m0000000000000000^3761"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVCommandQueue.o [1mClasses/CDVCommandQueue.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export LANG=en_US.US-ASCII    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x objective-c -arch i386 -fmessage-length=80 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit=0 -fcolor-diagnostics -std=c99 -fobjc-arc -Wno-trigraphs -fpascal-strings -O0 -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-implicit-atomic-properties -Wno-receiver-is-weak -Wno-arc-repeated-use-of-weak -Wduplicate-method-match -Wno-missing-braces -Wparentheses -Wswitch -Wunused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wempty-body -Wuninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wno-shorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wundeclared-selector -Wno-deprecated-implementations -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk -fexceptions -fasm-blocks -fstrict-aliasing -Wprotocol -Wdeprecated-declarations -g -Wno-sign-conversion -fobjc-abi-version=2 -fobjc-legacy-dispatch -mios-simulator-version-min=5.1 -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-generated-files.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-own-target-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-all-target-headers.hmap -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-project-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources/i386 -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources -F/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator -DDEBUG -include /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/CordovaLib_Prefix-gwnzeytolprvftgyoqbofcitvwag/CordovaLib_Prefix.pch -MMD -MT dependencies -MF /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVCommandQueue.d --serialize-diagnostics /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVCommandQueue.dia -c /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVCommandQueue.m -o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVCommandQueue.o36"ABDD2986-5E75-484A-BE1F-D4190DEEB458-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVConfigParser.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVConfigParser.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+s426628791.717493
+e426628791.811474
+r1
+xCompileC
+xbuild/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVConfigParser.o
+x/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVConfigParser.m
+xnormal
+xi386
+xobjective-c
+xcom.apple.compilers.llvm.clang.1_0.compiler
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVConfigParser.m
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVConfigParser.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection93"Compile /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVConfigParser.m218"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVConfigParser.o [1mClasses/CDVConfigParser.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler39d4b7b7d66db941^c3d3cfb7d66db941^---0#0#1#-19%DVTDocumentLocation2@92"file:///Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVConfigParser.m0000000000000000^3761"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVConfigParser.o [1mClasses/CDVConfigParser.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export LANG=en_US.US-ASCII    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x objective-c -arch i386 -fmessage-length=80 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit=0 -fcolor-diagnostics -std=c99 -fobjc-arc -Wno-trigraphs -fpascal-strings -O0 -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-implicit-atomic-properties -Wno-receiver-is-weak -Wno-arc-repeated-use-of-weak -Wduplicate-method-match -Wno-missing-braces -Wparentheses -Wswitch -Wunused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wempty-body -Wuninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wno-shorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wundeclared-selector -Wno-deprecated-implementations -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk -fexceptions -fasm-blocks -fstrict-aliasing -Wprotocol -Wdeprecated-declarations -g -Wno-sign-conversion -fobjc-abi-version=2 -fobjc-legacy-dispatch -mios-simulator-version-min=5.1 -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-generated-files.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-own-target-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-all-target-headers.hmap -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-project-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources/i386 -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources -F/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator -DDEBUG -include /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/CordovaLib_Prefix-gwnzeytolprvftgyoqbofcitvwag/CordovaLib_Prefix.pch -MMD -MT dependencies -MF /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVConfigParser.d --serialize-diagnostics /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVConfigParser.dia -c /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVConfigParser.m -o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVConfigParser.o36"2192F377-DF84-49EB-80AB-CB42A384BC6A-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVInvokedUrlCommand.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVInvokedUrlCommand.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+s426628789.960763
+e426628790.275508
+r1
+xCompileC
+xbuild/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVInvokedUrlCommand.o
+x/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVInvokedUrlCommand.m
+xnormal
+xi386
+xobjective-c
+xcom.apple.compilers.llvm.clang.1_0.compiler
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVInvokedUrlCommand.m
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVInvokedUrlCommand.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVJSON.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSData+Base64.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection98"Compile /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVInvokedUrlCommand.m228"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVInvokedUrlCommand.o [1mClasses/CDVInvokedUrlCommand.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler6b2bf6b5d66db941^9a9846b6d66db941^---0#0#1#-19%DVTDocumentLocation2@97"file:///Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVInvokedUrlCommand.m0000000000000000^3791"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVInvokedUrlCommand.o [1mClasses/CDVInvokedUrlCommand.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export LANG=en_US.US-ASCII    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x objective-c -arch i386 -fmessage-length=80 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit=0 -fcolor-diagnostics -std=c99 -fobjc-arc -Wno-trigraphs -fpascal-strings -O0 -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-implicit-atomic-properties -Wno-receiver-is-weak -Wno-arc-repeated-use-of-weak -Wduplicate-method-match -Wno-missing-braces -Wparentheses -Wswitch -Wunused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wempty-body -Wuninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wno-shorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wundeclared-selector -Wno-deprecated-implementations -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk -fexceptions -fasm-blocks -fstrict-aliasing -Wprotocol -Wdeprecated-declarations -g -Wno-sign-conversion -fobjc-abi-version=2 -fobjc-legacy-dispatch -mios-simulator-version-min=5.1 -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-generated-files.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-own-target-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-all-target-headers.hmap -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-project-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources/i386 -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources -F/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator -DDEBUG -include /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/CordovaLib_Prefix-gwnzeytolprvftgyoqbofcitvwag/CordovaLib_Prefix.pch -MMD -MT dependencies -MF /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVInvokedUrlCommand.d --serialize-diagnostics /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVInvokedUrlCommand.dia -c /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVInvokedUrlCommand.m -o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVInvokedUrlCommand.o36"3544143E-4DE6-4ABA-B4D4-D8F559FA312A-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVJSON.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVJSON.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+s426628791.810117
+e426628791.904754
+r1
+xCompileC
+xbuild/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVJSON.o
+x/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVJSON.m
+xnormal
+xi386
+xobjective-c
+xcom.apple.compilers.llvm.clang.1_0.compiler
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVJSON.m
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVJSON.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection85"Compile /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVJSON.m202"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVJSON.o [1mClasses/CDVJSON.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler0280cfb7d66db941^6d8ee7b7d66db941^---0#0#1#-19%DVTDocumentLocation2@84"file:///Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVJSON.m0000000000000000^3713"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVJSON.o [1mClasses/CDVJSON.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export LANG=en_US.US-ASCII    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x objective-c -arch i386 -fmessage-length=80 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit=0 -fcolor-diagnostics -std=c99 -fobjc-arc -Wno-trigraphs -fpascal-strings -O0 -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-implicit-atomic-properties -Wno-receiver-is-weak -Wno-arc-repeated-use-of-weak -Wduplicate-method-match -Wno-missing-braces -Wparentheses -Wswitch -Wunused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wempty-body -Wuninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wno-shorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wundeclared-selector -Wno-deprecated-implementations -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk -fexceptions -fasm-blocks -fstrict-aliasing -Wprotocol -Wdeprecated-declarations -g -Wno-sign-conversion -fobjc-abi-version=2 -fobjc-legacy-dispatch -mios-simulator-version-min=5.1 -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-generated-files.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-own-target-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-all-target-headers.hmap -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-project-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources/i386 -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources -F/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator -DDEBUG -include /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/CordovaLib_Prefix-gwnzeytolprvftgyoqbofcitvwag/CordovaLib_Prefix.pch -MMD -MT dependencies -MF /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVJSON.d --serialize-diagnostics /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVJSON.dia -c /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVJSON.m -o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVJSON.o36"2158739E-181A-49D4-BBE9-83350D064B9A-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVLocalStorage.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVLocalStorage.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+s426628790.467869
+e426628791.508124
+r1
+xCompileC
+xbuild/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVLocalStorage.o
+x/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVLocalStorage.m
+xnormal
+xi386
+xobjective-c
+xcom.apple.compilers.llvm.clang.1_0.compiler
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVLocalStorage.m
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVLocalStorage.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVPlugin.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVPluginResult.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSMutableArray+QueueAdditions.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVCommandDelegate.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVAvailability.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVInvokedUrlCommand.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDV.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVViewController.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVCommandQueue.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVWhitelist.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVScreenOrientationDelegate.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVURLProtocol.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVDebug.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVTimer.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSArray+Comparisons.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSData+Base64.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSDictionary+Extensions.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/UIDevice+Extensions.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVJSON.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection93"Compile /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVLocalStorage.m218"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVLocalStorage.o [1mClasses/CDVLocalStorage.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler0bee77b6d66db941^a91582b7d66db941^---0#0#1#-19%DVTDocumentLocation2@92"file:///Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVLocalStorage.m0000000000000000^3761"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVLocalStorage.o [1mClasses/CDVLocalStorage.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export LANG=en_US.US-ASCII    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x objective-c -arch i386 -fmessage-length=80 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit=0 -fcolor-diagnostics -std=c99 -fobjc-arc -Wno-trigraphs -fpascal-strings -O0 -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-implicit-atomic-properties -Wno-receiver-is-weak -Wno-arc-repeated-use-of-weak -Wduplicate-method-match -Wno-missing-braces -Wparentheses -Wswitch -Wunused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wempty-body -Wuninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wno-shorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wundeclared-selector -Wno-deprecated-implementations -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk -fexceptions -fasm-blocks -fstrict-aliasing -Wprotocol -Wdeprecated-declarations -g -Wno-sign-conversion -fobjc-abi-version=2 -fobjc-legacy-dispatch -mios-simulator-version-min=5.1 -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-generated-files.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-own-target-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-all-target-headers.hmap -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-project-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources/i386 -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources -F/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator -DDEBUG -include /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/CordovaLib_Prefix-gwnzeytolprvftgyoqbofcitvwag/CordovaLib_Prefix.pch -MMD -MT dependencies -MF /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVLocalStorage.d --serialize-diagnostics /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVLocalStorage.dia -c /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVLocalStorage.m -o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVLocalStorage.o36"E3D8523B-25FA-4971-8012-C78B5D521DFC-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVPlugin.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVPlugin.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+s426628790.271890
+e426628791.454806
+r1
+xCompileC
+xbuild/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVPlugin.o
+x/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVPlugin.m
+xnormal
+xi386
+xobjective-c
+xcom.apple.compilers.llvm.clang.1_0.compiler
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVPlugin.m
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVPlugin.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVPluginResult.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSMutableArray+QueueAdditions.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVCommandDelegate.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVAvailability.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVInvokedUrlCommand.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection87"Compile /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVPlugin.m206"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVPlugin.o [1mClasses/CDVPlugin.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler26c745b6d66db941^1a6e74b7d66db941^---0#0#1#-19%DVTDocumentLocation2@86"file:///Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVPlugin.m0000000000000000^3725"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVPlugin.o [1mClasses/CDVPlugin.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export LANG=en_US.US-ASCII    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x objective-c -arch i386 -fmessage-length=80 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit=0 -fcolor-diagnostics -std=c99 -fobjc-arc -Wno-trigraphs -fpascal-strings -O0 -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-implicit-atomic-properties -Wno-receiver-is-weak -Wno-arc-repeated-use-of-weak -Wduplicate-method-match -Wno-missing-braces -Wparentheses -Wswitch -Wunused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wempty-body -Wuninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wno-shorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wundeclared-selector -Wno-deprecated-implementations -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk -fexceptions -fasm-blocks -fstrict-aliasing -Wprotocol -Wdeprecated-declarations -g -Wno-sign-conversion -fobjc-abi-version=2 -fobjc-legacy-dispatch -mios-simulator-version-min=5.1 -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-generated-files.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-own-target-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-all-target-headers.hmap -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-project-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources/i386 -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources -F/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator -DDEBUG -include /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/CordovaLib_Prefix-gwnzeytolprvftgyoqbofcitvwag/CordovaLib_Prefix.pch -MMD -MT dependencies -MF /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVPlugin.d --serialize-diagnostics /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVPlugin.dia -c /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVPlugin.m -o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVPlugin.o36"6FD7013E-648D-4C20-BC0D-C0CB8C0FD41F-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVPluginResult.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVPluginResult.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+s426628789.962355
+e426628790.289020
+r1
+xCompileC
+xbuild/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVPluginResult.o
+x/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVPluginResult.m
+xnormal
+xi386
+xobjective-c
+xcom.apple.compilers.llvm.clang.1_0.compiler
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVPluginResult.m
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVPluginResult.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVJSON.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVDebug.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSData+Base64.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection93"Compile /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVPluginResult.m218"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVPluginResult.o [1mClasses/CDVPluginResult.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler2289f6b5d66db941^821e4ab6d66db941^---0#0#1#-19%DVTDocumentLocation2@92"file:///Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVPluginResult.m0000000000000000^3761"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVPluginResult.o [1mClasses/CDVPluginResult.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export LANG=en_US.US-ASCII    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x objective-c -arch i386 -fmessage-length=80 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit=0 -fcolor-diagnostics -std=c99 -fobjc-arc -Wno-trigraphs -fpascal-strings -O0 -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-implicit-atomic-properties -Wno-receiver-is-weak -Wno-arc-repeated-use-of-weak -Wduplicate-method-match -Wno-missing-braces -Wparentheses -Wswitch -Wunused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wempty-body -Wuninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wno-shorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wundeclared-selector -Wno-deprecated-implementations -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk -fexceptions -fasm-blocks -fstrict-aliasing -Wprotocol -Wdeprecated-declarations -g -Wno-sign-conversion -fobjc-abi-version=2 -fobjc-legacy-dispatch -mios-simulator-version-min=5.1 -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-generated-files.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-own-target-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-all-target-headers.hmap -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-project-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources/i386 -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources -F/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator -DDEBUG -include /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/CordovaLib_Prefix-gwnzeytolprvftgyoqbofcitvwag/CordovaLib_Prefix.pch -MMD -MT dependencies -MF /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVPluginResult.d --serialize-diagnostics /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVPluginResult.dia -c /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVPluginResult.m -o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVPluginResult.o36"78CFD7F5-212D-434B-8EDB-F8152333E0D8-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVShared.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVShared.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+s426628792.027195
+e426628792.151210
+r1
+xCompileC
+xbuild/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVShared.o
+x/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVShared.m
+xnormal
+xi386
+xobjective-c
+xcom.apple.compilers.llvm.clang.1_0.compiler
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVShared.m
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVShared.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection87"Compile /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVShared.m206"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVShared.o [1mClasses/CDVShared.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compilerd11e07b8d66db941^17b626b8d66db941^---0#0#1#-19%DVTDocumentLocation2@86"file:///Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVShared.m0000000000000000^3725"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVShared.o [1mClasses/CDVShared.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export LANG=en_US.US-ASCII    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x objective-c -arch i386 -fmessage-length=80 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit=0 -fcolor-diagnostics -std=c99 -fobjc-arc -Wno-trigraphs -fpascal-strings -O0 -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-implicit-atomic-properties -Wno-receiver-is-weak -Wno-arc-repeated-use-of-weak -Wduplicate-method-match -Wno-missing-braces -Wparentheses -Wswitch -Wunused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wempty-body -Wuninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wno-shorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wundeclared-selector -Wno-deprecated-implementations -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk -fexceptions -fasm-blocks -fstrict-aliasing -Wprotocol -Wdeprecated-declarations -g -Wno-sign-conversion -fobjc-abi-version=2 -fobjc-legacy-dispatch -mios-simulator-version-min=5.1 -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-generated-files.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-own-target-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-all-target-headers.hmap -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-project-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources/i386 -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources -F/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator -DDEBUG -include /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/CordovaLib_Prefix-gwnzeytolprvftgyoqbofcitvwag/CordovaLib_Prefix.pch -MMD -MT dependencies -MF /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVShared.d --serialize-diagnostics /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVShared.dia -c /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVShared.m -o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVShared.o36"2C074CF8-57CA-4FA0-89D8-470E6D8F6F90-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVTimer.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVTimer.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+s426628791.905595
+e426628792.026725
+r1
+xCompileC
+xbuild/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVTimer.o
+x/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVTimer.m
+xnormal
+xi386
+xobjective-c
+xcom.apple.compilers.llvm.clang.1_0.compiler
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVTimer.m
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVTimer.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection86"Compile /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVTimer.m204"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVTimer.o [1mClasses/CDVTimer.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler4304e8b7d66db941^9bca06b8d66db941^---0#0#1#-19%DVTDocumentLocation2@85"file:///Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVTimer.m0000000000000000^3719"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVTimer.o [1mClasses/CDVTimer.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export LANG=en_US.US-ASCII    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x objective-c -arch i386 -fmessage-length=80 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit=0 -fcolor-diagnostics -std=c99 -fobjc-arc -Wno-trigraphs -fpascal-strings -O0 -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-implicit-atomic-properties -Wno-receiver-is-weak -Wno-arc-repeated-use-of-weak -Wduplicate-method-match -Wno-missing-braces -Wparentheses -Wswitch -Wunused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wempty-body -Wuninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wno-shorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wundeclared-selector -Wno-deprecated-implementations -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk -fexceptions -fasm-blocks -fstrict-aliasing -Wprotocol -Wdeprecated-declarations -g -Wno-sign-conversion -fobjc-abi-version=2 -fobjc-legacy-dispatch -mios-simulator-version-min=5.1 -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-generated-files.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-own-target-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-all-target-headers.hmap -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-project-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources/i386 -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources -F/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator -DDEBUG -include /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/CordovaLib_Prefix-gwnzeytolprvftgyoqbofcitvwag/CordovaLib_Prefix.pch -MMD -MT dependencies -MF /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVTimer.d --serialize-diagnostics /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVTimer.dia -c /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVTimer.m -o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVTimer.o36"68C0CD87-71F6-4C9A-9B4A-92448E5BC1F1-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVURLProtocol.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVURLProtocol.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+s426628790.289400
+e426628791.462131
+r1
+xCompileC
+xbuild/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVURLProtocol.o
+x/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVURLProtocol.m
+xnormal
+xi386
+xobjective-c
+xcom.apple.compilers.llvm.clang.1_0.compiler
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVURLProtocol.m
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVURLProtocol.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVAvailability.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVCommandQueue.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVWhitelist.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVViewController.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVInvokedUrlCommand.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVCommandDelegate.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVScreenOrientationDelegate.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVPlugin.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVPluginResult.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSMutableArray+QueueAdditions.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection92"Compile /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVURLProtocol.m216"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVURLProtocol.o [1mClasses/CDVURLProtocol.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler153b4ab6d66db941^7b4e76b7d66db941^---0#0#1#-19%DVTDocumentLocation2@91"file:///Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVURLProtocol.m0000000000000000^3755"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVURLProtocol.o [1mClasses/CDVURLProtocol.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export LANG=en_US.US-ASCII    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x objective-c -arch i386 -fmessage-length=80 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit=0 -fcolor-diagnostics -std=c99 -fobjc-arc -Wno-trigraphs -fpascal-strings -O0 -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-implicit-atomic-properties -Wno-receiver-is-weak -Wno-arc-repeated-use-of-weak -Wduplicate-method-match -Wno-missing-braces -Wparentheses -Wswitch -Wunused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wempty-body -Wuninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wno-shorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wundeclared-selector -Wno-deprecated-implementations -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk -fexceptions -fasm-blocks -fstrict-aliasing -Wprotocol -Wdeprecated-declarations -g -Wno-sign-conversion -fobjc-abi-version=2 -fobjc-legacy-dispatch -mios-simulator-version-min=5.1 -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-generated-files.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-own-target-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-all-target-headers.hmap -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-project-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources/i386 -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources -F/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator -DDEBUG -include /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/CordovaLib_Prefix-gwnzeytolprvftgyoqbofcitvwag/CordovaLib_Prefix.pch -MMD -MT dependencies -MF /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVURLProtocol.d --serialize-diagnostics /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVURLProtocol.dia -c /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVURLProtocol.m -o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVURLProtocol.o36"DED8FAAA-A245-4BD6-A3BE-793622BD940C-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVUserAgentUtil.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVUserAgentUtil.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+s426628791.811017
+e426628792.137483
+r1
+xCompileC
+xbuild/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVUserAgentUtil.o
+x/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVUserAgentUtil.m
+xnormal
+xi386
+xobjective-c
+xcom.apple.compilers.llvm.clang.1_0.compiler
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVUserAgentUtil.m
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVUserAgentUtil.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection94"Compile /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVUserAgentUtil.m220"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVUserAgentUtil.o [1mClasses/CDVUserAgentUtil.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler8bc5cfb7d66db941^6a3223b8d66db941^---0#0#1#-19%DVTDocumentLocation2@93"file:///Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVUserAgentUtil.m0000000000000000^3767"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVUserAgentUtil.o [1mClasses/CDVUserAgentUtil.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export LANG=en_US.US-ASCII    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x objective-c -arch i386 -fmessage-length=80 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit=0 -fcolor-diagnostics -std=c99 -fobjc-arc -Wno-trigraphs -fpascal-strings -O0 -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-implicit-atomic-properties -Wno-receiver-is-weak -Wno-arc-repeated-use-of-weak -Wduplicate-method-match -Wno-missing-braces -Wparentheses -Wswitch -Wunused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wempty-body -Wuninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wno-shorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wundeclared-selector -Wno-deprecated-implementations -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk -fexceptions -fasm-blocks -fstrict-aliasing -Wprotocol -Wdeprecated-declarations -g -Wno-sign-conversion -fobjc-abi-version=2 -fobjc-legacy-dispatch -mios-simulator-version-min=5.1 -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-generated-files.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-own-target-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-all-target-headers.hmap -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-project-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources/i386 -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources -F/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator -DDEBUG -include /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/CordovaLib_Prefix-gwnzeytolprvftgyoqbofcitvwag/CordovaLib_Prefix.pch -MMD -MT dependencies -MF /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVUserAgentUtil.d --serialize-diagnostics /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVUserAgentUtil.dia -c /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVUserAgentUtil.m -o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVUserAgentUtil.o36"25B892F8-0B75-4586-BE53-26033B42E126-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVViewController.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVViewController.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+s426628790.381514
+e426628792.351572
+r1
+xCompileC
+xbuild/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVViewController.o
+x/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVViewController.m
+xnormal
+xi386
+xobjective-c
+xcom.apple.compilers.llvm.clang.1_0.compiler
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVViewController.m
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDV.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVAvailability.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVPlugin.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVPluginResult.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSMutableArray+QueueAdditions.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVCommandDelegate.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVInvokedUrlCommand.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVViewController.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVCommandQueue.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVWhitelist.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVScreenOrientationDelegate.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVURLProtocol.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVDebug.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVLocalStorage.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVTimer.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSArray+Comparisons.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSData+Base64.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSDictionary+Extensions.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/UIDevice+Extensions.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVJSON.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVCommandDelegateImpl.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVConfigParser.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVUserAgentUtil.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVWebViewDelegate.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection95"Compile /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVViewController.m222"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVViewController.o [1mClasses/CDVViewController.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler21c861b6d66db941^43025ab8d66db941^---0#0#1#-19%DVTDocumentLocation2@94"file:///Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVViewController.m0000000000000000^3773"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVViewController.o [1mClasses/CDVViewController.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export LANG=en_US.US-ASCII    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x objective-c -arch i386 -fmessage-length=80 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit=0 -fcolor-diagnostics -std=c99 -fobjc-arc -Wno-trigraphs -fpascal-strings -O0 -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-implicit-atomic-properties -Wno-receiver-is-weak -Wno-arc-repeated-use-of-weak -Wduplicate-method-match -Wno-missing-braces -Wparentheses -Wswitch -Wunused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wempty-body -Wuninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wno-shorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wundeclared-selector -Wno-deprecated-implementations -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk -fexceptions -fasm-blocks -fstrict-aliasing -Wprotocol -Wdeprecated-declarations -g -Wno-sign-conversion -fobjc-abi-version=2 -fobjc-legacy-dispatch -mios-simulator-version-min=5.1 -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-generated-files.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-own-target-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-all-target-headers.hmap -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-project-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources/i386 -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources -F/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator -DDEBUG -include /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/CordovaLib_Prefix-gwnzeytolprvftgyoqbofcitvwag/CordovaLib_Prefix.pch -MMD -MT dependencies -MF /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVViewController.d --serialize-diagnostics /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVViewController.dia -c /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVViewController.m -o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVViewController.o36"F16F9418-4773-4B05-9507-718603533F4C-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVWebViewDelegate.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVWebViewDelegate.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+s426628791.812068
+e426628792.177267
+r1
+xCompileC
+xbuild/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVWebViewDelegate.o
+x/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVWebViewDelegate.m
+xnormal
+xi386
+xobjective-c
+xcom.apple.compilers.llvm.clang.1_0.compiler
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVWebViewDelegate.m
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVWebViewDelegate.h
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVAvailability.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection96"Compile /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVWebViewDelegate.m224"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVWebViewDelegate.o [1mClasses/CDVWebViewDelegate.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler912cd0b7d66db941^5a622db8d66db941^---0#0#1#-19%DVTDocumentLocation2@95"file:///Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVWebViewDelegate.m0000000000000000^3779"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVWebViewDelegate.o [1mClasses/CDVWebViewDelegate.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export LANG=en_US.US-ASCII    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x objective-c -arch i386 -fmessage-length=80 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit=0 -fcolor-diagnostics -std=c99 -fobjc-arc -Wno-trigraphs -fpascal-strings -O0 -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-implicit-atomic-properties -Wno-receiver-is-weak -Wno-arc-repeated-use-of-weak -Wduplicate-method-match -Wno-missing-braces -Wparentheses -Wswitch -Wunused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wempty-body -Wuninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wno-shorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wundeclared-selector -Wno-deprecated-implementations -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk -fexceptions -fasm-blocks -fstrict-aliasing -Wprotocol -Wdeprecated-declarations -g -Wno-sign-conversion -fobjc-abi-version=2 -fobjc-legacy-dispatch -mios-simulator-version-min=5.1 -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-generated-files.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-own-target-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-all-target-headers.hmap -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-project-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources/i386 -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources -F/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator -DDEBUG -include /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/CordovaLib_Prefix-gwnzeytolprvftgyoqbofcitvwag/CordovaLib_Prefix.pch -MMD -MT dependencies -MF /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVWebViewDelegate.d --serialize-diagnostics /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVWebViewDelegate.dia -c /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVWebViewDelegate.m -o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVWebViewDelegate.o36"4DACD32E-4C24-4B9C-9006-D22368F86404-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVWhitelist.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVWhitelist.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+s426628790.276238
+e426628790.467345
+r1
+xCompileC
+xbuild/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVWhitelist.o
+x/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVWhitelist.m
+xnormal
+xi386
+xobjective-c
+xcom.apple.compilers.llvm.clang.1_0.compiler
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVWhitelist.m
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVWhitelist.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection90"Compile /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVWhitelist.m212"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVWhitelist.o [1mClasses/CDVWhitelist.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compilerf5d846b6d66db941^f8a477b6d66db941^---0#0#1#-19%DVTDocumentLocation2@89"file:///Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVWhitelist.m0000000000000000^3743"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVWhitelist.o [1mClasses/CDVWhitelist.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export LANG=en_US.US-ASCII    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x objective-c -arch i386 -fmessage-length=80 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit=0 -fcolor-diagnostics -std=c99 -fobjc-arc -Wno-trigraphs -fpascal-strings -O0 -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-implicit-atomic-properties -Wno-receiver-is-weak -Wno-arc-repeated-use-of-weak -Wduplicate-method-match -Wno-missing-braces -Wparentheses -Wswitch -Wunused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wempty-body -Wuninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wno-shorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wundeclared-selector -Wno-deprecated-implementations -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk -fexceptions -fasm-blocks -fstrict-aliasing -Wprotocol -Wdeprecated-declarations -g -Wno-sign-conversion -fobjc-abi-version=2 -fobjc-legacy-dispatch -mios-simulator-version-min=5.1 -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-generated-files.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-own-target-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-all-target-headers.hmap -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-project-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources/i386 -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources -F/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator -DDEBUG -include /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/CordovaLib_Prefix-gwnzeytolprvftgyoqbofcitvwag/CordovaLib_Prefix.pch -MMD -MT dependencies -MF /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVWhitelist.d --serialize-diagnostics /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVWhitelist.dia -c /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVWhitelist.m -o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/CDVWhitelist.o36"27CB4DA2-F6BD-4819-BEF7-9453D1BC7A2B-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/NSArray+Comparisons.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSArray+Comparisons.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+s426628791.462500
+e426628791.558379
+r1
+xCompileC
+xbuild/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/NSArray+Comparisons.o
+x/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSArray+Comparisons.m
+xnormal
+xi386
+xobjective-c
+xcom.apple.compilers.llvm.clang.1_0.compiler
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSArray+Comparisons.m
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSArray+Comparisons.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection97"Compile /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSArray+Comparisons.m226"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/NSArray+Comparisons.o [1mClasses/NSArray+Comparisons.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler51a576b7d66db941^4cfb8eb7d66db941^---0#0#1#-19%DVTDocumentLocation2@96"file:///Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSArray+Comparisons.m0000000000000000^3785"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/NSArray+Comparisons.o [1mClasses/NSArray+Comparisons.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export LANG=en_US.US-ASCII    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x objective-c -arch i386 -fmessage-length=80 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit=0 -fcolor-diagnostics -std=c99 -fobjc-arc -Wno-trigraphs -fpascal-strings -O0 -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-implicit-atomic-properties -Wno-receiver-is-weak -Wno-arc-repeated-use-of-weak -Wduplicate-method-match -Wno-missing-braces -Wparentheses -Wswitch -Wunused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wempty-body -Wuninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wno-shorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wundeclared-selector -Wno-deprecated-implementations -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk -fexceptions -fasm-blocks -fstrict-aliasing -Wprotocol -Wdeprecated-declarations -g -Wno-sign-conversion -fobjc-abi-version=2 -fobjc-legacy-dispatch -mios-simulator-version-min=5.1 -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-generated-files.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-own-target-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-all-target-headers.hmap -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-project-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources/i386 -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources -F/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator -DDEBUG -include /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/CordovaLib_Prefix-gwnzeytolprvftgyoqbofcitvwag/CordovaLib_Prefix.pch -MMD -MT dependencies -MF /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/NSArray+Comparisons.d --serialize-diagnostics /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/NSArray+Comparisons.dia -c /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSArray+Comparisons.m -o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/NSArray+Comparisons.o36"36C4D1AA-BF1E-4A93-A679-41F324555D13-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/NSData+Base64.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSData+Base64.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+s426628789.961237
+e426628790.270941
+r1
+xCompileC
+xbuild/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/NSData+Base64.o
+x/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSData+Base64.m
+xnormal
+xi386
+xobjective-c
+xcom.apple.compilers.llvm.clang.1_0.compiler
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSData+Base64.m
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSData+Base64.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection91"Compile /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSData+Base64.m214"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/NSData+Base64.o [1mClasses/NSData+Base64.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler6743f6b5d66db941^164b45b6d66db941^---0#0#1#-19%DVTDocumentLocation2@90"file:///Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSData+Base64.m0000000000000000^3749"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/NSData+Base64.o [1mClasses/NSData+Base64.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export LANG=en_US.US-ASCII    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x objective-c -arch i386 -fmessage-length=80 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit=0 -fcolor-diagnostics -std=c99 -fobjc-arc -Wno-trigraphs -fpascal-strings -O0 -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-implicit-atomic-properties -Wno-receiver-is-weak -Wno-arc-repeated-use-of-weak -Wduplicate-method-match -Wno-missing-braces -Wparentheses -Wswitch -Wunused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wempty-body -Wuninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wno-shorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wundeclared-selector -Wno-deprecated-implementations -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk -fexceptions -fasm-blocks -fstrict-aliasing -Wprotocol -Wdeprecated-declarations -g -Wno-sign-conversion -fobjc-abi-version=2 -fobjc-legacy-dispatch -mios-simulator-version-min=5.1 -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-generated-files.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-own-target-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-all-target-headers.hmap -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-project-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources/i386 -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources -F/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator -DDEBUG -include /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/CordovaLib_Prefix-gwnzeytolprvftgyoqbofcitvwag/CordovaLib_Prefix.pch -MMD -MT dependencies -MF /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/NSData+Base64.d --serialize-diagnostics /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/NSData+Base64.dia -c /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSData+Base64.m -o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/NSData+Base64.o36"A1762F43-33E9-4757-91AE-07755424344A-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/NSDictionary+Extensions.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSDictionary+Extensions.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+s426628789.960534
+e426628790.273207
+r1
+xCompileC
+xbuild/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/NSDictionary+Extensions.o
+x/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSDictionary+Extensions.m
+xnormal
+xi386
+xobjective-c
+xcom.apple.compilers.llvm.clang.1_0.compiler
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSDictionary+Extensions.m
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSDictionary+Extensions.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection101"Compile /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSDictionary+Extensions.m234"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/NSDictionary+Extensions.o [1mClasses/NSDictionary+Extensions.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler8107f6b5d66db941^41f345b6d66db941^---0#0#1#-19%DVTDocumentLocation2@100"file:///Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSDictionary+Extensions.m0000000000000000^3809"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/NSDictionary+Extensions.o [1mClasses/NSDictionary+Extensions.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export LANG=en_US.US-ASCII    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x objective-c -arch i386 -fmessage-length=80 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit=0 -fcolor-diagnostics -std=c99 -fobjc-arc -Wno-trigraphs -fpascal-strings -O0 -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-implicit-atomic-properties -Wno-receiver-is-weak -Wno-arc-repeated-use-of-weak -Wduplicate-method-match -Wno-missing-braces -Wparentheses -Wswitch -Wunused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wempty-body -Wuninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wno-shorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wundeclared-selector -Wno-deprecated-implementations -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk -fexceptions -fasm-blocks -fstrict-aliasing -Wprotocol -Wdeprecated-declarations -g -Wno-sign-conversion -fobjc-abi-version=2 -fobjc-legacy-dispatch -mios-simulator-version-min=5.1 -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-generated-files.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-own-target-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-all-target-headers.hmap -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-project-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources/i386 -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources -F/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator -DDEBUG -include /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/CordovaLib_Prefix-gwnzeytolprvftgyoqbofcitvwag/CordovaLib_Prefix.pch -MMD -MT dependencies -MF /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/NSDictionary+Extensions.d --serialize-diagnostics /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/NSDictionary+Extensions.dia -c /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSDictionary+Extensions.m -o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/NSDictionary+Extensions.o36"B16B7754-6D4A-40A8-80E3-9710D2065147-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/NSMutableArray+QueueAdditions.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSMutableArray+QueueAdditions.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+s426628790.274841
+e426628790.381186
+r1
+xCompileC
+xbuild/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/NSMutableArray+QueueAdditions.o
+x/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSMutableArray+QueueAdditions.m
+xnormal
+xi386
+xobjective-c
+xcom.apple.compilers.llvm.clang.1_0.compiler
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSMutableArray+QueueAdditions.m
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSMutableArray+QueueAdditions.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection107"Compile /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSMutableArray+QueueAdditions.m246"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/NSMutableArray+QueueAdditions.o [1mClasses/NSMutableArray+QueueAdditions.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler158c46b6d66db941^579561b6d66db941^---0#0#1#-19%DVTDocumentLocation2@106"file:///Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSMutableArray+QueueAdditions.m0000000000000000^3845"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/NSMutableArray+QueueAdditions.o [1mClasses/NSMutableArray+QueueAdditions.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export LANG=en_US.US-ASCII    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x objective-c -arch i386 -fmessage-length=80 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit=0 -fcolor-diagnostics -std=c99 -fobjc-arc -Wno-trigraphs -fpascal-strings -O0 -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-implicit-atomic-properties -Wno-receiver-is-weak -Wno-arc-repeated-use-of-weak -Wduplicate-method-match -Wno-missing-braces -Wparentheses -Wswitch -Wunused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wempty-body -Wuninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wno-shorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wundeclared-selector -Wno-deprecated-implementations -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk -fexceptions -fasm-blocks -fstrict-aliasing -Wprotocol -Wdeprecated-declarations -g -Wno-sign-conversion -fobjc-abi-version=2 -fobjc-legacy-dispatch -mios-simulator-version-min=5.1 -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-generated-files.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-own-target-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-all-target-headers.hmap -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-project-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources/i386 -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources -F/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator -DDEBUG -include /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/CordovaLib_Prefix-gwnzeytolprvftgyoqbofcitvwag/CordovaLib_Prefix.pch -MMD -MT dependencies -MF /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/NSMutableArray+QueueAdditions.d --serialize-diagnostics /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/NSMutableArray+QueueAdditions.dia -c /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSMutableArray+QueueAdditions.m -o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/NSMutableArray+QueueAdditions.o36"ED597D92-662C-4ADC-9CA9-6AF33690AF0F-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCompileC build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/UIDevice+Extensions.o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/UIDevice+Extensions.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+s426628791.455200
+e426628791.716962
+r1
+xCompileC
+xbuild/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/UIDevice+Extensions.o
+x/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/UIDevice+Extensions.m
+xnormal
+xi386
+xobjective-c
+xcom.apple.compilers.llvm.clang.1_0.compiler
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/UIDevice+Extensions.m
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/UIDevice+Extensions.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection97"Compile /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/UIDevice+Extensions.m226"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/UIDevice+Extensions.o [1mClasses/UIDevice+Extensions.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler6fb774b7d66db941^ecbeb7b7d66db941^---0#0#1#-19%DVTDocumentLocation2@96"file:///Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/UIDevice+Extensions.m0000000000000000^3785"[1mCompileC[0m build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/UIDevice+Extensions.o [1mClasses/UIDevice+Extensions.m[0m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export LANG=en_US.US-ASCII    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x objective-c -arch i386 -fmessage-length=80 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit=0 -fcolor-diagnostics -std=c99 -fobjc-arc -Wno-trigraphs -fpascal-strings -O0 -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-implicit-atomic-properties -Wno-receiver-is-weak -Wno-arc-repeated-use-of-weak -Wduplicate-method-match -Wno-missing-braces -Wparentheses -Wswitch -Wunused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wempty-body -Wuninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wno-shorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wundeclared-selector -Wno-deprecated-implementations -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk -fexceptions -fasm-blocks -fstrict-aliasing -Wprotocol -Wdeprecated-declarations -g -Wno-sign-conversion -fobjc-abi-version=2 -fobjc-legacy-dispatch -mios-simulator-version-min=5.1 -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-generated-files.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-own-target-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-all-target-headers.hmap -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-project-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources/i386 -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources -F/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator -DDEBUG -include /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/CordovaLib_Prefix-gwnzeytolprvftgyoqbofcitvwag/CordovaLib_Prefix.pch -MMD -MT dependencies -MF /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/UIDevice+Extensions.d --serialize-diagnostics /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/UIDevice+Extensions.dia -c /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/UIDevice+Extensions.m -o /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/UIDevice+Extensions.o36"B9CD7C9D-4F94-41C9-B40B-1DD1E711D0CA-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCpHeader Classes/CDV.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDV.h
+s426628786.830856
+e426628786.858586
+r1
+xCpHeader
+xClasses/CDV.h
+x/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDV.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection90"Copy /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDV.h124"[1mCpHeader[0m Classes/CDV.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDV.h[0m6eded4b2d66db941^2ecbdbb2d66db941^---0#0#1#-19%DVTDocumentLocation2@92"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDV.h00349454ddffdf42^712"[1mCpHeader[0m Classes/CDV.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDV.h[0m    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDV.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova36"64E040F0-CBFF-4C9C-B56B-6E56607B4E64-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCpHeader Classes/CDVAvailability.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVAvailability.h
+s426628786.831093
+e426628786.856505
+r1
+xCpHeader
+xClasses/CDVAvailability.h
+x/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVAvailability.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection102"Copy /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVAvailability.h148"[1mCpHeader[0m Classes/CDVAvailability.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVAvailability.h[0m3ae6d4b2d66db941^d444dbb2d66db941^---0#0#1#-19%DVTDocumentLocation2@104"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVAvailability.h00349454ddffdf42^748"[1mCpHeader[0m Classes/CDVAvailability.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVAvailability.h[0m    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVAvailability.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova36"976CBDEE-8E13-4782-8A98-8757A8C84195-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCpHeader Classes/CDVCommandDelegate.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVCommandDelegate.h
+s426628786.819776
+e426628786.830515
+r1
+xCpHeader
+xClasses/CDVCommandDelegate.h
+x/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVCommandDelegate.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection105"Copy /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVCommandDelegate.h154"[1mCpHeader[0m Classes/CDVCommandDelegate.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVCommandDelegate.h[0mcafad1b2d66db941^0fd5d4b2d66db941^---0#0#1#-19%DVTDocumentLocation2@107"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVCommandDelegate.h00349454ddffdf42^757"[1mCpHeader[0m Classes/CDVCommandDelegate.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVCommandDelegate.h[0m    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVCommandDelegate.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova36"CEB2CAEB-2DBA-413E-81A6-DB60338A91F0-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCpHeader Classes/CDVCommandDelegateImpl.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVCommandDelegateImpl.h
+s426628786.858797
+e426628786.859884
+r1
+xCpHeader
+xClasses/CDVCommandDelegateImpl.h
+x/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVCommandDelegateImpl.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection109"Copy /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVCommandDelegateImpl.h162"[1mCpHeader[0m Classes/CDVCommandDelegateImpl.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVCommandDelegateImpl.h[0m28efdbb2d66db941^9a22dcb2d66db941^---0#0#1#-19%DVTDocumentLocation2@111"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVCommandDelegateImpl.h00349454ddffdf42^769"[1mCpHeader[0m Classes/CDVCommandDelegateImpl.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVCommandDelegateImpl.h[0m    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVCommandDelegateImpl.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova36"E8359BA0-B0BC-4569-B9B9-C1190E0265DC-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCpHeader Classes/CDVCommandQueue.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVCommandQueue.h
+s426628786.856689
+e426628786.859489
+r1
+xCpHeader
+xClasses/CDVCommandQueue.h
+x/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVCommandQueue.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection102"Copy /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVCommandQueue.h148"[1mCpHeader[0m Classes/CDVCommandQueue.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVCommandQueue.h[0m7861dbb2d66db941^1c09dcb2d66db941^---0#0#1#-19%DVTDocumentLocation2@104"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVCommandQueue.h00349454ddffdf42^748"[1mCpHeader[0m Classes/CDVCommandQueue.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVCommandQueue.h[0m    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVCommandQueue.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova36"59CF9BBD-1677-4EDD-AE8F-1FDCA3E60BD1-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCpHeader Classes/CDVConfigParser.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVConfigParser.h
+s426628786.860281
+e426628786.886796
+r1
+xCpHeader
+xClasses/CDVConfigParser.h
+x/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVConfigParser.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection102"Copy /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVConfigParser.h148"[1mCpHeader[0m Classes/CDVConfigParser.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVConfigParser.h[0md253dcb2d66db941^0308e3b2d66db941^---0#0#1#-19%DVTDocumentLocation2@104"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVConfigParser.h00349454ddffdf42^748"[1mCpHeader[0m Classes/CDVConfigParser.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVConfigParser.h[0m    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVConfigParser.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova36"CAA02CA5-E663-4DC2-B446-B1A699412D97-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCpHeader Classes/CDVDebug.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVDebug.h
+s426628786.783539
+e426628786.804983
+r1
+xCpHeader
+xClasses/CDVDebug.h
+x/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVDebug.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection95"Copy /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVDebug.h134"[1mCpHeader[0m Classes/CDVDebug.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVDebug.h[0m3ba8c8b2d66db941^d313ceb2d66db941^---0#0#1#-19%DVTDocumentLocation2@97"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVDebug.h00349454ddffdf42^727"[1mCpHeader[0m Classes/CDVDebug.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVDebug.h[0m    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVDebug.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova36"EBD7B2E4-931E-4654-BA2F-D73DEF588EE4-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCpHeader Classes/CDVInvokedUrlCommand.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVInvokedUrlCommand.h
+s426628786.730633
+e426628786.782992
+r1
+xCpHeader
+xClasses/CDVInvokedUrlCommand.h
+x/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVInvokedUrlCommand.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection107"Copy /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVInvokedUrlCommand.h158"[1mCpHeader[0m Classes/CDVInvokedUrlCommand.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVInvokedUrlCommand.h[0m492abbb2d66db941^a471c8b2d66db941^---0#0#1#-19%DVTDocumentLocation2@109"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVInvokedUrlCommand.h00349454ddffdf42^763"[1mCpHeader[0m Classes/CDVInvokedUrlCommand.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVInvokedUrlCommand.h[0m    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVInvokedUrlCommand.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova36"08AB156A-49E3-42EF-9D18-558204B9ED7F-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCpHeader Classes/CDVJSON.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVJSON.h
+s426628786.861482
+e426628786.886661
+r1
+xCpHeader
+xClasses/CDVJSON.h
+x/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVJSON.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection94"Copy /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVJSON.h132"[1mCpHeader[0m Classes/CDVJSON.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVJSON.h[0mdba2dcb2d66db941^59fce2b2d66db941^---0#0#1#-19%DVTDocumentLocation2@96"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVJSON.h00349454ddffdf42^724"[1mCpHeader[0m Classes/CDVJSON.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVJSON.h[0m    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVJSON.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova36"EDD602E5-5DBF-413A-9976-B17F143E80D0-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCpHeader Classes/CDVLocalStorage.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVLocalStorage.h
+s426628786.831470
+e426628786.833172
+r1
+xCpHeader
+xClasses/CDVLocalStorage.h
+x/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVLocalStorage.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection102"Copy /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVLocalStorage.h148"[1mCpHeader[0m Classes/CDVLocalStorage.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVLocalStorage.h[0m8cf6d4b2d66db941^164bd5b2d66db941^---0#0#1#-19%DVTDocumentLocation2@104"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVLocalStorage.h00349454ddffdf42^748"[1mCpHeader[0m Classes/CDVLocalStorage.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVLocalStorage.h[0m    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVLocalStorage.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova36"A19245B8-C39B-460D-97AD-FD586F0F3C61-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCpHeader Classes/CDVPlugin.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVPlugin.h
+s426628786.783479
+e426628786.784898
+r1
+xCpHeader
+xClasses/CDVPlugin.h
+x/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVPlugin.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection96"Copy /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVPlugin.h136"[1mCpHeader[0m Classes/CDVPlugin.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVPlugin.h[0me3a8c8b2d66db941^30f0c8b2d66db941^---0#0#1#-19%DVTDocumentLocation2@98"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVPlugin.h00349454ddffdf42^730"[1mCpHeader[0m Classes/CDVPlugin.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVPlugin.h[0m    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVPlugin.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova36"FC9DEF9F-F03F-45C8-82E6-1CAB15A96714-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCpHeader Classes/CDVPluginResult.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVPluginResult.h
+s426628786.731644
+e426628786.783077
+r1
+xCpHeader
+xClasses/CDVPluginResult.h
+x/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVPluginResult.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection102"Copy /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVPluginResult.h148"[1mCpHeader[0m Classes/CDVPluginResult.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVPluginResult.h[0mbc59bbb2d66db941^e97cc8b2d66db941^---0#0#1#-19%DVTDocumentLocation2@104"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVPluginResult.h00349454ddffdf42^748"[1mCpHeader[0m Classes/CDVPluginResult.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVPluginResult.h[0m    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVPluginResult.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova36"C7091E22-C106-46E8-925B-065184211F1F-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCpHeader Classes/CDVScreenOrientationDelegate.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVScreenOrientationDelegate.h
+s426628786.859944
+e426628786.861293
+r1
+xCpHeader
+xClasses/CDVScreenOrientationDelegate.h
+x/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVScreenOrientationDelegate.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection115"Copy /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVScreenOrientationDelegate.h174"[1mCpHeader[0m Classes/CDVScreenOrientationDelegate.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVScreenOrientationDelegate.h[0mc443dcb2d66db941^3d81dcb2d66db941^---0#0#1#-19%DVTDocumentLocation2@117"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVScreenOrientationDelegate.h00349454ddffdf42^787"[1mCpHeader[0m Classes/CDVScreenOrientationDelegate.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVScreenOrientationDelegate.h[0m    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVScreenOrientationDelegate.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova36"9991FFB3-9E0F-47CC-8229-5177CD02CEB3-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCpHeader Classes/CDVShared.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVShared.h
+s426628786.859852
+e426628786.861368
+r1
+xCpHeader
+xClasses/CDVShared.h
+x/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVShared.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection96"Copy /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVShared.h136"[1mCpHeader[0m Classes/CDVShared.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVShared.h[0m5436dcb2d66db941^9a7bdcb2d66db941^---0#0#1#-19%DVTDocumentLocation2@98"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVShared.h00349454ddffdf42^730"[1mCpHeader[0m Classes/CDVShared.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVShared.h[0m    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVShared.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova36"563C0DE1-2B22-477F-9AA9-86273E2D1105-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCpHeader Classes/CDVTimer.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVTimer.h
+s426628786.886895
+e426628786.888615
+r1
+xCpHeader
+xClasses/CDVTimer.h
+x/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVTimer.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection95"Copy /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVTimer.h134"[1mCpHeader[0m Classes/CDVTimer.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVTimer.h[0ma73be3b2d66db941^dd7ce3b2d66db941^---0#0#1#-19%DVTDocumentLocation2@97"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVTimer.h00349454ddffdf42^727"[1mCpHeader[0m Classes/CDVTimer.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVTimer.h[0m    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVTimer.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova36"83D22450-9DD2-4FFE-9E85-B63F8184493B-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCpHeader Classes/CDVURLProtocol.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVURLProtocol.h
+s426628786.805191
+e426628786.830477
+r1
+xCpHeader
+xClasses/CDVURLProtocol.h
+x/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVURLProtocol.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection101"Copy /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVURLProtocol.h146"[1mCpHeader[0m Classes/CDVURLProtocol.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVURLProtocol.h[0ma834ceb2d66db941^6fa0d4b2d66db941^---0#0#1#-19%DVTDocumentLocation2@103"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVURLProtocol.h00349454ddffdf42^745"[1mCpHeader[0m Classes/CDVURLProtocol.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVURLProtocol.h[0m    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVURLProtocol.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova36"2E7BB8FE-633B-47EF-B993-CD7A7EB3E34C-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCpHeader Classes/CDVUserAgentUtil.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVUserAgentUtil.h
+s426628786.885587
+e426628786.887466
+r1
+xCpHeader
+xClasses/CDVUserAgentUtil.h
+x/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVUserAgentUtil.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection103"Copy /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVUserAgentUtil.h150"[1mCpHeader[0m Classes/CDVUserAgentUtil.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVUserAgentUtil.h[0m03cee2b2d66db941^e431e3b2d66db941^---0#0#1#-19%DVTDocumentLocation2@105"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVUserAgentUtil.h00349454ddffdf42^751"[1mCpHeader[0m Classes/CDVUserAgentUtil.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVUserAgentUtil.h[0m    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVUserAgentUtil.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova36"D432D40F-A413-4515-B445-049612CB6FD5-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCpHeader Classes/CDVViewController.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVViewController.h
+s426628786.819492
+e426628786.830453
+r1
+xCpHeader
+xClasses/CDVViewController.h
+x/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVViewController.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection104"Copy /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVViewController.h152"[1mCpHeader[0m Classes/CDVViewController.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVViewController.h[0m89ead1b2d66db941^d099d4b2d66db941^---0#0#1#-19%DVTDocumentLocation2@106"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVViewController.h00349454ddffdf42^754"[1mCpHeader[0m Classes/CDVViewController.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVViewController.h[0m    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVViewController.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova36"88255DFD-DB8A-452B-9944-E0C758DD02CC-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCpHeader Classes/CDVWebViewDelegate.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVWebViewDelegate.h
+s426628786.861715
+e426628786.887554
+r1
+xCpHeader
+xClasses/CDVWebViewDelegate.h
+x/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVWebViewDelegate.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection105"Copy /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVWebViewDelegate.h154"[1mCpHeader[0m Classes/CDVWebViewDelegate.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVWebViewDelegate.h[0m10b2dcb2d66db941^c619e3b2d66db941^---0#0#1#-19%DVTDocumentLocation2@107"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVWebViewDelegate.h00349454ddffdf42^757"[1mCpHeader[0m Classes/CDVWebViewDelegate.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVWebViewDelegate.h[0m    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVWebViewDelegate.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova36"F9E2B3BA-8E97-4B0F-AAFA-3E493FA9ED53-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCpHeader Classes/CDVWhitelist.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVWhitelist.h
+s426628786.785361
+e426628786.830508
+r1
+xCpHeader
+xClasses/CDVWhitelist.h
+x/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVWhitelist.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection99"Copy /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVWhitelist.h142"[1mCpHeader[0m Classes/CDVWhitelist.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVWhitelist.h[0m7825c9b2d66db941^d2acd4b2d66db941^---0#0#1#-19%DVTDocumentLocation2@101"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVWhitelist.h00349454ddffdf42^739"[1mCpHeader[0m Classes/CDVWhitelist.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/CDVWhitelist.h[0m    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/CDVWhitelist.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova36"4D100CAB-1C4D-406D-B84B-6BE01B90D34C-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCpHeader Classes/NSArray+Comparisons.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSArray+Comparisons.h
+s426628786.833330
+e426628786.859514
+r1
+xCpHeader
+xClasses/NSArray+Comparisons.h
+x/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSArray+Comparisons.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection106"Copy /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSArray+Comparisons.h156"[1mCpHeader[0m Classes/NSArray+Comparisons.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSArray+Comparisons.h[0ma165d5b2d66db941^2c11dcb2d66db941^---0#0#1#-19%DVTDocumentLocation2@108"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSArray+Comparisons.h00349454ddffdf42^760"[1mCpHeader[0m Classes/NSArray+Comparisons.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSArray+Comparisons.h[0m    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSArray+Comparisons.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova36"F4F40142-EB06-4DBA-B8F2-7FB2FC1AAF53-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCpHeader Classes/NSData+Base64.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSData+Base64.h
+s426628786.731009
+e426628786.819216
+r1
+xCpHeader
+xClasses/NSData+Base64.h
+x/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSData+Base64.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection100"Copy /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSData+Base64.h144"[1mCpHeader[0m Classes/NSData+Base64.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSData+Base64.h[0meb3bbbb2d66db941^a2b6d1b2d66db941^---0#0#1#-19%DVTDocumentLocation2@102"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSData+Base64.h00349454ddffdf42^742"[1mCpHeader[0m Classes/NSData+Base64.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSData+Base64.h[0m    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSData+Base64.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova36"7C12BCA0-44EE-4100-84E5-7B29EDA7CCE5-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCpHeader Classes/NSDictionary+Extensions.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSDictionary+Extensions.h
+s426628786.730443
+e426628786.784904
+r1
+xCpHeader
+xClasses/NSDictionary+Extensions.h
+x/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSDictionary+Extensions.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection110"Copy /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSDictionary+Extensions.h164"[1mCpHeader[0m Classes/NSDictionary+Extensions.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSDictionary+Extensions.h[0m5324bbb2d66db941^3cf5c8b2d66db941^---0#0#1#-19%DVTDocumentLocation2@112"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSDictionary+Extensions.h00349454ddffdf42^772"[1mCpHeader[0m Classes/NSDictionary+Extensions.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSDictionary+Extensions.h[0m    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSDictionary+Extensions.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova36"7F8725F8-119F-489B-AD81-BB31702BA5E6-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCpHeader Classes/NSMutableArray+QueueAdditions.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSMutableArray+QueueAdditions.h
+s426628786.785147
+e426628786.819192
+r1
+xCpHeader
+xClasses/NSMutableArray+QueueAdditions.h
+x/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSMutableArray+QueueAdditions.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection116"Copy /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSMutableArray+QueueAdditions.h176"[1mCpHeader[0m Classes/NSMutableArray+QueueAdditions.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSMutableArray+QueueAdditions.h[0m431ec9b2d66db941^8cdad1b2d66db941^---0#0#1#-19%DVTDocumentLocation2@118"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSMutableArray+QueueAdditions.h00349454ddffdf42^790"[1mCpHeader[0m Classes/NSMutableArray+QueueAdditions.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/NSMutableArray+QueueAdditions.h[0m    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/NSMutableArray+QueueAdditions.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova36"F66F4180-D3A0-4A59-8D9E-4B350EEC3879-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CCpHeader Classes/UIDevice+Extensions.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/UIDevice+Extensions.h
+s426628786.832054
+e426628786.885356
+r1
+xCpHeader
+xClasses/UIDevice+Extensions.h
+x/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/UIDevice+Extensions.h
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection106"Copy /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/UIDevice+Extensions.h156"[1mCpHeader[0m Classes/UIDevice+Extensions.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/UIDevice+Extensions.h[0m5113d5b2d66db941^16a7e2b2d66db941^---0#0#1#-19%DVTDocumentLocation2@108"file:///Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/UIDevice+Extensions.h00349454ddffdf42^760"[1mCpHeader[0m Classes/UIDevice+Extensions.h [1m/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova/UIDevice+Extensions.h[0m    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/Classes/UIDevice+Extensions.h /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include/Cordova36"0F1CDC08-C9E6-40B3-86F4-AD601300D261-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CLibtool /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/libCordova.a normal i386
+s426628792.353618
+e426628792.443229
+r1
+xLibtool
+x/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/libCordova.a
+xnormal
+xi386
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection104"[1mLibtool[0m /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/libCordova.a normal i386104"[1mLibtool[0m /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/libCordova.a normal i38690a25ab8d66db941^c47871b8d66db941^---0#0#1#--1038"[1mLibtool[0m /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/libCordova.a normal i386    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export IPHONEOS_DEPLOYMENT_TARGET=5.1    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/libtool -static -arch_only i386 -syslibroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk -L/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator -filelist /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Objects-normal/i386/Cordova.LinkFileList -o /Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/libCordova.a36"B84AABF7-CB97-4A32-B442-55F64B84FF67-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+
+CProcessPCH /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/CordovaLib_Prefix-gwnzeytolprvftgyoqbofcitvwag/CordovaLib_Prefix.pch.pch CordovaLib_Prefix.pch normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+s426628786.889385
+e426628789.959599
+r1
+xProcessPCH
+x/var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/CordovaLib_Prefix-gwnzeytolprvftgyoqbofcitvwag/CordovaLib_Prefix.pch.pch
+xCordovaLib_Prefix.pch
+xnormal
+xi386
+xobjective-c
+xcom.apple.compilers.llvm.clang.1_0.compiler
+d/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/CordovaLib_Prefix.pch
+lSLF06#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection32"Precompile CordovaLib_Prefix.pch299"[1mProcessPCH[0m /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/CordovaLib_Prefix-gwnzeytolprvftgyoqbofcitvwag/CordovaLib_Prefix.pch.pch CordovaLib_Prefix.pch normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compilereacee3b2d66db941^61aaf5b5d66db941^---0#0#1#-19%DVTDocumentLocation2@88"file:///Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/CordovaLib_Prefix.pch0000000000000000^3738"[1mProcessPCH[0m /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/CordovaLib_Prefix-gwnzeytolprvftgyoqbofcitvwag/CordovaLib_Prefix.pch.pch CordovaLib_Prefix.pch normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler    cd /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib    export LANG=en_US.US-ASCII    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin"    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x objective-c-header -arch i386 -fmessage-length=80 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit=0 -fcolor-diagnostics -std=c99 -fobjc-arc -Wno-trigraphs -fpascal-strings -O0 -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-implicit-atomic-properties -Wno-receiver-is-weak -Wno-arc-repeated-use-of-weak -Wduplicate-method-match -Wno-missing-braces -Wparentheses -Wswitch -Wunused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wempty-body -Wuninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wno-shorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wundeclared-selector -Wno-deprecated-implementations -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk -fexceptions -fasm-blocks -fstrict-aliasing -Wprotocol -Wdeprecated-declarations -g -Wno-sign-conversion -fobjc-abi-version=2 -fobjc-legacy-dispatch -mios-simulator-version-min=5.1 -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-generated-files.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-own-target-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-all-target-headers.hmap -iquote /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/Cordova-project-headers.hmap -I/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources/i386 -I/Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/build/CordovaLib.build/Debug-iphonesimulator/CordovaLib.build/DerivedSources -F/Users/smerk/workspace/mobile-gato/platforms/ios/build/emulator -DDEBUG --serialize-diagnostics /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/CordovaLib_Prefix-gwnzeytolprvftgyoqbofcitvwag/CordovaLib_Prefix.pch.dia -MMD -MT dependencies -MF /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/CordovaLib_Prefix-gwnzeytolprvftgyoqbofcitvwag/CordovaLib_Prefix.pch.d -c /Users/smerk/workspace/mobile-gato/platforms/ios/CordovaLib/CordovaLib_Prefix.pch -o /var/folders/dh/_msjf_cn75xg1wkxcgwp1w6c0000gt/C/com.apple.DeveloperTools/5.1.1-5B1008/Xcode/SharedPrecompiledHeaders/CordovaLib_Prefix-gwnzeytolprvftgyoqbofcitvwag/CordovaLib_Prefix.pch.pch36"90977314-4428-4EB0-824A-BC519C0D7948-
+b913AA4CA-7D96-4546-AFED-AB230C46AA3C
+

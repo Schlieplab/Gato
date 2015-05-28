@@ -1,0 +1,23 @@
+dependencies: \
+  /Users/smerk/workspace/gato-code/Gato/ios_project/platforms/ios/HelloCordova/Plugins/org.apache.cordova.console/CDVLogger.m \
+  /Users/smerk/workspace/gato-code/Gato/ios_project/platforms/ios/HelloCordova/Plugins/org.apache.cordova.console/CDVLogger.h \
+  /Users/smerk/workspace/gato-code/Gato/ios_project/platforms/ios/build/emulator/include/Cordova/CDVPlugin.h \
+  /Users/smerk/workspace/gato-code/Gato/ios_project/platforms/ios/build/emulator/include/Cordova/CDVPluginResult.h \
+  /Users/smerk/workspace/gato-code/Gato/ios_project/platforms/ios/build/emulator/include/Cordova/NSMutableArray+QueueAdditions.h \
+  /Users/smerk/workspace/gato-code/Gato/ios_project/platforms/ios/build/emulator/include/Cordova/CDVCommandDelegate.h \
+  /Users/smerk/workspace/gato-code/Gato/ios_project/platforms/ios/build/emulator/include/Cordova/CDVAvailability.h \
+  /Users/smerk/workspace/gato-code/Gato/ios_project/platforms/ios/build/emulator/include/Cordova/CDVInvokedUrlCommand.h \
+  /Users/smerk/workspace/gato-code/Gato/ios_project/platforms/ios/build/emulator/include/Cordova/CDV.h \
+  /Users/smerk/workspace/gato-code/Gato/ios_project/platforms/ios/build/emulator/include/Cordova/CDVViewController.h \
+  /Users/smerk/workspace/gato-code/Gato/ios_project/platforms/ios/build/emulator/include/Cordova/CDVCommandQueue.h \
+  /Users/smerk/workspace/gato-code/Gato/ios_project/platforms/ios/build/emulator/include/Cordova/CDVWhitelist.h \
+  /Users/smerk/workspace/gato-code/Gato/ios_project/platforms/ios/build/emulator/include/Cordova/CDVScreenOrientationDelegate.h \
+  /Users/smerk/workspace/gato-code/Gato/ios_project/platforms/ios/build/emulator/include/Cordova/CDVURLProtocol.h \
+  /Users/smerk/workspace/gato-code/Gato/ios_project/platforms/ios/build/emulator/include/Cordova/CDVDebug.h \
+  /Users/smerk/workspace/gato-code/Gato/ios_project/platforms/ios/build/emulator/include/Cordova/CDVLocalStorage.h \
+  /Users/smerk/workspace/gato-code/Gato/ios_project/platforms/ios/build/emulator/include/Cordova/CDVTimer.h \
+  /Users/smerk/workspace/gato-code/Gato/ios_project/platforms/ios/build/emulator/include/Cordova/NSArray+Comparisons.h \
+  /Users/smerk/workspace/gato-code/Gato/ios_project/platforms/ios/build/emulator/include/Cordova/NSData+Base64.h \
+  /Users/smerk/workspace/gato-code/Gato/ios_project/platforms/ios/build/emulator/include/Cordova/NSDictionary+Extensions.h \
+  /Users/smerk/workspace/gato-code/Gato/ios_project/platforms/ios/build/emulator/include/Cordova/UIDevice+Extensions.h \
+  /Users/smerk/workspace/gato-code/Gato/ios_project/platforms/ios/build/emulator/include/Cordova/CDVJSON.h

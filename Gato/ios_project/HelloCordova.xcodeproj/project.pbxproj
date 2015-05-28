@@ -482,8 +482,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Alexander Schliep (C29GB564K2)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Alexander Schliep (C29GB564K2)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Scott Merkling (6Y63CWYHXV)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Scott Merkling (6Y63CWYHXV)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -508,7 +508,7 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = HelloCordova;
-				PROVISIONING_PROFILE = "fcc69490-6e84-4289-ab5f-a1b76a043d4d";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 2;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -519,8 +519,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Alexander Schliep (C29GB564K2)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Alexander Schliep (C29GB564K2)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Scott Merkling (6Y63CWYHXV)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Scott Merkling (6Y63CWYHXV)";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "HelloCordova/HelloCordova-Prefix.pch";
@@ -543,7 +543,7 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = HelloCordova;
-				PROVISIONING_PROFILE = "fcc69490-6e84-4289-ab5f-a1b76a043d4d";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 2;
 				VALIDATE_PRODUCT = YES;
 			};
