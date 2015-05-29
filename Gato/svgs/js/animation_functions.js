@@ -133,11 +133,12 @@ function Animation() {
 		}
 	};
 
+	
 	this.start = function() {
 		this.start_time = new Date();
 		if (this.state === 'stopped' || this.state === 'done') {
-			if (this.state === 'done') {
-				// If we are done then reset the animation
+			if (this.state === 'done' && g.animation.step_num === anim_array.length) {
+				// If we are done and the user hasn't moved the anim-slider then reset the animation
 				this.jump_to_step(0);
 			}
 
