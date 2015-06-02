@@ -429,4 +429,62 @@ function init() {
 
     hide_spinner();
     show_everything();
+
+    g.mc = new Hammer.Manager(document.getElementById('base_container'));
+    var pinch = new Hammer.Pinch()
+    g.mc.add(pinch);
+    
+    var step_size = .2;
+    var start_scale = 0;
+    var start_ev_scale = 1;
+    var last_scale = 0;
+    var growing = true;
+    g.mc.on('pinchstart', function(ev) {
+        start_ev_scale = 1;
+        start_scale = g.scaler.curr_scale;
+        last_scale = 1;
+    });
+    g.mc.on('pinch', function(ev) {
+        if (ev.scale >= last_scale) {
+            if (!growing) {
+                start_ev_scale = ev.scale;
+                start_scale = g.scaler.curr_scale;
+            }
+            growing = true;
+        } else {
+            if (growing) {
+                start_ev_scale = ev.scale;
+                start_scale = g.scaler.curr_scale;
+            }
+            growing = false;
+        }
+
+        var add = 0;
+        if (growing) {
+            var scale_diff = ev.scale - start_ev_scale;
+            add = step_size * scale_diff;
+        } else {
+            var scale_diff;
+            if (ev.scale < 1) {
+                if (start_ev_scale > 1) {
+                    scale_diff = (start_ev_scale - 1) + (1 - ev.scale)*10;
+                } else {
+                    scale_diff = (start_ev_scale - ev.scale)*10;
+                }
+            } else {
+                scale_diff = start_ev_scale - ev.scale;
+            }
+            add = -1 * step_size * scale_diff;
+        }
+
+        var sf = start_scale + add;
+        if (sf > g.scaler.max_scale_factor) {
+            sf = g.scaler.max_scale_factor;
+        } else if (sf < g.scaler.min_scale_factor) {
+            sf = g.scaler.min_scale_factor;
+        }
+        g.scaler.curr_scale = sf;
+        g.scaler.scale_graphs(sf);
+        last_scale = ev.scale;
+    });
 }
