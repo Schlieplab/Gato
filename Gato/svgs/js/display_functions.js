@@ -499,7 +499,6 @@ function click_speed_button(evt) {
     for (var i=0; i<buttons.length; i++) {
         if (button_types[i].label === target_label) {
             g.animation.change_speed(button_types[i]['speed']);
-            // g.animation.step_ms = button_types[i]['speed'];
             buttons[i].attr({'opacity': speed_controls.button_settings.active_opacity});
             g.control_panel.set_text(target_label);
         } else {

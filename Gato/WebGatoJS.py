@@ -25,6 +25,7 @@ animationhead = '''
         <link rel="stylesheet" type="text/css" href="js/subModal/subModal.css" />
         <script type="text/javascript" src="js/subModal/common.js"></script>
         <script type="text/javascript" src="js/subModal/subModal.js"></script>
+        <script type="text/javascript" src="js/hammer.min.js"></script>
         <script src="js/snap.svg.js" type="text/javascript"></script>
         <style>
             html, body {

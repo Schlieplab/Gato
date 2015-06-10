@@ -1,5 +1,0 @@
-For the app icon itself we need a 180x180, 120x120, 152x152, 76x76, and 1024x1024.  That last big one is for displaying in the App Store.  
-
-In addition to the app icon, we also need a launch image.  A launch image is an image that is displayed immediately when a user opens an app to make it seem responsive while it's busy loading its actual functionality.  Ours might just be our index page minus the graphs, or something like that.  The launch image is required in the following resolutions: 640x1136, 640x960, 1536x2048, 2048x1536, 768x1024, 1024x768, (750x1334, 1334x750, 1242x2208, and 2208x1242).  The 4 resolutions in parentheses can optionally be skipped and we could instead supply a launch file which has some dynamic layout data-- but I'm not sure which would be easier.  
-
-That's it for required images-- but Apple also recommends a search results icon, and a settings icon.  If we want to add those in then we additionally need these resolutions: 80x80, 87x87, 58x58, 29x29, 40x40.  There's also a 120x120 required for the spotlight icon-- but we already need one of those for the appstore icons so I'm thinking we can just use the same image.

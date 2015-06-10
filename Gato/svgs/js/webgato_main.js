@@ -436,6 +436,7 @@ function init() {
     if (isiPhone()) {
         document.getElementById('nav_bar').className = 'active_nav';
         g.navbar = new NavBar();
+        document.getElementById('nav_svg').setAttribute('style', 'width: ' + g.cont_width + 'px; height: ' + g.navbar.height + 'px');
     } else {
         g.navbar = null;
     }

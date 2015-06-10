@@ -194,6 +194,7 @@ function get_default_vertex_info(vertex_g_id, graph_index) {
     return info;
 }
 
+// TODO: This and the next function both use the max_sizes object... that seems wrong
 function record_max_graph_size(g_num) {
     // Checks to see if any of the graphs are bigger then they were before
     // If they are at a current max size we record that
