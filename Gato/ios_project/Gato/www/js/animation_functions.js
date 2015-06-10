@@ -120,8 +120,12 @@ function Animation() {
 		this.start_time = new Date();
 		if (this.state === 'stopped' || this.state === 'done') {
 			if (this.state === 'done') {
-				// If we are done then reset the animation
-				this.jump_to_step(0);
+				// If we are done, and the user hasn't moved the slider, then reset the animation
+				if (this.step_num === anim_array.length) {
+					this.jump_to_step(0);
+				} else {
+					this.jump_to_step(this.step_num);
+				}
 			}
 
 			this.state = 'animating';
@@ -164,8 +168,8 @@ function Animation() {
 		}
 	};
 
-	this.jump_to_step = function(n, move_slider) {
-		if (!g.jump_ready) {
+	this.jump_to_step = function(n, move_slider, immediate) {
+		if (!g.jump_ready && !immediate) {
 			return;
 		}
 		if (n === this.step_num) {
@@ -403,6 +407,17 @@ function Animation() {
 		}
 	};
 
+	// this.closest_checkpoint_to_step = function(step, direction) {
+	// 	console.log("Got step " + step + " and direction " + direction);
+	// 	if (step%500 === 0) {
+	// 		return step;
+	// 	} else if (direction === 'left') {
+	// 		return 500 * (Math.floor(step/500) + 1);
+	// 	} else {
+	// 		return 500 * Math.floor(step/500);
+	// 	}
+	// };
+
 	this.initialize_variables = function() {
 		// State of animation		
 		this.states = ['animating', 'stopped', 'stepping', 'waiting', 'done'];
@@ -467,8 +482,9 @@ function Slider(width, height) {
 		g.slider.start_mouse_x = parseInt(clientX);
 	};
 	this.cursor_drag = function(evt) {
-		this.cursor_mouseup(evt);
+		this.cursor_mousemove(evt);
 	};
+	// TODO: This and the next function are the same except the next one takes dragging parameter, and sets sliding to false
 	this.cursor_mousemove = function(evt) {
 		/*	This does the actual moving of the cursor.  Using the cursor and mouse positions
 			at mousedown event this computes the new position of the cursor, and moves
@@ -490,8 +506,20 @@ function Slider(width, height) {
 		} else {
 			step = self.get_step_for_position(new_x / self.step_width);
 		}
+		// if (this.slide_direction) {
+		// 	step = g.animation.closest_checkpoint_to_step(step, this.slide_direction);
+		// }
+		console.log("Jumping to " + step);
 		g.animation.jump_to_step(step, false);
 		self.go_to_step(step);
+		// if (this.last_client_x) {
+		// 	if (this.last_client_x > clientX) {
+		// 		this.slide_direction = 'left';
+		// 	} else {
+		// 		this.slide_direction = 'right';
+		// 	}
+		// }
+		// this.last_client_x = clientX;
 	};
 	this.cursor_mouseup = function(evt) {
 		/* Ends cursor sliding behavior */
@@ -514,9 +542,11 @@ function Slider(width, height) {
 			step = self.get_step_for_position(new_x / self.step_width);
 		}
 		console.log("jumping to step");
-		g.animation.jump_to_step(step, false);
+		g.animation.jump_to_step(step, false, true);
 		self.go_to_step(step);
 		this.sliding = false;
+		this.last_client_x = null;
+		this.slide_direction = null;
 	};
 	this.go_to_step = function(n, time) {
 		/* Positions the cursor at the position corresponding to step number n */
@@ -578,6 +608,11 @@ function Slider(width, height) {
 		this.g = snap.group();
 		this.slider_positions = [];
 		this.position_to_step = {};
+
+		// When the slider is moving last_client_x is the position of the slider in the last call of mousemove
+		this.last_client_x = null;
+		// Direction the slider is moving, if it is moving
+		this.slide_direction = null;
 
 		// Construct the slider track
 		this.track_width = this.width;

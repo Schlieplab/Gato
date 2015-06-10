@@ -23,6 +23,8 @@
         <meta name="format-detection" content="telephone=no" />
         <meta name="viewport" content="user-scalable=yes, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, target-densitydpi=device-dpi" />
         <link rel="stylesheet" type="text/css" href="js/subModal/subModal.css" />
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="cordova_plugins.js"></script>
         <script type="text/javascript" src="js/subModal/common.js"></script>
         <script type="text/javascript" src="js/subModal/subModal.js"></script>
         <script type="text/javascript" src="js/hammer.min.js"></script>
@@ -1024,7 +1026,7 @@ Array(8, ShowActive, "l_10"),
 Array(5, SetEdgeColor, "g1_12-14", "grey"),
 Array(1, SetVertexFrameWidth, "g1_14", "0"),
 Array(4, ShowActive, "l_6"));
-            init();
+            document.addEventListener("deviceready", function(){console.log('ready');console.log(window.plugins); init();}, false);
         </script>
 
     </body>

@@ -14,12 +14,16 @@ function fill_global() {
         navbar_padding = 5;
         navbar_border_height = 2;
     }
+
     var cont_width = window.innerWidth;
     var cont_height = window.innerHeight - navbar_height - navbar_border_height;
+
+    // A jump is allowed every jump_interval milliseconds
     var jump_interval = 50;
     if (isiPhone()) {
-        jump_interval = 200;
+        jump_interval = 500;
     }
+
     extend(g, {
         playback_bar: null,
         code_box: null,
@@ -394,6 +398,7 @@ function show_everything() {
 }
 
 function init() {
+    window.plugins.spinnerDialog.show();
     window_size_check();
 
     // Add global event handlers
@@ -427,9 +432,10 @@ function init() {
         g.navbar = null;
     }
 
-    hide_spinner();
+    window.plugins.spinnerDialog.hide();
     show_everything();
 
+    // Temporary pinch code
     g.mc = new Hammer.Manager(document.getElementById('base_container'));
     var pinch = new Hammer.Pinch()
     g.mc.add(pinch);
@@ -487,4 +493,6 @@ function init() {
         g.scaler.scale_graphs(sf);
         last_scale = ev.scale;
     });
+console.log(window.plugins);
+
 }

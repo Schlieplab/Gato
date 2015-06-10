@@ -14,6 +14,9 @@
     <feature name="LocalStorage">
         <param name="ios-package" value="CDVLocalStorage" />
     </feature>
+    <feature name="SpinnerDialog">
+        <param name="ios-package" value="CDVSpinnerDialog" />
+    </feature>
     <name>Gato</name>
     <description>
         A sample Apache Cordova application that responds to the deviceready event.
@@ -26,4 +29,6 @@
     <preference name="Orientation" value="landscape" />
     <preference name="orientation" value="landscape" />
     <preference name="DisallowOverscroll" value="true" />
+    <gap:plugin name="it.mobimentum.phonegapspinnerplugin" />
+    <gap:plugin name="hu.dpal.phonegap.plugins.spinnerdialog" />
 </widget>
