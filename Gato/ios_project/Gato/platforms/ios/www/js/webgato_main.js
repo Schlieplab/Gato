@@ -398,7 +398,6 @@ function show_everything() {
 }
 
 function init() {
-    window.plugins.spinnerDialog.show();
     window_size_check();
 
     // Add global event handlers
@@ -432,7 +431,6 @@ function init() {
         g.navbar = null;
     }
 
-    window.plugins.spinnerDialog.hide();
     show_everything();
 
     // Temporary pinch code

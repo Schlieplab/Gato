@@ -407,16 +407,16 @@ function Animation() {
 		}
 	};
 
-	this.closest_checkpoint_to_step = function(step, direction) {
-		console.log("Got step " + step + " and direction " + direction);
-		if (step%500 === 0) {
-			return step;
-		} else if (direction === 'left') {
-			return 500 * (Math.floor(step/500) + 1);
-		} else {
-			return 500 * Math.floor(step/500);
-		}
-	};
+	// this.closest_checkpoint_to_step = function(step, direction) {
+	// 	console.log("Got step " + step + " and direction " + direction);
+	// 	if (step%500 === 0) {
+	// 		return step;
+	// 	} else if (direction === 'left') {
+	// 		return 500 * (Math.floor(step/500) + 1);
+	// 	} else {
+	// 		return 500 * Math.floor(step/500);
+	// 	}
+	// };
 
 	this.initialize_variables = function() {
 		// State of animation		
@@ -506,20 +506,20 @@ function Slider(width, height) {
 		} else {
 			step = self.get_step_for_position(new_x / self.step_width);
 		}
-		if (this.slide_direction) {
-			step = g.animation.closest_checkpoint_to_step(step, this.slide_direction);
-		}
+		// if (this.slide_direction) {
+		// 	step = g.animation.closest_checkpoint_to_step(step, this.slide_direction);
+		// }
 		console.log("Jumping to " + step);
 		g.animation.jump_to_step(step, false);
 		self.go_to_step(step);
-		if (this.last_client_x) {
-			if (this.last_client_x > clientX) {
-				this.slide_direction = 'left';
-			} else {
-				this.slide_direction = 'right';
-			}
-		}
-		this.last_client_x = clientX;
+		// if (this.last_client_x) {
+		// 	if (this.last_client_x > clientX) {
+		// 		this.slide_direction = 'left';
+		// 	} else {
+		// 		this.slide_direction = 'right';
+		// 	}
+		// }
+		// this.last_client_x = clientX;
 	};
 	this.cursor_mouseup = function(evt) {
 		/* Ends cursor sliding behavior */
