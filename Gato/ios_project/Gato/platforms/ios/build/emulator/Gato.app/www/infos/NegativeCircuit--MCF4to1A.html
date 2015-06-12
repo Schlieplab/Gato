@@ -1,0 +1,219 @@
+<html>
+ <head>
+  <link href="../css/info_page_style.css" rel="stylesheet"/>
+  <title>
+   Minimum Cost Flow - Negative Cycle
+  </title>
+ </head>
+ <body>
+  This algorithm finds a minimum cost flow by canceling negative
+cycles. Initially, adding an artificial source-sink-pair and using a
+maximum flow algorithm, a feasible flow is computed. In the following
+we search for cycles of negative weight in the residual network, and
+decrease the cost by sending flow along these cycles, see Chapter 7 of
+the book.
+  <h3>
+   Visualization
+  </h3>
+  <h4>
+   Primary Window
+  </h4>
+  <h5>
+   Vertex Colors
+  </h5>
+  <dl>
+   <dt>
+    <div class="color_div" style="background-color: green">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    Vertices with a positive supply.
+   </dd>
+   <div class="clear_div">
+   </div>
+   <dt>
+    <div class="color_div" style="background-color: red">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    Vertices with a positive demand.
+   </dd>
+   <div class="clear_div">
+   </div>
+   <dt>
+    <div class="color_div" style="background-color: grey">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    Balanced vertices.
+   </dd>
+   <div class="clear_div">
+   </div>
+  </dl>
+  <h5>
+   Edge Colors
+  </h5>
+  <dl>
+   <dt>
+    <div class="color_div" style="background-color: #EEEEEE">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   Initial color for edges.
+  </dl>
+ </body>
+</html>
+<dt>
+ <div class="color_div" style="background-color: blue">
+  &nbsp;&nbsp;&nbsp;&nbsp;
+ </div>
+</dt>
+<dd>
+ Color of saturated edges.
+</dd>
+<div class="clear_div">
+</div>
+<dt>
+ <div class="color_div" style="background-color: #9999FF">
+  &nbsp;&nbsp;&nbsp;&nbsp;
+ </div>
+</dt>
+<dd>
+ Color of
+unsaturated edges with positive flow.
+</dd>
+<div class="clear_div">
+</div>
+<h5>
+ Further elements
+</h5>
+<dl>
+ <dd>
+  Labels at the vertices give the
+suppy respectively the demand of the vertex. Labels at edges give the
+flow and the capacity of that edge.
+ </dd>
+ <div class="clear_div">
+ </div>
+</dl>
+<h4>
+ <a name="Secondary">
+  Secondary Window
+ </a>
+</h4>
+This window depicts the residual network. The residual capacities and
+the cost of the edges are given in the graph informer.
+<p>
+ <p>
+  <h5>
+   Vertex Colors
+  </h5>
+  <dl>
+   <dt>
+    <div class="color_div" style="background-color: green">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    Vertices with a positive supply.
+   </dd>
+   <div class="clear_div">
+   </div>
+   <dt>
+    <div class="color_div" style="background-color: red">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    Vertices with a positive demand.
+   </dd>
+   <div class="clear_div">
+   </div>
+   <dt>
+    <div class="color_div" style="background-color: grey">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    Balanced vertices.
+   </dd>
+   <div class="clear_div">
+   </div>
+   <dt>
+    <div class="color_div" style="background-color: red">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    Vertices in a negative cycle.
+   </dd>
+   <div class="clear_div">
+   </div>
+   <dt>
+    <div class="color_div" style="background-color: green">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    Vertex processed in an augmentation along a negative cycle.
+   </dd>
+   <div class="clear_div">
+   </div>
+  </dl>
+  <p>
+   <h5>
+    Edge Colors
+   </h5>
+   <dl>
+    <dt>
+     <div class="color_div" style="background-color: #EEEEEE">
+      &nbsp;&nbsp;&nbsp;&nbsp;
+     </div>
+    </dt>
+    Initial color for edges.
+   </dl>
+  </p>
+ </p>
+</p>
+<dl>
+ <dt>
+  <div class="color_div" style="background-color: red">
+   &nbsp;&nbsp;&nbsp;&nbsp;
+  </div>
+ </dt>
+ Edges in a negative cycle.
+</dl>
+<dt>
+ <div class="color_div" style="background-color: yellow">
+  &nbsp;&nbsp;&nbsp;&nbsp;
+ </div>
+</dt>
+<dd>
+ Edge of minimum capacity in
+the present negative cycle.
+ <dt>
+  <div class="color_div" style="background-color: green">
+   &nbsp;&nbsp;&nbsp;&nbsp;
+  </div>
+ </dt>
+ <dd>
+  Edges in the shortest path tree proving the non-existence of a negativ cycle.
+ </dd>
+ <div class="clear_div">
+ </div>
+</dd>
+<div class="clear_div">
+</div>
+<h5>
+ Further elements
+</h5>
+<dl>
+ <dd>
+  Labels at the vertices give the dually optimal potential.
+ </dd>
+ <div class="clear_div">
+ </div>
+</dl>
