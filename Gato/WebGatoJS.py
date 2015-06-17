@@ -136,6 +136,7 @@ animationhead = '''
 
         <script type="text/javascript">
             var chapter_number = %(chapter_number)d;
+            var chapter_name = "%(chapter_name)s";
             var algo_div = "%(algo_div)s";
             var info_file = "%(info_file)s";
             var animation_name = "%(animation_name)s";

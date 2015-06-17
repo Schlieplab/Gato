@@ -32,6 +32,7 @@ function fill_global() {
         navbar_padding = 5;
         navbar_border_height = 2;
     }
+
     var cont_width = window.innerWidth;
     var cont_height = window.innerHeight - navbar_height - navbar_border_height;
     var jump_interval = 50;
@@ -39,79 +40,117 @@ function fill_global() {
         jump_interval = 200;
     }
     extend(g, {
+        // Bar at bottom of screen that controls playback 
         playback_bar: null,
+        // Codebox element at leftside of screen
         code_box: null,
+        // Object that controls animation
         animation: null,
 
         /* General Globals */
-        // Width and height of the whole draw area
+
+        // Navbar dimensions
         navbar_height: navbar_height,
         navbar_padding: navbar_padding,
         navbar_border_height: navbar_border_height,
+
+        // Height of the transparent iOS status bar that we must account for
         ios_statusbar_height: 20,
+
+        // Top level div container width and height
         cont_width: cont_width,
         cont_height: cont_height,
+
+        // Constant used for rounded edges of rect elements
         rect_r: 1, 
+
         playback_bar_stroke_width: 2,
         codebox_stroke_width: 2,
+
+        // Time(in ms) the speed menu is open with no activity before we close it
         speed_menu_close_timeout: 2000,
         playback_bar_fill: '#606060',
         playback_bar_stroke: '#333',
         graph_frame_normalize_diff: 25,
         jump_ready: true,
+
+        // Jump Interval is the length of time required between jumps.  When a jump is performed jump_ready is set to 
+        // false, with a timeout set to happen in jump_interval ms that sets jump_ready back to true.
         jump_interval: jump_interval,
+
         // Location in the file system of the algorithm info file
         info_file: 'infos/%(info_file)s',
+
         // Number of pixels to use for padding on edges of canvas and between elements
         padding: Math.min(Math.ceil(cont_width*.02), Math.ceil(cont_height)*.03),
+
         // The x/y coordinate shifts we apply to any coordinates passed in from animation commands
         coord_changes: [
             {'x': g1_x_add, 'y': g1_y_add},
             {'x': g2_x_add, 'y': g2_y_add}
         ],
+
         // true moats are currently undergoing a growing animation.  
         // We use this to know when we've hit the first GrowMoat command in a series, so we can find the corresponding
         // Wait() command that tells us how long the animation lasts
         growing_moats: false,
+
         // true if we are currently jumping between animation states(we avoid blinking if we are jumping, 
         // and execute animation commands immediately if they would normally be animated).
         // At the start we are building the graph states so we set it to true
         jumping: true,
 
         /* Graph Related Globals */
+
         // The radius of vertices on the graph
         vertex_r: parseInt(snap.select('g#g1 .vertex').attr('r')),
+
         // Padding given to graph inside graph container
         frame_padding: 8,
+
         // The two containers that hold each graph
         graph_containers: [snap.group().attr({'id': 'g1_container'}),
             snap.group().attr({'id': 'g2_container'})],
+
         // The two containers that hold each graph info.  These are children of the graph containers above
         graph_info_containers: [snap.group().attr({'id': 'g1_info_container'}), 
             snap.group().attr({'id': 'g2_info_container'})],
+
         graph_frame_stroke_width: 1,
+
+        // Constants for graph edges
         edge_width: 4,
         edge_color: '#EEEEEE',
+
         graph_info_height: 20,
+
         // Holds the offsets for bubbles per graph.  Each bubble is indexed by id.  A bubble
         // offset is a value that is added to the radius of the bubble when resizing.
         bubble_offsets: [{}, {}],
+
         // Dictionary of edges that are currently blinking, indexed by ID.
         // When we set an edge's color we remove any blinks associated with that edge, if any
         blinking_edges: {},
+
         // Same as blinking_edges but for vertices
         blinking_vertices: {},
+
         // The initial information for each element type
         init_edge_infos: [g1_init_edge_info, g2_init_edge_info],
         init_graph_infos: [g1_init_graph_info, g2_init_graph_info],
         init_vertex_infos: [g1_init_vertex_info, g2_init_vertex_info],
+
         // The graph info text elements
         graph_infos: [],
+
         // Array of tooltip text elements
         tooltips: [{}, {}],
+
         // Dictionary of tooltips indexed by tooltip ID that points to the ToolTip javascript objects
         tooltip_objects: {},
+
         arrow_id_prefix: 'ea',
+
         // Array with a dictionary for each graph that contains the maximum width and height the graph attains.
         // The min_left attribute is the minimum x value that the graph attains throughout animation.
         // min_left is useful for things like WeightedMatching of PrimalDualKruskal which have big bubbles
@@ -283,6 +322,7 @@ function global_drag(evt) {
 }
 
 var window_size_check = (function() {
+    /* Shows the user an alert message if they scale the window too small */
     var notice_shown = false;
     return function() {
         if (!notice_shown) {
@@ -295,6 +335,7 @@ var window_size_check = (function() {
 })();
 
 function window_resize(evt) {
+    /* Function is called when window is resized, and handles resizing of individual GUI components */
     window_size_check();
     g.cont_height = window.innerHeight - g.navbar_height - g.navbar_border_height;
     g.cont_width = window.innerWidth;
@@ -309,92 +350,8 @@ function window_resize(evt) {
     }
 }
 
-function NavBar() {
-    // g.navbar_height, g.navbar_padding, g.ios_statusbar_height
-    
-    // this is jsut here to simulate the status bar
-    // nav_snap.rect(0, 0, g.cont_width, 20);
-    this.padding = g.navbar_padding;
-    this.width = g.cont_width - g.padding*2;
-    this.height = g.navbar_height;
-
-    this.g = nav_snap.group().attr({'id': 'navbar_g'});
-
-    // Create backlink
-    this.backlink_g = nav_snap.group().attr({'id': 'backlink_g', 'cursor': 'pointer'});
-    var h = this.height - this.padding*2 - g.ios_statusbar_height;
-    var p = 5.0;
-    var k = Math.sqrt(2.0*Math.pow(p, 2));
-    var f = Math.pow(p,2) / k;
-    this.backlink_poly = nav_snap.polygon([
-        0, h/2.0,
-        h/2.0, h,
-        h/2.0 + k/2.0, h - Math.pow(p,2)/k,
-        k, h/2.0,
-        h/2.0 + k/2.0, Math.pow(p,2) / k,
-        h/2.0, 0
-    ]).attr({
-        'fill': '#ccc'
-    });
-    this.backlink_g.append(this.backlink_poly);
-    this.backlink_text = nav_snap.text(h/2.0 + k/2.0 + this.padding, h/2.0 + 5, "Animation Index").attr({
-        'fill': '#ccc',
-        'font-family': 'Helvetica',
-        'font-size': 14,
-    });
-    this.backlink_g.append(this.backlink_text);
-    var backlink_bbox = this.backlink_g.getBBox();
-    this.backlink_rect = nav_snap.rect(0, 0, backlink_bbox.width, backlink_bbox.height).attr({
-        'fill': 'white'
-    });
-    this.backlink_g.prepend(this.backlink_rect);
-    this.backlink_g.click(
-        function() {
-            window.location = 'index.html#' + algo_div;
-        }
-    );
-    this.g.append(this.backlink_g);
-
-    // Create the title
-    this.anim_title = nav_snap.text(this.width/2, h/2.0 + 5, animation_name).attr({
-        'fill': '#ccc',
-        'font-family': 'Helvetica',
-        'font-size': 15,
-        'text-anchor': 'middle'
-    });
-    this.g.append(this.anim_title);
-
-    this.cog_dim = 30;
-    this.cog = nav_snap.image('img/cog_grey.png', this.width - this.cog_dim, 0, this.cog_dim, this.cog_dim).attr({
-        'cursor': 'pointer'
-    }).click(show_algo_info);
-    // TODO: Add a click handler to this
-    this.g.append(this.cog);
-
-    this.help_link = nav_snap.text(0, h/2.0 + 5, "Help").attr({
-        'fill': '#ccc',
-        'font-family': 'Helvetica',
-        'font-size': 15,
-        'text-anchor': 'middle',
-        'cursor': 'pointer'
-    }).click(function() {
-        window.location = 'help.html';
-    });
-    this.help_link.attr({'x': this.width - this.cog_dim - this.help_link.getBBox().width - 5});
-    this.g.append(this.help_link);
-
-    this.g.transform('t' + g.padding + ',' + (g.ios_statusbar_height+g.navbar_padding));
-
-    this.resize = function() {
-        this.width = g.cont_width - g.padding*2;
-        this.anim_title.attr({'x': g.cont_width/2});
-        this.cog.attr({'x': this.width - this.cog_dim});
-        this.help_link.attr({'x': this.width - this.cog_dim - this.help_link.getBBox().width - 5});
-    };
-
-}
-
 function show_everything() {
+    /* Sets visibililty of every GUI element to visible */
     g.playback_bar.g.attr({'visibility': 'visible'});
     g.code_box.g.attr({'visibility': 'visible'});
     snap.select("#codelines").attr({'visibility': 'visible'});

@@ -511,6 +511,7 @@ svg_instance = [
             {
                 'title': 'Bipartite',
                 'file': 'Bipartite.alg',
+                'svg_file': 'Bipartite_app.alg',
                 'description': 'This algorithm finds a maximal cardinality matching ' \
                 'in a bipartite graph. In other words it maximes the number of matched ' \
                 'vertices',
@@ -522,6 +523,7 @@ svg_instance = [
             {
                 'title': 'Cardinality Matching',
                 'file': 'CardinalityMatching.alg',
+                'svg_file': 'CardinalityMatching_app.alg',
                 'description': 'This algorithm finds a maximal cardinality matching in graphs ' \
                 'which are not necessarily bipartite.',
                 'graphs': [
@@ -767,7 +769,8 @@ if __name__ == '__main__':
                     graph_name = os.path.splitext(os.path.basename(graph_file))[0]
                     png_file_name = 'svgs/img/%s.png' % (graph_name)
                     svg_file_name = 'svgs/%s--%s.html' % (os.path.splitext(algo['file'])[0], graph_name)
-                    algo_location = testPath + chapter_dict['chapter_directory'] + '/' + algo['file']
+                    algo_location = testPath + chapter_dict['chapter_directory'] + '/' + algo.get('svg_file', algo['file'])
+
                     generate_anim = should_generate_animation(algo_location, testPath+graph_file, svg_file_name)
                     generate_png = should_generate_png(algo_location, testPath+graph_file, png_file_name)
                     if generate_anim or generate_png or force_animation:
@@ -787,7 +790,9 @@ if __name__ == '__main__':
                         app.CmdStart()
                         app.update_idletasks()
                         # Generate the SVG
-                        app.ExportSVGAnimation(svg_file_name, chapter_number=chapter_dict['chapter_number'], algo_div=algo['title'].replace(' ', '').replace('-',''))
+                        app.ExportSVGAnimation(svg_file_name, chapter_number=chapter_dict['chapter_number'], 
+                            algo_div=algo['title'].replace(' ', '').replace('-',''),
+                            chapter_name=chapter_dict['title'])
                     else:
                         print "Animation already generated, skipping."
 
