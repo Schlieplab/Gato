@@ -87,6 +87,18 @@
 			document.getElementById('regular_header').className = 'invisible';
 			document.getElementById('touch_header').className = 'visible';
 		}
+
+		function offsetAnchor() {
+		    if(location.hash.length !== 0) {
+		        window.scrollTo(window.scrollX, window.scrollY - 100);
+		    }
+		}
+		window.addEventListener("hashchange", function() {
+			offsetAnchor();
+		}, false);
+		window.setTimeout(function() {
+		    offsetAnchor();
+		}, 1);
 	</script>
 </body>
 </html>

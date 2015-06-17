@@ -24,6 +24,8 @@ animationhead = '''
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, target-densitydpi=device-dpi" />
         <link rel="stylesheet" type="text/css" href="js/subModal/subModal.css" />
         <script type="text/javascript" src="js/subModal/common.js"></script>
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="cordova_plugins.js"></script>
         <script type="text/javascript" src="js/subModal/subModal.js"></script>
         <script type="text/javascript" src="js/hammer.min.js"></script>
         <script src="js/snap.svg.js" type="text/javascript"></script>
@@ -158,7 +160,15 @@ animationhead = '''
         
         <script type="text/javascript">
             %(animation)s
-            init();
+
+            if (isiPhone()) {
+                document.addEventListener("deviceready", 
+                    function(){ init() }, 
+                    false
+                );
+            } else {
+                init();
+            }
         </script>
 
     </body>
