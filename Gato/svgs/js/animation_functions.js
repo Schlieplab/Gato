@@ -182,12 +182,28 @@ function Animation() {
 		}
 	};
 
-	this.jump_to_step = function(n, move_slider) {
+	this.jump_to_closest_state = function(n) {
 		if (!g.jump_ready) {
 			return;
 		}
+		var rem = n % this.state_interval;
+		var new_state_ind;
+		if (rem >= this.state_interval/2) {
+			// Go to next state_interval
+			new_state_ind = parseInt((n + this.state_interval)/this.state_interval);
+		} else {
+			new_state_ind = parseInt(n / this.state_interval);
+		}
+		return this.jump_to_step(new_state_ind*this.state_interval, false);
+	};
+
+	this.jump_to_step = function(n, move_slider) {
+		/* Tried to jump to given step_number.  Returns true/false whether jump was performe dor not */
+		if (!g.jump_ready) {
+			return false;
+		}
 		if (n === this.step_num) {
-			return;
+			return false;
 		}
 		g.jumping = true;
 		var curr_state_ind = parseInt(this.step_num/this.state_interval);
@@ -195,8 +211,8 @@ function Animation() {
 		var state = this.graph_states[new_state_ind];
 
 		// TODO: Test to see whether it is faster to jump 500 then animate 500 vs animation 1000
-		if (n > this.step_num && n - this.step_num <= this.state_interval) {
-			// If we are animating between now and next state then just animate until, don't go to any state
+		if (n > this.step_num && n - this.step_num < this.state_interval) {
+			// If we are animating returnbetween now and next state then just animate until, don't go to any state
 			this.animate_until(n);
 		} else {
 			// We are moving backwards, or past the next state.  
@@ -314,6 +330,7 @@ function Animation() {
 		}, g.jump_interval);
 
 		this.start_time = new Date().getTime();
+		return true;
 	};
 
 	/*
@@ -437,7 +454,7 @@ function Animation() {
 		this.step_num = 0;
 
 		// How many steps we take between each saved graph state
-		this.state_interval = 500; 
+		this.state_interval = 300; 
 
 		// Try to retrieve the graph states from local storage before constructing them anew
 		this.retrieve_graph_states();
@@ -506,7 +523,11 @@ function Slider(width, height) {
 		} else {
 			step = self.get_step_for_position(new_x / self.step_width);
 		}
-		g.animation.jump_to_step(step, false);
+		// g.animation.jump_to_step(step, false);
+		var jumped = g.animation.jump_to_closest_state(step);
+		if (jumped) {
+			show_overlay_frames();
+		}
 		self.go_to_step(step);
 	};
 	this.cursor_mouseup = function(evt) {
@@ -530,6 +551,7 @@ function Slider(width, height) {
 		g.animation.jump_to_step(step, false);
 		self.go_to_step(step);
 		this.sliding = false;
+		hide_overlay_frames();
 	};
 	this.go_to_step = function(n, time) {
 		/* Positions the cursor at the position corresponding to step number n */

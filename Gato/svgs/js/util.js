@@ -51,6 +51,22 @@ function isiPhone(){
     );
 }
 
+function show_overlay_frames() {
+    for (var i=0; i<2; i++) {
+        if (g.overlay_frames[i]) {
+            g.overlay_frames[i].attr({'visibility': 'visible'});
+        }
+    }
+}
+
+function hide_overlay_frames() {
+    for (var i=0; i<2; i++) {
+        if (g.overlay_frames[i]) {
+            g.overlay_frames[i].attr({'visibility': 'hidden'});
+        }
+    }
+}
+
 function add_scaler() {
     g.scaler = new Scaler();
     g.graph_containers[g.num_graphs-1].append(g.scaler.click_receiver);

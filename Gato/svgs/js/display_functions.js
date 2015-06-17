@@ -402,6 +402,7 @@ function add_graph_frame() {
     }
 
     // Create the frames
+    g.overlay_frames = [];
     for (var g_num=0; g_num<g.num_graphs; g_num++) {
         var frame_dim = graph_frame_dim[g_num];
         if (frame_dim['width'] && frame_dim['height']) {
@@ -414,6 +415,18 @@ function add_graph_frame() {
                 strokeDasharray: '5,2',
             });
             g.graph_containers[g_num].prepend(frame);
+            var overlay_frame = snap.rect(0, 0, frame_dim['width'], frame_dim['height'], 3, 3) 
+            .attr({
+                id: 'g' + (g_num+1) + '_overlay_frame',
+                fill: '#333',
+                opacity: .3,
+                stroke: '#ccc',
+                strokeWidth: g.graph_frame_stroke_width,
+                strokeDasharray: '5,2',
+                visibility: 'hidden',
+            });
+            g.graph_containers[g_num].append(overlay_frame);
+            g.overlay_frames.push(overlay_frame);
         }
     }
 }
