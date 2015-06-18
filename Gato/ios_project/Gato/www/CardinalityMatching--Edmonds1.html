@@ -267,60 +267,29 @@
 </g>
 </g>
 
-            <g id="codelines" style="visibility: hidden"><text blank = "false" id="l_1" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">def</tspan> FindSuspectEdge(G,M,A):</text>
-<text blank = "false" id="l_2" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">A.Clear()</text>
-<text blank = "false" id="l_3" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">Q = TrackingVertexQueue(A)</text>
-<text blank = "false" id="l_4" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">pred = SearchTreePredecessorLabeling(A)</text>
-<text blank = "false" id="l_5" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">label = VisibleVertexLabeling(A)</text>
-<text blank = "false" id="l_6" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">base ={}</text>
-<text blank = "true" id="l_7" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"></text>
-<text blank = "false" id="l_8" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">for</tspan> v<tspan font-weight="bold"> in</tspan> UnmatchedVertices(G,M):</text>
-<text blank = "false" id="l_9" class="code_line" x="0" y="0" dx="32" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">pred[v] = v</text>
-<text blank = "false" id="l_10" class="code_line" x="0" y="0" dx="32" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">base[v] = v</text>
-<text blank = "false" id="l_11" class="code_line" x="0" y="0" dx="32" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">label[v] = 1</text>
-<text blank = "false" id="l_12" class="code_line" x="0" y="0" dx="32" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">Q.Append(v)</text>
-<text blank = "true" id="l_13" class="code_line" x="0" y="0" dx="32" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"></text>
-<text blank = "false" id="l_14" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">while</tspan> Q.IsNotEmpty():</text>
-<text blank = "false" id="l_15" class="code_line" x="0" y="0" dx="32" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">v = Q.Top()</text>
-<text blank = "false" id="l_16" class="code_line" x="0" y="0" dx="32" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">for</tspan> w<tspan font-weight="bold"> in</tspan> G.Neighborhood(v):</text>
-<text blank = "false" id="l_17" class="code_line" x="0" y="0" dx="48" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan><tspan font-weight="bold"> not</tspan> pred.QDefined(w):</text>
-<text blank = "false" id="l_18" class="code_line" x="0" y="0" dx="64" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">pred[w] = v</text>
-<text blank = "false" id="l_19" class="code_line" x="0" y="0" dx="64" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">base[w] = base[v]</text>
-<text blank = "false" id="l_20" class="code_line" x="0" y="0" dx="64" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">label[w] = 0</text>
-<text blank = "true" id="l_21" class="code_line" x="0" y="0" dx="64" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"></text>
-<text blank = "false" id="l_22" class="code_line" x="0" y="0" dx="64" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan> w<tspan font-weight="bold"> in</tspan> M.Vertices():</text>
-<text blank = "false" id="l_23" class="code_line" x="0" y="0" dx="80" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">u = M.Neighborhood(w)[0]</text>
-<text blank = "false" id="l_24" class="code_line" x="0" y="0" dx="80" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">pred[u] = w</text>
-<text blank = "false" id="l_25" class="code_line" x="0" y="0" dx="80" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">base[u] = base[w]</text>
-<text blank = "false" id="l_26" class="code_line" x="0" y="0" dx="80" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">label[u] = 1</text>
-<text blank = "false" id="l_27" class="code_line" x="0" y="0" dx="80" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">Q.Append(u)</text>
-<text blank = "false" id="l_28" class="code_line" x="0" y="0" dx="48" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">elif</tspan> pred[v] != w<tspan font-weight="bold"> and</tspan> label[w] != 0:</text>
-<text blank = "false" id="l_29" class="code_line" x="0" y="0" dx="64" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">A.SetEdgeColor(v,w,'red')</text>
-<text blank = "false" id="l_30" class="code_line" x="0" y="0" dx="64" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">return</tspan>((v,w),pred,base,label)</text>
-<text blank = "false" id="l_31" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">return</tspan>(None,pred,base,label)</text>
-<text blank = "true" id="l_32" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"></text>
-<text blank = "false" id="l_33" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">maximal = False</text>
-<text blank = "false" id="l_34" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">while</tspan><tspan font-weight="bold"> not</tspan> maximal:</text>
-<text blank = "false" id="l_35" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">(e,pred,base,label) = FindSuspectEdge(SG,SGM,SGA)</text>
-<text blank = "false" id="l_36" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan> e<tspan font-weight="bold"> is</tspan> None:</text>
-<text blank = "false" id="l_37" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">maximal = True</text>
-<text blank = "false" id="l_38" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">else</tspan>:</text>
-<text blank = "false" id="l_39" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan> base[e[0]] == base[e[1]]:# Found a blossom</text>
-<text blank = "false" id="l_40" class="code_line" x="0" y="0" dx="44" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">B = BlossomContaining(e,pred)</text>
-<text blank = "false" id="l_41" class="code_line" x="0" y="0" dx="44" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">sv = ShrinkBlossom(B)</text>
-<text blank = "false" id="l_42" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">else</tspan>:</text>
-<text blank = "false" id="l_43" class="code_line" x="0" y="0" dx="44" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">P = FindAugmentingPath(SG,SGM,pred,e)</text>
-<text blank = "false" id="l_44" class="code_line" x="0" y="0" dx="44" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">Augment(SGM,P)</text>
-<text blank = "true" id="l_45" class="code_line" x="0" y="0" dx="44" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"></text>
-<text blank = "false" id="l_46" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">ShowGallaiEdmondsDecomposition(label)</text>
-<text blank = "true" id="l_47" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"></text>
-<text blank = "true" id="l_48" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"></text>
+            <g id="codelines" style="visibility: hidden"><text blank = "false" id="l_1" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">maximal = False</text>
+<text blank = "false" id="l_2" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">while</tspan><tspan font-weight="bold"> not</tspan> maximal:</text>
+<text blank = "false" id="l_3" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">(e,pred,base,label) = FindSuspectEdge(SG,SGM,SGA)</text>
+<text blank = "false" id="l_4" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan> e<tspan font-weight="bold"> is</tspan> None:</text>
+<text blank = "false" id="l_5" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">maximal = True</text>
+<text blank = "false" id="l_6" class="code_line" x="0" y="0" dx="16" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">else</tspan>:</text>
+<text blank = "false" id="l_7" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">if</tspan> base[e[0]] == base[e[1]]:# Found a blossom</text>
+<text blank = "false" id="l_8" class="code_line" x="0" y="0" dx="44" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">B = BlossomContaining(e,pred)</text>
+<text blank = "false" id="l_9" class="code_line" x="0" y="0" dx="44" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">sv = ShrinkBlossom(B)</text>
+<text blank = "false" id="l_10" class="code_line" x="0" y="0" dx="28" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"><tspan font-weight="bold">else</tspan>:</text>
+<text blank = "false" id="l_11" class="code_line" x="0" y="0" dx="44" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">P = FindAugmentingPath(SG,SGM,pred,e)</text>
+<text blank = "false" id="l_12" class="code_line" x="0" y="0" dx="44" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">Augment(SGM,P)</text>
+<text blank = "true" id="l_13" class="code_line" x="0" y="0" dx="44" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"></text>
+<text blank = "false" id="l_14" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">ShowGallaiEdmondsDecomposition(label)</text>
+<text blank = "true" id="l_15" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"></text>
+<text blank = "true" id="l_16" class="code_line" x="0" y="0" dx="0" text-anchor="start" fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"></text>
 </g>
         </svg>
         </div>
 
         <script type="text/javascript">
             var chapter_number = 8;
+            var chapter_name = "Matching";
             var algo_div = "CardinalityMatching";
             var info_file = "infos/CardinalityMatching--Edmonds1.html";
             var animation_name = "CardinalityMatching algorithm on Edmonds1 graph";
@@ -459,7 +428,7 @@
         <script type="text/javascript">
             var anim_array = Array(Array(1, SetAllVerticesColor, "g1_grey"),
 Array(1, SetAllVerticesColor, "g2_grey"),
-Array(2, ShowActive, "l_1"),
+Array(1, ShowActive, "l_1"),
 Array(1, UpdateEdgeInfo, "g1_1-2", "Edge (1,2) weight: 112"),
 Array(1, UpdateEdgeInfo, "g1_6-4", "Edge (6,4) weight: 112"),
 Array(1, UpdateEdgeInfo, "g1_5-6", "Edge (5,6) weight: 112"),
@@ -473,37 +442,36 @@ Array(1, UpdateVertexInfo, "g1_3", "Vertex 3 at position (50,150)"),
 Array(1, UpdateVertexInfo, "g1_4", "Vertex 4 at position (300,100)"),
 Array(1, UpdateVertexInfo, "g1_5", "Vertex 5 at position (450,50)"),
 Array(1, UpdateVertexInfo, "g1_6", "Vertex 6 at position (400,150)"),
-Array(5, ShowActive, "l_33"),
-Array(6, ShowActive, "l_34"),
-Array(6, ShowActive, "l_35"),
+Array(5, ShowActive, "l_2"),
+Array(5, ShowActive, "l_3"),
 Array(5, SetAllVerticesColor, "g2_grey"),
 Array(1, SetAllEdgesColor, "g2_grey"),
 Array(1, SetVertexColor, "g2_1", "#663333"),
 Array(1, SetVertexAnnotation, "g2_1", "1"),
-Array(5, SetVertexColor, "g2_2", "#993333"),
+Array(3, SetVertexColor, "g2_2", "#993333"),
 Array(1, SetVertexAnnotation, "g2_2", "1"),
-Array(4, SetVertexColor, "g2_3", "#CC3333"),
+Array(3, SetVertexColor, "g2_3", "#CC3333"),
 Array(1, SetVertexAnnotation, "g2_3", "1"),
-Array(4, SetVertexColor, "g2_4", "#336633"),
+Array(3, SetVertexColor, "g2_4", "#336633"),
 Array(1, SetVertexAnnotation, "g2_4", "1"),
-Array(2, SetVertexColor, "g2_5", "#666633"),
+Array(3, SetVertexColor, "g2_5", "#666633"),
 Array(1, SetVertexAnnotation, "g2_5", "1"),
-Array(2, SetVertexColor, "g2_6", "#996633"),
+Array(3, SetVertexColor, "g2_6", "#996633"),
 Array(1, SetVertexAnnotation, "g2_6", "1"),
 Array(3, SetVertexFrameWidth, "g2_1", "6"),
-Array(1, SetEdgeColor, "g2_3-1", "red"),
-Array(2, ShowActive, "l_36"),
-Array(6, ShowActive, "l_39"),
-Array(6, ShowActive, "l_43"),
+Array(3, SetEdgeColor, "g2_3-1", "red"),
+Array(1, ShowActive, "l_4"),
+Array(5, ShowActive, "l_7"),
+Array(5, ShowActive, "l_11"),
 Array(5, HighlightPath, "g2_[1, 3]", "yellow", "0"),
-Array(2, ShowActive, "l_44"),
+Array(1, ShowActive, "l_12"),
 Array(5, SetVertexColor, "g1_3", "blue"),
 Array(1, SetVertexColor, "g1_1", "blue"),
 Array(1, SetEdgeColor, "g1_3-1", "blue"),
 Array(1, SetEdgeColor, "g2_3-1", "blue"),
 Array(1, HidePath, "g2_(1, 3)"),
-Array(1, ShowActive, "l_34"),
-Array(5, ShowActive, "l_35"),
+Array(1, ShowActive, "l_2"),
+Array(5, ShowActive, "l_3"),
 Array(5, SetAllVerticesColor, "g2_grey"),
 Array(1, SetAllEdgesColor, "g2_grey"),
 Array(1, SetVertexFrameWidth, "g2_1", "0"),
@@ -513,21 +481,21 @@ Array(3, SetVertexColor, "g2_4", "#336633"),
 Array(1, SetVertexAnnotation, "g2_4", "1"),
 Array(3, SetVertexColor, "g2_5", "#666633"),
 Array(1, SetVertexAnnotation, "g2_5", "1"),
-Array(3, SetVertexColor, "g2_6", "#996633"),
+Array(7, SetVertexColor, "g2_6", "#996633"),
 Array(1, SetVertexAnnotation, "g2_6", "1"),
 Array(3, SetVertexFrameWidth, "g2_2", "6"),
 Array(1, SetVertexColor, "g2_1", "#993333"),
 Array(1, SetEdgeColor, "g2_1-2", "#993333"),
 Array(1, SetVertexAnnotation, "g2_1", "0"),
-Array(4, SetVertexColor, "g2_3", "#993333"),
+Array(3, SetVertexColor, "g2_3", "#993333"),
 Array(1, SetEdgeColor, "g2_3-1", "#993333"),
 Array(1, SetVertexAnnotation, "g2_3", "1"),
-Array(3, SetEdgeColor, "g2_2-3", "red"),
-Array(1, ShowActive, "l_36"),
-Array(5, ShowActive, "l_39"),
-Array(5, ShowActive, "l_40"),
-Array(5, ShowActive, "l_41"),
-Array(4, AddVertex, "g2_(116.66666666666667, 100.0)", "7"),
+Array(5, SetEdgeColor, "g2_2-3", "red"),
+Array(1, ShowActive, "l_4"),
+Array(5, ShowActive, "l_7"),
+Array(5, ShowActive, "l_8"),
+Array(6, ShowActive, "l_9"),
+Array(5, AddVertex, "g2_(116.66666666666667, 100.0)", "7"),
 Array(4, AddEdge, "g2_7-4"),
 Array(1, SetEdgeColor, "g2_3-1", "black"),
 Array(1, DeleteEdge, "g2_1-2", "1"),
@@ -537,53 +505,53 @@ Array(1, DeleteEdge, "g2_3-1", "1"),
 Array(1, DeleteEdge, "g2_1-4", "1"),
 Array(1, DeleteVertex, "g2_1"),
 Array(1, DeleteVertex, "g2_3"),
-Array(1, ShowActive, "l_34"),
-Array(5, ShowActive, "l_35"),
+Array(1, ShowActive, "l_2"),
+Array(5, ShowActive, "l_3"),
 Array(4, SetAllVerticesColor, "g2_grey"),
 Array(1, SetAllEdgesColor, "g2_grey"),
 Array(1, SetVertexColor, "g2_4", "#336633"),
 Array(1, SetVertexAnnotation, "g2_4", "1"),
-Array(4, SetVertexColor, "g2_5", "#666633"),
+Array(3, SetVertexColor, "g2_5", "#666633"),
 Array(1, SetVertexAnnotation, "g2_5", "1"),
-Array(3, SetVertexColor, "g2_6", "#996633"),
+Array(4, SetVertexColor, "g2_6", "#996633"),
 Array(1, SetVertexAnnotation, "g2_6", "1"),
-Array(3, SetVertexColor, "g2_7", "#CC6633"),
+Array(5, SetVertexColor, "g2_7", "#CC6633"),
 Array(1, SetVertexAnnotation, "g2_7", "1"),
-Array(2, SetVertexFrameWidth, "g2_4", "6"),
+Array(3, SetVertexFrameWidth, "g2_4", "6"),
 Array(1, SetEdgeColor, "g2_6-4", "red"),
-Array(1, ShowActive, "l_36"),
-Array(5, ShowActive, "l_39"),
-Array(5, ShowActive, "l_43"),
-Array(4, HighlightPath, "g2_[4, 6]", "yellow", "0"),
-Array(1, ShowActive, "l_44"),
-Array(4, SetVertexColor, "g1_6", "blue"),
+Array(1, ShowActive, "l_4"),
+Array(5, ShowActive, "l_7"),
+Array(6, ShowActive, "l_11"),
+Array(5, HighlightPath, "g2_[4, 6]", "yellow", "0"),
+Array(1, ShowActive, "l_12"),
+Array(5, SetVertexColor, "g1_6", "blue"),
 Array(1, SetVertexColor, "g1_4", "blue"),
-Array(1, SetEdgeColor, "g1_6-4", "blue"),
+Array(3, SetEdgeColor, "g1_6-4", "blue"),
 Array(1, SetEdgeColor, "g2_6-4", "blue"),
-Array(1, HidePath, "g2_(4, 6)"),
-Array(1, ShowActive, "l_34"),
-Array(5, ShowActive, "l_35"),
-Array(4, SetAllVerticesColor, "g2_grey"),
+Array(2, HidePath, "g2_(4, 6)"),
+Array(1, ShowActive, "l_2"),
+Array(5, ShowActive, "l_3"),
+Array(5, SetAllVerticesColor, "g2_grey"),
 Array(1, SetAllEdgesColor, "g2_grey"),
 Array(1, SetVertexFrameWidth, "g2_4", "0"),
 Array(1, SetVertexColor, "g2_5", "#666633"),
 Array(1, SetVertexAnnotation, "g2_5", "1"),
-Array(3, SetVertexColor, "g2_7", "#CC6633"),
+Array(4, SetVertexColor, "g2_7", "#CC6633"),
 Array(1, SetVertexAnnotation, "g2_7", "1"),
-Array(3, SetVertexFrameWidth, "g2_5", "6"),
+Array(2, SetVertexFrameWidth, "g2_5", "6"),
 Array(1, SetVertexColor, "g2_4", "#666633"),
 Array(1, SetEdgeColor, "g2_4-5", "#666633"),
 Array(1, SetVertexAnnotation, "g2_4", "0"),
-Array(4, SetVertexColor, "g2_6", "#666633"),
+Array(2, SetVertexColor, "g2_6", "#666633"),
 Array(1, SetEdgeColor, "g2_6-4", "#666633"),
 Array(1, SetVertexAnnotation, "g2_6", "1"),
-Array(3, SetEdgeColor, "g2_5-6", "red"),
-Array(1, ShowActive, "l_36"),
-Array(5, ShowActive, "l_39"),
-Array(5, ShowActive, "l_40"),
-Array(5, ShowActive, "l_41"),
-Array(4, AddVertex, "g2_(383.3333333333333, 100.0)", "8"),
-Array(4, AddEdge, "g2_8-7"),
+Array(4, SetEdgeColor, "g2_5-6", "red"),
+Array(1, ShowActive, "l_4"),
+Array(5, ShowActive, "l_7"),
+Array(5, ShowActive, "l_8"),
+Array(5, ShowActive, "l_9"),
+Array(5, AddVertex, "g2_(383.3333333333333, 100.0)", "8"),
+Array(3, AddEdge, "g2_8-7"),
 Array(1, SetEdgeColor, "g2_6-4", "black"),
 Array(1, DeleteEdge, "g2_4-5", "1"),
 Array(1, DeleteEdge, "g2_5-6", "1"),
@@ -592,24 +560,24 @@ Array(1, DeleteEdge, "g2_6-4", "1"),
 Array(1, DeleteEdge, "g2_7-4", "1"),
 Array(1, DeleteVertex, "g2_4"),
 Array(1, DeleteVertex, "g2_6"),
-Array(1, ShowActive, "l_34"),
-Array(5, ShowActive, "l_35"),
+Array(1, ShowActive, "l_2"),
+Array(5, ShowActive, "l_3"),
 Array(4, SetAllVerticesColor, "g2_grey"),
 Array(1, SetAllEdgesColor, "g2_grey"),
 Array(1, SetVertexColor, "g2_8", "#339933"),
 Array(1, SetVertexAnnotation, "g2_8", "1"),
-Array(4, SetVertexColor, "g2_7", "#CC6633"),
+Array(3, SetVertexColor, "g2_7", "#CC6633"),
 Array(1, SetVertexAnnotation, "g2_7", "1"),
-Array(4, SetVertexFrameWidth, "g2_8", "6"),
+Array(3, SetVertexFrameWidth, "g2_8", "6"),
 Array(1, SetEdgeColor, "g2_8-7", "red"),
-Array(1, ShowActive, "l_36"),
-Array(5, ShowActive, "l_39"),
-Array(5, ShowActive, "l_43"),
+Array(1, ShowActive, "l_4"),
+Array(5, ShowActive, "l_7"),
+Array(5, ShowActive, "l_11"),
 Array(5, HighlightPath, "g2_[8, 7]", "yellow", "0"),
-Array(1, ShowActive, "l_44"),
+Array(1, ShowActive, "l_12"),
 Array(5, SetEdgeColor, "g1_3-1", "black"),
 Array(1, SetVertexColor, "g1_2", "blue"),
-Array(1, SetEdgeColor, "g1_2-3", "blue"),
+Array(2, SetEdgeColor, "g1_2-3", "blue"),
 Array(1, SetEdgeColor, "g1_6-4", "black"),
 Array(1, SetVertexColor, "g1_5", "blue"),
 Array(1, SetEdgeColor, "g1_5-6", "blue"),
@@ -620,34 +588,34 @@ Array(1, SetEdgeColor, "g2_8-7", "black"),
 Array(1, DeleteEdge, "g2_8-7", "1"),
 Array(1, DeleteVertex, "g2_8"),
 Array(1, AddVertex, "g2_(450, 50)", "5"),
-Array(4, AddVertex, "g2_(300, 100)", "4"),
-Array(3, AddVertex, "g2_(400, 150)", "6"),
+Array(3, AddVertex, "g2_(300, 100)", "4"),
+Array(2, AddVertex, "g2_(400, 150)", "6"),
 Array(3, AddEdge, "g2_4-5"),
 Array(1, AddEdge, "g2_5-6"),
 Array(1, AddEdge, "g2_6-4"),
 Array(1, AddEdge, "g2_7-4"),
 Array(1, SetEdgeColor, "g2_5-6", "blue"),
-Array(1, HidePath, "g2_(8, 7)"),
+Array(2, HidePath, "g2_(8, 7)"),
 Array(1, DeleteEdge, "g2_7-4", "1"),
 Array(1, DeleteVertex, "g2_7"),
 Array(1, AddVertex, "g2_(100, 50)", "2"),
-Array(2, AddVertex, "g2_(200, 100)", "1"),
+Array(3, AddVertex, "g2_(200, 100)", "1"),
 Array(3, AddVertex, "g2_(50, 150)", "3"),
-Array(2, AddEdge, "g2_1-2"),
+Array(3, AddEdge, "g2_1-2"),
 Array(1, AddEdge, "g2_1-4"),
 Array(1, AddEdge, "g2_2-3"),
 Array(1, AddEdge, "g2_3-1"),
 Array(1, SetEdgeColor, "g2_1-4", "blue"),
-Array(2, SetEdgeColor, "g2_2-3", "blue"),
+Array(1, SetEdgeColor, "g2_2-3", "blue"),
 Array(1, HidePath, "g2_(8, 7)"),
-Array(1, ShowActive, "l_34"),
-Array(5, ShowActive, "l_35"),
-Array(4, SetAllVerticesColor, "g2_grey"),
+Array(1, ShowActive, "l_2"),
+Array(5, ShowActive, "l_3"),
+Array(5, SetAllVerticesColor, "g2_grey"),
 Array(1, SetAllEdgesColor, "g2_grey"),
-Array(1, ShowActive, "l_36"),
-Array(5, ShowActive, "l_37"),
-Array(5, ShowActive, "l_34"),
-Array(6, ShowActive, "l_46"));
+Array(1, ShowActive, "l_4"),
+Array(5, ShowActive, "l_5"),
+Array(6, ShowActive, "l_2"),
+Array(5, ShowActive, "l_14"));
 
             if (isiPhone()) {
                 document.addEventListener("deviceready", 
