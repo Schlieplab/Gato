@@ -456,7 +456,7 @@ function Animation() {
 		this.step_num = 0;
 
 		// How many steps we take between each saved graph state
-		this.state_interval = 500; 
+		this.state_interval = Math.min(1000, parseInt(anim_array.length / 16)); 
 
 		// Try to retrieve the graph states from local storage before constructing them anew
 		this.retrieve_graph_states();
