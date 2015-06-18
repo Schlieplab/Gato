@@ -494,7 +494,6 @@ function Slider(width, height) {
 			recording initial cursor and mouse positions
 		*/
 		g.jump_closest_state_interval = setInterval(function(){g.animation.jump_to_closest_state();}, g.jump_interval);
-		show_overlay_frames();
 		var clientX = evt.clientX;
 		if (Object.prototype.toString.call(evt) === '[object TouchEvent]') {
 			clientX = evt.changedTouches[0].clientX;
@@ -538,6 +537,7 @@ function Slider(width, height) {
 	};
 	this.cursor_mouseup = function(evt) {
 		/* Ends cursor sliding behavior */
+		g.jump_closest_state_stack = [];
 		clearInterval(g.jump_closest_state_interval);
 		var clientX = parseInt(evt.clientX);
 		if (Object.prototype.toString.call(evt) === '[object TouchEvent]') {
@@ -558,7 +558,6 @@ function Slider(width, height) {
 		g.animation.jump_to_step(step, false, true);
 		self.go_to_step(step);
 		this.sliding = false;
-		hide_overlay_frames();
 	};
 	this.go_to_step = function(n, time) {
 		/* Positions the cursor at the position corresponding to step number n */

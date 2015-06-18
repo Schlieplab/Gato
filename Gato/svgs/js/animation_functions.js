@@ -526,9 +526,6 @@ function Slider(width, height) {
 		}
 		// g.animation.jump_to_step(step, false);
 		var jumped = g.animation.jump_to_closest_state(step);
-		if (jumped) {
-			show_overlay_frames();
-		}
 		self.go_to_step(step);
 	};
 	this.cursor_mouseup = function(evt) {
@@ -552,7 +549,6 @@ function Slider(width, height) {
 		g.animation.jump_to_step(step, false);
 		self.go_to_step(step);
 		this.sliding = false;
-		hide_overlay_frames();
 	};
 	this.go_to_step = function(n, time) {
 		/* Positions the cursor at the position corresponding to step number n */

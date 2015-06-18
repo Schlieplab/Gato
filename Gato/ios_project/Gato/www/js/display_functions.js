@@ -402,18 +402,6 @@ function add_graph_frame() {
                 strokeDasharray: '5,2',
             });
             g.graph_containers[g_num].prepend(frame);
-            var overlay_frame = snap.rect(0, 0, frame_dim['width'], frame_dim['height'], 3, 3) 
-            .attr({
-                id: 'g' + (g_num+1) + '_overlay_frame',
-                fill: '#333',
-                opacity: .3,
-                stroke: '#ccc',
-                strokeWidth: g.graph_frame_stroke_width,
-                strokeDasharray: '5,2',
-                visibility: 'hidden',
-            });
-            g.graph_containers[g_num].append(overlay_frame);
-            g.overlay_frames.push(overlay_frame);
         }
     }
 }
@@ -678,7 +666,7 @@ function ControlPanel(button_panel_height, y_trans) {
         if (g.control_panel.close_timeout) {
             clearTimeout(g.control_panel.close_timeout);
         }
-        this.close_timeout = setTimeout(g.control_panel.toggle_visibility, g.speed_menu_close_timeout);
+        g.control_panel.close_timeout = setTimeout(g.control_panel.close, g.speed_menu_close_timeout);
     };
 
 
@@ -765,6 +753,13 @@ function ControlPanel(button_panel_height, y_trans) {
                     clearTimeout(self.close_timeout);
                     self.close_timeout = null;
                 }
+            }
+        }
+    })(this);
+    this.close = (function(self) {
+        return function() {
+            if (self.speed_frame_open) {
+                self.toggle_visibility();
             }
         }
     })(this);
@@ -1254,7 +1249,7 @@ function NavBar() {
     this.g.append(this.backlink_g);
 
     // Create the title and chapter name
-    this.chapter_title = nav_snap.text(this.width/2, h/2.0 + 5, chapter_name + ' -- ').attr({
+    this.chapter_title = nav_snap.text(this.width/2, h/2.0 + 5, chapter_name + ': ').attr({
         'fill': '#333',
         'font-family': 'Helvetica',
         'font-size': 15,

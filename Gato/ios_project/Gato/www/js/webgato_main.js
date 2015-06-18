@@ -74,9 +74,6 @@ function fill_global() {
             {'x': g2_x_add, 'y': g2_y_add}
         ],
 
-        // Frames that are shown over graph when user is sliding
-        overlay_frames: [],
-
         // true moats are currently undergoing a growing animation.  
         // We use this to know when we've hit the first GrowMoat command in a series, so we can find the corresponding
         // Wait() command that tells us how long the animation lasts
