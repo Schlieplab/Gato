@@ -402,6 +402,18 @@ function add_graph_frame() {
                 strokeDasharray: '5,2',
             });
             g.graph_containers[g_num].prepend(frame);
+            var overlay_frame = snap.rect(0, 0, frame_dim['width'], frame_dim['height'], 3, 3) 
+            .attr({
+                id: 'g' + (g_num+1) + '_overlay_frame',
+                fill: '#333',
+                opacity: .3,
+                stroke: '#ccc',
+                strokeWidth: g.graph_frame_stroke_width,
+                strokeDasharray: '5,2',
+                visibility: 'hidden',
+            });
+            g.graph_containers[g_num].append(overlay_frame);
+            g.overlay_frames.push(overlay_frame);
         }
     }
 }
@@ -493,6 +505,7 @@ function click_speed_button(evt) {
             buttons[i].attr({'opacity': speed_controls.button_settings.inactive_opacity});
         }
     }
+    g.control_panel.start_speed_menu_close_timeout();
 }
 
 function HelpPanel(y_trans, padding, button_panel_height) {
@@ -661,6 +674,13 @@ function ControlPanel(button_panel_height, y_trans) {
         this.speed_menu_text_content = txt;
         this.speed_menu_text_elem.node.textContent = txt;
     };
+    this.start_speed_menu_close_timeout = function() {
+        if (g.control_panel.close_timeout) {
+            clearTimeout(g.control_panel.close_timeout);
+        }
+        this.close_timeout = setTimeout(g.control_panel.toggle_visibility, g.speed_menu_close_timeout);
+    };
+
 
     this.button_panel_height = button_panel_height;
     this.padding = 5;
@@ -748,7 +768,10 @@ function ControlPanel(button_panel_height, y_trans) {
             }
         }
     })(this);
-    this.open_group.click(this.toggle_visibility).touchstart(this.toggle_visibility);
+    this.open_group.click(this.toggle_visibility)
+        .touchstart(this.toggle_visibility)
+        .click(this.start_speed_menu_close_timeout)
+        .touchstart(this.start_speed_menu_close_timeout);;
 }
 
 function PlaybackBar() {
@@ -1186,4 +1209,97 @@ function CodeBox() {
     }
 
     this.scale_and_translate();
+}
+
+function NavBar() {
+    this.padding = g.navbar_padding;
+    this.width = g.cont_width - g.padding*2;
+    this.height = g.navbar_height;
+
+    this.g = nav_snap.group().attr({'id': 'navbar_g'});
+
+    // Create backlink
+    this.backlink_g = nav_snap.group().attr({'id': 'backlink_g', 'cursor': 'pointer'});
+    var h = this.height - this.padding*2 - g.ios_statusbar_height;
+    var p = 5.0;
+    var k = Math.sqrt(2.0*Math.pow(p, 2));
+    var f = Math.pow(p,2) / k;
+    this.backlink_poly = nav_snap.polygon([
+        0, h/2.0,
+        h/2.0, h,
+        h/2.0 + k/2.0, h - Math.pow(p,2)/k,
+        k, h/2.0,
+        h/2.0 + k/2.0, Math.pow(p,2) / k,
+        h/2.0, 0
+    ]).attr({
+        'fill': '#ccc'
+    });
+    this.backlink_g.append(this.backlink_poly);
+    this.backlink_text = nav_snap.text(h/2.0 + k/2.0 + this.padding, h/2.0 + 5, "Animation Index").attr({
+        'fill': '#ccc',
+        'font-family': 'Helvetica',
+        'font-size': 14,
+    });
+    this.backlink_g.append(this.backlink_text);
+    var backlink_bbox = this.backlink_g.getBBox();
+    this.backlink_rect = nav_snap.rect(0, 0, backlink_bbox.width, backlink_bbox.height).attr({
+        'fill': 'white'
+    });
+    this.backlink_g.prepend(this.backlink_rect);
+    this.backlink_g.click(
+        function() {
+            window.location = 'index.html#' + algo_div;
+        }
+    );
+    this.g.append(this.backlink_g);
+
+    // Create the title and chapter name
+    this.chapter_title = nav_snap.text(this.width/2, h/2.0 + 5, chapter_name + ' -- ').attr({
+        'fill': '#333',
+        'font-family': 'Helvetica',
+        'font-size': 15,
+        'text-anchor': 'start',
+        'font-weight': 'bold'
+    });
+    this.g.append(this.chapter_title);
+    this.anim_title = nav_snap.text(this.width/2 + this.chapter_title.getBBox().width/2, h/2.0 + 5, animation_name).attr({
+        'fill': '#333',
+        'font-family': 'Helvetica',
+        'font-size': 15,
+        'text-anchor': 'start'
+    });
+    this.g.append(this.anim_title);
+    this.chapter_title_width = this.chapter_title.getBBox().width;
+    this.anim_title_width = this.anim_title.getBBox().width;
+    this.chapter_title.attr({'x': this.width/2 - (this.chapter_title_width + this.anim_title_width)/2});
+    this.anim_title.attr({'x': this.width/2 + 3 - ((this.chapter_title_width + this.anim_title_width)/2 - this.chapter_title_width)});
+
+    this.cog_dim = 30;
+    this.cog = nav_snap.image('img/cog_grey.png', this.width - this.cog_dim, 0, this.cog_dim, this.cog_dim).attr({
+        'cursor': 'pointer'
+    }).click(show_algo_info);
+    this.g.append(this.cog);
+
+    this.help_link = nav_snap.text(0, h/2.0 + 5, "Help").attr({
+        'fill': '#ccc',
+        'font-family': 'Helvetica',
+        'font-size': 15,
+        'text-anchor': 'middle',
+        'cursor': 'pointer'
+    }).click(function() {
+        window.location = 'help.html';
+    });
+    this.help_link.attr({'x': this.width - this.cog_dim - this.help_link.getBBox().width - 5});
+    this.g.append(this.help_link);
+
+    this.g.transform('t' + g.padding + ',' + (g.ios_statusbar_height+g.navbar_padding));
+
+    this.resize = function() {
+        this.width = g.cont_width - g.padding*2;
+        this.chapter_title.attr({'x': this.width/2 - (this.chapter_title_width + this.anim_title_width)/2});
+        this.anim_title.attr({'x': this.width/2 + 3 - ((this.chapter_title_width + this.anim_title_width)/2 - this.chapter_title_width)});
+
+        this.cog.attr({'x': this.width - this.cog_dim});
+        this.help_link.attr({'x': this.width - this.cog_dim - this.help_link.getBBox().width - 5});
+    };
 }

@@ -190,7 +190,8 @@ function Animation() {
 		var new_state_ind;
 		if (rem >= this.state_interval/2) {
 			// Go to next state_interval
-			new_state_ind = parseInt((n + this.state_interval)/this.state_interval);
+			var max_state_ind = parseInt(anim_array.length / this.state_interval);
+			new_state_ind = Math.min(max_state_ind, parseInt((n + this.state_interval)/this.state_interval));
 		} else {
 			new_state_ind = parseInt(n / this.state_interval);
 		}
@@ -454,7 +455,7 @@ function Animation() {
 		this.step_num = 0;
 
 		// How many steps we take between each saved graph state
-		this.state_interval = 300; 
+		this.state_interval = 500; 
 
 		// Try to retrieve the graph states from local storage before constructing them anew
 		this.retrieve_graph_states();

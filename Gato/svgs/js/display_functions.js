@@ -402,7 +402,6 @@ function add_graph_frame() {
     }
 
     // Create the frames
-    g.overlay_frames = [];
     for (var g_num=0; g_num<g.num_graphs; g_num++) {
         var frame_dim = graph_frame_dim[g_num];
         if (frame_dim['width'] && frame_dim['height']) {
@@ -519,7 +518,6 @@ function click_speed_button(evt) {
         }
     }
     g.control_panel.start_speed_menu_close_timeout();
-
 }
 
 function HelpPanel(y_trans, padding, button_panel_height) {

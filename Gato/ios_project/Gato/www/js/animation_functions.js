@@ -98,6 +98,7 @@ function Animation() {
 	the given index with no timeout in between commands */
 	this.animate_until = function(stop_at_ind) {
 		for (var i=this.step_num; i<stop_at_ind; i++) {
+			console.log('performing');
 			this.do_command(anim_array[i]);
 			this.step_num ++;
 			g.slider.go_to_step(this.step_num);
@@ -164,21 +165,45 @@ function Animation() {
 		}
 	};
 
-	this.jump_to_step = function(n, move_slider, immediate) {
-		if (!g.jump_ready && !immediate) {
+	this.jump_to_closest_state = function(n) {
+		if (!g.jump_ready) {
 			return;
+		}
+		n = g.jump_closest_state_stack.pop()
+		if (!n) {
+			return false;
+		}
+		g.jump_closest_state_stack = [];
+		var rem = n % this.state_interval;
+		var new_state_ind;
+		if (rem >= this.state_interval/2) {
+			// Go to next state_interval
+			var max_state_ind = parseInt(anim_array.length / this.state_interval);
+			new_state_ind = Math.min(max_state_ind, parseInt((n + this.state_interval)/this.state_interval));
+		} else {
+			new_state_ind = parseInt(n / this.state_interval);
+		}
+		return this.jump_to_step(new_state_ind*this.state_interval, false);
+	};
+
+	this.jump_to_step = function(n, move_slider, force) {
+		/* Tried to jump to given step_number.  Returns true/false whether jump was performe dor not */
+		if (!g.jump_ready && !force) {
+			return false;
 		}
 		if (n === this.step_num) {
-			return;
+			return false;
 		}
+		console.log("Jumping to " + n);
 		g.jumping = true;
 		var curr_state_ind = parseInt(this.step_num/this.state_interval);
 		var new_state_ind = parseInt(n/this.state_interval);
 		var state = this.graph_states[new_state_ind];
 
 		// TODO: Test to see whether it is faster to jump 500 then animate 500 vs animation 1000
-		if (n > this.step_num && n - this.step_num <= this.state_interval) {
-			// If we are animating between now and next state then just animate until, don't go to any state
+		if (n > this.step_num && n - this.step_num < this.state_interval) {
+			// If we are animating returnbetween now and next state then just animate until, don't go to any state
+			console.log("Animating until " + n);
 			this.animate_until(n);
 		} else {
 			// We are moving backwards, or past the next state.  
@@ -296,6 +321,7 @@ function Animation() {
 		}, g.jump_interval);
 
 		this.start_time = new Date().getTime();
+		return true;
 	};
 
 	/*
@@ -467,10 +493,10 @@ function Slider(width, height) {
 		/*	Triggers when cursor is mousedowned.  Begins sliding process by 
 			recording initial cursor and mouse positions
 		*/
+		g.jump_closest_state_interval = setInterval(function(){g.animation.jump_to_closest_state();}, g.jump_interval);
+		show_overlay_frames();
 		var clientX = evt.clientX;
 		if (Object.prototype.toString.call(evt) === '[object TouchEvent]') {
-			console.log('mousedown event');
-			console.log(evt);
 			clientX = evt.changedTouches[0].clientX;
 		}
 		g.slider.sliding = true;
@@ -502,25 +528,17 @@ function Slider(width, height) {
 		} else {
 			step = self.get_step_for_position(new_x / self.step_width);
 		}
-		// if (this.slide_direction) {
-		// 	step = g.animation.closest_checkpoint_to_step(step, this.slide_direction);
+		// g.animation.jump_to_step(step, false);
+		g.jump_closest_state_stack.push(step);
+		// var jumped = g.animation.jump_to_closest_state(step);
+		// if (jumped) {
+		// 	show_overlay_frames();
 		// }
-		console.log("Jumping to " + step);
-		g.animation.jump_to_step(step, false);
 		self.go_to_step(step);
-		// if (this.last_client_x) {
-		// 	if (this.last_client_x > clientX) {
-		// 		this.slide_direction = 'left';
-		// 	} else {
-		// 		this.slide_direction = 'right';
-		// 	}
-		// }
-		// this.last_client_x = clientX;
 	};
 	this.cursor_mouseup = function(evt) {
 		/* Ends cursor sliding behavior */
-		console.log('in mouseup');
-		console.log(evt);
+		clearInterval(g.jump_closest_state_interval);
 		var clientX = parseInt(evt.clientX);
 		if (Object.prototype.toString.call(evt) === '[object TouchEvent]') {
 			clientX = parseInt(evt.changedTouches[0].clientX);
@@ -537,12 +555,10 @@ function Slider(width, height) {
 		} else {
 			step = self.get_step_for_position(new_x / self.step_width);
 		}
-		console.log("jumping to step");
 		g.animation.jump_to_step(step, false, true);
 		self.go_to_step(step);
 		this.sliding = false;
-		this.last_client_x = null;
-		this.slide_direction = null;
+		hide_overlay_frames();
 	};
 	this.go_to_step = function(n, time) {
 		/* Positions the cursor at the position corresponding to step number n */
@@ -604,11 +620,6 @@ function Slider(width, height) {
 		this.g = snap.group();
 		this.slider_positions = [];
 		this.position_to_step = {};
-
-		// When the slider is moving last_client_x is the position of the slider in the last call of mousemove
-		this.last_client_x = null;
-		// Direction the slider is moving, if it is moving
-		this.slide_direction = null;
 
 		// Construct the slider track
 		this.track_width = this.width;
@@ -838,24 +849,14 @@ function BlinkEdge(edge_id, color){
 }
 
 function SetVertexFrameWidth(vertex_id, val) {
-	/* Sets the stroke-width of a vertex */
-
-	// Take away dropshadow(this get's messed up by changing stroke-width)
+	/* Sets the stroke-width of a vertex 
+		NOTE: This function used to remove the stroke, then re-add it in 
+		because of some problems with the dropshadow getting taken off incorrectly.
+		I think that problem is gone, so I took out the code for now.  Search SVN
+		around revision 690 if you need it.
+	*/
     var vertex = g.vertices[graph_num_from_id(vertex_id)][vertex_id];
-    var stroke_color = '';
-	if (val !== '0') {
-		stroke_color = vertex.attr('stroke');
-        vertex.attr({"style": ""});
-	}
-	if (!stroke_color || stroke_color === 'none') {
-		stroke_color = 'black';
-	}
-    vertex.attr({'stroke-width': val, 'stroke': stroke_color});
-
-    // Add back in dropshadow
-    if (val === "0") {
-        vertex.attr({"style": "filter:url(#dropshadow)"});
-    }
+    vertex.attr({'stroke-width': val, "style": "filter:url(#dropshadow)"});
 }
 
 function SetVertexAnnotation(vertex_id, annotation, color) {
