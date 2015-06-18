@@ -670,7 +670,7 @@ def format_animation(animation):
     else:
         ret_str = 'var anim_array = Array(' + ',\n'.join(animation[:32000]) + ');\n'
         for chunk in chunker(animation[32000:], 32000):
-            ret_str += 'anim_array.concat(Array(' + ','.join(chunk) + '));\n'
+            ret_str += 'anim_array = anim_array.concat(Array(' + ','.join(chunk) + '));\n'
         return ret_str
 
 def construct_title(fileName):
