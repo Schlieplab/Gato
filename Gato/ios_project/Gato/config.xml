@@ -9,8 +9,9 @@
     </author>
     <content src="index.html" />
     <access origin="*" />
-    <preference name="Orientation" value="landscape" />
-    <preference name="orientation" value="landscape" />
+    <preference name="Orientation" value="default" />
+    <preference name="orientation" value="default" />
+
     <preference name="DisallowOverscroll" value="true"/>
     <gap:plugin name="it.mobimentum.phonegapspinnerplugin" />
     <gap:plugin name="hu.dpal.phonegap.plugins.spinnerdialog" />

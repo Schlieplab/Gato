@@ -330,6 +330,7 @@ function window_resize(evt) {
     position_graph();
     if (g.navbar) {
         g.navbar.resize();
+        document.getElementById('nav_svg').setAttribute('style', 'width: ' + g.cont_width + 'px; height: ' + g.navbar.height + 'px');
     }
 }
 

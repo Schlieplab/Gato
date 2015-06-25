@@ -133,8 +133,8 @@ function Scaler() {
     this.y = bbox.height;   // TODO: commit this line
     this.elem = snap.polygon([this.x, this.y, this.x+this.width, this.y, this.x+this.width, this.y-this.height, this.x, this.y]).attr(
     {
-        'fill': '#cc3333',
-        'stroke': '#330000',
+        'fill': '#fc4537',
+        'stroke': '#fc4537',
         'cursor': 'move'
     }).mousedown(this.mousedown);
     var w = 15;
@@ -397,9 +397,8 @@ function add_graph_frame() {
             .attr({
                 id: 'g' + (g_num+1) + '_frame',
                 fill: '#fff',
-                stroke: '#ccc',
+                stroke: '#fff',
                 strokeWidth: g.graph_frame_stroke_width,
-                strokeDasharray: '5,2',
             });
             g.graph_containers[g_num].prepend(frame);
         }
@@ -1230,7 +1229,7 @@ function NavBar() {
         'fill': '#ccc'
     });
     this.backlink_g.append(this.backlink_poly);
-    this.backlink_text = nav_snap.text(h/2.0 + k/2.0 + this.padding, h/2.0 + 5, "Animation Index").attr({
+    this.backlink_text = nav_snap.text(h/2.0 + k/2.0 + this.padding, h/2.0 + 5, "Index").attr({
         'fill': '#ccc',
         'font-family': 'Helvetica',
         'font-size': 14,
