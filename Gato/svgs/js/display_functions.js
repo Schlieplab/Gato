@@ -1233,7 +1233,7 @@ function NavBar() {
         'fill': '#ccc'
     });
     this.backlink_g.append(this.backlink_poly);
-    this.backlink_text = nav_snap.text(h/2.0 + k/2.0 + this.padding, h/2.0 + 5, "Animation Index").attr({
+    this.backlink_text = nav_snap.text(h/2.0 + k/2.0 + this.padding, h/2.0 + 5, "Index").attr({
         'fill': '#ccc',
         'font-family': 'Helvetica',
         'font-size': 14,

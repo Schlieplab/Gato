@@ -33,7 +33,6 @@ animationhead = '''
             html, body {
                 margin: 0 auto;
                 overflow-y: hidden;
-                background-image:url('img/white_wall.png')
             }
             * {
                 -webkit-touch-callout: none;

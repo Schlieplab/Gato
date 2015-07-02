@@ -172,7 +172,7 @@ instance = {
     '07-MinimumCostFlows/CostScaling.alg':[
     '07-MinimumCostFlows/MCF4to1B.cat'
     ],
-    '07-MinimumCostFlows/NegativeCircuit.alg':[
+    '07-MinimumCostFlows/NegativeCycleCanceling.alg':[
     '07-MinimumCostFlows/MCFCycle.cat'
     ],
     '07-MinimumCostFlows/SuccessiveShortestPath.alg':[
@@ -201,7 +201,7 @@ svg_instance = [
         'title': 'Basics, Notation and Data Structures',
         'algorithms': [
             {
-                'title': 'BFS-components',
+                'title': 'BFS-Components',
                 'file': 'BFS-components.alg',
                 'description': 'Finds connected components in a graph using iterated ' \
                 'Breadth-First-Search (BFS).',
@@ -214,7 +214,7 @@ svg_instance = [
                 'title': 'DFS Recursive',
                 'file': 'DFS-Recursive.alg',
                 'description': 'A recursive implementation of Depth-First-Search (DFS), ' \
-                'which computes a DFS labeling',
+                'which computes a DFS labeling.',
                 'graphs': [
                     '02-GraphsNetworks/BFS.cat', '02-GraphsNetworks/3Components.cat'
                 ]
@@ -223,7 +223,7 @@ svg_instance = [
                 'title': 'Iterative BFS',
                 'file': 'BFS.alg',
                 'description': 'An iterative implementation of Breadth-First-Search ' \
-                '(BFS), which computes a BFS labeling',
+                '(BFS), which computes a BFS labeling.',
                 'graphs': [
                     '02-GraphsNetworks/BFS.cat', '02-GraphsNetworks/3Components.cat'
                 ]
@@ -232,7 +232,7 @@ svg_instance = [
                 'title': 'BFS to DFS',
                 'file': 'BFStoDFS.alg',
                 'description': 'Converting the iterative BFS implementation to an iterative ' \
-                'DFS implementation by exchanging the Queue by a Stack.',
+                'DFS implementation by exchanging the Queue for a Stack.',
                 'graphs': [
                     '02-GraphsNetworks/BFS.cat', '06-MaximalFlows/FordFulkerson5.cat'
                 ]
@@ -241,7 +241,7 @@ svg_instance = [
                 'title': 'Iterative DFS',
                 'file': 'DFS.alg',
                 'description': 'An iterative implementation of Depth-First-Search (DFS), which ' \
-                'computes a DFS labeling',
+                'computes a DFS labeling.',
                 'graphs': [
                     '02-GraphsNetworks/BFS.cat', '02-GraphsNetworks/3Components.cat'
                 ]
@@ -267,7 +267,7 @@ svg_instance = [
             {
                 'title': 'Kruskal\'s Algorithm using FindCircuit',
                 'file': 'KruskalFindCircuit.alg',
-                'description': 'A more detailled, but naive implementation of Kruskal\'s ' \
+                'description': 'A more detailed, but naive implementation of Kruskal\'s ' \
                 'algorithm, which checks for each edge to be added whether it completes a circuit.',
                 'graphs': [
                     '03-MinimalSpanningTrees/Kruskal1.cat','03-MinimalSpanningTrees/Kruskal2.cat',
@@ -312,7 +312,7 @@ svg_instance = [
             {
                 'title': 'Matroid Dual of Kruskal\'s Algorithm',
                 'file': 'MatroidDualKruskal.alg',
-                'description': 'An implementation of a matroid dual of Kruskal\'s Algorithm. ', 
+                'description': 'An implementation of a matroid dual of Kruskal\'s Algorithm.', 
                 'graphs': [
                     '03-MinimalSpanningTrees/Kruskal1.cat','03-MinimalSpanningTrees/Kruskal2.cat',
                     '03-MinimalSpanningTrees/Kruskal3.cat',
@@ -344,7 +344,7 @@ svg_instance = [
         'title': 'Shortest Paths',
         'algorithms': [
             {
-                'title': 'Dijkstra\'s algorithm',
+                'title': 'Dijkstra\'s Algorithm',
                 'file': 'Dijkstra.alg',
                 'description': 'Dijkstra\'s algorithm for finding a shortest path tree in ' \
                 'a graph. This is an example of a label setting algorithm.',
@@ -357,7 +357,7 @@ svg_instance = [
                 ]
             },
             {
-                'title': 'Dijkstra\'s algorithm using a Priority Queue',
+                'title': 'Dijkstra\'s Algorithm using a Priority Queue',
                 'file': 'DijkstraPQ.alg',
                 'description': 'Dijkstra\'s algorithm for finding a shortest path tree in a ' \
                 'graph implemented using a Priority Queue.',
@@ -417,7 +417,6 @@ svg_instance = [
                     '05-ShortestPaths/NegCircuit2.cat'
                 ]
             },
-            # Could use highlighting of paths on this
             {
                 'title': 'Find Path from Two Sources',
                 'file': 'TwoSources.alg',
@@ -432,10 +431,10 @@ svg_instance = [
     {
         'chapter_directory': '06-MaximalFlows',
         'chapter_number': 6,
-        'title': 'Maximal flows in capacitated networks',
+        'title': 'Maximal Flows',
         'algorithms': [
             {
-                'title': 'The Ford Fulkerson algorithm',
+                'title': 'The Ford-Fulkerson Algorithm',
                 'file': 'FordFulkerson.alg',
                 'description': 'The Ford-Fulkerson algorithm finds a maximal flow in a ' \
                 'capacitated network by successive shortest path applications.',
@@ -454,7 +453,7 @@ svg_instance = [
                 'file': 'PreflowPush.alg',
                 'description': 'The Preflow Push algorithm due to Goldberg and Tarjan ' \
                 'computes a maximal flow by saturating a network and correcting possible ' \
-                'excesses later',
+                'excesses later.',
                 'graphs': [
                     '06-MaximalFlows/PreflowPush1.cat',
                     '06-MaximalFlows/PreflowPush6.cat',
@@ -471,12 +470,12 @@ svg_instance = [
     {
         'chapter_directory': '07-MinimumCostFlows',
         'chapter_number': 7,
-        'title': 'Minimum-cost Flows',
+        'title': 'Minimum-Cost Flows',
         'algorithms': [
             {
-                'title': 'Negative Circuits',
-                'file': 'NegativeCircuit.alg',
-                'description': 'The Negative Circuits algorithms establishes a maximal flow ' \
+                'title': 'Negative Cycle Canceling',
+                'file': 'NegativeCycleCanceling.alg',
+                'description': 'The Negative Cycle Canceling algorithm establishes a maximal flow ' \
                 'and reduces costs by finding negative circuits.',
                 'graphs': [
                     '07-MinimumCostFlows/MCF4to1A.cat', '07-MinimumCostFlows/MCFCycle.cat'
@@ -485,8 +484,8 @@ svg_instance = [
             {
                 'title': 'Successive Shortest Paths',
                 'file': 'SuccessiveShortestPath.alg',
-                'description': 'This algorithm finds a minimum cost flow by  repeatedly ' \
-                ' finding shortest, augmenting paths ',
+                'description': 'This algorithm finds a minimum cost flow by repeatedly ' \
+                'finding shortest, augmenting paths.',
                 'graphs': [
                     '07-MinimumCostFlows/MCF4to1A.cat', '07-MinimumCostFlows/MCFCycle.cat'
                 ]
@@ -495,7 +494,7 @@ svg_instance = [
                 'title': 'Cost Scaling',
                 'file': 'CostScaling.alg',
                 'description': 'The cost scaling algorithm directly operates on the bits ' \
-                'of the cost function',
+                'of the cost function.',
                 'graphs': [
                     '07-MinimumCostFlows/MCF4to1A.cat', '07-MinimumCostFlows/MCFCycle.cat'
                 ]
@@ -513,8 +512,8 @@ svg_instance = [
                 'file': 'Bipartite.alg',
                 'svg_file': 'Bipartite_app.alg',
                 'description': 'This algorithm finds a maximal cardinality matching ' \
-                'in a bipartite graph. In other words it maximes the number of matched ' \
-                'vertices',
+                'in a bipartite graph. In other words it maximizes the number of matched ' \
+                'vertices.',
                 'graphs': [
                     '08-Matching/Bi003.cat', '08-Matching/Bi006.cat', '08-Matching/Bi008.cat',
                     '08-Matching/Bi009.cat', '08-Matching/Bi010.cat'
@@ -543,7 +542,7 @@ svg_instance = [
                 'title': 'Weighted Matching',
                 'file': 'WeightedMatching.alg',
                 'description': 'This algorithm considers vertices as points in 2-dimensional ' \
-                'space and implicitely assumes the existence of all edges in the complete ' \
+                'space and implicitly assumes the existence of all edges in the complete ' \
                 'graph. Furthermore, edge weights are Euclidean. It finds a matching of minimal ' \
                 'weight. The matching is perfect if the number of vertices is even', 
                 'graphs': [
@@ -553,6 +552,51 @@ svg_instance = [
             }
         ]
     }
+]
+
+alphabetic_algorithms = [
+    {'algo_div_id': 'BellmanFord', 'title': 'Bellman Ford'}, 
+
+    {'algo_div_id': 'Bipartite', 'title': 'Bipartite'}, 
+
+    {'algo_div_id': 'IterativeBFS', 'title': 'Iterative BFS'}, 
+    {'algo_div_id': 'BFSComponents', 'title': 'BFS-Components'}, 
+    {'algo_div_id': 'BFStoDFS', 'title': 'BFS to DFS'}, 
+
+    {'algo_div_id': 'CardinalityMatching', 'title': 'Cardinality Matching'}, 
+
+    {'algo_div_id': 'CostScaling', 'title': 'Cost Scaling'}, 
+
+    {'algo_div_id': 'DFSRecursive', 'title': 'DFS Recursive'}, 
+    {'algo_div_id': 'IterativeDFS', 'title': 'Iterative DFS'}, 
+
+    {'algo_div_id': "Dijkstra'sAlgorithm", 'title': "Dijkstra's Algorithm"}, 
+    {'algo_div_id': "Dijkstra'sAlgorithmusingaPriorityQueue", 'title': "Dijkstra's Algorithm using a Priority Queue"}, 
+
+    {'algo_div_id': 'FindingNegativeCircuits', 'title': 'Finding Negative Circuits'},
+
+    {'algo_div_id': 'FindPath', 'title': 'Find Path'}, 
+    {'algo_div_id': 'FindPathfromTwoSources', 'title': 'Find Path from Two Sources'}, 
+    {'algo_div_id': 'FindPathinanEuclideanGraph', 'title': 'Find Path in an Euclidean Graph'}, 
+
+    {'algo_div_id': 'TheFordFulkersonAlgorithm', 'title': 'The Ford-Fulkerson Algorithm'}, 
+
+    {'algo_div_id': "Kruskal'sAlgorithm", 'title': "Kruskal's Algorithm"}, 
+    {'algo_div_id': "Kruskal'sAlgorithmusingFindCircuit", 'title': "Kruskal's Algorithm using FindCircuit"}, 
+    {'algo_div_id': "EfficientKruskal'sAlgorithm", 'title': "Efficient Kruskal's Algorithm"}, 
+    {'algo_div_id': "InefficientKruskal'sAlgorithm", 'title': "Inefficient Kruskal's Algorithm"}, 
+    {'algo_div_id': "MatroidDualofKruskal'sAlgorithm", 'title': "Matroid Dual of Kruskal's Algorithm"}, 
+    {'algo_div_id': "PrimalDualofKruskal'sAlgorithm", 'title': "Primal Dual of Kruskal's Algorithm"}, 
+
+    {'algo_div_id': 'NegativeCycleCanceling', 'title': 'Negative Cycle Canceling'}, 
+
+    {'algo_div_id': 'PreflowPush', 'title': 'Preflow Push'}, 
+
+    {'algo_div_id': "Prim'sAlgorithm", 'title': "Prim's Algorithm"}, 
+
+    {'algo_div_id': 'SuccessiveShortestPaths', 'title': 'Successive Shortest Paths'}, 
+
+    {'algo_div_id': 'WeightedMatching', 'title': 'Weighted Matching'}
 ]
 
 #
@@ -569,7 +613,7 @@ friendly_graph_names = {
 
 # Keys: e.g. '09-WeightedMatching/k4.cat', values: graph description
 graph_descriptions = {
-    '02-GraphsNetworks/BFS.cat': 'BFS Graph Description'
+    #'02-GraphsNetworks/BFS.cat': 'BFS Graph Description'
 }
 
 def create_svg_index_page(graph_pngs):
@@ -593,7 +637,8 @@ def create_svg_index_page(graph_pngs):
                 'svg_instance': svg_instance, 
                 'graph_pngs': graph_pngs, 
                 'graph_descriptions': graph_descriptions,
-                'svg_locations': svg_locations
+                'svg_locations': svg_locations,
+                'alphabetic_algorithms': alphabetic_algorithms
              }))
 
 def should_generate_animation(algo_file_name, graph_file_name, svg_file_name):
@@ -609,8 +654,9 @@ def should_generate_animation(algo_file_name, graph_file_name, svg_file_name):
     pro_age = os.path.getmtime(os.path.join(catbox_path, algo_pro_file_name))
     algo_age = os.path.getmtime(algo_file_name)
     webgato_js_age = os.path.getmtime('WebGatoJS.py')
+    this_age = os.path.getmtime('GatoTest.py')
 
-    if svg_age > max(graph_age, pro_age, algo_age, webgato_js_age):
+    if svg_age > max(graph_age, pro_age, algo_age, webgato_js_age, this_age):
         return False
     return True
 

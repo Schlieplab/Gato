@@ -683,7 +683,7 @@ def construct_animation_name(fileName):
     sp = fileName.split('/')[1].split('--')
     algorithm = sp[0]
     graph = sp[1].split('.')[0]
-    return '%s algorithm on %s graph' % (algorithm, graph)
+    return '%s on %s graph' % (algorithm, graph)
 
 def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=None, 
     secondaryGraphDisplayAnimationHistory=None, showAnimation=False, 
