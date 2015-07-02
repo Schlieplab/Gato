@@ -1,0 +1,165 @@
+<html>
+ <head>
+  <link href="../css/info_page_style.css" rel="stylesheet"/>
+  <title>
+   Connected Components with Breadth-First-Search
+  </title>
+ </head>
+ <body>
+  This algorithm finds connected components in a graph by performing one
+breadth-first-search per component.  It visualises the predecessor
+tree being built and the BFS vertex labels.  See Chapter 2 in the
+CATBox book.
+  <h3>
+   Visualization
+  </h3>
+  <h5>
+   Vertex Colors
+  </h5>
+  <dl>
+   <dt>
+    <div class="color_div" style="background-color: #EEEEEE">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    Initial color for vertices that
+have neither been
+    <em>
+     visited
+    </em>
+    nor
+    <em>
+     processed
+    </em>
+    .
+   </dd>
+   <div class="clear_div">
+   </div>
+   <dt>
+    <div class="color_div" style="background-color: blue">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    Vertices which have been
+    <em>
+     visited
+    </em>
+    as a neighbor while
+    <em>
+     processing
+    </em>
+    the
+    <em>
+     active
+    </em>
+    vertex.
+   </dd>
+   <div class="clear_div">
+   </div>
+   <dt>
+    <div class="color_div" style="background-color: red">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    First component only: Vertices of this color have been
+    <em>
+     processed
+    </em>
+    ; i.e., their neighbors have been explored.
+Processed vertices will get different colors in other components.
+   </dd>
+   <div class="clear_div">
+   </div>
+   <dt>
+    <div class="color_div" style="background-color: black">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    The vertex being
+    <em>
+     processed
+    </em>
+    is
+displayed with a wide outline in this color.
+   </dd>
+   <div class="clear_div">
+   </div>
+  </dl>
+  <h5>
+   Edge Colors
+  </h5>
+  <dl>
+   <dt>
+    <div class="color_div" style="background-color: #EEEEEE">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    Initial color for edges. Edges
+of this color have not been
+    <em>
+     traversed
+    </em>
+    yet.
+   </dd>
+   <div class="clear_div">
+   </div>
+   <dt>
+    <div class="color_div" style="background-color: yellow">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    Color of the edge being
+    <em>
+     traversed
+    </em>
+    .
+   </dd>
+   <div class="clear_div">
+   </div>
+   <dt>
+    <div class="color_div" style="background-color: red">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    First component only: Traversed
+edges displayed in the color are part of the BFS tree. A different
+color will be used in other components
+   </dd>
+   <div class="clear_div">
+   </div>
+   <dt>
+    <div class="color_div" style="background-color: grey">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    Color of edges traversed which
+are not part of the DFS tree.
+   </dd>
+   <div class="clear_div">
+   </div>
+  </dl>
+  <h5>
+   Further elements
+  </h5>
+  <dl>
+   <dt>
+    <div class="color_div" style="background-color: black">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    The BFS label assigned to visited vertices is displayed in this color.
+   </dd>
+   <div class="clear_div">
+   </div>
+  </dl>
+ </body>
+</html>

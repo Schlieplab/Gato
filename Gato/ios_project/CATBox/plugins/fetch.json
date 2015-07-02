@@ -1,0 +1,10 @@
+{
+    "hu.dpal.phonegap.plugins.SpinnerDialog": {
+        "source": {
+            "type": "registry",
+            "id": "hu.dpal.phonegap.plugins.SpinnerDialog"
+        },
+        "is_top_level": true,
+        "variables": {}
+    }
+}

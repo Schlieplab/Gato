@@ -1,0 +1,183 @@
+<html>
+ <head>
+  <link href="../css/info_page_style.css" rel="stylesheet"/>
+  <title>
+   Depth-First-Search Traversal
+  </title>
+ </head>
+ <body>
+  <h1>
+   Depth-First-Search (DFS) Traversal
+  </h1>
+  This algorithm traverses a graph in depth-first order and visualizes
+the predecessor tree being built and the DFS vertex labels. See
+Chapter 2 in the CATBox book. Non-recursive implementation.
+  <h3>
+   Visualization
+  </h3>
+  <h5>
+   Vertex Colors
+  </h5>
+  <dl>
+   <dt>
+    <div class="color_div" style="background-color: #EEEEEE">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    Initial color for vertices that
+have neither been
+    <em>
+     visited
+    </em>
+    nor
+    <em>
+     processed
+    </em>
+    .
+   </dd>
+   <div class="clear_div">
+   </div>
+   <dt>
+    <div class="color_div" style="background-color: blue">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    Vertices which have been
+    <em>
+     visited
+    </em>
+    as a neighbor while
+    <em>
+     processing
+    </em>
+    the
+    <em>
+     active
+    </em>
+    vertex.
+   </dd>
+   <div class="clear_div">
+   </div>
+   <dt>
+    <div class="color_div" style="background-color: red">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    Vertices of this color have
+been
+    <em>
+     processed
+    </em>
+    ; i.e.,
+their neighbors have been explored.
+   </dd>
+   <div class="clear_div">
+   </div>
+   <dt>
+    <div class="color_div" style="background-color: black">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    The vertex being
+    <em>
+     processed
+    </em>
+    is
+displayed with a wide outline in this color.
+   </dd>
+   <div class="clear_div">
+   </div>
+  </dl>
+  <h5>
+   Edge Colors
+  </h5>
+  <dl>
+   <dt>
+    <div class="color_div" style="background-color: #EEEEEE">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    Initial color for edges. Edges
+of this color have not been
+    <em>
+     traversed
+    </em>
+    yet.
+   </dd>
+   <div class="clear_div">
+   </div>
+   <dt>
+    <div class="color_div" style="background-color: yellow">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    Color of the edge being
+    <em>
+     traversed
+    </em>
+    .
+   </dd>
+   <div class="clear_div">
+   </div>
+   <dt>
+    <div class="color_div" style="background-color: #EE9900">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    A traversed edge for which the label
+of the head has not been set yet. Upon setting of the label the color
+will change to
+    <colordef color="red">
+     .
+    </colordef>
+   </dd>
+   <div class="clear_div">
+   </div>
+   <dt>
+    <div class="color_div" style="background-color: red">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    Traversed edges displayed in the color are
+part of the DFS tree.
+   </dd>
+   <div class="clear_div">
+   </div>
+   <dt>
+    <div class="color_div" style="background-color: grey">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    Color of edges traversed
+which are not part of the DFS tree.
+   </dd>
+   <div class="clear_div">
+   </div>
+  </dl>
+  <h5>
+   Further elements
+  </h5>
+  <dl>
+   <dt>
+    <div class="color_div" style="background-color: black">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    The DFS label assigned to
+visited vertices is displayed in this color.
+   </dd>
+   <div class="clear_div">
+   </div>
+  </dl>
+ </body>
+</html>
