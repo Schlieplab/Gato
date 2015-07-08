@@ -151,10 +151,6 @@ a:hover, a:focus {
 	border-bottom: 1px solid #999;
 }
 
-.nav_ul a:hover {
-	color: #333;
-}
-
 #alpha_nav {
 	height: 500px;
 	overflow-y: scroll;
@@ -163,10 +159,6 @@ a:hover, a:focus {
 .nav_ul a {
 	color: #333;
 	text-decoration: none
-}
-
-.nav_ul a:hover {
-	color: #fc4731;
 }
 
 
