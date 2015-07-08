@@ -21,7 +21,7 @@ h2 {
 
 h3 {
 	font-size: 23px;
-	color: #428bca;
+	color: #3d7ff3;
 }
 
 a:hover, a:focus {
@@ -37,22 +37,6 @@ a:hover, a:focus {
 	position: absolute;
 	top: 20px;
 	left: 20px;
-}
-
-.fixed_bottom_nav {
-
-}
-
-.fixed_top_help {
-	position: fixed;
-	right: 0px;
-	top: 0px;
-	height: 40px;
-	padding: 10px;
-	z-index: 1000;
-	font-size: 20px;
-	padding-top: 5px;
-	border-radius: 0px;
 }
 
 .algo_div {
@@ -165,6 +149,10 @@ a:hover, a:focus {
 	padding-top: 5px;
 	padding-bottom: 5px;
 	border-bottom: 1px solid #999;
+}
+
+.nav_ul a:hover {
+	color: #333;
 }
 
 #alpha_nav {

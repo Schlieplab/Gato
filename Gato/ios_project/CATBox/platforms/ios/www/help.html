@@ -1,28 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>WebGato Index</title>
+<title>CATBox Help Page</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <link href="css/bootstrap.min.css" rel="stylesheet" />
 <link href="css/help_page.css" rel="stylesheet" />
 </head>
 <body>
-	<div id="fixed_top_index_div" class="fixed_top_index_div well">
-		<a href="index.html">Index</a>
+	<div id="top_logo_div">
+		<img src="img/catboxLogo279x104.png" />
 	</div>
 
-	<!-- TODO:
-		Put more stress on the headers!
-	-->
-	<div id="master_container" class="container">
-		<div class="row">
-			<div class="header col-xs-12">
-				<h1 id="regular_header">WebGato Usage and Help</h1>
-				<h1 id="touch_header" class="invisible">Gato Usage and Help</h1>
-			</div>
-		</div>
+	<div id="master_container" class="container page-wrap">
 
-		<div class="well row">
+		<div class="row">
 			<div class="col-xs-12">
 				<div class="row">
 					<div class="col-xs-12">
@@ -33,7 +24,7 @@
 				<div class="row usage">
 					<div class="col-xs-12">
 						<p>
-							WebGato is an application that animates graph algorithms operating on different graphs.  It features a codebox that shows the current step of the algorithm execution, and allows breakpoints on any line.  A scalable graph shows the current state of the algorithm with color coded edges and vertices.  Edges, Vertices, and the Graph all have information associated with them.  The animation can run at multiple speeds, and any point in the animation can be jumped to.
+							CATBox is an application that animates graph algorithms operating on different graphs.  It features a codebox that shows the current step of the algorithm execution, and allows breakpoints on any line.  A scalable graph shows the current state of the algorithm with color coded edges and vertices.  Edges, Vertices, and the Graph all have information associated with them.  The animation can run at multiple speeds, and any point in the animation can be jumped to.
 						</p>
 					</div>
 				</div>
@@ -46,9 +37,9 @@
 				</div>
 
 				<div class="row">
-					<div class="col-xs-12 well">
+					<div class="col-xs-12">
 						<div style="float: left; max-width: 67%">
-							<h4 style="font-size: 21px">CodeBox</h4>
+							<h3>CodeBox</h3>
 							<ul>
 								<li>
 									The breakpoint indicators next to each of the lines of code are blue if the breakpoint is not active, and red if it is.
@@ -66,8 +57,8 @@
 				</div>
 
 				<div class="row">
-					<div class="col-xs-12 well">
-						<h4 style="font-size: 21px">Playback Bar</h4>
+					<div class="col-xs-12">
+						<h3>Playback Bar</h3>
 						<img class="playback_help_image" src="img/playback_bar_help_image.png" />
 						<ul>
 							<li>
@@ -91,7 +82,7 @@
 								The progress bar lets you jump to any position in the animation by clicking on the bar or dragging the progress bar handle to the desired position.
 							</li>
 							<li>
-								The "1x" button with the text opens the speed menu where you can adjust the animations speed to go faster or slower.
+								The "1x" button with the text opens the speed menu where you can adjust the animation's speed to go faster or slower.
 							</li>
 							<li>
 								The "?" button will open up the algorithm information window.
@@ -101,12 +92,12 @@
 				</div>
 
 				<div class="row">
-					<div class="col-xs-12 well">
-						<h4 style="font-size: 21px">Graph</h4>
+					<div class="col-xs-12">
+						<h3>Graph</h3>
 						<img class="graph_help_image" src="img/graph_help_image.png" />
 						<ul>
 							<li>
-								The vertices and edges have information that is displayed by hovering over them.
+								The vertices and edges have information that is displayed by clicking on them.
 							</li>
 							<li>
 								The different colors have different meanings depending on the algorithm being run.  Look at the algorithm information window to see a glossary of colors.
@@ -122,11 +113,23 @@
 				</div>
 			</div>
 		</div>
-			<div style="margin-top: 20px; font-size: 12px">
-				The Javascript that powers WebGato was created by Scott Merkling and Matthew Mitsui.  Each animation 
-				is created with <a href="http://gato.sourceforge.net/">Gato</a>, the original desktop version of this software.
-			</div>
+		<div style="margin-top: 20px; font-size: 12px">
+			The Javascript that powers CATBox was created by Scott Merkling and Matthew Mitsui.  Each animation 
+			is created with <a href="http://gato.sourceforge.net/">Gato</a>, the original desktop version of this software.
+		</div>
 	</div>
+	<div class="fixed_bottom_nav">
+		<a class="nav_link" href="index.html">
+			<div class="arrow_nav_item" >
+				<div class="arrow-left"></div>
+				<div class="small-arrow-left"></div>
+			</div>
+		</a>
+		<a href="index.html" class="nav_link">
+			<div class="back_nav_item nav_item" >
+				Back
+			</div>
+		</a>
 	<script type="text/javascript" src="js/util.js"></script>
 	<script type="text/javascript">
 		if (isiPhone()) {

@@ -1,21 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>WebGato Index</title>
+<title>CATBox Index</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link href="css/bootstrap.min.css" rel="stylesheet" />
 <link href="css/index.css" rel="stylesheet" />
 </head>
-<body>
+<body id="body">
 	<div id="top_logo_div">
 		<img src="img/catboxLogo279x104.png" />
 	</div>
 	
 	<div id="master_container" class="container page-wrap">
-
-	
-		
 		<div id="chapter_2_div" class="chapter_div row">
 			<div class="col-xs-12">
 				<div class="row">
@@ -1851,7 +1848,7 @@
 			</div>
 		</div>
 		<a id="chapter_nav_link" class="nav_link">
-			<div class="nav_item" >
+			<div id="chapter_nav_item" class="nav_item" >
 				Chapter
 			</div>
 		</a>
@@ -1971,12 +1968,12 @@
 			</div>
 		</div>
 		<a id="alpha_nav_link" class="nav_link">
-			<div class="nav_item" >
+			<div id="alpha_nav_item" class="nav_item" >
 				Algorithm
 			</div>
 		</a>
 		<div class="nav_item" >
-			<a href="help.html">? Help</a>
+			<a class="nav_link" href="help.html">? Help</a>
 		</div>
 	</div>
 	<script type="text/javascript" src="js/util.js"></script>
@@ -1996,6 +1993,8 @@
 		var chapter_nav_link = document.getElementById('chapter_nav_link');
 		var chapter_nav = document.getElementById('chapter_nav');
 		var alpha_nav_link = document.getElementById('alpha_nav_link');
+		var chapter_nav_item = document.getElementById('chapter_nav_item');
+		var alpha_nav_item = document.getElementById('alpha_nav_item');
 		var alpha_nav = document.getElementById('alpha_nav');
 		function chapter_click() {
 			if (chapter_nav.className === 'visible nav_drop_up') {
@@ -2018,6 +2017,19 @@
 				chapter_nav.className = 'invisible nav_drop_up';
 			}
 		}
+
+		function body_click(evt) {
+			if (evt.target === chapter_nav_item || evt.target === alpha_nav_item) {
+				return;
+			}
+			if (alpha_nav.className === 'visible nav_drop_up') {
+				alpha_nav.className = 'invisible nav_drop_up';
+			}
+			if (chapter_nav.className === 'visible nav_drop_up') {
+				chapter_nav.className = 'invisible nav_drop_up';
+			}
+		}
+		document.getElementById('body').addEventListener('click', body_click);
 		chapter_nav_link.addEventListener('click', chapter_click);
 		alpha_nav_link.addEventListener('click', alpha_click);
 	</script>
