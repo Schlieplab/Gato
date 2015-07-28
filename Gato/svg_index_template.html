@@ -9,7 +9,7 @@
 </head>
 <body id="body">
 	<div id="top_logo_div">
-		<img src="img/catboxLogo279x104.png" />
+		<img src="img/catboxLogo140x52.png" />
 	</div>
 	
 	<div id="master_container" class="container page-wrap">
@@ -20,7 +20,7 @@
 			<div class="col-xs-12">
 				<div class="row">
 					<div class="col-xs-12">
-						<h2>{{ chapter_dict['chapter_number'] }} {{ chapter_dict['title'] }}</h2>
+						<h2 class="indent">{{ chapter_dict['chapter_number'] }} {{ chapter_dict['title'] }}</h2>
 					</div>
 				</div>
 					
@@ -29,25 +29,27 @@
 					<div class="col-xs-12">
 						<div class="row">
 							<div class="col-xs-12">
-								<h3>{{ algo['title'] }}</h3>
-								<p class="algo_p">{{ algo['description'] }}</p>
+								<h3 class="indent">{{ algo['title'] }}</h3>
+								<p class="algo_p indent">{{ algo['description'] }}</p>
 							</div>
 						</div>
 
-						{% for graph in algo['graphs'] %}
-						{% if loop.index0 % 4 == 0 %}
 						<div class="row">
-						{% endif %}
-							<div class="graph_div col-xs-12 col-sm-6 col-md-3">
+						{% for graph in algo['graphs'] %}
+						
+							<div class="graph_div col-xs-12 col-sm-4 col-md-3">
 								
 								<a href="{{ svg_locations[algo['title'] + graph] }}">
 									<img class="graph_img" src="{{ graph_pngs[graph]['file'] }}" style="width: {{ graph_pngs[graph]['width'] }}px; height: {{ graph_pngs[graph]['height'] }}px"/>
 								</a>
 								<p><a href="{{ svg_locations[algo['title'] + graph] }}">{{ graph_pngs[graph]['name'] }}</a></p>
 							</div>
-						
-						{% if loop.index0 % 4 == 3 and not loop.last %}
-						</div>
+
+						{% if loop.index % 3 == 0 %}
+							<div class="clear3"></div>
+						{% endif %}
+						{% if loop.index % 4 == 0 %}
+							<div class="clear4"></div>
 						{% endif %}
 						{% endfor %}
 						</div>
@@ -74,7 +76,7 @@
 				<ul class="nav_ul">
 					{% for chapter_dict in svg_instance %}
 					<a href="#chapter_{{ chapter_dict['chapter_number'] }}_div">
-						<li>{{ chapter_dict['chapter_number'] }} {{ chapter_dict['title'] }}
+						<li class="ignore">{{ chapter_dict['chapter_number'] }} {{ chapter_dict['title'] }}
 						</li>
 					</a>
 					{% endfor %}
@@ -91,7 +93,7 @@
 				<ul class="nav_ul">
 					{% for algo in alphabetic_algorithms %}
 					<a href="#{{ algo.algo_div_id }}">
-						<li>{{ algo.title }}</li>
+						<li class="ignore">{{ algo.title }}</li>
 					</a>
 					{% endfor %}					
 				</ul>
@@ -129,37 +131,49 @@
 		function chapter_click() {
 			if (chapter_nav.className === 'visible nav_drop_up') {
 				chapter_nav.className = 'invisible nav_drop_up';
+				chapter_nav_item.className = 'nav_item';
 			} else {
 				chapter_nav.className = 'visible nav_drop_up';
+				chapter_nav_item.className = 'nav_item active';
 			}
 			if (alpha_nav.className === 'visible nav_drop_up') {
 				alpha_nav.className = 'invisible nav_drop_up';
+				alpha_nav_item.className = 'nav_item';
 			}
 		}
 
 		function alpha_click() {
 			if (alpha_nav.className === 'visible nav_drop_up') {
 				alpha_nav.className = 'invisible nav_drop_up';
+				alph_nav_item.className = 'nav_item';
 			} else {
 				alpha_nav.className = 'visible nav_drop_up';
+				alpha_nav_item.className = 'nav_item active';
 			}
 			if (chapter_nav.className === 'visible nav_drop_up') {
 				chapter_nav.className = 'invisible nav_drop_up';
+				chapter_nav_item.className = 'nav_item';
 			}
 		}
 
 		function body_click(evt) {
-			if (evt.target === chapter_nav_item || evt.target === alpha_nav_item) {
+			if (evt.target === chapter_nav_item || evt.target === alpha_nav_item || evt.target.className === 'ignore') {
 				return;
 			}
 			if (alpha_nav.className === 'visible nav_drop_up') {
 				alpha_nav.className = 'invisible nav_drop_up';
+				alpha_nav_item.className = 'nav_item';
 			}
 			if (chapter_nav.className === 'visible nav_drop_up') {
 				chapter_nav.className = 'invisible nav_drop_up';
+				chapter_nav_item.className = 'nav_item';
 			}
 		}
-		document.getElementById('body').addEventListener('click', body_click);
+		if (isiPhone()) {
+			document.getElementById('master_container').addEventListener('touchstart', body_click);
+		} else {
+			document.getElementById('master_container').addEventListener('click', body_click);
+		}
 		chapter_nav_link.addEventListener('click', chapter_click);
 		alpha_nav_link.addEventListener('click', alpha_click);
 	</script>

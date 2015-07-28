@@ -161,7 +161,7 @@ animationhead = '''
         <script type="text/javascript">
             %(animation)s
 
-            if (isiPhone()) {
+            if (cordova) {
                 document.addEventListener("deviceready", 
                     function(){ init() }, 
                     false
