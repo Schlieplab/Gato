@@ -11,17 +11,45 @@ body {
 }
 
 #master_container {
-	margin-top: 70px;    /* Push down to accomodate logo */
+	margin-top: 20px;    /* Push down to accomodate logo */
+}
+
+.clear3 {
+	display: none;
+	clear: both;
+}
+
+.clear4 {
+	display: none;
+	clear: both;
+}
+
+@media (max-width: 992px) {
+  .clear3 {
+    display: block;
+    clear: both;
+  }
+}
+
+@media (min-width: 992px) {
+	.clear4 {
+		display: block;
+		clear: both;
+	}
+}
+
+.indent {
+	padding-left: 0px;
 }
 
 h2 {
-	font-size: 30px;
+	font-size: 32px;
 	color: #aaa;
 }
 
 h3 {
 	font-size: 23px;
-	color: #3d7ff3;
+	color: #3d7fc2;
 }
 
 a:hover, a:focus {
@@ -34,7 +62,8 @@ a:hover, a:focus {
 }
 
 #top_logo_div{
-	position: absolute;
+	position: fixed;
+	z-index:1000;
 	top: 20px;
 	left: 20px;
 }
@@ -115,6 +144,11 @@ a:hover, a:focus {
 	color: #ececec;
 }
 
+.active {
+	color: #333;
+	background-color: #d7d7d7;
+}
+
 .drop_up_holder {
 	width:0px; 
 	padding: 0px;
@@ -152,8 +186,7 @@ a:hover, a:focus {
 }
 
 #alpha_nav {
-	height: 500px;
-	overflow-y: scroll;
+	height: 514px;
 }
 
 .nav_ul a {
@@ -177,4 +210,8 @@ a#help_anchor:hover, a#help_anchor:focus {
 
 .visible {
 	display: block;
+}
+
+p {
+	margin: 0 0 30px;
 }

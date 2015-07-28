@@ -409,7 +409,7 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = CATBox;
-				PROVISIONING_PROFILE = "81ec5bb7-0f25-432f-a85c-19022f85342f";
+				PROVISIONING_PROFILE = "ffc918df-7e4e-4543-a91e-c9bb1b58b166";
 				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Debug;
@@ -440,7 +440,7 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = CATBox;
-				PROVISIONING_PROFILE = "81ec5bb7-0f25-432f-a85c-19022f85342f";
+				PROVISIONING_PROFILE = "ffc918df-7e4e-4543-a91e-c9bb1b58b166";
 				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Release;

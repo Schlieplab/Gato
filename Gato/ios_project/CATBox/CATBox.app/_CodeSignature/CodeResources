@@ -22,19 +22,19 @@
 		</data>
 		<key>Default-Landscape@2x~ipad.png</key>
 		<data>
-		xRyEF53rPvncge6mEvNPPHMZLPI=
+		oXALQh8Cco7OAHRx3aM9H0qS0M0=
 		</data>
 		<key>Default-Landscape~ipad.png</key>
 		<data>
-		UF+hYZaxWJ4hTvpnQI0CDpVZAng=
+		LtAWpYg1GU9mcWrE0EiZOM6tbhs=
 		</data>
 		<key>Default-Portrait@2x~ipad.png</key>
 		<data>
-		Nim0AhsbkZJKWuKHPZTZfiq67lg=
+		uIKK8sy4d2pRxoqcwbTc0ojFEgM=
 		</data>
 		<key>Default-Portrait~ipad.png</key>
 		<data>
-		EziB8rHFrGAAmA+auXVgT39OIl0=
+		2F3s5MpS5irOeMDKsuPqNMjFfCU=
 		</data>
 		<key>Default@2x~iphone.png</key>
 		<data>
@@ -46,7 +46,7 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		x6k3tzAALU7Qc7hGiCHVEJ/Odfw=
+		7dJrtqlwlW7nEnkitkBR5hR69eE=
 		</data>
 		<key>MainViewController.nib</key>
 		<data>
@@ -58,19 +58,19 @@
 		</data>
 		<key>config.xml</key>
 		<data>
-		G4klue5xls3rc06gFE1tltbln5o=
+		ayMV1I63+5pB0tOHsciZnm0+/YY=
 		</data>
 		<key>embedded.mobileprovision</key>
 		<data>
-		yQNKoDAMr7YUtPWB8Lra+tyq7ps=
+		3U8Tw1nO1lNh0VrHLLSwuGt9Ang=
 		</data>
 		<key>icon-40.png</key>
 		<data>
-		3KGRhE6fGtDn+6OcCWh00noSXJ8=
+		xRjcC/uEJQBgoan95ETFtcELrjY=
 		</data>
 		<key>icon-40@2x.png</key>
 		<data>
-		PtOZln81Z9Z9mhyjrpU9sD3/Bsg=
+		iM7nRAILkVCPxqaqWYUyqYiFohE=
 		</data>
 		<key>icon-50.png</key>
 		<data>
@@ -102,19 +102,19 @@
 		</data>
 		<key>icon-76.png</key>
 		<data>
-		KXctX/mjm9qPTqqdbfpX7CQkLBg=
+		vlaPwpDr6tXFEN1vVeGd6yDb3hg=
 		</data>
 		<key>icon-76@2x.png</key>
 		<data>
-		x3TKdWAFEgyfni/5+oAm0h/zIJI=
+		JPbyb3Rxp+EULRsSToKM58moI8c=
 		</data>
 		<key>icon-small.png</key>
 		<data>
-		kq2SRjYrT/gJ4aeJZV2VJa/KiuI=
+		Ct3ISI/BWbTubksbHUkKQ8uo1bE=
 		</data>
 		<key>icon-small@2x.png</key>
 		<data>
-		mVu6rfZvmn85BOmkHVJHreO6CQE=
+		P66aq+kLbF9rGSHlPKPNF+xy30c=
 		</data>
 		<key>icon.png</key>
 		<data>
@@ -130,7 +130,7 @@
 		</data>
 		<key>www/BFS--BFS.html</key>
 		<data>
-		wj3yTB28I0QoLz8vZdD/sAkFwyA=
+		Jn279jrlwbAIREOTc48qSXIgib8=
 		</data>
 		<key>www/BFS--BFS_saved.html</key>
 		<data>
@@ -634,11 +634,11 @@
 		</data>
 		<key>www/css/help_page.css</key>
 		<data>
-		ot/ypcAu5+kuoiAc7MPQ5zlFDpQ=
+		c6Lfvd7AS4c7VdRZb0D73zImsCc=
 		</data>
 		<key>www/css/index.css</key>
 		<data>
-		z8zAsi8fdTzwgyNeSBaD+k9iYZA=
+		SWtBud8qXhRGM0iX+QGsZB8/ft4=
 		</data>
 		<key>www/css/info_page_style.css</key>
 		<data>
@@ -646,7 +646,7 @@
 		</data>
 		<key>www/help.html</key>
 		<data>
-		8QVFG89FwfV/+ZNHSjhM/V8eYOA=
+		TMBGkmXhN+Hz6hFZqhvUuRlQWHs=
 		</data>
 		<key>www/img/11vs13.png</key>
 		<data>
@@ -852,6 +852,10 @@
 		<data>
 		epiqLnhAWEZTLf1dzI2MDAmTsF0=
 		</data>
+		<key>www/img/catboxLogo140x52.png</key>
+		<data>
+		WLiZt04cbIKk57af+he02NlG/5E=
+		</data>
 		<key>www/img/catboxLogo279x104.png</key>
 		<data>
 		8g5yrUNPC20slVohWWClNJGEVJo=
@@ -892,6 +896,18 @@
 		<data>
 		1qOr4Ik9L4h5DA4O6wSFzvssUto=
 		</data>
+		<key>www/img/playback_bar_ios_help_image.png</key>
+		<data>
+		0cjXrsCjVSdqf+04VHJM7zBtEEk=
+		</data>
+		<key>www/img/top_control_bar_img.png</key>
+		<data>
+		p5w0DnkYCh0MYmKzkKdC+kyyWWs=
+		</data>
+		<key>www/img/triangle.png</key>
+		<data>
+		JV1+djIa742e70a+3COKYgVEnCo=
+		</data>
 		<key>www/img/twotriangles.png</key>
 		<data>
 		MzD1HopsRVEhJB442IxVZPQzNyU=
@@ -906,7 +922,7 @@
 		</data>
 		<key>www/index.html</key>
 		<data>
-		6EQEHVXRVdede4FtZb+J5OJe++A=
+		0vySihzuZfdU4pzlv5nuohTShTs=
 		</data>
 		<key>www/infos/BFS--3Components.html</key>
 		<data>
@@ -1430,7 +1446,7 @@
 		</data>
 		<key>www/js/webgato_main.js</key>
 		<data>
-		T2HlVyKMndhCB3s6riePBqldizU=
+		/THqLnpU0wCVnkGos5BHR2ilIk4=
 		</data>
 		<key>www/plugins/hu.dpal.phonegap.plugins.SpinnerDialog/www/spinner.js</key>
 		<data>
@@ -1465,19 +1481,19 @@
 		</data>
 		<key>Default-Landscape@2x~ipad.png</key>
 		<data>
-		xRyEF53rPvncge6mEvNPPHMZLPI=
+		oXALQh8Cco7OAHRx3aM9H0qS0M0=
 		</data>
 		<key>Default-Landscape~ipad.png</key>
 		<data>
-		UF+hYZaxWJ4hTvpnQI0CDpVZAng=
+		LtAWpYg1GU9mcWrE0EiZOM6tbhs=
 		</data>
 		<key>Default-Portrait@2x~ipad.png</key>
 		<data>
-		Nim0AhsbkZJKWuKHPZTZfiq67lg=
+		uIKK8sy4d2pRxoqcwbTc0ojFEgM=
 		</data>
 		<key>Default-Portrait~ipad.png</key>
 		<data>
-		EziB8rHFrGAAmA+auXVgT39OIl0=
+		2F3s5MpS5irOeMDKsuPqNMjFfCU=
 		</data>
 		<key>Default@2x~iphone.png</key>
 		<data>
@@ -1493,19 +1509,19 @@
 		</data>
 		<key>config.xml</key>
 		<data>
-		G4klue5xls3rc06gFE1tltbln5o=
+		ayMV1I63+5pB0tOHsciZnm0+/YY=
 		</data>
 		<key>embedded.mobileprovision</key>
 		<data>
-		yQNKoDAMr7YUtPWB8Lra+tyq7ps=
+		3U8Tw1nO1lNh0VrHLLSwuGt9Ang=
 		</data>
 		<key>icon-40.png</key>
 		<data>
-		3KGRhE6fGtDn+6OcCWh00noSXJ8=
+		xRjcC/uEJQBgoan95ETFtcELrjY=
 		</data>
 		<key>icon-40@2x.png</key>
 		<data>
-		PtOZln81Z9Z9mhyjrpU9sD3/Bsg=
+		iM7nRAILkVCPxqaqWYUyqYiFohE=
 		</data>
 		<key>icon-50.png</key>
 		<data>
@@ -1537,19 +1553,19 @@
 		</data>
 		<key>icon-76.png</key>
 		<data>
-		KXctX/mjm9qPTqqdbfpX7CQkLBg=
+		vlaPwpDr6tXFEN1vVeGd6yDb3hg=
 		</data>
 		<key>icon-76@2x.png</key>
 		<data>
-		x3TKdWAFEgyfni/5+oAm0h/zIJI=
+		JPbyb3Rxp+EULRsSToKM58moI8c=
 		</data>
 		<key>icon-small.png</key>
 		<data>
-		kq2SRjYrT/gJ4aeJZV2VJa/KiuI=
+		Ct3ISI/BWbTubksbHUkKQ8uo1bE=
 		</data>
 		<key>icon-small@2x.png</key>
 		<data>
-		mVu6rfZvmn85BOmkHVJHreO6CQE=
+		P66aq+kLbF9rGSHlPKPNF+xy30c=
 		</data>
 		<key>icon.png</key>
 		<data>
@@ -1565,7 +1581,7 @@
 		</data>
 		<key>www/BFS--BFS.html</key>
 		<data>
-		wj3yTB28I0QoLz8vZdD/sAkFwyA=
+		Jn279jrlwbAIREOTc48qSXIgib8=
 		</data>
 		<key>www/BFS--BFS_saved.html</key>
 		<data>
@@ -2069,11 +2085,11 @@
 		</data>
 		<key>www/css/help_page.css</key>
 		<data>
-		ot/ypcAu5+kuoiAc7MPQ5zlFDpQ=
+		c6Lfvd7AS4c7VdRZb0D73zImsCc=
 		</data>
 		<key>www/css/index.css</key>
 		<data>
-		z8zAsi8fdTzwgyNeSBaD+k9iYZA=
+		SWtBud8qXhRGM0iX+QGsZB8/ft4=
 		</data>
 		<key>www/css/info_page_style.css</key>
 		<data>
@@ -2081,7 +2097,7 @@
 		</data>
 		<key>www/help.html</key>
 		<data>
-		8QVFG89FwfV/+ZNHSjhM/V8eYOA=
+		TMBGkmXhN+Hz6hFZqhvUuRlQWHs=
 		</data>
 		<key>www/img/11vs13.png</key>
 		<data>
@@ -2287,6 +2303,10 @@
 		<data>
 		epiqLnhAWEZTLf1dzI2MDAmTsF0=
 		</data>
+		<key>www/img/catboxLogo140x52.png</key>
+		<data>
+		WLiZt04cbIKk57af+he02NlG/5E=
+		</data>
 		<key>www/img/catboxLogo279x104.png</key>
 		<data>
 		8g5yrUNPC20slVohWWClNJGEVJo=
@@ -2327,6 +2347,18 @@
 		<data>
 		1qOr4Ik9L4h5DA4O6wSFzvssUto=
 		</data>
+		<key>www/img/playback_bar_ios_help_image.png</key>
+		<data>
+		0cjXrsCjVSdqf+04VHJM7zBtEEk=
+		</data>
+		<key>www/img/top_control_bar_img.png</key>
+		<data>
+		p5w0DnkYCh0MYmKzkKdC+kyyWWs=
+		</data>
+		<key>www/img/triangle.png</key>
+		<data>
+		JV1+djIa742e70a+3COKYgVEnCo=
+		</data>
 		<key>www/img/twotriangles.png</key>
 		<data>
 		MzD1HopsRVEhJB442IxVZPQzNyU=
@@ -2341,7 +2373,7 @@
 		</data>
 		<key>www/index.html</key>
 		<data>
-		6EQEHVXRVdede4FtZb+J5OJe++A=
+		0vySihzuZfdU4pzlv5nuohTShTs=
 		</data>
 		<key>www/infos/BFS--3Components.html</key>
 		<data>
@@ -2865,7 +2897,7 @@
 		</data>
 		<key>www/js/webgato_main.js</key>
 		<data>
-		T2HlVyKMndhCB3s6riePBqldizU=
+		/THqLnpU0wCVnkGos5BHR2ilIk4=
 		</data>
 		<key>www/plugins/hu.dpal.phonegap.plugins.SpinnerDialog/www/spinner.js</key>
 		<data>
