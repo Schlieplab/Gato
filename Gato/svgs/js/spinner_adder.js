@@ -18,6 +18,9 @@
 
 var spinner = null;
 function add_spinner() {
+  if (spinner) {
+    return;
+  }
   var opts = {
       lines: 13, // The number of lines to draw
       length: 20, // The length of each line
@@ -39,7 +42,6 @@ function add_spinner() {
     var target = document.getElementById('base_container');
     spinner = new Spinner(opts).spin(target);
 }
-add_spinner();
 
 function hide_spinner() {
     spinner.stop();

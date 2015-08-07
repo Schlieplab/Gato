@@ -171,7 +171,7 @@ function ToolTip(elem, elem_type) {
     this.frame_padding_x = 20;
     this.frame_width = text_bbox.width + this.frame_padding_x;
     this.frame_height = text_bbox.height*2 + 5;
-    this.frame = snap.rect(-1 * this.frame_padding_x/2, text_bbox.height* -1.5, this.frame_width, this.frame_height, 4, 4).attr({
+    this.frame = snap.rect(-1 * this.frame_padding_x/2, text_bbox.height* -1.5, this.frame_width, this.frame_height, g.rect_r).attr({
         'fill': '#AFC8FA',
         'stroke': '#010E26',
         'stroke-width': 1,
@@ -436,7 +436,7 @@ function HelpPanel(y_trans, padding, button_panel_height) {
     this.padding = padding;
     this.button_panel_height = button_panel_height;
     this.g = snap.group().attr({'id': 'help_panel_group', 'cursor': 'pointer'})
-    .click(show_algo_info);
+        .click(show_algo_info);
     this.width = 24;
 
     this.text_elem = snap.text(0, 0, '?')
@@ -529,49 +529,12 @@ function SpeedControls(width, height) {
 function show_algo_info() {
     /* Pops open the algorithm info iframe */
     g.algo_info_active = true;
-    showPopWin(info_file, g.cont_width*1/2, g.cont_height*1/2, function() {g.algo_info_active = false;});
     if (!isiPhone()) {
+        showPopWin(info_file, g.cont_width*1/2, g.cont_height*1/2);
         document.getElementById('help_div').className = 'visible';
-    }    
-}
-
-function create_algo_info_button() {
-    /* Creates the button that when clicked will show the algorithm info iframe */
-    var g = snap.group().attr({
-        'cursor': 'pointer'
-    })
-    .click(show_algo_info)
-    .touchstart(show_algo_info);
-    var text_elem = snap.text(5, 0, 'Show Algorithm Info');
-    var text_bbox = text_elem.getBBox();
-    text_elem.attr({'y': text_bbox.height});
-    var rect = snap.rect(0, 0, text_bbox.width + 10, text_bbox.height + 7, 4, 4).attr({
-        'fill': '#aaaaaa',
-        'stroke': '#777777',
-        'stroke-width': 1
-    });
-    g.append(rect);
-    g.append(text_elem);
-    return g;
-}
-
-function create_homepage_link() {
-    var g = snap.group();
-    var text_elem = snap.text(0, 0, 'Visit Gato Homepage').attr({
-        'id': 'homepage_link',
-        'fill': '#87afff',
-        'text-decoration': 'underline',
-        'font-size': 17,
-        'font-weight': 'bold',
-        'cursor': 'pointer'
-    });
-    var link_func = function() {
-        window.open('http://bioinformatics.rutgers.edu/Software/Gato/');
-    };
-    text_elem.click(link_func).touchstart(link_func);
-    text_elem.attr({'y': text_elem.getBBox().height});
-    g.append(text_elem);
-    return g;
+    } else {
+        showPopWin(info_file, g.cont_width*1/2, g.cont_height*1/2, function() {g.algo_info_active = false;});
+    }
 }
 
 function ControlPanel(button_panel_height, y_trans) {
@@ -1104,7 +1067,7 @@ function CodeBox() {
     this.highlight_box_opacity = .35;
     this.highlight_box_x = this.line_x - this.highlight_box_padding.x/2;
     this.highlight_box_width = this.frame_width - this.highlight_box_x;
-    this.highlight_box = snap.rect(this.highlight_box_x, 0, this.highlight_box_width, this.line_padding + this.highlight_box_padding.y).attr({
+    this.highlight_box = snap.rect(this.highlight_box_x, 0, this.highlight_box_width, this.line_padding + this.highlight_box_padding.y, g.rect_r, g.rect_r).attr({
         'id': 'highlight_box',
         'fill': 'yellow',
         'stroke': 'blue',
@@ -1218,7 +1181,7 @@ function NavBar() {
         'text-anchor': 'middle',
         'cursor': 'pointer'
     }).click(function() {
-        window.location = 'help.html';
+        window.location = 'help.html?last_page=' + g.this_url;
     });
     this.help_link.attr({'x': this.width - this.cog_dim - this.help_link.getBBox().width - 5});
     this.g.append(this.help_link);

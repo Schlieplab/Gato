@@ -31,6 +31,8 @@ function fill_global() {
 
         /* General Globals */
 
+        this_url: this_url,
+
         jump_closest_state_stack: [],
 
         // Navbar dimensions
@@ -345,11 +347,13 @@ function show_everything() {
     }
 }
 
-function init() {
-    if (isiPhone()) {
-        window.plugins.spinnerDialog.show(); 
-    }
+function init(is_mobile) {
     window_size_check();
+    if (is_mobile) {
+        window.plugins.spinnerDialog.show(); 
+    } else {
+        add_spinner();
+    }
 
     // Add global event handlers
     snap.mouseup(global_mouseup);
@@ -384,8 +388,10 @@ function init() {
         g.navbar = null;
     }
 
-    if (isiPhone()) {
+    if (is_mobile) {
         window.plugins.spinnerDialog.hide();    
+    } else {
+        hide_spinner();
     }
     show_everything();
 }

@@ -18,7 +18,7 @@
 		
 		<div id="chapter_{{ chapter_dict['chapter_number'] }}_div" class="chapter_div row">
 			<div class="col-xs-12">
-				<div class="row">
+				<div class="row chapter_row">
 					<div class="col-xs-12">
 						<h2 class="indent">{{ chapter_dict['chapter_number'] }} {{ chapter_dict['title'] }}</h2>
 					</div>
@@ -27,22 +27,22 @@
 				{% for algo in chapter_dict['algorithms'] %}
 				<div id="{{ algo['algo_div_id'] }}" class="algo_div row">
 					<div class="col-xs-12">
-						<div class="row">
+						<div class="row algo_title_row">
 							<div class="col-xs-12">
 								<h3 class="indent">{{ algo['title'] }}</h3>
 								<p class="algo_p indent">{{ algo['description'] }}</p>
 							</div>
 						</div>
 
-						<div class="row">
+						<div class="row graph_row">
 						{% for graph in algo['graphs'] %}
 						
 							<div class="graph_div col-xs-12 col-sm-4 col-md-3">
 								
 								<a href="{{ svg_locations[algo['title'] + graph] }}">
-									<img class="graph_img" src="{{ graph_pngs[graph]['file'] }}" style="width: {{ graph_pngs[graph]['width'] }}px; height: {{ graph_pngs[graph]['height'] }}px"/>
+									<img class="graph_img" src="{{ graph_pngs[algo['title'] + graph]['file'] }}" style="width: {{ graph_pngs[algo['title'] + graph]['width'] }}px; height: {{ graph_pngs[algo['title'] + graph]['height'] }}px"/>
 								</a>
-								<p><a href="{{ svg_locations[algo['title'] + graph] }}">{{ graph_pngs[graph]['name'] }}</a></p>
+								<p><a href="{{ svg_locations[algo['title'] + graph] }}">{{ graph_pngs[algo['title'] + graph]['name'] }}</a></p>
 							</div>
 
 						{% if loop.index % 3 == 0 %}
@@ -68,15 +68,12 @@
 		</div>
 	</div>
 	<div class="fixed_bottom_nav">
-		<div class="find_nav_item" >
-			Go To
-		</div>
 		<div class="drop_up_holder">
 			<div id="chapter_nav" class="invisible nav_drop_up">
 				<ul class="nav_ul">
 					{% for chapter_dict in svg_instance %}
 					<a href="#chapter_{{ chapter_dict['chapter_number'] }}_div">
-						<li class="ignore">{{ chapter_dict['chapter_number'] }} {{ chapter_dict['title'] }}
+						<li class="ignore">{{ chapter_dict['chapter_number'] }} {{ chapter_dict['shortened_title'] }}
 						</li>
 					</a>
 					{% endfor %}

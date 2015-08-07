@@ -27,7 +27,6 @@
         <script type="text/javascript" src="cordova_plugins.js"></script>
         <script type="text/javascript" src="js/subModal/common.js"></script>
         <script type="text/javascript" src="js/subModal/subModal.js"></script>
-        <script type="text/javascript" src="js/hammer.min.js"></script>
         <script src="js/snap.svg.js" type="text/javascript"></script>
         <style>
             html, body {
@@ -227,6 +226,7 @@
             var chapter_name = "Shortest Paths";
             var algo_div = "BellmanFord";
             var info_file = "infos/BellmanFord--NegArc.html";
+            var this_url = "BellmanFord--NegArc.html";
             var animation_name = "BellmanFord on NegArc graph";
             var g1_x_add = 50;
             var g1_y_add = 150;
@@ -362,7 +362,7 @@ Array(1, UpdateVertexInfo, "g1_4", "Vertex 4 is not in tree"),
 Array(1, UpdateVertexInfo, "g1_5", "Vertex 5 is not in tree"),
 Array(1, UpdateVertexInfo, "g1_6", "Vertex 6 is not in tree"),
 Array(1, SetVertexAnnotation, "g1_1", "s"),
-Array(20, ShowActive, "l_2"),
+Array(18, ShowActive, "l_2"),
 Array(1, UpdateVertexInfo, "g1_1", "Vertex 1 is root of tree"),
 Array(1, ShowActive, "l_3"),
 Array(1, ShowActive, "l_4"),
@@ -382,7 +382,7 @@ Array(1, ShowActive, "l_12"),
 Array(1, UpdateVertexInfo, "g1_2", "Vertex 2 has predecessor 1 and distance 1"),
 Array(1, ShowActive, "l_13"),
 Array(1, SetVertexColor, "g1_2", "blue"),
-Array(14, ShowActive, "l_8"),
+Array(1, ShowActive, "l_8"),
 Array(1, SetVertexFrameWidth, "g1_1", "0"),
 Array(1, ShowActive, "l_6"),
 Array(1, ShowActive, "l_7"),
@@ -400,7 +400,7 @@ Array(1, ShowActive, "l_12"),
 Array(1, UpdateVertexInfo, "g1_3", "Vertex 3 has predecessor 2 and distance 4"),
 Array(1, ShowActive, "l_13"),
 Array(1, SetVertexColor, "g1_3", "blue"),
-Array(8, ShowActive, "l_8"),
+Array(1, ShowActive, "l_8"),
 Array(1, SetEdgeColor, "g1_2-4", "yellow"),
 Array(1, ShowActive, "l_9"),
 Array(1, ShowActive, "l_10"),
@@ -470,14 +470,19 @@ Array(1, SetVertexFrameWidth, "g1_6", "6"),
 Array(1, SetVertexFrameWidth, "g1_6", "0"),
 Array(1, ShowActive, "l_6"));
 
-            if (isiPhone()) {
-                document.addEventListener("deviceready", 
-                    function(){ init() }, 
-                    false
-                );
-            } else {
+            try {
+                if (cordova) {
+                    document.addEventListener("deviceready", 
+                        function(){ init() }, 
+                        false
+                    );
+                } else {
+                    init();
+                }
+            } catch (e) {
                 init();
             }
+            
         </script>
 
     </body>

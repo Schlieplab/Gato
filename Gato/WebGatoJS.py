@@ -27,7 +27,6 @@ animationhead = '''
         <script type="text/javascript" src="cordova_plugins.js"></script>
         <script type="text/javascript" src="js/subModal/common.js"></script>
         <script type="text/javascript" src="js/subModal/subModal.js"></script>
-        <script type="text/javascript" src="js/hammer.min.js"></script>
         <script src="js/snap.svg.js" type="text/javascript"></script>
         <style>
             html, body {
@@ -138,6 +137,7 @@ animationhead = '''
             var chapter_name = "%(chapter_name)s";
             var algo_div = "%(algo_div)s";
             var info_file = "%(info_file)s";
+            var this_url = "%(this_url)s";
             var animation_name = "%(animation_name)s";
             var g1_x_add = %(g1_x_add)d;
             var g1_y_add = %(g1_y_add)d;
@@ -161,14 +161,19 @@ animationhead = '''
         <script type="text/javascript">
             %(animation)s
 
-            if (cordova) {
-                document.addEventListener("deviceready", 
-                    function(){ init() }, 
-                    false
-                );
-            } else {
-                init();
+            try {
+                if (cordova) {
+                    document.addEventListener("deviceready", 
+                        function(){ init(true) }, 
+                        false
+                    );
+                } else {
+                    init(false);
+                }
+            } catch (e) {
+                init(false);
             }
+            
         </script>
 
     </body>

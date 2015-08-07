@@ -1,0 +1,69 @@
+<html>
+ <head>
+  <link href="../css/info_page_style.css" rel="stylesheet"/>
+  <title>
+   Minimal Spanning Tree - Matroid Dual Kruskal
+  </title>
+ </head>
+ <body>
+  This algorithm finds a minimal spanning tree in an undirected graph
+using the dual approach to Kruskals algorithm.
+  <h3>
+   Visualization
+  </h3>
+  <h5>
+   Vertex Colors
+  </h5>
+  <dl>
+   <dt>
+    <div class="color_div" style="background-color: #000099">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    The spanning subgraph in the input which will be the MST
+upon termination of the algorithm.  Initially, all the vertices and
+edges are part of the spanning subgraph.
+   </dd>
+   <div class="clear_div">
+   </div>
+  </dl>
+  <h5>
+   Edge Colors
+  </h5>
+  <dl>
+   <dt>
+    <div class="color_div" style="background-color: #000099">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    Edges which are part of the spanning subgraph.
+   </dd>
+   <div class="clear_div">
+   </div>
+   <dt>
+    <div class="color_div" style="background-color: #FF9200">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    Color of the edge being
+considered for removal from the spanning subgraph. (transient)
+   </dd>
+   <div class="clear_div">
+   </div>
+   <dt>
+    <div class="color_div" style="background-color: grey">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+   </dt>
+   <dd>
+    Color of edges which have been removed from
+the spanning subgraph.
+   </dd>
+   <div class="clear_div">
+   </div>
+  </dl>
+ </body>
+</html>

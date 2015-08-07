@@ -75,7 +75,7 @@ class AnimationParameters:
     GridSize = 50 # Grid size for editor
 
     # Colors
-    cVertexDefault = "#000099" # 'red'
+    cVertexDefault = "#000099" # 'blue'
     cVertexBlink = "black"
     cEdgeDefault = "#DDDDDD" #"#EEEEEE"
     cEditorEdgeDefault = "#444444"

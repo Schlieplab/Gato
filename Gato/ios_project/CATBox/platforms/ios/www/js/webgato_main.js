@@ -31,6 +31,8 @@ function fill_global() {
 
         /* General Globals */
 
+        this_url: this_url,
+
         jump_closest_state_stack: [],
 
         // Navbar dimensions

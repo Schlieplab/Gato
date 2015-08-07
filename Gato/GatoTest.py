@@ -199,6 +199,7 @@ svg_instance = [
         'chapter_directory': '02-GraphsNetworks',
         'chapter_number': 2,
         'title': 'Basics, Notation and Data Structures',
+        'shortened_title': 'Basics',
         'algorithms': [
             {
                 'title': 'BFS-Components',
@@ -252,6 +253,7 @@ svg_instance = [
         'chapter_directory': '03-MinimalSpanningTrees',
         'chapter_number': 3,
         'title': 'Minimum Spanning Trees',
+        'shortened_title': 'Minimum Spanning Trees',
         'algorithms': [
             {   
                 'title': 'Kruskal\'s Algorithm',
@@ -325,6 +327,7 @@ svg_instance = [
         'chapter_directory': '04-LPDuality',
         'chapter_number': 4,
         'title': 'Linear Programming Duality',
+        'shortened_title': 'Linear Programming Duality',
         'algorithms': [
             {
                 'title': 'Primal Dual of Kruskal\'s Algorithm',
@@ -342,6 +345,7 @@ svg_instance = [
         'chapter_directory': '05-ShortestPaths',
         'chapter_number': 5,
         'title': 'Shortest Paths',
+        'shortened_title': 'Shortest Paths',
         'algorithms': [
             {
                 'title': 'Dijkstra\'s Algorithm',
@@ -432,6 +436,7 @@ svg_instance = [
         'chapter_directory': '06-MaximalFlows',
         'chapter_number': 6,
         'title': 'Maximal Flows',
+        'shortened_title': 'Maximal Flows',
         'algorithms': [
             {
                 'title': 'The Ford-Fulkerson Algorithm',
@@ -471,6 +476,7 @@ svg_instance = [
         'chapter_directory': '07-MinimumCostFlows',
         'chapter_number': 7,
         'title': 'Minimum-Cost Flows',
+        'shortened_title': 'Minimum-Cost Flows',
         'algorithms': [
             {
                 'title': 'Negative Cycle Canceling',
@@ -506,6 +512,7 @@ svg_instance = [
         'chapter_directory': '08-Matching',
         'chapter_number': 8,
         'title': 'Matching',
+        'shortened_title': 'Matching',
         'algorithms': [
             {
                 'title': 'Bipartite',
@@ -537,6 +544,7 @@ svg_instance = [
         'chapter_directory': '09-WeightedMatching',
         'chapter_number': 9,
         'title': 'Weighted Matching',
+        'shortened_title': 'Weighted Matching',
         'algorithms': [
             {
                 'title': 'Weighted Matching',
@@ -813,16 +821,15 @@ if __name__ == '__main__':
                     log.info("=== TEST === "+algo['file']+" === "+graph_file+" ===")
                     print "=== TEST === "+algo['file']+" === "+graph_file+" ==="
                     graph_name = os.path.splitext(os.path.basename(graph_file))[0]
-                    png_file_name = 'svgs/img/%s.png' % (graph_name)
+                    png_file_name = 'svgs/img/%s--%s.png' % (os.path.splitext(algo['file'])[0], graph_name)
                     svg_file_name = 'svgs/%s--%s.html' % (os.path.splitext(algo['file'])[0], graph_name)
                     algo_location = testPath + chapter_dict['chapter_directory'] + '/' + algo.get('svg_file', algo['file'])
 
                     generate_anim = should_generate_animation(algo_location, testPath+graph_file, svg_file_name)
-                    generate_png = should_generate_png(algo_location, testPath+graph_file, png_file_name)
+                    generate_png = should_generate_png(algo_location, testPath+graph_file, png_file_name) or force_animation
                     if generate_anim or generate_png or force_animation:
                         app.OpenAlgorithm(algo_location)
                         app.OpenGraph(testPath + graph_file)
-                    if generate_anim or force_animation:
                         g.Interactive = 0 # This is set to 0 above.  Do we need to do it here as well?
                         g.GeneratingSVG = 1
                         app.algorithm.ClearBreakpoints()
@@ -830,11 +837,13 @@ if __name__ == '__main__':
                         app.update()
                         app.update_idletasks()
                         app.update()
+                        # coordinate_diff = app.GetSVGCoordinateDiff()
                         # Run it ...
                         app.after_idle(app.CmdContinue) # after idle needed since CmdStart
                         # does not return
                         app.CmdStart()
                         app.update_idletasks()
+
                         # Generate the SVG
                         app.ExportSVGAnimation(svg_file_name, chapter_number=chapter_dict['chapter_number'], 
                             algo_div=algo['title'].replace(' ', '').replace('-',''),
@@ -842,19 +851,21 @@ if __name__ == '__main__':
                     else:
                         print "Animation already generated, skipping."
 
-                    index_graph_name = friendly_graph_names.get(graph_name, graph_name)
                     if generate_png:
                         # Generate the PNG
-                        if graph_file not in graph_pngs and has_png_libs:
+                        index_page_graph_name = friendly_graph_names.get(graph_name, graph_name)
+                        if png_file_name not in graph_pngs and has_png_libs:
+                            # png_dimensions = app.ExportSVG(png_file_name, write_to_png=True, start_graph_coord_diff=coordinate_diff)
                             png_dimensions = app.ExportSVG(png_file_name, write_to_png=True)
                             path_from_index = '/'.join(png_file_name.split('/')[1:])
-                            graph_pngs[graph_file] = {'file': path_from_index, 'name': index_graph_name, 'width': png_dimensions['width'], 'height': png_dimensions['height']}
-                    else:
-                        from PIL import Image
-                        img = Image.open(png_file_name)
-                        graph_pngs[graph_file] = {'file': '/'.join(png_file_name.split('/')[1:]), 'name': index_graph_name, 'width': img.size[0], 'height': img.size[1]}
+                            graph_pngs[algo['title'] + graph_file] = {'file': path_from_index, 'name': index_page_graph_name, 'width': png_dimensions['width'], 'height': png_dimensions['height']}
+                        else:
+                            from PIL import Image
+                            img = Image.open(png_file_name)
+                            graph_pngs[algo['title'] + graph_file] = {'file': '/'.join(png_file_name.split('/')[1:]), 'name': index_page_graph_name, 'width': img.size[0], 'height': img.size[1]}
 
-        if has_png_libs:
+
+        if has_png_libs and graph_pngs:
             create_svg_index_page(graph_pngs)
 
     else:

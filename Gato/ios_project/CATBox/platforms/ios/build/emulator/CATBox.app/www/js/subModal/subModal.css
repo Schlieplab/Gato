@@ -31,12 +31,12 @@
 	top: 0px;
 	left: 0px;
 	display:none;
-	border-radius: 10px;
+	border-radius: 1px;
 	padding: 0px;
 }
 #popupInner {
 	border: 2px solid #000000;
-	border-radius: 10px;
+	border-radius: 1px;
 	background-color: #ffffff;
 }
 
@@ -57,8 +57,8 @@
 	border-top: 1px solid #78A3F2;
 	border-left: 1px solid #78A3F2;
 	border-right: 1px solid #204095;
-	border-top-right-radius: 10px;
-	border-top-left-radius: 10px;
+	border-top-right-radius: 1px;
+	border-top-left-radius: 1px;
 	position: relative;
 	z-index: 203;
 }

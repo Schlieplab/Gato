@@ -841,7 +841,14 @@ class AlgoWin(Frame):
         if file is not "": 
             self.graphDisplay.PrintToPSFile(file)
 
-    def ExportSVG(self, fileName=None, write_to_png=False):
+    def GetSVGCoordinateDiff(self):
+        import GatoExport
+        if not self.secondaryGraphDisplay or self.algorithm.graphDisplays == None or self.algorithm.graphDisplays == 1:
+            return GatoExport.get_start_coordinate_diff(self.graphDisplay)
+        else:
+            return GatoExport.get_start_coordinate_diff(self.graphDisplay, self.secondaryGraphDisplay.animator)
+
+    def ExportSVG(self, fileName=None, write_to_png=False, start_graph_coord_diff=None):
         """ GUI to control export of SVG file  """
         if not fileName:
             fileName = asksaveasfilename(title="Export SVG",
@@ -853,10 +860,10 @@ class AlgoWin(Frame):
 
             if not self.secondaryGraphDisplay or self.algorithm.graphDisplays == None or self.algorithm.graphDisplays == 1:
                 return GatoExport.ExportSVG(fileName, self, self.algorithm, self.graphDisplay, 
-                    showAnimation=False, write_to_png=write_to_png)
+                    showAnimation=False, write_to_png=write_to_png, start_graph_coord_diff=start_graph_coord_diff)
             else:
                 return GatoExport.ExportSVG(fileName, self, self.algorithm, self.graphDisplay,
-                    self.secondaryGraphDisplay.animator, showAnimation=False, write_to_png=write_to_png)
+                    self.secondaryGraphDisplay.animator, showAnimation=False, write_to_png=write_to_png, start_graph_coord_diff=start_graph_coord_diff)
 
     def ExportSVGAnimation(self, fileName=None, chapter_number=None, algo_div=None, chapter_name=None):
         """ GUI to control export of SVG file  """

@@ -27,7 +27,6 @@
         <script type="text/javascript" src="cordova_plugins.js"></script>
         <script type="text/javascript" src="js/subModal/common.js"></script>
         <script type="text/javascript" src="js/subModal/subModal.js"></script>
-        <script type="text/javascript" src="js/hammer.min.js"></script>
         <script src="js/snap.svg.js" type="text/javascript"></script>
         <style>
             html, body {
@@ -193,6 +192,7 @@
             var chapter_name = "Matching";
             var algo_div = "Bipartite";
             var info_file = "infos/Bipartite--Bi008.html";
+            var this_url = "Bipartite--Bi008.html";
             var animation_name = "Bipartite on Bi008 graph";
             var g1_x_add = 100;
             var g1_y_add = 50;
@@ -334,8 +334,8 @@ Array(1, UpdateEdgeInfo, "g1_4-3", "Edge (4,3) is not a matching edge"),
 Array(1, UpdateVertexInfo, "g1_1", "Vertex 1 in W  has no predecessor"),
 Array(1, UpdateVertexInfo, "g1_3", "Vertex 3 in W  has no predecessor"),
 Array(1, SetVertexColor, "g1_1", "#99ff99"),
-Array(24, SetVertexColor, "g1_3", "#ff9999"),
-Array(2, SetVertexColor, "g1_2", "#ff9999"),
+Array(1, SetVertexColor, "g1_3", "#ff9999"),
+Array(1, SetVertexColor, "g1_2", "#ff9999"),
 Array(1, SetVertexColor, "g1_4", "#99ff99"),
 Array(1, ShowActive, "l_2"),
 Array(1, UpdateVertexInfo, "g1_1", "Vertex 1 in V  has no predecessor"),
@@ -405,14 +405,19 @@ Array(1, SetVertexFrameWidth, "g1_4", "6"),
 Array(1, SetVertexFrameWidth, "g1_3", "2"),
 Array(1, SetVertexFrameWidth, "g1_2", "2"));
 
-            if (isiPhone()) {
-                document.addEventListener("deviceready", 
-                    function(){ init() }, 
-                    false
-                );
-            } else {
+            try {
+                if (cordova) {
+                    document.addEventListener("deviceready", 
+                        function(){ init() }, 
+                        false
+                    );
+                } else {
+                    init();
+                }
+            } catch (e) {
                 init();
             }
+            
         </script>
 
     </body>

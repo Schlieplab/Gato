@@ -128,6 +128,7 @@ function Scaler() {
             }
             g_cont.transform('t' + x_trans + ',' + y_trans);
         }
+        this.curr_scale = scale_factor;
     };
 
     var bbox = g.graph_containers[g.num_graphs-1].getBBox();
@@ -146,7 +147,6 @@ function Scaler() {
     this.elem = snap.polygon([this.x, this.y, this.x+this.width, this.y, this.x+this.width, this.y-this.height, this.x, this.y]).attr(
     {
         'fill': '#cc3333',
-        'stroke': '#330000',
         'cursor': 'move'
     }).mousedown(this.mousedown);
     var w = 15;
@@ -246,7 +246,7 @@ function ToolTip(elem, elem_type) {
     this.frame_padding_x = 20;
     this.frame_width = text_bbox.width + this.frame_padding_x;
     this.frame_height = text_bbox.height*2 + 5;
-    this.frame = snap.rect(-1 * this.frame_padding_x/2, text_bbox.height* -1.5, this.frame_width, this.frame_height, 4, 4).attr({
+    this.frame = snap.rect(-1 * this.frame_padding_x/2, text_bbox.height* -1.5, this.frame_width, this.frame_height, g.rect_r, g.rect_r).attr({
         'fill': '#AFC8FA',
         'stroke': '#010E26',
         'stroke-width': 1,
@@ -409,9 +409,6 @@ function add_graph_frame() {
             .attr({
                 id: 'g' + (g_num+1) + '_frame',
                 fill: '#fff',
-                stroke: '#ccc',
-                strokeWidth: g.graph_frame_stroke_width,
-                strokeDasharray: '5,2',
             });
             g.graph_containers[g_num].prepend(frame);
         }
@@ -604,7 +601,6 @@ function SpeedControls(width, height) {
 
 function show_algo_info() {
     /* Pops open the algorithm info iframe */
-    algo_info_active = true;
     showPopWin(info_file, g.cont_width*1/2, g.cont_height*1/2);
     if (!isiPhone()) {
         document.getElementById('help_div').className = 'visible';
@@ -621,7 +617,7 @@ function create_algo_info_button() {
     var text_elem = snap.text(5, 0, 'Show Algorithm Info');
     var text_bbox = text_elem.getBBox();
     text_elem.attr({'y': text_bbox.height});
-    var rect = snap.rect(0, 0, text_bbox.width + 10, text_bbox.height + 7, 4, 4).attr({
+    var rect = snap.rect(0, 0, text_bbox.width + 10, text_bbox.height + 7, g.rect_r, g.rect_r).attr({
         'fill': '#aaaaaa',
         'stroke': '#777777',
         'stroke-width': 1
@@ -789,7 +785,7 @@ function PlaybackBar() {
     this.stroke = g.playback_bar_stroke;
     this.stroke_width = g.playback_bar_stroke_width;
 
-    this.frame = snap.rect(0, 0, this.width, this.height, 1, 1).attr({
+    this.frame = snap.rect(0, 0, this.width, this.height, g.rect_r, g.rect_r).attr({
         'fill': this.bg_color,
         'stroke': this.stroke,
         'stroke-width': this.stroke_width,
@@ -1170,7 +1166,7 @@ function CodeBox() {
     this.highlight_box_opacity = .35;
     this.highlight_box_x = this.line_x - this.highlight_box_padding.x/2;
     this.highlight_box_width = this.frame_width - this.highlight_box_x;
-    this.highlight_box = snap.rect(this.highlight_box_x, 0, this.highlight_box_width, this.line_padding + this.highlight_box_padding.y).attr({
+    this.highlight_box = snap.rect(this.highlight_box_x, 0, this.highlight_box_width, this.line_padding + this.highlight_box_padding.y, g.rect_r, g.rect_r).attr({
         'id': 'highlight_box',
         'fill': 'yellow',
         'stroke': 'blue',

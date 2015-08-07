@@ -27,7 +27,6 @@
         <script type="text/javascript" src="cordova_plugins.js"></script>
         <script type="text/javascript" src="js/subModal/common.js"></script>
         <script type="text/javascript" src="js/subModal/subModal.js"></script>
-        <script type="text/javascript" src="js/hammer.min.js"></script>
         <script src="js/snap.svg.js" type="text/javascript"></script>
         <style>
             html, body {
@@ -228,6 +227,7 @@
             var chapter_name = "Minimum Spanning Trees";
             var algo_div = "Prim'sAlgorithm";
             var info_file = "infos/Prim--Kruskal2.html";
+            var this_url = "Prim--Kruskal2.html";
             var animation_name = "Prim on Kruskal2 graph";
             var g1_x_add = 163;
             var g1_y_add = 54;
@@ -349,7 +349,7 @@
         
         <script type="text/javascript">
             var anim_array = Array(Array(1, SetAllVerticesColor, "g1_#EEEEEE"),
-Array(3, ShowActive, "l_1"),
+Array(2, ShowActive, "l_1"),
 Array(1, UpdateGraphInfo, "g1_()", "Tree has 0 vertices and weight  0.00"),
 Array(1, UpdateEdgeInfo, "g1_5-7", "Edge (5,7) weight: 83"),
 Array(1, UpdateEdgeInfo, "g1_2-1", "Edge (2,1) weight: 199"),
@@ -366,7 +366,7 @@ Array(1, UpdateVertexInfo, "g1_5", "Vertex 5 at position (291,267) has predecess
 Array(1, UpdateVertexInfo, "g1_6", "Vertex 6 at position (200,240) has predecessor 6"),
 Array(1, UpdateVertexInfo, "g1_7", "Vertex 7 at position (368,236) has predecessor 7"),
 Array(1, SetVertexAnnotation, "g1_1", "s"),
-Array(20, ShowActive, "l_2"),
+Array(22, ShowActive, "l_2"),
 Array(1, SetVertexFrameWidth, "g1_1", "6"),
 Array(1, SetEdgeColor, "g1_2-1", "yellow"),
 Array(1, ShowActive, "l_3"),
@@ -385,7 +385,7 @@ Array(1, ShowActive, "l_2"),
 Array(1, UpdateVertexInfo, "g1_6", "Vertex 6 at position (200,240) has predecessor 1"),
 Array(1, SetVertexFrameWidth, "g1_1", "0"),
 Array(1, ShowActive, "l_6"),
-Array(1, ShowActive, "l_7"),
+Array(2, ShowActive, "l_7"),
 Array(1, SetEdgeColor, "g1_1-6", "green"),
 Array(1, ShowActive, "l_8"),
 Array(1, SetEdgeColor, "g1_1-6", "black"),
@@ -483,7 +483,7 @@ Array(1, ShowActive, "l_14"),
 Array(1, ShowActive, "l_15"),
 Array(1, SetVertexColor, "g1_3", "blue"),
 Array(1, SetEdgeColor, "g1_3-4", "blue"),
-Array(1, ShowActive, "l_16"),
+Array(2, ShowActive, "l_16"),
 Array(1, ShowActive, "l_11"),
 Array(1, UpdateVertexInfo, "g1_3", "Vertex 3 at position (387,81) has predecessor 4"),
 Array(1, SetEdgeColor, "g1_7-4", "yellow"),
@@ -500,12 +500,12 @@ Array(1, SetEdgeColor, "g1_3-4", "black"),
 Array(1, ShowActive, "l_9"),
 Array(1, SetVertexColor, "g1_3", "red"),
 Array(1, SetEdgeColor, "g1_3-4", "red"),
-Array(1, ShowActive, "l_11"),
+Array(2, ShowActive, "l_11"),
 Array(1, UpdateGraphInfo, "g1_()", "Tree has 6 vertices and weight 426.00"),
 Array(1, SetVertexFrameWidth, "g1_3", "6"),
 Array(1, SetEdgeColor, "g1_2-3", "yellow"),
 Array(1, ShowActive, "l_12"),
-Array(1, ShowActive, "l_13"),
+Array(2, ShowActive, "l_13"),
 Array(1, ShowActive, "l_14"),
 Array(1, SetEdgeColor, "g1_2-1", "black"),
 Array(1, ShowActive, "l_15"),
@@ -526,7 +526,7 @@ Array(1, SetEdgeColor, "g1_2-3", "black"),
 Array(1, ShowActive, "l_9"),
 Array(1, SetVertexColor, "g1_2", "red"),
 Array(1, SetEdgeColor, "g1_2-3", "red"),
-Array(1, ShowActive, "l_11"),
+Array(2, ShowActive, "l_11"),
 Array(1, UpdateGraphInfo, "g1_()", "Tree has 7 vertices and weight 493.00"),
 Array(1, SetVertexFrameWidth, "g1_2", "6"),
 Array(1, SetEdgeColor, "g1_2-3", "yellow"),
@@ -542,14 +542,19 @@ Array(1, SetEdgeColor, "g1_2-1", "grey"),
 Array(1, SetVertexFrameWidth, "g1_2", "0"),
 Array(1, ShowActive, "l_6"));
 
-            if (isiPhone()) {
-                document.addEventListener("deviceready", 
-                    function(){ init() }, 
-                    false
-                );
-            } else {
+            try {
+                if (cordova) {
+                    document.addEventListener("deviceready", 
+                        function(){ init() }, 
+                        false
+                    );
+                } else {
+                    init();
+                }
+            } catch (e) {
                 init();
             }
+            
         </script>
 
     </body>

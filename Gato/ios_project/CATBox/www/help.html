@@ -134,23 +134,34 @@
 		</div>
 	</div>
 	<div class="fixed_bottom_nav">
-		<a class="nav_link" href="index.html">
-			<div class="arrow_nav_item" >
-				<img src="img/triangle.png" height="30"/>
-			</div>
-		</a>
-		<a href="index.html" class="nav_link">
-			<div class="back_nav_item nav_item" >
-				Back
+		<a id="back_link" class="nav_link" href="index.html">
+			<div class="arrow_nav_item" style="position: relative">
+				<svg style="width: 30px; height: 30px; display: inline">
+					<polygon points="0,15,15,30,18.535533905932738,26.464466094067262,7.0710678118654755,15,18.535533905932738,3.5355339059327373,15,0" fill="#cccccc" style=""></polygon>
+				</svg>
+				<div id="back_text_span" style="bottom: 0px; left: 55px; position: absolute">Back</div>
 			</div>
 		</a>
 	<script type="text/javascript" src="js/util.js"></script>
 	<script type="text/javascript">
-		if (isiPhone()) {
-			document.getElementById('fixed_top_index_div').style.top = "20px";
-			document.getElementById('master_container').style.marginTop = "20px";
-			document.getElementById('regular_header').className = 'invisible';
-			document.getElementById('touch_header').className = 'visible';
+		function parse_get(val) {
+		    var result = null,
+		        tmp = [];
+		    location.search
+		    //.replace ( "?", "" )
+		    // this is better, there might be a question mark inside
+		    .substr(1)
+		        .split("&")
+		        .forEach(function (item) {
+		        tmp = item.split("=");
+		        if (tmp[0] === val) result = decodeURIComponent(tmp[1]);
+		    });
+		    return result;
+		}
+		if (parse_get('last_page')) {
+			// Set back link to the last_page parameter instead of index.html
+			console.log("Doin ma thing");
+			document.getElementById('back_link').href = parse_get('last_page');
 		}
 	</script>
 </body>

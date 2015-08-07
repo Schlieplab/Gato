@@ -365,8 +365,13 @@ function show_everything() {
     }
 }
 
-function init() {
+function init(is_mobile) {
     window_size_check();
+    if (is_mobile) {
+        window.plugins.spinnerDialog.show(); 
+    } else {
+        add_spinner();
+    }
 
     // Add global event handlers
     snap.mouseup(global_mouseup);
@@ -398,6 +403,10 @@ function init() {
     } else {
         g.navbar = null;
     }
-    hide_spinner();
+    if (is_mobile) {
+        window.plugins.spinnerDialog.hide();    
+    } else {
+        hide_spinner();
+    }
     show_everything();
 }
