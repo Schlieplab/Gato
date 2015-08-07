@@ -65,6 +65,9 @@ function fill_global() {
         // Location in the file system of the algorithm info file
         info_file: 'infos/%(info_file)s',
 
+        // true when algorithm info box is open and visible
+        algo_info_active: false,
+
         // Number of pixels to use for padding on edges of canvas and between elements
         padding: Math.min(Math.ceil(cont_width*.02), Math.ceil(cont_height)*.03),
 
@@ -319,7 +322,10 @@ function window_resize(evt) {
     g.playback_bar.resize();
     g.code_box.scale_and_translate();
     g.scaler.set_max_and_min_dimensions_of_graph_container();
+    console.log("New max scale: " + g.scaler.max_scale_factor);
     position_graph();
+    g.scaler.scale_graphs(g.scaler.max_scale_factor);
+    
     if (g.navbar) {
         g.navbar.resize();
         document.getElementById('nav_svg').setAttribute('style', 'width: ' + g.cont_width + 'px; height: ' + g.navbar.height + 'px');

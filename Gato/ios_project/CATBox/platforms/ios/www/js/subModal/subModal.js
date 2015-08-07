@@ -240,6 +240,7 @@ function hidePopWin(callReturnFunc) {
 	if (help_div) {
 		help_div.className = 'invisible';
 	}
+	g.algo_info_active = false;
 }
 
 /**

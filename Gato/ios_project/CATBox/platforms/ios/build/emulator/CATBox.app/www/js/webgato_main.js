@@ -65,6 +65,9 @@ function fill_global() {
         // Location in the file system of the algorithm info file
         info_file: 'infos/%(info_file)s',
 
+        // true when algorithm info box is open and visible
+        algo_info_active: false,
+
         // Number of pixels to use for padding on edges of canvas and between elements
         padding: Math.min(Math.ceil(cont_width*.02), Math.ceil(cont_height)*.03),
 
@@ -257,9 +260,6 @@ function save_initial_graph_dimensions() {
 }
 
 function global_mouseup(evt) {
-    if (g.scaler.scaling === true) {
-        g.scaler.mouseup(evt);
-    }
     if (g.slider.sliding === true) {
         g.slider.cursor_mouseup(evt);
     }
@@ -288,18 +288,12 @@ function global_touchend(evt) {
 }
 
 function global_mousemove(evt) {
-    if (g.scaler.scaling === true) {
-        g.scaler.mousemove(evt);
-    }
     if (g.slider.sliding === true) {
         g.slider.cursor_mousemove(evt);
     }
 }
 
 function global_drag(evt) {
-    if (g.scaler.scaling === true) {
-        g.scaler.drag(evt);
-    }
     if (g.slider.sliding === true) {
         g.slider.cursor_drag(evt);
     }
@@ -328,7 +322,10 @@ function window_resize(evt) {
     g.playback_bar.resize();
     g.code_box.scale_and_translate();
     g.scaler.set_max_and_min_dimensions_of_graph_container();
+    console.log("New max scale: " + g.scaler.max_scale_factor);
     position_graph();
+    g.scaler.scale_graphs(g.scaler.max_scale_factor);
+    
     if (g.navbar) {
         g.navbar.resize();
         document.getElementById('nav_svg').setAttribute('style', 'width: ' + g.cont_width + 'px; height: ' + g.navbar.height + 'px');
@@ -374,8 +371,10 @@ function init() {
     g.animation = new Animation();
     add_graph_frame();
     position_graph(true);
-    add_scaler();
+    g.scaler = new Scaler();
     save_initial_graph_dimensions();
+
+    g.scaler.scale_graphs(g.scaler.max_scale_factor);
 
     if (isiPhone()) {
         document.getElementById('nav_bar').className = 'active_nav';
@@ -389,66 +388,4 @@ function init() {
         window.plugins.spinnerDialog.hide();    
     }
     show_everything();
-
-    // Temporary pinch code
-    /*g.mc = new Hammer.Manager(document.getElementById('base_container'));
-    var pinch = new Hammer.Pinch()
-    g.mc.add(pinch);
-    
-    var step_size = .2;
-    var start_scale = 0;
-    var start_ev_scale = 1;
-    var last_scale = 0;
-    var growing = true;
-    g.mc.on('pinchstart', function(ev) {
-        start_ev_scale = 1;
-        start_scale = g.scaler.curr_scale;
-        last_scale = 1;
-    });
-    g.mc.on('pinch', function(ev) {
-        if (ev.scale >= last_scale) {
-            if (!growing) {
-                start_ev_scale = ev.scale;
-                start_scale = g.scaler.curr_scale;
-            }
-            growing = true;
-        } else {
-            if (growing) {
-                start_ev_scale = ev.scale;
-                start_scale = g.scaler.curr_scale;
-            }
-            growing = false;
-        }
-
-        var add = 0;
-        if (growing) {
-            var scale_diff = ev.scale - start_ev_scale;
-            add = step_size * scale_diff;
-        } else {
-            var scale_diff;
-            if (ev.scale < 1) {
-                if (start_ev_scale > 1) {
-                    scale_diff = (start_ev_scale - 1) + (1 - ev.scale)*10;
-                } else {
-                    scale_diff = (start_ev_scale - ev.scale)*10;
-                }
-            } else {
-                scale_diff = start_ev_scale - ev.scale;
-            }
-            add = -1 * step_size * scale_diff;
-        }
-
-        var sf = start_scale + add;
-        if (sf > g.scaler.max_scale_factor) {
-            sf = g.scaler.max_scale_factor;
-        } else if (sf < g.scaler.min_scale_factor) {
-            sf = g.scaler.min_scale_factor;
-        }
-        g.scaler.curr_scale = sf;
-        g.scaler.scale_graphs(sf);
-        last_scale = ev.scale;
-    });
-console.log(window.plugins);
-*/
-
 }

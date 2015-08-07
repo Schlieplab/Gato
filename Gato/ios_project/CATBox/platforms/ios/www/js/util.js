@@ -33,6 +33,12 @@ function isiPhone(){
     );
 }
 
+function add_scaler() {
+    g.scaler = new Scaler();
+    g.graph_containers[g.num_graphs-1].append(g.scaler.click_receiver);
+    g.graph_containers[g.num_graphs-1].append(g.scaler.elem);
+}
+
 function get_bubble_id(vertex, vertex_nums) {
     // Given a vertex attr and the vertex numbers the bubble connects, return a bubble id
     return vertex.attr('id') + '_bubble_' + vertex_nums.join('-');

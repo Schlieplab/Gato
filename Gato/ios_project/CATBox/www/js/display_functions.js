@@ -20,16 +20,12 @@ function Scaler() {
         if (isiPhone()) {
             max_height = g.cont_height - g.padding*2 - g.playback_bar.frame.attr('height');
         }
-        if (this.min_scale_factor) {
-            // If this isn't the first computation then add the click_receiver extra height to the max_height
-            max_height += this.click_receiver_extra_height;
-        }
         var max_width = g.cont_width - g.padding - get_graph_x_trans(),
             min_height = 50,
             min_width = 50;
         var max_scale_factor_y = max_height / (bbox.height / this.curr_scale),
             max_scale_factor_x = max_width / (bbox.width / this.curr_scale);
-        
+
         this.max_scale_factor = Math.min(max_scale_factor_x, max_scale_factor_y);
         if (isiPhone()) {
             this.min_scale_factor = Math.min(.5, Math.max(this.max_scale_factor-.1, .15));
@@ -77,6 +73,7 @@ function Scaler() {
             }
             g_cont.transform('t' + x_trans + ',' + y_trans);
         }
+        this.curr_scale = scale_factor;
     };
 
     var bbox = g.graph_containers[g.num_graphs-1].getBBox();
@@ -531,11 +528,11 @@ function SpeedControls(width, height) {
 
 function show_algo_info() {
     /* Pops open the algorithm info iframe */
-    algo_info_active = true;
-    showPopWin(info_file, g.cont_width*1/2, g.cont_height*1/2);
+    g.algo_info_active = true;
+    showPopWin(info_file, g.cont_width*1/2, g.cont_height*1/2, function() {g.algo_info_active = false;});
     if (!isiPhone()) {
         document.getElementById('help_div').className = 'visible';
-    }
+    }    
 }
 
 function create_algo_info_button() {
