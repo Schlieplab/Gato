@@ -8,6 +8,7 @@ html, body {
 
 body {
 	background-color: #fff;
+	color: #041133;
 }
 
 #master_container {
@@ -18,6 +19,11 @@ body {
 	text-align: center;
 	padding-left: 0px;
 	padding-right: 0px;
+	
+}
+
+.graph_div a {
+	color: #274485;
 }
 
 
@@ -79,16 +85,16 @@ body {
 
 h2 {
 	font-size: 32px;
-	color: #aaa;
+	color: #979797;
 }
 
 h3 {
 	font-size: 23px;
-	color: #3d7fc2;
+	color: #274485;
 }
 
 a:hover, a:focus {
-	color: #fc4731;
+	color: #274485;	/* Change this */
 	text-decoration: none;
 }
 
@@ -99,6 +105,7 @@ a:hover, a:focus {
 #top_logo_div{
 	position: fixed;
 	z-index:1000;
+	left: 20px;
 }
 
 .algo_div {
@@ -148,22 +155,11 @@ a:hover, a:focus {
 	position: fixed;
 	bottom: 0px;
 	width: 100%;
-  background: -webkit-linear-gradient(left, #a0a0a0 0px, #a0a0a0 60%, #fff 100%); /* For Safari 5.1 to 6.0 */
-  background: -o-linear-gradient(right, #a0a0a0 0px, #a0a0a0 60%, #fff 100%); /* For Opera 11.1 to 12.0 */
-  background: -moz-linear-gradient(right, #a0a0a0 0px, #a0a0a0 60%, #fff 100%); /* For Firefox 3.6 to 15 */
-  background: linear-gradient(to right, #a0a0a0 0px, #a0a0a0 60%, #fff 100%); /* Standard syntax */
-
-}
-
-.find_nav_item {
-	background-color: #d7d7d7; 
-	text-align: center; 
-	float: left; 
-	height: 100%; 
-	font-size: 20px; 
-	padding-top: 13px; 
-	padding-left: 30px; 
-	padding-right: 30px;
+  /*background: -webkit-linear-gradient(left, #ded4b5 0px, #ded4b5 60%, #fff 100%); 
+  background: -o-linear-gradient(right, #ded4b5 0px, #ded4b5 60%, #fff 100%);
+  background: -moz-linear-gradient(right, #ded4b5 0px, #ded4b5 60%, #fff 100%); 
+  background: linear-gradient(to right, #ded4b5 0px, #ded4b5 60%, #fff 100%); */
+  	background-color: #333;
 }
 
 .nav_item {
@@ -174,12 +170,18 @@ a:hover, a:focus {
 	padding-top: 13px; 
 	padding-left: 15px; 
 	padding-right: 15px; 
+	/*color: #e0e0e0;*/
 	color: #ececec;
+	background-color: #333;
+	/*background-color: #274384;*/
 }
 
 .active {
-	color: #333;
-	background-color: #d7d7d7;
+	color: #041133;
+	background-color: #ececec;
+	/*color: #ececec;*/
+	/*background-color: #333;*/
+	/*background-color: #ded4b5;*/
 }
 
 .drop_up_holder {
@@ -189,7 +191,7 @@ a:hover, a:focus {
 }
 
 .nav_link {
-	color: #ececec;
+	color: #e0e0e0;
 	cursor: pointer;
 }
 
@@ -200,8 +202,11 @@ a:hover, a:focus {
 	bottom: 50px;
 	font-size: 18px;
 	padding-left: 0px;
-	background-color: #d7d7d7;
-	color: #333;
+	/*background-color: #ded4b5;*/
+	/*background-color: #333;*/
+	background-color: #ececec;
+	color: #041133;
+	/*color: #ececec;*/
 	border-top-right-radius: 4px;
 	border-top-left-radius: 4px;
 }
@@ -223,18 +228,9 @@ a:hover, a:focus {
 }
 
 .nav_ul a {
-	color: #333;
+	color: #041133;
+	/*color: #cdcdcd;*/
 	text-decoration: none
-}
-
-
-#help_anchor {
-	color: #ececec;
-	text-decoration: none;
-}
-
-a#help_anchor:hover, a#help_anchor:focus {
-	color: #fc4731;
 }
 
 .invisible {
