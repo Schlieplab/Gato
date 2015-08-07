@@ -58,45 +58,6 @@ function Scaler() {
             }
         }
     };
-
-    this.mousedown = function(evt) {
-        console.log('in scaler')
-        g.scaler.scaling = true;
-        var bbox = g.master_graph_container.getBBox();
-        g.scaler.start_width = bbox.width * g.scaler.initial_scale;
-        var start_x = parseInt(evt.clientX),
-            start_y = parseInt(evt.clientY);
-        if (Object.prototype.toString.call(evt) === '[object TouchEvent]') {
-            start_x = parseInt(evt.changedTouches[0].clientX);
-            start_y = parseInt(evt.changedTouches[0].clientY);
-        }
-        g.scaler.start_mouse = {'x': start_x, 'y': start_y};
-    };
-    this.drag = function(evt) {
-        this.mouseup(evt);
-    };
-    this.mouseup = function(evt) {
-        g.scaler.scaling = false;
-    };
-    this.mousemove = function(evt) {
-        /* Computes the new scale_factor and calls scale_graphs() */
-        var clientX = evt.clientX;
-        if (Object.prototype.toString.call(evt) === '[object TouchEvent]') {
-            clientX = evt.changedTouches[0].clientX;
-        }
-        var dx = parseInt(clientX) - g.scaler.start_mouse.x;
-        var new_width = g.scaler.start_width + dx;
-        var scale_factor = new_width / g.initial_graph_width;
-
-        if (scale_factor > this.max_scale_factor) {
-            scale_factor = this.max_scale_factor;
-        } else if (scale_factor < this.min_scale_factor) {
-            scale_factor = this.min_scale_factor;
-        }
-
-        g.scaler.curr_scale = scale_factor;
-        g.scaler.scale_graphs();
-    };
     this.scale_graphs = function(scale_factor) {
         /* Scales the graph to the scale factor passed in, 
             or current scale factor.  Accomodates for translation changes(what does that mean?)
@@ -119,32 +80,11 @@ function Scaler() {
     };
 
     var bbox = g.graph_containers[g.num_graphs-1].getBBox();
-    // true if the scaler is currently being manipulated
-    this.scaling = false;
     // The current scale factor of the graph
     this.curr_scale = 1;
     this.set_max_and_min_dimensions_of_graph_container();
     // The initial scale factor of the graph
     this.initial_scale = this.curr_scale;
-    
-    this.width = 20;
-    this.height = 20;
-    this.x = bbox.width - this.width + g.graph_frame_stroke_width;
-    this.y = bbox.height;   // TODO: commit this line
-    this.elem = snap.polygon([this.x, this.y, this.x+this.width, this.y, this.x+this.width, this.y-this.height, this.x, this.y]).attr(
-    {
-        'fill': '#fc4537',
-        'stroke': '#fc4537',
-        'cursor': 'move'
-    }).mousedown(this.mousedown);
-    var w = 15;
-    var h = 15;
-    var e = 15;
-    this.click_receiver = snap.polygon([this.x-w-e, this.y+h, this.x+this.width+w, this.y+h, this.x+this.width+w, this.y-this.height-h-e, this.x-w-e, this.y+h]).attr(
-    {
-        'opacity': 0,
-    }).mousedown(this.mousedown);
-    this.click_receiver_extra_height = 7.5;
 }
 
 function ToolTip(elem, elem_type) {

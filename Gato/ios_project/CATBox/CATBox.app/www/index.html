@@ -9,7 +9,7 @@
 </head>
 <body id="body">
 	<div id="top_logo_div">
-		<img src="img/catboxLogo140x52.png" />
+		<img src="img/catboxLogo113x42.png" />
 	</div>
 	
 	<div id="master_container" class="container page-wrap">
@@ -1388,7 +1388,7 @@
 							</div>
 
 						
-							<div class="clear4"></div>
+							
 						
 						
 							<div class="graph_div col-xs-12 col-sm-4 col-md-3">
@@ -1398,7 +1398,7 @@
 								</a>
 								<p><a href="PreflowPush--PreflowPushWC.html">PreflowPushWC</a></p>
 							</div>
-
+							<div class="clear4"></div>
 						
 						
 						</div>
@@ -1783,43 +1783,44 @@
 			<div id="chapter_nav" class="invisible nav_drop_up">
 				<ul class="nav_ul">
 					
-					<a href="#chapter_2_div">
-						<li>2 Basics, Notation and Data Structures
+					<a href="#chapter_2_div" onclick="chapter_click()">
+						<li class="ignore">2 Basics, Notation and Data Structures
 						</li>
 					</a>
 					
-					<a href="#chapter_3_div">
-						<li>3 Minimum Spanning Trees
+					
+					<a href="#chapter_3_div" onclick="chapter_click()">
+						<li class="ignore">3 Minimum Spanning Trees
 						</li>
 					</a>
 					
-					<a href="#chapter_4_div">
-						<li>4 Linear Programming Duality
+					<a href="#chapter_4_div" onclick="chapter_click()">
+						<li class="ignore">4 Linear Programming Duality
 						</li>
 					</a>
 					
-					<a href="#chapter_5_div">
-						<li>5 Shortest Paths
+					<a href="#chapter_5_div" onclick="chapter_click()">
+						<li class="ignore">5 Shortest Paths
 						</li>
 					</a>
 					
-					<a href="#chapter_6_div">
-						<li>6 Maximal Flows
+					<a href="#chapter_6_div" onclick="chapter_click()">
+						<li class="ignore">6 Maximal Flows
 						</li>
 					</a>
 					
-					<a href="#chapter_7_div">
-						<li>7 Minimum-Cost Flows
+					<a href="#chapter_7_div" onclick="chapter_click()">
+						<li class="ignore">7 Minimum-Cost Flows
 						</li>
 					</a>
 					
-					<a href="#chapter_8_div">
-						<li>8 Matching
+					<a href="#chapter_8_div" onclick="chapter_click()">
+						<li class="ignore">8 Matching
 						</li>
 					</a>
 					
-					<a href="#chapter_9_div">
-						<li>9 Weighted Matching
+					<a href="#chapter_9_div" onclick="chapter_click()">
+						<li class="ignore">9 Weighted Matching
 						</li>
 					</a>
 					
@@ -1835,112 +1836,66 @@
 			<div id="alpha_nav" class="invisible nav_drop_up">
 				<ul class="nav_ul">
 					
-					<a href="#BellmanFord">
-						<li>Bellman Ford</li>
+					<a href="#BellmanFord" onclick="alpha_click()">
+						<li class="ignore">Bellman Ford</li>
 					</a>
 					
-					<a href="#Bipartite">
-						<li>Bipartite</li>
+					<a href="#IterativeBFS" onclick="alpha_click()">
+						<li class="ignore">BFS</li>
 					</a>
 					
-					<a href="#IterativeBFS">
-						<li>Iterative BFS</li>
+					
+					
+					<a href="#CostScaling" onclick="alpha_click()">
+						<li class="ignore">Cost Scaling</li>
 					</a>
 					
-					<a href="#BFSComponents">
-						<li>BFS-Components</li>
+					
+					<a href="#IterativeDFS" onclick="alpha_click()">
+						<li class="ignore">DFS</li>
 					</a>
 					
-					<a href="#BFStoDFS">
-						<li>BFS to DFS</li>
+					<a href="#Dijkstra'sAlgorithm" onclick="alpha_click()">
+						<li class="ignore">Dijkstra's Algorithm</li>
 					</a>
 					
-					<a href="#CardinalityMatching">
-						<li>Cardinality Matching</li>
+					
+					<a href="#FindPath" onclick="alpha_click()">
+						<li class="ignore">Find Path</li>
 					</a>
 					
-					<a href="#CostScaling">
-						<li>Cost Scaling</li>
+					
+					<a href="#TheFordFulkersonAlgorithm" onclick="alpha_click()">
+						<li class="ignore">The Ford-Fulkerson Algorithm</li>
 					</a>
 					
-					<a href="#DFSRecursive">
-						<li>DFS Recursive</li>
+					<a href="#Kruskal'sAlgorithm" onclick="alpha_click()">
+						<li class="ignore">Kruskal's Algorithm</li>
+					</a>
+
+
+					<a href="#CardinalityMatching" onclick="alpha_click()">
+						<li class="ignore">Matching</li>
 					</a>
 					
-					<a href="#IterativeDFS">
-						<li>Iterative DFS</li>
+					<a href="#NegativeCycleCanceling" onclick="alpha_click()">
+						<li class="ignore">Negative Cycle Canceling</li>
 					</a>
 					
-					<a href="#Dijkstra'sAlgorithm">
-						<li>Dijkstra's Algorithm</li>
+					<a href="#PreflowPush" onclick="alpha_click()">
+						<li class="ignore">Preflow Push</li>
 					</a>
 					
-					<a href="#Dijkstra'sAlgorithmusingaPriorityQueue">
-						<li>Dijkstra's Algorithm using a Priority Queue</li>
+					<a href="#Prim'sAlgorithm" onclick="alpha_click()">
+						<li class="ignore">Prim's Algorithm</li>
 					</a>
 					
-					<a href="#FindingNegativeCircuits">
-						<li>Finding Negative Circuits</li>
+					<a href="#SuccessiveShortestPaths" onclick="alpha_click()">
+						<li class="ignore">Successive Shortest Paths</li>
 					</a>
 					
-					<a href="#FindPath">
-						<li>Find Path</li>
-					</a>
-					
-					<a href="#FindPathfromTwoSources">
-						<li>Find Path from Two Sources</li>
-					</a>
-					
-					<a href="#FindPathinanEuclideanGraph">
-						<li>Find Path in an Euclidean Graph</li>
-					</a>
-					
-					<a href="#TheFordFulkersonAlgorithm">
-						<li>The Ford-Fulkerson Algorithm</li>
-					</a>
-					
-					<a href="#Kruskal'sAlgorithm">
-						<li>Kruskal's Algorithm</li>
-					</a>
-					
-					<a href="#Kruskal'sAlgorithmusingFindCircuit">
-						<li>Kruskal's Algorithm using FindCircuit</li>
-					</a>
-					
-					<a href="#EfficientKruskal'sAlgorithm">
-						<li>Efficient Kruskal's Algorithm</li>
-					</a>
-					
-					<a href="#InefficientKruskal'sAlgorithm">
-						<li>Inefficient Kruskal's Algorithm</li>
-					</a>
-					
-					<a href="#MatroidDualofKruskal'sAlgorithm">
-						<li>Matroid Dual of Kruskal's Algorithm</li>
-					</a>
-					
-					<a href="#PrimalDualofKruskal'sAlgorithm">
-						<li>Primal Dual of Kruskal's Algorithm</li>
-					</a>
-					
-					<a href="#NegativeCycleCanceling">
-						<li>Negative Cycle Canceling</li>
-					</a>
-					
-					<a href="#PreflowPush">
-						<li>Preflow Push</li>
-					</a>
-					
-					<a href="#Prim'sAlgorithm">
-						<li>Prim's Algorithm</li>
-					</a>
-					
-					<a href="#SuccessiveShortestPaths">
-						<li>Successive Shortest Paths</li>
-					</a>
-					
-					<a href="#WeightedMatching">
-						<li>Weighted Matching</li>
+					<a href="#WeightedMatching" onclick="alpha_click()">
+						<li class="ignore">Weighted Matching</li>
 					</a>
 										
 				</ul>
@@ -1978,37 +1933,50 @@
 		function chapter_click() {
 			if (chapter_nav.className === 'visible nav_drop_up') {
 				chapter_nav.className = 'invisible nav_drop_up';
+				chapter_nav_item.className = 'nav_item';
 			} else {
 				chapter_nav.className = 'visible nav_drop_up';
+				chapter_nav_item.className = 'nav_item active';
 			}
 			if (alpha_nav.className === 'visible nav_drop_up') {
 				alpha_nav.className = 'invisible nav_drop_up';
+				alpha_nav_item.className = 'nav_item';
 			}
 		}
 
 		function alpha_click() {
 			if (alpha_nav.className === 'visible nav_drop_up') {
 				alpha_nav.className = 'invisible nav_drop_up';
+				alph_nav_item.className = 'nav_item';
 			} else {
 				alpha_nav.className = 'visible nav_drop_up';
+				alpha_nav_item.className = 'nav_item active';
 			}
 			if (chapter_nav.className === 'visible nav_drop_up') {
 				chapter_nav.className = 'invisible nav_drop_up';
+				chapter_nav_item.className = 'nav_item';
 			}
 		}
 
 		function body_click(evt) {
-			if (evt.target === chapter_nav_item || evt.target === alpha_nav_item) {
+			console.log(evt.target);
+			if (evt.target === chapter_nav_item || evt.target === alpha_nav_item || evt.target.className === 'ignore') {
 				return;
 			}
 			if (alpha_nav.className === 'visible nav_drop_up') {
 				alpha_nav.className = 'invisible nav_drop_up';
+				alpha_nav_item.className = 'nav_item';
 			}
 			if (chapter_nav.className === 'visible nav_drop_up') {
 				chapter_nav.className = 'invisible nav_drop_up';
+				chapter_nav_item.className = 'nav_item';
 			}
 		}
-		document.getElementById('body').addEventListener('click', body_click);
+		if (isiPhone()) {
+			document.getElementById('master_container').addEventListener('touchstart', body_click);
+		} else {
+			document.getElementById('master_container').addEventListener('click', body_click);
+		}
 		chapter_nav_link.addEventListener('click', chapter_click);
 		alpha_nav_link.addEventListener('click', alpha_click);
 	</script>

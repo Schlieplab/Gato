@@ -7,14 +7,14 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>AE08A232-A4D5-40A4-A25F-E5196FE772E7</string>
 	<key>IDESourceControlProjectName</key>
-	<string>CATBox</string>
+	<string>project</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>c4051f24-6690-47a2-9e38-7de7e45f6f38++505</key>
 		<string>svn+ssh://svn.code.sf.net/p/gato/code/trunk</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>Gato/ios_project/CATBox/platforms/ios/CATBox.xcodeproj</string>
+	<string>Gato/ios_project/CATBox/platforms/ios/CATBox.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>c4051f24-6690-47a2-9e38-7de7e45f6f38++505</key>
@@ -26,7 +26,7 @@
 		<string>svn+ssh://svn.code.sf.net/p/gato/code</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>svn+ssh://svn.code.sf.net/p/gato/code/trunk/Gato/ios_project/CATBox/platforms/ios/CATBox.xcodeproj</string>
+	<string>svn+ssh://svn.code.sf.net/p/gato/code/trunk/Gato/ios_project/CATBox/platforms/ios/CATBox.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>

@@ -64,8 +64,6 @@ a:hover, a:focus {
 #top_logo_div{
 	position: fixed;
 	z-index:1000;
-	top: 20px;
-	left: 20px;
 }
 
 .algo_div {
@@ -144,6 +142,11 @@ a:hover, a:focus {
 	color: #ececec;
 }
 
+.active {
+	color: #333;
+	background-color: #d7d7d7;
+}
+
 .drop_up_holder {
 	width:0px; 
 	padding: 0px;
@@ -181,7 +184,7 @@ a:hover, a:focus {
 }
 
 #alpha_nav {
-	height: 475px;
+	height: 514px;
 }
 
 .nav_ul a {

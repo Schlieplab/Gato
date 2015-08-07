@@ -46,11 +46,11 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		7dJrtqlwlW7nEnkitkBR5hR69eE=
+		CagQ72Ww0SCHmEWlxVfB93rMT1g=
 		</data>
 		<key>MainViewController.nib</key>
 		<data>
-		euvrl97RnYuo3VCBWGlEZCmeg4k=
+		3Q3y4WLfZjCLrSZpR81j/1o8++0=
 		</data>
 		<key>PkgInfo</key>
 		<data>
@@ -638,7 +638,7 @@
 		</data>
 		<key>www/css/index.css</key>
 		<data>
-		SWtBud8qXhRGM0iX+QGsZB8/ft4=
+		bQjtWap9+FdAemukgYHOCQ48qAc=
 		</data>
 		<key>www/css/info_page_style.css</key>
 		<data>
@@ -646,7 +646,7 @@
 		</data>
 		<key>www/help.html</key>
 		<data>
-		TMBGkmXhN+Hz6hFZqhvUuRlQWHs=
+		XXMm15PqF25S5XAdUFmjLcqVn44=
 		</data>
 		<key>www/img/11vs13.png</key>
 		<data>
@@ -852,6 +852,10 @@
 		<data>
 		epiqLnhAWEZTLf1dzI2MDAmTsF0=
 		</data>
+		<key>www/img/catboxLogo113x42.png</key>
+		<data>
+		7MYmoqu7dAr96dT35MOFvXCe8Pg=
+		</data>
 		<key>www/img/catboxLogo140x52.png</key>
 		<data>
 		WLiZt04cbIKk57af+he02NlG/5E=
@@ -922,7 +926,7 @@
 		</data>
 		<key>www/index.html</key>
 		<data>
-		0vySihzuZfdU4pzlv5nuohTShTs=
+		4sE4Kgv425nreEFwCpAa+Hs72Fg=
 		</data>
 		<key>www/infos/BFS--3Components.html</key>
 		<data>
@@ -1505,7 +1509,7 @@
 		</data>
 		<key>MainViewController.nib</key>
 		<data>
-		euvrl97RnYuo3VCBWGlEZCmeg4k=
+		3Q3y4WLfZjCLrSZpR81j/1o8++0=
 		</data>
 		<key>config.xml</key>
 		<data>
@@ -2089,7 +2093,7 @@
 		</data>
 		<key>www/css/index.css</key>
 		<data>
-		SWtBud8qXhRGM0iX+QGsZB8/ft4=
+		bQjtWap9+FdAemukgYHOCQ48qAc=
 		</data>
 		<key>www/css/info_page_style.css</key>
 		<data>
@@ -2097,7 +2101,7 @@
 		</data>
 		<key>www/help.html</key>
 		<data>
-		TMBGkmXhN+Hz6hFZqhvUuRlQWHs=
+		XXMm15PqF25S5XAdUFmjLcqVn44=
 		</data>
 		<key>www/img/11vs13.png</key>
 		<data>
@@ -2303,6 +2307,10 @@
 		<data>
 		epiqLnhAWEZTLf1dzI2MDAmTsF0=
 		</data>
+		<key>www/img/catboxLogo113x42.png</key>
+		<data>
+		7MYmoqu7dAr96dT35MOFvXCe8Pg=
+		</data>
 		<key>www/img/catboxLogo140x52.png</key>
 		<data>
 		WLiZt04cbIKk57af+he02NlG/5E=
@@ -2373,7 +2381,7 @@
 		</data>
 		<key>www/index.html</key>
 		<data>
-		0vySihzuZfdU4pzlv5nuohTShTs=
+		4sE4Kgv425nreEFwCpAa+Hs72Fg=
 		</data>
 		<key>www/infos/BFS--3Components.html</key>
 		<data>
