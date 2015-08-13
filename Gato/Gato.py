@@ -1183,6 +1183,7 @@ class AlgoWin(Frame):
         if self.lastActiveLine != 0:
             self.unTagLine(self.lastActiveLine,'Active')
         self.lastActiveLine = lineNo
+        #log.debug("*ShowActive* %s" % lineNo)
         self.tagLine(lineNo,'Active')	
         self.algoText.yview_pickplace('%d.0' % lineNo)
         self.update() # Forcing redraw
@@ -1318,6 +1319,7 @@ class AlgorithmDebugger(bdb.Bdb):
         if fn != self.GUI.algoFileName:
             return None
         line = self.currentLine(frame)
+        #log.debug("dispatch_line %d (last %d)" % (line, self.lastLine))
         if line == self.lastLine:
             return self.trace_dispatch	    
         self.lastLine = line
@@ -1422,7 +1424,7 @@ class AlgorithmDebugger(bdb.Bdb):
         """
         self.doTrace = 0 # XXX
         line = self.currentLine(frame)
-        # log.debug("*user_line* %s" % line)
+        #log.debug("*user_line* %s" % line)
         if line in self.GUI.breakpoints:
             self.GUI.mode = 2
         self.GUI.GUI.ShowActive(line)
@@ -1586,7 +1588,10 @@ class AlgorithmDebugger(bdb.Bdb):
         
     def do_quit(self):
         self.set_quit()
-        
+
+    def do_stop(self):
+        self.lastLine = -1
+ 
     def currentLine(self, frame):
         """ *Internal* returns the current line number  """ 
         return frame.f_lineno 
@@ -1877,6 +1882,7 @@ class Algorithm:
         
     def Stop(self):
         self.mode = 0
+        self.DB.do_stop()
         
     def Step(self):
         if self.animation_history is not None:
