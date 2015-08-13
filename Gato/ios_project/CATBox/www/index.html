@@ -10,7 +10,6 @@
 </head>
 <body id="body">
 	<div id="top_logo_div">
-		<img src="img/catboxLogo140x52.png" />
 	</div>
 	
 	<div id="master_container" class="container page-wrap">
@@ -1896,42 +1895,42 @@
 			<div id="chapter_nav" class="invisible nav_drop_up">
 				<ul class="nav_ul">
 					
-					<a href="#chapter_2_div">
+					<a href="#chapter_2_div" onclick="chapter_click()">
 						<li class="ignore">2 Basics
 						</li>
 					</a>
 					
-					<a href="#chapter_3_div">
+					<a href="#chapter_3_div" onclick="chapter_click()">
 						<li class="ignore">3 Minimum Spanning Trees
 						</li>
 					</a>
 					
-					<a href="#chapter_4_div">
+					<a href="#chapter_4_div" onclick="chapter_click()">
 						<li class="ignore">4 Linear Programming Duality
 						</li>
 					</a>
 					
-					<a href="#chapter_5_div">
+					<a href="#chapter_5_div" onclick="chapter_click()">
 						<li class="ignore">5 Shortest Paths
 						</li>
 					</a>
 					
-					<a href="#chapter_6_div">
+					<a href="#chapter_6_div" onclick="chapter_click()">
 						<li class="ignore">6 Maximal Flows
 						</li>
 					</a>
 					
-					<a href="#chapter_7_div">
+					<a href="#chapter_7_div" onclick="chapter_click()">
 						<li class="ignore">7 Minimum-Cost Flows
 						</li>
 					</a>
 					
-					<a href="#chapter_8_div">
+					<a href="#chapter_8_div" onclick="chapter_click()">
 						<li class="ignore">8 Matching
 						</li>
 					</a>
 					
-					<a href="#chapter_9_div">
+					<a href="#chapter_9_div" onclick="chapter_click()">
 						<li class="ignore">9 Weighted Matching
 						</li>
 					</a>
@@ -2059,7 +2058,7 @@
 		function alpha_click() {
 			if (alpha_nav.className === 'visible nav_drop_up') {
 				alpha_nav.className = 'invisible nav_drop_up';
-				alph_nav_item.className = 'nav_item';
+				alpha_nav_item.className = 'nav_item';
 			} else {
 				alpha_nav.className = 'visible nav_drop_up';
 				alpha_nav_item.className = 'nav_item active';

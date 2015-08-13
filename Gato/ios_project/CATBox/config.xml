@@ -13,19 +13,23 @@
     <preference name="orientation" value="default" />
 
     <platform name="ios">
-        <icon src="image_resources/Icon1024.png" width="1024" height="1024" />
-        <icon src="image_resources/Icon152.png" width="152" height="152" />
-        <icon src="image_resources/Icon29.png" width="29" height="29" />
-        <icon src="image_resources/Icon40.png" width="40" height="40" />
-        <icon src="image_resources/Icon512.png" width="512" height="512" />
-        <icon src="image_resources/Icon58.png" width="58" height="58" />
-        <icon src="image_resources/Icon76.png" width="76" height="76" />
-        <icon src="image_resources/Icon80.png" width="80" height="80" />
         <splash src="image_resources/Launch_Landscape_1024x768.png" width="1024" height="768" />
         <splash src="image_resources/Launch_Landscape_1536x2045.png" width="2045" height="1536" />
         <splash src="image_resources/Launch_Portrait_1024x768.png" width="768" height="1024" />
         <splash src="image_resources/Launch_Portrait_1536x2045.png" width="1536" height="2045" />
-    
+
+        <icon src="image_resources/iTunesArtwork@2x.png" width="1024" height="1024" />
+        <icon src="image_resources/Icon-76@2x.png" width="152" height="152" />
+        <icon src="image_resources/Icon-Small.png" width="29" height="29" />
+        <icon src="image_resources/Icon-40.png" width="40" height="40" />
+        <icon src="image_resources/iTunesArtwork.png" width="512" height="512" />
+        <icon src="image_resources/Icon-Small@2x.png" width="58" height="58" />
+        <icon src="image_resources/Icon-76.png" width="76" height="76" />
+        <icon src="image_resources/Icon-40@2x.png" width="80" height="80" />
+        <icon src="image_resources/Icon-60@2x.png" width="120" height="120" />
+        <icon src="image_resources/Icon-60@3x.png" width="180" height="180" />
+        <icon src="image_resources/Icon-76.png" width="76" height="76" />
+        <icon src="image_resources/Icon-Small@3x.png" width="87" height="87" />
     </platform>
 
 

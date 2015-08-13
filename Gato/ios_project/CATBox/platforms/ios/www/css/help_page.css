@@ -9,7 +9,8 @@ body {
 }
 
 #top_logo_div{
-	position: absolute;
+	position: fixed;
+	z-index: 2000px;
 	top: 20px;
 	left: 20px;
 }
@@ -76,7 +77,8 @@ h3 {
 	bottom: 0px;
 	width: 100%;
 	height: 50px;
-	background: #333;
+	background: #606060;
+	border-top: 2px solid #333;
 	line-height: 50px;
   /*background: -webkit-linear-gradient(left, #d7d7d7 0px, #bcbcbc 60%, #fff 100%);*/ /* For Safari 5.1 to 6.0 */
   /*background: -o-linear-gradient(right, #d7d7d7 0px, #bcbcbc 60%, #fff 100%);*/ /* For Opera 11.1 to 12.0 */
@@ -98,7 +100,7 @@ h3 {
 
 
 .arrow_nav_item {
-	background-color: #333;
+	background-color: #606060;
 	text-align: center; 
 	float: left; 
 	height: 100%; 

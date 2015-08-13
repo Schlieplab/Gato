@@ -429,17 +429,6 @@ function Animation() {
 		}
 	};
 
-	// this.closest_checkpoint_to_step = function(step, direction) {
-	// 	console.log("Got step " + step + " and direction " + direction);
-	// 	if (step%500 === 0) {
-	// 		return step;
-	// 	} else if (direction === 'left') {
-	// 		return 500 * (Math.floor(step/500) + 1);
-	// 	} else {
-	// 		return 500 * Math.floor(step/500);
-	// 	}
-	// };
-
 	this.initialize_variables = function() {
 		// State of animation		
 		this.states = ['animating', 'stopped', 'stepping', 'waiting', 'done'];
@@ -456,7 +445,7 @@ function Animation() {
 		this.step_num = 0;
 
 		// How many steps we take between each saved graph state
-		this.state_interval = Math.min(1000, parseInt(anim_array.length / 16)); 
+		this.state_interval = Math.min(1000, parseInt(anim_array.length / 32)); 
 
 		// Try to retrieve the graph states from local storage before constructing them anew
 		this.retrieve_graph_states();

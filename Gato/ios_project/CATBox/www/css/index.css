@@ -106,6 +106,16 @@ a:hover, a:focus {
 	position: fixed;
 	z-index:1000;
 	left: 20px;
+	background: url(../img/catboxLogo140x52.png) no-repeat;
+	width: 140px;
+	height: 52px;
+}
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {    
+    #top_logo_div {
+    	background: url(../img/catboxLogo140x52@2.png) no-repeat;
+    	background-size: 140px 52px;
+    }
 }
 
 .algo_div {
@@ -159,7 +169,9 @@ a:hover, a:focus {
   background: -o-linear-gradient(right, #ded4b5 0px, #ded4b5 60%, #fff 100%);
   background: -moz-linear-gradient(right, #ded4b5 0px, #ded4b5 60%, #fff 100%); 
   background: linear-gradient(to right, #ded4b5 0px, #ded4b5 60%, #fff 100%); */
-  	background-color: #333;
+  	/*background-color: #333;*/
+  	background-color: #606060;
+  	border-top: 2px solid #333;
 }
 
 .nav_item {
@@ -167,12 +179,13 @@ a:hover, a:focus {
 	float: left; 
 	height: 100%; 
 	font-size: 20px; 
-	padding-top: 13px; 
+	padding-top: 11px; 
 	padding-left: 15px; 
 	padding-right: 15px; 
 	/*color: #e0e0e0;*/
 	color: #ececec;
-	background-color: #333;
+	/*background-color: #333;*/
+	background-color: #606060;
 	/*background-color: #274384;*/
 }
 
@@ -209,6 +222,7 @@ a:hover, a:focus {
 	/*color: #ececec;*/
 	border-top-right-radius: 4px;
 	border-top-left-radius: 4px;
+	/*border: 1px solid #333;*/
 }
 
 .nav_ul {

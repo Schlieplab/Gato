@@ -17,18 +17,21 @@
     <feature name="SpinnerDialog">
         <param name="ios-package" value="CDVSpinnerDialog" />
     </feature>
-    <icon height="1024" src="image_resources/Icon1024.png" width="1024" />
-    <icon height="152" src="image_resources/Icon152.png" width="152" />
-    <icon height="29" src="image_resources/Icon29.png" width="29" />
-    <icon height="40" src="image_resources/Icon40.png" width="40" />
-    <icon height="512" src="image_resources/Icon512.png" width="512" />
-    <icon height="58" src="image_resources/Icon58.png" width="58" />
-    <icon height="76" src="image_resources/Icon76.png" width="76" />
-    <icon height="80" src="image_resources/Icon80.png" width="80" />
     <splash height="768" src="image_resources/Launch_Landscape_1024x768.png" width="1024" />
     <splash height="1536" src="image_resources/Launch_Landscape_1536x2045.png" width="2045" />
     <splash height="1024" src="image_resources/Launch_Portrait_1024x768.png" width="768" />
     <splash height="2045" src="image_resources/Launch_Portrait_1536x2045.png" width="1536" />
+    <icon height="1024" src="image_resources/iTunesArtwork@2x.png" width="1024" />
+    <icon height="152" src="image_resources/Icon-76@2x.png" width="152" />
+    <icon height="29" src="image_resources/Icon-Small.png" width="29" />
+    <icon height="40" src="image_resources/Icon-40.png" width="40" />
+    <icon height="512" src="image_resources/iTunesArtwork.png" width="512" />
+    <icon height="58" src="image_resources/Icon-Small@2x.png" width="58" />
+    <icon height="80" src="image_resources/Icon-40@2x.png" width="80" />
+    <icon height="120" src="image_resources/Icon-60@2x.png" width="120" />
+    <icon height="180" src="image_resources/Icon-60@3x.png" width="180" />
+    <icon height="76" src="image_resources/Icon-76.png" width="76" />
+    <icon height="87" src="image_resources/Icon-Small@3x.png" width="87" />
     <name>CATBox</name>
     <description>
         Graph animation software.
