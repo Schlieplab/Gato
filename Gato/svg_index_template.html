@@ -72,7 +72,7 @@
 			<div id="chapter_nav" class="invisible nav_drop_up">
 				<ul class="nav_ul">
 					{% for chapter_dict in svg_instance %}
-					<a href="#chapter_{{ chapter_dict['chapter_number'] }}_div">
+					<a href="#chapter_{{ chapter_dict['chapter_number'] }}_div" onclick="chapter_click()">
 						<li class="ignore">{{ chapter_dict['chapter_number'] }} {{ chapter_dict['shortened_title'] }}
 						</li>
 					</a>
@@ -88,11 +88,67 @@
 		<div class="drop_up_holder">
 			<div id="alpha_nav" class="invisible nav_drop_up">
 				<ul class="nav_ul">
-					{% for algo in alphabetic_algorithms %}
-					<a href="#{{ algo.algo_div_id }}">
-						<li class="ignore">{{ algo.title }}</li>
+					<a href="#BellmanFord" onclick="alpha_click()">
+						<li class="ignore">Bellman Ford</li>
 					</a>
-					{% endfor %}					
+					
+					<a href="#IterativeBFS" onclick="alpha_click()">
+						<li class="ignore">BFS</li>
+					</a>
+					
+					
+					
+					<a href="#CostScaling" onclick="alpha_click()">
+						<li class="ignore">Cost Scaling</li>
+					</a>
+					
+					
+					<a href="#IterativeDFS" onclick="alpha_click()">
+						<li class="ignore">DFS</li>
+					</a>
+					
+					<a href="#Dijkstra'sAlgorithm" onclick="alpha_click()">
+						<li class="ignore">Dijkstra's Algorithm</li>
+					</a>
+					
+					
+					<a href="#FindPath" onclick="alpha_click()">
+						<li class="ignore">Find Path</li>
+					</a>
+					
+					
+					<a href="#TheFordFulkersonAlgorithm" onclick="alpha_click()">
+						<li class="ignore">The Ford-Fulkerson Algorithm</li>
+					</a>
+					
+					<a href="#Kruskal'sAlgorithm" onclick="alpha_click()">
+						<li class="ignore">Kruskal's Algorithm</li>
+					</a>
+
+
+					<a href="#CardinalityMatching" onclick="alpha_click()">
+						<li class="ignore">Matching</li>
+					</a>
+					
+					<a href="#NegativeCycleCanceling" onclick="alpha_click()">
+						<li class="ignore">Negative Cycle Canceling</li>
+					</a>
+					
+					<a href="#PreflowPush" onclick="alpha_click()">
+						<li class="ignore">Preflow Push</li>
+					</a>
+					
+					<a href="#Prim'sAlgorithm" onclick="alpha_click()">
+						<li class="ignore">Prim's Algorithm</li>
+					</a>
+					
+					<a href="#SuccessiveShortestPaths" onclick="alpha_click()">
+						<li class="ignore">Successive Shortest Paths</li>
+					</a>
+					
+					<a href="#WeightedMatching" onclick="alpha_click()">
+						<li class="ignore">Weighted Matching</li>
+					</a>					
 				</ul>
 			</div>
 		</div>
@@ -142,7 +198,7 @@
 		function alpha_click() {
 			if (alpha_nav.className === 'visible nav_drop_up') {
 				alpha_nav.className = 'invisible nav_drop_up';
-				alph_nav_item.className = 'nav_item';
+				alpha_nav_item.className = 'nav_item';
 			} else {
 				alpha_nav.className = 'visible nav_drop_up';
 				alpha_nav_item.className = 'nav_item active';

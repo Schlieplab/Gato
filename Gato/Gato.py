@@ -1382,7 +1382,7 @@ class AlgorithmDebugger(bdb.Bdb):
         """ *Internal* Put debugger into initial state, calls forget() """
         bdb.Bdb.reset(self)
         self.forget()
-        
+        self.reset_component_infos()
         
     def forget(self):
         self.lineno = None
@@ -1417,7 +1417,9 @@ class AlgorithmDebugger(bdb.Bdb):
         #log.debug("%s" % inspect.getframeinfo(frame))
             
     def user_line(self, frame):
-        """ *Internal* This function is called when we stop or break at this line  """
+        """ *Internal* This function is called when we stop or break at this line
+            note: technically we stop at every line
+        """
         self.doTrace = 0 # XXX
         line = self.currentLine(frame)
         # log.debug("*user_line* %s" % line)
@@ -1446,6 +1448,14 @@ class AlgorithmDebugger(bdb.Bdb):
         #log.debug("exc_type_name: %s" repr.repr(exc_value))
         self.interaction(frame, exc_traceback)
       
+    def reset_component_infos(self):
+        self.init_edge_infos = [None, None]
+        self.edge_infos = [None, None]
+        self.init_vertex_infos = [None, None]
+        self.vertex_infos = [None, None]
+        self.init_graph_infos = [None, None]
+        self.graph_infos = [None, None]
+
     def add_info_commands_to_history(self):
         ''' Inspects the graphInformer of each graph display to look for changes to 
             the edge, graph, and vertex info.  If there are changes then we execute 

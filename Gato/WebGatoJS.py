@@ -162,7 +162,7 @@ animationhead = '''
             %(animation)s
 
             try {
-                if (cordova) {
+                if (cordova && window.plugins.spinnerDialog) {
                     document.addEventListener("deviceready", 
                         function(){ init(true) }, 
                         false

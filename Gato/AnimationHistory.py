@@ -143,10 +143,6 @@ class AnimationHistory:
         self.logPrefix = logPrefix
         self.g = g
         self.displayNum = displayNum
-        """if displayNum == 2:
-            print "We're in display 2"
-        else:
-            print "We're in display 1"""
         AnimationHistory.merged = MergedHistories.MergedHistories()
         
     def UpdateEdgeInfo(self, tail, head, info):

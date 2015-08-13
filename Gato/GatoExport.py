@@ -215,7 +215,7 @@ def cmd_as_javascript(cmd, idPrefix=''):
     for arg in cmd.args:
         result.append(quote(arg))
     
-    # Special case for some animatin commands
+    # Special case for some animation commands
     if cmd.method.__name__ == 'SetAllVerticesColor' and 'vertices' in cmd.kwargs:
         for v in cmd.kwargs['vertices']:
             result.append(quote(v))
@@ -235,13 +235,15 @@ def collectAnimations(histories, prefixes):
     """ Given a list of animation histories (aka list of AnimationCommands)
         combine them, giving all targets of animation commands their history-
         specific prefix, sort them and return a list of JavaScripts arrays.
-    """ 
+    """
     mergedCmds = [cmd_as_javascript(cmd, prefixes[0]) for cmd in histories[0]]
     for i, h in enumerate(histories[1:]):
         mergedCmds += [cmd_as_javascript(cmd, prefixes[i+1]) for cmd in h]
     mergedCmds = sorted(mergedCmds, key=lambda cmd: cmd[0])
+
     # Replace absolute times by duration
     currentTime = mergedCmds[0][0]
+    start_idx = 0
     for i, cmd in enumerate(mergedCmds):
         duration = max(1,int(round((cmd[0] - currentTime) * 1000, 0)))
         currentTime = cmd[0]
@@ -250,6 +252,13 @@ def collectAnimations(histories, prefixes):
         for j in xrange(2, len(mergedCmds[i])):
             if 'Edge' in mergedCmds[i][1]:
                 mergedCmds[i][j] = change_id_format(mergedCmds[i][j])
+
+        # While we're looping, find the first ShowActive command.
+        # Prior to the first command there are just prolog commands which we can get rid of.
+        if cmd[1] == 'ShowActive' and cmd[2] == '"l_1"' and start_idx == 0:
+            start_idx = i
+
+    mergedCmds = mergedCmds[start_idx:]
     return ["Array(" + ", ".join(cmd) + ")" for cmd in mergedCmds]
 
 def get_edge_id(v, w, idPrefix):
@@ -437,7 +446,8 @@ def get_graph_as_svg_str_standalone(graphDisplay, x_add, y_add, file, idPrefix='
 
 def get_graph_as_svg_str_for_animation(graphDisplay, x_add, y_add, file, idPrefix=''):
     ''' Returns an svg string.  The SVG string returned 
-        is designed for use with javascript with WebGato
+        is designed for use with javascript with WebGato.
+        x_add and y_add are offsets for transforming coordinate system to (0, 0) origin
     '''
     ret_strs = []
 

@@ -562,6 +562,8 @@ svg_instance = [
     }
 ]
 
+
+
 alphabetic_algorithms = [
     {'algo_div_id': 'BellmanFord', 'title': 'Bellman Ford'}, 
 
