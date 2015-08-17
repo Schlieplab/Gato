@@ -453,6 +453,7 @@ function Animation() {
 			this.construct_graph_states();
 		}
 		this.compute_animation_schedules();
+		g.jumping = false
 	};
 	this.initialize_variables();
 }
