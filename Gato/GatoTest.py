@@ -562,7 +562,27 @@ svg_instance = [
     }
 ]
 
-
+svg_instance = [
+    {
+        'chapter_directory': '09-WeightedMatching',
+        'chapter_number': 9,
+        'title': 'Weighted Matching',
+        'shortened_title': 'Weighted Matching',
+        'algorithms': [
+            {
+                'title': 'Weighted Matching',
+                'file': 'WeightedMatching.alg',
+                'description': 'This algorithm considers vertices as points in 2-dimensional ' \
+                'space and implicitly assumes the existence of all edges in the complete ' \
+                'graph. Furthermore, edge weights are Euclidean. It finds a matching of minimal ' \
+                'weight. The matching is perfect if the number of vertices is even', 
+                'graphs': [
+                    '09-WeightedMatching/twotriangles.cat'
+                ]
+            }
+        ]
+    }
+]
 
 alphabetic_algorithms = [
     {'algo_div_id': 'BellmanFord', 'title': 'Bellman Ford'}, 

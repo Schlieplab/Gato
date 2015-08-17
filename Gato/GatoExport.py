@@ -713,6 +713,16 @@ def get_start_coordinate_diff(graphDisplay, secondaryGraphDisplay=None):
         'g2_has_elements': start_g2_has_elements
     }
 
+def format_bubbles(bubbles):
+    if not bubbles:
+        return '{}'
+    bubble_str = '{\n'
+    for bubble_id, (offset_value, color) in bubbles.iteritems():
+        bubble_str += '"%s"' % bubble_id
+        bubble_str += ': ["' + offset_value + '", "' + color + '"],\n'
+    bubble_str += '}'
+    return bubble_str
+
 def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=None, 
     secondaryGraphDisplayAnimationHistory=None, showAnimation=False, 
     init_edge_infos=None, init_vertex_infos=None, init_graph_infos=None,
@@ -816,7 +826,7 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
             'chapter_number': chapter_number or 0,
             'algo_div': algo_div or '',
             'chapter_name': chapter_name or '',
-            'info_file': 'infos/' + fileName[fileName.rindex('/') + 1:], 
+            'info_file': 'infos/' + fileName[fileName.rindex('/') + 1:],
             'this_url': fileName[fileName.rindex('/') + 1:],
             'animation': format_animation(animation),
             'graph_str': '\n'.join(graph_strs), 
@@ -831,6 +841,10 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
             'g2_init_graph_info': '"%s"' % init_graph_infos[1] if init_graph_infos and init_graph_infos[1] else '""',
             'g1_init_vertex_info': format_init_vertex_infos(init_vertex_infos[0], id_prefixes[0]) if init_vertex_infos else 'null',
             'g2_init_vertex_info': format_init_vertex_infos(init_vertex_infos[1], id_prefixes[1]) if init_vertex_infos else 'null',
+            'g1_init_bubbles': format_bubbles(graphDisplay.bubbles),
+            'g2_init_bubbles': format_bubbles(secondaryGraphDisplay.bubbles if secondaryGraphDisplay else None),
+            'g1_init_moats': format_bubbles(graphDisplay.moats),
+            'g2_init_moats': format_bubbles(secondaryGraphDisplay.moats if secondaryGraphDisplay else None),
         }
         file.write(animationhead % str_vars)
         file.close()

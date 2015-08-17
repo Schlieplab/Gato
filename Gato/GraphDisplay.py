@@ -118,6 +118,9 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
         self.zFontSize = g.FontSize
 
         self.g = g # So algorithms can get to the globals (XXX)
+
+        self.bubbles = {} # Mapping of vertex_list: (offset_value, color), used by WebGato
+        self.moats = {}   # Mapping of moat_id: (radius, color), used by WebGato
         
     def font(self, size):
         return tkFont.Font(self, (g.FontFamily, size, g.FontStyle))
@@ -370,6 +373,8 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
         self.drawLabel = VertexLabeling()
         self.vertexAnnotation = VertexLabeling()
         self.edgeAnnotation = EdgeLabeling()
+        self.bubbles = {}
+        self.moats = {}
         
         
     def DeleteDrawEdges(self):
@@ -1053,17 +1058,17 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
                 return None
 
     def CreateBubble(self, vertex_nums, offset_value, color):
-        pass
+        self.bubbles[vertex_nums] = (offset_value, color)
 
     def ResizeBubble(self, vertex_nums, new_radius):
         pass
 
     def DeleteBubble(self, vertex_nums):
-        pass
+        del self.bubbles[vertex_nums]
 
     def CreateMoat(self, moat_id, radius, color):
         # Moat ID is of form 'moat_{vertex_num}-{moat_num}'
-        pass
+        self.moats[moat_id] = (radius, color)
 
     def GrowMoat(self, moat_id, radius):
         pass

@@ -149,6 +149,10 @@ animationhead = '''
             var g2_init_graph_info = %(g2_init_graph_info)s;
             var g1_init_vertex_info = %(g1_init_vertex_info)s;
             var g2_init_vertex_info = %(g2_init_vertex_info)s;
+            var g1_init_moats = %(g1_init_moats)s;
+            var g2_init_moats = %(g2_init_moats)s;
+            var g1_init_bubbles = %(g1_init_bubbles)s;
+            var g2_init_bubbles = %(g2_init_bubbles)s;
         </script>
 
         <script type="text/javascript" src="js/spin.min.js"></script>

@@ -391,6 +391,8 @@ function init(is_mobile) {
     g.code_box = new CodeBox();
     initialize_tooltips();
     add_graph_info();
+    init_bubbles();
+    init_moats();
     g.animation = new Animation();
     add_graph_frame();
     position_graph(true);

@@ -674,7 +674,7 @@ function ControlPanel(button_panel_height, y_trans) {
         if (g.control_panel.close_timeout) {
             clearTimeout(g.control_panel.close_timeout);
         }
-        this.close_timeout = setTimeout(g.control_panel.toggle_visibility, g.speed_menu_close_timeout);
+        this.close_timeout = setTimeout(g.control_panel.close, g.speed_menu_close_timeout);
     };
 
     this.button_panel_height = button_panel_height;
@@ -745,7 +745,6 @@ function ControlPanel(button_panel_height, y_trans) {
 
     this.close_timeout = null;
     this.toggle_visibility = (function(self) {
-        var anim_speed = 300;
         return function() {
             self.speed_frame_open = !self.speed_frame_open;
             if (self.speed_frame_open) {
@@ -760,6 +759,18 @@ function ControlPanel(button_panel_height, y_trans) {
                     clearTimeout(self.close_timeout);
                     self.close_timeout = null;
                 }
+            }
+        }
+    })(this);
+    this.close = (function(self) {
+        return function() {
+            self.speed_frame_open = false;
+            g.control_panel.speed_controls.g.attr({'visibility': 'hidden'});
+            self.speed_frame.attr({'y': self.speed_frame_y_closed, 'height': self.speed_frame_height_closed});
+            self.frame_visibility = false;
+            if (self.close_timeout) {
+                clearTimeout(self.close_timeout);
+                self.close_timeout = null;
             }
         }
     })(this);
