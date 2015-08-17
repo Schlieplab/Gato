@@ -530,10 +530,10 @@ function show_algo_info() {
     /* Pops open the algorithm info iframe */
     g.algo_info_active = true;
     if (!isiPhone()) {
-        showPopWin(info_file, g.cont_width*1/2, g.cont_height*1/2);
+        showPopWin(info_file, g.cont_width*1/2, g.cont_height*1/2, null, false);
         document.getElementById('help_div').className = 'visible';
     } else {
-        showPopWin(info_file, g.cont_width*1/2, g.cont_height*1/2, function() {g.algo_info_active = false;});
+        showPopWin(info_file, g.cont_width*1/2, g.cont_height*1/2, function() {g.algo_info_active = false;}, false);
     }
 }
 
@@ -1174,7 +1174,8 @@ function NavBar() {
         'fill': '#ccc',
         'font-family': 'Helvetica',
         'font-size': this.font_size,
-        'text-anchor': 'end'
+        'text-anchor': 'end',
+        'cursor': 'pointer'
     }).click(show_algo_info);
     this.g.append(this.info_link);
     this.info_link_width = this.info_link.getBBox().width;
