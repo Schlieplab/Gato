@@ -108,7 +108,7 @@ class AnimationCommand:
         elif len(self.args) == 1:
             argstr = str(self.args[0])
         else:
-            argstr = ",".join(self.args)
+            argstr = ",".join([str(a) for a in self.args])
 
         return "%s(%s,%s) %s" % (self.method.__name__, t, argstr, kwstr)
 
@@ -218,6 +218,10 @@ class AnimationHistory:
             AnimationHistory.merged.auto_print = 1
         AnimationHistory.merged.DeleteBubble(vertex_nums, self.animator, self.displayNum)
 
+    def EndOfProlog(self):
+        if self.auto_print == 1:
+            AnimationHistory.merged.auto_print = 1
+        AnimationHistory.merged.DeleteBubble(self.animator, self.displayNum)
 
     def CreateMoat(self, moat_id, radius, color):
         if self.auto_print == 1:

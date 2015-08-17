@@ -255,8 +255,8 @@ def collectAnimations(histories, prefixes):
 
         # While we're looping, find the first ShowActive command.
         # Prior to the first command there are just prolog commands which we can get rid of.
-        if cmd[1] == 'ShowActive' and cmd[2] == '"l_1"' and start_idx == 0:
-            start_idx = i
+        # if cmd[1] == 'ShowActive' and cmd[2] == '"l_1"' and start_idx == 0:
+        #     start_idx = i
 
     mergedCmds = mergedCmds[start_idx:]
     return ["Array(" + ", ".join(cmd) + ")" for cmd in mergedCmds]

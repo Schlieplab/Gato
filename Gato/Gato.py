@@ -1877,7 +1877,9 @@ class Algorithm:
             short_msg = "Error in %s.alg" % os.path.splitext(self.algoFileName)[0]
             long_msg = traceback.format_exc()
             self.GUI.HandleError(short_msg, long_msg, log.exception)            
-            
+        
+        self.GUI.graphDisplay.EndOfProlog()
+
         self.GUI.CommitStop()
         
     def Stop(self):

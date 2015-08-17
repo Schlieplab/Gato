@@ -564,24 +564,24 @@ svg_instance = [
 
 svg_instance = [
     {
-        'chapter_directory': '09-WeightedMatching',
-        'chapter_number': 9,
-        'title': 'Weighted Matching',
-        'shortened_title': 'Weighted Matching',
+        'chapter_directory': '04-LPDuality',
+        'chapter_number': 4,
+        'title': 'Linear Programming Duality',
+        'shortened_title': 'Linear Programming Duality',
         'algorithms': [
             {
-                'title': 'Weighted Matching',
-                'file': 'WeightedMatching.alg',
-                'description': 'This algorithm considers vertices as points in 2-dimensional ' \
-                'space and implicitly assumes the existence of all edges in the complete ' \
-                'graph. Furthermore, edge weights are Euclidean. It finds a matching of minimal ' \
-                'weight. The matching is perfect if the number of vertices is even', 
+                'title': 'Primal Dual of Kruskal\'s Algorithm',
+                'file': 'PrimalDualKruskal.alg',
+                'description': 'A primal dual version of Kruskal\'s Algorithm.',
                 'graphs': [
-                    '09-WeightedMatching/twotriangles.cat'
+                '04-LPDuality/PD_Kruskal1.cat', '04-LPDuality/PD_Kruskal2.cat'
+                    # '04-LPDuality/PD_Kruskal1.cat','04-LPDuality/PD_Kruskal2.cat',
+                    # '04-LPDuality/PD_Kruskal3.cat', '04-LPDuality/PD_Kruskal4.cat',
+                    # '04-LPDuality/PD_Kruskal5.cat'
                 ]
             }
         ]
-    }
+    },
 ]
 
 alphabetic_algorithms = [

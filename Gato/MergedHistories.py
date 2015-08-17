@@ -153,6 +153,11 @@ class MergedHistories:
         animation.Do()
         self.append(animation, display)
 
+    def EndOfProlog(self, animator, display):
+        self._check_animator_set(animator, display)
+        animation = AnimationHistory.AnimationCommand(animator.EndOfProlog, (), (), canUndo=False)
+        animation.Do()
+        self.append(animation, display)
 
     def CreateMoat(self, moat_id, radius, color, animator, display):
         self._check_animator_set(animator, display)
@@ -315,8 +320,8 @@ class MergedHistories:
                 raise Error("Displaynum of function in merged history is neither 1 nor 2.")
             
     def append(self, animation, display):
-        #if self.auto_print:
-        #    print "disp" , display , "  " , animation.log_str() 
+        if self.auto_print:
+           print "disp" , display , "  " , animation.log_str() 
         tup = animation, display
         self.history.append(tup)
         

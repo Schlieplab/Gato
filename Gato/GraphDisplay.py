@@ -1076,6 +1076,9 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
     def Wait(self):
         pass
 
+    def EndOfProlog(self):
+        pass
+
     # XXX: Needs reorganisation. We could highlight paths, circuits
     # and vertex sets. Pretty (but not obvious) would be a convex
     # hull around a vertex set.
