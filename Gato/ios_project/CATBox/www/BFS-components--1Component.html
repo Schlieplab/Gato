@@ -2187,7 +2187,7 @@ Array(1, BlinkVertex, "g1_36", "None"),
 Array(16, ShowActive, "l_3"));
 
             try {
-                if (cordova) {
+                if (cordova && window.plugins.spinnerDialog) {
                     document.addEventListener("deviceready", 
                         function(){ init(true) }, 
                         false
@@ -2196,7 +2196,7 @@ Array(16, ShowActive, "l_3"));
                     init(false);
                 }
             } catch (e) {
-                init(false);
+                init(true);
             }
             
         </script>

@@ -23,6 +23,7 @@ function do_interval(func, speed_ms) {
 
 function isiPhone(){
     /* This is poorly named, it detects mobile generally */
+    return true;
     return (
         //Detect iPhone
         (navigator.platform.indexOf("iPhone") != -1) ||
