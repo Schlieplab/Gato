@@ -1183,7 +1183,7 @@ class AlgoWin(Frame):
         if self.lastActiveLine != 0:
             self.unTagLine(self.lastActiveLine,'Active')
         self.lastActiveLine = lineNo
-        #log.debug("*ShowActive* %s" % lineNo)
+        log.debug("*ShowActive* %s" % lineNo)
         self.tagLine(lineNo,'Active')	
         self.algoText.yview_pickplace('%d.0' % lineNo)
         self.update() # Forcing redraw
@@ -1319,7 +1319,7 @@ class AlgorithmDebugger(bdb.Bdb):
         if fn != self.GUI.algoFileName:
             return None
         line = self.currentLine(frame)
-        #log.debug("dispatch_line %d (last %d)" % (line, self.lastLine))
+        log.debug("dispatch_line %d (last %d)" % (line, self.lastLine))
         if line == self.lastLine:
             return self.trace_dispatch	    
         self.lastLine = line
@@ -1403,7 +1403,7 @@ class AlgorithmDebugger(bdb.Bdb):
         """ *Internal* This function is called when we stop or break
             at this line """
         line = self.currentLine(frame)
-        #log.debug("*user_call* %s %s" % (line, argument_list))
+        log.debug("*user_call* %s %s" % (line, argument_list))
         if self.doTrace == 1:
             line = self.currentLine(frame)
             if line in self.GUI.breakpoints:
@@ -1424,7 +1424,7 @@ class AlgorithmDebugger(bdb.Bdb):
         """
         self.doTrace = 0 # XXX
         line = self.currentLine(frame)
-        #log.debug("*user_line* %s" % line)
+        log.debug("*user_line* %s" % line)
         if line in self.GUI.breakpoints:
             self.GUI.mode = 2
         self.GUI.GUI.ShowActive(line)
@@ -2149,8 +2149,9 @@ def main(argv=None):
             app.OneGraphWindow()
         else:
             app = AlgoWin(tk,experimental=experimental)
-            if debug:
-                app.algorithm.logAnimator = 2
+
+        if debug:
+            app.algorithm.logAnimator = 2
 
         # On MacOS X the Quit menu entry otherwise bypasses our Quit
         # Handler According to
