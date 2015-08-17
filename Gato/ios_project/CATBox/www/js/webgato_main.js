@@ -52,6 +52,7 @@ function fill_global() {
 
         playback_bar_stroke_width: 2,
         codebox_stroke_width: 2,
+        codebox_fill: '#ddd',
 
         // Time(in ms) the speed menu is open with no activity before we close it
         speed_menu_close_timeout: 2000,

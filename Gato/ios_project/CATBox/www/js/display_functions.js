@@ -172,8 +172,8 @@ function ToolTip(elem, elem_type) {
     this.frame_width = text_bbox.width + this.frame_padding_x;
     this.frame_height = text_bbox.height*2 + 5;
     this.frame = snap.rect(-1 * this.frame_padding_x/2, text_bbox.height* -1.5, this.frame_width, this.frame_height, g.rect_r).attr({
-        'fill': '#AFC8FA',
-        'stroke': '#010E26',
+        'fill': g.codebox_fill,
+        'stroke': g.playback_bar_stroke,
         'stroke-width': 1,
         'filter' : 'url(#tooltip_dropshadow)',
     });
@@ -1056,7 +1056,7 @@ function CodeBox() {
     this.frame_height = curr_y + this.padding*2;
 
     this.frame = snap.rect(0, 0, this.frame_width, this.frame_height, g.rect_r, g.rect_r).attr({
-        fill: '#ddd',
+        fill: g.codebox_fill,
         stroke: '#333333',
         strokeWidth: g.codebox_stroke_width,
     });
