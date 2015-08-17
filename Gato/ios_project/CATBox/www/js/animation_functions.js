@@ -11,7 +11,7 @@ function Animation() {
 			g.moat_growing_time = null;
 		} 
 		if (anim[1] === ResizeBubble) {
-			g.bubble_resize_time = anim[0]*this.step_ms;
+			g.bubble_resize_time = get_moat_growing_time(this.step_num) * this.step_ms;
 		}
 
 		if (anim.length === 3) {
