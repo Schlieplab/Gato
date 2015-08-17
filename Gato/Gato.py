@@ -1387,6 +1387,7 @@ class AlgorithmDebugger(bdb.Bdb):
         self.reset_component_infos()
         
     def forget(self):
+        self.lastLine = -1
         self.lineno = None
         self.stack = []
         self.curindex = 0
