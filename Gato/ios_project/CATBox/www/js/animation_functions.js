@@ -1176,6 +1176,16 @@ function DeleteVertex(vertex_id) {
 	delete g.vertex_groups[g_num-1][group_id];
 }
 
+function init_moats() {
+	var initial_moats = [g1_init_moats, g2_init_moats];
+	for (var i=0; i<2; i++) {
+		var curr_moats = initial_moats[i];
+		for (var key in curr_moats) {
+			CreateMoat(key, curr_moats[key][0], curr_moats[key][1]);
+		}
+	}
+}
+
 function CreateMoat(moat_id, radius, color) {
 	radius = parseFloat(radius);
 	var g_num = parseInt(moat_id.substring(1,2));
@@ -1220,6 +1230,17 @@ function DeleteMoat(moat_id) {
 	var moat = g.moats[g_num-1][moat_id];
 	delete g.moats[g_num-1][moat_id];
 	moat.remove();
+}
+
+function init_bubbles() {
+	var initial_bubbles = [g1_init_bubbles, g2_init_bubbles];
+	for (var i=0; i<2; i++) {
+		var curr_bubbles = initial_bubbles[i];
+		var graph = "g" + (i+1) + "_()";
+		for (var key in curr_bubbles) {
+			CreateBubble(graph, key, curr_bubbles[key][0], curr_bubbles[key][1]);
+		}
+	}
 }
 
 function CreateBubble(which_graph, vertex_nums_str, offset_values_str, color) {

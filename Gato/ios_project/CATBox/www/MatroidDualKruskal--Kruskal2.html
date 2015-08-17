@@ -252,6 +252,10 @@
 "g1_7": "Vertex 7 at position (368,236)",
 };
             var g2_init_vertex_info = null;
+            var g1_init_moats = {};
+            var g2_init_moats = {};
+            var g1_init_bubbles = {};
+            var g2_init_bubbles = {};
         </script>
 
         <script type="text/javascript" src="js/spin.min.js"></script>
@@ -262,28 +266,14 @@
         <script type="text/javascript" src="js/webgato_main.js"></script>
         
         <script type="text/javascript">
-            var anim_array = Array(Array(1, SetVertexColor, "g1_1", "#000099"),
-Array(1, SetVertexColor, "g1_6", "#000099"),
-Array(1, SetEdgeColor, "g1_1-6", "#000099"),
-Array(1, SetVertexColor, "g1_2", "#000099"),
-Array(1, SetVertexColor, "g1_3", "#000099"),
-Array(1, SetEdgeColor, "g1_2-3", "#000099"),
-Array(1, SetEdgeColor, "g1_2-1", "#000099"),
-Array(1, SetVertexColor, "g1_4", "#000099"),
-Array(1, SetEdgeColor, "g1_3-4", "#000099"),
-Array(1, SetVertexColor, "g1_5", "#000099"),
-Array(1, SetVertexColor, "g1_7", "#000099"),
-Array(1, SetEdgeColor, "g1_5-7", "#000099"),
-Array(1, SetEdgeColor, "g1_6-5", "#000099"),
-Array(1, SetEdgeColor, "g1_7-4", "#000099"),
-Array(1, ShowActive, "l_1"),
-Array(1, ShowActive, "l_3"),
+            var anim_array = Array(Array(8, ShowActive, "l_1"),
+Array(16, ShowActive, "l_3"),
 Array(1, SetEdgeColor, "g1_2-1", "#FF9200"),
-Array(1, ShowActive, "l_4"),
-Array(1, ShowActive, "l_5"),
+Array(16, ShowActive, "l_4"),
+Array(17, ShowActive, "l_5"),
 Array(1, SetEdgeColor, "g1_2-1", "black"),
 Array(1, SetEdgeColor, "g1_2-1", "grey"),
-Array(1, ShowActive, "l_3"),
+Array(14, ShowActive, "l_3"),
 Array(1, UpdateGraphInfo, "g1_()", "Weight of spanning graph: 493.00"),
 Array(1, UpdateEdgeInfo, "g1_5-7", "Weight of edge (5,7): 83 - Weight of spanning graph: 493"),
 Array(1, UpdateEdgeInfo, "g1_2-1", "Weight of edge (2,1): 199 - Weight of spanning graph: 493"),
@@ -293,32 +283,32 @@ Array(1, UpdateEdgeInfo, "g1_2-3", "Weight of edge (2,3): 67 - Weight of spannin
 Array(1, UpdateEdgeInfo, "g1_3-4", "Weight of edge (3,4): 120 - Weight of spanning graph: 493"),
 Array(1, UpdateEdgeInfo, "g1_6-5", "Weight of edge (6,5): 95 - Weight of spanning graph: 493"),
 Array(1, SetEdgeColor, "g1_3-4", "#FF9200"),
-Array(1, ShowActive, "l_4"),
-Array(1, ShowActive, "l_3"),
+Array(17, ShowActive, "l_4"),
+Array(18, ShowActive, "l_3"),
 Array(1, SetEdgeColor, "g1_3-4", "#000099"),
 Array(1, SetEdgeColor, "g1_6-5", "#FF9200"),
-Array(1, ShowActive, "l_4"),
-Array(1, ShowActive, "l_3"),
+Array(15, ShowActive, "l_4"),
+Array(15, ShowActive, "l_3"),
 Array(1, SetEdgeColor, "g1_6-5", "#000099"),
 Array(1, SetEdgeColor, "g1_5-7", "#FF9200"),
-Array(1, ShowActive, "l_4"),
-Array(1, ShowActive, "l_3"),
+Array(16, ShowActive, "l_4"),
+Array(17, ShowActive, "l_3"),
 Array(1, SetEdgeColor, "g1_5-7", "#000099"),
 Array(1, SetEdgeColor, "g1_1-6", "#FF9200"),
-Array(1, ShowActive, "l_4"),
-Array(1, ShowActive, "l_3"),
+Array(15, ShowActive, "l_4"),
+Array(18, ShowActive, "l_3"),
 Array(1, SetEdgeColor, "g1_1-6", "#000099"),
 Array(1, SetEdgeColor, "g1_2-3", "#FF9200"),
-Array(1, ShowActive, "l_4"),
-Array(1, ShowActive, "l_3"),
+Array(15, ShowActive, "l_4"),
+Array(16, ShowActive, "l_3"),
 Array(1, SetEdgeColor, "g1_2-3", "#000099"),
 Array(1, SetEdgeColor, "g1_7-4", "#FF9200"),
-Array(1, ShowActive, "l_4"),
-Array(1, ShowActive, "l_3"),
+Array(15, ShowActive, "l_4"),
+Array(17, ShowActive, "l_3"),
 Array(1, SetEdgeColor, "g1_7-4", "#000099"));
 
             try {
-                if (cordova) {
+                if (cordova && window.plugins.spinnerDialog) {
                     document.addEventListener("deviceready", 
                         function(){ init(true) }, 
                         false

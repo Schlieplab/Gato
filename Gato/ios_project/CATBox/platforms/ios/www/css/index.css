@@ -103,18 +103,18 @@ a:hover, a:focus {
 }
 
 #top_logo_div{
-	position: fixed;
+	position: absolute;
 	z-index:1000;
 	left: 20px;
-	background: url(../img/catboxLogo140x52.png) no-repeat;
-	width: 140px;
+	background: url(../img/catboxLogo170x52.png) no-repeat;
+	width: 170px;
 	height: 52px;
 }
 
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {    
     #top_logo_div {
-    	background: url(../img/catboxLogo140x52@2.png) no-repeat;
-    	background-size: 140px 52px;
+    	background: url(../img/catboxLogo170x52@2.png) no-repeat;
+    	background-size: 170px 52px;
     }
 }
 
@@ -179,7 +179,7 @@ a:hover, a:focus {
 	float: left; 
 	height: 100%; 
 	font-size: 20px; 
-	padding-top: 11px; 
+	padding-top: 9px; 
 	padding-left: 15px; 
 	padding-right: 15px; 
 	/*color: #e0e0e0;*/

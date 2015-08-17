@@ -108,6 +108,7 @@ addEvent(window, "load", initPopUp);
 	*/
 function showPopWin(url, width, height, returnFunc, showCloseBox) {
 	// show or hide the window close widget
+	console.log(showCloseBox);
 	if (showCloseBox == null || showCloseBox == true) {
 		document.getElementById("popCloseBox").style.display = "block";
 	} else {

@@ -1109,7 +1109,7 @@ function NavBar() {
     this.padding = g.navbar_padding;
     this.width = g.cont_width - g.padding*2;
     this.height = g.navbar_height;
-    this.font_size = 20;
+    this.font_size = 15;
 
     this.g = nav_snap.group().attr({'id': 'navbar_g'});
 
@@ -1130,8 +1130,7 @@ function NavBar() {
         'fill': '#ccc'
     });
     this.backlink_g.append(this.backlink_poly);
-    // The height of the next line used to be h/2.0 + 5
-    this.backlink_text = nav_snap.text(h/2.0 + k/2.0 + this.padding, h/2.0 + 7, "Index").attr({
+    this.backlink_text = nav_snap.text(h/2.0 + k/2.0 + this.padding, h/2.0 + 5, "Index").attr({
         'fill': '#ccc',
         'font-family': 'Helvetica',
         'font-size': this.font_size,

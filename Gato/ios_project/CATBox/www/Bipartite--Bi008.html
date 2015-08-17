@@ -224,6 +224,10 @@
 "g2_3": "Vertex 3 - excess: -1",
 "g2_4": "Vertex 4 - excess: 0",
 };
+            var g1_init_moats = {};
+            var g2_init_moats = {};
+            var g1_init_bubbles = {};
+            var g2_init_bubbles = {};
         </script>
 
         <script type="text/javascript" src="js/spin.min.js"></script>
@@ -308,7 +312,7 @@ Array(1, SetVertexFrameWidth, "g1_3", "2"),
 Array(1, SetVertexFrameWidth, "g1_2", "2"));
 
             try {
-                if (cordova) {
+                if (cordova && window.plugins.spinnerDialog) {
                     document.addEventListener("deviceready", 
                         function(){ init(true) }, 
                         false

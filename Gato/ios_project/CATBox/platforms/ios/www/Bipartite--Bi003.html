@@ -279,6 +279,10 @@
 "g2_3": "Vertex 3 - excess: -1",
 "g2_4": "Vertex 4 - excess: 0",
 };
+            var g1_init_moats = {};
+            var g2_init_moats = {};
+            var g1_init_bubbles = {};
+            var g2_init_bubbles = {};
         </script>
 
         <script type="text/javascript" src="js/spin.min.js"></script>
@@ -290,13 +294,13 @@
         
         <script type="text/javascript">
             var anim_array = Array(Array(1, ShowActive, "l_1"),
-Array(2, SetVertexColor, "g1_1", "#99ff99"),
-Array(2, SetVertexColor, "g1_2", "#ff9999"),
-Array(2, SetVertexColor, "g1_3", "#99ff99"),
+Array(1, SetVertexColor, "g1_1", "#99ff99"),
+Array(1, SetVertexColor, "g1_2", "#ff9999"),
+Array(1, SetVertexColor, "g1_3", "#99ff99"),
 Array(1, SetVertexColor, "g1_4", "#ff9999"),
 Array(1, SetVertexColor, "g1_5", "#99ff99"),
 Array(1, SetVertexColor, "g1_6", "#ff9999"),
-Array(2, SetVertexColor, "g1_7", "#99ff99"),
+Array(1, SetVertexColor, "g1_7", "#99ff99"),
 Array(1, SetVertexColor, "g1_8", "#ff9999"),
 Array(1, SetVertexColor, "g1_9", "#99ff99"),
 Array(1, ShowActive, "l_2"),
@@ -375,7 +379,7 @@ Array(1, ShowActive, "l_5"),
 Array(1, UpdateVertexInfo, "g1_1", "Vertex 1 in V  has predecessor 2"),
 Array(1, UpdateVertexInfo, "g1_2", "Vertex 2 in W  has predecessor 3"),
 Array(1, UpdateVertexInfo, "g1_4", "Vertex 4 in W  has predecessor 3"),
-Array(2, ShowActive, "l_6"),
+Array(1, ShowActive, "l_6"),
 Array(1, SetVertexColor, "g1_3", "blue"),
 Array(1, SetVertexColor, "g1_4", "blue"),
 Array(1, SetEdgeColor, "g1_3-4", "blue"),
@@ -555,7 +559,7 @@ Array(1, SetVertexFrameWidth, "g1_6", "6"),
 Array(1, SetVertexFrameWidth, "g1_8", "6"));
 
             try {
-                if (cordova) {
+                if (cordova && window.plugins.spinnerDialog) {
                     document.addEventListener("deviceready", 
                         function(){ init(true) }, 
                         false

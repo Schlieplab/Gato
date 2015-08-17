@@ -283,6 +283,10 @@
 "g1_10": "Vertex 10 at position (250,200)",
 };
             var g2_init_vertex_info = null;
+            var g1_init_moats = {};
+            var g2_init_moats = {};
+            var g1_init_bubbles = {};
+            var g2_init_bubbles = {};
         </script>
 
         <script type="text/javascript" src="js/spin.min.js"></script>
@@ -293,66 +297,47 @@
         <script type="text/javascript" src="js/webgato_main.js"></script>
         
         <script type="text/javascript">
-            var anim_array = Array(Array(1, SetVertexColor, "g1_1", "#000099"),
-Array(1, SetVertexColor, "g1_2", "#000099"),
-Array(1, SetEdgeColor, "g1_1-2", "#000099"),
-Array(1, SetVertexColor, "g1_3", "#000099"),
-Array(1, SetEdgeColor, "g1_2-3", "#000099"),
-Array(1, SetVertexColor, "g1_4", "#000099"),
-Array(1, SetEdgeColor, "g1_3-4", "#000099"),
-Array(1, SetVertexColor, "g1_5", "#000099"),
-Array(1, SetEdgeColor, "g1_4-5", "#000099"),
-Array(1, SetVertexColor, "g1_10", "#000099"),
-Array(1, SetEdgeColor, "g1_4-10", "#000099"),
-Array(1, SetVertexColor, "g1_6", "#000099"),
-Array(1, SetEdgeColor, "g1_5-6", "#000099"),
-Array(1, SetVertexColor, "g1_8", "#000099"),
-Array(1, SetEdgeColor, "g1_5-8", "#000099"),
-Array(1, SetVertexColor, "g1_7", "#000099"),
-Array(1, SetEdgeColor, "g1_6-7", "#000099"),
-Array(1, SetVertexColor, "g1_9", "#000099"),
-Array(1, SetEdgeColor, "g1_8-9", "#000099"),
-Array(1, ShowActive, "l_1"),
+            var anim_array = Array(Array(9, ShowActive, "l_1"),
 Array(2, ShowActive, "l_3"),
 Array(1, SetEdgeColor, "g1_4-5", "#FF9200"),
-Array(1, ShowActive, "l_4"),
-Array(1, ShowActive, "l_3"),
+Array(15, ShowActive, "l_4"),
+Array(18, ShowActive, "l_3"),
 Array(1, SetEdgeColor, "g1_4-5", "#000099"),
 Array(1, SetEdgeColor, "g1_2-3", "#FF9200"),
-Array(1, ShowActive, "l_4"),
-Array(1, ShowActive, "l_3"),
+Array(20, ShowActive, "l_4"),
+Array(11, ShowActive, "l_3"),
 Array(1, SetEdgeColor, "g1_2-3", "#000099"),
 Array(1, SetEdgeColor, "g1_5-6", "#FF9200"),
-Array(1, ShowActive, "l_4"),
-Array(1, ShowActive, "l_3"),
+Array(15, ShowActive, "l_4"),
+Array(17, ShowActive, "l_3"),
 Array(1, SetEdgeColor, "g1_5-6", "#000099"),
 Array(1, SetEdgeColor, "g1_1-2", "#FF9200"),
-Array(1, ShowActive, "l_4"),
-Array(1, ShowActive, "l_3"),
+Array(16, ShowActive, "l_4"),
+Array(17, ShowActive, "l_3"),
 Array(1, SetEdgeColor, "g1_1-2", "#000099"),
 Array(1, SetEdgeColor, "g1_4-10", "#FF9200"),
-Array(1, ShowActive, "l_4"),
-Array(1, ShowActive, "l_3"),
+Array(15, ShowActive, "l_4"),
+Array(16, ShowActive, "l_3"),
 Array(1, SetEdgeColor, "g1_4-10", "#000099"),
 Array(1, SetEdgeColor, "g1_5-8", "#FF9200"),
-Array(1, ShowActive, "l_4"),
-Array(1, ShowActive, "l_3"),
+Array(17, ShowActive, "l_4"),
+Array(16, ShowActive, "l_3"),
 Array(1, SetEdgeColor, "g1_5-8", "#000099"),
 Array(1, SetEdgeColor, "g1_6-7", "#FF9200"),
-Array(1, ShowActive, "l_4"),
-Array(1, ShowActive, "l_3"),
+Array(15, ShowActive, "l_4"),
+Array(17, ShowActive, "l_3"),
 Array(1, SetEdgeColor, "g1_6-7", "#000099"),
 Array(1, SetEdgeColor, "g1_8-9", "#FF9200"),
-Array(1, ShowActive, "l_4"),
-Array(1, ShowActive, "l_3"),
+Array(16, ShowActive, "l_4"),
+Array(17, ShowActive, "l_3"),
 Array(1, SetEdgeColor, "g1_8-9", "#000099"),
 Array(1, SetEdgeColor, "g1_3-4", "#FF9200"),
-Array(1, ShowActive, "l_4"),
-Array(1, ShowActive, "l_3"),
+Array(16, ShowActive, "l_4"),
+Array(17, ShowActive, "l_3"),
 Array(1, SetEdgeColor, "g1_3-4", "#000099"));
 
             try {
-                if (cordova) {
+                if (cordova && window.plugins.spinnerDialog) {
                     document.addEventListener("deviceready", 
                         function(){ init(true) }, 
                         false

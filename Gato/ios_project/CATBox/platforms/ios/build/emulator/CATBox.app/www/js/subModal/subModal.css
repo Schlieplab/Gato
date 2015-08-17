@@ -48,17 +48,17 @@
 	z-index: 202;
 }
 #popupTitleBar {
-	background-color: #486CAE;
+	background-color: #333;
 	color: #ffffff;
 	font-weight: bold;
 	height: 1.3em;
 	padding: 5px;
-	border-bottom: 2px solid #000000;
+	/*border-bottom: 2px solid #000000;
 	border-top: 1px solid #78A3F2;
 	border-left: 1px solid #78A3F2;
 	border-right: 1px solid #204095;
 	border-top-right-radius: 1px;
-	border-top-left-radius: 1px;
+	border-top-left-radius: 1px;*/
 	position: relative;
 	z-index: 203;
 }
