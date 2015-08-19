@@ -73,6 +73,7 @@ svg_drop_shadow = '''
     <filter id="dropshadow" height="130%">
       <feGaussianBlur in="SourceAlpha" stdDeviation="1"/> <!-- stdDeviation is how much to blur -->
         <feOffset dx="2.5" dy="2.5" result="offsetblur"/> <!-- how much to offset -->
+
         <feMerge> 
           <feMergeNode/> <!-- this contains the offset blurred image -->
           <feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->

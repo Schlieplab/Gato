@@ -847,14 +847,22 @@ function BlinkEdge(edge_id, color){
 }
 
 function SetVertexFrameWidth(vertex_id, val) {
-	/* Sets the stroke-width of a vertex 
-		NOTE: This function used to remove the stroke, then re-add it in 
-		because of some problems with the dropshadow getting taken off incorrectly.
-		I think that problem is gone, so I took out the code for now.  Search SVN
-		around revision 690 if you need it.
-	*/
+	/* Sets the stroke-width of a vertex */
     var vertex = g.vertices[graph_num_from_id(vertex_id)][vertex_id];
-    vertex.attr({'stroke-width': val, "style": "filter:url(#dropshadow)"});
+    var stroke_color = '';
+	if (val !== '0') {
+		stroke_color = vertex.attr('stroke');
+        vertex.attr({"style": ""});
+	}
+	if (!stroke_color || stroke_color === 'none') {
+		stroke_color = 'black';
+	}
+    vertex.attr({'stroke-width': val, 'stroke': stroke_color});
+
+    // Add back in dropshadow
+    if (val === "0") {
+        vertex.attr({"style": "filter:url(#dropshadow)"});
+    }
 }
 
 function SetVertexAnnotation(vertex_id, annotation, color) {

@@ -205,7 +205,7 @@
 
         <script type="text/javascript">
             var chapter_number = 4;
-            var chapter_name = "Linear Programming Duality";
+            var chapter_name = "";
             var algo_div = "PrimalDualofKruskal'sAlgorithm";
             var info_file = "infos/PrimalDualKruskal--PD_Kruskal1.html";
             var this_url = "PrimalDualKruskal--PD_Kruskal1.html";
@@ -256,13 +256,13 @@ Array(1, GrowMoat, "g1_moat_1-0", "56.0"),
 Array(1, GrowMoat, "g1_moat_2-0", "56.0"),
 Array(1, GrowMoat, "g1_moat_3-0", "56.0"),
 Array(1, GrowMoat, "g1_moat_4-0", "56.0"),
-Array(2060, Wait, "g1_()"),
+Array(14371, Wait, "g1_()"),
 Array(1, AddEdge, "g2_1-2"),
 Array(1, ShowActive, "l_3"),
 Array(1, AddEdge, "g1_1-2"),
 Array(1, SetAllVerticesColor, "g2_#FF0000", "2"),
-Array(1, SetEdgeColor, "g2_1-2", "#FF0000"),
-Array(1, ShowActive, "l_1"),
+Array(31, SetEdgeColor, "g2_1-2", "#FF0000"),
+Array(35, ShowActive, "l_1"),
 Array(1, UpdateEdgeInfo, "g1_1-2", "Edge (1,2) weight: 111"),
 Array(1, ShowActive, "l_2"),
 Array(1, CreateMoat, "g1_moat_1-1", "56.0", "#FF8800"),
@@ -273,13 +273,13 @@ Array(1, GrowMoat, "g1_moat_1-1", "68.0"),
 Array(1, GrowMoat, "g1_moat_2-1", "68.0"),
 Array(1, GrowMoat, "g1_moat_3-1", "68.0"),
 Array(1, GrowMoat, "g1_moat_4-1", "68.0"),
-Array(157, Wait, "g1_()"),
+Array(3858, Wait, "g1_()"),
 Array(1, AddEdge, "g2_3-4"),
 Array(1, ShowActive, "l_3"),
 Array(1, AddEdge, "g1_3-4"),
 Array(1, SetAllVerticesColor, "g2_#0000FF", "4"),
-Array(1, SetEdgeColor, "g2_3-4", "#0000FF"),
-Array(1, ShowActive, "l_1"),
+Array(31, SetEdgeColor, "g2_3-4", "#0000FF"),
+Array(34, ShowActive, "l_1"),
 Array(1, ShowActive, "l_2"),
 Array(1, CreateMoat, "g1_moat_1-2", "68.0", "#FFFF00"),
 Array(1, CreateMoat, "g1_moat_2-2", "68.0", "#FFFF00"),
@@ -289,19 +289,19 @@ Array(1, GrowMoat, "g1_moat_1-2", "79.0"),
 Array(1, GrowMoat, "g1_moat_2-2", "79.0"),
 Array(1, GrowMoat, "g1_moat_3-2", "79.0"),
 Array(1, GrowMoat, "g1_moat_4-2", "79.0"),
-Array(152, Wait, "g1_()"),
+Array(3505, Wait, "g1_()"),
 Array(1, AddEdge, "g2_1-3"),
-Array(1, ShowActive, "l_3"),
+Array(2, ShowActive, "l_3"),
 Array(1, AddEdge, "g1_1-3"),
 Array(1, SetVertexColor, "g2_3", "#FF0000"),
-Array(1, SetVertexColor, "g2_4", "#FF0000"),
-Array(1, SetEdgeColor, "g2_4-3", "#FF0000"),
-Array(1, SetAllVerticesColor, "g2_#FF0000", "3", "4"),
-Array(1, SetEdgeColor, "g2_1-3", "#FF0000"),
-Array(1, ShowActive, "l_1"));
+Array(30, SetVertexColor, "g2_4", "#FF0000"),
+Array(33, SetEdgeColor, "g2_4-3", "#FF0000"),
+Array(17, SetAllVerticesColor, "g2_#FF0000", "3", "4"),
+Array(35, SetEdgeColor, "g2_1-3", "#FF0000"),
+Array(34, ShowActive, "l_1"));
 
             try {
-                if (cordova && window.plugins.spinnerDialog) {
+                if (isPhoneGap()) {
                     document.addEventListener("deviceready", 
                         function(){ init(true) }, 
                         false

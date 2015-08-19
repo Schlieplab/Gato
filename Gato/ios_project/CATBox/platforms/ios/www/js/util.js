@@ -21,6 +21,12 @@ function do_interval(func, speed_ms) {
     window.setTimeout(instance, speed_ms);
 }
 
+function isPhoneGap() {
+    return (cordova || PhoneGap || phonegap) 
+    && /^file:\/{3}[^\/]/i.test(window.location.href) 
+    && /ios|iphone|ipod|ipad/i.test(navigator.userAgent);
+}
+
 function isiPhone(){
     /* This is poorly named, it detects mobile generally */
     return (

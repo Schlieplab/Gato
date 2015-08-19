@@ -274,7 +274,7 @@
 
         <script type="text/javascript">
             var chapter_number = 7;
-            var chapter_name = "Minimum-Cost Flows";
+            var chapter_name = "";
             var algo_div = "SuccessiveShortestPaths";
             var info_file = "infos/SuccessiveShortestPath--MCFCycle.html";
             var this_url = "SuccessiveShortestPath--MCFCycle.html";
@@ -352,13 +352,13 @@ Array(1, UpdateGraphInfo, "g2_()", "delta = 1"),
 Array(1, SetVertexColor, "g2_4", "red"),
 Array(1, SetVertexColor, "g2_3", "gray"),
 Array(1, SetEdgeColor, "g1_4-3", "#9999FF"),
-Array(19, AddEdge, "g2_3-4"),
+Array(21, AddEdge, "g2_3-4"),
 Array(1, SetEdgeColor, "g2_4-3", "red"),
 Array(1, SetEdgeColor, "g2_3-4", "green"),
 Array(1, SetVertexColor, "g2_1", "gray"),
 Array(1, SetVertexColor, "g2_4", "gray"),
 Array(1, SetEdgeColor, "g1_1-4", "#9999FF"),
-Array(19, AddEdge, "g2_4-1"),
+Array(18, AddEdge, "g2_4-1"),
 Array(1, SetEdgeColor, "g2_1-4", "red"),
 Array(1, SetEdgeColor, "g2_4-1", "green"),
 Array(1, ShowActive, "l_11"),
@@ -371,10 +371,10 @@ Array(1, UpdateEdgeInfo, "g2_3-4", "Edge (3,4) - residual capacity: 1 - cost: -1
 Array(1, UpdateVertexInfo, "g1_1", "Vertex 1 - excess: 0"),
 Array(1, UpdateVertexInfo, "g1_3", "Vertex 3 - excess: 0"),
 Array(1, SetVertexAnnotation, "g2_1", "0"),
-Array(20, SetVertexAnnotation, "g2_2", "2"),
-Array(20, SetVertexAnnotation, "g2_3", "2"),
-Array(23, SetVertexAnnotation, "g2_4", "1"),
-Array(22, SetEdgeColor, "g2_1-2", "grey"),
+Array(18, SetVertexAnnotation, "g2_2", "2"),
+Array(21, SetVertexAnnotation, "g2_3", "2"),
+Array(22, SetVertexAnnotation, "g2_4", "1"),
+Array(24, SetEdgeColor, "g2_1-2", "grey"),
 Array(1, SetEdgeColor, "g2_1-4", "grey"),
 Array(1, SetEdgeColor, "g2_2-3", "red"),
 Array(1, SetEdgeColor, "g2_3-4", "grey"),
@@ -392,7 +392,7 @@ Array(1, UpdateVertexInfo, "g2_4", "Vertex 4 - potential: 1"),
 Array(1, ShowActive, "l_5"));
 
             try {
-                if (cordova && window.plugins.spinnerDialog) {
+                if (isPhoneGap()) {
                     document.addEventListener("deviceready", 
                         function(){ init(true) }, 
                         false

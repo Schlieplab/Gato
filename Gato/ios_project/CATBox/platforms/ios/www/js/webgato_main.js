@@ -353,6 +353,7 @@ function init(is_mobile) {
     if (is_mobile) {
         window.plugins.spinnerDialog.show(); 
     } else {
+        console.log("I'm not mobile!!");
         add_spinner();
     }
 

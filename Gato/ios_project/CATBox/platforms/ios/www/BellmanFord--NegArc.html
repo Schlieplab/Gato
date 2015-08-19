@@ -233,7 +233,7 @@
 
         <script type="text/javascript">
             var chapter_number = 5;
-            var chapter_name = "Shortest Paths";
+            var chapter_name = "";
             var algo_div = "BellmanFord";
             var info_file = "infos/BellmanFord--NegArc.html";
             var this_url = "BellmanFord--NegArc.html";
@@ -278,7 +278,7 @@
         <script type="text/javascript">
             var anim_array = Array(Array(2, ShowActive, "l_1"),
 Array(1, SetVertexAnnotation, "g1_1", "s"),
-Array(23, ShowActive, "l_2"),
+Array(19, ShowActive, "l_2"),
 Array(1, UpdateVertexInfo, "g1_1", "Vertex 1 is root of tree"),
 Array(1, ShowActive, "l_3"),
 Array(1, ShowActive, "l_4"),
@@ -387,7 +387,7 @@ Array(1, SetVertexFrameWidth, "g1_6", "0"),
 Array(1, ShowActive, "l_6"));
 
             try {
-                if (cordova && window.plugins.spinnerDialog) {
+                if (isPhoneGap()) {
                     document.addEventListener("deviceready", 
                         function(){ init(true) }, 
                         false

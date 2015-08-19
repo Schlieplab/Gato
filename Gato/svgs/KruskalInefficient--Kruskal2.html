@@ -236,7 +236,7 @@
 
         <script type="text/javascript">
             var chapter_number = 3;
-            var chapter_name = "Minimum Spanning Trees";
+            var chapter_name = "";
             var algo_div = "InefficientKruskal'sAlgorithm";
             var info_file = "infos/KruskalInefficient--Kruskal2.html";
             var this_url = "KruskalInefficient--Kruskal2.html";
@@ -306,7 +306,7 @@ Array(1, SetEdgeColor, "g1_3-2", "#0000FF"),
 Array(1, SetAllVerticesColor, "g1_#0000FF", "2", "3"),
 Array(1, BlinkVertex, "g1_2", "None"),
 Array(1, BlinkVertex, "g1_3", "None"),
-Array(1, ShowActive, "l_16"),
+Array(2, ShowActive, "l_16"),
 Array(1, SetEdgeColor, "g1_1-6", "yellow"),
 Array(1, ShowActive, "l_17"),
 Array(1, ShowActive, "l_18"),
@@ -316,8 +316,8 @@ Array(1, SetVertexColor, "g1_1", "#999900"),
 Array(1, SetEdgeColor, "g1_6-1", "#999900"),
 Array(1, SetAllVerticesColor, "g1_#999900", "1", "6"),
 Array(1, BlinkVertex, "g1_1", "None"),
-Array(2, BlinkVertex, "g1_6", "None"),
-Array(2, ShowActive, "l_16"),
+Array(1, BlinkVertex, "g1_6", "None"),
+Array(1, ShowActive, "l_16"),
 Array(1, SetEdgeColor, "g1_5-7", "yellow"),
 Array(1, ShowActive, "l_17"),
 Array(1, ShowActive, "l_18"),
@@ -328,7 +328,7 @@ Array(1, SetEdgeColor, "g1_7-5", "#009999"),
 Array(1, SetAllVerticesColor, "g1_#009999", "5", "7"),
 Array(1, BlinkVertex, "g1_5", "None"),
 Array(1, BlinkVertex, "g1_7", "None"),
-Array(2, ShowActive, "l_16"),
+Array(1, ShowActive, "l_16"),
 Array(1, SetEdgeColor, "g1_6-5", "yellow"),
 Array(1, ShowActive, "l_17"),
 Array(1, ShowActive, "l_18"),
@@ -342,7 +342,7 @@ Array(1, SetAllVerticesColor, "g1_#009999", "6", "1", "5"),
 Array(1, BlinkVertex, "g1_6", "None"),
 Array(1, BlinkVertex, "g1_1", "None"),
 Array(1, BlinkVertex, "g1_5", "None"),
-Array(2, ShowActive, "l_16"),
+Array(1, ShowActive, "l_16"),
 Array(1, SetEdgeColor, "g1_3-4", "yellow"),
 Array(1, ShowActive, "l_17"),
 Array(1, ShowActive, "l_18"),
@@ -363,7 +363,7 @@ Array(1, SetEdgeColor, "g1_2-1", "grey"),
 Array(1, ShowActive, "l_16"));
 
             try {
-                if (cordova && window.plugins.spinnerDialog) {
+                if (isPhoneGap()) {
                     document.addEventListener("deviceready", 
                         function(){ init(true) }, 
                         false

@@ -229,7 +229,7 @@
 
         <script type="text/javascript">
             var chapter_number = 4;
-            var chapter_name = "Linear Programming Duality";
+            var chapter_name = "";
             var algo_div = "PrimalDualofKruskal'sAlgorithm";
             var info_file = "infos/PrimalDualKruskal--PD_Kruskal2.html";
             var this_url = "PrimalDualKruskal--PD_Kruskal2.html";
@@ -293,7 +293,7 @@ Array(1, GrowMoat, "g1_moat_3-0", "48.0"),
 Array(1, GrowMoat, "g1_moat_4-0", "48.0"),
 Array(1, GrowMoat, "g1_moat_5-0", "48.0"),
 Array(1, GrowMoat, "g1_moat_6-0", "48.0"),
-Array(755, Wait, "g1_()"),
+Array(10678, Wait, "g1_()"),
 Array(1, AddEdge, "g2_4-6"),
 Array(1, ShowActive, "l_3"),
 Array(1, AddEdge, "g1_4-6"),
@@ -313,7 +313,7 @@ Array(1, GrowMoat, "g1_moat_3-1", "60.0"),
 Array(1, GrowMoat, "g1_moat_4-1", "60.0"),
 Array(1, GrowMoat, "g1_moat_6-1", "60.0"),
 Array(1, GrowMoat, "g1_moat_5-1", "60.0"),
-Array(244, Wait, "g1_()"),
+Array(235, Wait, "g1_()"),
 Array(1, AddEdge, "g2_5-6"),
 Array(1, ShowActive, "l_3"),
 Array(1, AddEdge, "g1_5-6"),
@@ -336,7 +336,7 @@ Array(1, GrowMoat, "g1_moat_3-2", "84.0"),
 Array(1, GrowMoat, "g1_moat_5-2", "84.0"),
 Array(1, GrowMoat, "g1_moat_4-2", "84.0"),
 Array(1, GrowMoat, "g1_moat_6-2", "84.0"),
-Array(543, Wait, "g1_()"),
+Array(647, Wait, "g1_()"),
 Array(1, AddEdge, "g2_1-2"),
 Array(1, ShowActive, "l_3"),
 Array(1, AddEdge, "g1_1-2"),
@@ -356,7 +356,7 @@ Array(1, GrowMoat, "g1_moat_3-3", "88.5"),
 Array(1, GrowMoat, "g1_moat_5-3", "88.5"),
 Array(1, GrowMoat, "g1_moat_4-3", "88.5"),
 Array(1, GrowMoat, "g1_moat_6-3", "88.5"),
-Array(117, Wait, "g1_()"),
+Array(110, Wait, "g1_()"),
 Array(1, AddEdge, "g2_1-3"),
 Array(1, ShowActive, "l_3"),
 Array(1, AddEdge, "g1_1-3"),
@@ -376,7 +376,7 @@ Array(1, GrowMoat, "g1_moat_3-4", "105.5"),
 Array(1, GrowMoat, "g1_moat_5-4", "105.5"),
 Array(1, GrowMoat, "g1_moat_4-4", "105.5"),
 Array(1, GrowMoat, "g1_moat_6-4", "105.5"),
-Array(492, Wait, "g1_()"),
+Array(459, Wait, "g1_()"),
 Array(1, AddEdge, "g2_2-5"),
 Array(1, ShowActive, "l_3"),
 Array(1, AddEdge, "g1_2-5"),
@@ -390,7 +390,7 @@ Array(1, SetEdgeColor, "g2_2-5", "#FF0000"),
 Array(1, ShowActive, "l_1"));
 
             try {
-                if (cordova && window.plugins.spinnerDialog) {
+                if (isPhoneGap()) {
                     document.addEventListener("deviceready", 
                         function(){ init(true) }, 
                         false

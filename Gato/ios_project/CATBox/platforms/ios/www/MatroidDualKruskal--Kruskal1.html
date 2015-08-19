@@ -257,7 +257,7 @@
 
         <script type="text/javascript">
             var chapter_number = 3;
-            var chapter_name = "Minimum Spanning Trees";
+            var chapter_name = "";
             var algo_div = "MatroidDualofKruskal'sAlgorithm";
             var info_file = "infos/MatroidDualKruskal--Kruskal1.html";
             var this_url = "MatroidDualKruskal--Kruskal1.html";
@@ -307,8 +307,8 @@
         <script type="text/javascript" src="js/webgato_main.js"></script>
         
         <script type="text/javascript">
-            var anim_array = Array(Array(2, ShowActive, "l_1"),
-Array(2, ShowActive, "l_3"),
+            var anim_array = Array(Array(1, ShowActive, "l_1"),
+Array(1, ShowActive, "l_3"),
 Array(1, SetEdgeColor, "g1_4-5", "#FF9200"),
 Array(1, ShowActive, "l_4"),
 Array(1, ShowActive, "l_3"),
@@ -318,36 +318,36 @@ Array(1, ShowActive, "l_4"),
 Array(1, ShowActive, "l_3"),
 Array(1, SetEdgeColor, "g1_2-3", "#000099"),
 Array(1, SetEdgeColor, "g1_5-6", "#FF9200"),
-Array(7, ShowActive, "l_4"),
+Array(1, ShowActive, "l_4"),
 Array(1, ShowActive, "l_3"),
 Array(1, SetEdgeColor, "g1_5-6", "#000099"),
-Array(1, SetEdgeColor, "g1_1-2", "#FF9200"),
-Array(1, ShowActive, "l_4"),
-Array(14, ShowActive, "l_3"),
+Array(22, SetEdgeColor, "g1_1-2", "#FF9200"),
+Array(18, ShowActive, "l_4"),
+Array(1, ShowActive, "l_3"),
 Array(1, SetEdgeColor, "g1_1-2", "#000099"),
-Array(1, SetEdgeColor, "g1_4-10", "#FF9200"),
-Array(16, ShowActive, "l_4"),
-Array(17, ShowActive, "l_3"),
+Array(15, SetEdgeColor, "g1_4-10", "#FF9200"),
+Array(17, ShowActive, "l_4"),
+Array(2, ShowActive, "l_3"),
 Array(1, SetEdgeColor, "g1_4-10", "#000099"),
 Array(1, SetEdgeColor, "g1_5-8", "#FF9200"),
-Array(15, ShowActive, "l_4"),
-Array(18, ShowActive, "l_3"),
+Array(1, ShowActive, "l_4"),
+Array(1, ShowActive, "l_3"),
 Array(1, SetEdgeColor, "g1_5-8", "#000099"),
 Array(1, SetEdgeColor, "g1_6-7", "#FF9200"),
-Array(14, ShowActive, "l_4"),
-Array(17, ShowActive, "l_3"),
+Array(1, ShowActive, "l_4"),
+Array(1, ShowActive, "l_3"),
 Array(1, SetEdgeColor, "g1_6-7", "#000099"),
 Array(1, SetEdgeColor, "g1_8-9", "#FF9200"),
-Array(17, ShowActive, "l_4"),
-Array(16, ShowActive, "l_3"),
+Array(1, ShowActive, "l_4"),
+Array(8, ShowActive, "l_3"),
 Array(1, SetEdgeColor, "g1_8-9", "#000099"),
 Array(1, SetEdgeColor, "g1_3-4", "#FF9200"),
-Array(16, ShowActive, "l_4"),
-Array(16, ShowActive, "l_3"),
+Array(14, ShowActive, "l_4"),
+Array(17, ShowActive, "l_3"),
 Array(1, SetEdgeColor, "g1_3-4", "#000099"));
 
             try {
-                if (cordova && window.plugins.spinnerDialog) {
+                if (isPhoneGap()) {
                     document.addEventListener("deviceready", 
                         function(){ init(true) }, 
                         false

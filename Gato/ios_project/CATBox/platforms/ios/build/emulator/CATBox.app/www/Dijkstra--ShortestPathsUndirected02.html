@@ -221,7 +221,7 @@
 
         <script type="text/javascript">
             var chapter_number = 5;
-            var chapter_name = "Shortest Paths";
+            var chapter_name = "";
             var algo_div = "Dijkstra'sAlgorithm";
             var info_file = "infos/Dijkstra--ShortestPathsUndirected02.html";
             var this_url = "Dijkstra--ShortestPathsUndirected02.html";
@@ -422,7 +422,7 @@ Array(1, SetVertexFrameWidth, "g1_6", "0"),
 Array(1, ShowActive, "l_5"));
 
             try {
-                if (cordova && window.plugins.spinnerDialog) {
+                if (isPhoneGap()) {
                     document.addEventListener("deviceready", 
                         function(){ init(true) }, 
                         false

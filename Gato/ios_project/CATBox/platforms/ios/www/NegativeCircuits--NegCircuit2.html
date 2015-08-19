@@ -355,7 +355,7 @@
 
         <script type="text/javascript">
             var chapter_number = 5;
-            var chapter_name = "Shortest Paths";
+            var chapter_name = "";
             var algo_div = "FindingNegativeCircuits";
             var info_file = "infos/NegativeCircuits--NegCircuit2.html";
             var this_url = "NegativeCircuits--NegCircuit2.html";
@@ -415,9 +415,9 @@
         <script type="text/javascript" src="js/webgato_main.js"></script>
         
         <script type="text/javascript">
-            var anim_array = Array(Array(2, ShowActive, "l_1"),
+            var anim_array = Array(Array(3, ShowActive, "l_1"),
 Array(1, SetVertexAnnotation, "g1_1", "s"),
-Array(18, ShowActive, "l_2"),
+Array(21, ShowActive, "l_2"),
 Array(1, UpdateVertexInfo, "g1_1", "Vertex 1 is root of tree."),
 Array(1, ShowActive, "l_3"),
 Array(1, ShowActive, "l_4"),
@@ -437,7 +437,7 @@ Array(1, ShowActive, "l_14"),
 Array(1, ShowActive, "l_15"),
 Array(1, SetVertexColor, "g1_1", "grey"),
 Array(1, SetVertexFrameWidth, "g1_1", "6"),
-Array(1, ShowActive, "l_16"),
+Array(2, ShowActive, "l_16"),
 Array(1, SetVertexFrameWidth, "g1_1", "6"),
 Array(1, SetEdgeColor, "g1_1-3", "yellow"),
 Array(1, ShowActive, "l_17"),
@@ -453,7 +453,7 @@ Array(1, SetEdgeColor, "g1_1-2", "yellow"),
 Array(1, ShowActive, "l_17"),
 Array(1, ShowActive, "l_18"),
 Array(1, SetEdgeColor, "g1_1-2", "red"),
-Array(2, ShowActive, "l_19"),
+Array(1, ShowActive, "l_19"),
 Array(1, ShowActive, "l_20"),
 Array(1, UpdateVertexInfo, "g1_2", "Vertex 2 has predecessor 1 and distance 158.11"),
 Array(1, ShowActive, "l_21"),
@@ -522,10 +522,10 @@ Array(1, ShowActive, "l_16"),
 Array(1, SetVertexFrameWidth, "g1_3", "6"),
 Array(1, SetEdgeColor, "g1_3-11", "yellow"),
 Array(1, ShowActive, "l_17"),
-Array(1, ShowActive, "l_16"),
+Array(2, ShowActive, "l_16"),
 Array(1, SetEdgeColor, "g1_3-11", "grey"),
 Array(1, SetVertexFrameWidth, "g1_3", "0"),
-Array(1, ShowActive, "l_14"),
+Array(2, ShowActive, "l_14"),
 Array(1, ShowActive, "l_15"),
 Array(1, SetVertexColor, "g1_2", "grey"),
 Array(1, SetVertexFrameWidth, "g1_3", "0"),
@@ -813,7 +813,7 @@ Array(1, ShowActive, "l_14"),
 Array(1, ShowActive, "l_8"),
 Array(1, ShowActive, "l_9"),
 Array(1, ShowActive, "l_10"),
-Array(2, ShowActive, "l_11"),
+Array(1, ShowActive, "l_11"),
 Array(1, SetVertexColor, "g1_12", "grey"),
 Array(1, SetVertexFrameWidth, "g1_9", "0"),
 Array(1, SetVertexFrameWidth, "g1_12", "6"),
@@ -841,7 +841,7 @@ Array(1, ShowActive, "l_21"),
 Array(1, SetVertexColor, "g1_2", "red"),
 Array(1, ShowActive, "l_16"),
 Array(1, SetVertexFrameWidth, "g1_12", "0"),
-Array(2, ShowActive, "l_14"),
+Array(1, ShowActive, "l_14"),
 Array(1, ShowActive, "l_8"),
 Array(1, ShowActive, "l_9"),
 Array(1, ShowActive, "l_10"),
@@ -890,7 +890,7 @@ Array(1, ShowActive, "l_15"),
 Array(1, SetVertexColor, "g1_3", "grey"),
 Array(1, SetVertexFrameWidth, "g1_2", "0"),
 Array(1, SetVertexFrameWidth, "g1_3", "6"),
-Array(1, ShowActive, "l_16"),
+Array(2, ShowActive, "l_16"),
 Array(1, SetVertexFrameWidth, "g1_3", "6"),
 Array(1, SetEdgeColor, "g1_3-11", "yellow"),
 Array(1, ShowActive, "l_17"),
@@ -1019,11 +1019,11 @@ Array(1, SetVertexColor, "g1_5", "yellow"),
 Array(1, SetEdgeColor, "g1_5-10", "yellow"),
 Array(1, ShowActive, "l_32"),
 Array(1, ShowActive, "l_30"),
-Array(2, ShowActive, "l_33"),
+Array(1, ShowActive, "l_33"),
 Array(1, SetEdgeColor, "g1_4-5", "yellow"));
 
             try {
-                if (cordova && window.plugins.spinnerDialog) {
+                if (isPhoneGap()) {
                     document.addEventListener("deviceready", 
                         function(){ init(true) }, 
                         false

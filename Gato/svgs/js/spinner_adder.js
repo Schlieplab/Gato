@@ -43,6 +43,7 @@ function add_spinner() {
     spinner = new Spinner(opts).spin(target);
 }
 
+
 function hide_spinner() {
     spinner.stop();
 }

@@ -602,9 +602,12 @@ function SpeedControls(width, height) {
 
 function show_algo_info() {
     /* Pops open the algorithm info iframe */
-    showPopWin(info_file, g.cont_width*1/2, g.cont_height*1/2, null, false);
+    g.algo_info_active = true;
     if (!isiPhone()) {
+        showPopWin(info_file, g.cont_width*1/2, g.cont_height*1/2, null, false);
         document.getElementById('help_div').className = 'visible';
+    } else {
+        showPopWin(info_file, g.cont_width*1/2, g.cont_height*1/2, function() {g.algo_info_active = false;}, false);
     }
 }
 
@@ -1168,7 +1171,7 @@ function CodeBox() {
 
     this.frame = snap.rect(0, 0, this.frame_width, this.frame_height, g.rect_r, g.rect_r).attr({
         fill: g.codebox_fill,
-        stroke: '#333333',
+        stroke: g.playback_bar_stroke,
         strokeWidth: g.codebox_stroke_width,
     });
     this.g.prepend(this.frame);
@@ -1221,6 +1224,7 @@ function NavBar() {
     this.padding = g.navbar_padding;
     this.width = g.cont_width - g.padding*2;
     this.height = g.navbar_height;
+    this.font_size = 15;
 
     this.g = nav_snap.group().attr({'id': 'navbar_g'});
 
@@ -1244,7 +1248,7 @@ function NavBar() {
     this.backlink_text = nav_snap.text(h/2.0 + k/2.0 + this.padding, h/2.0 + 5, "Index").attr({
         'fill': '#ccc',
         'font-family': 'Helvetica',
-        'font-size': 14,
+        'font-size': this.font_size,
     });
     this.backlink_g.append(this.backlink_text);
     var backlink_bbox = this.backlink_g.getBBox();
@@ -1263,7 +1267,7 @@ function NavBar() {
     this.chapter_title = nav_snap.text(this.width/2, h/2.0 + 5, chapter_name + ': ').attr({
         'fill': '#333',
         'font-family': 'Helvetica',
-        'font-size': 15,
+        'font-size': this.font_size,
         'text-anchor': 'start',
         'font-weight': 'bold'
     });
@@ -1271,7 +1275,7 @@ function NavBar() {
     this.anim_title = nav_snap.text(this.width/2 + this.chapter_title.getBBox().width/2, h/2.0 + 5, animation_name).attr({
         'fill': '#333',
         'font-family': 'Helvetica',
-        'font-size': 15,
+        'font-size': this.font_size,
         'text-anchor': 'start'
     });
     this.g.append(this.anim_title);
@@ -1280,22 +1284,26 @@ function NavBar() {
     this.chapter_title.attr({'x': this.width/2 - (this.chapter_title_width + this.anim_title_width)/2});
     this.anim_title.attr({'x': this.width/2 + 3 - ((this.chapter_title_width + this.anim_title_width)/2 - this.chapter_title_width)});
 
-    this.cog_dim = 30;
-    this.cog = nav_snap.image('img/cog_grey.png', this.width - this.cog_dim, 0, this.cog_dim, this.cog_dim).attr({
+    this.info_link = nav_snap.text(this.width - this.padding, h/2.0 + 5, 'Legend').attr({
+        'fill': '#ccc',
+        'font-family': 'Helvetica',
+        'font-size': this.font_size,
+        'text-anchor': 'end',
         'cursor': 'pointer'
     }).click(show_algo_info);
-    this.g.append(this.cog);
+    this.g.append(this.info_link);
+    this.info_link_width = this.info_link.getBBox().width;
 
     this.help_link = nav_snap.text(0, h/2.0 + 5, "Help").attr({
         'fill': '#ccc',
-        'font-family': 'Helvetica',
-        'font-size': 15,
+        'font-family': 'Helvetica', 
+        'font-size': this.font_size,
         'text-anchor': 'middle',
         'cursor': 'pointer'
     }).click(function() {
-        window.location = 'help.html';
+        window.location = 'help.html?last_page=' + g.this_url;
     });
-    this.help_link.attr({'x': this.width - this.cog_dim - this.help_link.getBBox().width - 5});
+    this.help_link.attr({'x': this.width - this.info_link_width - this.help_link.getBBox().width - 5});
     this.g.append(this.help_link);
 
     this.g.transform('t' + g.padding + ',' + (g.ios_statusbar_height+g.navbar_padding));
@@ -1305,7 +1313,8 @@ function NavBar() {
         this.chapter_title.attr({'x': this.width/2 - (this.chapter_title_width + this.anim_title_width)/2});
         this.anim_title.attr({'x': this.width/2 + 3 - ((this.chapter_title_width + this.anim_title_width)/2 - this.chapter_title_width)});
 
-        this.cog.attr({'x': this.width - this.cog_dim});
-        this.help_link.attr({'x': this.width - this.cog_dim - this.help_link.getBBox().width - 5});
+        // this.cog.attr({'x': this.width - this.cog_dim});
+        this.info_link.attr({'x': this.width - this.padding});
+        this.help_link.attr({'x': this.width - this.info_link_width - this.help_link.getBBox().width - 5});
     };
 }
