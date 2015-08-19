@@ -409,6 +409,7 @@ function add_graph_frame() {
             .attr({
                 id: 'g' + (g_num+1) + '_frame',
                 fill: '#fff',
+                
             });
             g.graph_containers[g_num].prepend(frame);
         }
@@ -601,7 +602,7 @@ function SpeedControls(width, height) {
 
 function show_algo_info() {
     /* Pops open the algorithm info iframe */
-    showPopWin(info_file, g.cont_width*1/2, g.cont_height*1/2);
+    showPopWin(info_file, g.cont_width*1/2, g.cont_height*1/2, null, false);
     if (!isiPhone()) {
         document.getElementById('help_div').className = 'visible';
     }
