@@ -98,7 +98,6 @@ function Animation() {
 	the given index with no timeout in between commands */
 	this.animate_until = function(stop_at_ind) {
 		for (var i=this.step_num; i<stop_at_ind; i++) {
-			console.log('performing');
 			this.do_command(anim_array[i]);
 			this.step_num ++;
 			g.slider.go_to_step(this.step_num);
@@ -194,7 +193,6 @@ function Animation() {
 		if (n === this.step_num) {
 			return false;
 		}
-		console.log("Jumping to " + n);
 		g.jumping = true;
 		var curr_state_ind = parseInt(this.step_num/this.state_interval);
 		var new_state_ind = parseInt(n/this.state_interval);
@@ -438,7 +436,7 @@ function Animation() {
 		this.max_size_storage_key_name = animation_name + '_max_sizes';
 		
 		// Our step interval in milliseconds
-		this.step_ms = 2;
+		this.step_ms = g.speeds['4x'];
 		this.start_at_step = 0;
 		
 		// Current step in the animation

@@ -469,12 +469,13 @@ function SpeedControls(width, height) {
     this.g = snap.group();
 
     this.button_types = [
-        {'label': '.25x', 'speed': 100, 'default_selected': false},
-        {'label': '.5x', 'speed': 22, 'default_selected': false},
-        {'label': '1x', 'speed': 10, 'default_selected': false},
-        {'label': '2x', 'speed': 5, 'default_selected': false},
-        {'label': '4x', 'speed': 2, 'default_selected': true},
+        {'label': '.25x', 'speed': g.speeds['.25x'], 'default_selected': false},
+        {'label': '.5x', 'speed': g.speeds['.5x'], 'default_selected': false},
+        {'label': '1x', 'speed': g.speeds['1x'], 'default_selected': false},
+        {'label': '2x', 'speed': g.speeds['2x'], 'default_selected': false},
+        {'label': '4x', 'speed': g.speeds['4x'], 'default_selected': true},
     ];
+    
     this.button_settings = {
         'width': this.width,
         'height': this.height / this.button_types.length,

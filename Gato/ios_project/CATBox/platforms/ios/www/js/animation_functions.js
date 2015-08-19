@@ -55,6 +55,7 @@ function Animation() {
 				if (!this.immediate_calls) {
 					this.immediate_calls = 0;
 				}
+				console.log(this.immediate_calls);
 				this.immediate_calls += 1;
 				g.slider.go_to_step(this.step_num);
 				this.animator();
@@ -438,7 +439,7 @@ function Animation() {
 		this.max_size_storage_key_name = animation_name + '_max_sizes';
 		
 		// Our step interval in milliseconds
-		this.step_ms = 2;
+		this.step_ms = g.speeds['4x'];
 		this.start_at_step = 0;
 		
 		// Current step in the animation

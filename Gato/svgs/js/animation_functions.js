@@ -448,7 +448,7 @@ function Animation() {
 		this.max_size_storage_key_name = animation_name + '_max_sizes';
 		
 		// Our step interval in milliseconds
-		this.step_ms = 5;
+		this.step_ms = g.speeds['4x'];
 		this.start_at_step = 0;
 
 		// Current step in the animation

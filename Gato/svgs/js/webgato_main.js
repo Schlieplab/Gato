@@ -49,6 +49,15 @@ function fill_global() {
 
         /* General Globals */
 
+        // Animation speeds
+        speeds: {
+            '4x': 5,
+            '2x': 10,
+            '1x': 22,
+            '.5x': 37,
+            '.25x': 200
+        },
+
         // Navbar dimensions
         navbar_height: navbar_height,
         navbar_padding: navbar_padding,
