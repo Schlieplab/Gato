@@ -228,7 +228,7 @@ class WeightedGraphInformer(GraphInformer):
         if self.G.edgeWeights[0].QInteger():
             return "Edge (%d,%d) %s: %d" % (tail, head, self.weightDesc, w) 
         else:
-            return "Edge (%d,%d) %s: %f" % (tail, head, self.weightDesc, w) 
+            return "Edge (%d,%d) %s: %.2f" % (tail, head, self.weightDesc, w) 
             
             
 class MSTGraphInformer(WeightedGraphInformer):
