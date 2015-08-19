@@ -111,14 +111,24 @@ animationhead = '''
         </div>
         <div id="base_container">
         <svg id="svg">
+
+            <!-- This filter is applied to vertices -->
             <filter id="dropshadow" height="130%%">
               <feGaussianBlur in="SourceAlpha" stdDeviation="1"/> <!-- stdDeviation is how much to blur -->
                 <feOffset dx="2.5" dy="2.5" result="offsetblur"/> <!-- how much to offset -->
+                
+                <!-- Lower the slope of this to increase shadow transparency -->
+                <feComponentTransfer>
+                  <feFuncA type="linear" slope="0.15"/>
+                </feComponentTransfer>
+
                 <feMerge> 
                   <feMergeNode/> <!-- this contains the offset blurred image -->
                   <feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->
                </feMerge>
             </filter>
+            
+            <!-- This filter is applied to tooltips(as you can see from the id) -->
             <filter id="tooltip_dropshadow" height="130%%">
               <feGaussianBlur in="SourceAlpha" stdDeviation="1"/> <!-- stdDeviation is how much to blur -->
                 <feOffset dx="2" dy="2" result="offsetblur"/> <!-- how much to offset -->
