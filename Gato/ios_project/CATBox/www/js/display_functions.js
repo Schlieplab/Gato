@@ -657,8 +657,13 @@ function ControlPanel(button_panel_height, y_trans) {
     })(this);
     this.close = (function(self) {
         return function() {
-            if (self.speed_frame_open) {
-                self.toggle_visibility();
+            self.speed_frame_open = false;
+            g.control_panel.speed_controls.g.attr({'visibility': 'hidden'});
+            self.speed_frame.attr({'y': self.speed_frame_y_closed, 'height': self.speed_frame_height_closed});
+            self.frame_visibility = false;
+            if (self.close_timeout) {
+                clearTimeout(self.close_timeout);
+                self.close_timeout = null;
             }
         }
     })(this);
@@ -1057,7 +1062,7 @@ function CodeBox() {
 
     this.frame = snap.rect(0, 0, this.frame_width, this.frame_height, g.rect_r, g.rect_r).attr({
         fill: g.codebox_fill,
-        stroke: '#333333',
+        stroke: g.playback_bar_stroke,
         strokeWidth: g.codebox_stroke_width,
     });
     this.g.prepend(this.frame);

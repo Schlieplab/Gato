@@ -453,7 +453,8 @@ function Animation() {
 			this.construct_graph_states();
 		}
 		this.compute_animation_schedules();
-		g.jumping = false
+
+		g.jumping = false	// We're done building graph state, so set this to false
 	};
 	this.initialize_variables();
 }
