@@ -351,7 +351,7 @@ function show_everything() {
 function init(is_mobile) {
     window_size_check();
     if (is_mobile) {
-        // window.plugins.spinnerDialog.show(); 
+        window.plugins.spinnerDialog.show(); 
     } else {
         add_spinner();
     }
@@ -392,7 +392,7 @@ function init(is_mobile) {
     }
 
     if (is_mobile) {
-        // window.plugins.spinnerDialog.hide();    
+        window.plugins.spinnerDialog.hide();    
     } else {
         hide_spinner();
     }

@@ -8,7 +8,6 @@
 </head>
 <body>
 	<div id="top_logo_div">
-		<img src="img/catboxLogo140x52.png" />
 	</div>
 
 	<div id="master_container" class="container page-wrap">
@@ -84,8 +83,26 @@
 							<li>
 								The "1x" button with the text opens the speed menu where you can adjust the animation's speed to go faster or slower.
 							</li>
+						</ul>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-xs-12">
+						<h3>Top Control Bar</h3>
+						<img class="top_control_bar_img" src="img/top_control_bar_img.png" />
+						<ul>
 							<li>
-								The "?" button will open up the algorithm information window.
+								At the left of the Control Bar there is a clickable link that returns you to the animation index page, where you can choose a different animation.
+							</li>
+							<li>
+								In the middle the chapter, algorithm, and graph titles are displayed.
+							</li>
+							<li>
+								The "Help" link directs you to this help page.
+							</li>
+							<li>
+								Clicking the cog at the right will open a window displaying information on the animation, such as what graph colors mean.
 							</li>
 						</ul>
 					</div>
@@ -97,13 +114,10 @@
 						<img class="graph_help_image" src="img/graph_help_image.png" />
 						<ul>
 							<li>
-								The vertices and edges have information that is displayed by hovering over them.
+								The vertices and edges have information that is displayed by clicking on them.
 							</li>
 							<li>
 								The different colors have different meanings depending on the algorithm being run.  Look at the algorithm information window to see a glossary of colors.
-							</li>
-							<li>
-								The red triangle at the bottom right of the graph can be clicked and dragged to scale the graph up or down.
 							</li>
 							<li>
 								Information on the current state of the algorithm is displayed at the bottom left of the graph window.
@@ -113,26 +127,39 @@
 				</div>
 			</div>
 		</div>
-		
 	</div>
+	
 	<div class="fixed_bottom_nav">
-		<a class="nav_link" href="index.html">
-			<div class="arrow_nav_item" >
-				<img src="img/triangle.png" height="30"/>
+		<a id="back_link" class="nav_link" href="index.html">
+			<div class="arrow_nav_item" style="position: relative">
+				<svg style="width: 30px; height: 30px; display: inline">
+					<polygon points="0,15,15,30,18.535533905932738,26.464466094067262,7.0710678118654755,15,18.535533905932738,3.5355339059327373,15,0" fill="#cccccc" style=""></polygon>
+				</svg>
+				<div id="back_text_span" style="bottom: -2px; left: 55px; position: absolute">Back</div>
 			</div>
 		</a>
-		<a href="index.html" class="nav_link">
-			<div class="back_nav_item nav_item" >
-				Back
-			</div>
-		</a>
+	</div>
+
 	<script type="text/javascript" src="js/util.js"></script>
 	<script type="text/javascript">
-		if (isiPhone()) {
-			document.getElementById('fixed_top_index_div').style.top = "20px";
-			document.getElementById('master_container').style.marginTop = "20px";
-			document.getElementById('regular_header').className = 'invisible';
-			document.getElementById('touch_header').className = 'visible';
+		function parse_get(val) {
+		    var result = null,
+		        tmp = [];
+		    location.search
+		    //.replace ( "?", "" )
+		    // this is better, there might be a question mark inside
+		    .substr(1)
+		        .split("&")
+		        .forEach(function (item) {
+		        tmp = item.split("=");
+		        if (tmp[0] === val) result = decodeURIComponent(tmp[1]);
+		    });
+		    return result;
+		}
+		if (parse_get('last_page')) {
+			// Set back link to the last_page parameter instead of index.html
+			console.log("Doin ma thing");
+			document.getElementById('back_link').href = parse_get('last_page');
 		}
 	</script>
 </body>
