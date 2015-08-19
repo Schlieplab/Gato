@@ -213,7 +213,7 @@ function Animation() {
 
 		// TODO: Test to see whether it is faster to jump 500 then animate 500 vs animation 1000
 		if (n > this.step_num && n - this.step_num < this.state_interval) {
-			// If we are animating returnbetween now and next state then just animate until, don't go to any state
+			// If we are animating return between now and next state then just animate until, don't go to any state
 			this.animate_until(n);
 		} else {
 			// We are moving backwards, or past the next state.  
@@ -391,7 +391,7 @@ function Animation() {
 		var states = [];
 		for (var i=0; i<anim_array.length; i++) {
 			this.step_num = i;
-			if (i % this.state_interval === 0) {
+			if (i % this.state_interval === 0 || i == anim_array.length - 1) {
 				states.push(construct_state(i))
 			}
 			if (anim_array[i][1] === BlinkEdge || anim_array[i][1] === BlinkVertex) {
@@ -455,7 +455,7 @@ function Animation() {
 		this.step_num = 0;
 
 		// How many steps we take between each saved graph state
-		this.state_interval = Math.min(1000, parseInt(anim_array.length / 16)); 
+		this.state_interval = Math.min(1000, parseInt(anim_array.length / 32)); 
 
 		// Try to retrieve the graph states from local storage before constructing them anew
 		this.retrieve_graph_states();
@@ -598,6 +598,7 @@ function Slider(width, height) {
 		this.width = new_width;
 		this.track_width = this.width;
 		this.track.attr({'width': this.width});
+		this.track_click_receiver.attr({'width': this.width});
 		this.cursor_max_x = this.width - this.cursor_width;
 		this.step_width = this.compute_step_width()
 		this.naive_step_width = this.cursor_max_x / anim_array.length;
@@ -618,12 +619,15 @@ function Slider(width, height) {
 		this.track_height = 10;
 		this.track_y = this.height/2-this.track_height/2;
 		this.track = snap.rect(0, this.track_y, this.width, this.track_height, 2, 2).attr({
+			'id': 'slider_track',
 			'fill': '#AAA',
 			'cursor': 'pointer'
 		})
 		.click(this.track_click)
 		.touchstart(this.track_click);
+
 		this.track_click_receiver = snap.rect(0, -10, this.width, this.height+20).attr({
+			'id': 'slider_track_click_receiver',
 			'opacity': 0
 		})
 		.click(this.track_click)
@@ -635,11 +639,13 @@ function Slider(width, height) {
 		this.cursor_height = this.height;
 		this.cursor_width = 10;
 		this.cursor = snap.rect(0, 0, this.cursor_width, this.cursor_height, 6, 6).attr({
+			'id': 'slider_cursor',
 			'fill': '#eee',
 			'stroke': '#111',
 			'stroke-width': 1,
 			'cursor': 'pointer'
 		}).mousedown(this.cursor_mousedown);
+		
 		this.cursor_extra_click_width = 40;
 		this.cursor_extra_click_height = 20;
 		this.cursor_click_receiver = snap.rect(this.cursor_extra_click_width/2.0*-1, 
@@ -647,8 +653,10 @@ function Slider(width, height) {
 			this.cursor_width+this.cursor_extra_click_width, 
 			this.cursor_height+this.cursor_extra_click_height
 		).attr({
+			'id': 'slider_cursor_click_receiver',
 			'opacity': 0
 		}).mousedown(this.cursor_mousedown);
+
 		this.cursor_max_x = this.width - this.cursor_width;
 		this.cursor_min_x = 0;
 
