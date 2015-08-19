@@ -78,10 +78,10 @@ animationhead = '''
                 font-family: Helvetica;
                 font-size: 1.5em;
                 text-decoration: none;
-                color: #87afff;
+                color: #274485;
             }
             .help_link:visited {
-                color: #1354D6;
+                color: #274485;
             }
             .help_link:hover {
                 color: #1354D6;
@@ -101,7 +101,7 @@ animationhead = '''
     <body>
         <div id="help_div" class="invisible">
             <div style="padding: .5em">
-                <a class="help_link left_link" href="./index.html#%(algo_div)s" target="_blank">Index</a><a class="help_link right_link" href="./help.html" target="_blank">Help</a>
+                <a class="help_link left_link" href="./index.html#%(algo_div)s" target="_blank">Index</a><a class="help_link right_link" href="./help.html?last_page=%(this_url)s" target="_blank">Help</a>
             </div>
         </div>
         <div id="nav_bar" class="inactive_nav">

@@ -32,11 +32,11 @@
 	left: 0px;
 	display:none;
 	border-radius: 1px;
+	border: 2px solid #000000;
+	border-radius: 1px;
 	padding: 0px;
 }
 #popupInner {
-	border: 2px solid #000000;
-	border-radius: 1px;
 	background-color: #ffffff;
 }
 

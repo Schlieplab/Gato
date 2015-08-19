@@ -78,10 +78,10 @@
                 font-family: Helvetica;
                 font-size: 1.5em;
                 text-decoration: none;
-                color: #87afff;
+                color: #274485;
             }
             .help_link:visited {
-                color: #1354D6;
+                color: #274485;
             }
             .help_link:hover {
                 color: #1354D6;
@@ -101,7 +101,7 @@
     <body>
         <div id="help_div" class="invisible">
             <div style="padding: .5em">
-                <a class="help_link left_link" href="./index.html#Kruskal'sAlgorithm" target="_blank">Index</a><a class="help_link right_link" href="./help.html" target="_blank">Help</a>
+                <a class="help_link left_link" href="./index.html#Kruskal'sAlgorithm" target="_blank">Index</a><a class="help_link right_link" href="./help.html?last_page=Kruskal--Kruskal2.html" target="_blank">Help</a>
             </div>
         </div>
         <div id="nav_bar" class="inactive_nav">
@@ -111,14 +111,24 @@
         </div>
         <div id="base_container">
         <svg id="svg">
+
+            <!-- This filter is applied to vertices -->
             <filter id="dropshadow" height="130%">
               <feGaussianBlur in="SourceAlpha" stdDeviation="1"/> <!-- stdDeviation is how much to blur -->
                 <feOffset dx="2.5" dy="2.5" result="offsetblur"/> <!-- how much to offset -->
+                
+                <!-- Lower the slope of this to increase shadow transparency -->
+                <feComponentTransfer>
+                  <feFuncA type="linear" slope="0.15"/>
+                </feComponentTransfer>
+
                 <feMerge> 
                   <feMergeNode/> <!-- this contains the offset blurred image -->
                   <feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->
                </feMerge>
             </filter>
+            
+            <!-- This filter is applied to tooltips(as you can see from the id) -->
             <filter id="tooltip_dropshadow" height="130%">
               <feGaussianBlur in="SourceAlpha" stdDeviation="1"/> <!-- stdDeviation is how much to blur -->
                 <feOffset dx="2" dy="2" result="offsetblur"/> <!-- how much to offset -->
@@ -266,70 +276,70 @@
         <script type="text/javascript" src="js/webgato_main.js"></script>
         
         <script type="text/javascript">
-            var anim_array = Array(Array(6, ShowActive, "l_1"),
-Array(17, ShowActive, "l_3"),
+            var anim_array = Array(Array(1, ShowActive, "l_1"),
+Array(2, ShowActive, "l_3"),
 Array(1, SetEdgeColor, "g1_7-4", "yellow"),
-Array(17, ShowActive, "l_4"),
+Array(1, ShowActive, "l_4"),
 Array(1, SetEdgeColor, "g1_7-4", "green"),
-Array(15, ShowActive, "l_5"),
+Array(1, ShowActive, "l_5"),
 Array(1, SetAllVerticesColor, "g1_#996666", "4"),
 Array(1, SetEdgeColor, "g1_7-4", "#996666"),
-Array(14, ShowActive, "l_3"),
+Array(1, ShowActive, "l_3"),
 Array(1, UpdateGraphInfo, "g1_()", "Component [7, 4] has maximal weight: 48"),
 Array(1, UpdateEdgeInfo, "g1_7-4", "Weight of edge (7,4): 48 - Weight of component: 48"),
 Array(1, SetEdgeColor, "g1_2-3", "yellow"),
-Array(16, ShowActive, "l_4"),
+Array(1, ShowActive, "l_4"),
 Array(1, SetEdgeColor, "g1_2-3", "green"),
-Array(15, ShowActive, "l_5"),
+Array(1, ShowActive, "l_5"),
 Array(1, SetAllVerticesColor, "g1_#00FF00", "3"),
 Array(1, SetEdgeColor, "g1_2-3", "#00FF00"),
-Array(15, ShowActive, "l_3"),
+Array(1, ShowActive, "l_3"),
 Array(1, UpdateGraphInfo, "g1_()", "Component [2, 3] has maximal weight: 67"),
 Array(1, UpdateEdgeInfo, "g1_2-3", "Weight of edge (2,3): 67 - Weight of component: 67"),
 Array(1, SetEdgeColor, "g1_1-6", "yellow"),
-Array(15, ShowActive, "l_4"),
+Array(1, ShowActive, "l_4"),
 Array(1, SetEdgeColor, "g1_1-6", "green"),
-Array(16, ShowActive, "l_5"),
+Array(1, ShowActive, "l_5"),
 Array(1, SetAllVerticesColor, "g1_#FF0000", "6"),
-Array(2, SetEdgeColor, "g1_1-6", "#FF0000"),
-Array(14, ShowActive, "l_3"),
+Array(1, SetEdgeColor, "g1_1-6", "#FF0000"),
+Array(1, ShowActive, "l_3"),
 Array(1, UpdateGraphInfo, "g1_()", "Component [1, 6] has maximal weight: 80"),
 Array(1, UpdateEdgeInfo, "g1_1-6", "Weight of edge (1,6): 80 - Weight of component: 80"),
 Array(1, SetEdgeColor, "g1_5-7", "yellow"),
-Array(16, ShowActive, "l_4"),
+Array(1, ShowActive, "l_4"),
 Array(1, SetEdgeColor, "g1_5-7", "green"),
-Array(16, ShowActive, "l_5"),
+Array(1, ShowActive, "l_5"),
 Array(1, SetAllVerticesColor, "g1_#996666", "5"),
 Array(1, SetEdgeColor, "g1_5-7", "#996666"),
-Array(15, ShowActive, "l_3"),
+Array(1, ShowActive, "l_3"),
 Array(1, UpdateGraphInfo, "g1_()", "Component [7, 4, 5] has maximal weight: 131"),
 Array(1, UpdateEdgeInfo, "g1_5-7", "Weight of edge (5,7): 83 - Weight of component: 131"),
 Array(1, UpdateEdgeInfo, "g1_7-4", "Weight of edge (7,4): 48 - Weight of component: 131"),
 Array(1, SetEdgeColor, "g1_6-5", "yellow"),
-Array(17, ShowActive, "l_4"),
+Array(1, ShowActive, "l_4"),
 Array(1, SetEdgeColor, "g1_6-5", "green"),
-Array(16, ShowActive, "l_5"),
+Array(1, ShowActive, "l_5"),
 Array(1, SetVertexColor, "g1_1", "#996666"),
-Array(2, SetVertexColor, "g1_6", "#996666"),
+Array(1, SetVertexColor, "g1_6", "#996666"),
 Array(1, SetEdgeColor, "g1_6-1", "#996666"),
-Array(1, SetAllVerticesColor, "g1_#996666", "1", "6"),
+Array(2, SetAllVerticesColor, "g1_#996666", "1", "6"),
 Array(1, SetEdgeColor, "g1_6-5", "#996666"),
-Array(10, ShowActive, "l_3"),
+Array(1, ShowActive, "l_3"),
 Array(1, UpdateGraphInfo, "g1_()", "Component [7, 4, 5, ...] has maximal weight: 306"),
 Array(1, UpdateEdgeInfo, "g1_5-7", "Weight of edge (5,7): 83 - Weight of component: 306"),
 Array(1, UpdateEdgeInfo, "g1_7-4", "Weight of edge (7,4): 48 - Weight of component: 306"),
 Array(1, UpdateEdgeInfo, "g1_1-6", "Weight of edge (1,6): 80 - Weight of component: 306"),
 Array(1, UpdateEdgeInfo, "g1_6-5", "Weight of edge (6,5): 95 - Weight of component: 306"),
 Array(1, SetEdgeColor, "g1_3-4", "yellow"),
-Array(15, ShowActive, "l_4"),
+Array(1, ShowActive, "l_4"),
 Array(1, SetEdgeColor, "g1_3-4", "green"),
-Array(18, ShowActive, "l_5"),
+Array(1, ShowActive, "l_5"),
 Array(1, SetVertexColor, "g1_2", "#996666"),
-Array(2, SetVertexColor, "g1_3", "#996666"),
+Array(1, SetVertexColor, "g1_3", "#996666"),
 Array(1, SetEdgeColor, "g1_3-2", "#996666"),
 Array(1, SetAllVerticesColor, "g1_#996666", "2", "3"),
-Array(2, SetEdgeColor, "g1_3-4", "#996666"),
-Array(10, ShowActive, "l_3"),
+Array(1, SetEdgeColor, "g1_3-4", "#996666"),
+Array(1, ShowActive, "l_3"),
 Array(1, UpdateGraphInfo, "g1_()", "Weight of minimal spanning tree: 493"),
 Array(1, UpdateEdgeInfo, "g1_5-7", "Weight of edge (5,7): 83 - Weight of component: 493"),
 Array(1, UpdateEdgeInfo, "g1_7-4", "Weight of edge (7,4): 48 - Weight of component: 493"),
@@ -338,9 +348,9 @@ Array(1, UpdateEdgeInfo, "g1_2-3", "Weight of edge (2,3): 67 - Weight of compone
 Array(1, UpdateEdgeInfo, "g1_3-4", "Weight of edge (3,4): 120 - Weight of component: 493"),
 Array(1, UpdateEdgeInfo, "g1_6-5", "Weight of edge (6,5): 95 - Weight of component: 493"),
 Array(1, SetEdgeColor, "g1_2-1", "yellow"),
-Array(16, ShowActive, "l_4"),
+Array(1, ShowActive, "l_4"),
 Array(1, SetEdgeColor, "g1_2-1", "grey"),
-Array(15, ShowActive, "l_3"));
+Array(1, ShowActive, "l_3"));
 
             try {
                 if (cordova && window.plugins.spinnerDialog) {

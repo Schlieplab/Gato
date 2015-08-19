@@ -78,10 +78,10 @@
                 font-family: Helvetica;
                 font-size: 1.5em;
                 text-decoration: none;
-                color: #87afff;
+                color: #274485;
             }
             .help_link:visited {
-                color: #1354D6;
+                color: #274485;
             }
             .help_link:hover {
                 color: #1354D6;
@@ -101,7 +101,7 @@
     <body>
         <div id="help_div" class="invisible">
             <div style="padding: .5em">
-                <a class="help_link left_link" href="./index.html#PrimalDualofKruskal'sAlgorithm" target="_blank">Index</a><a class="help_link right_link" href="./help.html" target="_blank">Help</a>
+                <a class="help_link left_link" href="./index.html#PrimalDualofKruskal'sAlgorithm" target="_blank">Index</a><a class="help_link right_link" href="./help.html?last_page=PrimalDualKruskal--PD_Kruskal1.html" target="_blank">Help</a>
             </div>
         </div>
         <div id="nav_bar" class="inactive_nav">
@@ -111,14 +111,24 @@
         </div>
         <div id="base_container">
         <svg id="svg">
+
+            <!-- This filter is applied to vertices -->
             <filter id="dropshadow" height="130%">
               <feGaussianBlur in="SourceAlpha" stdDeviation="1"/> <!-- stdDeviation is how much to blur -->
                 <feOffset dx="2.5" dy="2.5" result="offsetblur"/> <!-- how much to offset -->
+                
+                <!-- Lower the slope of this to increase shadow transparency -->
+                <feComponentTransfer>
+                  <feFuncA type="linear" slope="0.15"/>
+                </feComponentTransfer>
+
                 <feMerge> 
                   <feMergeNode/> <!-- this contains the offset blurred image -->
                   <feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->
                </feMerge>
             </filter>
+            
+            <!-- This filter is applied to tooltips(as you can see from the id) -->
             <filter id="tooltip_dropshadow" height="130%">
               <feGaussianBlur in="SourceAlpha" stdDeviation="1"/> <!-- stdDeviation is how much to blur -->
                 <feOffset dx="2" dy="2" result="offsetblur"/> <!-- how much to offset -->
@@ -246,13 +256,13 @@ Array(1, GrowMoat, "g1_moat_1-0", "56.0"),
 Array(1, GrowMoat, "g1_moat_2-0", "56.0"),
 Array(1, GrowMoat, "g1_moat_3-0", "56.0"),
 Array(1, GrowMoat, "g1_moat_4-0", "56.0"),
-Array(14301, Wait, "g1_()"),
+Array(2060, Wait, "g1_()"),
 Array(1, AddEdge, "g2_1-2"),
-Array(2, ShowActive, "l_3"),
+Array(1, ShowActive, "l_3"),
 Array(1, AddEdge, "g1_1-2"),
 Array(1, SetAllVerticesColor, "g2_#FF0000", "2"),
-Array(31, SetEdgeColor, "g2_1-2", "#FF0000"),
-Array(34, ShowActive, "l_1"),
+Array(1, SetEdgeColor, "g2_1-2", "#FF0000"),
+Array(1, ShowActive, "l_1"),
 Array(1, UpdateEdgeInfo, "g1_1-2", "Edge (1,2) weight: 111"),
 Array(1, ShowActive, "l_2"),
 Array(1, CreateMoat, "g1_moat_1-1", "56.0", "#FF8800"),
@@ -263,14 +273,14 @@ Array(1, GrowMoat, "g1_moat_1-1", "68.0"),
 Array(1, GrowMoat, "g1_moat_2-1", "68.0"),
 Array(1, GrowMoat, "g1_moat_3-1", "68.0"),
 Array(1, GrowMoat, "g1_moat_4-1", "68.0"),
-Array(3774, Wait, "g1_()"),
+Array(157, Wait, "g1_()"),
 Array(1, AddEdge, "g2_3-4"),
 Array(1, ShowActive, "l_3"),
 Array(1, AddEdge, "g1_3-4"),
 Array(1, SetAllVerticesColor, "g2_#0000FF", "4"),
-Array(14, SetEdgeColor, "g2_3-4", "#0000FF"),
-Array(17, ShowActive, "l_1"),
-Array(17, ShowActive, "l_2"),
+Array(1, SetEdgeColor, "g2_3-4", "#0000FF"),
+Array(1, ShowActive, "l_1"),
+Array(1, ShowActive, "l_2"),
 Array(1, CreateMoat, "g1_moat_1-2", "68.0", "#FFFF00"),
 Array(1, CreateMoat, "g1_moat_2-2", "68.0", "#FFFF00"),
 Array(1, CreateMoat, "g1_moat_3-2", "68.0", "#FFFF00"),
@@ -279,15 +289,15 @@ Array(1, GrowMoat, "g1_moat_1-2", "79.0"),
 Array(1, GrowMoat, "g1_moat_2-2", "79.0"),
 Array(1, GrowMoat, "g1_moat_3-2", "79.0"),
 Array(1, GrowMoat, "g1_moat_4-2", "79.0"),
-Array(3457, Wait, "g1_()"),
+Array(152, Wait, "g1_()"),
 Array(1, AddEdge, "g2_1-3"),
 Array(1, ShowActive, "l_3"),
 Array(1, AddEdge, "g1_1-3"),
 Array(1, SetVertexColor, "g2_3", "#FF0000"),
-Array(31, SetVertexColor, "g2_4", "#FF0000"),
-Array(17, SetEdgeColor, "g2_4-3", "#FF0000"),
+Array(1, SetVertexColor, "g2_4", "#FF0000"),
+Array(1, SetEdgeColor, "g2_4-3", "#FF0000"),
 Array(1, SetAllVerticesColor, "g2_#FF0000", "3", "4"),
-Array(2, SetEdgeColor, "g2_1-3", "#FF0000"),
+Array(1, SetEdgeColor, "g2_1-3", "#FF0000"),
 Array(1, ShowActive, "l_1"));
 
             try {

@@ -78,10 +78,10 @@
                 font-family: Helvetica;
                 font-size: 1.5em;
                 text-decoration: none;
-                color: #87afff;
+                color: #274485;
             }
             .help_link:visited {
-                color: #1354D6;
+                color: #274485;
             }
             .help_link:hover {
                 color: #1354D6;
@@ -101,7 +101,7 @@
     <body>
         <div id="help_div" class="invisible">
             <div style="padding: .5em">
-                <a class="help_link left_link" href="./index.html#InefficientKruskal'sAlgorithm" target="_blank">Index</a><a class="help_link right_link" href="./help.html" target="_blank">Help</a>
+                <a class="help_link left_link" href="./index.html#InefficientKruskal'sAlgorithm" target="_blank">Index</a><a class="help_link right_link" href="./help.html?last_page=KruskalInefficient--Kruskal3.html" target="_blank">Help</a>
             </div>
         </div>
         <div id="nav_bar" class="inactive_nav">
@@ -111,14 +111,24 @@
         </div>
         <div id="base_container">
         <svg id="svg">
+
+            <!-- This filter is applied to vertices -->
             <filter id="dropshadow" height="130%">
               <feGaussianBlur in="SourceAlpha" stdDeviation="1"/> <!-- stdDeviation is how much to blur -->
                 <feOffset dx="2.5" dy="2.5" result="offsetblur"/> <!-- how much to offset -->
+                
+                <!-- Lower the slope of this to increase shadow transparency -->
+                <feComponentTransfer>
+                  <feFuncA type="linear" slope="0.15"/>
+                </feComponentTransfer>
+
                 <feMerge> 
                   <feMergeNode/> <!-- this contains the offset blurred image -->
                   <feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->
                </feMerge>
             </filter>
+            
+            <!-- This filter is applied to tooltips(as you can see from the id) -->
             <filter id="tooltip_dropshadow" height="130%">
               <feGaussianBlur in="SourceAlpha" stdDeviation="1"/> <!-- stdDeviation is how much to blur -->
                 <feOffset dx="2" dy="2" result="offsetblur"/> <!-- how much to offset -->
@@ -343,7 +353,7 @@
         
         <script type="text/javascript">
             var anim_array = Array(Array(1, ShowActive, "l_1"),
-Array(1, ShowActive, "l_8"),
+Array(2, ShowActive, "l_8"),
 Array(1, ShowActive, "l_14"),
 Array(2, ShowActive, "l_16"),
 Array(1, SetEdgeColor, "g1_2-1", "yellow"),
@@ -356,21 +366,21 @@ Array(1, SetEdgeColor, "g1_1-2", "#FF0000"),
 Array(1, SetAllVerticesColor, "g1_#FF0000", "2", "1"),
 Array(1, BlinkVertex, "g1_2", "None"),
 Array(1, BlinkVertex, "g1_1", "None"),
-Array(16, ShowActive, "l_16"),
+Array(2, ShowActive, "l_16"),
 Array(1, SetEdgeColor, "g1_10-3", "yellow"),
-Array(15, ShowActive, "l_17"),
-Array(17, ShowActive, "l_18"),
+Array(1, ShowActive, "l_17"),
+Array(1, ShowActive, "l_18"),
 Array(1, SetVertexColor, "g1_3", "#0066CC"),
 Array(1, SetEdgeColor, "g1_10-3", "#0066CC"),
 Array(1, SetVertexColor, "g1_10", "#0000FF"),
 Array(1, SetEdgeColor, "g1_3-10", "#0000FF"),
 Array(1, SetAllVerticesColor, "g1_#0000FF", "10", "3"),
 Array(1, BlinkVertex, "g1_10", "None"),
-Array(2, BlinkVertex, "g1_3", "None"),
-Array(11, ShowActive, "l_16"),
+Array(1, BlinkVertex, "g1_3", "None"),
+Array(2, ShowActive, "l_16"),
 Array(1, SetEdgeColor, "g1_3-2", "yellow"),
-Array(16, ShowActive, "l_17"),
-Array(16, ShowActive, "l_18"),
+Array(1, ShowActive, "l_17"),
+Array(1, ShowActive, "l_18"),
 Array(1, SetVertexColor, "g1_2", "#0000FF"),
 Array(1, SetEdgeColor, "g1_3-2", "#0000FF"),
 Array(1, SetVertexColor, "g1_3", "#FF0000"),
@@ -381,21 +391,21 @@ Array(1, SetAllVerticesColor, "g1_#FF0000", "3", "10", "2"),
 Array(1, BlinkVertex, "g1_3", "None"),
 Array(1, BlinkVertex, "g1_10", "None"),
 Array(1, BlinkVertex, "g1_2", "None"),
-Array(11, ShowActive, "l_16"),
+Array(1, ShowActive, "l_16"),
 Array(1, SetEdgeColor, "g1_5-4", "yellow"),
-Array(15, ShowActive, "l_17"),
-Array(17, ShowActive, "l_18"),
+Array(1, ShowActive, "l_17"),
+Array(1, ShowActive, "l_18"),
 Array(1, SetVertexColor, "g1_4", "#990099"),
-Array(2, SetEdgeColor, "g1_5-4", "#990099"),
+Array(1, SetEdgeColor, "g1_5-4", "#990099"),
 Array(1, SetVertexColor, "g1_5", "#009999"),
 Array(1, SetEdgeColor, "g1_4-5", "#009999"),
 Array(1, SetAllVerticesColor, "g1_#009999", "5", "4"),
 Array(1, BlinkVertex, "g1_5", "None"),
-Array(2, BlinkVertex, "g1_4", "None"),
-Array(9, ShowActive, "l_16"),
+Array(1, BlinkVertex, "g1_4", "None"),
+Array(2, ShowActive, "l_16"),
 Array(1, SetEdgeColor, "g1_5-7", "yellow"),
 Array(1, ShowActive, "l_17"),
-Array(15, ShowActive, "l_18"),
+Array(1, ShowActive, "l_18"),
 Array(1, SetVertexColor, "g1_7", "#009999"),
 Array(1, SetEdgeColor, "g1_5-7", "#009999"),
 Array(1, SetVertexColor, "g1_5", "#996666"),
@@ -404,26 +414,26 @@ Array(1, SetEdgeColor, "g1_4-5", "#996666"),
 Array(1, SetEdgeColor, "g1_7-5", "#996666"),
 Array(1, SetAllVerticesColor, "g1_#996666", "4", "5", "7"),
 Array(1, BlinkVertex, "g1_4", "None"),
-Array(2, BlinkVertex, "g1_5", "None"),
+Array(1, BlinkVertex, "g1_5", "None"),
 Array(1, BlinkVertex, "g1_7", "None"),
-Array(8, ShowActive, "l_16"),
+Array(2, ShowActive, "l_16"),
 Array(1, SetEdgeColor, "g1_9-10", "yellow"),
 Array(1, ShowActive, "l_17"),
-Array(14, ShowActive, "l_18"),
+Array(1, ShowActive, "l_18"),
 Array(1, SetVertexColor, "g1_10", "#666699"),
 Array(1, SetEdgeColor, "g1_9-10", "#666699"),
 Array(1, SetVertexColor, "g1_9", "#FF0000"),
 Array(1, SetEdgeColor, "g1_10-9", "#FF0000"),
 Array(1, SetAllVerticesColor, "g1_#FF0000", "9", "10"),
-Array(1, BlinkVertex, "g1_9", "None"),
-Array(1, BlinkVertex, "g1_10", "None"),
-Array(10, ShowActive, "l_16"),
+Array(2, BlinkVertex, "g1_9", "None"),
+Array(2, BlinkVertex, "g1_10", "None"),
+Array(2, ShowActive, "l_16"),
 Array(1, SetEdgeColor, "g1_3-4", "yellow"),
-Array(17, ShowActive, "l_17"),
-Array(17, ShowActive, "l_18"),
+Array(1, ShowActive, "l_17"),
+Array(1, ShowActive, "l_18"),
 Array(1, SetVertexColor, "g1_4", "#FF0000"),
-Array(2, SetEdgeColor, "g1_3-4", "#FF0000"),
-Array(2, SetVertexColor, "g1_2", "#996666"),
+Array(1, SetEdgeColor, "g1_3-4", "#FF0000"),
+Array(1, SetVertexColor, "g1_2", "#996666"),
 Array(1, SetVertexColor, "g1_1", "#996666"),
 Array(1, SetVertexColor, "g1_3", "#996666"),
 Array(1, SetVertexColor, "g1_10", "#996666"),
@@ -434,9 +444,9 @@ Array(1, SetEdgeColor, "g1_4-3", "#996666"),
 Array(1, SetEdgeColor, "g1_3-10", "#996666"),
 Array(1, SetEdgeColor, "g1_10-9", "#996666"),
 Array(1, SetAllVerticesColor, "g1_#996666", "1", "2", "3", "10", "9", "4"),
-Array(2, BlinkVertex, "g1_1", "None"),
-Array(1, BlinkVertex, "g1_2", "None"),
-Array(1, BlinkVertex, "g1_3", "None"),
+Array(3, BlinkVertex, "g1_1", "None"),
+Array(3, BlinkVertex, "g1_2", "None"),
+Array(2, BlinkVertex, "g1_3", "None"),
 Array(1, BlinkVertex, "g1_10", "None"),
 Array(1, BlinkVertex, "g1_9", "None"),
 Array(1, BlinkVertex, "g1_4", "None"),
@@ -450,23 +460,23 @@ Array(1, SetVertexColor, "g1_6", "#996666"),
 Array(1, SetEdgeColor, "g1_5-6", "#996666"),
 Array(1, SetAllVerticesColor, "g1_#996666", "6", "5"),
 Array(1, BlinkVertex, "g1_6", "None"),
-Array(1, BlinkVertex, "g1_5", "None"),
-Array(24, ShowActive, "l_16"),
+Array(2, BlinkVertex, "g1_5", "None"),
+Array(19, ShowActive, "l_16"),
 Array(1, SetEdgeColor, "g1_4-9", "yellow"),
-Array(16, ShowActive, "l_17"),
+Array(1, ShowActive, "l_17"),
 Array(1, SetEdgeColor, "g1_4-9", "grey"),
-Array(14, ShowActive, "l_16"),
+Array(1, ShowActive, "l_16"),
 Array(1, SetEdgeColor, "g1_2-4", "yellow"),
-Array(17, ShowActive, "l_17"),
+Array(1, ShowActive, "l_17"),
 Array(1, SetEdgeColor, "g1_2-4", "grey"),
-Array(16, ShowActive, "l_16"),
+Array(1, ShowActive, "l_16"),
 Array(1, SetEdgeColor, "g1_1-6", "yellow"),
-Array(16, ShowActive, "l_17"),
+Array(1, ShowActive, "l_17"),
 Array(1, SetEdgeColor, "g1_1-6", "grey"),
-Array(17, ShowActive, "l_16"),
+Array(1, ShowActive, "l_16"),
 Array(1, SetEdgeColor, "g1_8-4", "yellow"),
-Array(15, ShowActive, "l_17"),
-Array(17, ShowActive, "l_18"),
+Array(1, ShowActive, "l_17"),
+Array(1, ShowActive, "l_18"),
 Array(1, SetVertexColor, "g1_4", "#669966"),
 Array(1, SetEdgeColor, "g1_8-4", "#669966"),
 Array(1, SetVertexColor, "g1_8", "#996666"),
@@ -474,27 +484,27 @@ Array(1, SetEdgeColor, "g1_4-8", "#996666"),
 Array(1, SetAllVerticesColor, "g1_#996666", "8", "4"),
 Array(1, BlinkVertex, "g1_8", "None"),
 Array(1, BlinkVertex, "g1_4", "None"),
-Array(12, ShowActive, "l_16"),
+Array(2, ShowActive, "l_16"),
 Array(1, SetEdgeColor, "g1_7-8", "yellow"),
-Array(15, ShowActive, "l_17"),
+Array(1, ShowActive, "l_17"),
 Array(1, SetEdgeColor, "g1_7-8", "grey"),
-Array(16, ShowActive, "l_16"),
+Array(1, ShowActive, "l_16"),
 Array(1, SetEdgeColor, "g1_10-4", "yellow"),
-Array(16, ShowActive, "l_17"),
+Array(1, ShowActive, "l_17"),
 Array(1, SetEdgeColor, "g1_10-4", "grey"),
-Array(16, ShowActive, "l_16"),
+Array(1, ShowActive, "l_16"),
 Array(1, SetEdgeColor, "g1_1-5", "yellow"),
-Array(15, ShowActive, "l_17"),
+Array(1, ShowActive, "l_17"),
 Array(1, SetEdgeColor, "g1_1-5", "grey"),
-Array(16, ShowActive, "l_16"),
+Array(1, ShowActive, "l_16"),
 Array(1, SetEdgeColor, "g1_4-1", "yellow"),
-Array(15, ShowActive, "l_17"),
+Array(1, ShowActive, "l_17"),
 Array(1, SetEdgeColor, "g1_4-1", "grey"),
-Array(17, ShowActive, "l_16"),
+Array(1, ShowActive, "l_16"),
 Array(1, SetEdgeColor, "g1_4-7", "yellow"),
-Array(15, ShowActive, "l_17"),
+Array(1, ShowActive, "l_17"),
 Array(1, SetEdgeColor, "g1_4-7", "grey"),
-Array(16, ShowActive, "l_16"));
+Array(1, ShowActive, "l_16"));
 
             try {
                 if (cordova && window.plugins.spinnerDialog) {

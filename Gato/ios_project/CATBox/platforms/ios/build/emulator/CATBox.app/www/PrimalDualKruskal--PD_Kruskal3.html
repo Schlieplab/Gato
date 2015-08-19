@@ -78,10 +78,10 @@
                 font-family: Helvetica;
                 font-size: 1.5em;
                 text-decoration: none;
-                color: #87afff;
+                color: #274485;
             }
             .help_link:visited {
-                color: #1354D6;
+                color: #274485;
             }
             .help_link:hover {
                 color: #1354D6;
@@ -101,7 +101,7 @@
     <body>
         <div id="help_div" class="invisible">
             <div style="padding: .5em">
-                <a class="help_link left_link" href="./index.html#PrimalDualofKruskal'sAlgorithm" target="_blank">Index</a><a class="help_link right_link" href="./help.html" target="_blank">Help</a>
+                <a class="help_link left_link" href="./index.html#PrimalDualofKruskal'sAlgorithm" target="_blank">Index</a><a class="help_link right_link" href="./help.html?last_page=PrimalDualKruskal--PD_Kruskal3.html" target="_blank">Help</a>
             </div>
         </div>
         <div id="nav_bar" class="inactive_nav">
@@ -111,14 +111,24 @@
         </div>
         <div id="base_container">
         <svg id="svg">
+
+            <!-- This filter is applied to vertices -->
             <filter id="dropshadow" height="130%">
               <feGaussianBlur in="SourceAlpha" stdDeviation="1"/> <!-- stdDeviation is how much to blur -->
                 <feOffset dx="2.5" dy="2.5" result="offsetblur"/> <!-- how much to offset -->
+                
+                <!-- Lower the slope of this to increase shadow transparency -->
+                <feComponentTransfer>
+                  <feFuncA type="linear" slope="0.15"/>
+                </feComponentTransfer>
+
                 <feMerge> 
                   <feMergeNode/> <!-- this contains the offset blurred image -->
                   <feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->
                </feMerge>
             </filter>
+            
+            <!-- This filter is applied to tooltips(as you can see from the id) -->
             <filter id="tooltip_dropshadow" height="130%">
               <feGaussianBlur in="SourceAlpha" stdDeviation="1"/> <!-- stdDeviation is how much to blur -->
                 <feOffset dx="2" dy="2" result="offsetblur"/> <!-- how much to offset -->
@@ -241,25 +251,25 @@
             var g2_x_add = 57;
             var g2_y_add = 45;
             var g1_init_edge_info = {
-"g1_1-2": "Edge (1,2) weight: 207.624661",
-"g1_6-4": "Edge (6,4) weight: 214.282524",
-"g1_3-2": "Edge (3,2) weight: 152.741612",
-"g1_2-6": "Edge (2,6) weight: 189.992105",
-"g1_6-7": "Edge (6,7) weight: 214.730063",
-"g1_4-3": "Edge (4,3) weight: 142.021125",
-"g1_6-1": "Edge (6,1) weight: 369.438764",
-"g1_3-1": "Edge (3,1) weight: 183.504768",
-"g1_4-7": "Edge (4,7) weight: 395.135420",
-"g1_1-4": "Edge (1,4) weight: 318.352006",
-"g1_7-5": "Edge (7,5) weight: 166.412139",
-"g1_7-2": "Edge (7,2) weight: 179.477018",
-"g1_3-6": "Edge (3,6) weight: 216.843261",
-"g1_5-1": "Edge (5,1) weight: 240.659511",
-"g1_3-7": "Edge (3,7) weight: 319.953122",
-"g1_5-2": "Edge (5,2) weight: 124.951991",
-"g1_2-4": "Edge (2,4) weight: 265.706605",
-"g1_6-5": "Edge (6,5) weight: 291.358885",
-"g1_3-5": "Edge (3,5) weight: 267.052429",
+"g1_1-2": "Edge (1,2) weight: 207.62",
+"g1_6-4": "Edge (6,4) weight: 214.28",
+"g1_3-2": "Edge (3,2) weight: 152.74",
+"g1_2-6": "Edge (2,6) weight: 189.99",
+"g1_6-7": "Edge (6,7) weight: 214.73",
+"g1_4-3": "Edge (4,3) weight: 142.02",
+"g1_6-1": "Edge (6,1) weight: 369.44",
+"g1_3-1": "Edge (3,1) weight: 183.50",
+"g1_4-7": "Edge (4,7) weight: 395.14",
+"g1_1-4": "Edge (1,4) weight: 318.35",
+"g1_7-5": "Edge (7,5) weight: 166.41",
+"g1_7-2": "Edge (7,2) weight: 179.48",
+"g1_3-6": "Edge (3,6) weight: 216.84",
+"g1_5-1": "Edge (5,1) weight: 240.66",
+"g1_3-7": "Edge (3,7) weight: 319.95",
+"g1_5-2": "Edge (5,2) weight: 124.95",
+"g1_2-4": "Edge (2,4) weight: 265.71",
+"g1_6-5": "Edge (6,5) weight: 291.36",
+"g1_3-5": "Edge (3,5) weight: 267.05",
 };
             var g2_init_edge_info = null;
             var g1_init_graph_info = "";
@@ -304,13 +314,13 @@ Array(1, GrowMoat, "g1_moat_4-0", "62.5"),
 Array(1, GrowMoat, "g1_moat_5-0", "62.5"),
 Array(1, GrowMoat, "g1_moat_6-0", "62.5"),
 Array(1, GrowMoat, "g1_moat_7-0", "62.5"),
-Array(20982, Wait, "g1_()"),
+Array(1264, Wait, "g1_()"),
 Array(1, AddEdge, "g2_2-5"),
 Array(1, ShowActive, "l_3"),
 Array(1, AddEdge, "g1_2-5"),
 Array(1, SetAllVerticesColor, "g2_#00FF00", "5"),
-Array(32, SetEdgeColor, "g2_2-5", "#00FF00"),
-Array(35, ShowActive, "l_1"),
+Array(1, SetEdgeColor, "g2_2-5", "#00FF00"),
+Array(1, ShowActive, "l_1"),
 Array(1, ShowActive, "l_2"),
 Array(1, CreateMoat, "g1_moat_1-1", "62.5", "#FF8800"),
 Array(1, CreateMoat, "g1_moat_2-1", "62.5", "#FF8800"),
@@ -326,14 +336,14 @@ Array(1, GrowMoat, "g1_moat_3-1", "71.0"),
 Array(1, GrowMoat, "g1_moat_4-1", "71.0"),
 Array(1, GrowMoat, "g1_moat_6-1", "71.0"),
 Array(1, GrowMoat, "g1_moat_7-1", "71.0"),
-Array(2697, Wait, "g1_()"),
+Array(209, Wait, "g1_()"),
 Array(1, AddEdge, "g2_3-4"),
-Array(2, ShowActive, "l_3"),
+Array(1, ShowActive, "l_3"),
 Array(1, AddEdge, "g1_3-4"),
 Array(1, SetAllVerticesColor, "g2_#0000FF", "4"),
-Array(14, SetEdgeColor, "g2_3-4", "#0000FF"),
-Array(16, ShowActive, "l_1"),
-Array(22, ShowActive, "l_2"),
+Array(1, SetEdgeColor, "g2_3-4", "#0000FF"),
+Array(1, ShowActive, "l_1"),
+Array(1, ShowActive, "l_2"),
 Array(1, CreateMoat, "g1_moat_1-2", "71.0", "#FFFF00"),
 Array(1, CreateMoat, "g1_moat_2-2", "71.0", "#FFFF00"),
 Array(1, CreateMoat, "g1_moat_5-2", "71.0", "#FFFF00"),
@@ -348,16 +358,16 @@ Array(1, GrowMoat, "g1_moat_3-2", "76.5"),
 Array(1, GrowMoat, "g1_moat_4-2", "76.5"),
 Array(1, GrowMoat, "g1_moat_6-2", "76.5"),
 Array(1, GrowMoat, "g1_moat_7-2", "76.5"),
-Array(1789, Wait, "g1_()"),
+Array(156, Wait, "g1_()"),
 Array(1, AddEdge, "g2_2-3"),
 Array(1, ShowActive, "l_3"),
 Array(1, AddEdge, "g1_2-3"),
 Array(1, SetVertexColor, "g2_3", "#00FF00"),
-Array(31, SetVertexColor, "g2_4", "#00FF00"),
-Array(17, SetEdgeColor, "g2_4-3", "#00FF00"),
+Array(1, SetVertexColor, "g2_4", "#00FF00"),
+Array(1, SetEdgeColor, "g2_4-3", "#00FF00"),
 Array(1, SetAllVerticesColor, "g2_#00FF00", "3", "4"),
 Array(1, SetEdgeColor, "g2_2-3", "#00FF00"),
-Array(1, ShowActive, "l_1"),
+Array(2, ShowActive, "l_1"),
 Array(1, ShowActive, "l_2"),
 Array(1, CreateMoat, "g1_moat_1-3", "76.5", "#00FF00"),
 Array(1, CreateMoat, "g1_moat_2-3", "76.5", "#00FF00"),
@@ -373,15 +383,15 @@ Array(1, GrowMoat, "g1_moat_3-3", "83.0"),
 Array(1, GrowMoat, "g1_moat_4-3", "83.0"),
 Array(1, GrowMoat, "g1_moat_6-3", "83.0"),
 Array(1, GrowMoat, "g1_moat_7-3", "83.0"),
-Array(2143, Wait, "g1_()"),
+Array(194, Wait, "g1_()"),
 Array(1, AddEdge, "g2_5-7"),
 Array(1, ShowActive, "l_3"),
 Array(1, AddEdge, "g1_5-7"),
 Array(1, SetAllVerticesColor, "g2_#00FF00", "7"),
-Array(32, SetEdgeColor, "g2_5-7", "#00FF00"),
-Array(37, ShowActive, "l_1"),
-Array(2, ShowActive, "l_2"),
-Array(2, CreateMoat, "g1_moat_1-4", "83.0", "#00FFFF"),
+Array(1, SetEdgeColor, "g2_5-7", "#00FF00"),
+Array(1, ShowActive, "l_1"),
+Array(1, ShowActive, "l_2"),
+Array(1, CreateMoat, "g1_moat_1-4", "83.0", "#00FFFF"),
 Array(1, CreateMoat, "g1_moat_2-4", "83.0", "#00FFFF"),
 Array(1, CreateMoat, "g1_moat_5-4", "83.0", "#00FFFF"),
 Array(1, CreateMoat, "g1_moat_3-4", "83.0", "#00FFFF"),
@@ -395,14 +405,14 @@ Array(1, GrowMoat, "g1_moat_3-4", "92.0"),
 Array(1, GrowMoat, "g1_moat_4-4", "92.0"),
 Array(1, GrowMoat, "g1_moat_7-4", "92.0"),
 Array(1, GrowMoat, "g1_moat_6-4", "92.0"),
-Array(2978, Wait, "g1_()"),
+Array(287, Wait, "g1_()"),
 Array(1, AddEdge, "g2_1-3"),
 Array(1, ShowActive, "l_3"),
 Array(1, AddEdge, "g1_1-3"),
 Array(1, SetVertexColor, "g2_2", "#FF0000"),
-Array(32, SetVertexColor, "g2_5", "#FF0000"),
-Array(33, SetVertexColor, "g2_3", "#FF0000"),
-Array(16, SetVertexColor, "g2_7", "#FF0000"),
+Array(1, SetVertexColor, "g2_5", "#FF0000"),
+Array(1, SetVertexColor, "g2_3", "#FF0000"),
+Array(1, SetVertexColor, "g2_7", "#FF0000"),
 Array(1, SetVertexColor, "g2_4", "#FF0000"),
 Array(1, SetEdgeColor, "g2_5-2", "#FF0000"),
 Array(1, SetEdgeColor, "g2_3-2", "#FF0000"),
@@ -426,13 +436,13 @@ Array(1, GrowMoat, "g1_moat_3-5", "95.0"),
 Array(1, GrowMoat, "g1_moat_7-5", "95.0"),
 Array(1, GrowMoat, "g1_moat_4-5", "95.0"),
 Array(1, GrowMoat, "g1_moat_6-5", "95.0"),
-Array(914, Wait, "g1_()"),
+Array(119, Wait, "g1_()"),
 Array(1, AddEdge, "g2_2-6"),
 Array(1, ShowActive, "l_3"),
 Array(1, AddEdge, "g1_2-6"),
 Array(1, SetAllVerticesColor, "g2_#FF0000", "6"),
-Array(33, SetEdgeColor, "g2_2-6", "#FF0000"),
-Array(34, ShowActive, "l_1"));
+Array(3, SetEdgeColor, "g2_2-6", "#FF0000"),
+Array(2, ShowActive, "l_1"));
 
             try {
                 if (cordova && window.plugins.spinnerDialog) {

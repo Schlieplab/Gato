@@ -78,10 +78,10 @@
                 font-family: Helvetica;
                 font-size: 1.5em;
                 text-decoration: none;
-                color: #87afff;
+                color: #274485;
             }
             .help_link:visited {
-                color: #1354D6;
+                color: #274485;
             }
             .help_link:hover {
                 color: #1354D6;
@@ -101,7 +101,7 @@
     <body>
         <div id="help_div" class="invisible">
             <div style="padding: .5em">
-                <a class="help_link left_link" href="./index.html#Bipartite" target="_blank">Index</a><a class="help_link right_link" href="./help.html" target="_blank">Help</a>
+                <a class="help_link left_link" href="./index.html#Bipartite" target="_blank">Index</a><a class="help_link right_link" href="./help.html?last_page=Bipartite--Bi003.html" target="_blank">Help</a>
             </div>
         </div>
         <div id="nav_bar" class="inactive_nav">
@@ -111,14 +111,24 @@
         </div>
         <div id="base_container">
         <svg id="svg">
+
+            <!-- This filter is applied to vertices -->
             <filter id="dropshadow" height="130%">
               <feGaussianBlur in="SourceAlpha" stdDeviation="1"/> <!-- stdDeviation is how much to blur -->
                 <feOffset dx="2.5" dy="2.5" result="offsetblur"/> <!-- how much to offset -->
+                
+                <!-- Lower the slope of this to increase shadow transparency -->
+                <feComponentTransfer>
+                  <feFuncA type="linear" slope="0.15"/>
+                </feComponentTransfer>
+
                 <feMerge> 
                   <feMergeNode/> <!-- this contains the offset blurred image -->
                   <feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->
                </feMerge>
             </filter>
+            
+            <!-- This filter is applied to tooltips(as you can see from the id) -->
             <filter id="tooltip_dropshadow" height="130%">
               <feGaussianBlur in="SourceAlpha" stdDeviation="1"/> <!-- stdDeviation is how much to blur -->
                 <feOffset dx="2" dy="2" result="offsetblur"/> <!-- how much to offset -->
@@ -300,10 +310,10 @@ Array(1, SetVertexColor, "g1_3", "#99ff99"),
 Array(1, SetVertexColor, "g1_4", "#ff9999"),
 Array(1, SetVertexColor, "g1_5", "#99ff99"),
 Array(1, SetVertexColor, "g1_6", "#ff9999"),
-Array(1, SetVertexColor, "g1_7", "#99ff99"),
-Array(1, SetVertexColor, "g1_8", "#ff9999"),
+Array(2, SetVertexColor, "g1_7", "#99ff99"),
+Array(3, SetVertexColor, "g1_8", "#ff9999"),
 Array(1, SetVertexColor, "g1_9", "#99ff99"),
-Array(1, ShowActive, "l_2"),
+Array(3, ShowActive, "l_2"),
 Array(1, UpdateVertexInfo, "g1_1", "Vertex 1 in V  has no predecessor"),
 Array(1, UpdateVertexInfo, "g1_3", "Vertex 3 in V  has no predecessor"),
 Array(1, UpdateVertexInfo, "g1_5", "Vertex 5 in V  has no predecessor"),
@@ -330,28 +340,28 @@ Array(1, SetVertexColor, "g1_2", "red"),
 Array(1, SetEdgeColor, "g1_1-2", "#ccccff"),
 Array(1, SetVertexColor, "g1_2", "#ff9999"),
 Array(1, HighlightPath, "g1_[1, 2]", "yellow", "0"),
-Array(1, ShowActive, "l_5"),
+Array(7, ShowActive, "l_5"),
 Array(1, UpdateVertexInfo, "g1_1", "Vertex 1 in V  is exposed"),
 Array(1, UpdateVertexInfo, "g1_2", "Vertex 2 in W  has predecessor 1"),
 Array(1, UpdateVertexInfo, "g1_3", "Vertex 3 in V  is exposed"),
 Array(1, UpdateVertexInfo, "g1_5", "Vertex 5 in V  is exposed"),
 Array(1, UpdateVertexInfo, "g1_7", "Vertex 7 in V  is exposed"),
 Array(1, UpdateVertexInfo, "g1_9", "Vertex 9 in V  is exposed"),
-Array(1, ShowActive, "l_6"),
+Array(17, ShowActive, "l_6"),
 Array(1, SetVertexColor, "g1_1", "blue"),
 Array(1, SetVertexColor, "g1_2", "blue"),
 Array(1, SetEdgeColor, "g1_1-2", "blue"),
 Array(1, HidePath, "g1_(1, 2)"),
-Array(1, ShowActive, "l_3"),
+Array(13, ShowActive, "l_3"),
 Array(1, UpdateEdgeInfo, "g1_1-2", "Edge (1,2) is a matching edge"),
-Array(1, ShowActive, "l_4"),
+Array(17, ShowActive, "l_4"),
 Array(1, SetVertexColor, "g1_3", "#00cc00"),
 Array(1, SetVertexColor, "g1_5", "#00cc00"),
 Array(1, SetVertexColor, "g1_7", "#00cc00"),
 Array(1, SetVertexColor, "g1_9", "#00cc00"),
 Array(1, SetVertexFrameWidth, "g1_1", "0"),
 Array(1, SetAllEdgesColor, "g1_black"),
-Array(3, SetVertexColor, "g1_3", "#00cc00"),
+Array(4, SetVertexColor, "g1_3", "#00cc00"),
 Array(1, SetVertexColor, "g1_3", "#00cc00"),
 Array(1, SetVertexColor, "g1_5", "#00cc00"),
 Array(1, SetVertexColor, "g1_5", "#00cc00"),
@@ -415,7 +425,7 @@ Array(1, SetVertexColor, "g1_6", "red"),
 Array(1, SetEdgeColor, "g1_5-6", "#ccccff"),
 Array(1, SetVertexColor, "g1_6", "#ff9999"),
 Array(1, HighlightPath, "g1_[5, 6]", "yellow", "0"),
-Array(1, ShowActive, "l_5"),
+Array(7, ShowActive, "l_5"),
 Array(1, UpdateVertexInfo, "g1_1", "Vertex 1 in V  has no predecessor"),
 Array(1, UpdateVertexInfo, "g1_2", "Vertex 2 in W  has no predecessor"),
 Array(1, UpdateVertexInfo, "g1_3", "Vertex 3 in V  has predecessor 4"),
@@ -423,12 +433,12 @@ Array(1, UpdateVertexInfo, "g1_4", "Vertex 4 in W  has predecessor 5"),
 Array(1, UpdateVertexInfo, "g1_6", "Vertex 6 in W  has predecessor 5"),
 Array(1, ShowActive, "l_6"),
 Array(1, SetVertexColor, "g1_5", "blue"),
-Array(1, SetVertexColor, "g1_6", "blue"),
+Array(2, SetVertexColor, "g1_6", "blue"),
 Array(1, SetEdgeColor, "g1_5-6", "blue"),
-Array(1, HidePath, "g1_(5, 6)"),
-Array(1, ShowActive, "l_3"),
+Array(2, HidePath, "g1_(5, 6)"),
+Array(11, ShowActive, "l_3"),
 Array(1, UpdateEdgeInfo, "g1_5-6", "Edge (5,6) is a matching edge"),
-Array(1, ShowActive, "l_4"),
+Array(17, ShowActive, "l_4"),
 Array(1, SetVertexColor, "g1_7", "#00cc00"),
 Array(1, SetVertexColor, "g1_9", "#00cc00"),
 Array(1, SetVertexColor, "g1_3", "#00cc00"),
@@ -467,12 +477,12 @@ Array(1, SetEdgeColor, "g1_7-8", "blue"),
 Array(1, HidePath, "g1_(7, 8)"),
 Array(1, ShowActive, "l_3"),
 Array(1, UpdateEdgeInfo, "g1_7-8", "Edge (7,8) is a matching edge"),
-Array(1, ShowActive, "l_4"),
+Array(13, ShowActive, "l_4"),
 Array(1, SetVertexColor, "g1_9", "#00cc00"),
 Array(1, SetVertexColor, "g1_5", "#00cc00"),
 Array(1, SetVertexFrameWidth, "g1_7", "0"),
 Array(1, SetAllEdgesColor, "g1_black"),
-Array(2, SetVertexColor, "g1_9", "#00cc00"),
+Array(3, SetVertexColor, "g1_9", "#00cc00"),
 Array(1, SetVertexColor, "g1_9", "#00cc00"),
 Array(1, SetVertexColor, "g1_9", "#00cc00"),
 Array(1, SetVertexFrameWidth, "g1_9", "6"),
@@ -504,9 +514,9 @@ Array(1, SetVertexFrameWidth, "g1_7", "0"),
 Array(1, SetVertexColor, "g1_5", "#00cc00"),
 Array(1, SetVertexFrameWidth, "g1_7", "0"),
 Array(1, SetVertexFrameWidth, "g1_5", "6"),
-Array(1, SetVertexFrameWidth, "g1_5", "6"),
-Array(1, SetEdgeColor, "g1_4-5", "yellow"),
-Array(1, SetVertexColor, "g1_4", "red"),
+Array(2, SetVertexFrameWidth, "g1_5", "6"),
+Array(2, SetEdgeColor, "g1_4-5", "yellow"),
+Array(2, SetVertexColor, "g1_4", "red"),
 Array(1, SetEdgeColor, "g1_4-5", "#ccccff"),
 Array(1, SetVertexColor, "g1_4", "#ff9999"),
 Array(1, SetVertexColor, "g1_3", "#00cc00"),
@@ -516,14 +526,14 @@ Array(1, SetVertexColor, "g1_3", "#00cc00"),
 Array(1, SetEdgeColor, "g1_5-6", "yellow"),
 Array(1, SetEdgeColor, "g1_5-6", "blue"),
 Array(1, SetVertexFrameWidth, "g1_5", "0"),
-Array(1, SetVertexColor, "g1_3", "#00cc00"),
+Array(2, SetVertexColor, "g1_3", "#00cc00"),
 Array(1, SetVertexFrameWidth, "g1_5", "0"),
-Array(1, SetVertexFrameWidth, "g1_3", "6"),
+Array(2, SetVertexFrameWidth, "g1_3", "6"),
 Array(1, SetVertexFrameWidth, "g1_3", "6"),
 Array(1, SetEdgeColor, "g1_3-2", "yellow"),
 Array(1, SetVertexColor, "g1_2", "red"),
 Array(1, SetEdgeColor, "g1_3-2", "#ccccff"),
-Array(1, SetVertexColor, "g1_2", "#ff9999"),
+Array(3, SetVertexColor, "g1_2", "#ff9999"),
 Array(1, SetVertexColor, "g1_1", "#00cc00"),
 Array(1, SetEdgeColor, "g1_1-2", "blue"),
 Array(1, SetVertexColor, "g1_1", "#99ff99"),
@@ -538,7 +548,7 @@ Array(1, SetVertexFrameWidth, "g1_1", "6"),
 Array(1, SetEdgeColor, "g1_1-2", "yellow"),
 Array(1, SetEdgeColor, "g1_1-2", "blue"),
 Array(1, SetVertexFrameWidth, "g1_1", "0"),
-Array(1, ShowActive, "l_5"),
+Array(2, ShowActive, "l_5"),
 Array(1, UpdateVertexInfo, "g1_1", "Vertex 1 in V  has predecessor 2"),
 Array(1, UpdateVertexInfo, "g1_2", "Vertex 2 in W  has predecessor 3"),
 Array(1, UpdateVertexInfo, "g1_3", "Vertex 3 in V  has predecessor 4"),
@@ -548,8 +558,8 @@ Array(1, UpdateVertexInfo, "g1_8", "Vertex 8 in W  has predecessor 9"),
 Array(1, ShowActive, "l_8"),
 Array(1, ShowActive, "l_3"),
 Array(1, ShowActive, "l_10"),
-Array(1, SetVertexFrameWidth, "g1_1", "2"),
-Array(1, SetVertexFrameWidth, "g1_3", "2"),
+Array(2, SetVertexFrameWidth, "g1_1", "2"),
+Array(2, SetVertexFrameWidth, "g1_3", "2"),
 Array(1, SetVertexFrameWidth, "g1_5", "2"),
 Array(1, SetVertexFrameWidth, "g1_7", "2"),
 Array(1, SetVertexFrameWidth, "g1_9", "2"),

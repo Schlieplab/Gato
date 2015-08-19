@@ -78,10 +78,10 @@
                 font-family: Helvetica;
                 font-size: 1.5em;
                 text-decoration: none;
-                color: #87afff;
+                color: #274485;
             }
             .help_link:visited {
-                color: #1354D6;
+                color: #274485;
             }
             .help_link:hover {
                 color: #1354D6;
@@ -101,7 +101,7 @@
     <body>
         <div id="help_div" class="invisible">
             <div style="padding: .5em">
-                <a class="help_link left_link" href="./index.html#Bipartite" target="_blank">Index</a><a class="help_link right_link" href="./help.html" target="_blank">Help</a>
+                <a class="help_link left_link" href="./index.html#Bipartite" target="_blank">Index</a><a class="help_link right_link" href="./help.html?last_page=Bipartite--Bi008.html" target="_blank">Help</a>
             </div>
         </div>
         <div id="nav_bar" class="inactive_nav">
@@ -111,14 +111,24 @@
         </div>
         <div id="base_container">
         <svg id="svg">
+
+            <!-- This filter is applied to vertices -->
             <filter id="dropshadow" height="130%">
               <feGaussianBlur in="SourceAlpha" stdDeviation="1"/> <!-- stdDeviation is how much to blur -->
                 <feOffset dx="2.5" dy="2.5" result="offsetblur"/> <!-- how much to offset -->
+                
+                <!-- Lower the slope of this to increase shadow transparency -->
+                <feComponentTransfer>
+                  <feFuncA type="linear" slope="0.15"/>
+                </feComponentTransfer>
+
                 <feMerge> 
                   <feMergeNode/> <!-- this contains the offset blurred image -->
                   <feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->
                </feMerge>
             </filter>
+            
+            <!-- This filter is applied to tooltips(as you can see from the id) -->
             <filter id="tooltip_dropshadow" height="130%">
               <feGaussianBlur in="SourceAlpha" stdDeviation="1"/> <!-- stdDeviation is how much to blur -->
                 <feOffset dx="2" dy="2" result="offsetblur"/> <!-- how much to offset -->
@@ -243,13 +253,13 @@ Array(1, SetVertexColor, "g1_1", "#99ff99"),
 Array(1, SetVertexColor, "g1_3", "#ff9999"),
 Array(1, SetVertexColor, "g1_2", "#ff9999"),
 Array(1, SetVertexColor, "g1_4", "#99ff99"),
-Array(1, ShowActive, "l_2"),
+Array(13, ShowActive, "l_2"),
 Array(1, UpdateVertexInfo, "g1_1", "Vertex 1 in V  has no predecessor"),
 Array(1, UpdateVertexInfo, "g1_4", "Vertex 4 in V  has no predecessor"),
-Array(1, ShowActive, "l_3"),
-Array(1, ShowActive, "l_4"),
+Array(16, ShowActive, "l_3"),
+Array(16, ShowActive, "l_4"),
 Array(1, SetAllEdgesColor, "g1_black"),
-Array(1, SetVertexColor, "g1_1", "#00cc00"),
+Array(2, SetVertexColor, "g1_1", "#00cc00"),
 Array(1, SetVertexColor, "g1_1", "#00cc00"),
 Array(1, SetVertexColor, "g1_4", "#00cc00"),
 Array(1, SetVertexColor, "g1_4", "#00cc00"),
@@ -261,7 +271,7 @@ Array(1, SetVertexColor, "g1_3", "red"),
 Array(1, SetEdgeColor, "g1_3-1", "#ccccff"),
 Array(1, SetVertexColor, "g1_3", "#ff9999"),
 Array(1, HighlightPath, "g1_[1, 3]", "yellow", "0"),
-Array(1, ShowActive, "l_5"),
+Array(8, ShowActive, "l_5"),
 Array(1, UpdateVertexInfo, "g1_1", "Vertex 1 in V  is exposed"),
 Array(1, UpdateVertexInfo, "g1_3", "Vertex 3 in W  has predecessor 1"),
 Array(1, UpdateVertexInfo, "g1_4", "Vertex 4 in V  is exposed"),
@@ -270,13 +280,13 @@ Array(1, SetVertexColor, "g1_3", "blue"),
 Array(1, SetVertexColor, "g1_1", "blue"),
 Array(1, SetEdgeColor, "g1_3-1", "blue"),
 Array(1, HidePath, "g1_(1, 3)"),
-Array(1, ShowActive, "l_3"),
+Array(13, ShowActive, "l_3"),
 Array(1, UpdateEdgeInfo, "g1_3-1", "Edge (3,1) is a matching edge"),
-Array(1, ShowActive, "l_4"),
+Array(18, ShowActive, "l_4"),
 Array(1, SetVertexColor, "g1_4", "#00cc00"),
 Array(1, SetVertexFrameWidth, "g1_1", "0"),
 Array(1, SetAllEdgesColor, "g1_black"),
-Array(1, SetVertexColor, "g1_4", "#00cc00"),
+Array(2, SetVertexColor, "g1_4", "#00cc00"),
 Array(1, SetVertexColor, "g1_4", "#00cc00"),
 Array(1, SetVertexColor, "g1_4", "#00cc00"),
 Array(1, SetVertexFrameWidth, "g1_4", "6"),
@@ -286,26 +296,26 @@ Array(1, SetVertexColor, "g1_2", "red"),
 Array(1, SetEdgeColor, "g1_2-4", "#ccccff"),
 Array(1, SetVertexColor, "g1_2", "#ff9999"),
 Array(1, HighlightPath, "g1_[4, 2]", "yellow", "0"),
-Array(1, ShowActive, "l_5"),
+Array(7, ShowActive, "l_5"),
 Array(1, UpdateVertexInfo, "g1_1", "Vertex 1 in V  has no predecessor"),
 Array(1, UpdateVertexInfo, "g1_2", "Vertex 2 in W  has predecessor 4"),
 Array(1, UpdateVertexInfo, "g1_3", "Vertex 3 in W  has no predecessor"),
 Array(1, ShowActive, "l_6"),
 Array(1, SetVertexColor, "g1_2", "blue"),
-Array(1, SetVertexColor, "g1_4", "blue"),
+Array(2, SetVertexColor, "g1_4", "blue"),
 Array(1, SetEdgeColor, "g1_2-4", "blue"),
 Array(1, HidePath, "g1_(4, 2)"),
-Array(1, ShowActive, "l_3"),
+Array(11, ShowActive, "l_3"),
 Array(1, UpdateEdgeInfo, "g1_2-4", "Edge (2,4) is a matching edge"),
-Array(1, ShowActive, "l_4"),
+Array(17, ShowActive, "l_4"),
 Array(1, SetVertexFrameWidth, "g1_4", "0"),
 Array(1, SetAllEdgesColor, "g1_black"),
-Array(1, ShowActive, "l_5"),
+Array(16, ShowActive, "l_5"),
 Array(1, UpdateVertexInfo, "g1_2", "Vertex 2 in W  has no predecessor"),
 Array(1, UpdateVertexInfo, "g1_4", "Vertex 4 in V  has no predecessor"),
-Array(1, ShowActive, "l_8"),
-Array(1, ShowActive, "l_3"),
-Array(1, ShowActive, "l_10"),
+Array(16, ShowActive, "l_8"),
+Array(17, ShowActive, "l_3"),
+Array(18, ShowActive, "l_10"),
 Array(1, SetVertexFrameWidth, "g1_1", "6"),
 Array(1, SetVertexFrameWidth, "g1_4", "6"),
 Array(1, SetVertexFrameWidth, "g1_3", "2"),

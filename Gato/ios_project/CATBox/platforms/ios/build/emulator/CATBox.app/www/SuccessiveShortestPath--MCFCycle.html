@@ -78,10 +78,10 @@
                 font-family: Helvetica;
                 font-size: 1.5em;
                 text-decoration: none;
-                color: #87afff;
+                color: #274485;
             }
             .help_link:visited {
-                color: #1354D6;
+                color: #274485;
             }
             .help_link:hover {
                 color: #1354D6;
@@ -101,7 +101,7 @@
     <body>
         <div id="help_div" class="invisible">
             <div style="padding: .5em">
-                <a class="help_link left_link" href="./index.html#SuccessiveShortestPaths" target="_blank">Index</a><a class="help_link right_link" href="./help.html" target="_blank">Help</a>
+                <a class="help_link left_link" href="./index.html#SuccessiveShortestPaths" target="_blank">Index</a><a class="help_link right_link" href="./help.html?last_page=SuccessiveShortestPath--MCFCycle.html" target="_blank">Help</a>
             </div>
         </div>
         <div id="nav_bar" class="inactive_nav">
@@ -111,14 +111,24 @@
         </div>
         <div id="base_container">
         <svg id="svg">
+
+            <!-- This filter is applied to vertices -->
             <filter id="dropshadow" height="130%">
               <feGaussianBlur in="SourceAlpha" stdDeviation="1"/> <!-- stdDeviation is how much to blur -->
                 <feOffset dx="2.5" dy="2.5" result="offsetblur"/> <!-- how much to offset -->
+                
+                <!-- Lower the slope of this to increase shadow transparency -->
+                <feComponentTransfer>
+                  <feFuncA type="linear" slope="0.15"/>
+                </feComponentTransfer>
+
                 <feMerge> 
                   <feMergeNode/> <!-- this contains the offset blurred image -->
                   <feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->
                </feMerge>
             </filter>
+            
+            <!-- This filter is applied to tooltips(as you can see from the id) -->
             <filter id="tooltip_dropshadow" height="130%">
               <feGaussianBlur in="SourceAlpha" stdDeviation="1"/> <!-- stdDeviation is how much to blur -->
                 <feOffset dx="2" dy="2" result="offsetblur"/> <!-- how much to offset -->
@@ -327,22 +337,22 @@ Array(1, ShowActive, "l_1"),
 Array(1, ShowActive, "l_5"),
 Array(1, ShowActive, "l_6"),
 Array(1, SetVertexColor, "g2_3", "grey"),
-Array(14, SetVertexFrameWidth, "g2_3", "6"),
-Array(17, ShowActive, "l_7"),
-Array(17, ShowActive, "l_8"),
+Array(1, SetVertexFrameWidth, "g2_3", "6"),
+Array(1, ShowActive, "l_7"),
+Array(1, ShowActive, "l_8"),
 Array(1, SetVertexColor, "g2_4", "blue"),
 Array(1, SetVertexColor, "g2_3", "blue"),
 Array(1, SetEdgeColor, "g2_4-3", "blue"),
 Array(1, SetVertexColor, "g2_1", "blue"),
 Array(1, SetEdgeColor, "g2_1-4", "blue"),
-Array(13, ShowActive, "l_9"),
+Array(1, ShowActive, "l_9"),
 Array(1, SetEdgeColor, "g2_4-3", "yellow"),
-Array(33, ShowActive, "l_10"),
+Array(1, ShowActive, "l_10"),
 Array(1, UpdateGraphInfo, "g2_()", "delta = 1"),
 Array(1, SetVertexColor, "g2_4", "red"),
-Array(17, SetVertexColor, "g2_3", "gray"),
-Array(17, SetEdgeColor, "g1_4-3", "#9999FF"),
-Array(24, AddEdge, "g2_3-4"),
+Array(1, SetVertexColor, "g2_3", "gray"),
+Array(1, SetEdgeColor, "g1_4-3", "#9999FF"),
+Array(19, AddEdge, "g2_3-4"),
 Array(1, SetEdgeColor, "g2_4-3", "red"),
 Array(1, SetEdgeColor, "g2_3-4", "green"),
 Array(1, SetVertexColor, "g2_1", "gray"),
@@ -361,10 +371,10 @@ Array(1, UpdateEdgeInfo, "g2_3-4", "Edge (3,4) - residual capacity: 1 - cost: -1
 Array(1, UpdateVertexInfo, "g1_1", "Vertex 1 - excess: 0"),
 Array(1, UpdateVertexInfo, "g1_3", "Vertex 3 - excess: 0"),
 Array(1, SetVertexAnnotation, "g2_1", "0"),
-Array(33, SetVertexAnnotation, "g2_2", "2"),
-Array(19, SetVertexAnnotation, "g2_3", "2"),
-Array(19, SetVertexAnnotation, "g2_4", "1"),
-Array(24, SetEdgeColor, "g2_1-2", "grey"),
+Array(20, SetVertexAnnotation, "g2_2", "2"),
+Array(20, SetVertexAnnotation, "g2_3", "2"),
+Array(23, SetVertexAnnotation, "g2_4", "1"),
+Array(22, SetEdgeColor, "g2_1-2", "grey"),
 Array(1, SetEdgeColor, "g2_1-4", "grey"),
 Array(1, SetEdgeColor, "g2_2-3", "red"),
 Array(1, SetEdgeColor, "g2_3-4", "grey"),

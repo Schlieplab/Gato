@@ -612,8 +612,7 @@ def format_init_edge_infos(info_dict, idPrefix):
     if not info_dict:
         return 'null';
     str_bits = ['{'] # List of strings to return joined at the end(faster than concatenation)
-    for tup, info in info_dict.iteritems():
-        v, w = tup
+    for (v, w), info in info_dict.iteritems():
         edge_id = get_edge_id(v, w, idPrefix)
         assignment = '"{}": "{}",'.format(edge_id, info)
         str_bits.append(assignment)
@@ -903,7 +902,7 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
         # Put a border between the graphs
         if secondaryGraphDisplay and g2_svg_body_str:
             y = g1_height + g2_y_padding/2 + edge_padding
-            g2_svg_body_str += '<line x1="0" x2="%d" y1="%d" y2="%d" stroke="#000" stroke-width="3.0" />' % (width, y, y)
+            g2_svg_body_str += '<line x1="0" x2="%d" y1="%d" y2="%d" stroke="#aaa" stroke-width="1.0" />' % (width, y, y)
         svg_str = '\n'.join(['<svg width="%d" height="%d">' % (width, height), svg_drop_shadow, g1_svg_body_str, g2_svg_body_str, '</svg>'])
 
         img = cairo.ImageSurface(cairo.FORMAT_ARGB32, int(ceil(width*scale)), int(ceil(height*scale)))
