@@ -9,14 +9,25 @@ body {
 }
 
 #top_logo_div{
-	position: fixed;
-	z-index: 2000px;
-	top: 20px;
+	position: absolute;
+	z-index:1000;
 	left: 20px;
+	top: 10px;
+	background: url(../img/catboxLogo170x52.png) no-repeat;
+	width: 170px;
+	height: 52px;
+}
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {    
+    #top_logo_div {
+    	background: url(../img/catboxLogo170x52@2.png) no-repeat;
+    	background-size: 170px 52px;
+    }
 }
 
 #master_container {
-	margin-top: 130px;
+	/*margin-top: 130px;*/
+	padding-top: 110px;
 }
 
 h2 {
@@ -26,7 +37,7 @@ h2 {
 
 h3 {
 	font-size: 23px;
-	color: #3d7fc2;
+	color: #274485;
 }
 
 .codebox_help_image {
@@ -140,4 +151,8 @@ h3 {
 	position: relative;
 	top: -27px;
 	left: 4px;
+}
+
+.indent {
+	padding-left: 30px;
 }

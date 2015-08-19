@@ -80,6 +80,8 @@ svg_drop_shadow = '''
     </filter>
 '''
 
+CHAPTER_NUM_TO_ABBREV = {2: 'Basics'}
+
 
 def tokenEater(type, token, (srow, scol), (erow, ecol), line):
     global line_count
@@ -824,7 +826,7 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
             'animation_name': construct_animation_name(fileName),
             'chapter_number': chapter_number or 0,
             'algo_div': algo_div or '',
-            'chapter_name': chapter_name or '',
+            'chapter_name': CHAPTER_NUM_TO_ABBREV.get(int(chapter_number or 0)) or '',
             'info_file': 'infos/' + fileName[fileName.rindex('/') + 1:],
             'this_url': fileName[fileName.rindex('/') + 1:],
             'animation': format_animation(animation),
