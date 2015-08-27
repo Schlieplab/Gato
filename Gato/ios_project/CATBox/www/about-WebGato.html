@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>CATBox About Page</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link href="css/bootstrap.min.css" rel="stylesheet" />
+<link href="css/help_page.css" rel="stylesheet" />
+</head>
+<body>
+	<div id="top_logo_div">
+	</div>
+
+	<div id="master_container" class="container page-wrap">
+		<div class="row">
+			<div class="col-xs-12">
+				<h2>About CATBox</h2>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-xs-12 indent">
+					<!-- Content goes here -->
+<p>The CATBox app is a companion to the textbook <a
+href="http://itunes.apple.com/us/book/isbn9783540148876">CATBox &#151;
+An Interactive Course in Combinatorial Optimization</a> by Winfried
+Hochst&auml;ttler and Alexander Schliep published by Springer in
+2010.</p>
+
+<p>The animations of the algorithms implemented for the textbook are
+created with the open-source desktop software <a
+href="http://gato.sf.net">Gato</a> by the same authors, which is also
+available as source and binaries from the website <a
+href="http://schliep.org/CATBox">http://schliep.org/CATBox</a>.</p>
+
+
+<p>With Gato you can edit the graph instances the algorithms
+operate on and implement and animate your own algorithms. The
+animations can also be exported to HTML.</p>
+
+
+<h3>History</h3>
+
+<p>The graph animation toolbox (Gato) started its life 1997 at the
+Universit&auml;t zu K&ouml;ln as a cross-platform desktop application
+written in Python using Tkinter for its graphical user
+interface. Algorithms are also implemented in Python and
+semi-automatically animated. Development of Gato continued from 2002
+until 2009 at the Max Planck Institute for Molecular Genetics in
+Berlin and, since 2009, at Rutgers, The State University of New
+Jersey.</p>
+
+<p>A frequent feature request was backward execution, or to be able
+to jump back in the execution time-line. The solution was to record
+animation histories in Gato, combined with light-weight players for
+the animation histories. Additionally, this technical solution made both
+WebGato and the CATBox app feasible.</p>
+
+
+<h3>Developers of Web Gato</h3>
+
+<p>Scott Merkling is the main developer of the Gato app and WebGato
+online system; he was also the maintainer of Gato since 2012 and
+implemented the support of animation histories in Gato. Matt Mitsui
+implemented an earlier proof of concept of the WebGato online
+system. Alexander Schliep is the original author of Gato and has been
+directing the development of Gato, WebGato and the CATBox app ever since.
+</p>
+
+
+<h3>Acknowledgments</H3> 
+
+<p>Scott Merkling participated in the DIMACS REU program with support from
+NSF award 1263082. Matt Mitsui participated in the DIMACS REU program
+with support from NSF award 1263082. The development of Gato, WebGato
+and the CATBox app was supported by Rutgers. The development of Gato
+was previously supported by the Universit&auml;t zu K&ouml;ln, the Max
+Planck Society and the Fernuniversit&auml;t Hagen.</p>
+
+			</div>
+		</div>
+	</div>
+	<div class="fixed_bottom_nav">
+		<a id="back_link" class="nav_link" href="index.html">
+			<div class="arrow_nav_item" style="position: relative">
+				<svg style="width: 30px; height: 30px; display: inline">
+					<polygon points="0,15,15,30,18.535533905932738,26.464466094067262,7.0710678118654755,15,18.535533905932738,3.5355339059327373,15,0" fill="#cccccc" style=""></polygon>
+				</svg>
+				<div id="back_text_span" style="bottom: -2px; left: 55px; position: absolute">Back</div>
+			</div>
+		</a>
+	<script type="text/javascript" src="js/util.js"></script>
+	<script type="text/javascript">
+		function parse_get(val) {
+		    var result = null,
+		        tmp = [];
+		    location.search
+		    //.replace ( "?", "" )
+		    // this is better, there might be a question mark inside
+		    .substr(1)
+		        .split("&")
+		        .forEach(function (item) {
+		        tmp = item.split("=");
+		        if (tmp[0] === val) result = decodeURIComponent(tmp[1]);
+		    });
+		    return result;
+		}
+		if (parse_get('last_page')) {
+			// Set back link to the last_page parameter instead of index.html
+			console.log("Doin ma thing");
+			document.getElementById('back_link').href = parse_get('last_page');
+		}
+	</script>
+</body>
+</html>
