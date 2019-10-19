@@ -55,22 +55,20 @@ http://schliep.org/CATBox) by Winfried Hochstaettler and Alexander
 Schliep. CATBox is a textbook on combinatorial optimization on graphs
 (traversals, minimal spanning trees, shortest paths, maximum flows,
 min-cost flows, cardinality and weighted matching) which uses Gato to
-provide interactive animations and exercises for all algorithms.  A
-screencast is at:
-http://biomaps.rutgers.edu/~schliep/CATBox/Dijkstra.swf
+provide interactive animations and exercises for all algorithms.  
+See http://schliep.org/CATBox.
 
 Gato and CATBox has been used in university classrooms for several
 years by us and colleagues on several continents at the undergraduate
 and graduate level.  Winfried Hochstaettler is a professor in
 mathematics at the FernUniversitaet Hagen, Germany and Alexander
-Schliep is an associate professor in computer science and quantitative
-biology at Rutgers University.
+Schliep is an associate professor in computer science at Gothenburg University.
 """
 
 
 
 setup(name="Gato",
-      version="1.2.2",
+      version="1.2.3",
       description="Graph Animation Toolbox: animating algorithms on graphs",
       long_description = long_description,
       author="Alexander Schliep and Winfried Hochstaettler",
