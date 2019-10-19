@@ -155,6 +155,7 @@ class AlgoWin(Frame):
         self.experimental = experimental
         if parent:
             parent.report_callback_exception = self.ReportCallbackException
+            self.parent = parent
         Frame.__init__(self,parent)
 
         #XXX import tkoptions
@@ -260,8 +261,13 @@ class AlgoWin(Frame):
         
         # --- FILE menu ----------------------------------------
         self.fileMenu = Menu(self.menubar, tearoff=0)
+        self.menubar.add_cascade(label="File", menu=self.fileMenu,
+                                 underline=0)
+
         self.fileMenu.add_command(label='Open Algorithm...',	
                                   command=self.OpenAlgorithm)
+        self.fileMenu.entryconfigure(1, state=DISABLED)
+        self.fileMenu.entryconfigure(1, state=ACTIVE)
         self.fileMenu.add_command(label='Open Graph...',	
                                   command=self.OpenGraph)
         # On the Mac starting gred from Gato will not create a seperate process
@@ -286,40 +292,60 @@ class AlgoWin(Frame):
             self.fileMenu.add_command(label='Export Animation as SVG...',	
                                       command=self.ExportSVGAnimation)
         if self.windowingsystem != 'aqua':
-            self.fileMenu.add_separator()
-            self.fileMenu.add_command(label='Preferences...',
-                                      command=self.Preferences,
-                                      accelerator='%s-,' % accMod)
+            #self.fileMenu.add_separator()
+            #self.fileMenu.add_command(label='Preferences...',
+            #                          command=self.Preferences,
+            #                          accelerator='%s-,' % accMod)
             #self.gatoInstaller.addMenuEntry(self.fileMenu)
             self.fileMenu.add_separator()
             self.fileMenu.add_command(label='Quit',		
                                       command=self.Quit,
                                       accelerator='%s-Q' % accMod)
-        self.menubar.add_cascade(label="File", menu=self.fileMenu, 
-                                 underline=0)	
-        # --- WINDOW menu ----------------------------------------
-        self.windowMenu=Menu(self.menubar, tearoff=0)
-        self.windowMenu.add_command(label='One graph window',	
-                                    accelerator='%s-1' % accMod,
-                                    command=self.OneGraphWindow)
-        self.windowMenu.add_command(label='Two graph windows',	
-                                    accelerator='%s-2' % accMod,
-                                    command=self.TwoGraphWindow)
-        self.menubar.add_cascade(label="Window Layout", menu=self.windowMenu, 
-                                 underline=0)
+
+        # --- WINDOW LAYOUT menu ----------------------------------------
+        if self.windowingsystem != 'aqua':                    
+            self.windowMenu=Menu(self.menubar, tearoff=0)
+            self.windowMenu.add_command(label='One graph window',	
+                                        accelerator='%s-1' % accMod,
+                                        command=self.OneGraphWindow)
+            self.windowMenu.add_command(label='Two graph windows',	
+                                        accelerator='%s-2' % accMod,
+                                        command=self.TwoGraphWindow)
+            self.menubar.add_cascade(label="Window Layout", menu=self.windowMenu, 
+                                     underline=0)
+
+        # --- AQUA Windows Menu
+        if self.windowingsystem == 'aqua':
+            self.aquawindowMenu = Menu(self.menubar, tearoff=0, name='window')
+            self.menubar.add_cascade(menu=self.aquawindowMenu, label='Window',
+                                     underline=0)
+            self.aquawindowMenu.add_separator()
+            self.aquawindowMenu.add_command(label='One graph window',
+                                            accelerator='%s-1' % accMod,
+                                            command=self.OneGraphWindow)
+            self.aquawindowMenu.add_command(label='Two graph windows',
+                                            accelerator='%s-2' % accMod,
+                                            command=self.TwoGraphWindow)
+
         
         
         # --- HELP menu ----------------------------------------
         self.helpMenu=Menu(self.menubar, tearoff=0, name='help')
-        
+        self.menubar.add_cascade(label="Help", menu=self.helpMenu,
+                                 underline=0)
+
         if self.windowingsystem != 'aqua':
             self.helpMenu.add_command(label='About Gato',
                                       command=self.AboutBox)
                                       
-        self.helpMenu.add_command(label='Help',
-                                  accelerator='%s-?' % accMod,
-                                  command=self.HelpBox)        
-        self.helpMenu.add_separator()
+            self.helpMenu.add_command(label='Help',
+                                      accelerator='%s-?' % accMod,
+                                      command=self.HelpBox)
+            
+            self.helpMenu.add_separator()
+        else:
+            self.parent.createcommand('tk::mac::ShowHelp', self.HelpBox)
+
         self.helpMenu.add_command(label='Go to Gato website',
                                   command=self.GoToGatoWebsite)
         self.helpMenu.add_command(label='Go to CATBox website',
@@ -329,21 +355,24 @@ class AlgoWin(Frame):
                                   command=self.AboutAlgorithm)
         self.helpMenu.add_command(label='About Graph',	
                                   command=self.AboutGraph)
-        self.menubar.add_cascade(label="Help", menu=self.helpMenu, 
-                                 underline=0)
+
 
 
         # --- MacOS X application menu --------------------------
         # On a Mac we put our about box under the Apple menu ... 
         if self.windowingsystem == 'aqua':
             self.apple=Menu(self.menubar, tearoff=0, name='apple')
-            self.apple.add_command(label='About Gato',	
-                                   command=self.AboutBox)
-            self.apple.add_separator()
-            self.apple.add_command(label='Preferences...',
-                                   accelerator='command-,',
-                                   command=self.Preferences)
-            self.menubar.add_cascade(menu=self.apple)
+            self.menubar.add_cascade(menu=self.apple, underline=0)
+            #self.apple.add_command(label='About My Application',	
+            #                       command=self.AboutBox)
+            #self.apple.add_separator()
+
+            self.parent.createcommand('tkAboutDialog', self.AboutBox)
+            self.parent.createcommand('tk::mac::ShowPreferences', self.Preferences)
+            #self.apple.add_command(label='Preferences...',
+            #                       accelerator='command-,',
+            #                       command=self.Preferences)
+            #self.menubar.add_cascade(menu=self.apple)
 
             
         self.master.configure(menu=self.menubar)
@@ -1111,7 +1140,8 @@ class AlgoWin(Frame):
             accMod = "Control"
        
         widget.bind('<%s-q>' % accMod,  self.Quit)
-        widget.bind('<%s-comma>' % accMod,  self.Preferences)
+        if self.windowingsystem != 'aqua':
+            widget.bind('<%s-comma>' % accMod,  self.Preferences)
         widget.bind('<%s-KeyPress-1>' % accMod,  self.OneGraphWindow)
         widget.bind('<%s-KeyPress-2>' % accMod,  self.TwoGraphWindow)
         widget.bind('<%s-question>' % accMod,  self.HelpBox)
@@ -1303,6 +1333,7 @@ class AlgorithmDebugger(bdb.Bdb):
         self.GUI = dbgGUI
         bdb.Bdb.__init__(self)
         self.doTrace = 0
+        self.alwaysTrace = 0
         self.lastLine = -1
         self.init_edge_infos = [None, None]
         self.edge_infos = [None, None]
@@ -1352,7 +1383,7 @@ class AlgorithmDebugger(bdb.Bdb):
             
         self.user_call(frame, arg)
         if self.quitting: raise bdb.BdbQuit
-        if doTrace == 1:
+        if doTrace == 1 or self.alwaysTrace:
             self.doTrace = 0
             return self.trace_dispatch
         if self.break_anywhere(frame):
@@ -1596,7 +1627,8 @@ class AlgorithmDebugger(bdb.Bdb):
     def currentLine(self, frame):
         """ *Internal* returns the current line number  """ 
         return frame.f_lineno 
-        
+
+
 # Endof: AlgorithmDebugger  ----------------------------------------------------
         
 class Algorithm:
@@ -2117,16 +2149,18 @@ def main(argv=None):
         except tkinter.TclError:
             pass
 
+        # NOTE: Options did caus menu items to display grayed out. Needed?
+        #
         #tk.option_add('*ActiveBackground','#EEEEEE')
-        tk.option_add('*background','#DDDDDD')
+        #tk.option_add('*background','#DDDDDD')
         #XXX Buttons look ugly with white backgrounds on MacOS X, added directly to Button(...)
         # The option not working is might be a known bug 
         # http://aspn.activestate.com/ASPN/Mail/Message/Tcl-bugs/2131881
         # Still present in the 8.4.7 that comes with 10.4  
-        tk.option_add('*Highlightbackground','#DDDDDD')
-        tk.option_add('*Button.highlightbackground','#DDDDDD')
-        tk.option_add('*Button.background','#DDDDDD')
-        tk.option_add('Tk*Scrollbar.troughColor','#CACACA')        
+        #tk.option_add('*Highlightbackground','#DDDDDD')
+        #tk.option_add('*Button.highlightbackground','#DDDDDD')
+        #tk.option_add('*Button.background','#DDDDDD')
+        #tk.option_add('Tk*Scrollbar.troughColor','#CACACA')        
 
         if paned:
             # We want a three paned left | right top / right bottom layout
