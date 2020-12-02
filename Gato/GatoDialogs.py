@@ -332,7 +332,7 @@ class HTMLViewer(Toplevel):
     def __init__(self, htmlcode, title, master=None):
     
         Toplevel.__init__(self, master)
-        #self.protocol('WM_DELETE_WINDOW',self.withdraw)
+        self.protocol('WM_DELETE_WINDOW',self.withdraw)
         self.titleprefix = title
         color = self.config("bg")[4]
         borderFrame = Frame(self, relief=SUNKEN, bd=2) # Extra Frame
