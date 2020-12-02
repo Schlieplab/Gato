@@ -60,22 +60,29 @@ class MergedHistories:
         if self.animator2 is None:
             if display == 2:
                 self.animator2 = animator
-
+                
+    #=========== Dummy methods for recording info messages
     def UpdateEdgeInfo(self, tail, head, info, animator, display):
         self._check_animator_set(animator, display)
-        animation = AnimationHistory.AnimationCommand(animator.UpdateEdgeInfo, (tail, head), (info,))
+        animation = AnimationHistory.AnimationCommand(animator.UpdateEdgeInfo, (tail, head), (info,),
+                                                      undo_args = (animator.graphInformer.EdgeInfo(tail,head),))
         self.append(animation, display)
 
     def UpdateGraphInfo(self, info, animator, display):
+        # The graph info could be changed in a multitude of places. No good way to deal with it. However, for
+        # the purpose of un- and redoing animations it doesn't matter.
         self._check_animator_set(animator, display)
-        animation = AnimationHistory.AnimationCommand(animator.UpdateGraphInfo, (), (info,))
+        animation = AnimationHistory.AnimationCommand(animator.UpdateGraphInfo, (), (info,),
+                                                      undo_args = ("     ",))
         self.append(animation, display)
 
     def UpdateVertexInfo(self, v, info, animator, display):
         self._check_animator_set(animator, display)
-        animation = AnimationHistory.AnimationCommand(animator.UpdateVertexInfo, (v,), (info,))
+        animation = AnimationHistory.AnimationCommand(animator.UpdateVertexInfo, (v,), (info,),
+                                                      undo_args = (animator.graphInformer.VertexInfo(v),)) 
         self.append(animation, display)
 
+    #========== Provide Undo/Redo for animation commands from GraphDisplay ======
     def SetVertexColor(self, v, color, animator, display):
         self._check_animator_set(animator, display)
         animation = AnimationHistory.AnimationCommand(animator.SetVertexColor, (v,), (color,),
