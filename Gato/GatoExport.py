@@ -726,9 +726,10 @@ def format_bubbles(bubbles):
     return bubble_str
 
 def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=None, 
-    secondaryGraphDisplayAnimationHistory=None, showAnimation=False, 
-    init_edge_infos=None, init_vertex_infos=None, init_graph_infos=None,
-    write_to_png=False, chapter_number=None, algo_div=None, chapter_name=None, start_graph_coord_diff=None):
+              secondaryGraphDisplayAnimationHistory=None, showAnimation=False, 
+              init_edge_infos=None, init_vertex_infos=None, init_graph_infos=None,
+              write_to_png=False, chapter_number=None, algo_div=None, chapter_name=None, start_graph_coord_diff=None,
+              restart_algorithm=True):
     """ Export either the current graphs or the complete animation
         (showAnimation=True) to the file fileName.
 
@@ -771,7 +772,8 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
 
     # Reload the graph and execute prolog so we can save the initial state to SVG
     # if showAnimation and not write_to_png:
-    algorithm.Start(prologOnly=True)
+    if restart_algorithm:
+        algorithm.Start(prologOnly=True)
 
     # If we have coord diffs passed in, then use those, otherwise recompute
     if start_graph_coord_diff:

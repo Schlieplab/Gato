@@ -286,11 +286,11 @@ class AlgoWin(Frame):
         self.fileMenu.add_command(label='Export Graph as EPS...',	
                                   command=self.ExportEPSF)        
 
-        if self.experimental:
-            self.fileMenu.add_command(label='Export Graph as SVG...',	
+        #if self.experimental:
+        self.fileMenu.add_command(label='Export Graph as SVG...',	
                                   command=self.ExportSVG)
-            self.fileMenu.add_command(label='Export Animation as SVG...',	
-                                      command=self.ExportSVGAnimation)
+        self.fileMenu.add_command(label='Export Animation as SVG...',	
+                                  command=self.ExportSVGAnimation)
             
         if self.windowingsystem != 'aqua':
             #self.fileMenu.add_separator()
@@ -891,7 +891,8 @@ class AlgoWin(Frame):
 
             if not self.secondaryGraphDisplay or self.algorithm.graphDisplays == None or self.algorithm.graphDisplays == 1:
                 return GatoExport.ExportSVG(fileName, self, self.algorithm, self.graphDisplay, 
-                    showAnimation=False, write_to_png=write_to_png, start_graph_coord_diff=start_graph_coord_diff)
+                                            showAnimation=False, write_to_png=write_to_png, start_graph_coord_diff=start_graph_coord_diff,
+                                            restart_algorithm=False)
             else:
                 return GatoExport.ExportSVG(fileName, self, self.algorithm, self.graphDisplay,
                     self.secondaryGraphDisplay.animator, showAnimation=False, write_to_png=write_to_png, start_graph_coord_diff=start_graph_coord_diff)
