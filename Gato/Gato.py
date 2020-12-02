@@ -284,13 +284,14 @@ class AlgoWin(Frame):
         self.fileMenu.add_command(label='Reload Algorithm & Graph',	
                                   command=self.ReloadAlgorithmGraph)
         self.fileMenu.add_command(label='Export Graph as EPS...',	
-                                  command=self.ExportEPSF)
+                                  command=self.ExportEPSF)        
 
         if self.experimental:
             self.fileMenu.add_command(label='Export Graph as SVG...',	
-                                      command=self.ExportSVG)
+                                  command=self.ExportSVG)
             self.fileMenu.add_command(label='Export Animation as SVG...',	
                                       command=self.ExportSVGAnimation)
+            
         if self.windowingsystem != 'aqua':
             #self.fileMenu.add_separator()
             #self.fileMenu.add_command(label='Preferences...',
@@ -653,7 +654,8 @@ class AlgoWin(Frame):
             
             if self.AboutAlgorithmDialog:
                 self.AboutAlgorithmDialog.Update(self.algorithm.About(),"About Algorithm")
-                
+
+               
     def NewGraph(self):
         Gred.Start()
         
@@ -921,7 +923,8 @@ class AlgoWin(Frame):
         if self.algorithmIsRunning == 1:
             self.commandAfterStop = self.Quit
             self.CmdStop()
-            return
+            self.update_idletasks()
+            #return
             
         if askokcancel("Quit","Do you really want to quit?"):
             self.CleanUp()
@@ -1128,10 +1131,10 @@ class AlgoWin(Frame):
         widget.bind('c', self.KeyContinue)
         widget.bind('t', self.KeyTrace)
         widget.bind('b', self.KeyBreak)        
-        if self.experimental:
-            widget.bind('r', self.KeyReplay)
-            widget.bind('u', self.KeyUndo)
-            widget.bind('d', self.KeyDo)
+        #if self.experimental:
+        widget.bind('r', self.KeyReplay)
+        widget.bind('u', self.KeyUndo)
+        widget.bind('d', self.KeyDo)
         
         # Cross-plattform accelerators
         if self.windowingsystem == 'aqua':
@@ -2111,12 +2114,12 @@ def main(argv=None):
     if not argv: 
         argv = sys.argv    
     try:
-        opts, args = getopt.getopt(argv[1:], "pvdx", ["verbose","paned","debug","experimental"])
+        opts, args = getopt.getopt(argv[1:], "svdx", ["verbose","separate","debug","experimental"])
     except getopt.GetoptError:
         usage()
         return 2
 
-    paned = False
+    paned = True
     debug = False
     verbose = False        
     experimental = False
@@ -2134,8 +2137,9 @@ def main(argv=None):
                     logging.basicConfig(level=logging.DEBUG,
                                         stream=sys.stdout,
                                         format='%(name)s %(levelname)s %(message)s')
-            if o in ("-p", "--paned"):
-                paned = True
+            # Default is now paned view
+            if o in ("-s", "--separate"):
+                paned = False
             if o in ("-d", "--debug"):
                 debug = True
             if o in ("-x", "--experimental"):
@@ -2194,8 +2198,8 @@ def main(argv=None):
         # Handler According to
         # http://mail.python.org/pipermail/pythonmac-sig/2006-May/017432.html
         # this should work
-        if not paned and app.windowingsystem == 'aqua':
-            tk.tk.createcommand("::tk::mac::Quit",app.Quit)
+        if app.windowingsystem == 'aqua':
+            tk.createcommand("::tk::mac::Quit",app.Quit)
             
         # XXX Here we should actually provide our own buffer and a Tk
         # Textbox to write to. NullHandler taken from
