@@ -382,7 +382,7 @@ class AlgoWin(Frame):
     def makeToolBar(self):
         """ *Internal* Creates Start/Stop/COntinue ... toolbar """
         toolbar = Frame(self, cursor='hand2', relief=FLAT)
-        toolbar.pack(side=BOTTOM, fill=X) # Allows horizontal growth
+        toolbar.pack(side=BOTTOM, fill=X, padx=2, pady=2) # Allows horizontal growth
         toolbar.columnconfigure(5,weight=1)
         
         if os.name == 'nt' or os.name == 'dos':
@@ -456,7 +456,7 @@ class AlgoWin(Frame):
                                          )
         self.SetAlgorithmFont(self.algoFont, self.algoFontSize)
         self.algoText.pack(expand=1, fill=BOTH)
-        borderFrame.pack(side=TOP, expand=1, fill=BOTH)
+        borderFrame.pack(side=TOP, expand=1, fill=BOTH, padx=1, pady=1)
         
         # GUI-related tags
         self.algoText.tag_config('Interactive', foreground='#009900',background="#E5E5E5")
@@ -2187,6 +2187,7 @@ def main(argv=None):
                 50))
             app.tkraise()
             app.master.update()            
+            app.update_idletasks()
             app.OneGraphWindow()
         else:
             app = AlgoWin(tk,experimental=experimental)
