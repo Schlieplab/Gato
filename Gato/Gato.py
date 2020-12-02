@@ -289,8 +289,8 @@ class AlgoWin(Frame):
         #if self.experimental:
         self.fileMenu.add_command(label='Export Graph as SVG...',	
                                   command=self.ExportSVG)
-        self.fileMenu.add_command(label='Export Animation as SVG...',	
-                                  command=self.ExportSVGAnimation)
+        self.fileMenu.add_command(label='Export Animation as HTML...',	
+                                  command=self.ExportHTMLAnimation)
             
         if self.windowingsystem != 'aqua':
             #self.fileMenu.add_separator()
@@ -919,6 +919,71 @@ class AlgoWin(Frame):
                     init_edge_infos=self.algorithm.DB.init_edge_infos, init_vertex_infos=self.algorithm.DB.init_vertex_infos,
                     init_graph_infos=self.algorithm.DB.init_graph_infos, chapter_number=chapter_number, algo_div=algo_div,
                     chapter_name=chapter_name)
+
+    def ExportHTMLAnimation(self):
+        """ GUI to control export of SVG file  """
+        chapter_number=None
+        algo_div=None
+        chapter_name=None
+        
+        graph_name = os.path.splitext(os.path.basename(self.algorithm.graphFileName))[0]
+        algo_name = os.path.splitext(os.path.basename(self.algorithm.algoFileName))[0]
+
+        html_dir = "~/Documents/MyGatoAnimations/"
+        
+        svg_file_name = os.path.join(html_dir, "%s--%s.html" % (algo_name, graph_name))
+
+        if not askokcancel("HTML Animation",
+                           "A HTML file containing the animation will be saved as %s" % svg_file_name):
+            return
+        svg_file_name = os.path.expanduser(svg_file_name)
+        html_dir_path = os.path.expanduser(html_dir)
+        if not os.path.isdir(html_dir_path):
+            os.makedirs(html_dir_path)
+        
+        if os.path.isfile(os.path.expanduser(svg_file_name)):
+            if not askokcancel("Overwrite File", "File %s exists. Overwrite?" % svg_file_name):
+                return
+
+        svg_file_name = os.path.expanduser(svg_file_name)
+
+        oldGInteractive = g.Interactive
+        g.Interactive = False
+        # Should restore breakpoints once we are done
+        self.algorithm.ClearBreakpoints()
+        self.algorithm.DB.alwaysTrace = 1 # Capture activeLine in sub-routines
+        self.update_idletasks()
+        self.update()
+        self.update_idletasks()
+        self.update()
+        # Run it ...
+        #self.after_idle(self.CmdContinue) # after idle needed since CmdStart
+        # does not return
+        self.CmdStart()
+        self.update_idletasks()
+        self.CmdContinue
+        
+        import GatoExport
+        # We never destroy the secondary graph display (and create it from the beginning
+        # for the paned viewed. graphDisplays is set from prolog
+        if not self.secondaryGraphDisplay or self.algorithm.graphDisplays == None or self.algorithm.graphDisplays == 1:
+            GatoExport.ExportSVG(svg_file_name, self, self.algorithm, self.graphDisplay, None, None, showAnimation=True, 
+                                 init_edge_infos=self.algorithm.DB.init_edge_infos,
+                                 init_vertex_infos=self.algorithm.DB.init_vertex_infos,
+                                 init_graph_infos=self.algorithm.DB.init_graph_infos,
+                                 chapter_number=chapter_number, algo_div=algo_div,
+                                 chapter_name=chapter_name, no_info_file=True)
+        else:
+            GatoExport.ExportSVG(svg_file_name, self, self.algorithm, self.graphDisplay,
+                                 self.secondaryGraphDisplay.animator, self.secondaryGraphDisplay, showAnimation=True,
+                                 init_edge_infos=self.algorithm.DB.init_edge_infos,
+                                 init_vertex_infos=self.algorithm.DB.init_vertex_infos,
+                                 init_graph_infos=self.algorithm.DB.init_graph_infos,
+                                 chapter_number=chapter_number, algo_div=algo_div,
+                                 chapter_name=chapter_name, no_info_file=True)
+        g.Interactive = oldGInteractive
+
+        
 
     def Quit(self,event=None):
         if self.algorithmIsRunning == 1:

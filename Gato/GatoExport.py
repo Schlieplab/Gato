@@ -689,16 +689,19 @@ def format_animation(animation):
         return ret_str
 
 def construct_title(fileName):
-    sp = fileName.split('/')[1].split('--')
-    algorithm = sp[0]
-    graph = sp[1].split('.')[0]
-    return 'Gato -- %s algorithm on %s graph' % (algorithm, graph)
+    basename = os.path.splitext(os.path.basename(fileName))
+    algorithm, graph = basename[0].split('--')
+    result = 'Gato -- %s algorithm on %s graph' % (algorithm, graph)
+    print result
+    return result
 
 def construct_animation_name(fileName):
-    sp = fileName.split('/')[1].split('--')
-    algorithm = sp[0]
-    graph = sp[1].split('.')[0]
-    return '%s on %s graph' % (algorithm, graph)
+    basename = os.path.splitext(os.path.basename(fileName))
+    algorithm, graph = basename[0].split('--')
+    result = '%s on %s graph' % (algorithm, graph)
+    print result
+    return result
+    
 
 def get_start_coordinate_diff(graphDisplay, secondaryGraphDisplay=None):
     start_g1_x_add, start_g1_y_add, start_g1_has_elements = compute_coord_changes(graphDisplay)
@@ -729,7 +732,7 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
               secondaryGraphDisplayAnimationHistory=None, showAnimation=False, 
               init_edge_infos=None, init_vertex_infos=None, init_graph_infos=None,
               write_to_png=False, chapter_number=None, algo_div=None, chapter_name=None, start_graph_coord_diff=None,
-              restart_algorithm=True):
+              restart_algorithm=True, no_info_file=False):
     """ Export either the current graphs or the complete animation
         (showAnimation=True) to the file fileName.
 
@@ -823,6 +826,12 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
         tokenize.tokenize(StringIO.StringIO(source.replace('\\', '\\\\')).readline, tokenEater)
         algowin.CommitStop()
 
+        # 
+        if no_info_file:
+            info_file = ""
+        else:
+            info_file = 'infos/' + fileName[fileName.rindex('/') + 1:]
+        
         # Merge the animation into the HTML
         str_vars = {
             'title': construct_title(fileName),
@@ -830,7 +839,7 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
             'chapter_number': chapter_number or 0,
             'algo_div': algo_div or '',
             'chapter_name': CHAPTER_NUM_TO_ABBREV.get(int(chapter_number or 0)) or '',
-            'info_file': 'infos/' + fileName[fileName.rindex('/') + 1:],
+            'info_file': info_file,
             'this_url': fileName[fileName.rindex('/') + 1:],
             'animation': format_animation(animation),
             'graph_str': '\n'.join(graph_strs), 
