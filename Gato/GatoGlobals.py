@@ -177,19 +177,24 @@ gGatoHelp = """
 <HTML>
 <HEAD><TITLE>Gato %s </TITLE></HEAD>
 <BODY>
+<img src="Icons/gato.gif">
 
 <H3>Keyboard Shortcuts</H3>
 
+<p>These shortcuts do not require any modifier (e.g., Ctrl, or Cmd) and are active at all times.
+The animation specific commands, r, u, d, only affect the animation, not the line. This is helpful to
+discuss specific steps in an algorithm.</p>
 <ul>
-<li> <tt>s</tt> Start
-<li> <tt>x</tt> Stop
-<li> <tt>[space]</tt> Step
-<li> <tt>c</tt> Continue
-<li> <tt>t</tt> trace
-<li> <tt>b</tt> toggle breakpoint
+<li> <tt>s</tt> Start the current algorithm.
+<li> <tt>x</tt> Stop the running algorithm.
+<li> <tt>[space]</tt> Step one command.
+<li> <tt>c</tt> Continue after a break.
+<li> <tt>t</tt> Trace into a function call.
+<li> <tt>b</tt> Toggle breakpoint on current line.
+<li> <tt>r</tt> Replay the last animation (will catch-up with all previously undone animation steps).
+<li> <tt>u</tt> Undo the last animation.
+<li> <tt>d</tt> (Re-)do the last undone animation.
 </ul>
-
-<img src="Icons/gato.gif">
 
 </BODY>
 </HTML>""" % gatoVersion
