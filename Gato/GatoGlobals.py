@@ -37,8 +37,8 @@
 
 import tkFont
 
-gatoVersion = '1.2.3'
-gatoBuildDate = '10/19/2019'
+gatoVersion = '1.2.4'
+gatoBuildDate = '12/06/2020'
 
 class AnimationParameters:
     """ Convenience class to collect all globals. 

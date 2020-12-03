@@ -45,7 +45,8 @@ import htmllib, formatter
 
 
 # Should be in GatoGlobals 
-crnotice1 = "Copyright (C) 1998-2015, Alexander Schliep\n"\
+crnotice1 = "Copyright (C) 2016-2020 Alexander Schliep.\n"\
+            "Copyright 1998-2015, Alexander Schliep\n"\
             "and Winfried Hochstaettler. Copyright (C)\n"\
             "1998-2001 ZPR, University of Cologne\n"\
             "Gato version %s from %s" % (GatoGlobals.gatoVersion,GatoGlobals.gatoBuildDate)
@@ -53,7 +54,7 @@ crnotice1 = "Copyright (C) 1998-2015, Alexander Schliep\n"\
 crnotice2 = "Written by Alexander Schliep (alexander@schliep.org).\n" \
             "Application Design: Alexander Schliep and \n" \
             "Winfried Hochstaettler. Additional developers: Torsten\n" \
-            "Pattberg, Ramazan Buzdemir, Achim Gaedke,\n Janne Grunau and Wasinee Rungsarityotin.\n" \
+            "Pattberg, Ramazan Buzdemir, Achim Gaedke,\n Scott Merkling, Janne Grunau and Wasinee Rungsarityotin.\n" \
             "Screen Design: Heidrun Krimmel.\n\n" \
             "For Information see http://gato.sf.net\n" \
             "Gato comes with ABSOLUTELY NO WARRANTY.\n" \

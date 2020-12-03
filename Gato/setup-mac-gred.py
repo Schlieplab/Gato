@@ -50,33 +50,39 @@ long_description = """
 Gato, the Graph Animation Toolbox http://gato.sf.net by Alexander
 Schliep and Winfried Hochstaettler, is a LGPL-licensed Python
 application which animates algorithms on graphs. It uses Tkinter and
-runs on Unix, MacOS X, Linux and Windows.
+runs on Unix, MacOS, Linux and Windows.
 
 It is primarily a teaching tool, but can also be useful in research on
 algorithm design and engineering, for example by demonstrating effects of
 heuristics.
 
 It is used in CATBox (Springer 2010, see authors' website
-http://schliep.org/CATBox) by Winfried Hochstaettler and Alexander
+https://schliep.org/CATBox) by Winfried Hochstaettler and Alexander
 Schliep. CATBox is a textbook on combinatorial optimization on graphs
 (traversals, minimal spanning trees, shortest paths, maximum flows,
 min-cost flows, cardinality and weighted matching) which uses Gato to
-provide interactive animations and exercises for all algorithms.  See
-https://schliep.org/CATBox.A
+provide interactive animations and exercises for all algorithms.
+Animations can be viewed in the desktop app or saved as HTML files
+with a JavaScript and SVG-based player for online viewing. See
+https://schliep.org/CATBox/WebGato/index.html for examples.
 
-
-Gato and CATBox has been used in university classrooms for several
+Gato and CATBox have been used in university classrooms for several
 years by us and colleagues on several continents at the undergraduate
 and graduate level.  Winfried Hochstaettler is a professor in
 mathematics at the FernUniversitaet Hagen, Germany and Alexander
-Schliep is an associate professor in computer science at Gothenburg University.
+Schliep is an associate professor in computer science at Gothenburg
+University, Sweden.
+
+Gato is Copyright (C) 2016-2020 Alexander Schliep, Copyright
+1998-2015, Alexander Schliep and Winfried Hochstaettler, and Copyright
+1998-2001 ZAIK/ZPR, Universitaet zu Koeln, Germany.
 """
 
 
 
 setup(name="Gred",
       app=['Gred.py'],
-      version="1.2.3",
+      version="1.2.4",
       setup_requires=["py2app"],
       options=dict(py2app=dict(semi_standalone=None,
                                argv_emulation=True,
@@ -107,7 +113,7 @@ setup(name="Gred",
                                plist=dict(CFBundleIdentifier='org.schliep.gred',
                                           CFBundleGetInfoString='Graph Animation Toolbox',
                                           NSHumanReadableCopyright= \
-                                          u"\u00A9 Alexander Schliep and Winfried Hochst\u00E4ttler 2014")
+                                          u"\u00A9 Alexander Schliep 2020")
                                )
                                ),
       description="Graph Animation Toolbox: animating algorithms on graphs",
