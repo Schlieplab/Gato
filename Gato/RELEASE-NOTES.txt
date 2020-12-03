@@ -1,6 +1,7 @@
 Gato Release notes
 
 Gato 1.2.4 from 12/6/2020
+* Still Python 2.7
 * Paned modus is now default
 * Added -s --separate for old standard behaviour with two graph windows
 * Added replay (r), undo (u), do (d) key commands alllowing to play back animation commands

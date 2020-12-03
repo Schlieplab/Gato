@@ -1711,6 +1711,7 @@ class Algorithm:
         self.breakpoints = []       # Doesnt debugger take care of it ?
         self.algoFileName = ""
         self.graphFileName = ""
+        self.graphDisplays = None
         self.mode = 0
         # mode = 0  Stop
         # mode = 1  Running
@@ -2303,6 +2304,22 @@ def main(argv=None):
             app.OpenGatoFile(fileName)
             app.update_idletasks()
             app.update()
+
+        if app.windowingsystem == 'aqua':
+            #app.master.iconify()
+            app.update()
+            app.master.deiconify()
+            app.master.lift()
+            # See discussion at https://stackoverflow.com/questions/1892339/how-to-make-a-tkinter-window-jump-to-the-front
+            if sys.argv[0] == 'Gato.py':
+                # If I am running from the command line the app is "Python"
+                os.system('''/usr/bin/osascript -e 'tell app "System Events" to set frontmost of process "Python" to true' ''')
+            else:
+                # When executing a packages MacOS App
+                # This does not throw an error, so I suppose sys.argv[0] is set correctly to Gato
+                # However this still asks the user for permision, which looks nefarious.
+                os.system('''/usr/bin/osascript -e 'tell app "System Events" to set frontmost of process "Gato" to true' ''')
+               
         app.mainloop()
     else:
         usage()
