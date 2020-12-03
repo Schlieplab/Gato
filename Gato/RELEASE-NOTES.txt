@@ -1,5 +1,15 @@
 Gato Release notes
 
+Gato 1.2.4 from 12/6/2020
+* Paned modus is now default
+* Added -s --separate for old standard behaviour with two graph windows
+* Added replay (r), undo (u), do (d) key commands alllowing to play back animation commands
+  (used to be experimental)
+* Fixed bugs in undo command
+* Fixed bugs in WM interaction
+* Enables SVG export of graph in current animation state and saving of animations as HTML
+
+
 Gato 1.2.2 from 1/13/15
 - Finished work on SVG export
 - Lot's of minor bug fixes
