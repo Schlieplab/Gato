@@ -39,6 +39,13 @@ import tkFont
 
 gatoVersion = '1.2.4'
 gatoBuildDate = '12/06/2020'
+gatoDescription = 'Graph Animation Toolbox: animating algorithms on graphs'
+gatoAuthorEmail = 'alexander@schliep.org'
+gatoURL = 'http://gato.sf.net'
+gatoDownloadURL = 'http://sourceforge.net/projects/gato/files/'
+gGatoURL = gatoURL
+gCATBoxURL = 'http://schliep.org/CATBox'
+
 
 class AnimationParameters:
     """ Convenience class to collect all globals. 
@@ -56,7 +63,7 @@ class AnimationParameters:
     FontSize = 10
     FontStyle = tkFont.BOLD
 
-    # Animation
+    # Animationk
     BlinkRate = 10 # ms
     BlinkRepeat = 3 # One more than you want
     Interactive = 1
@@ -168,9 +175,6 @@ gProperty = {
     'Size': (0, 'no edges', 'number of edges')
     }
 
-
-gGatoURL = 'http://gato.sf.net'
-gCATBoxURL = 'http://schliep.org/CATBox'
 
 
 gGatoHelp = """

@@ -41,12 +41,30 @@ import distutils
 from distutils.core import setup,Extension
 import py2exe
 
+# Read info from GatoGlobals.py ... the following code makes sure we read
+# GatoGlobals.py in the current directory
+import sys
+if sys.version_info < (3,0):
+    info={}
+    execfile("GatoGlobals.py", info)
+else:
+    # Some variant of exec(open("GatoGlobals.py").read())
+    raise NotImplementedError
+
+long_description_text = open('README').readlines()
+
+
+
 setup(name="Gato",
-      version="1.2.4",
-      description="the Graph Animation Toolbox",
-      author="Gato authors",
-      author_email="Gato",
-      url="http://gato.sourceforge.net/",
+      version=info['gatoVersion'],
+      description = info['gatoDescription'],
+      long_description = long_description_text,
+      author = "Alexander Schliep and Winfried Hochstaettler",
+      author_email = info['gatoAuthorEmail'],
+      maintainer = "Alexander Schliep",
+      maintainer_email = info['gatoAuthorEmail'],
+      url = info['gatoURL'],
+      download_url = info['gatoDownloadURL'],
       packages=['Gato'],
       package_dir={'Gato': ''},
       scripts=['scripts/Gato', 'scripts/Gred'],

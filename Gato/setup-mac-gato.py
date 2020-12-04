@@ -46,44 +46,22 @@ from setuptools import setup
 #import distutils
 #from distutils.core import setup
 
-long_description = """
-Gato, the Graph Animation Toolbox http://gato.sf.net by Alexander
-Schliep and Winfried Hochstaettler, is a LGPL-licensed Python
-application which animates algorithms on graphs. It uses Tkinter and
-runs on Unix, MacOS, Linux and Windows.
+# Read info from GatoGlobals.py ... the following code makes sure we read
+# GatoGlobals.py in the current directory
+import sys
+if sys.version_info < (3,0):
+    info={}
+    execfile("GatoGlobals.py", info)
+else:
+    # Some variant of exec(open("GatoGlobals.py").read())
+    raise NotImplementedError
 
-It is primarily a teaching tool, but can also be useful in research on
-algorithm design and engineering, for example by demonstrating effects of
-heuristics.
-
-It is used in CATBox (Springer 2010, see authors' website
-https://schliep.org/CATBox) by Winfried Hochstaettler and Alexander
-Schliep. CATBox is a textbook on combinatorial optimization on graphs
-(traversals, minimal spanning trees, shortest paths, maximum flows,
-min-cost flows, cardinality and weighted matching) which uses Gato to
-provide interactive animations and exercises for all
-algorithms. Animations can be viewed in the desktop app or saved as
-HTML files with a JavaScript and SVG-based player for online
-viewing. See https://schliep.org/CATBox/WebGato/index.html for
-examples.
-
-Gato and CATBox has been used in university classrooms for several
-years by us and colleagues on several continents at the undergraduate
-and graduate level.  Winfried Hochstaettler is a professor in
-mathematics at the FernUniversitaet Hagen, Germany and Alexander
-Schliep is an associate professor in computer science at Gothenburg
-University, Sweden.
-
-Gato is Copyright (C) 2016-2020 Alexander Schliep, Copyright
-1998-2015, Alexander Schliep and Winfried Hochstaettler, and Copyright
-1998-2001 ZAIK/ZPR, Universitaet zu Koeln, Germany.
-"""
-
+long_description_text = open('README').readlines()
 
 
 setup(name="Gato",
       app=['Gato.py'],
-      version="1.2.4",
+      version=info['gatoVersion'],
       setup_requires=["py2app"],
       options=dict(py2app=dict(semi_standalone=None,
                                argv_emulation=True,
@@ -117,14 +95,14 @@ setup(name="Gato",
                                           NSHumanReadableCopyright=u"\u00A9 Alexander Schliep 2020")
                                )
                    ),
-      description="Graph Animation Toolbox: animating algorithms on graphs",
-      long_description = long_description,
-      author="Alexander Schliep and Winfried Hochstaettler",
-      author_email="alexander@schliep.org",
-      maintainer="Alexander Schliep",
-      maintainer_email="alexander@schliep.org",
-      url="http://gato.sf.net/",
-      download_url = 'http://sourceforge.net/projects/gato/files/',
+      description = info['gatoDescription'],
+      long_description = long_description_text,
+      author = "Alexander Schliep and Winfried Hochstaettler",
+      author_email = info['gatoAuthorEmail'],
+      maintainer = "Alexander Schliep",
+      maintainer_email = info['gatoAuthorEmail'],
+      url = info['gatoURL'],
+      download_url = info['gatoDownloadURL'],
       packages=['Gato'],
       package_dir={'Gato': ''},
       scripts=['scripts/Gato', 'scripts/Gred'],
