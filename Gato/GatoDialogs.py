@@ -49,17 +49,20 @@ crnotice1 = "Copyright (C) 2016-2020 Alexander Schliep.\n"\
             "Copyright 1998-2015, Alexander Schliep\n"\
             "and Winfried Hochstaettler. Copyright (C)\n"\
             "1998-2001 ZPR, University of Cologne\n"\
-            "Gato version %s from %s" % (GatoGlobals.gatoVersion,GatoGlobals.gatoBuildDate)
+            "Gato version %s from %s" % (GatoGlobals.gatoVersion,
+                                         GatoGlobals.gatoBuildDate)
 
-crnotice2 = "Written by Alexander Schliep (alexander@schliep.org).\n" \
+crnotice2 = "Written by Alexander Schliep (%s).\n" \
             "Application Design: Alexander Schliep and \n" \
             "Winfried Hochstaettler. Additional developers: Torsten\n" \
-            "Pattberg, Ramazan Buzdemir, Achim Gaedke,\n Scott Merkling, Janne Grunau and Wasinee Rungsarityotin.\n" \
+            "Pattberg, Ramazan Buzdemir, Achim Gaedke,\n" \
+            "Scott Merkling, Janne Grunau and Wasinee Rungsarityotin.\n" \
             "Screen Design: Heidrun Krimmel.\n\n" \
-            "For Information see http://gato.sf.net\n" \
+            "For Information see %s\n" \
             "Gato comes with ABSOLUTELY NO WARRANTY.\n" \
             "This is free software, and you are welcome to redistribute\n" \
-            "it under certain conditions. For details see 'LGPL.txt'.\n"
+            "it under certain conditions. For details see 'LGPL.txt'.\n" %(GatoGlobals.gatoAuthorEmail,
+                                                                           GatoGlobals.gatoURL)
 
 class AutoScrollbar(Scrollbar):
     """ Code taken from a comp.lang.python posting by
