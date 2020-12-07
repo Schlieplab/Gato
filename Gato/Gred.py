@@ -402,8 +402,8 @@ class SAGraphEditor(GraphEditor, Frame):
         self.fileMenu.add_separator()
         self.fileMenu.add_command(label='Export as EPSF...',
                                   command=self.ExportEPSF)
-        #self.fileMenu.add_command(label='Export as SVG...',	
-        #                          command=self.ExportSVG)
+        self.fileMenu.add_command(label='Export as SVG...',	
+                                  command=self.ExportSVG)
         if self.windowingsystem != 'aqua':
             self.fileMenu.add_separator()
             self.fileMenu.add_command(label='Quit',		
@@ -691,6 +691,21 @@ class SAGraphEditor(GraphEditor, Frame):
         if file != "" and file != (): 
             self.PrintToPSFile(file)
             
+    def ExportSVG(self):
+        """ GUI to control export of SVG file  """
+        fileName = asksaveasfilename(title="Export SVG",
+                                     defaultextension=".svg",
+                                     filetypes = [("SVG", ".svg")]
+                                     )
+        if fileName is not "":
+            import GatoExport
+            return GatoExport.ExportSVG(fileName, self, None, self, 
+                                        showAnimation=False,
+                                        write_to_png=False,
+                                        start_graph_coord_diff=None,
+                                        restart_algorithm=False)
+
+
             
     def Quit(self,dummy=None):
         if askokcancel("Quit","Do you really want to quit?"):
