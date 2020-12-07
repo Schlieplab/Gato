@@ -41,8 +41,11 @@
 #
 #
 #
+import distutils
+from distutils.core import setup
+import py2app
 
-from setuptools import setup
+#from setuptools import setup
 
 # Read info from GatoGlobals.py ... the following code makes sure we read
 # GatoGlobals.py in the current directory
@@ -56,14 +59,12 @@ else:
 
 long_description_text = open('README').readlines()
 
-#import distutils
-#from distutils.core import setup
 
 
 setup(name="Gred",
       app=['Gred.py'],
       version=info['gatoVersion'],
-      setup_requires=["py2app"],
+      #setup_requires=["py2app"],
       options=dict(py2app=dict(semi_standalone=None,
                                argv_emulation=True,
                                iconfile='Gred.icns',

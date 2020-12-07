@@ -42,9 +42,10 @@
 #
 #
 
-from setuptools import setup
-#import distutils
-#from distutils.core import setup
+import distutils
+from distutils.core import setup
+import py2app
+
 
 # Read info from GatoGlobals.py ... the following code makes sure we read
 # GatoGlobals.py in the current directory
