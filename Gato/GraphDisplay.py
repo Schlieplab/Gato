@@ -1253,15 +1253,15 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
         del(self.drawVertex.label[v])
         self.canvas.delete(self.drawLabel[v])
         del(self.drawLabel.label[v])
-        """ delete incident edges
+        # delete incident edges
         outVertices = self.G.OutNeighbors(v)[:] # Need a copy here
         inVertices = self.G.InNeighbors(v)[:]
-        #for w in outVertices:
-        #    self.DeleteEdge(v,w,0)
-        #for w in inVertices:
-        #    if w != v: # We have already deleted loops
+        for w in outVertices:
+            self.DeleteEdge(v,w,0)
+        for w in inVertices:
+            if w != v: # We have already deleted loops
                self.DeleteEdge(w,v,0)
-        """
+        
         self.G.DeleteVertex(v)
 
         
