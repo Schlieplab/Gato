@@ -386,6 +386,9 @@ class SAGraphEditor(GraphEditor, Frame):
         
         # --- FILE menu ----------------------------------------
         self.fileMenu = Menu(self.menubar, tearoff=0)
+        self.menubar.add_cascade(label="File", menu=self.fileMenu, 
+                                 underline=0)
+
         self.fileMenu.add_command(label='New',
                                   command=self.NewGraph)
         self.fileMenu.add_command(label='Open ...',
@@ -397,18 +400,22 @@ class SAGraphEditor(GraphEditor, Frame):
         self.fileMenu.add_command(label='Save as ...',
                                   command=self.SaveAsGraph)
         self.fileMenu.add_separator()
-        self.fileMenu.add_command(label='Export EPSF...',
+        self.fileMenu.add_command(label='Export as EPSF...',
                                   command=self.ExportEPSF)
+        #self.fileMenu.add_command(label='Export as SVG...',	
+        #                          command=self.ExportSVG)
         if self.windowingsystem != 'aqua':
             self.fileMenu.add_separator()
             self.fileMenu.add_command(label='Quit',		
                                       command=self.Quit,
                                       accelerator='%s-Q' % accMod)
-        self.menubar.add_cascade(label="File", menu=self.fileMenu, 
-                                 underline=0)
+
         
         # --- GRAPH menu ----------------------------------------
         self.graphMenu = Menu(self.menubar, tearoff=0)
+        self.menubar.add_cascade(label="Graph", menu=self.graphMenu, 
+                                 underline=0)
+        
         self.directedVar = IntVar()
         self.graphMenu.add_checkbutton(label='Directed',  
                                        command=self.graphDirected,
@@ -466,13 +473,13 @@ class SAGraphEditor(GraphEditor, Frame):
         self.graphMenu.add_separator()
         self.graphMenu.add_checkbutton(label='Grid', 
                                                   command=self.ToggleGridding)	
-        self.menubar.add_cascade(label="Graph", menu=self.graphMenu, 
-                                 underline=0)
         
 
         # --- EXTRAS menu ----------------------------------------
         # Add a menue item for all creators found in GraphCreator.creator
         self.extrasMenu = Menu(self.menubar, tearoff=0)
+        self.menubar.add_cascade(label="Extras", menu=self.extrasMenu, 
+                                 underline=0)
         
         for create in GraphCreator.creator: 
             self.extrasMenu.add_command(label=create.Name(),
@@ -487,33 +494,41 @@ class SAGraphEditor(GraphEditor, Frame):
         self.extrasMenu.add_separator()        
         self.extrasMenu.add_command(label='Randomize Edge Weights',
                                   command=self.RandomizeEdgeWeights)
-        self.menubar.add_cascade(label="Extras", menu=self.extrasMenu, 
-                                 underline=0)
+
 
         # --- HELP menu ----------------------------------------        
         self.helpMenu=Menu(self.menubar, tearoff=0, name='help')
+        self.menubar.add_cascade(label="Help", menu=self.helpMenu, 
+                                 underline=0)
+
         if self.windowingsystem != 'aqua':
             self.helpMenu.add_command(label='About Gred',
                                       command=self.AboutBox)
-        
-        self.helpMenu.add_command(label='About Graph',	
-                                  command=self.AboutGraph)
-        self.helpMenu.add_separator()
+            #self.helpMenu.add_command(label='Help',
+            #                          accelerator='%s-?' % accMod,
+            #                          command=self.HelpBox)
+            self.helpMenu.add_separator()
+        else:
+            pass #self.master.createcommand('tk::mac::ShowHelp', self.HelpBox)
+
+
         self.helpMenu.add_command(label='Go to Gato website',
                                   command=self.GoToGatoWebsite)
         self.helpMenu.add_command(label='Go to CATBox website',
                                   command=self.GoToCATBoxWebsite)       
-        self.menubar.add_cascade(label="Help", menu=self.helpMenu, 
-                                 underline=0)
+        self.helpMenu.add_separator()
+        self.helpMenu.add_command(label='About Graph',	
+                                  command=self.AboutGraph)
 
         # --- MacOS X application menu --------------------------
         # On a Mac we put our about box under the Apple menu ... 
         if self.windowingsystem == 'aqua':
             self.apple=Menu(self.menubar, tearoff=0, name='apple')
-            self.apple.add_command(label='About Gred',	
-                                   command=self.AboutBox)
-            self.menubar.add_cascade(menu=self.apple)
-            
+            self.menubar.add_cascade(menu=self.apple, underline=0)
+            self.master.createcommand('tkAboutDialog', self.AboutBox)
+            #self.master.createcommand('tk::mac::ShowPreferences', self.Preferences)
+
+ 
         if toplevel:
             self.configure(menu=self.menubar)
         else:
@@ -956,9 +971,6 @@ def main(argv=None):
         tk.tk.call('console','hide')
     except tkinter.TclError or AttributeError:
         pass
-    tk.option_add('*ActiveBackground','#EEEEEE')
-    tk.option_add('*background','#DDDDDD')
-    tk.option_add('Tk*Scrollbar.troughColor','#CACACA')
     graphEditor = SAGraphEditor(tk)
     graphEditor.dirty = 0
     if len(argv) == 2:
@@ -967,6 +979,14 @@ def main(argv=None):
         graphEditor.NewGraph()
     import logging
     log = logging.getLogger("Gred.py")
+
+    # On MacOS X the Quit menu entry otherwise bypasses our Quit
+    # Handler According to
+    # http://mail.python.org/pipermail/pythonmac-sig/2006-May/017432.html
+    # this should work
+    if graphEditor.windowingsystem == 'aqua':
+        tk.createcommand("::tk::mac::Quit",graphEditor.Quit)
+
     graphEditor.mainloop()
 
 
