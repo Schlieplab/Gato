@@ -1,17 +1,16 @@
-#!/usr/bin/env python2.6
+#!/usr/bin/env python2.7
 ################################################################################
 #
 #       This file is part of Gato (Graph Animation Toolbox) 
 #
-#   file:   GatoExport.py
-#   author: Alexander Schliep (alexander@schliep.org)
+#       file:   GatoExport.py
+#       author: Alexander Schliep (alexander@schlieplab.org)
 #
 #       Copyright (C) 2010, Alexander Schliep, Winfried Hochstaettler and 
-#       Copyright 1998-2001 ZAIK/ZPR, Universitaet zu Koeln
+#       Copyright (C) 1998-2001 ZAIK/ZPR, Universitaet zu Koeln
 #                                   
-#       Contact: alexander@schliep.org, winfried.hochstaettler@fernuni-hagen.de
+#       Contact: alexander@schlieplab.org
 #
-#       Information: http://gato.sf.net
 #
 #       This library is free software; you can redistribute it and/or
 #       modify it under the terms of the GNU Library General Public

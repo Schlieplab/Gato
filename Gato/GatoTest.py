@@ -4,14 +4,14 @@
 #       This file is part of Gato (Graph Animation Toolbox) 
 #
 #	file:   GatoTest.py
-#	author: Alexander Schliep (alexander@schliep.org)
+#	author: Alexander Schliep (alexander@schlieplab.org)
 #
-#       Copyright (C) 1998-2015, Alexander Schliep, Winfried Hochstaettler and 
-#       Copyright 1998-2001 ZAIK/ZPR, Universitaet zu Koeln
+#       Copyright (C) 2016-2020 Alexander Schliep and
+#	Copyright (C) 1998-2015 Alexander Schliep, Winfried Hochstaettler and 
+#       Copyright (C) 1998-2001 ZAIK/ZPR, Universitaet zu Koeln
 #                                   
-#       Contact: alexander@schliep.org, winfried.hochstaettler@fernuni-hagen.de             
+#       Contact: alexander@schlieplab.org             
 #
-#       Information: http://gato.sf.net
 #
 #       This library is free software; you can redistribute it and/or
 #       modify it under the terms of the GNU Library General Public
@@ -562,7 +562,25 @@ svg_instance = [
     }
 ]
 
-
+##svg_instance = [
+##    {
+##        'chapter_directory': '03-MinimalSpanningTrees',
+##        'chapter_number': 3,
+##        'title': 'Minimum Spanning Trees',
+##        'shortened_title': 'Minimum Spanning Trees',
+##        'algorithms': [
+##            {
+##                'title': 'Kruskal\'s Algorithm using FindCircuit',
+##                'file': 'KruskalFindCircuit.alg',
+##                'description': 'A more detailed, but naive implementation of Kruskal\'s ' \
+##                'algorithm, which checks for each edge to be added whether it completes a circuit.',
+##                'graphs': [
+##                    '03-MinimalSpanningTrees/Kruskal1.cat','03-MinimalSpanningTrees/Kruskal2.cat'
+##                ]
+##            }
+##        ]
+##    }
+##]
 
 alphabetic_algorithms = [
     {'algo_div_id': 'BellmanFord', 'title': 'Bellman Ford'}, 
@@ -835,6 +853,7 @@ if __name__ == '__main__':
                         g.Interactive = 0 # This is set to 0 above.  Do we need to do it here as well?
                         g.GeneratingSVG = 1
                         app.algorithm.ClearBreakpoints()
+                        app.algorithm.DB.alwaysTrace = 1 # Capture activeLine in sub-routines
                         app.update_idletasks()
                         app.update()
                         app.update_idletasks()

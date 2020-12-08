@@ -1,18 +1,17 @@
 ################################################################################
 #
 #       This file is part of Gato (Graph Animation Toolbox) 
-#       You can find more information at 
-#       http://gato.sf.net
+#       You can find more information at http://gato.sf.net
 #
 #	file:   Embedder.py
 #	author: Ramazan Buzdemir
 #
-#       Copyright (C) 1998-2015, Alexander Schliep, Winfried Hochstaettler and 
-#       Copyright 1998-2001 ZAIK/ZPR, Universitaet zu Koeln
+#       Copyright (C) 2016-2020 Alexander Schliep and
+#	Copyright (C) 1998-2015 Alexander Schliep, Winfried Hochstaettler and 
+#       Copyright (C) 1998-2001 ZAIK/ZPR, Universitaet zu Koeln
 #                                   
-#       Contact: alexander@schliep.org, winfried.hochstaettler@fernuni-hagen.de             
+#       Contact: alexander@schlieplab.org             
 #
-#       Information: http://gato.sf.net
 #
 #       This library is free software; you can redistribute it and/or
 #       modify it under the terms of the GNU Library General Public

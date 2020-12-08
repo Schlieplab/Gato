@@ -4,13 +4,13 @@
 #       This file is part of Gato (Graph Algorithm Toolbox) 
 #
 #	file:   HMMEd.py
-#	author: Alexander Schliep (alexander@schliep.org)
+#	author: Alexander Schliep (alexander@schlieplab.org)
 #
 #       Copyright (C) 1998-2002, Alexander Schliep
 #                                   
-#       Contact: alexander@schliep.org
+#       Contact: alexander@schlieplab.org
 #
-#       Information: http://gato.sf.net
+
 #
 #       This library is free software; you can redistribute it and/or
 #       modify it under the terms of the GNU Library General Public

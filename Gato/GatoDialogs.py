@@ -4,13 +4,13 @@
 #       You can find more information at http://gato.sf.net
 #
 #	file:   GatoDialogs.py
-#	author: Alexander Schliep (alexander@schliep.org)
-#       Copyright (C) 1998-2015, Alexander Schliep, Winfried Hochstaettler and 
-#       Copyright 1998-2001 ZAIK/ZPR, Universitaet zu Koeln
+#	author: Alexander Schliep (alexander@schlieplab.org)
+#       Copyright (C) 2016-2020 Alexander Schliep and
+#	Copyright (C) 1998-2015 Alexander Schliep, Winfried Hochstaettler and 
+#       Copyright (C) 1998-2001 ZAIK/ZPR, Universitaet zu Koeln
 #                                   
-#       Contact: alexander@schliep.org, winfried.hochstaettler@fernuni-hagen.de             
+#       Contact: alexander@schlieplab.org             
 #
-#       Information: http://gato.sf.net
 #
 #       This library is free software; you can redistribute it and/or
 #       modify it under the terms of the GNU Library General Public
@@ -46,7 +46,7 @@ import htmllib, formatter
 
 # Should be in GatoGlobals 
 crnotice1 = "Copyright (C) 2016-2020 Alexander Schliep.\n"\
-            "Copyright 1998-2015, Alexander Schliep\n"\
+            "Copyright (C) 1998-2015 Alexander Schliep\n"\
             "and Winfried Hochstaettler. Copyright (C)\n"\
             "1998-2001 ZPR, University of Cologne\n"\
             "Gato version %s from %s" % (GatoGlobals.gatoVersion,

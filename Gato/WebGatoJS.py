@@ -1,7 +1,44 @@
+################################################################################
+#
+#       This file is part of Gato (Graph Animation Toolbox) 
+#       You can find more information at http://gato.sf.net
+#
+#       file:   WebGatoJS.py
+#       author: Scott Merkling
+#
+#       Copyright (C) 2016-2020 Alexander Schliep and
+#       Copyright (C) 1998-2015 Alexander Schliep, Winfried Hochstaettler and 
+#       Copyright (C) 1998-2001 ZAIK/ZPR, Universitaet zu Koeln
+#                                   
+#       Contact: alexander@schlieplab.org             
+#
+#
+#       NOTE: Webgato is licensed under GPL version 3 or later.
+#
+#       WebGato is free software: you can redistribute it and/or modify
+#       it under the terms of the GNU General Public License as published by
+#       the Free Software Foundation, either version 3 of the License, or
+#       (at your option) any later version.
+#
+#       WebGato is distributed in the hope that it will be useful,
+#       but WITHOUT ANY WARRANTY; without even the implied warranty of
+#       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#       GNU General Public License for more details.
+#
+#       You should have received a copy of the GNU General Public License
+#       along with WebGato.  If not, see <http://www.gnu.org/licenses/>.
+#
+#       This file is version $Revision: 670 $ 
+#                       from $Date: 2015-01-13 22:04:11 +0100 (Tue, 13 Jan 2015) $
+#             last change by $Author: schliep $.
+#
+################################################################################
+
+
 animationhead = '''
 <!DOCTYPE html>
 <!--
-    Copyright 2014 Scott Merkling
+    Copyright 2014-2020 Alexander Schliep, and Copyright 2014 Scott Merkling.
     This file is part of WebGato.
 
     WebGato is free software: you can redistribute it and/or modify
