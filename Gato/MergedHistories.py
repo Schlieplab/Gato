@@ -30,9 +30,9 @@
 #
 #
 #
-#       This file is version $Revision: 455 $ 
-#                       from $Date: 2012-02-14 16:45:23 -0500 (Tue, 14 Feb 2012) $
-#             last change by $Author: smerking $.
+#       This file is version $Revision$ 
+#                       from $Date$
+#             last change by $Author$.
 #
 ################################################################################
 

@@ -29,9 +29,9 @@
 #
 #
 #
-#       This file is version $Revision: 343 $ 
-#                       from $Date: 2009-12-02 16:05:17 -0500 (Wed, 02 Dec 2009) $
-#             last change by $Author: schliep $.
+#       This file is version $Revision$ 
+#                       from $Date$
+#             last change by $Author$.
 #
 ################################################################################
 from Gato import *

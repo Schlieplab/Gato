@@ -29,9 +29,9 @@
 #
 #
 #
-#       This file is version $Revision: 353 $ 
-#                       from $Date: 2010-06-03 14:58:37 -0400 (Thu, 03 Jun 2010) $
-#             last change by $Author: schliep $.
+#       This file is version $Revision$ 
+#                       from $Date$
+#             last change by $Author$.
 #
 ################################################################################
 import os

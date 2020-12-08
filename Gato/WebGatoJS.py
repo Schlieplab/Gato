@@ -28,9 +28,9 @@
 #       You should have received a copy of the GNU General Public License
 #       along with WebGato.  If not, see <http://www.gnu.org/licenses/>.
 #
-#       This file is version $Revision: 670 $ 
-#                       from $Date: 2015-01-13 22:04:11 +0100 (Tue, 13 Jan 2015) $
-#             last change by $Author: schliep $.
+#       This file is version $Revision$ 
+#                       from $Date$
+#             last change by $Author$.
 #
 ################################################################################
 
