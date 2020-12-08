@@ -733,7 +733,7 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
               init_edge_infos=None, init_vertex_infos=None, init_graph_infos=None,
               write_to_png=False, chapter_number=None, algo_div=None, chapter_name=None, start_graph_coord_diff=None,
               restart_algorithm=True, no_info_file=False):
-    """ Export either the current graphs or the complete animation
+    """ **** OBSOLETE ***** Export either the current graphs or the complete animation
         (showAnimation=True) to the file fileName.
 
         showAnimation: We don't do anything if this is False
@@ -927,4 +927,255 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
         handler.render_cairo(ctx)
         img.write_to_png(fileName)
         return {'width': width*scale, 'height': height*scale}
+
+
+
+
+
+def ComputeGraphPadding(graphDisplay, secondaryGraphDisplay, start_graph_coord_diff = None, endPadding = None):
+
+    if endPadding:
+        end_g1_x_add, end_g1_y_add, end_g1_has_elements, end_g2_x_add, end_g2_y_add, end_g2_has_elements = endPadding
+    else:
+        # Figure out how much we want to pull the graph to the left and top before we reset the graph
+        end_g1_x_add, end_g1_y_add, end_g1_has_elements = compute_coord_changes(graphDisplay)
+        end_g2_x_add, end_g2_y_add = 0, 0
+        if secondaryGraphDisplay:
+            end_g2_x_add, end_g2_y_add, end_g2_has_elements = compute_coord_changes(secondaryGraphDisplay)
+        else:
+            end_g2_x_add, end_g2_y_add, end_g2_has_elements = None, None, None
+       
+        
+    g2_y_add, g2_x_add = None, None
+    # If we have coord diffs passed in, then use those, otherwise recompute
+    if start_graph_coord_diff:
+        start_g1_x_add, start_g2_x_add = start_graph_coord_diff['g1_x_add'], start_graph_coord_diff['g2_x_add']
+        start_g1_y_add, start_g2_y_add = start_graph_coord_diff['g1_y_add'], start_graph_coord_diff['g2_y_add']
+        start_g1_has_elements, start_g2_has_elements = start_graph_coord_diff['g1_has_elements'], start_graph_coord_diff['g2_has_elements']
+    else:
+        start_g1_x_add, start_g1_y_add, start_g1_has_elements = compute_coord_changes(graphDisplay)
+        start_g2_x_add, start_g2_y_add, g2_x_add, g2_y_add = 0, 0, 0, 0
+        if secondaryGraphDisplay:
+            start_g2_x_add, start_g2_y_add, start_g2_has_elements = compute_coord_changes(secondaryGraphDisplay)
+    
+    # Find final g1 and g2 x and y coord differences
+    if start_g1_has_elements and end_g1_has_elements:
+        g1_x_add, g1_y_add = min(start_g1_x_add, end_g1_x_add), min(start_g1_y_add, end_g1_y_add)
+    elif start_g1_has_elements:
+        g1_x_add, g1_y_add = start_g1_x_add, start_g1_y_add
+    else:
+        g1_x_add, g1_y_add = end_g1_x_add, end_g1_y_add
+
+    if secondaryGraphDisplay:
+        if start_g2_has_elements and end_g2_has_elements:
+            g2_y_add, g2_x_add = min(start_g2_y_add, end_g2_y_add), min(start_g2_x_add, end_g2_x_add)
+        elif start_g2_has_elements:
+            g2_y_add, g2_x_add = start_g2_y_add, start_g2_x_add
+        else:
+            g2_y_add, g2_x_add = end_g2_y_add, end_g2_x_add
+
+    return g1_x_add, g1_y_add, g2_x_add, g2_y_add
+
+    
+
+def SVGForExport(algorithm, graphDisplay, secondaryGraphDisplay=None, initialState=False,
+                 edge_padding=5, skip_edge_info=False, scale_both_coordinates=False):
+    """ Compute the SVG as a string for exporting to SVG or a PNG """
+    if initialState:
+        algorithm.Start(prologOnly=True)
+
+    g1_x_add, g1_y_add, g2_x_add, g2_y_add = ComputeGraphPadding(graphDisplay, secondaryGraphDisplay)
+    g1_svg_body_str, g1_width, g1_height = get_graph_as_svg_str_standalone(graphDisplay,
+                                                                           g1_x_add,  g1_y_add,
+                                                                           file, idPrefix=id_prefixes[0],
+                                                                           translate=(edge_padding, edge_padding),
+                                                                           skip_edge_info=skip_edge_info)
+    g2_svg_body_str, g2_width, g2_height = '', 0, 0
+    g2_y_padding = 0
+    if secondaryGraphDisplay:
+        g2_y_padding = 10
+        g2_svg_body_str, g2_width, g2_height = get_graph_as_svg_str_standalone(secondaryGraphDisplay,
+                                                                               g2_x_add, g2_y_add,
+                                                                               file, idPrefix=id_prefixes[1],
+                                                                               translate=(edge_padding,g1_height+g2_y_padding+edge_padding),
+                                                                               skip_edge_info=skip_edge_info)
+
+    width = int(max(g1_width, g2_width))+edge_padding*2
+    height = int(g1_height+g2_height+g2_y_padding)+edge_padding*2
+    if scale_both_coordinates:
+        scale = min(min(200.0/width, 1.0), min(200.0/height, 1.0))
+    else:
+        scale = min(200.0/width, 1.0)
+        
+    # Put a border between the graphs
+    if secondaryGraphDisplay:
+        y = g1_height + g2_y_padding/2 + edge_padding
+        g2_svg_body_str += '<line x1="0" x2="%d" y1="%d" y2="%d" stroke="#000" stroke-width="3.0" />' % (width, y, y)
+    svg_str = '\n'.join(['<svg width="%d" height="%d">' % (width, height), svg_drop_shadow, g1_svg_body_str, g2_svg_body_str, '</svg>'])
+    return svg_str
+    
+
+
+def ExportGraphToSVG(svgFileName, algorithm, graphDisplay, secondaryGraphDisplay = None, initialState = False):
+    """ Export one or both graphs, if secondaryGraphDisplay is not none, currently displayed as a SVG.  
+        If initialState is True, the algorithm will be restarted to show graphs in their initial state.
+    """
+
+    svg_str = SVGForExport(algorithm, graphDisplay, secondaryGraphDisplay,
+                           initialState=initialState)
+    
+    file = open(svgFileName, 'w')
+    file.write(svg_str)
+    file.close()
+
+
+def ExportGraphToPNG(pngFileName, algorithm, graphDisplay, secondaryGraphDisplay = None, initialState = False):
+    """ Export one or both graphs, if secondaryGraphDisplay is not none, currently displayed as a PNG.  
+        If initialState is True, the algorithm will be restarted to show graphs in their initial state.
+    """
+
+    svg_str = SVGForExport(algorithm, graphDisplay, secondaryGraphDisplay,
+                           initialState=initialState,
+                           edge_padding=15,
+                           skip_edge_info=True,
+                           scale_both_coordinates=True)
+    
+    '''
+        The commands on Ubuntu to get these libraries installed:
+        sudo apt-get install libcairo2-dev librsvg2-dev python-rsvg
+    '''
+    import cairo
+    import rsvg
+    img = cairo.ImageSurface(cairo.FORMAT_ARGB32, int(ceil(width*scale)), int(ceil(height*scale)))
+
+    ctx = cairo.Context(img)
+    ctx.scale(scale, scale)
+    handler= rsvg.Handle(None, svg_str)
+    handler.render_cairo(ctx)
+    img.write_to_png(fileName)
+    return {'width': width*scale, 'height': height*scale}
+ 
+    
+   
+def ExportAnimationAsHTML(fileName, algowin, algorithm, graphDisplay,
+                          secondaryGraphDisplay=None, secondaryGraphDisplayAnimationHistory=None, 
+                          init_edge_infos=None, init_vertex_infos=None, init_graph_infos=None,
+                          chapter_number=None, algo_div=None, chapter_name=None, start_graph_coord_diff=None,
+                          restart_algorithm=True, no_info_file=False,
+                          htmlTitle=None, animationName=None):
+    """ Export the complete animation to the HTML file fileName.
+
+        showAnimation: We don't do anything if this is False
+        init_edge_infos: list of dictionaries with keys that are tuples of form (v1, v2) where v1 and v2 are the vertices
+            that an edge connects.  The values keys point to are the initial edge infos of that edge.
+    """
+    global algo_lines
+
+    algo_lines = []
+    file = open(fileName, 'w')
+
+    # Figure out how much we want to pull the graph to the left and top before we reset the graph
+    end_g1_x_add, end_g1_y_add, end_g1_has_elements = compute_coord_changes(graphDisplay)
+    end_g2_x_add, end_g2_y_add = 0, 0
+    if secondaryGraphDisplay:
+        end_g2_x_add, end_g2_y_add, end_g2_has_elements = compute_coord_changes(secondaryGraphDisplay)
+    else:
+        end_g2_x_add, end_g2_y_add, end_g2_has_elements = None, None, None
+       
+        
+    try:
+        if secondaryGraphDisplayAnimationHistory:
+            animation = collectAnimations([algorithm.animation_history.getHistoryOne(),
+                                           secondaryGraphDisplayAnimationHistory.getHistoryTwo(),
+                                           algowin.codeLineHistory],
+                                          ['g1_', 'g2_', 'l_'])
+        else:
+            animation = collectAnimations([algorithm.animation_history.getHistoryOne(),
+                                           algowin.codeLineHistory],
+                                          ['g1_', 'l_'])
+    except IndexError as e:
+        print "Error:"
+        print e
+        print "Filename: ", fileName
+        print "Algowin: ", algowin
+        print "Algorithm: ", algorithm
+        print "graphDisplay: ", graphDisplay
+        return
+
+
+    # Reload the graph and execute prolog so we can save the initial state to SVG
+    # if showAnimation and not write_to_png:
+    if restart_algorithm:
+        algorithm.Start(prologOnly=True)
+
+
+    g1_x_add, g1_y_add, g2_x_add, g2_y_add = ComputeGraphPadding(graphDisplay, secondaryGraphDisplay,
+                                                                 endPadding = (end_g1_x_add, end_g1_y_add, end_g1_has_elements,
+                                                                               end_g2_x_add, end_g2_y_add, end_g2_has_elements)
+                                                                 )
+
+    # Build the SVG graph string
+    graph_strs = []
+    graph_type = "undirected" if graphDisplay.G.directed == 0 else "directed"
+    graph_strs.append('<g id="g1" type="%s" style="visibility: hidden">\n' % (graph_type))
+
+    g1_str = get_graph_as_svg_str_for_animation(graphDisplay, g1_x_add, g1_y_add, file, idPrefix=id_prefixes[0])
+    graph_strs.append(g1_str)
+    graph_strs.append('</g>\n')
+    if secondaryGraphDisplay:
+        graph_type = "undirected" if secondaryGraphDisplay.G.directed == 0 else "directed"
+        graph_strs.append('<g id="g2" type="%s" style="visibility: hidden">\n' % (graph_type))
+        g2_str = get_graph_as_svg_str_for_animation(secondaryGraphDisplay, g2_x_add, g2_y_add, file, idPrefix=id_prefixes[1])
+        graph_strs.append(g2_str)
+        graph_strs.append('</g>\n')
+
+    # Build the Algorithm SVG string
+    source = algorithm.GetSource()
+    tokenize.tokenize(StringIO.StringIO(source.replace('\\', '\\\\')).readline, tokenEater)
+    algowin.CommitStop()
+
+
+    if no_info_file:
+        info_file = ""
+    else:
+        info_file = 'infos/' + fileName[fileName.rindex('/') + 1:]
+
+    if not htmlTitle:
+        htmlTitle = construct_title(fileName)
+
+    if not animationName:
+        animationName = construct_animation_name(fileName)
+        
+    # Merge the animation into the HTML
+    str_vars = {
+        'title': htmlTitle,
+        'animation_name': animationName,
+        'chapter_number': chapter_number or 0,
+        'algo_div': algo_div or '',
+        'chapter_name': CHAPTER_NUM_TO_ABBREV.get(int(chapter_number or 0)) or '',
+        'info_file': info_file,
+        'this_url': fileName[fileName.rindex('/') + 1:],
+        'animation': format_animation(animation),
+        'graph_str': '\n'.join(graph_strs), 
+        'algo_str': '<g id="codelines" style="visibility: hidden">' + ''.join(algo_lines) + "</g>",
+        'g1_x_add': g1_x_add,
+        'g1_y_add': g1_y_add,
+        'g2_x_add': g2_x_add,
+        'g2_y_add': g2_y_add,
+        'g1_init_edge_info': format_init_edge_infos(init_edge_infos[0], id_prefixes[0]) if init_edge_infos else 'null',
+        'g2_init_edge_info': format_init_edge_infos(init_edge_infos[1], id_prefixes[1]) if init_edge_infos and len(init_edge_infos) > 1 else 'null',
+        'g1_init_graph_info': '"%s"' % init_graph_infos[0] if init_graph_infos and init_graph_infos[0] else '""',
+        'g2_init_graph_info': '"%s"' % init_graph_infos[1] if init_graph_infos and init_graph_infos[1] else '""',
+        'g1_init_vertex_info': format_init_vertex_infos(init_vertex_infos[0], id_prefixes[0]) if init_vertex_infos else 'null',
+        'g2_init_vertex_info': format_init_vertex_infos(init_vertex_infos[1], id_prefixes[1]) if init_vertex_infos else 'null',
+        'g1_init_bubbles': format_bubbles(graphDisplay.bubbles),
+        'g2_init_bubbles': format_bubbles(secondaryGraphDisplay.bubbles if secondaryGraphDisplay else None),
+        'g1_init_moats': format_bubbles(graphDisplay.moats),
+        'g2_init_moats': format_bubbles(secondaryGraphDisplay.moats if secondaryGraphDisplay else None),
+    }
+    file.write(animationhead % str_vars)
+    file.close()
+
+    # Export the algorithm info to its own HTML file        
+    ExportAlgoInfo(fileName, algorithm)
 

@@ -699,13 +699,7 @@ class SAGraphEditor(GraphEditor, Frame):
                                      )
         if fileName is not "":
             import GatoExport
-            return GatoExport.ExportSVG(fileName, self, None, self, 
-                                        showAnimation=False,
-                                        write_to_png=False,
-                                        start_graph_coord_diff=None,
-                                        restart_algorithm=False)
-
-
+            GatoExport.ExportGraphToSVG(fileName, None, self)
             
     def Quit(self,dummy=None):
         if askokcancel("Quit","Do you really want to quit?"):

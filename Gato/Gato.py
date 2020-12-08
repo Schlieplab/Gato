@@ -52,6 +52,7 @@ import getopt
 
 import Gred
 
+
 from Tkinter import *
 from tkFileDialog import askopenfilename, asksaveasfilename
 from tkMessageBox import askokcancel, showerror, askyesno
@@ -67,6 +68,8 @@ import GatoIcons
 # Only needed for Trial-Solution version. 
 #import GatoSystemConfiguration
 from AnimationHistory import AnimationHistory, AnimationCommand
+import GatoExport
+
 
 # Workaround for bug in py2exe which mangles linecache on Windows
 # On Windows put a copy of linecache.py included in your Python's 
@@ -283,12 +286,20 @@ class AlgoWin(Frame):
         #			  command=self.SaveGatoFile)
         self.fileMenu.add_command(label='Reload Algorithm & Graph',	
                                   command=self.ReloadAlgorithmGraph)
+
+        self.fileMenu.add_separator()
+
+        self.fileMenu.add_command(label='Export Graph as SVG...',	
+                                  command=self.ExportGraphAsSVG)
+
+        #self.fileMenu.add_command(label='Export Graph as PNG...',	
+        #                          command=self.ExportGraphAsPNG)        
+
         self.fileMenu.add_command(label='Export Graph as EPS...',	
                                   command=self.ExportEPSF)        
 
-        #if self.experimental:
-        self.fileMenu.add_command(label='Export Graph as SVG...',	
-                                  command=self.ExportSVG)
+        self.fileMenu.add_separator()
+
         self.fileMenu.add_command(label='Export Animation as HTML...',	
                                   command=self.ExportHTMLAnimation)
             
@@ -497,6 +508,15 @@ class AlgoWin(Frame):
                                  background=c('activebg'))
         g.BlinkRate = int(c('blinkrate'))
         g.BlinkRepeat = int(c('blinkrepeat'))
+
+
+    def HaveSecondaryGraphDisplay(self):
+        """ Returns true if there is a second graph displayed for current algorithm """
+        if not self.secondaryGraphDisplay or self.algorithm.graphDisplays == None or self.algorithm.graphDisplays == 1:
+            return False
+        else:
+            return True
+        
         
         
     def OpenSecondaryGraphDisplay(self):
@@ -873,53 +893,69 @@ class AlgoWin(Frame):
             self.graphDisplay.PrintToPSFile(file)
 
     def GetSVGCoordinateDiff(self):
-        import GatoExport
-        if not self.secondaryGraphDisplay or self.algorithm.graphDisplays == None or self.algorithm.graphDisplays == 1:
-            return GatoExport.get_start_coordinate_diff(self.graphDisplay)
-        else:
+        if  self.HaveSecondaryGraphDisplay():
             return GatoExport.get_start_coordinate_diff(self.graphDisplay, self.secondaryGraphDisplay.animator)
+        else:
+            return GatoExport.get_start_coordinate_diff(self.graphDisplay)
 
-    def ExportSVG(self, fileName=None, write_to_png=False, start_graph_coord_diff=None):
+
+    def ExportGraphAsSVG(self):
         """ GUI to control export of SVG file  """
+        fileName = asksaveasfilename(title="Export SVG",
+                                     defaultextension=".svg",
+                                     filetypes = [("SVG", ".svg")]
+                                     )
+        if fileName is not "":
+            if self.HaveSecondaryGraphDisplay():
+                GatoExport.ExportGraphToSVG(fileName, self.algorithm, self.graphDisplayy, self.secondaryGraphDisplay)
+            else:
+                GatoExport.ExportGraphToSVG(fileName, self.algorithm, self.graphDisplay)
+
+                
+    def ExportSVG(self, fileName=None, write_to_png=False, start_graph_coord_diff=None):
+        """ *Obsolete*  """
         if not fileName:
             fileName = asksaveasfilename(title="Export SVG",
                                  defaultextension=".svg",
                                  filetypes = [("SVG", ".svg")]
                                  )
         if fileName is not "":
-            import GatoExport
-
-            if not self.secondaryGraphDisplay or self.algorithm.graphDisplays == None or self.algorithm.graphDisplays == 1:
-                return GatoExport.ExportSVG(fileName, self, self.algorithm, self.graphDisplay, 
-                                            showAnimation=False, write_to_png=write_to_png, start_graph_coord_diff=start_graph_coord_diff,
+            if self.HaveSecondaryGraphDisplay():
+                return GatoExport.ExportSVG(fileName, self, self.algorithm, self.graphDisplay,
+                                            self.secondaryGraphDisplay.animator, showAnimation=False,
+                                            write_to_png=write_to_png, start_graph_coord_diff=start_graph_coord_diff,
                                             restart_algorithm=False)
             else:
-                return GatoExport.ExportSVG(fileName, self, self.algorithm, self.graphDisplay,
-                    self.secondaryGraphDisplay.animator, showAnimation=False, write_to_png=write_to_png, start_graph_coord_diff=start_graph_coord_diff)
+                return GatoExport.ExportSVG(fileName, self, self.algorithm, self.graphDisplay, 
+                                            showAnimation=False, write_to_png=write_to_png,
+                                            start_graph_coord_diff=start_graph_coord_diff,
+                                            restart_algorithm=False)
 
+            
     def ExportSVGAnimation(self, fileName=None, chapter_number=None, algo_div=None, chapter_name=None):
-        """ GUI to control export of SVG file  """
+        """ Used to export animations from GatoTest  """
         if not fileName:
             fileName = asksaveasfilename(title="Export SVG",
                                          defaultextension=".svg",
                                          filetypes = [("SVG", ".svg")]
                                          )
         if fileName is not "":
-            import GatoExport
             # We never destroy the secondary graph display (and create it from the beginning
             # for the paned viewed. graphDisplays is set from prolog
-            if not self.secondaryGraphDisplay or self.algorithm.graphDisplays == None or self.algorithm.graphDisplays == 1:
-                GatoExport.ExportSVG(fileName, self, self.algorithm, self.graphDisplay, None, None, showAnimation=True, 
-                    init_edge_infos=self.algorithm.DB.init_edge_infos, init_vertex_infos=self.algorithm.DB.init_vertex_infos,
-                    init_graph_infos=self.algorithm.DB.init_graph_infos, chapter_number=chapter_number, algo_div=algo_div,
-                    chapter_name=chapter_name)
-            else:
+            if self.HaveSecondaryGraphDisplay():
                 GatoExport.ExportSVG(fileName, self, self.algorithm, self.graphDisplay,
                     self.secondaryGraphDisplay.animator, self.secondaryGraphDisplay, showAnimation=True,
                     init_edge_infos=self.algorithm.DB.init_edge_infos, init_vertex_infos=self.algorithm.DB.init_vertex_infos,
                     init_graph_infos=self.algorithm.DB.init_graph_infos, chapter_number=chapter_number, algo_div=algo_div,
                     chapter_name=chapter_name)
+            else:
+                GatoExport.ExportSVG(fileName, self, self.algorithm, self.graphDisplay, None, None, showAnimation=True, 
+                    init_edge_infos=self.algorithm.DB.init_edge_infos, init_vertex_infos=self.algorithm.DB.init_vertex_infos,
+                    init_graph_infos=self.algorithm.DB.init_graph_infos, chapter_number=chapter_number, algo_div=algo_div,
+                    chapter_name=chapter_name)
 
+
+                
     def ExportHTMLAnimation(self):
         """ GUI to control export of SVG file  """
         chapter_number=None
@@ -928,63 +964,39 @@ class AlgoWin(Frame):
         
         graph_name = os.path.splitext(os.path.basename(self.algorithm.graphFileName))[0]
         algo_name = os.path.splitext(os.path.basename(self.algorithm.algoFileName))[0]
-
-        html_dir = "~/Documents/MyGatoAnimations/"
         
-        svg_file_name = os.path.join(html_dir, "%s--%s.html" % (algo_name, graph_name))
-
-        if not askokcancel("HTML Animation",
-                           "A HTML file containing the animation will be saved as %s" % svg_file_name):
-            return
-        svg_file_name = os.path.expanduser(svg_file_name)
-        html_dir_path = os.path.expanduser(html_dir)
-        if not os.path.isdir(html_dir_path):
-            os.makedirs(html_dir_path)
+        fileName = asksaveasfilename(title="Export HTML Animation",
+                                     defaultextension=".html",
+                                     filetypes = [("HTML", ".html")]
+                                     )
+        if fileName is not "":
+            fileBasename = os.path.splitext(os.path.basename(fileName))[0]
+            self.RunAlgorithmToCompletion()
         
-        if os.path.isfile(os.path.expanduser(svg_file_name)):
-            if not askokcancel("Overwrite File", "File %s exists. Overwrite?" % svg_file_name):
-                return
-
-        svg_file_name = os.path.expanduser(svg_file_name)
-
-        oldGInteractive = g.Interactive
-        g.Interactive = False
-        # Should restore breakpoints once we are done
-        self.algorithm.ClearBreakpoints()
-        self.algorithm.DB.alwaysTrace = 1 # Capture activeLine in sub-routines
-        self.update_idletasks()
-        self.update()
-        self.update_idletasks()
-        self.update()
-        # Run it ...
-        #self.after_idle(self.CmdContinue) # after idle needed since CmdStart
-        # does not return
-        self.CmdStart()
-        self.update_idletasks()
-        self.CmdContinue
-        
-        import GatoExport
-        # We never destroy the secondary graph display (and create it from the beginning
-        # for the paned viewed. graphDisplays is set from prolog
-        if not self.secondaryGraphDisplay or self.algorithm.graphDisplays == None or self.algorithm.graphDisplays == 1:
-            GatoExport.ExportSVG(svg_file_name, self, self.algorithm, self.graphDisplay, None, None, showAnimation=True, 
-                                 init_edge_infos=self.algorithm.DB.init_edge_infos,
-                                 init_vertex_infos=self.algorithm.DB.init_vertex_infos,
-                                 init_graph_infos=self.algorithm.DB.init_graph_infos,
-                                 chapter_number=chapter_number, algo_div=algo_div,
-                                 chapter_name=chapter_name, no_info_file=True)
-        else:
-            GatoExport.ExportSVG(svg_file_name, self, self.algorithm, self.graphDisplay,
-                                 self.secondaryGraphDisplay.animator, self.secondaryGraphDisplay, showAnimation=True,
-                                 init_edge_infos=self.algorithm.DB.init_edge_infos,
-                                 init_vertex_infos=self.algorithm.DB.init_vertex_infos,
-                                 init_graph_infos=self.algorithm.DB.init_graph_infos,
-                                 chapter_number=chapter_number, algo_div=algo_div,
-                                 chapter_name=chapter_name, no_info_file=True)
-        g.Interactive = oldGInteractive
+            # We never destroy the secondary graph display (and create it from the beginning
+            # for the paned viewed. graphDisplays is set from prolog
+            if self.HaveSecondaryGraphDisplay():
+                GatoExport.ExportAnimationAsHTML(fileName, self, self.algorithm, self.graphDisplay,
+                                                 self.secondaryGraphDisplay.animator, self.secondaryGraphDisplay,
+                                                 init_edge_infos=self.algorithm.DB.init_edge_infos,
+                                                 init_vertex_infos=self.algorithm.DB.init_vertex_infos,
+                                                 init_graph_infos=self.algorithm.DB.init_graph_infos,
+                                                 chapter_number=None, algo_div=None,
+                                                 chapter_name=None, no_info_file=True,
+                                                 htmlTitle="%s: %s on graph %s" % (fileBasename, algo_name, graph_name),
+                                                 animationName="%s on graph %s" % (algo_name, graph_name))
+            else:
+                GatoExport.ExportAnimationAsHTML(fileName, self, self.algorithm, self.graphDisplay,
+                                                 None, None, 
+                                                 init_edge_infos=self.algorithm.DB.init_edge_infos,
+                                                 init_vertex_infos=self.algorithm.DB.init_vertex_infos,
+                                                 init_graph_infos=self.algorithm.DB.init_graph_infos,
+                                                 chapter_number=None, algo_div=algo_div,
+                                                 chapter_name=None, no_info_file=True,
+                                                 htmlTitle="%s: %s on graph %s" % (fileBasename, algo_name, graph_name),
+                                                 animationName="%s on graph %s" % (algo_name, graph_name))
 
         
-
     def Quit(self,event=None):
         if self.algorithmIsRunning == 1:
             self.commandAfterStop = self.Quit
@@ -1387,7 +1399,30 @@ class AlgoWin(Frame):
         self.lastActiveLine = 0
         self.codeLineHistory = []
 
-                
+    def RunAlgorithmToCompletion(self):
+        """ Utility function for exporting animations to HTML. Run algorithm without
+            user interaction until it completes.
+        """
+        oldGInteractive = g.Interactive
+        oldBreakpoints = self.algorithm.breakpoints
+        self.algorithm.breakpoints = []
+        g.Interactive = False
+        # Should restore breakpoints once we are done
+        self.algorithm.ClearBreakpoints()
+        self.algorithm.DB.alwaysTrace = 1 # Capture activeLine in sub-routines
+        self.update_idletasks()
+        self.update()
+        self.update_idletasks()
+        self.update()
+        # Run it ...
+        #self.after_idle(self.CmdContinue) # after idle needed since CmdStart
+        # does not return
+        self.CmdStart()
+        self.update_idletasks()
+        self.CmdContinue
+        g.Interactive = oldGInteractive
+        self.algorithm.breakpoint = oldBreakpoints
+        
 # Endof: AlgoWin ---------------------------------------------------------------
         
         
@@ -1695,7 +1730,9 @@ class AlgorithmDebugger(bdb.Bdb):
  
     def currentLine(self, frame):
         """ *Internal* returns the current line number  """ 
-        return frame.f_lineno 
+        return frame.f_lineno
+
+    
 
 
 # Endof: AlgorithmDebugger  ----------------------------------------------------
