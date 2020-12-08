@@ -57,7 +57,7 @@ else:
     # Some variant of exec(open("GatoGlobals.py").read())
     raise NotImplementedError
 
-long_description_text = open('README').readlines()
+long_description_text = "".join(open('README').readlines())
 
 
 setup(name="Gato",
@@ -97,6 +97,7 @@ setup(name="Gato",
                                )
                    ),
       description = info['gatoDescription'],
+      long_description_content_type = 'text/plain',
       long_description = long_description_text,
       author = "Alexander Schliep and Winfried Hochstaettler",
       author_email = info['gatoAuthorEmail'],

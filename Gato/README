@@ -1,5 +1,6 @@
-
+================================
 Gato the Graph Animation Toolbox
+================================
 
 Gato, the Graph Animation Toolbox http://gato.sf.net by Alexander
 Schliep and Winfried Hochstaettler, is a LGPL-licensed Python
@@ -30,4 +31,10 @@ University, Sweden.
 Gato is Copyright (C) 2016-2020 Alexander Schliep, Copyright
 1998-2015, Alexander Schliep and Winfried Hochstaettler, and Copyright
 1998-2001 ZAIK/ZPR, Universitaet zu Koeln, Germany.
+
+WebGato, the included standards-compliant JavaScript-player which
+allows to play animation created with Gato on the web, is licensed
+under the GPL version 3 or later. It has been developed by Scott
+Merkling and Alexander Schliep and is copyright (C) 2014-20
+AlexanderSchliep, and copyright (C) 2014-16 Scott Merkling.
 
