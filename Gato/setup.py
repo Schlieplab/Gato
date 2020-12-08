@@ -31,9 +31,9 @@
 #
 #
 #
-#       This file is version $Revision: 291 $ 
-#                       from $Date: 2006-10-18 16:04:35 +0200 (Wed, 18 Oct 2006) $
-#             last change by $Author: schliep $.
+#       This file is version $Revision$ 
+#                       from $LastChangedDate$
+#             last change by $Author$.
 #
 ################################################################################
 
