@@ -1,6 +1,6 @@
 Gato Release notes
 
-Gato 1.2.4 from 12/6/2020
+Gato 1.2.5 from 12/8/2020
 * Still Python 2.7
 * Paned modus is now default
 * Added -s --separate for old standard behaviour with two graph windows

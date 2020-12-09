@@ -74,6 +74,17 @@ prefix path and/or an alternative Python interpreter.
 > /some/otherpath/python setup.py install --prefix=/yetanotherpath/
 </pre></P>
 
+<p>WebGato: So that HTML files containing animations can find all the
+  JavaScript and CSS code symbolic links to directories <tt>Gato/svgs/js</tt>
+  and <tt>Gato/svgs/css</tt> from the Gato distribution are needed. If you install Gato
+  with <tt>setup.py</tt> you can use the provided script <tt>gato-create-js-css-symlinks</tt>.
+	  Otherwise, locate the directories and issue the commands
+	  <pre>
+		> ln -s /.../Gato/svgs/css .
+		> ln -s	/.../Gato/svgs/js .
+</pre>
+<p>
+
 <H3>Linux packages</H3>
 
 For Gentoo there is a Gato package available at <A
