@@ -2311,7 +2311,8 @@ def main(argv=None):
         # Textbox to write to. NullHandler taken from
         # http://docs.python.org/library/logging.html
         if not verbose:
-            if app.windowingsystem == 'win32':
+            # Windows does not have /tmp, MacOS does not allow binaries to write to /tmp 
+            if app.windowingsystem == 'win32' or app.windowingsystem == 'aqua':
                class NullHandler(logging.Handler):
                    def emit(self, record):
                        pass
