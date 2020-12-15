@@ -146,10 +146,10 @@ catbox_instances = {
         '03-MinimalSpanningTrees/Kruskal4.cat'
     ],
     # XXX Not sure whether it terminates: on a small instance it does
-    # But since this is random this is not good for regression testing
-    '03-MinimalSpanningTrees/MSTInteractive.alg':[
-        '03-MinimalSpanningTrees/Kruskal3.cat'
-    ],
+    # But since this selects edges at random this is not good for regression testing
+    #'03-MinimalSpanningTrees/MSTInteractive.alg':[
+    #    '03-MinimalSpanningTrees/Kruskal3.cat'
+    #],
     '03-MinimalSpanningTrees/MatroidDualKruskal.alg':[
         '03-MinimalSpanningTrees/Kruskal3.cat'    
     ],
@@ -186,9 +186,9 @@ catbox_instances = {
     '06-MaximalFlows/PreflowPush.alg':[
         '06-MaximalFlows/FordFulkerson4.cat'
     ],
-    '07-MinimumCostFlows/CostScaling.alg':[
-        '07-MinimumCostFlows/MCF4to1B.cat'
-    ],
+    #'07-MinimumCostFlows/CostScaling.alg':[
+    #    '07-MinimumCostFlows/MCF4to1B.cat'
+    #],
     '07-MinimumCostFlows/NegativeCycleCanceling.alg':[
         '07-MinimumCostFlows/MCFCycle.cat'
     ],
@@ -199,7 +199,7 @@ catbox_instances = {
         '08-Matching/Bi006.cat'
     ],
     '08-Matching/CardinalityMatching.alg':[
-        '08-Matching/Edmonds5.cat'
+        '08-Matching/Edmonds6.cat'
     ],
     '09-WeightedMatching/WeightedMatching.alg':[
         '09-WeightedMatching/rote4.cat'
