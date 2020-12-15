@@ -12,7 +12,6 @@
 #                                   
 #       Contact: alexander@schlieplab.org
 #
-
 #
 #       This library is free software; you can redistribute it and/or
 #       modify it under the terms of the GNU Library General Public
@@ -49,7 +48,8 @@ import tokenize
 import tkFont
 import copy
 import webbrowser
-import getopt
+import argparse
+import logging
 
 import Gred
 
@@ -183,14 +183,13 @@ class AlgoWin(Frame):
         
         GatoIcons.Init()
         self.config = GatoConfiguration(self)
-        # Only needed for Trial-Solution version. 
+        # Only needed for Trial-Solution
         #self.gatoInstaller=GatoSystemConfiguration.GatoInstaller()
         
         # Create widgets
         self.pack()
         self.pack(expand=1,fill=BOTH) # Makes menuBar and toolBar sizeable
         self.makeMenuBar()
-        #a = raw_input()
         self.makeAlgoTextWidget()
         self.makeToolBar()
         self.master.title("Gato %s - Algorithm" % GatoGlobals.gatoVersion)
@@ -248,6 +247,7 @@ class AlgoWin(Frame):
         self.BindKeys(self.graphDisplay)
         
         self.SetFromConfig() # Set values read in config
+
         
     ############################################################
     #
@@ -536,13 +536,14 @@ class AlgoWin(Frame):
             elif self.algorithm.logAnimator == 2:
                 self.secondaryGraphDisplay = AnimationHistory(self.secondaryGraphDisplay,
                                                           'disp2\t', displayNum=2)
-                #self.secondaryGraphDisplay.auto_print = 1
         else:
             if self.graph_panes:
                 self.setSash(0.5)
             else:
                 self.secondaryGraphDisplay.Show()
-
+        if self.graphDisplay.animationReportFileHandle:
+            self.secondaryGraphDisplay.animationReportFileHandle = self.graphDisplay.animationReportFileHandle
+                
     def setSash(self, proportion):
         x,dummy = self.graph_panes.sash_coord(0)
         win_height = parsegeometry(self.master.geometry())[1]
@@ -1210,7 +1211,6 @@ class AlgoWin(Frame):
         widget.bind('c', self.KeyContinue)
         widget.bind('t', self.KeyTrace)
         widget.bind('b', self.KeyBreak)        
-        #if self.experimental:
         widget.bind('r', self.KeyReplay)
         widget.bind('u', self.KeyUndo)
         widget.bind('d', self.KeyDo)
@@ -1400,6 +1400,20 @@ class AlgoWin(Frame):
         self.lastActiveLine = 0
         self.codeLineHistory = []
 
+    def StartAlgorithmGraph(self, algorithmFileName, graphFileName):
+        """ Utility function for opening and starting algorithm and graph from a script. 
+        Used for testing and exporting svgs. """
+        self.OpenAlgorithm(algorithmFileName)
+        self.update_idletasks()
+        self.update()
+        self.OpenGraph(graphFileName)
+        self.update_idletasks()
+        self.update()
+        #self.after_idle(self.CmdContinue) # after idle needed since CmdStart
+        self.CmdStart()
+        self.update_idletasks()
+
+        
     def RunAlgorithmToCompletion(self):
         """ Utility function for exporting animations to HTML. Run algorithm without
             user interaction until it completes.
@@ -1409,6 +1423,8 @@ class AlgoWin(Frame):
         self.algorithm.breakpoints = []
         g.Interactive = False
         # Should restore breakpoints once we are done
+        #if self.graphDisplay.animationReportFileHandle and self.secondaryGraphDisplay:
+        #    self.secondaryGraphDisplay.animationReportFileHandle = self.graphDisplay.animationReportFileHandle
         self.algorithm.ClearBreakpoints()
         self.algorithm.DB.alwaysTrace = 1 # Capture activeLine in sub-routines
         self.update_idletasks()
@@ -1416,8 +1432,9 @@ class AlgoWin(Frame):
         self.update_idletasks()
         self.update()
         # Run it ...
-        #self.after_idle(self.CmdContinue) # after idle needed since CmdStart
-        # does not return
+        #if contAfterIdle:
+        #    self.after_idle(self.CmdContinue) # after idle needed since CmdStart
+        #    # does not return
         self.CmdStart()
         self.update_idletasks()
         self.CmdContinue
@@ -1949,7 +1966,6 @@ class Algorithm:
         elif self.logAnimator == 2:
             self.animation_history = AnimationHistory(self.GUI.graphDisplay,
                                                       'disp1\t')
-            self.animation_history.auto_print = 1
             self.algoGlobals['A'] = self.animation_history
         else:
             self.algoGlobals['A'] = self.GUI.graphDisplay
@@ -2207,162 +2223,191 @@ class Algorithm:
             visual(e)
         return e
         
-        
-################################################################################
-def usage():
-    print "Usage: Gato.py"
-    print "       Gato.py -v algorithm.alg graph.cat | gato-file"
-    print "               -v or --verbose switches on the debugging/logging information"
+    
 
+def setupLogging(args, windowingsystem, macOSbinary=False):
+    log = logging.getLogger("Gato")
 
-def main(argv=None):
-    if not argv: 
-        argv = sys.argv    
-    try:
-        opts, args = getopt.getopt(argv[1:], "svdx", ["verbose","separate","debug","experimental"])
-    except getopt.GetoptError:
-        usage()
-        return 2
-
-    paned = True
-    debug = False
-    verbose = False        
-    experimental = False
-
-    if len(args) < 4:
-        import logging
-        log = logging.getLogger("Gato")
-        for o, a in opts:
-            if o in ("-v", "--verbose"):
-                verbose = True
-                if sys.version_info[0:2] < (2,4):
-                    log.addHandler(logging.StreamHandler(sys.stdout))
-                    log.setLevel(logging.DEBUG)
-                else:
-                    logging.basicConfig(level=logging.DEBUG,
-                                        stream=sys.stdout,
-                                        format='%(name)s %(levelname)s %(message)s')
-            # Default is now paned view
-            if o in ("-s", "--separate"):
-                paned = False
-            if o in ("-d", "--debug"):
-                debug = True
-            if o in ("-x", "--experimental"):
-                experimental = True
-
-        tk = Tk()
-        # Prevent the Tcl console from popping up in standalone apps on MacOS X
-        # Checking for hasattr(sys,'frozen') does not work for bundelbuilder
-        try:
-            tk.tk.call('console','hide')
-        except tkinter.TclError:
-            pass
-
-        # NOTE: Options did caus menu items to display grayed out. Needed?
+    if windowingsystem == 'win32' or (windowingsystem == 'aqua' and macOSbinary):
+        # Suppress all logging on Windows and for MacOS binaries
         #
-        #tk.option_add('*ActiveBackground','#EEEEEE')
-        #tk.option_add('*background','#DDDDDD')
-        #XXX Buttons look ugly with white backgrounds on MacOS X, added directly to Button(...)
-        # The option not working is might be a known bug 
-        # http://aspn.activestate.com/ASPN/Mail/Message/Tcl-bugs/2131881
-        # Still present in the 8.4.7 that comes with 10.4  
-        #tk.option_add('*Highlightbackground','#DDDDDD')
-        #tk.option_add('*Button.highlightbackground','#DDDDDD')
-        #tk.option_add('*Button.background','#DDDDDD')
-        #tk.option_add('Tk*Scrollbar.troughColor','#CACACA')        
-
-        if paned:
-            # We want a three paned left | right top / right bottom layout
-            pw = PanedWindow(tk)
-            pw.pack(fill=BOTH, expand=1)
-            graph_panes = PanedWindow(pw, orient=VERTICAL)
-            app = AlgoWin(tk, graph_panes, experimental=experimental)
-            if debug:
-                app.algorithm.logAnimator = 2
-            app.OpenSecondaryGraphDisplay()
-            graph_panes.add(app.graphDisplay)
-            graph_panes.add(app.secondaryGraphDisplay)                        
-            pw.add(app)
-            pw.add(graph_panes)
-            #if app.windowingsystem == 'aqua':
-            app.master.geometry("%dx%d+%d+%d" % (
-                880,
-                600, 
-                50, 	    
-                50))
-            app.tkraise()
-            app.master.update()            
-            app.update_idletasks()
-            app.OneGraphWindow()
-        else:
-            app = AlgoWin(tk,experimental=experimental)
-
-        if debug:
-            app.algorithm.logAnimator = 2
-
-        # On MacOS X the Quit menu entry otherwise bypasses our Quit
-        # Handler According to
-        # http://mail.python.org/pipermail/pythonmac-sig/2006-May/017432.html
-        # this should work
-        if app.windowingsystem == 'aqua':
-            tk.createcommand("::tk::mac::Quit",app.Quit)
-            
-        # XXX Here we should actually provide our own buffer and a Tk
-        # Textbox to write to. NullHandler taken from
-        # http://docs.python.org/library/logging.html
-        if not verbose:
-            # Windows does not have /tmp, MacOS does not allow binaries to write to /tmp 
-            if app.windowingsystem == 'win32' or app.windowingsystem == 'aqua':
-               class NullHandler(logging.Handler):
-                   def emit(self, record):
-                       pass
-               h = NullHandler()
-               logging.getLogger("Gato").addHandler(h)
-            else:
-                logging.basicConfig(level=logging.WARNING,
-                                    filename='/tmp/Gato.log',
-                                    filemode='w',
-                                    format='%(name)s %(levelname)s %(message)s')
-        
-        # We get here if Gato.py <algorithm> <graph>
-        if len(args) == 2:
-            algorithm, graph = args[0:2]
-            app.OpenAlgorithm(algorithm)
-            app.update_idletasks()
-            app.update()
-            app.OpenGraph(graph)
-            app.update_idletasks()
-            app.update()
-            app.after_idle(app.CmdContinue) # after idle needed since CmdStart
-            app.CmdStart()
-            app.update_idletasks()
-            
-        # We get here if Gato.py <gatofile-name|url>
-        elif len(args)==1:
-            fileName=args[0]
-            app.OpenGatoFile(fileName)
-            app.update_idletasks()
-            app.update()
-
-        if app.windowingsystem == 'aqua':
-            #app.master.iconify()
-            app.update()
-            app.master.deiconify()
-            app.master.lift()
-            # See discussion at https://stackoverflow.com/questions/1892339/how-to-make-a-tkinter-window-jump-to-the-front
-            if sys.argv[0] == 'Gato.py':
-                # If I am running from the command line the app is "Python"
-                os.system('''/usr/bin/osascript -e 'tell app "System Events" to set frontmost of process "Python" to true' ''')
-            else:
-                # When executing a packages MacOS App
-                # This does not throw an error, so I suppose sys.argv[0] is set correctly to Gato
-                # However this still asks the user for permision, which looks nefarious.
-                os.system('''/usr/bin/osascript -e 'tell app "System Events" to set frontmost of process "Gato" to true' ''')
-               
-        app.mainloop()
+        # XXX Here we should actually provide our own buffer and a Tk Textbox to
+        # display the messages 
+        #
+        # NullHandler taken from http://docs.python.org/library/logging.html
+        class NullHandler(logging.Handler):
+            def emit(self, record):
+                pass
+        h = NullHandler()
+        logging.getLogger("Gato").addHandler(h)
     else:
-        usage()
-        return 2
+        # If we run MacOS from source we can write to /tmp and also have a shell
+
+        if args.verbose:
+            logLevel = logging.INFO
+        elif args.debug:
+            logLevel = logging.DEBUG
+        else:
+            logLevel = logging.WARNING
+        
+        
+        if args.log_file:
+            logging.basicConfig(
+                level=logLevel,
+                filename='/tmp/Gato.log',
+                filemode='w',
+                format='%(levelname)s %(message)s'
+            )
+        else:
+           logging.basicConfig(
+                 level=logLevel,
+               stream=sys.stdout,
+               format='%(levelname)s %(message)s'
+           )
+
+
+def GatoApp(args):
+    import logging
+    log = logging.getLogger("Gato")
+
+    tk = Tk()
+    # Prevent the Tcl console from popping up in standalone apps on MacOS X
+    # Checking for hasattr(sys,'frozen') does not work for bundelbuilder
+    try:
+        tk.tk.call('console','hide')
+    except tkinter.TclError:
+        pass
+
+
+    if args.separate:
+        app = AlgoWin(tk, experimental=args.experimental)
+        setupLogging(args, app.windowingsystem, macOSbinary=(sys.argv[0] != 'Gato.py'))
+    else:
+        # We want a three paned left | right top / right bottom layout
+        pw = PanedWindow(tk)
+        pw.pack(fill=BOTH, expand=1)
+        graph_panes = PanedWindow(pw, orient=VERTICAL)
+        app = AlgoWin(tk, graph_panes, experimental=args.experimental)
+        setupLogging(args, app.windowingsystem, macOSbinary=(sys.argv[0] != 'Gato.py'))
+        app.OpenSecondaryGraphDisplay()
+        graph_panes.add(app.graphDisplay)
+        graph_panes.add(app.secondaryGraphDisplay)                        
+        pw.add(app)
+        pw.add(graph_panes)
+        #if app.windowingsystem == 'aqua':
+        app.master.geometry("%dx%d+%d+%d" % (
+            880,
+            600, 
+            50, 	    
+            50))
+        app.tkraise()
+        app.master.update()            
+        app.update_idletasks()
+        app.OneGraphWindow()
+
+    if args.debug:
+        app.algorithm.logAnimator = 2
+
+    # On MacOS X the Quit menu entry otherwise bypasses our Quit
+    # Handler see  http://mail.python.org/pipermail/pythonmac-sig/2006-May/017432.html
+    if app.windowingsystem == 'aqua':
+        tk.createcommand("::tk::mac::Quit",app.Quit)
+            
+    # XXX Here we should actually provide our own buffer and a Tk
+    # Textbox to write to. NullHandler taken from
+    # http://docs.python.org/library/logging.html
+    if not args.verbose:
+        # Windows does not have /tmp, MacOS does not allow binaries to write to /tmp 
+        if app.windowingsystem == 'win32' or app.windowingsystem == 'aqua':
+            class NullHandler(logging.Handler):
+                def emit(self, record):
+                    pass
+            h = NullHandler()
+            logging.getLogger("Gato").addHandler(h)
+        else:
+            logging.basicConfig(level=logging.WARNING,
+                                filename='/tmp/Gato.log',
+                                filemode='w',
+                                format='%(name)s %(levelname)s %(message)s')
+        
+    # We get here if Gato.py <algorithm> <graph>
+    if args.algorithmFileName and args.graphFileName:
+        app.StartAlgorithmGraph(args.algorithmFileName, args.graphFileName)
+
+
+    # We get here if Gato.py --gato-file <gatofile-name|url>
+    if args.gato_file:
+        app.OpenGatoFile(args.gato_file)
+        app.update_idletasks()
+        app.update()
+
+        
+    if app.windowingsystem == 'aqua':
+        #app.master.iconify()
+        app.update()
+        app.master.deiconify()
+        app.master.lift()
+        # See discussion at https://stackoverflow.com/questions/1892339/how-to-make-a-tkinter-window-jump-to-the-front
+        if sys.argv[0] == 'Gato.py':
+            # If I am running from the command line the app is "Python"
+            os.system('''/usr/bin/osascript -e 'tell app "System Events" to set frontmost of process "Python" to true' ''')
+        else:
+            # When executing a packages MacOS App
+            # This does not throw an error, so I suppose sys.argv[0] is set correctly to Gato
+            # However this still asks the user for permision, which looks nefarious.
+            os.system('''/usr/bin/osascript -e 'tell app "System Events" to set frontmost of process "Gato" to true' ''')
+    app.update_idletasks()
+    app.update()
+    return app
+
     
 if __name__ == '__main__':
-    sys.exit(main())
+    description = "Animate Graph Algorithms such as BFS, DFS, Dijkstra, ..."
+
+    parser = argparse.ArgumentParser(
+        description=description,
+        epilog="Example: Gato.py BFS.alg sample.cat"
+    )
+
+    parser.add_argument(
+        "--experimental",
+        "-x",
+        action="store_true",
+        help="Enable experimental features in the User Interface.",
+    )   
+    parser.add_argument(
+        "--gato-file",
+        "-g",
+        help="Legacy format containg algorithm and graph in one file (either local or from URL).",
+    )   
+    parser.add_argument(
+        "--debug",
+        "-d",
+        action="store_true",
+        help="Outputs detailed debugging information on the console.",
+    )   
+    parser.add_argument(
+        "--log-file",
+        "-l",
+        action="store_true",
+        help="Send all log messages to log file /tmp/Gato.log.",
+    )   
+    parser.add_argument(
+        "--separate",
+        "-s",
+        action="store_true",
+        help="Use individual windows for algorithm and graph(s) instead of panes in the same window.",
+    )
+    parser.add_argument(
+        "--verbose",
+        "-v",
+        action="store_true",
+        help="Outputs detailed information on the console."
+    )
+
+    parser.add_argument('algorithmFileName')
+    parser.add_argument('graphFileName')
+    
+    args = parser.parse_args()
+    app = GatoApp(args)
+    sys.exit(app.mainloop())

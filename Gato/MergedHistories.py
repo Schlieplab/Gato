@@ -39,6 +39,7 @@
 import GatoGlobals
 import AnimationHistory
 import traceback
+import logging
 
 g = GatoGlobals.AnimationParameters
 
@@ -51,7 +52,6 @@ class MergedHistories:
         self.history_index = None
         self.animator1 = None
         self.animator2 = None
-        self.auto_print = 0
 
     def _check_animator_set(self, animator, display):
         if self.animator1 is None:
@@ -327,8 +327,16 @@ class MergedHistories:
                 raise Error("Displaynum of function in merged history is neither 1 nor 2.")
             
     def append(self, animation, display):
-        if self.auto_print:
-           print "disp" , display , "  " , animation.log_str() 
+        message = "disp%d %s" % (display, animation.log_str())
+        logging.info(message)
+
+        # In some algorithms the first animation commands occurr in secondary
+        # graph display. Then self,animator1 is not set.
+        if self.animator1 and self.animator1.animationReportFileHandle:
+            self.animator1.animationReportFileHandle.write(message + "\n")
+        elif self.animator2 and self.animator2.animationReportFileHandle:
+            self.animator2.animationReportFileHandle.write(message + "\n")
+            
         tup = animation, display
         self.history.append(tup)
         

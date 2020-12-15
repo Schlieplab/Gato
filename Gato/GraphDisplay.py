@@ -11,8 +11,7 @@
 #                                   
 #       Contact: alexander@schlieplab.org
 #
-
-#n
+#
 #       This library is free software; you can redistribute it and/or
 #       modify it under the terms of the GNU Library General Public
 #       License as published by the Free Software Foundation; either
@@ -46,14 +45,9 @@ from DataStructures import Point2D, VertexLabeling, EdgeLabeling
 from AnimatedDataStructures import ComponentMaker
 import os
 import colorsys
-
 import logging
-log = logging.getLogger("GraphDisplay.py")
 
 g = GatoGlobals.AnimationParameters
-
-
-
 
 
 class ZoomVar(StringVar):
@@ -111,6 +105,10 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
         self.graphInformer = None
         self.clickhandler = None
         self.highlightedPath = {}
+
+        # As logging cannot reconfigure while running, we define a file handle to output
+        # animation commands (will be called from MergedHistories only)
+        self.animationReportFileHandle = None
         
         # Used by ramazan's scaling code. Gives sizes in pixels at
         # current zoom level
@@ -1278,7 +1276,7 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
             self.canvas.lower(de,"vertices")
             return tail, head                
         except GatoGlobals.GraphNotSimpleError:
-            log.error("Inserting edge (%d,%d) would result in non-simple graph" % (tail,head))
+            logging.error("Inserting edge (%d,%d) would result in non-simple graph" % (tail,head))
             
             
     def DeleteEdge(self,tail,head,repaint=1):
@@ -1744,7 +1742,7 @@ class GraphDisplayFrame(GraphDisplay, Frame):
         GraphDisplay.__init__(self)
         
     def SetTitle(self,title):
-        log.info("change window title to %s" % title)
+        logging.info("change window title to %s" % title)
 
     def Show(self):
         pass

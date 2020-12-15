@@ -37,9 +37,12 @@
 import sys
 import inspect
 import time
+import logging
 import GatoGlobals
 import MergedHistories
+
 g = GatoGlobals.AnimationParameters
+log = logging.getLogger("Gato")
 
 
 class AnimationCommand:
@@ -122,160 +125,100 @@ class AnimationHistory:
        Animation commands for which undo/redo is provided, have to be methods of
        AnimationHistory.
 
-       If AnimationHistory.auto_print is true, textual representations of animation
-       commands are written to stdout to allow regression testing of animations.
-
-       This might also be helpful in debugging.
-
        The AnimationHistory is also used for providing SVG output of animations.
 
-       
        XXX Maybe decorators for graph display would be a better way to implement
        it. Here we incurr overhead for every method call
     """
     def __init__(self, animator, logPrefix = '', displayNum=1):
-        """ We wrap animator. If self.auto_print is true, then we prepend the
-            logPrefix to the output
-        """
         self.animator = animator
         self.history = []
         self.history_index = None
-        self.auto_print = 0
         self.logPrefix = logPrefix
         self.g = g
         self.displayNum = displayNum
         AnimationHistory.merged = MergedHistories.MergedHistories()
         
     def UpdateEdgeInfo(self, tail, head, info):
-        if self.auto_print == 1:
-            AnimationHistory.merged.auto_print = 1
         AnimationHistory.merged.UpdateEdgeInfo(tail, head, info, self.animator, self.displayNum)
 
     def UpdateGraphInfo(self, info):
-        if self.auto_print == 1:
-            AnimationHistory.merged.auto_print = 1
         AnimationHistory.merged.UpdateGraphInfo(info, self.animator, self.displayNum)
 
     def UpdateVertexInfo(self, v, info):
-        if self.auto_print == 1:
-            AnimationHistory.merged.auto_print = 1
         AnimationHistory.merged.UpdateVertexInfo(v, info, self.animator, self.displayNum)
         
     #========== Provide Undo/Redo for animation commands from GraphDisplay ======
     def SetVertexColor(self, v, color):
-        if self.auto_print == 1:
-            AnimationHistory.merged.auto_print = 1
         AnimationHistory.merged.SetVertexColor(v, color, self.animator, self.displayNum)
        
     def Wait(self):
-        if self.auto_print == 1:
-            AnimationHistory.merged.auto_print = 1
         AnimationHistory.merged.Wait(self.animator, self.displayNum)
 
     def SetAllVerticesColor(self, color, graph=None, vertices=None):
-        if self.auto_print == 1:
-            AnimationHistory.merged.auto_print = 1
         AnimationHistory.merged.SetAllVerticesColor(color, self.animator, self.displayNum, graph, vertices)
         
     def SetAllEdgesColor(self, color, graph=None, leaveColor=None, edges=None):
-        if self.auto_print == 1:
-            AnimationHistory.merged.auto_print = 1
         AnimationHistory.merged.SetAllEdgesColor( color, self.animator, self.displayNum, leaveColor, graph, edges)
        
     #Need to handle directed/undirected differently?
     def SetEdgesColor(self, edges, color):
-        if self.auto_print == 1:
-            AnimationHistory.merged.auto_print = 1
         AnimationHistory.merged.SetEdgesColor(edges, color, self.animator, self.displayNum)
         
     def SetEdgeColor(self, tail, head, color):
-        if self.auto_print == 1:
-            AnimationHistory.merged.auto_print = 1
         AnimationHistory.merged.SetEdgeColor(tail, head, color, self.animator, self.displayNum)
         
     def BlinkVertex(self, v, color=None):
-        if self.auto_print == 1:
-            AnimationHistory.merged.auto_print = 1
         AnimationHistory.merged.BlinkVertex(v, self.animator, self.displayNum, color)
        
     def BlinkEdge(self, tail, head, color=None):
-        if self.auto_print == 1:
-            AnimationHistory.merged.auto_print = 1
         AnimationHistory.merged.BlinkEdge(tail, head, self.animator, self.displayNum, color)
 
     def CreateBubble(self, vertex_nums, offset_value, color):
-        if self.auto_print == 1:
-            AnimationHistory.merged.auto_print = 1
         AnimationHistory.merged.CreateBubble(vertex_nums, offset_value, color, self.animator, self.displayNum)
        
 
     def ResizeBubble(self, vertex_nums, new_radius):
-        if self.auto_print == 1:
-            AnimationHistory.merged.auto_print = 1
         AnimationHistory.merged.ResizeBubble(vertex_nums, new_radius, self.animator, self.displayNum)
 
     def DeleteBubble(self, vertex_nums):
-        if self.auto_print == 1:
-            AnimationHistory.merged.auto_print = 1
         AnimationHistory.merged.DeleteBubble(vertex_nums, self.animator, self.displayNum)
 
     def EndOfProlog(self):
-        if self.auto_print == 1:
-            AnimationHistory.merged.auto_print = 1
         AnimationHistory.merged.DeleteBubble(self.animator, self.displayNum)
 
     def CreateMoat(self, moat_id, radius, color):
-        if self.auto_print == 1:
-            AnimationHistory.merged.auto_print = 1
         AnimationHistory.merged.CreateMoat(moat_id, radius, color, self.animator, self.displayNum)
        
     def GrowMoat(self, moat_id, radius):
-        if self.auto_print == 1:
-            AnimationHistory.merged.auto_print = 1
         AnimationHistory.merged.GrowMoat(moat_id, radius, self.animator, self.displayNum)
 
     def SetVertexFrameWidth(self, v, val):
-        if self.auto_print == 1:
-            AnimationHistory.merged.auto_print = 1
         AnimationHistory.merged.SetVertexFrameWidth(v, val, self.animator, self.displayNum)
         
     def SetVertexAnnotation(self, v, annotation,color="black"):
-        if self.auto_print == 1:
-            AnimationHistory.merged.auto_print = 1
         AnimationHistory.merged.SetVertexAnnotation(v, annotation, self.animator, self.displayNum, color)
         
     def AddVertex(self, x, y, v=None):
-        if self.auto_print == 1:
-            AnimationHistory.merged.auto_print = 1
         return AnimationHistory.merged.AddVertex(x, y, self.animator, self.displayNum, v)  
         
     def AddEdge(self, tail, head):
-        if self.auto_print == 1:
-            AnimationHistory.merged.auto_print = 1
         AnimationHistory.merged.AddEdge(tail, head, self.animator, self.displayNum)
        
     def DeleteEdge(self, tail, head, repaint=1):
-        if self.auto_print == 1:
-            AnimationHistory.merged.auto_print = 1
         AnimationHistory.merged.DeleteEdge(tail, head, self.animator, self.displayNum, repaint)
         
         
     def DeleteVertex(self, v):
         #Delete all edges containing v
         #Call deletevertex command
-        if self.auto_print == 1:
-            AnimationHistory.merged.auto_print = 1
         AnimationHistory.merged.DeleteVertex(v, self.animator, self.displayNum)
         
 
     def HighlightPath(self, path, color, closed=0):
-        if self.auto_print == 1:
-            AnimationHistory.merged.auto_print = 1
         return AnimationHistory.merged.HighlightPath(path, color, self.animator, self.displayNum, closed)  
 
     def HidePath(self, pathID):
-        if self.auto_print == 1:
-            AnimationHistory.merged.auto_print = 1
         AnimationHistory.merged.HidePath(pathID, self.animator, self.displayNum)  
 
     #========== Handle all other methods from GraphDisplay =====================
@@ -305,8 +248,7 @@ class AnimationHistory:
        
     #Deprecated Function
     def append(self, animation):
-        if self.auto_print:
-            print self.logPrefix + animation.log_str() 
+        log.info(self.logPrefix + animation.log_str())
         self.history.append(animation)
         
 
