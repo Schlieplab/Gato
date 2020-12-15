@@ -235,7 +235,7 @@ class AlgoWin(Frame):
             height = self.master.winfo_reqheight()
 
             # XXX Some WM + packer combinatios ocassionally produce absurd requested sizes
-            #log.debug(os.name + str(wmExtras) + " width = %f height = %f " % (width, height))
+            #logging.debug(os.name + str(wmExtras) + " width = %f height = %f " % (width, height))
             width = min(600, self.master.winfo_reqwidth())
             height = min(750, self.master.winfo_reqheight())
             if os.name == 'nt' or os.name == 'dos':
@@ -608,7 +608,7 @@ class AlgoWin(Frame):
             self.tagLine(l, tag)
             
     def tokenEater(self, type, token, (srow, scol), (erow, ecol), line):
-        #log.debug("%d,%d-%d,%d:\t%s\t%s" % \
+        #logging.debug("%d,%d-%d,%d:\t%s\t%s" % \
         #     (srow, scol, erow, ecol, type, repr(token)))
     
         if type == 1:    # Name 
@@ -1041,14 +1041,15 @@ class AlgoWin(Frame):
         try:
             self.master.geometry("+%d+%d" % (pad, screenTop + pad)) 
         except TclError:
-            log.debug("OneGraphWindow: self.master.geometry failed for +%d+%d" % (pad, screenTop + pad)) 
+            logging.debug("OneGraphWindow: self.master.geometry failed for +%d+%d" % (pad, screenTop + pad)) 
             
-        log.debug("OneGraphWindow: screen= (%d * %d), extras = (%d %d)" % (
-            self.master.winfo_screenwidth(),
-            self.master.winfo_screenheight(),
-            WMExtra,
-            topWMExtra)
-                  )
+        logging.debug(
+            "OneGraphWindow: screen= (%d * %d), extras = (%d %d)" % (
+                self.master.winfo_screenwidth(),
+                self.master.winfo_screenheight(),
+                WMExtra,
+                topWMExtra)
+        )
         
         # Move graph win to take up the rest of the screen
         screenwidth  = self.master.winfo_screenwidth()
@@ -1295,7 +1296,7 @@ class AlgoWin(Frame):
         if self.lastActiveLine != 0:
             self.unTagLine(self.lastActiveLine,'Active')
         self.lastActiveLine = lineNo
-        log.debug("*ShowActive* %s" % lineNo)
+        logging.debug("*ShowActive* %s" % lineNo)
         self.tagLine(lineNo,'Active')	
         self.algoText.yview_pickplace('%d.0' % lineNo)
         self.update() # Forcing redraw
@@ -1383,7 +1384,7 @@ class AlgoWin(Frame):
         else:
             msg = "I/O error(%s) occured for %s file %s: %s" % (errNo, fileDesc,
                                                                 fileName, strError)
-        log.error(msg)
+        logging.error(msg)
         showerror("Gato - File Error",msg)
 
     def HandleError(self, short_msg, long_msg, log_function):
@@ -1472,7 +1473,7 @@ class AlgorithmDebugger(bdb.Bdb):
         if fn != self.GUI.algoFileName:
             return None
         line = self.currentLine(frame)
-        log.debug("dispatch_line %d (last %d)" % (line, self.lastLine))
+        logging.debug("dispatch_line %d (last %d)" % (line, self.lastLine))
         if line == self.lastLine:
             return self.trace_dispatch	    
         self.lastLine = line
@@ -1485,15 +1486,15 @@ class AlgorithmDebugger(bdb.Bdb):
         #import inspect
         fn = frame.f_code.co_filename
         line = self.currentLine(frame)
-        #log.debug("dispatch_call %s %s %s %s %s %s" % (fn, line, frame, self.stop_here(frame), self.break_anywhere(frame), self.break_here(frame)))
-        #log.debug("%s" % inspect.getframeinfo(frame))
+        #logging.debug("dispatch_call %s %s %s %s %s %s" % (fn, line, frame, self.stop_here(frame), self.break_anywhere(frame), self.break_here(frame)))
+        #logging.debug("%s" % inspect.getframeinfo(frame))
         doTrace = self.doTrace # value of self.doTrace might change
         # No tracing of functions defined outside of our algorithmfile 
         if fn != self.GUI.algoFileName:
             return None
             #import inspect
-            #log.debug("dispatch_call %s %s %s %s %s %s" % (fn, line, frame, self.stop_here(frame), self.break_anywhere(frame), self.break_here(frame)))
-            #log.debug("%s" % inspect.getframeinfo(frame))
+            #logging.debug("dispatch_call %s %s %s %s %s %s" % (fn, line, frame, self.stop_here(frame), self.break_anywhere(frame), self.break_here(frame)))
+            #logging.debug("%s" % inspect.getframeinfo(frame))
         frame.f_locals['__args__'] = arg
         if self.botframe is None:
             # First call of dispatch since reset()
@@ -1512,7 +1513,7 @@ class AlgorithmDebugger(bdb.Bdb):
             self.doTrace = 0 #1 # We will break if there is a breakpoint set in
             # function called (set to self.doTrace = 1 if you don't want that)
             return self.trace_nofeedback_dispatch	    
-        #log.debug("%s" % inspect.getframeinfo(frame))
+        #logging.debug("%s" % inspect.getframeinfo(frame))
         return None
         
     def trace_nofeedback_dispatch(self, frame, event, arg):
@@ -1531,7 +1532,7 @@ class AlgorithmDebugger(bdb.Bdb):
             return self.dispatch_return(frame, arg)
         if event == 'exception':
             return self.dispatch_exception(frame, arg)
-        log.debug("bdb.Bdb.dispatch: unknown debugging event: %s" % event)
+        logging.debug("bdb.Bdb.dispatch: unknown debugging event: %s" % event)
         
     def reset(self):
         """ *Internal* Put debugger into initial state, calls forget() """
@@ -1557,7 +1558,7 @@ class AlgorithmDebugger(bdb.Bdb):
         """ *Internal* This function is called when we stop or break
             at this line """
         line = self.currentLine(frame)
-        log.debug("*user_call* %s %s" % (line, argument_list))
+        logging.debug("*user_call* %s %s" % (line, argument_list))
         if self.doTrace == 1:
             line = self.currentLine(frame)
             if line in self.GUI.breakpoints:
@@ -1570,7 +1571,7 @@ class AlgorithmDebugger(bdb.Bdb):
             pass
         # XXX No idea why this is here
         #import inspect
-        #log.debug("%s" % inspect.getframeinfo(frame))
+        #logging.debug("%s" % inspect.getframeinfo(frame))
             
     def user_line(self, frame):
         """ *Internal* This function is called when we stop or break at this line
@@ -1578,7 +1579,7 @@ class AlgorithmDebugger(bdb.Bdb):
         """
         self.doTrace = 0 # XXX
         line = self.currentLine(frame)
-        log.debug("*user_line* %s" % line)
+        logging.debug("*user_line* %s" % line)
         if line in self.GUI.breakpoints:
             self.GUI.mode = 2
         self.GUI.GUI.ShowActive(line)
@@ -1588,7 +1589,7 @@ class AlgorithmDebugger(bdb.Bdb):
         """ *Internal* This function is called when a return trap is set here """
         #import inspect
         frame.f_locals['__return__'] = return_value
-        #log.debug('--Return--')
+        #logging.debug('--Return--')
         #self.doTrace = 0 #YYY
         # TO Avoid multiple steps in return line of called fun
         #self.interaction(frame, None)
@@ -1601,7 +1602,7 @@ class AlgorithmDebugger(bdb.Bdb):
         if type(exc_type) == type(''):
             exc_type_name = exc_type
         else: exc_type_name = exc_type.__name__
-        #log.debug("exc_type_name: %s" repr.repr(exc_value))
+        #logging.debug("exc_type_name: %s" repr.repr(exc_value))
         self.interaction(frame, exc_traceback)
       
     def reset_component_infos(self):
@@ -1723,7 +1724,7 @@ class AlgorithmDebugger(bdb.Bdb):
         if self.GUI.mode == 2:
             old = self.GUI.mode
             self.GUI.GUI.WaitNextEvent() # user event -- might change self.GUI.mode
-            #log.debug("self.GUI.mode: %s -> %s " % (old, self.GUI.mode))
+            #logging.debug("self.GUI.mode: %s -> %s " % (old, self.GUI.mode))
             #if self.GUI.mode == 2: 
             #self.do_next()
             
@@ -2000,7 +2001,7 @@ class Algorithm:
                      self.algoGlobals, self.algoGlobals)
         except AbortProlog as e:
             # Only get here because NeededProperties was canceled by user
-            log.info(e.value)
+            logging.info(e.value)
             self.GUI.CommitStop()
             return
         except (EOFError, IOError), (errno, strerror):
@@ -2090,7 +2091,7 @@ class Algorithm:
         
             Set all breakpoints in list: So an algorithm prolog
             can set a bunch of pre-assigned breakpoints at once """
-        log.info("SetBreakpoints() is depreciated. Use 'breakpoint' var in prolog instead. ")
+        logging.info("SetBreakpoints() is depreciated. Use 'breakpoint' var in prolog instead. ")
         for line in list:
             self.GUI.ShowBreakpoint(line)
             self.breakpoints.append(line)
@@ -2227,7 +2228,7 @@ class Algorithm:
 
 def setupLogging(args, windowingsystem, macOSbinary=False):
     log = logging.getLogger("Gato")
-
+        
     if windowingsystem == 'win32' or (windowingsystem == 'aqua' and macOSbinary):
         # Suppress all logging on Windows and for MacOS binaries
         #
@@ -2260,16 +2261,13 @@ def setupLogging(args, windowingsystem, macOSbinary=False):
             )
         else:
            logging.basicConfig(
-                 level=logLevel,
+               level=logLevel,
                stream=sys.stdout,
                format='%(levelname)s %(message)s'
            )
 
 
 def GatoApp(args):
-    import logging
-    log = logging.getLogger("Gato")
-
     tk = Tk()
     # Prevent the Tcl console from popping up in standalone apps on MacOS X
     # Checking for hasattr(sys,'frozen') does not work for bundelbuilder

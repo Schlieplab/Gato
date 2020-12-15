@@ -328,7 +328,7 @@ class MergedHistories:
             
     def append(self, animation, display):
         message = "disp%d %s" % (display, animation.log_str())
-        logging.info(message)
+        logging.debug(message)
 
         # In some algorithms the first animation commands occurr in secondary
         # graph display. Then self,animator1 is not set.

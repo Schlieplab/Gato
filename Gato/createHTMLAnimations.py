@@ -607,6 +607,119 @@ def should_generate_png(algo_file_name, graph_file_name, png_file_name):
     return True
 
 
+
+def produceHTMLAnimations(args):
+    app = GatoApp(args)
+    logging.info("# Producing HTML animations")
+
+    if not os.path.exists(args.path):
+        os.makedirs(args.path)
+
+    has_png_libs = checkForLibs()
+
+    graph_pngs = {}
+    testPath = "../CATBox/"
+
+    for chapter_dict in svg_instance:
+        for algo in chapter_dict["algorithms"]:
+            for graph_file in algo["graphs"]:
+                logging.info("=== HTML Generation === %s === %s ===" % (algo["file"], graph_file))
+
+                graph_name = os.path.splitext(os.path.basename(graph_file))[0]
+                algo_name = os.path.splitext(algo['file'])[0]
+
+                
+                png_file_name = os.path.join(
+                    args.path,
+                    'img',
+                    "%s--%s.png" % (algo_name, graph_name)
+                )
+                svg_file_name = os.path.join(
+                    args.path,
+                    "%s--%s.html" % (algo_name, graph_name)
+                )
+                algo_location = os.path.join(
+                    testPath,
+                    chapter_dict["chapter_directory"],
+                    algo.get("svg_file", algo["file"])
+                )
+
+                generate_anim = should_generate_animation(
+                    algo_location,
+                    testPath + graph_file,
+                    svg_file_name
+                )
+                generate_png = should_generate_png(
+                    algo_location,
+                    testPath + graph_file,
+                    png_file_name
+                )
+                if generate_anim or generate_png or args.force:
+                    g.GeneratingSVG = 1
+
+                    app.OpenGraph(os.path.join(testPath, graph_file))
+                    app.OpenAlgorithm(algo_location)
+                    app.RunAlgorithmToCompletion()
+                                  
+                    app.ExportSVGAnimation(
+                        svg_file_name,
+                        chapter_number=chapter_dict["chapter_number"],
+                        algo_div=algo["title"].replace(" ", "").replace("-", ""),
+                        chapter_name=chapter_dict["title"],
+                    )
+                else:
+                    logging.info("Animation already generated, skipping.")
+
+                if generate_png:
+                    index_page_graph_name = friendly_graph_names.get(graph_name, graph_name)
+                    if png_file_name not in graph_pngs and has_png_libs:
+                        #png_dimensions = app.ExportSVG(
+                        #    png_file_name,
+                        #    write_to_png=True,
+                        #    start_graph_coord_diff=coordinate_diff
+                        #)
+                        png_dimensions = app.ExportSVG(png_file_name, write_to_png=True)
+                        path_from_index = '/'.join(png_file_name.split('/')[1:])
+                        graph_pngs[algo['title'] + graph_file] = {
+                            'file': path_from_index,
+                            'name': index_page_graph_name,
+                            'width': png_dimensions['width'],
+                            'height': png_dimensions['height']
+                        }
+                    else:
+                        from PIL import Image
+                        img = Image.open(png_file_name)
+                        graph_pngs[algo['title'] + graph_file] = {
+                            'file': '/'.join(png_file_name.split('/')[1:]),
+                            'name': index_page_graph_name,
+                            'width': img.size[0],
+                            'height': img.size[1]
+                        }
+                    
+        if has_png_libs and graph_pngs:
+            create_svg_index_page(graph_pngs)
+
+
+
+
+def checkForLibs():
+    has_png_libs = False
+    try:
+        import cairo
+        import rsvg
+        has_png_libs = True
+    except:
+        err_msg = (
+            "*******\nWARNING:\n"
+            "Generation of the SVG Index page requires the python packages for"
+            "Cairo (http://cairographics.org/) and librsvg "
+            "(https://wiki.gnome.org/action/show/Projects/LibRsvg?action=show&redirect=LibRsvg)."
+            "HTML generation will continue, but no index page will be generated.\n*******"
+        )
+        print err_msg
+    return has_png_libs
+
+
 # -------------------------------------------------------------------------------
 if __name__ == "__main__":
     description = (
@@ -617,239 +730,49 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description=description, epilog="Example:")
     parser.add_argument(
+        "--debug",
+        "-d",
+        action="store_true",
+        help="Outputs detailed debugging information on the console.",
+    )   
+    parser.add_argument(
         "--force",
         "-f",
         action="store_true",
         help="The name of the assignment to operate on.",
     )
-    parser.add_argument("--verbose", "-v", action="store_true", help="")
+    parser.add_argument(
+        "--path",
+        "-p",
+        default='./svgs',
+        help="Path to store HTML output.",
+    )   
+    parser.add_argument(
+        "--verbose",
+        "-v",
+        action="store_true",
+        help="Outputs detailed information on the console."
+    )
 
     args = parser.parse_args()
+    # Manually set the extra arguments defined in Gato.py
+    args.experimental=False
+    args.separate=False
+    args.algorithmFileName=''
+    args.gatoFileName=''
+    args.gato_file=''
+    args.log_file=''
 
-    if test:
-        testPath = "./"
-        tests = [("BFS.alg", "sample.cat")]
-    elif not svg:
-        if all:
-            ei = {
-                "05-ShortestPaths/BellmanFord.alg": [
-                    "05-ShortestPaths/11x11neg.cat",
-                    "05-ShortestPaths/NegCircuit.cat",
-                    "05-ShortestPaths/NegCircuit2.cat",
-                ],
-                "05-ShortestPaths/FindPath.alg": [
-                    "05-ShortestPaths/11x11neg.cat",
-                    "05-ShortestPaths/NegCircuit.cat",
-                    "05-ShortestPaths/NegCircuit2.cat",
-                ],
-                "05-ShortestPaths/FindPathEuclid.alg": [
-                    "05-ShortestPaths/11x11neg.cat",
-                    "05-ShortestPaths/NegCircuit.cat",
-                    "05-ShortestPaths/NegCircuit2.cat",
-                ],
-                "05-ShortestPaths/Dijkstra.alg": [
-                    "05-ShortestPaths/11x11neg.cat",
-                    "05-ShortestPaths/NegCircuit.cat",
-                    "05-ShortestPaths/NegCircuit2.cat",
-                ],
-                "05-ShortestPaths/DijkstraPQ.alg": [
-                    "05-ShortestPaths/11x11neg.cat",
-                    "05-ShortestPaths/NegCircuit.cat",
-                    "05-ShortestPaths/NegCircuit2.cat",
-                ],
-            }
-            instance = allInstances(
-                exclude_algorithms=["MSTInteractive.alg"], exclude_instances=ei
-            )
-        algorithms = instance.keys()
-        algorithms.sort()
-        tests = [
-            (algo, graph) for algo in algorithms for graph in instance[algo]
-        ]
-        testPath = "../CATBox/"
-
-    # To speed up running of tests
-    g.BlinkRepeat = 1
-    g.BlinkRate = 2
-
-    g.Interactive = 0  # Same effect as hitting continue for interactive lines
-    log = logging.getLogger("Gato")
-
-    app = AlgoWin()
-    if debug:
-        app.algorithm.logAnimator = 2
-
-    if verbose:
-        if sys.version_info[0:2] < (2, 4):
-            log.addHandler(logging.StreamHandler(sys.stdout))
-            log.setLevel(logging.DEBUG)
-        else:
-            logging.basicConfig(
-                level=logging.DEBUG,
-                stream=sys.stdout,
-                format="%(name)s %(levelname)s %(message)s",
-            )
+    if args.verbose:
+        logLevel = logging.INFO
+    elif args.debug:
+        logLevel = logging.DEBUG
     else:
-        if app.windowingsystem == "win32":
-
-            class NullHandler(logging.Handler):
-                def emit(self, record):
-                    pass
-
-            h = NullHandler()
-            logging.getLogger("Gato").addHandler(h)
-
-        else:
-            logging.basicConfig(
-                level=logging.WARNING,
-                filename="/tmp/Gato.log",
-                filemode="w",
-                format="%(name)s %(levelname)s %(message)s",
-            )
-
-    if svg:
-        print "# Producing SVG output"
-        if not os.path.exists("./svgs"):
-            os.makedirs("./svgs")
-
-        # Warn the user if they don't have the correct libraries for PNG generation
-        has_png_libs = True
-        try:
-            import cairo
-            import rsvg
-        except:
-            has_png_libs = False
-            err_msg = (
-                "*******\nWARNING:\n"
-                "Generation of an SVG Index page requires the python packages for cairo(http://cairographics.org/)"
-                " and librsvg(https://wiki.gnome.org/action/show/Projects/LibRsvg?action=show&redirect=LibRsvg)."
-                "  SVG generation will continue, but no index page will be generated.\n*******"
-            )
-            print err_msg
-
-        graph_pngs = {}
-        testPath = "../CATBox/"
-        for chapter_dict in svg_instance:
-            for algo in chapter_dict["algorithms"]:
-                for graph_file in algo["graphs"]:
-                    log.info(
-                        "=== TEST === "
-                        + algo["file"]
-                        + " === "
-                        + graph_file
-                        + " ==="
-                    )
-                    print "=== TEST === " + algo[
-                        "file"
-                    ] + " === " + graph_file + " ==="
-                    graph_name = os.path.splitext(os.path.basename(graph_file))[
-                        0
-                    ]
-                    png_file_name = "svgs/img/%s--%s.png" % (
-                        os.path.splitext(algo["file"])[0],
-                        graph_name,
-                    )
-                    svg_file_name = "svgs/%s--%s.html" % (
-                        os.path.splitext(algo["file"])[0],
-                        graph_name,
-                    )
-                    algo_location = (
-                        testPath
-                        + chapter_dict["chapter_directory"]
-                        + "/"
-                        + algo.get("svg_file", algo["file"])
-                    )
-
-                    generate_anim = should_generate_animation(
-                        algo_location, testPath + graph_file, svg_file_name
-                    )
-                    generate_png = (
-                        should_generate_png(
-                            algo_location, testPath + graph_file, png_file_name
-                        )
-                        or force_animation
-                    )
-                    if generate_anim or generate_png or force_animation:
-                        app.OpenAlgorithm(algo_location)
-                        app.OpenGraph(testPath + graph_file)
-                        g.Interactive = 0  # This is set to 0 above.  Do we need to do it here as well?
-                        g.GeneratingSVG = 1
-                        app.algorithm.ClearBreakpoints()
-                        app.algorithm.DB.alwaysTrace = (
-                            1  # Capture activeLine in sub-routines
-                        )
-                        app.update_idletasks()
-                        app.update()
-                        app.update_idletasks()
-                        app.update()
-                        # coordinate_diff = app.GetSVGCoordinateDiff()
-                        # Run it ...
-                        app.after_idle(
-                            app.CmdContinue
-                        )  # after idle needed since CmdStart
-                        # does not return
-                        app.CmdStart()
-                        app.update_idletasks()
-
-                        # Generate the SVG
-                        app.ExportSVGAnimation(
-                            svg_file_name,
-                            chapter_number=chapter_dict["chapter_number"],
-                            algo_div=algo["title"]
-                            .replace(" ", "")
-                            .replace("-", ""),
-                            chapter_name=chapter_dict["title"],
-                        )
-                    else:
-                        print "Animation already generated, skipping."
-
-                    if generate_png:
-                        # Generate the PNG
-                        index_page_graph_name = friendly_graph_names.get(
-                            graph_name, graph_name
-                        )
-                        if png_file_name not in graph_pngs and has_png_libs:
-                            # png_dimensions = app.ExportSVG(png_file_name, write_to_png=True, start_graph_coord_diff=coordinate_diff)
-                            png_dimensions = app.ExportSVG(
-                                png_file_name, write_to_png=True
-                            )
-                            path_from_index = "/".join(
-                                png_file_name.split("/")[1:]
-                            )
-                            graph_pngs[algo["title"] + graph_file] = {
-                                "file": path_from_index,
-                                "name": index_page_graph_name,
-                                "width": png_dimensions["width"],
-                                "height": png_dimensions["height"],
-                            }
-                        else:
-                            from PIL import Image
-
-                            img = Image.open(png_file_name)
-                            graph_pngs[algo["title"] + graph_file] = {
-                                "file": "/".join(png_file_name.split("/")[1:]),
-                                "name": index_page_graph_name,
-                                "width": img.size[0],
-                                "height": img.size[1],
-                            }
-
-        if has_png_libs and graph_pngs:
-            create_svg_index_page(graph_pngs)
-
-    else:
-        for case in tests:
-            log.info("=== TEST === " + case[0] + " === " + case[1] + " ===")
-            app.OpenAlgorithm(testPath + case[0])
-            g.Interactive = 0
-            app.algorithm.ClearBreakpoints()
-            app.update_idletasks()
-            app.update()
-            app.OpenGraph(testPath + case[1])
-            app.update_idletasks()
-            app.update()
-            # Run it ...
-            app.after_idle(app.CmdContinue)  # after idle needed since CmdStart
-            # does not return
-            app.CmdStart()
-            app.update_idletasks()
-            # app.mainloop()
+        logLevel = logging.WARNING
+    logging.basicConfig(
+        level=logLevel,
+        stream=sys.stdout,
+        format='%(levelname)s %(message)s'
+    )
+    logging.info("Starting HTML generation")
+    produceHTMLAnimations(args)

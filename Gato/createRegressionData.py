@@ -318,6 +318,18 @@ if __name__ == '__main__':
     args.gatoFileName=''
     args.gato_file=''
     args.log_file=''
+
+    if args.verbose:
+        logLevel = logging.INFO
+    elif args.debug:
+        logLevel = logging.DEBUG
+    else:
+        logLevel = logging.WARNING
+    logging.basicConfig(
+        level=logLevel,
+        stream=sys.stdout,
+        format='%(levelname)s %(message)s'
+    )
     RunTests(args)
     
 
