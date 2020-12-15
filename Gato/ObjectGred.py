@@ -6,11 +6,12 @@
 #	file:   ObjectGred.py
 #	author: Alexander Schliep (alexander@schlieplab.org)
 #
-#       Copyright (C) 2007-2015 Alexander Schliep, Winfried Hochstaettler
+#       Copyright (C) 2016-2020 Alexander Schliep and
+#	Copyright (C) 1998-2015 Alexander Schliep, Winfried Hochstaettler and 
+#       Copyright (C) 1998-2001 ZAIK/ZPR, Universitaet zu Koeln
 #                                   
 #       Contact: alexander@schlieplab.org
 #
-
 #
 #       This library is free software; you can redistribute it and/or
 #       modify it under the terms of the GNU Library General Public
