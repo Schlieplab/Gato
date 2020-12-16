@@ -410,7 +410,7 @@ class configureUNIX(configureOS):
                 if mimeType==gatoMimeType:
                     continue
                     
-                savedLines+=string.join(continuedLines,'')+savedLine
+                savedLines+= "".join(continuedLines)+savedLine
             mailcap.close()
             # open for write access
         mailcap=file(self.mailcapFile,"w")
@@ -460,7 +460,7 @@ class configureUNIX(configureOS):
                     mime_dict.get("exts")==gatoFileExtension):
                     continue
                     
-                savedLines+=string.join(continuedLines,'')+savedLine
+                savedLines+="".join(continuedLines)+savedLine
             mime_types.close()
         else:
             # fake Netscape MIME file

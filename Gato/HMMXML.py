@@ -44,7 +44,6 @@
 from sys import *
 from xml.dom.minidom import *
 import copy
-import string
 import logging
 
 def printDict(d):
@@ -102,7 +101,7 @@ class DataFactory:
         
         logging.debug("DataFactory.arrayFromCSV(%s)" % str(s))
         
-        items = string.split(s,',')
+        items = s.split(',')
         for i in items:
             retVal.append(type(i))
         return retVal

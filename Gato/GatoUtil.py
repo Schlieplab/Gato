@@ -35,15 +35,14 @@
 ################################################################################
 
 from Tkinter import *
-    
+import os
+
 def extension(pathAndFile):
     """ Return ext if path/filename.ext is given """
-    import string
-    return string.split(stripPath(pathAndFile),".")[-1]
+    return os.path.splitext(pathAndFile)[1]
     
 def stripPath(pathAndFile):
     """ Return filename.ext if path/filename.ext is given """
-    import os 
     return os.path.split(pathAndFile)[1]
     
 def orthogonal(u):

@@ -68,15 +68,15 @@ def typed_assign(var, val):
     return result
     
 def listFromCSV(s, type):
-    return map(type,string.split(s,','))
+    return map(type,s.split(','))
     
 def csvFromList(list, perRow = None):
     if perRow == None:
-        return string.join(map(str,list), ', ')
+        return ", ".join(map(str,list))
     else:
         result = ""
         for start in xrange(0, len(list), perRow):
-            result += string.join(map(str,list[start:start+perRow]), ', ') + ',\n'
+            result += (", ".join(map(str,list[start:start+perRow])) + ',\n')
         return result[0:len(result)-2]
         
 def writeContents(XMLDoc, XMLNode, data):

@@ -42,7 +42,7 @@ import GraphUtil #import ConnectedComponents, FindBipartitePartitions
 
 from math import sqrt
 import logging
-import string
+
 
 ################################################################################
 #
@@ -503,7 +503,7 @@ class Graph:
 
         <p>The properties %s are unknown or undetermined.</p>
         </BODY></HTML>
-        """ % (graphName, self.Order(), self.Size(), knownProps, string.join(unknownProps,', '))
+        """ % (graphName, self.Order(), self.Size(), knownProps, ", ".join(unknownProps))
         return result
 
 

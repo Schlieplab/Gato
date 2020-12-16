@@ -117,7 +117,7 @@ def WMExtrasGeometry(window):
               """
     try:
         window.geometry() # XXX Sometimes first produced wrong results ...
-        g = string.split(window.geometry(),"+")
+        g = window.geometry().split("+")
     except TclError:
         # bad geometry specifier: e.g. ... "-1949x260+1871+1"
         return (32,32) 
@@ -1283,7 +1283,8 @@ class AlgoWin(Frame):
     # handleMouse 
     def handleMouse(self, event):
         """ Callback for canvas to allow toggeling of breakpoints """
-        currLine  = string.splitfields(self.algoText.index(CURRENT),'.')[0]
+        # Was: currLine  = string.splitfields(self.algoText.index(CURRENT),'.')[0]
+        currLine  = self.algoText.index(CURRENT).split('.')[0]
         self.algorithm.ToggleBreakpoint(string.atoi(currLine))
         
 

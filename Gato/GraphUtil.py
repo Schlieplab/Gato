@@ -37,7 +37,6 @@
 
 import types
 import StringIO
-from string import split
 import string
 from GatoGlobals import *
 import Graph
@@ -299,6 +298,13 @@ def OpenCATBoxGraph(_file):
     firstEdgeLineNr   = -1
     lastEdgeLineNr    = -1
     intWeights        = 0
+
+    def int_value(s):
+        return int(s.split(':')[1])
+
+    def	float_value(s):
+        return float(s.split(':')[1])
+
     
     while 1:
     
@@ -308,13 +314,22 @@ def OpenCATBoxGraph(_file):
             break
             
         if lineNr == 2: # Read directed and euclidian
-            splitLine = split(line[:-1],';')	    
-            G.directed = eval(split(splitLine[0],':')[1])
-            G.simple = eval(split(splitLine[1],':')[1])
-            G.euclidian = eval(split(splitLine[2],':')[1])
-            intWeights = eval(split(splitLine[3],':')[1])
-            nrOfEdgeWeights = eval(split(splitLine[4],':')[1])
-            nrOfVertexWeights = eval(split(splitLine[5],':')[1])
+            # splitLine = split(line[:-1],';')	    
+            # G.directed = eval(split(splitLine[0],':')[1])
+            # G.simple = eval(split(splitLine[1],':')[1])
+            # G.euclidian = eval(split(splitLine[2],':')[1])
+            # intWeights = eval(split(splitLine[3],':')[1])
+            # nrOfEdgeWeights = eval(split(splitLine[4],':')[1])
+            # nrOfVertexWeights = eval(split(splitLine[5],':')[1])
+
+            splitLine = line[:-1].split(';')
+            G.directed = int_value(splitLine[0])
+            G.simple = int_value(splitLine[1])
+            G.euclidian = int_value(splitLine[2])
+            intWeights = int_value(splitLine[3])
+            nrOfEdgeWeights = int_value(splitLine[4])
+            nrOfVertexWeights = int_value(splitLine[5])
+
             for i in xrange(nrOfEdgeWeights):
                 G.edgeWeights[i] = EdgeWeight(G)
             for i in xrange(nrOfVertexWeights):
@@ -322,34 +337,41 @@ def OpenCATBoxGraph(_file):
                 
                 
         if lineNr == 5: # Read nr of vertices
-            nrOfVertices = eval(split(line[:-2],':')[1]) # Strip of "\n" and ; 
+            nrOfVertices = int_value(line[:-2]) # Strip of "\n" and ; 
             firstVertexLineNr = lineNr + 1
             lastVertexLineNr  = lineNr + nrOfVertices
             
         if  firstVertexLineNr <= lineNr and lineNr <= lastVertexLineNr: 
-            splitLine = split(line[:-1],';')
+            splitLine = line[:-1].split(';')
             v = G.AddVertex()
-            x = eval(split(splitLine[1],':')[1])
-            y = eval(split(splitLine[2],':')[1])
+            x = int_value(splitLine[1])
+            y = int_value(splitLine[2])
             for i in xrange(nrOfVertexWeights):
-                w = eval(split(splitLine[3+i],':')[1])
+                if intWeights:
+                    w = int_value(splitLine[3+i])
+                else:
+                    w = float_value(splitLine[3+i])
                 G.vertexWeights[i][v] = w
                 
             E[v] = Point2D(x,y)
             
         if lineNr == lastVertexLineNr + 1: # Read Nr of edges
-            nrOfEdges = eval(split(line[:-2],':')[1]) # Strip of "\n" and ; 
+            nrOfEdges = int_value(line[:-2]) # Strip of "\n" and ; 
             firstEdgeLineNr = lineNr + 1
             lastEdgeLineNr  = lineNr + nrOfEdges
             
         if firstEdgeLineNr <= lineNr and lineNr <= lastEdgeLineNr: 
-            splitLine = split(line[:-1],';')
-            h = eval(split(splitLine[0],':')[1])
-            t = eval(split(splitLine[1],':')[1])
+            splitLine = line[:-2].split(';')
+            h = int_value(splitLine[0])
+            t = int_value(splitLine[1])
             G.AddEdge(t,h,False)
             for i in xrange(nrOfEdgeWeights):
-                G.edgeWeights[i][(t,h)] = eval(split(splitLine[3+i],':')[1])
-                
+                # XXX Unclear whether intWeights is for both edge and vertex weights
+                if intWeights:
+                    G.edgeWeights[i][(t,h)] = int_value(splitLine[3+i])
+                else:
+                    G.edgeWeights[i][(t,h)] = float_value(splitLine[3+i])
+
         lineNr = lineNr + 1
         
     graphFile.close()
@@ -546,7 +568,7 @@ def OpenDotGraph(fileName):
     dot2graph = {}
     
     for l in lines[3:]:
-        items = string.split(l)
+        items = l.split(l)
         if len(items) < 2:
             break
         if items[1] != '->':

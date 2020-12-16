@@ -84,7 +84,7 @@ def WMExtrasGeometry(window):
     
         NOTE: Does not work with tk8.0 style menus, since those are
               handled by WM (according to Tk8.1 docs) """
-    g = string.split(window.geometry(),"+") 
+    g = window.geometry().split("+") 
     trueRootx = string.atoi(g[1]) 
     trueRooty = string.atoi(g[2])
     
@@ -760,7 +760,8 @@ class AlgoWin(Frame):
         # handleMouse 
     def handleMouse(self, event):
         """ Callback for canvas to allow toggeling of breakpoints """
-        currLine  = string.splitfields(self.algoText.index(CURRENT),'.')[0]
+        # Was currLine  = string.splitfields(self.algoText.index(CURRENT),'.')[0]
+        currLine  = self.algoText.index(CURRENT).split('.')[0]
         self.algorithm.ToggleBreakpoint(string.atoi(currLine))
         
         
