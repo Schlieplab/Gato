@@ -444,7 +444,7 @@ class AlgoWin(Frame):
                                                  ("Python Code", ".py"))
             
                                    )
-        if file is not "": 
+        if file != "": 
             try:
                 self.algorithm.Open(file)
             except (EOFError, IOError):
@@ -490,7 +490,7 @@ class AlgoWin(Frame):
                                                  )
                                    )
             
-        if file is not "":
+        if file != "":
             try:
                 self.algorithm.OpenGraph(file)
             except (EOFError, IOError):
@@ -509,9 +509,9 @@ class AlgoWin(Frame):
             self.commandAfterStop = self.ReloadAlgorithmGraph
             return
             
-        if self.algorithm.algoFileName is not "":
+        if self.algorithm.algoFileName != "":
             self.OpenAlgorithm(self.algorithm.algoFileName)
-        if self.algorithm.graphFileName is not "":
+        if self.algorithm.graphFileName != "":
             self.OpenGraph(self.algorithm.graphFileName)
             
             
@@ -527,7 +527,7 @@ class AlgoWin(Frame):
                                  filetypes = ( ("Encapsulated PS", ".eps"),
                                                ("Postscript", ".ps")
                                                ))
-        if file is not "": 
+        if file != "": 
             self.graphDisplay.PrintToPSFile(file)
             
             
@@ -1362,7 +1362,7 @@ class Algorithm:
                 v = random.choice(self.graph.vertices)
             else:
                 v = default
-        if visual is not None:
+        if visual != None:
             visual(v)
         return v
         
@@ -1388,7 +1388,7 @@ class Algorithm:
             else:
                 e = default
                 
-        if visual is not None:
+        if visual != None:
             visual(e)
         return e
         

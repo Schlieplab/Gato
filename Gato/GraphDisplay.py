@@ -704,9 +704,9 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
         """
         if graph == None and vertices == None: # All vertices of graph shown
             self.canvas.itemconfig("vertices", fill=color)
-        elif graph is not None: # all vertices of induced subgraph
+        elif graph != None: # all vertices of induced subgraph
             vertices = graph.vertices
-        if vertices is not None: # all specified vertices
+        if vertices != None: # all specified vertices
             for v in vertices:
                 self.canvas.itemconfig(self.drawVertex[v], fill=color)           
         self.update()        
@@ -1532,7 +1532,7 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
 ##"""
 
 ##        file = open(fileName,'w')
-##        if animation is not None:
+##        if animation != None:
 ##            anivar = ",\n".join(animation)
 ##            vars = {'x':x, 'y':y, 'width':width, 'height':height, 'animation':anivar}
 ##            file.write(animationhead % vars)

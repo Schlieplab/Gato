@@ -394,7 +394,7 @@ class AnimatedVertexQueue(Queue):
     def Top(self):
         v = Queue.Top(self)
         self.Animator.SetVertexColor(v, self.ColorOff)
-        if self.lastRemoved is not None:
+        if self.lastRemoved != None:
             self.Animator.SetVertexFrameWidth(self.lastRemoved, g.VertexFrameWidth)
         self.Animator.SetVertexFrameWidth(v, g.ActiveVertexFrameWidth)
         self.lastRemoved = v 
@@ -404,7 +404,7 @@ class AnimatedVertexQueue(Queue):
         for v in self.contents:
             self.Animator.SetVertexColor(v, self.ColorOff)
         Queue.Clear(self) 
-        if self.lastRemoved is not None:
+        if self.lastRemoved != None:
             self.Animator.SetVertexFrameWidth(self.lastRemoved,g.VertexFrameWidth)
             self.lastRemoved = None
             
@@ -435,7 +435,7 @@ class AnimatedVertexPriorityQueue(PriorityQueue):
     def DeleteMin(self):
         v = PriorityQueue.DeleteMin(self)
         self.Animator.SetVertexColor(v, self.ColorOff)
-        if self.lastRemoved is not None:
+        if self.lastRemoved != None:
             self.Animator.SetVertexFrameWidth(self.lastRemoved, g.VertexFrameWidth)
         self.Animator.SetVertexFrameWidth(v, g.ActiveVertexFrameWidth)
         self.lastRemoved = v 
@@ -465,7 +465,7 @@ class AnimatedVertexStack(Stack):
     def Pop(self):
         v = Stack.Pop(self)
         self.Animator.SetVertexColor(v, self.ColorOff)
-        if self.lastRemoved is not None:
+        if self.lastRemoved != None:
             self.Animator.SetVertexFrameWidth(self.lastRemoved, g.VertexFrameWidth)
         self.Animator.SetVertexFrameWidth(v, g.ActiveVertexFrameWidth)
         self.lastRemoved = v 
@@ -475,7 +475,7 @@ class AnimatedVertexStack(Stack):
         for v in self.contents:
             self.Animator.SetVertexColor(v, self.ColorOff)
         Stack.Clear(self)
-        if self.lastRemoved is not None:
+        if self.lastRemoved != None:
             self.Animator.SetVertexFrameWidth(self.lastRemoved, g.VertexFrameWidth)
             self.lastRemoved = None
             

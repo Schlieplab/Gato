@@ -258,7 +258,7 @@ class NamedCollectionEditor(tkSimpleDialog.Dialog):
         
     def editItem(self):
         name = self.lb.get(self.lb.curselection())
-        if name is not "":
+        if name != "":
             self.collection.edit(self, name)
             
     def deleteItem(self):

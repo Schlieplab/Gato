@@ -290,7 +290,7 @@ class MergedHistories:
             
     def DoAll(self):
         # Catchup
-        if self.history_index is not None:
+        if self.history_index != None:
             for cmd, display in self.history[self.history_index:]:     #formerly time, cmd
                 if cmd.canUndo:
                     #if cmd cannot undo, then it is the one blocking further undoes, do not do command

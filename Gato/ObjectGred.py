@@ -634,7 +634,7 @@ class SAGraphEditor(GraphEditor, Frame):
                                                #,("Graphlet", ".let")
                                              ]
                                  )
-        if file is not "":
+        if file != "":
             self.fileName = file
             self.dirty = 0
             SaveCATBoxGraph(self.G,file)
@@ -648,7 +648,7 @@ class SAGraphEditor(GraphEditor, Frame):
                                                ,("Postscript", ".ps")
                                              ]
                                  )
-        if file is not "": 
+        if file != "": 
             self.PrintToPSFile(file)
             
             
@@ -746,7 +746,7 @@ class SAGraphEditor(GraphEditor, Frame):
                 #----- Tools Menu callbacks
     def ChangeTool(self):
         tool = self.toolVar.get()
-        if self.lastTool is not None:
+        if self.lastTool != None:
             self.buttons[self.lastTool].configure(image=self.icons[self.lastTool][0])
         self.SetEditMode(tool)
         self.lastTool = tool
@@ -805,7 +805,7 @@ class SAGraphEditorToplevel(SAGraphEditor, Toplevel):
                                                ,("Postscript", ".ps")
                                              ]
                                  )
-        if file is not "": 
+        if file != "": 
             self.PrintToPSFile(file)
         self.tkraise()
         self.focus_force()

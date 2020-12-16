@@ -551,7 +551,7 @@ class AlgoWin(Frame):
             
     def WithdrawSecondaryGraphDisplay(self):
         """ Hide window containing second graph """
-        if self.secondaryGraphDisplay is not None:
+        if self.secondaryGraphDisplay != None:
             if self.graph_panes:
                 self.setSash(1.0)
             else:
@@ -648,7 +648,7 @@ class AlgoWin(Frame):
             file = askopenfilename(title="Open Algorithm",
                                    defaultextension=".py",
                                    filetypes = ft)
-        if file is not "" and file is not ():
+        if file != "" and file != ():
             try:
                 self.algorithm.Open(file)
             except (EOFError, IOError), (errno, strerror):
@@ -700,7 +700,7 @@ class AlgoWin(Frame):
                                                ]
                                    )
             
-        if file is not "" and file is not ():
+        if file != "" and file != ():
             try:
                 self.algorithm.OpenGraph(file)
             except (EOFError, IOError),(errno, strerror):
@@ -761,7 +761,7 @@ class AlgoWin(Frame):
                                                      ]
                                        )
             
-        if filename is not "":
+        if filename != "":
             select={}
             try:
                 # open xml file
@@ -872,9 +872,9 @@ class AlgoWin(Frame):
             self.commandAfterStop = self.ReloadAlgorithmGraph
             return
             
-        if self.algorithm.algoFileName is not "":
+        if self.algorithm.algoFileName != "":
             self.OpenAlgorithm(self.algorithm.algoFileName)
-        if self.algorithm.graphFileName is not "":
+        if self.algorithm.graphFileName != "":
             self.OpenGraph(self.algorithm.graphFileName)
             
             
@@ -891,7 +891,7 @@ class AlgoWin(Frame):
                                                 ("Postscript", ".ps")
                                                 ]
                                  )
-        if file is not "": 
+        if file != "": 
             self.graphDisplay.PrintToPSFile(file)
 
     def GetSVGCoordinateDiff(self):
@@ -907,7 +907,7 @@ class AlgoWin(Frame):
                                      defaultextension=".svg",
                                      filetypes = [("SVG", ".svg")]
                                      )
-        if fileName is not "":
+        if fileName != "":
             if self.HaveSecondaryGraphDisplay():
                 GatoExport.ExportGraphToSVG(fileName, self.algorithm, self.graphDisplayy, self.secondaryGraphDisplay)
             else:
@@ -921,7 +921,7 @@ class AlgoWin(Frame):
                                  defaultextension=".svg",
                                  filetypes = [("SVG", ".svg")]
                                  )
-        if fileName is not "":
+        if fileName != "":
             if self.HaveSecondaryGraphDisplay():
                 return GatoExport.ExportSVG(fileName, self, self.algorithm, self.graphDisplay,
                                             self.secondaryGraphDisplay.animator, showAnimation=False,
@@ -941,7 +941,7 @@ class AlgoWin(Frame):
                                          defaultextension=".svg",
                                          filetypes = [("SVG", ".svg")]
                                          )
-        if fileName is not "":
+        if fileName != "":
             # We never destroy the secondary graph display (and create it from the beginning
             # for the paned viewed. graphDisplays is set from prolog
             if self.HaveSecondaryGraphDisplay():
@@ -971,7 +971,7 @@ class AlgoWin(Frame):
                                      defaultextension=".html",
                                      filetypes = [("HTML", ".html")]
                                      )
-        if fileName is not "":
+        if fileName != "":
             fileBasename = os.path.splitext(os.path.basename(fileName))[0]
             self.RunAlgorithmToCompletion()
         
@@ -1012,7 +1012,7 @@ class AlgoWin(Frame):
             ## started from the command line. So we do it by hand
             if self.graphDisplay != None:
                 self.graphDisplay.destroy()
-            if self.secondaryGraphDisplay is not None:
+            if self.secondaryGraphDisplay != None:
                 self.secondaryGraphDisplay.destroy()
             self.destroy()
             os._exit(0)
@@ -1693,7 +1693,7 @@ class AlgorithmDebugger(bdb.Bdb):
         vertices = [self.GUI.graph.vertices]
         edges = [self.GUI.graph.edgeWeights[0].keys()]    # list of tuples that are edges
         histories = [self.GUI.animation_history]
-        if self.GUI.GUI.secondaryGraphDisplay is not None and self.GUI.GUI.secondaryGraphDisplay.graphInformer is not None:
+        if self.GUI.GUI.secondaryGraphDisplay != None and self.GUI.GUI.secondaryGraphDisplay.graphInformer != None:
             num_graphs = 2
             histories.append(self.GUI.GUI.secondaryGraphDisplay)
             informers.append(self.GUI.GUI.secondaryGraphDisplay.graphInformer)
@@ -2045,37 +2045,37 @@ class Algorithm:
         self.DB.do_stop()
         
     def Step(self):
-        if self.animation_history is not None:
+        if self.animation_history != None:
             self.animation_history.DoAll()        
         self.DB.doTrace = 0
         self.mode = 2 
         
     def Continue(self):
-        if self.animation_history is not None:
+        if self.animation_history != None:
             self.animation_history.DoAll()
         self.DB.doTrace = 0
         self.mode = 1
         
     def Trace(self):
-        if self.animation_history is not None:
+        if self.animation_history != None:
             self.animation_history.DoAll()
         self.mode = 2 
         self.DB.doTrace = 1
         
     def Replay(self):
         #self.GUI.CmdStep()
-        if self.animation_history is not None:
+        if self.animation_history != None:
             self.animation_history.DoAll()
             self.animation_history.Replay()
             
     def Undo(self):
         #self.GUI.CmdStep()
-        if self.animation_history is not None:
+        if self.animation_history != None:
             self.animation_history.Undo()
             
     def Do(self):
         #self.GUI.CmdStep()
-        if self.animation_history is not None:
+        if self.animation_history != None:
             self.animation_history.Do()    
             
     def ClearBreakpoints(self):

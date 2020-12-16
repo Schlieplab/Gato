@@ -477,7 +477,7 @@ class xmlGatoElement:
         else:
             newDOMElement=xml.dom.Element(xmlGraphElement.graphElementName)
         newElement=xmlGraphElement(newDOMElement)
-        if name is not None:
+        if name != None:
             newElement.setName(name)
         return newElement
         
@@ -492,7 +492,7 @@ class xmlGatoElement:
         else:
             newDOMElement=xml.dom.Element(xmlAlgorithmElement.algorithmElementName)
         newElement=xmlAlgorithmElement(newDOMElement)
-        if name is not None:
+        if name != None:
             newElement.setName(name)
         return newElement
         
@@ -688,7 +688,7 @@ class ElementDisplay(Tkinter.Frame):
             self.clearDisplay()
             return
         else:
-            if self.displayedNode is not None and self.displayedNode==node:
+            if self.displayedNode != None and self.displayedNode==node:
                 return #nothing to do
         self.clearDisplay()
         displayedWidget=None
@@ -1054,7 +1054,7 @@ class GatoFile:
         """
         # ???? write to right place????
         _thisFile=None
-        if _file is not None:
+        if _file != None:
             if type(_file) in types.StringTypes:
                 _thisFile=encodedStream(file(_file,"w"))
             elif type(_file)==types.FileType:
@@ -1105,7 +1105,7 @@ class GatoFile:
         creates a new (opt. unnamed)  Gato element
         """
         newElement=xmlGatoElement(self.dom.createElement(xmlGatoElement.gatoElementName))
-        if name is not None:
+        if name != None:
             newElement.setName(name)
         return newElement
         

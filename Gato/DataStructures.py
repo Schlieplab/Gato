@@ -101,7 +101,7 @@ class VertexWeight(VertexLabeling):
         VertexLabeling.__init__(self)
         self.G = theGraph
         self.integer = 0
-        if initialWeight is not None:
+        if initialWeight != None:
             self.SetAll(initialWeight)
             
     def QInteger(self):
@@ -167,7 +167,7 @@ class EdgeWeight(EdgeLabeling):
         EdgeLabeling.__init__(self)
         self.G       = theGraph
         self.integer = 0
-        if initialWeight is not None:
+        if initialWeight != None:
             self.SetAll(initialWeight)
             
     def __setitem__(self, e, val): # Use with (tail,head)

@@ -113,7 +113,7 @@ def ConnectedComponents(G):
         visited[v] = None
         
     for root in G.vertices:
-        if visited[root] is not None:
+        if visited[root] != None:
             continue
         else: # Found a new component
             component = [root]

@@ -268,7 +268,7 @@ class TkColorSelector:
         
     def editColor(self, event):
         color = askcolor(self.color)[1]
-        if color is not None:
+        if color != None:
             self.set(color)
             
     def tkWidget(self):

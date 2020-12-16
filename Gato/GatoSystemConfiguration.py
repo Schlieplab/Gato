@@ -769,7 +769,7 @@ class GatoInstaller:
         self.disabled=0
         self.SysConfig=getConfigurator()
         self.state=self.SysConfig.check()
-        if self.menu is not None:
+        if self.menu != None:
             self.insertMenuEntry()
             
     def disable(self):

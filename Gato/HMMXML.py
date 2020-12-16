@@ -257,7 +257,7 @@ class GraphML:
             dataValue = data.firstChild.nodeValue
             
             #print object, object.__dict__,dataKey, dataValue
-            if dataValue is not None:
+            if dataValue != None:
                 object.__dict__[dataKey] = self.dataFactory(self.type[dataKey], dataValue)
             else:
                 #copyAttributes(data.firstChild,object.__dict__[dataKey])
@@ -368,7 +368,7 @@ def WriteXML(gml):
     for k in gml.desc.keys():
         elem = doc.createElement("key")
         elem.setAttribute('id', k)
-        if gml.domain[k] is not None:
+        if gml.domain[k] != None:
             elem.setAttribute('for', gml.domain[k] )          
         elem.setAttribute('gd:type', gml.type[k])
         graphml.appendChild(elem)

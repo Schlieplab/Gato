@@ -351,7 +351,7 @@ class dom_structure_widget(Tkinter.Frame):
         tags_to_delete=filter(lambda s,t=tag+"-",l=len(tag)+1:s[:l]==t,all_tags)
         
         # handle selected node, that may become invisible
-        if self.selectedNode is not None and self.selectedNode.DisplayProperties.tag in tags_to_delete:
+        if self.selectedNode != None and self.selectedNode.DisplayProperties.tag in tags_to_delete:
             self.selectNode(tag)
             
         for t in tags_to_delete:

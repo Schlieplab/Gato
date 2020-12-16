@@ -365,7 +365,7 @@ class GraphEditor(GraphDisplay):
                     
                 d = EditWeightsDialog(self, "Weight of edge (%d,%d)" % (tail,head), 
                                       count, weights, intFlag) 
-                if d.result is not None:
+                if d.result != None:
                     for i in xrange(count):
                         self.SetEdgeWeight(i, tail, head, d.result[i])
             else: # We have a vertex
@@ -380,7 +380,7 @@ class GraphEditor(GraphDisplay):
                         
                     d = EditWeightsDialog(self, "Edit vertex weights %d" % v, 
                                               count, weights, intFlag) 
-                    if d.result is not None:
+                    if d.result != None:
                         for i in xrange(count):
                             self.G.SetVertexWeight(i, v, d.result[i])
                             

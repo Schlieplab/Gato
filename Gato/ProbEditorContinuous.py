@@ -1112,7 +1112,7 @@ class handle_base:
         """
         self.canvas=canvas
         self.values=values
-        if report_function is not None:
+        if report_function != None:
             self.report_function=report_function
         else:
             self.report_function=None
@@ -1196,7 +1196,7 @@ class handle_base:
         event handler for moving this handle
         """
         new_values=self.values_from_mouse(event)
-        if new_values is not None:
+        if new_values != None:
             self.set_values(new_values)
             self.report('move')
         return
@@ -1234,7 +1234,7 @@ class handle_base:
         """
         call report function
         """
-        if self.report_function is not None:
+        if self.report_function != None:
             self.report_function(self,reason,self.get_values())
 
             ################################################################################
@@ -1798,7 +1798,7 @@ class gaussian_tail_handle_right(gaussian_handle):
             return (self.values[0],self.values[1],v)
         else:
             values=gaussian_handle.values_from_mouse(self,event)
-            if values is not None:
+            if values != None:
                 return (values[0],values[1],self.tail)
             else:
                 return None
