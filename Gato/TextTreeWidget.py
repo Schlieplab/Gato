@@ -33,6 +33,7 @@
 ################################################################################
 
 import Tkinter
+import logging
 
 class dom_structure_widget(Tkinter.Frame):
     """
@@ -222,7 +223,7 @@ class dom_structure_widget(Tkinter.Frame):
             my_tags=self.textWidget.tag_names("@%d,%d"%(event.x,event.y))
             tree_tags=filter(lambda t:t[:4]=='root',my_tags)
             if len(tree_tags)!=1:
-                print "not good: found ",tree_tags,"to collapse!"
+                logging.warning("not good: found %s to collapse!" % tree_tags)
                 return "break"
             self.collapse_tag(tree_tags[0])
             return "break"
@@ -241,7 +242,7 @@ class dom_structure_widget(Tkinter.Frame):
             my_tags=self.textWidget.tag_names("@%d,%d"%(event.x,event.y))
             tree_tag=filter(lambda t:t[:4]=='root',my_tags)
             if len(tree_tag)!=1:
-                print "not good: found ",tree_tag," to expand!"
+                logging.warning("not good: found %s to expand!" % tree_tag)
                 return "break"
             self.expand_tag(tree_tag[0])
             return "break"
@@ -258,7 +259,7 @@ class dom_structure_widget(Tkinter.Frame):
         my_tags=self.textWidget.tag_names("@%d,%d"%(event.x,event.y))
         tree_tags=filter(lambda t:t[:4]=='root',my_tags)
         if len(tree_tags)!=1:
-            print "not good: found ",tree_tags," to select!"
+            logging.warning("not good: found %s to select!" % tree_tags)
         subtree=self.subtree_from_tag(tree_tags[0],self.dom)
         # mark the node
         self.selectNode(tree_tags[0])
@@ -275,7 +276,7 @@ class dom_structure_widget(Tkinter.Frame):
         my_tags=self.textWidget.tag_names(result[0])
         tree_tags=filter(lambda t:t[:4]=='root',my_tags)
         if len(tree_tags)!=1:
-            print "not good: found ",tree_tags," to select!"
+            logging.warning("not good: found %s to select!" % tree_tags)
             # mark the node
         self.selectNode(tree_tags[0])
         return "break"
@@ -291,7 +292,7 @@ class dom_structure_widget(Tkinter.Frame):
         my_tags=self.textWidget.tag_names(result[0])
         tree_tags=filter(lambda t:t[:4]=='root',my_tags)
         if len(tree_tags)!=1:
-            print "not good: found ",tree_tags," to select!"
+            logging.warning("not good: found %s to select!" % tree_tags)
             # mark the node
         self.selectNode(tree_tags[0])
         return "break"
@@ -323,7 +324,7 @@ class dom_structure_widget(Tkinter.Frame):
             my_tags=self.textWidget.tag_names("@%d,%d"%(event.x,event.y))
             tree_tags=filter(lambda t:t[:4]=='root',my_tags)
             if len(tree_tags)!=1:
-                print "not good: found ",tree_tags," to select!"
+                logging.warning("not good: found %s to select!" % tree_tags)
                 # select this node
             self.selectNode(tree_tags[0])
             subtree=self.subtree_from_tag(tree_tags[0],self.dom)

@@ -759,7 +759,7 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
     def SetEdgesColor(self, edges, color):
         """ Change color of [(tail1,head1),...] to color. No error checking! 
             Handles undirected graphs. """
-        #print "in setEdgesColor in GraphDisplay"
+        #logging.debug("in setEdgesColor in GraphDisplay")
         for tail, head in edges:
             if self.G.QDirected() == 1:
                 de = self.drawEdges[(tail,head)]
@@ -1356,7 +1356,7 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
             and rotated as to maximize size while still fitting on paper """ 
         bb = self.canvas.bbox("all") # Bounding box of all elements on canvas
         # Give 10 pixels room to breathe
-        print "PrintToPSFile", bb
+        logging.info("PrintToPSFile %s" % str(bb))
         padding = 15
         x = bb[0] - padding
         y = bb[1] - padding

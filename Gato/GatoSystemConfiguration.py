@@ -40,6 +40,7 @@ import Tkinter
 import tkSimpleDialog
 import tkFileDialog
 import traceback
+import logging
 try:
     import _winreg
 except ImportError:
@@ -138,7 +139,7 @@ class configureUnsupported(configureOS):
     def runInstall(self):
         """
         """
-        print "unsupported operating system %s"%sys.platform
+        logging.error("unsupported operating system %s" % sys.platform)
         
 class configureUNIX(configureOS):
     """
@@ -616,9 +617,9 @@ class configureWindows(configureOS):
         try:
             GatoFileHandle=_winreg.OpenKey(reader,"Gato.File")
         except WindowsError:
-            print "Could not find Gato.File section"
+            logging.error("Could not find Gato.File section")
         else:
-            print "found Gato.File section:"
+            print logging.info("found Gato.File section:")
             self.printSubRegistry(GatoFileHandle)
             
             # get Gato FileExtension Section
@@ -626,9 +627,9 @@ class configureWindows(configureOS):
         try:
             GatoExtensionHandle=_winreg.OpenKey(reader,"."+gatoFileExtension)
         except WindowsError:
-            print "could not find the file extension .%s"%gatoFileExtension
+            logging.error("could not find the file extension .%s" % gatoFileExtension)
         else:
-            print "found gato's extension"
+            logging.info("found gato's extension")
             self.printSubRegistry(GatoExtensionHandle)
             
             # get Gato mime Type section
@@ -642,9 +643,9 @@ class configureWindows(configureOS):
             GatoMimeHandleGatoExt=_winreg.OpenKey(GatoMimeHandleContentType,
                                                   gatoMimeType)
         except WindowsError:
-            print "could not find mime type: %s"%gatoMimeType
+            logging.error("could not find mime type: %s" % gatoMimeType)
         else:
-            print "found %s mime type"%gatoMimeType
+            logging.info("found %s mime type"%gatoMimeType)
             self.printSubRegistry(GatoMimeHandleGatoExt)
             
     def printSubRegistry(self,key,indent=""):
@@ -653,11 +654,11 @@ class configureWindows(configureOS):
         """
         subkeyNo,valueNo,lastMod=_winreg.QueryInfoKey(key)
         for i in range(valueNo):
-            print indent,_winreg.EnumValue(key, i)
+            logging.debug("%s %s" % (indent, _winreg.EnumValue(key, i)))
         for i in range(subkeyNo):
             subkeyName=_winreg.EnumKey(key,i)
             subkey=_winreg.OpenKey(key,subkeyName)
-            print indent,subkeyName
+            logging.debug("%s %s" % (indent, _winreg.EnumValue(key, i)))
             self.printSubRegistry(subkey,indent+"  ")
             
     def findWritableClassesSection(self):
@@ -693,7 +694,7 @@ class configureWindows(configureOS):
             GatoFileHandle=_winreg.CreateKey(ClassesSection,"Gato.File")
             _winreg.SetValueEx(GatoFileHandle,"",0,_winreg.REG_SZ,"Gato.File")
         except WindowsError:
-            print "Could not create/update the Gato.File section"
+            logging.error("Could not create/update the Gato.File section")
             self.traceback.print_exc()
             
             # update Gato.File's subsections
@@ -703,7 +704,7 @@ class configureWindows(configureOS):
             GatoOpenCommandHandle=_winreg.CreateKey(GatoOpenHandle,"command")
             _winreg.SetValueEx(GatoOpenCommandHandle,"",0,_winreg.REG_SZ,self.myExecutable+' "%1"')
         except WindowsError:
-            print "could not install open command for gato"
+            logging.error("could not install open command for gato")
             self.traceback.print_exc()
             
             # update .gato section    
@@ -712,7 +713,7 @@ class configureWindows(configureOS):
             _winreg.SetValueEx(GatoExtensionHandle,"",0,_winreg.REG_SZ,"Gato.File")
             _winreg.SetValueEx(GatoExtensionHandle,"Content Type",0,_winreg.REG_SZ,gatoMimeType)
         except WindowsError:
-            print "could not create/update FileExtension section"
+            logging.error("could not create/update FileExtension section")
             self.traceback.print_exc()
             
             # access MIME Database section
@@ -722,7 +723,7 @@ class configureWindows(configureOS):
             MimeDatabaseSection=_winreg.CreateKey(MimeSection,"Database")
             MimeContentTypeSection=_winreg.CreateKey(MimeDatabaseSection,"Content Type")
         except WindowsError:
-            print "could not access MIME Content Type database"
+            logging.error("could not access MIME Content Type database")
             self.traceback.print_exc()
             return
             # update gato's mime type
@@ -731,7 +732,7 @@ class configureWindows(configureOS):
             _winreg.SetValueEx(GatoMimeContentTypeHandle,"Extension",0,
                                     _winreg.REG_SZ,"."+gatoFileExtension)
         except WindowsError:
-            print "could not update the gato MIME section"
+            logging.error("could not update the gato MIME section")
             self.traceback.print_exc()
             
 class GatoInstaller:
@@ -812,7 +813,7 @@ class GatoInstaller:
         self.configureMenuEntry()
         
     def uninstallCommand(self):
-        print "uninstall"
+        logging.info("uninstall")
         self.state=self.SysConfig.check()
         self.configureMenuEntry()
         

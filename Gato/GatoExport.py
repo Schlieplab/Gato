@@ -43,6 +43,7 @@ import pdb
 from bs4 import BeautifulSoup
 from math import sqrt, pi, sin, cos, atan2, degrees, log10, floor, ceil
 from WebGatoJS import animationhead
+import logging
 
 #Global constants for tokenEater
 line_count = 1
@@ -692,14 +693,14 @@ def construct_title(fileName):
     basename = os.path.splitext(os.path.basename(fileName))
     algorithm, graph = basename[0].split('--')
     result = 'Gato -- %s algorithm on %s graph' % (algorithm, graph)
-    print result
+    logging.info(result)
     return result
 
 def construct_animation_name(fileName):
     basename = os.path.splitext(os.path.basename(fileName))
     algorithm, graph = basename[0].split('--')
     result = '%s on %s graph' % (algorithm, graph)
-    print result
+    logging.info(result)
     return result
     
 
@@ -763,12 +764,8 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
                                                algowin.codeLineHistory],
                                               ['g1_', 'l_'])
         except IndexError as e:
-            print "Error:"
-            print e
-            print "Filename: ", fileName
-            print "Algowin: ", algowin
-            print "Algorithm: ", algorithm
-            print "graphDisplay: ", graphDisplay
+            logging.error("Filename %s, Algowin: %s, Algorithm: %s, graphDisplay: %s, Errror: %s" % (
+                str(e), fileName, str(algowin), algorithm, str(graphDisplay)))
             return
 
     
@@ -1094,12 +1091,8 @@ def ExportAnimationAsHTML(fileName, algowin, algorithm, graphDisplay,
                                            algowin.codeLineHistory],
                                           ['g1_', 'l_'])
     except IndexError as e:
-        print "Error:"
-        print e
-        print "Filename: ", fileName
-        print "Algowin: ", algowin
-        print "Algorithm: ", algorithm
-        print "graphDisplay: ", graphDisplay
+        logging.error("Filename %s, Algowin: %s, Algorithm: %s, graphDisplay: %s, Errror: %s" % (
+            str(e), fileName, str(algowin), algorithm, str(graphDisplay)))
         return
 
 

@@ -160,7 +160,7 @@ if __name__ == '__main__':
         
     while 1:
         for case in tests:
-            print "=== TEST ===",case[0],"===",case[1],"==="
+            logging.info("=== DEMOing === %s === %s ===" % (case[0], case[1]))
             app.OpenAlgorithm(testPath + case[0])
             g.Interactive = 0
             app.algorithm.ClearBreakpoints()

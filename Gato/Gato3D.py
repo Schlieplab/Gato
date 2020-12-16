@@ -48,6 +48,7 @@ import string
 import StringIO
 import tokenize
 import tkFont
+import logging
 
 from Tkinter import *
 from tkFileDialog import askopenfilename, asksaveasfilename
@@ -406,8 +407,8 @@ class AlgoWin(Frame):
             self.tagLine(l, tag)
             
     def tokenEater(self, type, token, (srow, scol), (erow, ecol), line):
-        #print "%d,%d-%d,%d:\t%s\t%s" % \
-        #     (srow, scol, erow, ecol, type, repr(token))
+        # loggin.info("%d,%d-%d,%d:\t%s\t%s" % \
+        #     (srow, scol, erow, ecol, type, repr(token)))
     
         if type == 1:    # Name 
             if token in self.keywordsList:
@@ -561,11 +562,11 @@ class AlgoWin(Frame):
         self.master.geometry("+%d+%d" % (pad, screenTop + pad)) 
         
         # XXX-DEBUG-XXX
-        print "OneGraphWindow: screen= (%d * %d), extras = (%d %d)" % (
+        logging.debug("OneGraphWindow: screen= (%d * %d), extras = (%d %d)" % (
             self.master.winfo_screenwidth(),
             self.master.winfo_screenheight(),
             WMExtra,
-            topWMExtra)
+            topWMExtra))
         
         # Move graph win to take up the rest of the screen
         screenwidth  = self.master.winfo_screenwidth()
@@ -845,7 +846,7 @@ class AlgoWin(Frame):
             
             
     def HandleFileIOError(self, fileDescription, fileName):
-        print fileDescription," file named: ",fileName, " produced an error"
+        logging.error(fileDescription," file named: ",fileName, " produced an error")
         
         
         # Endof: AlgoWin ---------------------------------------------------------------
@@ -886,8 +887,8 @@ class AlgorithmDebugger(bdb.Bdb):
         if fn != self.GUI.algoFileName:
             return None
             #import inspect
-            #print "dispatch_call",fn, line, frame, self.stop_here(frame), self.break_anywhere(frame), self.break_here(frame)
-            #print inspect.getframeinfo(frame)
+            #logging.debug("dispatch_call",fn, line, frame, self.stop_here(frame), self.break_anywhere(frame), self.break_here(frame))
+            #logging.debug(str(inspect.getframeinfo(frame)))
         frame.f_locals['__args__'] = arg
         if self.botframe is None:
             # First call of dispatch since reset()
@@ -923,7 +924,7 @@ class AlgorithmDebugger(bdb.Bdb):
             return self.dispatch_return(frame, arg)
         if event == 'exception':
             return self.dispatch_exception(frame, arg)
-        print 'bdb.Bdb.dispatch: unknown debugging event:', `event`
+        logging.warning('bdb.Bdb.dispatch: unknown debugging event: %s' % event)
         
     def reset(self):
         """ *Internal* Put debugger into initial state, calls forget() """
@@ -1229,7 +1230,7 @@ class Algorithm:
             execfile(os.path.splitext(self.algoFileName)[0] + ".pro", 
                      self.algoGlobals, self.algoGlobals)
         except:
-            print "*** Bug in", os.path.splitext(self.algoFileName)[0] + ".pro"
+            logging.debug("*** Bug in %s.pro" % os.path.splitext(self.algoFileName)[0])
             traceback.print_exc()
             
             # Read in algo and execute it in the debugger
@@ -1244,7 +1245,7 @@ class Algorithm:
             self.DB.run(command, self.algoGlobals, self.algoGlobals)
         except:
             # Do somethin useful here
-            print "OOOppps bug in", self.algoFileName
+            logging.error("OOOppps bug in %s" % self.algoFileName)
             traceback.print_exc()
         self.GUI.CommitStop()
         
@@ -1276,7 +1277,7 @@ class Algorithm:
         
             Set all breakpoints in list: So an algorithm prolog
             can set a bunch of pre-assigned breakpoints at once """
-        print "SetBreakpoints() is depreciated. Use 'breakpoint' var in prolog instead. "
+        logging.warning("SetBreakpoints() is depreciated. Use 'breakpoint' var in prolog instead.")
         for line in list:
             self.GUI.ShowBreakpoint(line)
             self.breakpoints.append(line)

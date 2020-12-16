@@ -263,7 +263,7 @@ class MergedHistories:
         self.append(animation, display)
         
     def __getattr__(self,arg):
-        print "Function tried to be called: ", arg
+        logging.warning("Function tried to be called: %s " % str(arg))
         raise AttributeError('Specified function of MergedHistories does not exist.')
             
     def Undo(self):

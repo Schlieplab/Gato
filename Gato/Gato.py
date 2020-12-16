@@ -2175,7 +2175,7 @@ class Algorithm:
 
                 if g.GeneratingSVG:
                     # If we are generating SVG animations with GatoTest.py we want to proceed even if NeededProperties aren't met
-                    print "Warning: " + errMsg
+                    logging.warning(errMsg)
                     return
 
                 errMsg += ".\nDo you still want to proceed ?"                          

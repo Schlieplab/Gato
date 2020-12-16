@@ -39,6 +39,7 @@ import os.path
 import codecs
 import xml.dom
 import xml.dom.minidom
+import logging
 
 class Node:
     """
@@ -549,7 +550,7 @@ class xmlElementBranch(Branch):
         print map(lambda c:c.name, self.children)
         
     def __del__(self):
-        print "DOM Element %s deleted"%self.name
+        logging.info("DOM Element %s deleted" % self.name)
         
 class xmlFileBranch(xmlElementBranch):
     """
@@ -578,7 +579,7 @@ class xmlFileBranch(xmlElementBranch):
                                   element=self.dom.documentElement)
         
     def __del__(self):
-        print "DOM of file %s deleted"%self.path
+        logging.info("DOM of file %s deleted" % self.path)
         xmlElementBranch.__del__(self)
         
 class Tree(Tkinter.Canvas):

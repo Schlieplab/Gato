@@ -45,6 +45,7 @@ from sys import *
 from xml.dom.minidom import *
 import copy
 import string
+import logging
 
 def printDict(d):
     for k in d.keys():
@@ -99,7 +100,7 @@ class DataFactory:
     def arrayFromCSV(self, s, type):
         retVal = []
         
-        print "DataFactory.arrayFromCSV(", s, ")"
+        logging.debug("DataFactory.arrayFromCSV(%s)" % str(s))
         
         items = string.split(s,',')
         for i in items:
@@ -243,9 +244,9 @@ class GraphML:
                 self.hmmAlphabet.map[symbolCode] = symbolRep
                 
         else:
-            print "GraphML::handleHMMAlphabet does not handle alphabet type %s yet" % XMLNode.getAttribute("hmm:type") 
+            logging.error("GraphML::handleHMMAlphabet does not handle alphabet type %s yet" % XMLNode.getAttribute("hmm:type"))
             
-        print self.hmmAlphabet.__dict__
+        # print self.hmmAlphabet.__dict__
         
         
         
@@ -348,7 +349,7 @@ class DiscreteAlphabet:
         
         
 def WriteData(doc, e, object, keys):
-    print doc, e, object, keys
+    #print doc, e, object, keys
     for k in keys:
         elem = doc.createElement("data")
         elem.setAttribute('key', k)
@@ -394,7 +395,7 @@ def WriteXML(gml):
         WriteData(doc,elem,e,edge_keys)
         graphelem.appendChild(elem)
         
-    print doc.toprettyxml()
+    #print doc.toprettyxml()
     
     
     
@@ -405,7 +406,7 @@ if __name__ == '__main__':
     
     gml = GraphML()
     gml.handleGraphML(dom)
-    print gml
+    #print gml
     
     WriteXML(gml)
     

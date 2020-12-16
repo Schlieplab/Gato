@@ -38,6 +38,7 @@ import codecs
 import StringIO
 import urllib2
 import xml.dom.minidom
+import logging
 import Gato
 import Graph
 import GraphUtil
@@ -136,7 +137,7 @@ class GatoStorageLocationTest:
     """
     def __init__(self):
         l=GatoStorageLocation("bla")
-        print "human readable: %s, python representation %s"%(l,repr(l))
+        logging.info("human readable: %s, python representation %s"%(l,repr(l)))
         
         
 class GatoDirBranch(TreeWidget.DirBranch):
@@ -266,7 +267,7 @@ class xmlAlgorithmElement:
         if os.access(PrologFileName,os.R_OK):
             self.setProlog(file(PrologFileName).read())
         else:
-            print "Warning: could not read prolog file %s"%PrologFileName
+            logging.warning("Warning: could not read prolog file %s" % PrologFileName)
             
     def setProlog(self,text):
         """
@@ -703,7 +704,7 @@ class ElementDisplay(Tkinter.Frame):
             displayedWidget=AboutWidget(self,html_data)
             self.displayedNode=node
         else:
-            print "toDo: ",node
+            logging.warning("toDo: %s" % str(node))
             
         if displayedWidget:
             displayedWidget.pack(expand=1,fill=Tkinter.BOTH)
@@ -832,7 +833,7 @@ class GatoFileStructureWidget(TextTreeWidget.dom_structure_widget):
             if self.report_to:
                 self.report_to(event, node)
         else:
-            print event, opts
+            logging.warning("Don't know how to handls event %s and opts %s" % (event, opts))
             
     def chosenNode(self,node,register):
         """
@@ -1025,7 +1026,7 @@ class GatoFile:
                     # pull dom out of file
                     self.dom = xml.dom.minidom.parse(self.file)
                 except xml.dom.DOMException, e:
-                    print e
+                    logging.error("Exception raised %s" % str(e))
                     raise FileException(str(e))
                     
             elif self.mode=='w':

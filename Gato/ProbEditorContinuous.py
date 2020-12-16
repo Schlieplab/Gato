@@ -45,7 +45,7 @@ import ProbEditorBasics
 import ProbEditorWidgets
 from Tkconstants import *
 import tkMessageBox
-
+import logging
 
 class plot_object:
     """
@@ -1069,7 +1069,7 @@ class plot_canvas(Tkinter.Canvas):
         """
         if self.find_plot_object(plot_object)!=None:
             # exists!
-            print 'exists'
+            logging.error("Object already exists!")
             return
         item=self.create_plot_item(plot_object)
         self.plot_objects.append((plot_object,item))
@@ -1332,8 +1332,8 @@ class box_handle(handle_base):
            self.box_line==current:
             handle_base.start_move_event(self,event)
         else:
-            print self.start_move_event.__name__,\
-                  ": don't know what to do with this event"
+            logging.warning("%s: don't know what to do with this event." % self.start_move_event.__name__)
+            
         return
 
     def values_from_mouse(self,event):
@@ -1353,8 +1353,8 @@ class box_handle(handle_base):
             diff=abs(self.values[1]-self.values[0])/2.0
             values=(v-diff,v+diff)
         else:
-            print self.move_event.__name__,\
-                  ": don't know what to do with this event"
+            logging.warning("%s: don't know what to do with this event." % self.start_move_event.__name__)
+
         return values
 
         ####################################################################################
@@ -1449,8 +1449,8 @@ class exp_handle(handle_base):
            self.box_line==current:
             handle_base.start_move_event(self,event)
         else:
-            print self.start_move_event.__name__,\
-                  ": don't know what to do with this event"
+            logging.warning("%s: don't know what to do with this event." % self.start_move_event.__name__)
+
         return
 
     def values_from_mouse(self,event):
@@ -1470,8 +1470,8 @@ class exp_handle(handle_base):
             diff=abs(self.values[1]-self.values[0])/2.0
             values=(v-diff,v+diff)
         else:
-            print self.move_event.__name__,\
-                  ": don't know what to do with this event"
+            logging.warning("%s: don't know what to do with this event." % self.move_event.__name__)
+
         return values
 
 
@@ -1565,8 +1565,8 @@ class exp_other_handle(handle_base):
            self.box_line==current:
             handle_base.start_move_event(self,event)
         else:
-            print self.start_move_event.__name__,\
-                  ": don't know what to do with this event"
+            logging.warning("%s: don't know what to do with this event." % self.start_move_event.__name__)
+
         return
 
     def values_from_mouse(self,event):
@@ -1586,8 +1586,8 @@ class exp_other_handle(handle_base):
             diff=abs(self.values[1]-self.values[0])/2.0
             values=(v-diff,v+diff)
         else:
-            print self.move_event.__name__,\
-                  ": don't know what to do with this event"
+            logging.warning("%s: don't know what to do with this event." % self.move_event.__name__)
+
         return values
 
 
@@ -1700,8 +1700,8 @@ class gaussian_handle(handle_base):
            self.sigma2_handle==current:
             handle_base.start_move_event(self,event)
         else:
-            print self.start_move_event.__name__,\
-                  ": don't know what to do with this event"
+            logging.warning("%s: don't know what to do with this event." % self.start_move_event.__name__)
+
         return
 
     def values_from_mouse(self,event):
@@ -1719,8 +1719,7 @@ class gaussian_handle(handle_base):
             if v!=self.values[0]:
                 values=(self.values[0],abs(v-self.values[0]))
         else:
-            print self.move_event.__name__,\
-                  ": don't know what to do with this event"
+            logging.warning("%s: don't know what to do with this event." % self.move_event.__name__)
         return values
 
 class gaussian_tail_handle_right(gaussian_handle):
@@ -2425,7 +2424,8 @@ class gauss_editor(Tkinter.Frame):
             self.handle_list.append(handle)
 
         else:
-            print "no handle for %s"%(o.__class__.__name__)
+            logging.warning("no handle for %s" % (o.__class__.__name__))
+
         self.pos+=10
 
 
@@ -2457,7 +2457,7 @@ class gauss_editor(Tkinter.Frame):
             self.max_plot_x=plot_x[0]
             self.min_plot_x=plot_x[1]
         else:
-            print "Error"
+            logging.error("Error. Something went wrong.")
 
         if plot_y[1]>plot_y[0]:
             self.max_plot_y=plot_y[1]
@@ -2467,7 +2467,8 @@ class gauss_editor(Tkinter.Frame):
             self.max_plot_y=plot_y[0]
             self.min_plot_y=plot_y[1]
         else:
-            print "Error"
+            logging.error("Error. Something went wrong.")
+
 
         #Intervall
         self.int_x=(self.max_plot_x-self.min_plot_x)/10.0

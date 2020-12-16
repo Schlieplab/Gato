@@ -52,6 +52,7 @@ import types
 import copy
 import ProbEditorBasics
 import ProbEditorDialogs
+import logging
 
 import HMMXML
 import xml.dom.minidom
@@ -157,7 +158,7 @@ class NamedDistributions:
         order = tkSimpleDialog.askinteger("Distribution %s" % name, "Order", initialvalue=0)
         tmp = [1.0 / self.itsHMM.hmmAlphabet.size()] * self.itsHMM.hmmAlphabet.size()
         p = tmp * (self.itsHMM.hmmAlphabet.size() ** order)
-        print "adding", name, order, p
+        logging.info("adding %s %d %f" % (name, order, p))
         self.addDistribution(name, order, p)
         
     def delete(self, name):
@@ -165,7 +166,7 @@ class NamedDistributions:
         
     def edit(self, master, name):
         if self.order[name] != 0:
-            print "Sorry, cannot edit higher order distributions yet"
+            logging.warning("Sorry, cannot edit higher order distributions yet")
         else:
             emission_probabilities = ProbEditorBasics.ProbDict({})
             
@@ -248,7 +249,7 @@ class DiscreteHMMAlphabet(DOM_Map):
         if XMLNode.getAttribute("hmm:type") == self.hmm_type:
             self.symbolsFromDom(XMLNode)
         else:
-            print "DiscreteHMMAlphabet wrong type %s" % XMLNode.getAttribute("hmm:type") 
+            logging.error("DiscreteHMMAlphabet wrong type %s" % XMLNode.getAttribute("hmm:type"))
             
     def toDOM(self, XMLDoc, XMLNode):
         hmmalphabet = XMLDoc.createElement("hmm:alphabet")
@@ -261,9 +262,7 @@ class DiscreteHMMAlphabet(DOM_Map):
         
     def edit(self, master):        
         mapedit = MapEditor(master, [self.name], ['code','name'], [3,5])
-        print mapedit.result
         if mapedit.result != None:
-        
             new_keys = []
             for (code_str, name) in mapedit.result:
                 code = int(code_str)
@@ -294,7 +293,6 @@ class HMMClass(DOM_Map):
         
     def edit(self, master):        
         mapedit = MapEditor(master, [self.name, self.desc], ['code','name','desc'], [3,5,35])
-        print mapedit.result
         if mapedit.result != None:
         
             new_keys = []
@@ -411,10 +409,9 @@ class HMMState:
                 for child in data.childNodes:
                     dataValue += child.nodeValue
                 self.emissions = listFromCSV(dataValue, types.FloatType)
-                #print self.emissions
                 
             else:
-                print "HMMState.fromDOM: unknown key %s of value %s" % (dataKey, dataValue)
+                logging.warning("HMMState.fromDOM: unknown key %s of value %s" % (dataKey, dataValue))
                 
                 
     def toDOM(self, XMLDoc, XMLNode, initial_sum):
@@ -765,9 +762,7 @@ class HMMEditor(SAGraphEditor):
                                filetypes = (("XML", ".xml"),
                                             )
                                )
-        if file is "": 
-            print "cancelled"
-        else:
+        if file != "": 
             self.fileName = file
             self.graphName = stripPath(file)
             e = extension(file)
@@ -775,7 +770,7 @@ class HMMEditor(SAGraphEditor):
             if e == 'xml':
                 self.HMM.OpenXML(file)
             else:
-                print "Unknown extension"
+                logging.warning("Unknown extension .%s." % e)
                 return
                 
             self.ShowGraph(self.HMM.G, self.graphName)
@@ -799,10 +794,8 @@ class HMMEditor(SAGraphEditor):
                                  filetypes = ( ("XML", ".xml"),
                                                )
                                  )
-        if file is "": 
-            print "cancelled"
-        else:
-            print file
+        if file != "": 
+            logging.info("Saving HMM as %s" % file)
             self.fileName = file
             self.HMM.SaveAs(file)
             self.graphName = stripPath(file)
@@ -841,7 +834,7 @@ class HMMEditor(SAGraphEditor):
                 if v != None:
                     state = self.HMM.state[v]
                     if state.order > 0:
-                        print "Ooops. Cant edit higher order states"
+                        logging.warning("Ooops. Cant edit higher order states")
                         return
                         
                     if state.tiedto != '':
@@ -929,7 +922,7 @@ class HMMEditor(SAGraphEditor):
         
     def AddVertexCanvas(self,x,y):
         v = GraphDisplay.AddVertexCanvas(self, x, y)
-        print "AddVertex at ",x,y
+        logging.debug("AddVertex at (%d,%d)." % (x,y))
         self.HMM.AddState(v)
         
     def AddEdge(self,tail,head):

@@ -55,6 +55,7 @@ from DataStructures import Point2D, VertexLabeling, EdgeLabeling
 import os
 import colorsys
 import string
+import logging
 
 from visual import *
 
@@ -717,7 +718,7 @@ class GraphDisplayFrame(GraphDisplay3D, Frame):
         GraphDisplay.__init__(self)
         
     def SetTitle(self,title):
-        print "change window title to" + `title`
+        logging.debug("change window title to %s" + title)
         
         
 class GraphDisplay3DToplevel(GraphDisplay3D, Toplevel):

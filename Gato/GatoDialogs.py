@@ -229,15 +229,6 @@ class HTMLWriter(formatter.DumbWriter):
     def send_label_data(self, data):
         self.write(self.indent + data + ' ')
 
-    #def send_line_break(self):
-    #    print "send_line_break"
-    #    #pass
-
-    #def send_paragraph(self,blankline):
-    #    print "send_paragraph", blankline
-
-        
-
         
 class MyHTMLParser(htmllib.HTMLParser):
     """ Basic parser with image support added. output is supposed to be
