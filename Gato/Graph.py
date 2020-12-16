@@ -43,7 +43,6 @@ import GraphUtil #import ConnectedComponents, FindBipartitePartitions
 from math import sqrt
 import logging
 import string
-log = logging.getLogger("Graph.py")
 
 ################################################################################
 #
@@ -587,7 +586,7 @@ class SubGraph(Graph):
         """ Add subgraph G to self. Will do nothing if self and G 
             have distinct supergraphs """
         if self.superGraph != G.superGraph:
-            log.error("AddSubGraph: distinct superGraphs")
+            logging.error("AddSubGraph: distinct superGraphs")
             return
         for e in G.Edges():
             self.AddEdge(e[0],e[1])
@@ -618,7 +617,7 @@ class SubGraph(Graph):
         
     def GetNextVertexID(self):
         """ *Internal* safeguard """
-        log.error("Induced Subgraph -> GetNextVertexID should never have been called")
+        logging.error("Induced Subgraph -> GetNextVertexID should never have been called")
         
     def Weight(self):
         """ Returns the total weight (= sum of edge weights) of subgraph """

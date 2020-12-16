@@ -43,7 +43,6 @@ from GatoGlobals import *
 import Graph
 from DataStructures import Point2D, VertexLabeling, EdgeLabeling, EdgeWeight, VertexWeight, Queue
 import logging
-log = logging.getLogger("Gato")
 
 
 ################################################################################
@@ -448,7 +447,7 @@ def ParseGML(file):
                 retval.append((token[0], token[1]))
                 
         else:
-            log.error("Serious format error line %s:" % line)
+            logging.error("Serious format error line %s:" % line)
             
             
 def PairListToDictionary(l):
@@ -475,7 +474,7 @@ def OpenGMLGraph(fileName):
     file.close()
     
     if g[0][0] != 'graph':
-        log.error("Serious format error in %s. first key is not graph" % fileName)
+        logging.error("Serious format error in %s. first key is not graph" % fileName)
         return
     else:
         l = g[0][1]

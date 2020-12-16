@@ -2227,7 +2227,6 @@ class Algorithm:
     
 
 def setupLogging(args, windowingsystem, macOSbinary=False):
-    log = logging.getLogger("Gato")
         
     if windowingsystem == 'win32' or (windowingsystem == 'aqua' and macOSbinary):
         # Suppress all logging on Windows and for MacOS binaries

@@ -36,6 +36,8 @@
 ################################################################################
 from Gato import *
 import GatoGlobals
+import logging
+
 g = GatoGlobals.AnimationParameters
 # To speed up running of tests
 g.BlinkRepeat = 1

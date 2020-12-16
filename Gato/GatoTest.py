@@ -786,7 +786,6 @@ if __name__ == '__main__':
     g.BlinkRate = 2
     
     g.Interactive = 0 # Same effect as hitting continue for interactive lines
-    log = logging.getLogger("Gato")
     
     app = AlgoWin()
     if debug:
@@ -838,7 +837,7 @@ if __name__ == '__main__':
         for chapter_dict in svg_instance:
             for algo in chapter_dict['algorithms']:
                 for graph_file in algo['graphs']:
-                    log.info("=== TEST === "+algo['file']+" === "+graph_file+" ===")
+                    logging.info("=== TEST === "+algo['file']+" === "+graph_file+" ===")
                     print "=== TEST === "+algo['file']+" === "+graph_file+" ==="
                     graph_name = os.path.splitext(os.path.basename(graph_file))[0]
                     png_file_name = 'svgs/img/%s--%s.png' % (os.path.splitext(algo['file'])[0], graph_name)
@@ -891,7 +890,7 @@ if __name__ == '__main__':
 
     else:
         for case in tests:
-            log.info("=== TEST === "+case[0]+" === "+case[1]+" ===")
+            logging.info("=== TEST === "+case[0]+" === "+case[1]+" ===")
             app.OpenAlgorithm(testPath + case[0])
             g.Interactive = 0
             app.algorithm.ClearBreakpoints()

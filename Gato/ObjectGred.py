@@ -567,7 +567,7 @@ class SAGraphEditor(GraphEditor, Frame):
             elif e == 'dotted':
                 G = OpenDotGraph(file)
             else:
-                log.error("Unknown extension %s" % e)
+                logging.error("Unknown extension %s" % e)
                 
             if not self.gridding:
                 self.graphMenu.invoke(self.graphMenu.index('Grid'))	
@@ -832,7 +832,6 @@ class Start:
         graphEditor = SAGraphEditorToplevel()
         graphEditor.NewGraph()
         import logging
-        log = logging.getLogger("Gred.py")
         
         ################################################################################
 if __name__ == '__main__':
@@ -853,6 +852,5 @@ if __name__ == '__main__':
     graphEditor = SAGraphEditor(tk)
     graphEditor.NewGraph()
     import logging
-    log = logging.getLogger("Gred.py")
     graphEditor.mainloop()
     

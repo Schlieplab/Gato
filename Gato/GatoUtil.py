@@ -96,7 +96,6 @@ class ImageCache:
             return ImageCache.images[relURL]
         except IndexError, IOError:
             import logging
-            log = logging.getLogger("GatoUtil.py")
             log.exception("Error finding image %s" % relURL)
             
     def AddImage(self, relURL, imageData):

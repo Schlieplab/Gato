@@ -38,6 +38,7 @@ from GatoGlobals import AnimationParameters, gInfinity, NoSuchVertexError, NoSuc
 from DataStructures import VertexLabeling, Queue, Stack, PriorityQueue
 from Graph import SubGraph
 import copy
+import logging
 #import sets
 
 g = AnimationParameters
@@ -638,7 +639,7 @@ class AnimatedSubGraph(SubGraph):
         """ Add subgraph G to self. Will do nothing if self and G 
             have distinct supergraphs """
         if self.superGraph != G.superGraph:
-            log.error("AddSubGraph: distinct superGraphs")
+            logging.error("AddSubGraph: distinct superGraphs")
             return
         
         for v in G.Vertices():

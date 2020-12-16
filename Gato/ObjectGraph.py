@@ -39,7 +39,6 @@ from DataStructures import Point2D, VertexLabeling, EdgeLabeling, EdgeWeight
 #from math import log
 
 import logging
-log = logging.getLogger("ObjectGraph.py")
 
 ################################################################################
 #
@@ -514,7 +513,7 @@ class ObjectGraph(object):
 ##        """ Add subgraph G to self. Will do nothing if self and G 
 ##            have distinct supergraphs """
 ##        if self.superGraph != G.superGraph:
-##            log.error("AddSubGraph: distinct superGraphs")
+##            logging.error("AddSubGraph: distinct superGraphs")
 ##            return
 ##        for v in G.vertices:
 ##            self.AddVertex(v)
@@ -545,7 +544,7 @@ class ObjectGraph(object):
         
 ##    def GetNextVertexID(self):
 ##        """ *Internal* safeguard """
-##        log.error("Induced Subgraph -> GetNextVertexID should never have been called")
+##        logging.error("Induced Subgraph -> GetNextVertexID should never have been called")
         
 ##    def Weight(self):
 ##        """ Returns the total weight (= sum of edge weights) of subgraph """

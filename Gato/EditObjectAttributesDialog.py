@@ -44,7 +44,7 @@ import copy
 import sys
 import os
 import types
-
+import logging
 
 def typed_assign(var, val):
     result = type(var)(val)
@@ -207,7 +207,7 @@ class TkPopupSelector:
         keys = self.value2pop.keys()
         keys.sort()
         pops = map(lambda x: value2pop[x], keys)
-        #log.debug("pops = %s" % pops)
+        #logging.debug("pops = %s" % pops)
         args = (master, self.popupvalue) + tuple(pops)
         
         self.tkwidget = apply(OptionMenu, args)

@@ -603,7 +603,7 @@ class SAGraphEditor(GraphEditor, Frame):
             elif e == 'dotted':
                 G = OpenDotGraph(fileName)
             else:
-                log.error("Unknown extension %s" % e)
+                logging.error("Unknown extension %s" % e)
                 
             if not self.gridding:
                 self.graphMenu.invoke(self.graphMenu.index('Grid'))	
@@ -954,7 +954,6 @@ class Start:
         graphEditor.dirty = 0
         graphEditor.NewGraph()
         import logging
-        log = logging.getLogger("Gred.py")
 
         
         ################################################################################
@@ -987,7 +986,6 @@ def main(argv=None):
     else:
         graphEditor.NewGraph()
     import logging
-    log = logging.getLogger("Gred.py")
 
     # On MacOS X the Quit menu entry otherwise bypasses our Quit
     # Handler According to

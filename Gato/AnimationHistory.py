@@ -42,7 +42,6 @@ import GatoGlobals
 import MergedHistories
 
 g = GatoGlobals.AnimationParameters
-log = logging.getLogger("Gato")
 
 
 class AnimationCommand:
@@ -248,7 +247,7 @@ class AnimationHistory:
        
     #Deprecated Function
     def append(self, animation):
-        log.info(self.logPrefix + animation.log_str())
+        logging.info(self.logPrefix + animation.log_str())
         self.history.append(animation)
         
 
