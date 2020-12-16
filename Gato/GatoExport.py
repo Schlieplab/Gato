@@ -85,7 +85,10 @@ svg_drop_shadow = '''
 CHAPTER_NUM_TO_ABBREV = {2: 'Basics'}
 
 
-def tokenEater(type, token, (srow, scol), (erow, ecol), line):
+def tokenEater(tokenType, token, stuple, etuple, line):
+    srow, scol = stuple
+    erow, ecol = etuple
+
     global line_count
     global prev
     global begun_line
@@ -103,13 +106,13 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
                        'fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer">' % ("l_" + str(line_count), 8*indent_stack[len(indent_stack)-1]))
 
     indent_const = 22
-    if (type == 0): #EOF.  Reset globals
+    if (tokenType == 0): #EOF.  Reset globals
         line_count = 1
         num_spaces = 0.0
         indent_stack = [0]
         begun_line = False
         prev = ["",-1]
-    elif (type == 1): #Word.  Potential keyword.  Must check keywordsList
+    elif (tokenType == 1): #Word.  Potential keyword.  Must check keywordsList
         if begun_line == False:
             begun_line = True
             algo_lines.append('<text blank = "false" id="%s" class="code_line" x="0" y="0" dx="%d" text-anchor="start" '\
@@ -129,11 +132,11 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
                 algo_lines.append('%s' % token)
             else:
                 algo_lines.append(' %s' % token)
-    elif (type == 4): #Newline on nonempty line
+    elif (tokenType == 4): #Newline on nonempty line
         algo_lines.append('</text>\n')
         begun_line = False
         line_count += 1
-    elif (type == 5):  #Arbitrary number of tabs at beginning of line  tabs are 4 spaces long
+    elif (tokenType == 5):  #Arbitrary number of tabs at beginning of line  tabs are 4 spaces long
         num_spaces = 0.0
         for x in token:
             if ord(x) == 9:
@@ -144,9 +147,9 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
         num_spaces = int(floor(num_spaces))
         indent_stack.append(num_spaces)
         #num_spaces = int(floor(len(token))/4)
-    elif (type == 6):  #One backpedal
+    elif (tokenType == 6):  #One backpedal
         indent_stack.pop()
-    elif (type == 51): #Operators and punctuation
+    elif (tokenType == 51): #Operators and punctuation
         if begun_line == False:
             begun_line = True
             algo_lines.append('<text blank = "false" id="%s" class="code_line" x="0" y="0" dx="%d" text-anchor="start" '\
@@ -173,7 +176,7 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
                 algo_lines.append('%s' % token)
             else:
                 algo_lines.append('%s' % token)
-    elif (type == 53): #Comment
+    elif (tokenType == 53): #Comment
         if begun_line == False:
             begun_line = True
             algo_lines.append('<text blank = "false" id="%s" class="code_line" x="0" y="0" dx="%d" text-anchor="start" '\
@@ -183,7 +186,7 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
             algo_lines.append('%s' % token)
         else:
             algo_lines.append('%s' % token)
-    elif (type == 54): #Empty line with newline
+    elif (tokenType == 54): #Empty line with newline
         algo_lines.append('<text blank = "true" id="%s" class="code_line" x="0" y="0" dx="%d" text-anchor="start" '\
                        'fill="black" font-family="Courier New" font-size="14.0" font-style="normal" style="cursor: pointer"></text>\n' % ("l_" + str(line_count), 4*indent_stack[len(indent_stack)-1]))
         line_begun = False
@@ -200,9 +203,9 @@ def tokenEater(type, token, (srow, scol), (erow, ecol), line):
             algo_lines.append(' %s' % token)
     
     last_line = line
-    if type != 0:
+    if tokenType != 0:
         prev[0] = token
-        prev[1] = type
+        prev[1] = tokenType
 
 
 def cmd_as_javascript(cmd, idPrefix=''):

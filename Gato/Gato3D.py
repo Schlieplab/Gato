@@ -406,18 +406,21 @@ class AlgoWin(Frame):
         for l in lines:
             self.tagLine(l, tag)
             
-    def tokenEater(self, type, token, (srow, scol), (erow, ecol), line):
+    def tokenEater(self, tokenType, token, stuple, etuple, line):
+        srow, scol = stuple
+        erow, ecol = etuple
+
         # loggin.info("%d,%d-%d,%d:\t%s\t%s" % \
         #     (srow, scol, erow, ecol, type, repr(token)))
     
-        if type == 1:    # Name 
+        if tokenType == 1:    # Name 
             if token in self.keywordsList:
                 self.algoText.tag_add('keyword','%d.%d' % (srow, scol),
                                       '%d.%d' % (erow, ecol))
-        elif type == 3:  # String
+        elif tokenType == 3:  # String
             self.algoText.tag_add('string','%d.%d' % (srow, scol),
                                   '%d.%d' % (erow, ecol))
-        elif type == 39: # Comment
+        elif tokenType == 39: # Comment
             self.algoText.tag_add('comment','%d.%d' % (srow, scol),
                                   '%d.%d' % (erow, ecol))
             
