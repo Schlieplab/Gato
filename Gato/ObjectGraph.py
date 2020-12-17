@@ -181,7 +181,7 @@ class ObjectGraph(object):
         try:
             e = self.edges[(tail,head)]
         except KeyError:
-            raise NoSuchEdgeError, "(%d,%d) is not an edge." % (tail,head)
+            raise NoSuchEdgeError("(%d,%d) is not an edge." % (tail,head))
 
         self.vertices[tail].outEdges.remove(e)
         self.vertices[head].inEdges.remove(e)
@@ -193,14 +193,14 @@ class ObjectGraph(object):
              vertices as (tail,head). Raises NoSuchEdgeError upon error. """
         
         if tail not in self.vertices.keys() or head not in self.vertices.keys():
-            raise NoSuchEdgeError, "(%d,%d) is not an edge." % (tail,head)
+            raise NoSuchEdgeError("(%d,%d) is not an edge." % (tail,head))
             
         if self.edges.has_key((tail,head)):
             return (tail,head)
         elif self.directed == 0 and self.edges.has_key((head,tail)):
             return (head,tail)
         else:
-            raise NoSuchEdgeError, "(%d,%d) is not an edge." % (tail,head)
+            raise NoSuchEdgeError("(%d,%d) is not an edge." % (tail,head))
             
             
     def QEdge(self,tail,head):
