@@ -985,9 +985,10 @@ class AlgorithmDebugger(bdb.Bdb):
         #self.interaction(frame, None)
         
         
-    def user_exception(self, frame, (exc_type, exc_value, exc_traceback)):
+    def user_exception(self, frame, exc_info):
         """ *Internal* This function is called if an exception occurs,
             but only if we are to stop at or just below this level """ 
+	exc_info = exc_type, exc_value, exc_traceback
         frame.f_locals['__exception__'] = exc_type, exc_value
         if type(exc_type) == type(''):
             exc_type_name = exc_type

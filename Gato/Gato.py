@@ -654,8 +654,8 @@ class AlgoWin(Frame):
         if file != "" and file != ():
             try:
                 self.algorithm.Open(file)
-            except (EOFError, IOError), (errno, strerror):
-                self.HandleFileIOError("Algorithm",file,errno,strerror)
+            except (EOFError, IOError) as e:
+                self.HandleFileIOError("Algorithm",file,e.errno,e.strerror)
                 return 
 
             self.codeLineHistory = []
@@ -706,8 +706,8 @@ class AlgoWin(Frame):
         if file != "" and file != ():
             try:
                 self.algorithm.OpenGraph(file)
-            except (EOFError, IOError),(errno, strerror):
-                self.HandleFileIOError("Graph",file,errno, strerror)
+            except (EOFError, IOError) as e:
+                self.HandleFileIOError("Graph",file,e.errno, e.strerror)
                 return 
                 
             if self.algorithm.ReadyToStart():
@@ -775,7 +775,7 @@ class AlgoWin(Frame):
                     # select the graph
                     select=f.displaySelectionDialog(self)
                     
-            except GatoFile.FileException, e:
+            except GatoFile.FileException as e:
                 self.HandleFileIOError("GatoFile: %s"%e.reason,filename)
                 return
                 
@@ -791,8 +791,8 @@ class AlgoWin(Frame):
                     self.algorithm.OpenGraph(graphStream,
                                              fileName="%s::%s"%(filename,
                                                                 select["graph"].getName()))
-                except (EOFError, IOError),(errno, strerror):
-                    self.HandleFileIOError("Gato",filename,errno,strerror)
+                except (EOFError, IOError) as e:
+                    self.HandleFileIOError("Gato",filename,e.errno,e.strerror)
                     return
                     
                 if self.algorithm.ReadyToStart():
@@ -826,10 +826,10 @@ class AlgoWin(Frame):
                 # text copied from AlgoWin.OpenAlgorithm
                 try:
                     self.algorithm.Open(self.tmpAlgoFileName)
-                except (EOFError, IOError),(errno, strerror):
+                except (EOFError, IOError) as e:
                     os.remove(self.tmpAlgoFileName)
                     os.remove(proFileName)
-                    self.HandleFileIOError("Algorithm",self.tmpAlgoFileName,errno, strerror)
+                    self.HandleFileIOError("Algorithm",self.tmpAlgoFileName,e.errno, e.strerror)
                     self.algoDisplayFileName=lastAlgoDispalyName
                     self.tmpAlgoFileName=lastAlgoFileName
                     return
@@ -1599,9 +1599,10 @@ class AlgorithmDebugger(bdb.Bdb):
         #self.interaction(frame, None)
         
         
-    def user_exception(self, frame, (exc_type, exc_value, exc_traceback)):
+    def user_exception(self, frame, exc_info):
         """ *Internal* This function is called if an exception occurs,
             but only if we are to stop at or just below this level """ 
+        exc_info = exc_type, exc_value, exc_traceback
         frame.f_locals['__exception__'] = exc_type, exc_value
         if type(exc_type) == type(''):
             exc_type_name = exc_type
@@ -1807,9 +1808,9 @@ class Algorithm:
             input = open(os.path.splitext(self.algoFileName)[0] + ".pro", 'r')
             options = self.ReadPrologOptions(input)
             input.close()
-        except (EOFError, IOError),(errno, strerror):
+        except (EOFError, IOError) as e:
             self.GUI.HandleFileIOError("prolog",os.path.splitext(self.algoFileName)[0] + ".pro",
-                                       errno, strerror)
+                                       e.errno, e.strerror)
             return
             
         try:
@@ -1892,7 +1893,7 @@ class Algorithm:
             
     def OpenGraph(self,file,fileName=None):
         """ Read in a graph from file and open the display """
-        if type(file) in types.StringTypes:
+        if type(file) in (str,):
             self.graphFileName = file
         elif type(file) == types.FileType or issubclass(file.__class__,StringIO.StringIO):
             self.graphFileName = fileName
@@ -2008,10 +2009,10 @@ class Algorithm:
             logging.info(e.value)
             self.GUI.CommitStop()
             return
-        except (EOFError, IOError), (errno, strerror):
+        except (EOFError, IOError) as e:
             self.GUI.HandleFileIOError("prolog",
                                        os.path.splitext(self.algoFileName)[0] + ".pro",
-                                       errno,strerror)
+                                       e.errno,e.strerror)
             self.GUI.CommitStop()
             return
         except: # Bug in the prolog
@@ -2164,8 +2165,8 @@ class Algorithm:
             if failed or value == 'Unknown':
                 # For GatoTest: Abort if needed property is missing from graph 
                 if not g.Interactive and not g.GeneratingSVG:
-                    raise AbortProlog, "Not running interactively. Aborting due to" \
-                          " check for property %s" % property                    
+                    raise AbortProlog("Not running interactively. Aborting due to" \
+                          " check for property %s" % property)                    
                 errMsg = "The algorithm %s requires that the graph %s has %s" % \
                          (stripPath(self.algoFileName),
                           stripPath(self.graphFileName),
@@ -2185,7 +2186,7 @@ class Algorithm:
                 errMsg += ".\nDo you still want to proceed ?"                          
                 r = askokcancel("Gato - Error", errMsg)
                 if r == False:
-                    raise AbortProlog, "User aborted at check for property %s" % property
+                    raise AbortProlog("User aborted at check for property %s" % property)
                     
     def PickVertex(self, default=None, filter=None, visual=None):
         """ Pick a vertex interactively. 

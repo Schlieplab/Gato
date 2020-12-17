@@ -153,11 +153,11 @@ class ObjectGraph(object):
             are distinct edges """
         
         if self.simple == 1 and tail == head: # Loop
-            raise GraphNotSimpleError, '(%d,%d) is a loop' % (tail,head)
+            raise GraphNotSimpleError("(%d,%d) is a loop" % (tail,head))
         if self.directed == 0 and self.edges.has_key((head,tail)):
-            raise GraphNotSimpleError, '(%d,%d) is already an undirected edge' % (head,tail)
+            raise GraphNotSimpleError("(%d,%d) is already an undirected edge" % (head,tail))
         if self.edges.has_key((tail,head)): # Multiple edge
-            raise GraphNotSimpleError, '(%d,%d) is already an directed edge' % (tail,head)
+            raise GraphNotSimpleError("(%d,%d) is already an directed edge" % (tail,head))
 
         e = self.edgeClass(self.vertices[tail],self.vertices[head])
         self.edges[(tail,head)] = e

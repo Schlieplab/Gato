@@ -43,6 +43,12 @@ from EditObjectAttributesDialog import TkIntEntry, TkStringPopupSelector, TkColo
 
 import StringIO
 
+class NoOptionsError(Exception):
+    def __init__(self, name):
+        self.name = name
+    def __str__(self):
+        return "%s is not a valid option identifier" % self.name
+
 default_cfg = """
 [animation]
 BlinkRate = 10
@@ -113,15 +119,14 @@ class GatoConfiguration:
         if name in self.keys:
             return self.config.get(self.section[name], name)
         else:
-            raise 'NoOptionError'
+            raise NoOptionError(name)
             
     def set(self, name, value):
         if name in self.keys:
             self.config.set(self.section[name], name, "%s" % value)
             self.modified = 1
         else:
-            raise 'NoOptionError'
-            
+            raise NoOptionError(name)
             
     def edit(self):
         """ Bring up the editor for the configuration """

@@ -632,7 +632,7 @@ class AnimatedSubGraph(SubGraph):
             self.Animator.RaiseEdge(tt,hh)
             self.Animator.DefaultInfo()
             return tt,hh
-        except NoSuchVertexError, NoSuchEdgeError:
+        except (NoSuchVertexError, NoSuchEdgeError):
             return
 
     def AddSubGraph(self, G):
@@ -671,7 +671,7 @@ class AnimatedSubGraph(SubGraph):
         try:
             SubGraph.DeleteEdge(self,t,h)
             self.Animator.SetEdgeColor(t,h,"black")
-        except NoSuchVertexError, NoSuchEdgeError:
+        except (NoSuchVertexError, NoSuchEdgeError):
             return
             
     def Clear(self, color="grey"):
@@ -694,7 +694,7 @@ class AnimatedSubGraph(SubGraph):
             SubGraph.AddEdge(self,tail,head)
             self.Animator.SetEdgeColor(tail,head,self.Color)
             self.Animator.DefaultInfo()
-        except NoSuchVertexError, NoSuchEdgeError:
+        except (NoSuchVertexError, NoSuchEdgeError):
             return
             
             
