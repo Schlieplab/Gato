@@ -1090,7 +1090,7 @@ class Algorithm:
             input = open(os.path.splitext(self.algoFileName)[0] + ".pro", 'r')
             options = self.ReadPrologOptions(input)
             input.close()
-        except EOFError, IOError:
+        except EOFError as IOError:
             self.GUI.HandleFileIOError("Prolog",file)
             return 	
             

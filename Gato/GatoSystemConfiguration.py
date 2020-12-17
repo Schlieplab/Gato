@@ -154,7 +154,7 @@ class configureUNIX(configureOS):
         configureOS.__init__(self,DialogMaster)
         
         # find mailcap file
-        if not os.environ.has_key("HOME"):
+        if "HOME" not in os.environ:
             raise ConfigurationException("could not determine home directory")
         self.mailcapFile=os.path.join(os.environ["HOME"],".mailcap")
         self.mime_typesFile=os.path.join(os.environ["HOME"],".mime.types")

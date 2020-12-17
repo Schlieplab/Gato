@@ -74,9 +74,9 @@ class AnimationCommand:
     def Undo(self):
         if self.canUndo:
             if self.undo_method == None:
-                apply(self.method, self.target + self.undo_args)
+                self.method(*self.target + self.undo_args)
             else:
-                apply(self.undo_method, self.target + self.undo_args)
+                self.undo_method(*self.target + self.undo_args)
 
 
     def __repr__(self):

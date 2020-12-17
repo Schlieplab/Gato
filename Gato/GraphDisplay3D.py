@@ -106,7 +106,7 @@ class GraphDisplay3D:
                   'yellow': (1,1,0)
                   }
         
-        if colmap.has_key(tkcolor):
+        if tkcolor in colmap:
             return colmap[tkcolor]
         else: # tkcolor is #rrggbb
             r = string.atoi(tkcolor[1:3], 16) / 255.0
@@ -618,7 +618,7 @@ class GraphDisplay3D:
         pos = vector(x,y,z)
         dv = self.drawVertex[v]
         dv.pos = pos
-        if self.vertexAnnotation.label.has_key(v):
+        if v in self.vertexAnnotation.label:
             da = self.vertexAnnotation[v]
             da.pos = pos
             

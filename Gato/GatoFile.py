@@ -385,7 +385,7 @@ class xmlGraphElement:
                 raise FileException("Wrong element name: %s, %s expected"
                                     %(graph.tagName,self.graphElementName))
             self.domElement=graph
-        elif issubclass(graph.__class__,Graph.Graph) and type(name) in types.StringTypes:
+        elif issubclass(graph.__class__,Graph.Graph) and type(name) in (str,):
             # initialise dom element
             self.domElement=xml.dom.minidom.Element(xmlGraphElement.graphElementName)
             self.setName(name)
@@ -1012,7 +1012,7 @@ class GatoFile:
             if self.mode=='r':
                 self.file=None
                 self.name=None
-                if type(myFile) in types.StringTypes:
+                if type(myFile) in (str,):
                     if os.access(myFile,os.R_OK):
                         self.file=file(myFile,"r")
                         self.name=myFile
@@ -1025,12 +1025,12 @@ class GatoFile:
                 try:
                     # pull dom out of file
                     self.dom = xml.dom.minidom.parse(self.file)
-                except xml.dom.DOMException, e:
+                except xml.dom.DOMException as e:
                     logging.error("Exception raised %s" % str(e))
                     raise FileException(str(e))
                     
             elif self.mode=='w':
-                if type(myFile) in types.StringTypes:
+                if type(myFile) in (str,):
                     if os.access(myFile,os.W_OK):
                         self.file=file(myFile,"w")
                         self.name=myFile
@@ -1055,7 +1055,7 @@ class GatoFile:
         # ???? write to right place????
         _thisFile=None
         if _file != None:
-            if type(_file) in types.StringTypes:
+            if type(_file) in (str,):
                 _thisFile=encodedStream(file(_file,"w"))
             elif type(_file)==types.FileType:
                 _thisFile=_file

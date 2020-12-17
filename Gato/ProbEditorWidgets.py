@@ -51,7 +51,7 @@ class scroll_canvas(Tkinter.Canvas):
         self.hidden_frame.columnconfigure(0,weight=1)
         
         cnf=Tkinter._cnfmerge((cnf,kw))
-        if not cnf.has_key('highlightthickness'):
+        if 'highlightthickness' not in cnf:
             cnf['highlightthickness']=0
         Tkinter.Canvas.__init__(self,self.hidden_frame,cnf)
         
@@ -510,7 +510,7 @@ class bar_chart_y(Tkinter.Canvas,flyout_decoration):
         actual_values=self.get_bar_values()
         if prob_dict!=None:
             for key in prob_dict.keys():
-                if actual_values.has_key(key):
+                if key in actual_values:
                     actual_values[key]=prob_dict[key]
         old_max=self.max_value
         # find new max value

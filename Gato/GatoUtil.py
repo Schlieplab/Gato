@@ -93,7 +93,7 @@ class ImageCache:
             if relURL not in self.images.keys():
                 ImageCache.images[relURL] = PhotoImage(file=relURL)
             return ImageCache.images[relURL]
-        except IndexError, IOError:
+        except IndexError as IOError:
             import logging
             log.exception("Error finding image %s" % relURL)
             

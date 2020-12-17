@@ -76,7 +76,7 @@ class ProbDict(UserDict.UserDict):
             return cmp(self[b],self[a])
             
     def __setitem__(self,a,b):
-        if self.has_key(a):
+        if a in self:
             self.sum=self.sum-self[a]
         self.sum=self.sum+b
         UserDict.UserDict.__setitem__(self,a,b)
@@ -94,7 +94,7 @@ class ProbDict(UserDict.UserDict):
         self.__calc_sum__()
         
     def setdefault(self,key,failobj=0):
-        if not self.has_key(key):
+        if key not in self:
             self[key] = failobj
         return self[key]
         

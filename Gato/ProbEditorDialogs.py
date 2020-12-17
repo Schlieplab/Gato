@@ -89,7 +89,7 @@ class combined_editor(ProbEditorWidgets.scroll_canvas,ProbEditorBasics.emission_
         if what!='new value':
             return
         if len(self.key_list2)>0:
-            if dict.has_key('other'):
+            if 'other' in dict:
                 other_val=dict['other']
                 del dict['other']
                 sum=0.0
@@ -264,7 +264,7 @@ class figure_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
         text=widget.get()
         try:
             new_value=eval('float('+text+')')
-        except Exception, e:
+        except Exception as e:
             self.update_values({key:self.data.emissions[key]})
         else:
             if abs(new_value-self.data.emissions[key])>self.data.precision:
@@ -443,7 +443,7 @@ class sum_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
             new_sum=eval('float('+text+')')
             if new_sum<=0:
                 new_sum=self.data.emmissions.sum
-        except Exception, e:
+        except Exception as e:
             # nothing happens
             print e
             new_sum=self.data.emmissions.sum

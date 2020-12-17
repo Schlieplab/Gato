@@ -258,7 +258,7 @@ class PQImplementation(dict):
     def smallest(self):
         '''Find smallest item after removing deleted items from heap.'''
         if len(self) == 0:
-            raise IndexError, "smallest of empty priorityDictionary"
+            raise IndexError("smallest of empty priorityDictionary")
         heap = self.__heap
         while heap[0][1] not in self or self[heap[0][1]] != heap[0][0]:
             lastItem = heap.pop()
@@ -334,10 +334,10 @@ class PriorityQueue:
         return self.pq.deleteMin()
         
     def DecreaseKey(self,value,newSortKey):
-        if self.pq.has_key(value):
+        if value in self.pq:
             self.pq[value] = newSortKey
         else:
-            raise KeyError, "PriorityQueue: DecreaseKey of non-existing key"
+            raise KeyError("PriorityQueue: DecreaseKey of non-existing key")
             
     def Clear(self):
         del self.pq

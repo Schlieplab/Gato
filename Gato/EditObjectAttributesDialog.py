@@ -210,7 +210,7 @@ class TkPopupSelector:
         #logging.debug("pops = %s" % pops)
         args = (master, self.popupvalue) + tuple(pops)
         
-        self.tkwidget = apply(OptionMenu, args)
+        self.tkwidget = OptionMenu(*args)
         self.tkwidget.config(height=1, width=width)
         
     def tkWidget(self):
@@ -239,7 +239,7 @@ class TkStringPopupSelector:
             
         width = max(map(len, self.strings))
         args = (master, self.popupvalue) + tuple(self.strings)
-        self.tkwidget = apply(OptionMenu, args)
+        self.tkwidget = OptionMenu(*args)
         self.tkwidget.config(height=1, width=width)
         
     def tkWidget(self):

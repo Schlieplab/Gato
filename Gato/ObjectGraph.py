@@ -154,9 +154,9 @@ class ObjectGraph(object):
         
         if self.simple == 1 and tail == head: # Loop
             raise GraphNotSimpleError("(%d,%d) is a loop" % (tail,head))
-        if self.directed == 0 and self.edges.has_key((head,tail)):
+        if self.directed == 0 and (head,tail) in self.edges:
             raise GraphNotSimpleError("(%d,%d) is already an undirected edge" % (head,tail))
-        if self.edges.has_key((tail,head)): # Multiple edge
+        if (tail,head) in self.edges: # Multiple edge
             raise GraphNotSimpleError("(%d,%d) is already an directed edge" % (tail,head))
 
         e = self.edgeClass(self.vertices[tail],self.vertices[head])
@@ -195,9 +195,9 @@ class ObjectGraph(object):
         if tail not in self.vertices.keys() or head not in self.vertices.keys():
             raise NoSuchEdgeError("(%d,%d) is not an edge." % (tail,head))
             
-        if self.edges.has_key((tail,head)):
+        if (tail,head) in self.edges:
             return (tail,head)
-        elif self.directed == 0 and self.edges.has_key((head,tail)):
+        elif self.directed == 0 and (head,tail) in self.edges:
             return (head,tail)
         else:
             raise NoSuchEdgeError("(%d,%d) is not an edge." % (tail,head))
@@ -207,9 +207,9 @@ class ObjectGraph(object):
         """ Returns 1 if (tail,head) is an edge in G. If G is undirected
             order of vertices does not matter """
         if self.directed == 1:	
-            return self.edges.has_key((tail,head))
+            return (tail,head) in self.edges
         else: 
-            return self.edges.has_key((tail,head)) or self.edges.has_key((head,tail))
+            return (tail,head) in self.edges or (head,tail) in self.edges
 
 
     def QEdgeWidth(self):

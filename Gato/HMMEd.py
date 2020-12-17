@@ -132,7 +132,7 @@ class NamedDistributions:
             dataValue = ""
             for child in data.childNodes:
                 dataValue += child.nodeValue
-            p = listFromCSV(dataValue, types.FloatType)
+            p = listFromCSV(dataValue, float)
             self.addDistribution(dataKey, dataOrder, p)
             
     def toDOM(self, XMLDoc, XMLNode):
@@ -408,7 +408,7 @@ class HMMState:
                 dataValue = ""
                 for child in data.childNodes:
                     dataValue += child.nodeValue
-                self.emissions = listFromCSV(dataValue, types.FloatType)
+                self.emissions = listFromCSV(dataValue, float)
                 
             else:
                 logging.warning("HMMState.fromDOM: unknown key %s of value %s" % (dataKey, dataValue))

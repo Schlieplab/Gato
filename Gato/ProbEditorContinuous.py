@@ -1732,7 +1732,7 @@ class gaussian_tail_handle_right(gaussian_handle):
         """
         self.tail=values[2]
         values=(values[0],values[1])
-        if conf.has_key('arg_dict'):
+        if 'arg_dict' in conf:
             conf.update(conf['arg_dict'])
         gaussian_handle.__init__(self,canvas,report_function,values,arg_dict=conf)
 

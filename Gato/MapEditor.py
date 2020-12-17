@@ -83,7 +83,7 @@ class MultiListbox(Frame):
         
     def _scroll(self, *args):
         for l in self.lists:
-            apply(l.yview, args)
+            l.yview(*args)
             
     def curselection(self):
         return self.lists[0].curselection()
@@ -96,7 +96,7 @@ class MultiListbox(Frame):
         result = []
         for l in self.lists:
             result.append(l.get(first,last))
-        if last: return apply(map, [None] + result)
+        if last: return map(*[None] + result)
         return result
         
     def index(self, index):

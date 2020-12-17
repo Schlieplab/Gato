@@ -63,7 +63,7 @@ class dom_structure_widget(Tkinter.Frame):
         my_defaults={"highlightthickness":"0"}
         my_defaults.update(config)
         my_defaults.update(cnf)
-        if my_defaults.has_key("font"): del my_defaults["font"] 
+        if "font" in my_defaults: del my_defaults["font"] 
         text_defaults={'bg':'white','cursor':'top_left_arrow',
                        'selectbackground':"white", 'selectborderwidth':'0',
                        "insertwidth":"0", "exportselection":"0",
@@ -133,7 +133,7 @@ class dom_structure_widget(Tkinter.Frame):
         """
         sets the color of a node
         """
-        if not node.__dict__.has_key("DisplayProperties"):
+        if "DisplayProperties" not in node.__dict__:
             node.DisplayProperties=dom_structure_widget.nodeDisplayProperties()
         if fg:
             node.DisplayProperties.fg_color=fg
@@ -150,7 +150,7 @@ class dom_structure_widget(Tkinter.Frame):
         """
         if depth==0: return
         i=0 # counter of nodes to identifiy the label
-        if not subtree.__dict__.has_key("DisplayProperties"):
+        if "DisplayProperties" not in subtree.__dict__:
             subtree.DisplayProperties=dom_structure_widget.nodeDisplayProperties()
         subtree.DisplayProperties.expanded=1
         
@@ -164,7 +164,7 @@ class dom_structure_widget(Tkinter.Frame):
                 
             this_subtag="%s-%d"%(subtag,i)
             # node will be displayed, so add property tag
-            if not node.__dict__.has_key("DisplayProperties"):
+            if "DisplayProperties" not in node.__dict__:
                 node.DisplayProperties=dom_structure_widget.nodeDisplayProperties()
             node.DisplayProperties.tag=this_subtag
             self.textWidget.tag_config("nodeName-"+this_subtag,

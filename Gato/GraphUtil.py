@@ -284,7 +284,7 @@ def OpenCATBoxGraph(_file):
     
     # get file from name or file object
     graphFile=None
-    if type(_file) in types.StringTypes:
+    if type(_file) in (str,):
         graphFile = open(_file, 'r')
     elif type(_file)==types.FileType or issubclass(_file.__class__,StringIO.StringIO):
         graphFile=_file
@@ -393,7 +393,7 @@ def SaveCATBoxGraph(G, _file):
     
     # get file from name or file object
     file=None
-    if type(_file) in types.StringTypes:
+    if type(_file) in (str,):
         file = open(_file, 'w')
     elif type(_file)==types.FileType or issubclass(_file.__class__,StringIO.StringIO):
         file=_file
@@ -410,7 +410,7 @@ def SaveCATBoxGraph(G, _file):
                nrOfEdgeWeights, nrOfVertexWeights))
     file.write("scroller:\n")
     file.write("vdim:1000; hdim:1000; vlinc:10; hlinc:10; vpinc:50; hpinc:50;\n")
-    file.write("vertices:" + `G.Order()` + ";\n")
+    file.write("vertices:" + repr(G.Order()) + ";\n")
 
     # Being paranoid here: We force edge weights to be euclidean 
     if G.QEuclidian():
@@ -430,7 +430,7 @@ def SaveCATBoxGraph(G, _file):
                 file.write(" w:%d;" % G.vertexWeights[i][v])	    
         file.write("\n")
         
-    file.write("edges:" + `G.Size()` + ";\n")
+    file.write("edges:" + repr(G.Size()) + ";\n")
     for tail in G.vertices:
         for head in G.OutNeighbors(tail):
             file.write("h:%d; t:%d; e:2;" % (save[head], save[tail]))
