@@ -37,8 +37,8 @@
 
 import tkFont
 
-gatoVersion = '1.2.5'
-gatoBuildDate = '12/08/2020'
+gatoVersion = '1.2.6'
+gatoBuildDate = '12/17/2020'
 gatoDescription = 'Graph Animation Toolbox: animating algorithms on graphs'
 gatoAuthorEmail = 'alexander@schlieplab.org'
 gatoURL = 'http://gato.sf.net'

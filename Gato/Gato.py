@@ -2407,9 +2407,12 @@ if __name__ == '__main__':
         help="Outputs detailed information on the console."
     )
 
-    parser.add_argument('algorithmFileName')
-    parser.add_argument('graphFileName')
-    
-    args = parser.parse_args()
+    parser.add_argument('algorithmFileName', nargs='?', default="")
+    parser.add_argument('graphFileName', nargs='?', default="")
+
+    if 'Gato.app' in sys.argv[0]:
+        args = parser.parse_args([])
+    else:
+        args = parser.parse_args()
     app = GatoApp(args)
     sys.exit(app.mainloop())

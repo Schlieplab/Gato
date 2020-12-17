@@ -36,6 +36,7 @@ include __init__.py
 include setup.py
 include scripts/Gato
 include scripts/Gred
+exclude svgs
 include svgs/css/*
 include svgs/js/*
 include BFS.alg
@@ -55,3 +56,11 @@ exclude GatoDemo.py
 exclude *.pyc
 exclude mist*
 exclude test*
+exclude Icons
+exclude Installer
+exclude WWW
+exclude bs4
+exclude build
+exclude dist
+exclude ios_project
+exclude testdata

@@ -994,6 +994,23 @@ def main(argv=None):
     if graphEditor.windowingsystem == 'aqua':
         tk.createcommand("::tk::mac::Quit",graphEditor.Quit)
 
+    app = graphEditor
+    if app.windowingsystem == 'aqua':
+        app.update()
+        app.master.deiconify()
+        app.master.lift()
+        # See discussion at https://stackoverflow.com/questions/1892339/how-to-make-a-tkinter-window-jump-to-the-front
+        if sys.argv[0] == 'Gred.py':
+            # If I am running from the command line the app is "Python"
+            os.system('''/usr/bin/osascript -e 'tell app "System Events" to set frontmost of process "Python" to true' ''')
+        else:
+            # When executing a packaged MacOS App                              
+            # This does not throw an error, so I suppose sys.argv[0] is set correctly to Gato
+            # However this still asks the user for permision, which looks nefarious.
+            os.system('''/usr/bin/osascript -e 'tell app "System Events" to set frontmost of process "Gred" to true' ''')
+    app.update_idletasks()
+    app.update()
+         
     graphEditor.mainloop()
 
 

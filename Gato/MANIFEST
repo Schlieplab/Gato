@@ -17,7 +17,6 @@ GatoFile.py
 GatoGlobals.py
 GatoIcons.py
 GatoSystemConfiguration.py
-GatoTest.py
 GatoUtil.py
 Graph.py
 GraphCreator.py
@@ -44,6 +43,8 @@ TextTreeWidget.py
 TreeWidget.py
 WebGatoJS.py
 __init__.py
+createHTMLAnimations.py
+createRegressionData.py
 linecacheCopy.py
 sample.cat
 setup-mac-gato.py

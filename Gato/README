@@ -2,7 +2,7 @@
 Gato the Graph Animation Toolbox
 ================================
 
-Gato, the Graph Animation Toolbox http://gato.sf.net by Alexander
+Gato, the Graph Animation Toolbox (see http://gato.sf.net) by Alexander
 Schliep and Winfried Hochstaettler, is a LGPL-licensed Python
 application which animates algorithms on graphs. It uses Tkinter and
 runs on Unix, MacOS, Linux and Windows.
@@ -38,3 +38,4 @@ under the GPL version 3 or later. It has been developed by Scott
 Merkling and Alexander Schliep and is copyright (C) 2014-20
 AlexanderSchliep, and copyright (C) 2014-16 Scott Merkling.
 
+Version 1.2.6 is the last version with Python 2.7 support.

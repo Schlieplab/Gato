@@ -1,5 +1,10 @@
 Gato Release notes
 
+Gato 1.2.6 from 12/17/2020
+* Last version to support Python 2.7
+* Mostly internal cleanup to prepare for Python 3
+* Fixed logging
+
 Gato 1.2.5 from 12/8/2020
 * Still Python 2.7
 * Paned modus is now default
