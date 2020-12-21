@@ -150,13 +150,9 @@ if __name__ == '__main__':
     app = AlgoWin()    
     app.algorithm.logAnimator = 2
     g.Interactive = 0
-    if sys.version_info[0:2] < (2,4):
-        log.addHandler(logging.StreamHandler(sys.stdout))
-        log.setLevel(logging.DEBUG)
-    else:
-        logging.basicConfig(level=logging.DEBUG,
-                            stream=sys.stdout,
-                            format='%(name)s %(levelname)s %(message)s')
+    logging.basicConfig(level=logging.DEBUG,
+                        stream=sys.stdout,
+                        format='%(name)s %(levelname)s %(message)s')
         
     while 1:
         for case in tests:

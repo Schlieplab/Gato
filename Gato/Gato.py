@@ -1399,7 +1399,7 @@ class AlgoWin(Frame):
     def ReportCallbackException(self, *args):
         short_msg = "Internal Gato error"
         long_msg = ''.join(traceback.format_exception(*args))
-        self.HandleError(short_msg, long_msg, log.exception)
+        self.HandleError(short_msg, long_msg, logging.exception)
 
     def ClearHistory(self):
         self.lastActiveLine = 0
@@ -2018,7 +2018,7 @@ class Algorithm:
         except: # Bug in the prolog
             short_msg = "Error in %s.pro" % os.path.splitext(self.algoFileName)[0]
             long_msg = traceback.format_exc()
-            self.GUI.HandleError(short_msg, long_msg, log.exception)            
+            self.GUI.HandleError(short_msg, long_msg, logging.exception)            
             self.GUI.CommitStop()
             return
 
@@ -2039,7 +2039,7 @@ class Algorithm:
         except:
             short_msg = "Error in %s.alg" % os.path.splitext(self.algoFileName)[0]
             long_msg = traceback.format_exc()
-            self.GUI.HandleError(short_msg, long_msg, log.exception)            
+            self.GUI.HandleError(short_msg, long_msg, logging.exception)            
         
         self.GUI.graphDisplay.EndOfProlog()
 

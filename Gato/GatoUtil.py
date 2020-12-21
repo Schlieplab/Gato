@@ -36,6 +36,7 @@
 
 from Tkinter import *
 import os
+import logging
 
 def extension(pathAndFile):
     """ Return ext if path/filename.ext is given """
@@ -94,8 +95,7 @@ class ImageCache:
                 ImageCache.images[relURL] = PhotoImage(file=relURL)
             return ImageCache.images[relURL]
         except IndexError as IOError:
-            import logging
-            log.exception("Error finding image %s" % relURL)
+            logging.exception("Error finding image %s" % relURL)
             
     def AddImage(self, relURL, imageData):
         ImageCache.images[relURL] = PhotoImage(data=imageData)
