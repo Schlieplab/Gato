@@ -1,3 +1,5 @@
+from __future__ import division
+from __future__ import print_function
 ################################################################################
 #
 #       This file is part of Gato (Graph Animation Toolbox) 
@@ -32,7 +34,11 @@
 ################################################################################
 
 
-import Tkinter
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
+from past.utils import old_div
+import tkinter
 import sys
 import os
 import os.path
@@ -41,7 +47,7 @@ import xml.dom
 import xml.dom.minidom
 import logging
 
-class Node:
+class Node(object):
     """
     base class for all elements of my tree, provides icon support, selection features
     """
@@ -85,7 +91,7 @@ class Node:
         if self.icon:
             if not self.iconItem:
                 self.iconItem=self.canvas.create_image(self.anchor,
-                                                       anchor=Tkinter.NW,
+                                                       anchor=tkinter.NW,
                                                        image=self.icon)
             else:
                 self.canvas.itemconfigure(self.iconItem,image=self.icon)
@@ -100,7 +106,7 @@ class Node:
         if self.name:
             if not self.nameItem:
                 self.nameItem=self.canvas.create_text((ix1+1,self.anchor[1]),
-                                                      anchor=Tkinter.NW,
+                                                      anchor=tkinter.NW,
                                                       text=self.name)
             else:
                 self.canvas.itemconfigure(self.nameItem, text=self.name)
@@ -115,15 +121,15 @@ class Node:
         diff=iy1-iy0-ny1+ny0
         if diff>0 and self.nameItem:
             # center text
-            self.canvas.coords(self.nameItem,(nx0,(iy0+iy1)/2))
-            self.canvas.itemconfigure(self.nameItem,anchor=Tkinter.W)
+            self.canvas.coords(self.nameItem,(nx0,old_div((iy0+iy1),2)))
+            self.canvas.itemconfigure(self.nameItem,anchor=tkinter.W)
         elif diff<0 and self.iconItem:
             # center icon
-            self.canvas.coords(self.iconItem,(ix0,(ny0+ny1)/2))
-            self.canvas.itemconfigure(self.iconItem,anchor=Tkinter.W)
+            self.canvas.coords(self.iconItem,(ix0,old_div((ny0+ny1),2)))
+            self.canvas.itemconfigure(self.iconItem,anchor=tkinter.W)
             # maintain selection
         if self.selected:
-            coords=self.canvas.bbox(*filter(None,[self.iconItem,self.nameItem]))
+            coords=self.canvas.bbox(*[_f for _f in [self.iconItem,self.nameItem] if _f])
             if self.selectionItem:
                 self.canvas.coords(self.selectionItem,coords)
             else:
@@ -213,7 +219,7 @@ class Node:
         """
         self.selected=1
         if self.canvas:
-            coords=self.canvas.bbox(*filter(None,[self.iconItem,self.nameItem]))
+            coords=self.canvas.bbox(*[_f for _f in [self.iconItem,self.nameItem] if _f])
             if self.selectionItem:
                 self.canvas.coords(self.selectionItem,coords)
             else:
@@ -238,7 +244,7 @@ class Node:
             
     def printNode(self,indent=""):
         refcnt=sys.getrefcount(self)
-        print "%s%s:%d"%(indent,self.name,refcnt)
+        print("%s%s:%d"%(indent,self.name,refcnt))
         
 class Leaf(Node):
     """
@@ -248,7 +254,7 @@ class Leaf(Node):
     
     def __init__(self,parent=None, anchor=(0,0), name=None, icon=None):
         if "defaultIcon" not in Leaf.__dict__:
-            Leaf.defaultIcon=Tkinter.PhotoImage(data=Leaf.defaultIconData)
+            Leaf.defaultIcon=tkinter.PhotoImage(data=Leaf.defaultIconData)
         if name==None:
             raise Exception("name should be text")
         if not icon:
@@ -283,9 +289,9 @@ class Branch(Node):
         """
         # initialise Icon Data
         if "expandImage" not in Branch.__dict__:
-            Branch.expandImage=Tkinter.BitmapImage(data=Branch.expandData)
+            Branch.expandImage=tkinter.BitmapImage(data=Branch.expandData)
         if "collapseImage" not in Branch.__dict__:
-            Branch.collapseImage=Tkinter.BitmapImage(data=Branch.collapseData)
+            Branch.collapseImage=tkinter.BitmapImage(data=Branch.collapseData)
         self.expanded=expanded
         icon=Branch.expandImage
         if self.expanded:
@@ -332,7 +338,7 @@ class Branch(Node):
         if self.expanded:
             self.icon=self.collapseImage
             Node.display(self,recursive+1)
-            (x0,y0,x1,y1)=self.canvas.bbox(*filter(None,[self.nameItem,self.iconItem]))
+            (x0,y0,x1,y1)=self.canvas.bbox(*[_f for _f in [self.nameItem,self.iconItem] if _f])
             (ix0,iy0,ix1,iy1)=self.canvas.bbox(self.iconItem)
             self.updateChildList()
             for child in self.children:
@@ -462,7 +468,7 @@ class DirBranch(Branch):
         except OSError:
             pass
         entries.sort()
-        oldEntries=map(lambda c:c.name,oldChildren)
+        oldEntries=[c.name for c in oldChildren]
         for entry in entries:
             if entry in oldEntries:
                 self.children.append(oldChildren[oldEntries.index(entry)])
@@ -521,7 +527,7 @@ class xmlElementBranch(Branch):
         """
         oldChildren=self.children
         self.children=[]
-        oldElements=map(lambda c:c.element, oldChildren)
+        oldElements=[c.element for c in oldChildren]
         for child in self.element.childNodes:
             if child in oldElements:
                 self.children.append(oldChildren[oldElements.index(child)])
@@ -537,7 +543,7 @@ class xmlElementBranch(Branch):
         # remember all children, that have some nondefault status
         oldChildren=self.children
         self.children=[]
-        print map(lambda x:"%s ref=%d"%(x.name,sys.getrefcount(x)),oldChildren)
+        print(["%s ref=%d"%(x.name,sys.getrefcount(x)) for x in oldChildren])
         for child in oldChildren:
             if issubclass(child.__class__,Branch):
                 child.cleanupChildList()
@@ -545,7 +551,7 @@ class xmlElementBranch(Branch):
                     self.children.append(child)
             elif child.selected:
                 self.children.append(child)
-        print map(lambda c:c.name, self.children)
+        print([c.name for c in self.children])
         
     def __del__(self):
         logging.info("DOM Element %s deleted" % self.name)
@@ -580,14 +586,14 @@ class xmlFileBranch(xmlElementBranch):
         logging.info("DOM of file %s deleted" % self.path)
         xmlElementBranch.__del__(self)
         
-class Tree(Tkinter.Canvas):
+class Tree(tkinter.Canvas):
     """
     holds all nodes and manages the display
     """
     def __init__(self,master):
         """
         """
-        Tkinter.Canvas.__init__(self,master)
+        tkinter.Canvas.__init__(self,master)
         
     def moveAfterChild(self,child):
         pass
@@ -608,18 +614,18 @@ class scrolledTree(Tree):
         """
         initialises the tree widget and puts it into the frame
         """
-        self.hiddenFrame=Tkinter.Frame(master)
+        self.hiddenFrame=tkinter.Frame(master)
         Tree.__init__(self,self.hiddenFrame)
-        Tkinter.Canvas.pack(self,side=Tkinter.LEFT, fill=Tkinter.BOTH)
-        scroller=Tkinter.Scrollbar(self.hiddenFrame)
-        scroller.pack(side=Tkinter.RIGHT, fill=Tkinter.Y)
+        tkinter.Canvas.pack(self,side=tkinter.LEFT, fill=tkinter.BOTH)
+        scroller=tkinter.Scrollbar(self.hiddenFrame)
+        scroller.pack(side=tkinter.RIGHT, fill=tkinter.Y)
         scroller.config(command=self.yview)
         self.config(yscrollcommand=scroller.set)
         
     def moveAfterChild(self,child):
         # set new scrollregion, so all components are visible
         child.printNode()
-        self.config(scrollregion=self.bbox(Tkinter.ALL))
+        self.config(scrollregion=self.bbox(tkinter.ALL))
         
     def pack(self,*args,**kws):
         self.hiddenFrame.pack(*args, **kws)
@@ -709,8 +715,8 @@ class WorkInProgress(scrolledTree):
         firstNode.display()
         
 if __name__=="__main__":
-    root=Tkinter.Tk()
+    root=tkinter.Tk()
     widget=WorkInProgress(master=root)
-    widget.pack(expand=1,fill=Tkinter.BOTH)
+    widget.pack(expand=1,fill=tkinter.BOTH)
     widget.doDirTree()
     root.mainloop()

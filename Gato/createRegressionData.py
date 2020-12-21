@@ -34,14 +34,15 @@
 #             last change by $Author: schliep $.
 #
 ################################################################################
+from __future__ import absolute_import
 import getopt
 import sys
 import os
 import re
 import fnmatch
 import logging
-from Gato import *
-import GatoGlobals
+from .Gato import *
+from . import GatoGlobals
 
 g = GatoGlobals.AnimationParameters
 
@@ -208,7 +209,7 @@ catbox_instances = {
 
 
 def makeTests(instances):
-    algorithms = instances.keys()
+    algorithms = list(instances.keys())
     algorithms.sort()
     tests = [(algo, graph) for algo in algorithms for graph in instances[algo]]
     return tests

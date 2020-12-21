@@ -33,8 +33,12 @@
 #             last change by $Author$.
 #
 ################################################################################
-from Tkinter import *
-import tkSimpleDialog
+from future import standard_library
+standard_library.install_aliases()
+from builtins import map
+from builtins import range
+from tkinter import *
+import tkinter.simpledialog
 
 class MultiListbox(Frame):
     def __init__(self, master, lists, doubleclickCallback = None):
@@ -96,7 +100,7 @@ class MultiListbox(Frame):
         result = []
         for l in self.lists:
             result.append(l.get(first,last))
-        if last: return map(*[None] + result)
+        if last: return list(map(*[None] + result))
         return result
         
     def index(self, index):
@@ -132,7 +136,7 @@ class MultiListbox(Frame):
             l.selection_set(first, last)
             
             
-class MapEditor(tkSimpleDialog.Dialog):
+class MapEditor(tkinter.simpledialog.Dialog):
 
     def __init__(self, master, maps, map_titles, field_widths):
         self.maps = maps
@@ -140,20 +144,20 @@ class MapEditor(tkSimpleDialog.Dialog):
         self.field_widths = field_widths
         self.entryWidget = []
         self.lastSelection = None
-        tkSimpleDialog.Dialog.__init__(self, master, "MapEditor")
+        tkinter.simpledialog.Dialog.__init__(self, master, "MapEditor")
         
     def body(self, master):
         outer_frame = Frame(master, relief=SUNKEN, bd=2)
         
         args = ()
-        for i in xrange(len(self.map_titles)):
+        for i in range(len(self.map_titles)):
             args += ((self.map_titles[i], self.field_widths[i]),)
         self.mlb = MultiListbox(outer_frame, args, self.editSelection)
         self.mlb.pack(expand=YES,fill=BOTH)
         
         frame = Frame(outer_frame, relief=RAISED, bd=2)
         yanf = Frame(frame)
-        for i in xrange(len(self.map_titles)):
+        for i in range(len(self.map_titles)):
             self.entryWidget.append(Entry(yanf,width=self.field_widths[i], exportselection=FALSE))
             self.entryWidget[i].pack(padx=4, pady=3, side=LEFT)
         yanf.pack(expand=YES,fill=Y, side=TOP)
@@ -168,15 +172,15 @@ class MapEditor(tkSimpleDialog.Dialog):
         frame.pack(expand=YES,fill=Y)
         outer_frame.pack(expand=YES,fill=BOTH)
         
-        for k in self.maps[0].keys():
+        for k in list(self.maps[0].keys()):
             mapItem = (k,)
-            for i in xrange(len(self.maps)):
+            for i in range(len(self.maps)):
                 mapItem += (self.maps[i][k],)
             self.mlb.insert(END, mapItem)
             
     def addMapItem(self):
         mapItem = ()
-        for i in xrange(len(self.map_titles)):
+        for i in range(len(self.map_titles)):
             mapItem += (self.entryWidget[i].get(),)
             self.entryWidget[i].delete(0,END)
             
@@ -184,7 +188,7 @@ class MapEditor(tkSimpleDialog.Dialog):
         
     def updateMapItem(self):
         mapItem = ()
-        for i in xrange(len(self.map_titles)):
+        for i in range(len(self.map_titles)):
             mapItem += (self.entryWidget[i].get(),)
             self.entryWidget[i].delete(0,END)
             
@@ -198,7 +202,7 @@ class MapEditor(tkSimpleDialog.Dialog):
     def editSelection(self, selection):
         self.lastSelection = selection
         values = self.mlb.get(selection)
-        for i in xrange(len(values)):
+        for i in range(len(values)):
             self.entryWidget[i].delete(0,END)
             self.entryWidget[i].insert(0,"%s" % values[i])
             
@@ -206,10 +210,10 @@ class MapEditor(tkSimpleDialog.Dialog):
         self.result = []
         for i in range(self.mlb.size()):
             self.result.append(self.mlb.get(i))
-        tkSimpleDialog.Dialog.ok(self, event)
+        tkinter.simpledialog.Dialog.ok(self, event)
         
         
-class NamedCollectionEditor(tkSimpleDialog.Dialog):
+class NamedCollectionEditor(tkinter.simpledialog.Dialog):
     """ Provide a simple editor to
         - add items
         - remove items
@@ -224,7 +228,7 @@ class NamedCollectionEditor(tkSimpleDialog.Dialog):
     
     def __init__(self, master, collection):
         self.collection = collection
-        tkSimpleDialog.Dialog.__init__(self, master, "CollectionEditor")
+        tkinter.simpledialog.Dialog.__init__(self, master, "CollectionEditor")
         
     def body(self, master):
         outer_frame = Frame(master, relief=SUNKEN, bd=2)
@@ -267,7 +271,7 @@ class NamedCollectionEditor(tkSimpleDialog.Dialog):
         self.lb.delete(self.lb.curselection())
         
     def ok(self, event=None):
-        tkSimpleDialog.Dialog.ok(self, event)
+        tkinter.simpledialog.Dialog.ok(self, event)
         
         
         

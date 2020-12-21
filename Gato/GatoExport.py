@@ -35,14 +35,21 @@
 #             last change by $Author$.
 #
 ################################################################################
+from __future__ import division
+from __future__ import absolute_import
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
+from past.utils import old_div
 import os
-import StringIO
+import io
 import tokenize
 import re
 import pdb
-from bs4 import BeautifulSoup
+#from .bs4 import BeautifulSoup
 from math import sqrt, pi, sin, cos, atan2, degrees, log10, floor, ceil
-from WebGatoJS import animationhead
+from .WebGatoJS import animationhead
 import logging
 
 #Global constants for tokenEater
@@ -256,7 +263,7 @@ def collectAnimations(histories, prefixes):
         currentTime = cmd[0]
         mergedCmds[i][0] = str(duration)
         # We want to change the edge ids to a different form
-        for j in xrange(2, len(mergedCmds[i])):
+        for j in range(2, len(mergedCmds[i])):
             if 'Edge' in mergedCmds[i][1]:
                 mergedCmds[i][j] = change_id_format(mergedCmds[i][j])
 
@@ -350,7 +357,7 @@ def get_graph_as_svg_str_standalone(graphDisplay, x_add, y_add, file, idPrefix='
                 if (l < .001):
                     l = .001
 
-                c = (l-2*graphDisplay.zVertexRadius)/l + .01
+                c = old_div((l-2*graphDisplay.zVertexRadius),l) + .01
                 tmpX = float(vx) + c*(float(wx) - float(vx))
                 tmpY = float(vy) + c*(float(wy) - float(vy))
                 
@@ -378,14 +385,14 @@ def get_graph_as_svg_str_standalone(graphDisplay, x_add, y_add, file, idPrefix='
                 a_width *= float(width) 
                 p1 = (0,0)
                 p2 = (0, a_width)
-                p3 = (cr, a_width/2)
+                p3 = (cr, old_div(a_width,2))
                 angle = degrees(atan2(int(wy)-int(vy), int(wx)-int(vx)))
-                c = (l-2*graphDisplay.zVertexRadius)/l
+                c = old_div((l-2*graphDisplay.zVertexRadius),l)
                 tmpX = float(vx) + c*(float(wx) - float(vx))
                 tmpY = float(vy) + c*(float(wy) - float(vy))
                 ret_strs.append('<polyline points="%f %f %f %f %s %f" fill="%s" transform="translate(%f,%f)'\
                            ' rotate(%f %f %f)" />\n' % (p1[0], p1[1], p2[0], p2[1], p3[0], p3[1],
-                                                        col, tmpX, tmpY - a_width/2, angle, p1[0], a_width/2))
+                                                        col, tmpX, tmpY - old_div(a_width,2), angle, p1[0], old_div(a_width,2)))
 
 
         # Write Edge Annotations
@@ -495,7 +502,7 @@ def get_graph_as_svg_str_for_animation(graphDisplay, x_add, y_add, file, idPrefi
                 if (l < .001):
                     l = .001
 
-                c = (l-2*graphDisplay.zVertexRadius)/l + .01
+                c = old_div((l-2*graphDisplay.zVertexRadius),l) + .01
                 tmpX = float(vx) + c*(float(wx) - float(vx))
                 tmpY = float(vy) + c*(float(wy) - float(vy))
                 
@@ -522,14 +529,14 @@ def get_graph_as_svg_str_for_animation(graphDisplay, x_add, y_add, file, idPrefi
                 a_width *= float(width) 
                 p1 = (0,0)
                 p2 = (0, a_width)
-                p3 = (cr, a_width/2)
+                p3 = (cr, old_div(a_width,2))
                 angle = degrees(atan2(int(wy)-int(vy), int(wx)-int(vx)))
-                c = (l-2*graphDisplay.zVertexRadius)/l
+                c = old_div((l-2*graphDisplay.zVertexRadius),l)
                 tmpX = float(vx) + c*(float(wx) - float(vx))
                 tmpY = float(vy) + c*(float(wy) - float(vy))
                 ret_strs.append('<polyline id="%s" class="arrowhead" points="%f %f %f %f %s %f" fill="%s" transform="translate(%f,%f)'\
                            ' rotate(%f %f %f)" />\n' % ('ea' + edge_id, p1[0], p1[1], p2[0], p2[1], p3[0], p3[1],
-                                                        col, tmpX, tmpY - a_width/2, angle, p1[0], a_width/2))
+                                                        col, tmpX, tmpY - old_div(a_width,2), angle, p1[0], old_div(a_width,2)))
         ret_strs.append('</g>')
 
 
@@ -619,7 +626,7 @@ def format_init_edge_infos(info_dict, idPrefix):
     if not info_dict:
         return 'null';
     str_bits = ['{'] # List of strings to return joined at the end(faster than concatenation)
-    for (v, w), info in info_dict.iteritems():
+    for (v, w), info in info_dict.items():
         edge_id = get_edge_id(v, w, idPrefix)
         assignment = '"{}": "{}",'.format(edge_id, info)
         str_bits.append(assignment)
@@ -631,7 +638,7 @@ def format_init_vertex_infos(info_dict, idPrefix):
     if not info_dict:
         return 'null';
     str_bits = ['{'] # List of strings to return joined at the end(faster than concatenation)
-    for v, info in info_dict.iteritems():
+    for v, info in info_dict.items():
         vertex_id = idPrefix + str(v)
         assignment = '"{}": "{}",'.format(vertex_id, info)
         str_bits.append(assignment)
@@ -639,6 +646,8 @@ def format_init_vertex_infos(info_dict, idPrefix):
     return '\n'.join(str_bits)
         
 def ExportAlgoInfo(fileName, algorithm):
+    from bs4 import BeautifulSoup
+
     if not os.path.exists('./svgs/infos'):
         os.makedirs('./svgs/infos')
 
@@ -683,7 +692,7 @@ def ExportAlgoInfo(fileName, algorithm):
 
 def format_animation(animation):
     def chunker(seq, size):
-        return (seq[pos:pos + size] for pos in xrange(0, len(seq), size))
+        return (seq[pos:pos + size] for pos in range(0, len(seq), size))
     if len(animation) < 32000:
         return 'var anim_array = Array(' + ',\n'.join(animation) + ');'
     else:
@@ -726,7 +735,7 @@ def format_bubbles(bubbles):
     if not bubbles:
         return '{}'
     bubble_str = '{\n'
-    for bubble_id, (offset_value, color) in bubbles.iteritems():
+    for bubble_id, (offset_value, color) in bubbles.items():
         bubble_str += '"%s"' % bubble_id
         bubble_str += ': ["' + offset_value + '", "' + color + '"],\n'
     bubble_str += '}'
@@ -823,7 +832,7 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
 
         # Build the Algorithm SVG string
         source = algorithm.GetSource()
-        tokenize.tokenize(StringIO.StringIO(source.replace('\\', '\\\\')).readline, tokenEater)
+        tokenize.tokenize(io.StringIO(source.replace('\\', '\\\\')).readline, tokenEater)
         algowin.CommitStop()
 
         # 
@@ -883,7 +892,7 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
         
         # Put a border between the graphs
         if secondaryGraphDisplay:
-            y = g1_height + g2_y_padding/2 + edge_padding
+            y = g1_height + old_div(g2_y_padding,2) + edge_padding
             g2_svg_body_str += '<line x1="0" x2="%d" y1="%d" y2="%d" stroke="#000" stroke-width="3.0" />' % (width, y, y)
         svg_str = '\n'.join(['<svg width="%d" height="%d">' % (width, height), svg_drop_shadow, g1_svg_body_str, g2_svg_body_str, '</svg>'])
         file.write(svg_str)
@@ -915,7 +924,7 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
         
         # Put a border between the graphs
         if secondaryGraphDisplay and g2_svg_body_str:
-            y = g1_height + g2_y_padding/2 + edge_padding
+            y = g1_height + old_div(g2_y_padding,2) + edge_padding
             g2_svg_body_str += '<line x1="0" x2="%d" y1="%d" y2="%d" stroke="#aaa" stroke-width="1.0" />' % (width, y, y)
         svg_str = '\n'.join(['<svg width="%d" height="%d">' % (width, height), svg_drop_shadow, g1_svg_body_str, g2_svg_body_str, '</svg>'])
 
@@ -1009,7 +1018,7 @@ def SVGForExport(algorithm, graphDisplay, secondaryGraphDisplay=None, initialSta
         
     # Put a border between the graphs
     if secondaryGraphDisplay:
-        y = g1_height + g2_y_padding/2 + edge_padding
+        y = g1_height + old_div(g2_y_padding,2) + edge_padding
         g2_svg_body_str += '<line x1="0" x2="%d" y1="%d" y2="%d" stroke="#000" stroke-width="3.0" />' % (width, y, y)
     svg_str = '\n'.join(['<svg width="%d" height="%d">' % (width, height), svg_drop_shadow, g1_svg_body_str, g2_svg_body_str, '</svg>'])
     return svg_str
@@ -1127,7 +1136,7 @@ def ExportAnimationAsHTML(fileName, algowin, algorithm, graphDisplay,
 
     # Build the Algorithm SVG string
     source = algorithm.GetSource()
-    tokenize.tokenize(StringIO.StringIO(source.replace('\\', '\\\\')).readline, tokenEater)
+    tokenize.tokenize(io.StringIO(source.replace('\\', '\\\\')).readline, tokenEater)
     algowin.CommitStop()
 
 

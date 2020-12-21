@@ -1,3 +1,6 @@
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
 ################################################################################
 #
 #       This file is part of Gato (Graph Animation Toolbox) 
@@ -35,9 +38,14 @@
 #
 ################################################################################
 
-from GatoGlobals import *
-from DataStructures import Point2D, VertexLabeling, EdgeLabeling, EdgeWeight
-import GraphUtil #import ConnectedComponents, FindBipartitePartitions 
+from builtins import map
+from builtins import str
+from builtins import range
+from builtins import object
+from past.utils import old_div
+from .GatoGlobals import *
+from .DataStructures import Point2D, VertexLabeling, EdgeLabeling, EdgeWeight
+from . import GraphUtil #import ConnectedComponents, FindBipartitePartitions 
 
 
 from math import sqrt
@@ -49,7 +57,7 @@ import logging
 # Graph
 #
 ################################################################################
-class Graph:
+class Graph(object):
     """ Provides a mathematical graph object consisting of vertices 
         and (directed) edges connecting those vertices. Graphs have
     
@@ -147,7 +155,7 @@ class Graph:
             self.SetEdgeWeight(0,tail,head,sqrt((h.x - t.x)**2 + (h.y - t.y)**2))
         else:
             self.SetEdgeWeight(0,tail,head,0)
-        for i in xrange(1,self.NrOfEdgeWeights()):
+        for i in range(1,self.NrOfEdgeWeights()):
             self.SetEdgeWeight(i,tail,head,0)
         return tail, head
         
@@ -226,13 +234,13 @@ class Graph:
     def InEdges(self,v):
         """ Returns edges (*,v) """	
         f = lambda x, vertex = v : (x,vertex)
-        return map(f, self.invAdjLists[v])
+        return list(map(f, self.invAdjLists[v]))
         
         
     def OutEdges(self,v):
         """ Returns edges (v,*) """	
         f = lambda x, vertex = v : (vertex,x)
-        return map(f ,self.adjLists[v])
+        return list(map(f ,self.adjLists[v]))
         
         
     def IncidentEdges(self,v):
@@ -254,7 +262,7 @@ class Graph:
     def printMy(self):
         """ Debugging only """
         for v in self.vertices:
-            print v, " -- ", self.adjLists[v]
+            print(v, " -- ", self.adjLists[v])
             
             
     def GetNextVertexID(self):
@@ -327,11 +335,11 @@ class Graph:
             maxWeight = max(self.edgeWeights[weightID].label.values())
             for e in edges:
                 self.edgeWidth[e] = max(
-                    scale * (1 + 35 * self.edgeWeights[weightID][e] / maxWeight),
+                    scale * (1 + old_div(35 * self.edgeWeights[weightID][e], maxWeight)),
                     0.001)
         
     def NrOfEdgeWeights(self):
-        return len(self.edgeWeights.keys())
+        return len(list(self.edgeWeights.keys()))
 
     def SetEdgeWeight(self,i,v,w,value):
         self.edgeWeights[i][(v,w)] = value
@@ -340,7 +348,7 @@ class Graph:
         return self.edgeWeights[i][(v,w)]
 
     def NrOfVertexWeights(self):
-        return len(self.vertexWeights.keys())
+        return len(list(self.vertexWeights.keys()))
 
     def SetVertexWeight(self,i,v,value):
         self.vertexWeights[i][v] = value
@@ -381,7 +389,7 @@ class Graph:
         """ Integerize: Make all edge weights integers """
         
         if weightID == 'all':
-            for w in self.edgeWeights.keys():
+            for w in list(self.edgeWeights.keys()):
                 self.edgeWeights[w].Integerize()
         else:
             self.edgeWeights[weightID].Integerize()
@@ -478,7 +486,7 @@ class Graph:
         """
         unknownProps = []
         knownProps = ""
-        for name in  gProperty.keys():
+        for name in  list(gProperty.keys()):
             value = self.Property(name)
             if value == 'Unknown':
                 unknownProps.append(gProperty[name][2])

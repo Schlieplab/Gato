@@ -1,3 +1,6 @@
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
 ################################################################################
 #
 #       This file is part of Gato (Graph Algorithm Toolbox) 
@@ -61,16 +64,21 @@
 
 
 #=============================================================================#
-from PlanarityTest import *
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
+from past.utils import old_div
+from builtins import object
+from .PlanarityTest import *
 from copy import deepcopy
-from DataStructures import Stack
-from tkMessageBox import showinfo
+from .DataStructures import Stack
+from tkinter.messagebox import showinfo
 #=============================================================================#
 
 
 
 #=============================================================================#
-class pe_Point:
+class pe_Point(object):
 
     def __init__(self,xpos,ypos):
         self.x=xpos
@@ -80,7 +88,7 @@ class pe_Point:
         
         
         #=============================================================================#
-class pe_Node:
+class pe_Node(object):
 
     def __init__(self,x,y):
         self.xpos=x
@@ -109,7 +117,7 @@ class pe_Node:
         
         
         #=============================================================================#
-class pe_Edge: # directed from p1->p2
+class pe_Edge(object): # directed from p1->p2
 
     def __init__(self,index_p1,index_p2,ep1,ep2,tf):
         self.p1=index_p1
@@ -122,72 +130,72 @@ class pe_Edge: # directed from p1->p2
         
         
         #=============================================================================#
-class pe_Graph:
+class pe_Graph(object):
 
     #-------------------------------------------------------------------------
     def printGraph(self):
     
         for i in range(0,len(self.nodes)):
             n=self.nodes[i]
-            print "--------Node:",i,"--------------"
-            print "xpos=",n.xpos,"ypos=",n.ypos
-            print "canOrder=",n.canOrder
-            print "t1=",n.t1,"t2=",n.t2,"t3=",n.t3
-            print "p1=",n.p1,"p2=",n.p2,"p3=",n.p3
-            print "r1=",n.r1,"r2=",n.r2,"r3=",n.r3
-            print "xsch=",n.xsch,"ysch=",n.ysch
-            print "xfpp=",n.xfpp,"yfpp=",n.yfpp
-            print "outface=",n.outface
+            print("--------Node:",i,"--------------")
+            print("xpos=",n.xpos,"ypos=",n.ypos)
+            print("canOrder=",n.canOrder)
+            print("t1=",n.t1,"t2=",n.t2,"t3=",n.t3)
+            print("p1=",n.p1,"p2=",n.p2,"p3=",n.p3)
+            print("r1=",n.r1,"r2=",n.r2,"r3=",n.r3)
+            print("xsch=",n.xsch,"ysch=",n.ysch)
+            print("xfpp=",n.xfpp,"yfpp=",n.yfpp)
+            print("outface=",n.outface)
             
-        print
+        print()
         for i in range(0,len(self.edges)):
             e=self.edges[i]
-            print "-------Edge:",i,"---------------"
-            print "p1=",e.p1,"p2=",e.p2
-            print "label=",e.label
-            print "original=",e.original,"outface=",e.outface
+            print("-------Edge:",i,"---------------")
+            print("p1=",e.p1,"p2=",e.p2)
+            print("label=",e.label)
+            print("original=",e.original,"outface=",e.outface)
             
-        print
+        print()
         for i in range(0,len(self.nodes)):
             n=self.nodes[i]
             
-            print "---------------------------"
-            print i,":"
+            print("---------------------------")
+            print(i,":")
             
-            print "adjacentEdges:",
+            print("adjacentEdges:", end=' ')
             for j in range(0,len(n.adjacentEdges)):
-                print n.adjacentEdges[j],
-            print
+                print(n.adjacentEdges[j], end=' ')
+            print()
             
-            print "adjacentNodes:",
+            print("adjacentNodes:", end=' ')
             for j in range(0,len(n.adjacentNodes)):
-                print n.adjacentNodes[j],
-            print
+                print(n.adjacentNodes[j], end=' ')
+            print()
             
-            print "M:",
+            print("M:", end=' ')
             for j in range(0,len(n.M)):
-                print n.M[j],
-            print
+                print(n.M[j], end=' ')
+            print()
             
-            print "oppositeNodes:",
+            print("oppositeNodes:", end=' ')
             for j in range(0,len(n.oppositeNodes)):
-                print n.oppositeNodes[j],
-            print
+                print(n.oppositeNodes[j], end=' ')
+            print()
             
-            print "path1:",
+            print("path1:", end=' ')
             for j in range(0,len(n.path1)):
-                print n.path1[j],
-            print
+                print(n.path1[j], end=' ')
+            print()
             
-            print "path2:",
+            print("path2:", end=' ')
             for j in range(0,len(n.path2)):
-                print n.path2[j],
-            print
+                print(n.path2[j], end=' ')
+            print()
             
-            print "path3:",
+            print("path3:", end=' ')
             for j in range(0,len(n.path3)):
-                print n.path3[j],
-            print
+                print(n.path3[j], end=' ')
+            print()
             #-------------------------------------------------------------------------
             
             
@@ -673,8 +681,8 @@ class pe_Graph:
             x2=Wq.xfpp
             y2=Wq.yfpp
             
-            vkplus1.xfpp=(x1+x2+y2-y1)/2
-            vkplus1.yfpp=(x2-x1+y2+y1)/2
+            vkplus1.xfpp=old_div((x1+x2+y2-y1),2)
+            vkplus1.yfpp=old_div((x2-x1+y2+y1),2)
             
             # update M
             # wi.M = wi.M + v(k+1)  for i<=p
@@ -994,7 +1002,7 @@ def FPP_PlanarCoords(G, rect=None): # (2n-4)*(n-2) GRID
     
     #-------------------------------------------------------------------------
     if rect is None:
-        from Embedder import Rect
+        from .Embedder import Rect
         rect = Rect()
     # COORDINATES
     G.xCoord={}
@@ -1002,9 +1010,9 @@ def FPP_PlanarCoords(G, rect=None): # (2n-4)*(n-2) GRID
     n=len(graph.nodes)
     for i in range(0,n):
         G.xCoord[G.vertices[i]]=graph.nodes[i].xfpp*float(
-            (rect.height()-100)/(2*n-4))+50
+            old_div((rect.height()-100),(2*n-4)))+50
         G.yCoord[G.vertices[i]]=rect.width()-(graph.nodes[i].yfpp*float(
-            (rect.width()-100)/(n-2))+50)
+            old_div((rect.width()-100),(n-2)))+50)
     return 1
     #-------------------------------------------------------------------------
     
@@ -1066,7 +1074,7 @@ def Schnyder_PlanarCoords(G, rect=None): # (n-1)*(n-1) GRID
     
     #-------------------------------------------------------------------------
     if rect is None:
-        from Embedder import Rect
+        from .Embedder import Rect
         rect = Rect()
     # COORDINATES
     G.xCoord={}
@@ -1074,9 +1082,9 @@ def Schnyder_PlanarCoords(G, rect=None): # (n-1)*(n-1) GRID
     n=len(graph.nodes)
     for i in range(0,n):
         G.xCoord[G.vertices[i]]=graph.nodes[i].xsch*float(
-            (rect.height()-100)/(n-1))+50
+            old_div((rect.height()-100),(n-1)))+50
         G.yCoord[G.vertices[i]]=rect.width()-(graph.nodes[i].ysch*float(
-            (rect.width()-100)/(n-1))+50)
+            old_div((rect.width()-100),(n-1)))+50)
     return 1
     #-------------------------------------------------------------------------
     

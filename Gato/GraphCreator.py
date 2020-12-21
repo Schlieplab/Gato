@@ -1,3 +1,5 @@
+from __future__ import division
+from __future__ import absolute_import
 ################################################################################
 #
 #       This file is part of Gato (Graph Animation Toolbox) 
@@ -35,12 +37,17 @@
 #
 ################################################################################
 
-from Graph import *
-from Embedder import *
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
+from past.utils import old_div
+from builtins import object
+from .Graph import *
+from .Embedder import *
 import random
-from tkMessageBox import askokcancel
+from tkinter.messagebox import askokcancel
 
-class Creator:
+class Creator(object):
     """ This class provides an abstract Creator as
         a base for actual Creator implementations """
     
@@ -77,17 +84,17 @@ def DrawNewGraph(theGraphEditor,G,direction):
     
         
 #----------------------------------------------------------------------
-from Tkinter import *
-import tkSimpleDialog 
+from tkinter import *
+import tkinter.simpledialog 
 import string
-from tkMessageBox import showwarning
+from tkinter.messagebox import showwarning
 
-class Dialog(tkSimpleDialog.Dialog):
+class Dialog(tkinter.simpledialog.Dialog):
 
     def __init__(self, master, planar, visible, Text):
         self.planar=planar
         self.visible=visible
-        tkSimpleDialog.Dialog.__init__(self, master, Text)
+        tkinter.simpledialog.Dialog.__init__(self, master, Text)
         
         
     def body(self, master):
@@ -148,7 +155,7 @@ class Dialog(tkSimpleDialog.Dialog):
             
     def validate(self):
         try:
-            n=string.atoi(self.number_of_nodes.get())
+            n=int(self.number_of_nodes.get())
             if n<1 or n>200:
                 raise nodeError
         except:
@@ -158,7 +165,7 @@ class Dialog(tkSimpleDialog.Dialog):
             return 0            
             
         try:
-            m=string.atoi(self.number_of_edges.get())
+            m=int(self.number_of_edges.get())
             
             if self.planar:
                 if n==1: max_m=0
@@ -167,7 +174,7 @@ class Dialog(tkSimpleDialog.Dialog):
                 max_m=n*n-n
                 
             if self.direction.get()==0:
-                max_m = max_m/2
+                max_m = old_div(max_m,2)
                 
             if m<0 or m>max_m:
                 raise edgeError
@@ -420,11 +427,11 @@ class randomPlanarGraphCreator(Creator):
         theGraphEditor.config(cursor="")         
         
         #----------------------------------------------------------------------
-class TreeDialog(tkSimpleDialog.Dialog):
+class TreeDialog(tkinter.simpledialog.Dialog):
 
     def __init__(self, master, visible, Text):
         self.visible=visible
-        tkSimpleDialog.Dialog.__init__(self, master, Text)
+        tkinter.simpledialog.Dialog.__init__(self, master, Text)
         
         
     def body(self, master):
@@ -494,7 +501,7 @@ class TreeDialog(tkSimpleDialog.Dialog):
         
     def validate(self):
         try:
-            d=string.atoi(self.degree.get())
+            d=int(self.degree.get())
             if d<1 or d>20:
                 raise degreeError   
         except:
@@ -504,7 +511,7 @@ class TreeDialog(tkSimpleDialog.Dialog):
             return 0
             
         try:
-            h=string.atoi(self.height.get())
+            h=int(self.height.get())
             if h<0 or h>50:
                 raise heightError   
         except:
@@ -514,7 +521,7 @@ class TreeDialog(tkSimpleDialog.Dialog):
             return 0
             
         try:
-            n=string.atoi(self.number_of_nodes.get())
+            n=int(self.number_of_nodes.get())
         except:
             showwarning("Invalid value !",
                         "Please enter an integer\n"
@@ -544,7 +551,7 @@ class TreeDialog(tkSimpleDialog.Dialog):
             if d==1:
                 max_height=100
             else:
-                max_height=int(log10(1000)/log10(d))
+                max_height=int(old_div(log10(1000),log10(d)))
             if h>max_height:
                 showwarning("Please try again !",
                             "max. height = %i" %max_height)
@@ -651,8 +658,8 @@ class randomTreeCreator(Creator):
                 max_nodes=1
             else:
                 min_nodes=max(1,ceil(float(n-G.Order())/
-                                     float((float(degree)**(height-h)-1)/
-                                           (degree-1))))
+                                     float(old_div((float(degree)**(height-h)-1),
+                                           (degree-1)))))
                 max_nodes=min(n-G.Order()-height+h+1,len(nodes[h])*degree)     
             nodes_nr=random.randint(min_nodes,max_nodes)
             for i in range(0,nodes_nr):
@@ -690,11 +697,11 @@ class randomTreeCreator(Creator):
         #----------------------------------------------------------------------
 from math import ceil
 
-class GridDialog(tkSimpleDialog.Dialog):
+class GridDialog(tkinter.simpledialog.Dialog):
 
     def __init__(self, master, visible, Text):
         self.visible=visible
-        tkSimpleDialog.Dialog.__init__(self, master, Text)
+        tkinter.simpledialog.Dialog.__init__(self, master, Text)
         
         
     def body(self, master):
@@ -738,7 +745,7 @@ class GridDialog(tkSimpleDialog.Dialog):
         
     def validate(self):
         try:
-            xs=string.atoi(self.xsize.get())
+            xs=int(self.xsize.get())
             if xs<1:
                 raise degreeError   
         except:
@@ -747,7 +754,7 @@ class GridDialog(tkSimpleDialog.Dialog):
             return 0
 
         try:
-            ys=string.atoi(self.ysize.get())
+            ys=int(self.ysize.get())
             if ys<1:
                 raise degreeError   
         except:
@@ -756,7 +763,7 @@ class GridDialog(tkSimpleDialog.Dialog):
             return 0
 
         try:
-            xd=string.atoi(self.deltax.get())
+            xd=int(self.deltax.get())
             if xd<1:
                 raise degreeError   
         except:
@@ -765,7 +772,7 @@ class GridDialog(tkSimpleDialog.Dialog):
             return 0
 
         try:
-            yd=string.atoi(self.deltay.get())
+            yd=int(self.deltay.get())
             if yd<1:
                 raise degreeError   
         except:
@@ -801,20 +808,20 @@ class rectangularGridGraph(Creator):
         
         nodes = {}
         count = 1
-        for i in xrange(maxI):
-            for j in xrange(maxJ):
+        for i in range(maxI):
+            for j in range(maxJ):
                 v = G.AddVertex()
                 nodes[(i,j)] = v
                 G.xCoord[v] = j * deltax + deltax
                 G.yCoord[v] = i * deltay + deltay
                 count += 1
                 
-        for i in xrange(maxI-1):
-            for j in xrange(maxJ-1):
+        for i in range(maxI-1):
+            for j in range(maxJ-1):
                 G.AddEdge(nodes[(i,j)], nodes[(i+1,j)], initialize_weight=False)
                 G.AddEdge(nodes[(i,j)], nodes[(i,j+1)], initialize_weight=False)
             G.AddEdge(nodes[(i,maxJ-1)], nodes[(i+1,maxJ-1)], initialize_weight=False)
-        for  j in xrange(maxJ-1):
+        for  j in range(maxJ-1):
             G.AddEdge(nodes[(maxI-1,j)], nodes[(maxI-1,j+1)], initialize_weight=False)
             
         DrawNewGraph(theGraphEditor,G,G.directed) 

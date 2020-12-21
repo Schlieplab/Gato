@@ -35,6 +35,10 @@
 #
 ################################################################################
 
+from __future__ import division
+from past.builtins import cmp
+from builtins import object
+from past.utils import old_div
 import string
 
 def key_to_tag(key):
@@ -103,7 +107,7 @@ class ProbDict(UserDict.UserDict):
         
     def __calc_sum__(self):
         self.sum=0
-        for v in self.values():
+        for v in list(self.values()):
             self.sum=self.sum+v
             
     def __repr__(self):
@@ -114,11 +118,11 @@ class ProbDict(UserDict.UserDict):
         self.__calc_sum__()
         if self.sum == 0.0:
             even = sum/float(len(self.data))
-            for key in self.data.keys():
+            for key in list(self.data.keys()):
                 self.data[key] = even
         else:
-            factor=sum/self.sum
-            for key in self.data.keys():
+            factor=old_div(sum,self.sum)
+            for key in list(self.data.keys()):
                 self.data[key]*=factor
 
         self.__calc_sum__()
@@ -126,7 +130,7 @@ class ProbDict(UserDict.UserDict):
         
         #####################################################################################
         
-class emission_change:
+class emission_change(object):
     """
     base class for change notices
     """
@@ -178,7 +182,7 @@ class emission_change_data(emission_change):
         
         #####################################################################################
         
-class emission_data:
+class emission_data(object):
     """
     emission data and display data shared by many editors
     contains:
@@ -204,7 +208,7 @@ class emission_data:
                              'chocolate', 'burlywood', 'turquoise', 'wheat', 'cyan']
         else:
             self.color_list=color_list
-        self.order_list=emissions.keys()
+        self.order_list=list(emissions.keys())
         self.order_list.sort(emissions.cmp_prob_val)
         
     def register_viewer(self,data_viewer):
@@ -234,7 +238,7 @@ class emission_data:
                 
                 #####################################################################################
                 
-class emission_editor:
+class emission_editor(object):
     """
     client of emission_data, recieves update messages and sends updates
     """

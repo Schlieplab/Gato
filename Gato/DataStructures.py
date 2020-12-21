@@ -36,7 +36,8 @@
 ################################################################################
 
 
-from __future__ import generators #Needed for PQImplementation and Python2.2
+from builtins import object
+#from __future__ import generators #Needed for PQImplementation and Python2.2
 #from GatoGlobals import *
 
 
@@ -45,7 +46,7 @@ from __future__ import generators #Needed for PQImplementation and Python2.2
 # Embedding
 #
 ################################################################################
-class Point2D:
+class Point2D(object):
     """ Simple Wrapper class for a point in 2D-space. Used for Graph
         Embeddings.  Use: Point2D([x,y]) or Point2D(x,y) """
     def __init__(self, x = None, y = None):	
@@ -66,7 +67,7 @@ class Point2D:
 # Vertex Labeling
 #
 ################################################################################
-class VertexLabeling:
+class VertexLabeling(object):
     """ Simple Wrapper class for any mapping of vertices to values.
         E.g.,
     
@@ -87,13 +88,13 @@ class VertexLabeling:
         return self.label[v]
         
     def keys(self):
-        return self.label.keys()
+        return list(self.label.keys())
 
     def items(self):
-        return self.label.items()
+        return list(self.label.items())
         
     def QDefined(self,v):
-        return v in self.label.keys()
+        return v in list(self.label.keys())
         
 class VertexWeight(VertexLabeling):
 
@@ -110,7 +111,7 @@ class VertexWeight(VertexLabeling):
         
     def Integerize(self):
         if not self.integer:
-            for v in self.label.keys():
+            for v in list(self.label.keys()):
                 self.label[v] = int(round(self.label[v]))
             self.integer = 1	
             
@@ -125,7 +126,7 @@ class VertexWeight(VertexLabeling):
 # Edge Labeling
 #
 ################################################################################
-class EdgeLabeling:
+class EdgeLabeling(object):
     """ Simple wrapper class for any mapping of edges to values.
         E.g.,
     
@@ -148,13 +149,13 @@ class EdgeLabeling:
         return self.label[e]
         
     def items(self):
-        return self.label.items()
+        return list(self.label.items())
 
     def keys(self):
-        return self.label.keys()
+        return list(self.label.keys())
 
     def QDefined(self,e):
-        return e in self.label.keys()
+        return e in list(self.label.keys())
         
         
 class EdgeWeight(EdgeLabeling):
@@ -195,7 +196,7 @@ class EdgeWeight(EdgeLabeling):
         
     def Integerize(self):
         if not self.integer:
-            for e in self.label.keys():
+            for e in list(self.label.keys()):
                 self.label[e] = int(round(self.label[e]))
             self.integer = 1	
             
@@ -209,7 +210,7 @@ class EdgeWeight(EdgeLabeling):
 # Queue
 #
 ################################################################################
-class Queue:
+class Queue(object):
     """ Simple Queue class implemented as a Python list:
         XXX check whether replaceble by library queue"""
     
@@ -296,7 +297,7 @@ class PQImplementation(dict):
         dict.__setitem__(self,key,val)
         heap = self.__heap
         if len(heap) > 2 * len(self):
-            self.__heap = [(v,k) for k,v in self.iteritems()]
+            self.__heap = [(v,k) for k,v in self.items()]
             self.__heap.sort()  # builtin sort likely faster than O(n) heapify
         else:
             newPair = (val,key)
@@ -315,11 +316,11 @@ class PQImplementation(dict):
         return self[key]
         
     def update(self, other):
-        for key in other.keys():
+        for key in list(other.keys()):
             self[key] = other[key]
             
             
-class PriorityQueue:
+class PriorityQueue(object):
     """ A simple priority queue giving minimal valued items first.
         Interface only ... """
     
@@ -357,7 +358,7 @@ class PriorityQueue:
 # Stack
 #
 ################################################################################
-class Stack:
+class Stack(object):
     """ Simple Stack class implemented as a Python list """
     
     def __init__(self):
@@ -388,7 +389,7 @@ class Stack:
 # Set
 #
 ################################################################################
-class Set:
+class Set(object):
     """ XXX Obsolete. Replace by Python's set """
     def __init__(self):
         self.members = []

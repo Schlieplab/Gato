@@ -38,6 +38,14 @@
 #             last change by $Author$.
 #
 ################################################################################
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
+from past.builtins import execfile
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
+from past.utils import old_div
 import sys
 import traceback
 import os
@@ -45,22 +53,22 @@ import bdb
 import random
 import re 
 import string
-import StringIO
+import io
 import tokenize
-import tkFont
+import tkinter.font
 import logging
 
-from Tkinter import *
-from tkFileDialog import askopenfilename, asksaveasfilename
-from tkMessageBox import askokcancel, showerror, askyesno
-from ScrolledText import ScrolledText
-from GatoConfiguration import GatoConfiguration
-from Graph import Graph
-from GraphUtil import *
-from GraphDisplay3D import GraphDisplay3DToplevel
-from GraphDisplay import GraphDisplayToplevel
-from GatoUtil import *
-from GatoGlobals import *
+from tkinter import *
+from tkinter.filedialog import askopenfilename, asksaveasfilename
+from tkinter.messagebox import askokcancel, showerror, askyesno
+from tkinter.scrolledtext import ScrolledText
+from .GatoConfiguration import GatoConfiguration
+from .Graph import Graph
+from .GraphUtil import *
+from .GraphDisplay3D import GraphDisplay3DToplevel
+from .GraphDisplay import GraphDisplayToplevel
+from .GatoUtil import *
+from .GatoGlobals import *
 
 
 cVertexDefault    = "red"
@@ -71,8 +79,8 @@ cLabelDefaultInverted = "white"
 cLabelBlink       = "green"
 
 
-from GatoDialogs import AboutBox, SplashScreen, HTMLViewer
-import GatoIcons
+from .GatoDialogs import AboutBox, SplashScreen, HTMLViewer
+from . import GatoIcons
 
 # put someplace else
 def WMExtrasGeometry(window):
@@ -85,8 +93,8 @@ def WMExtrasGeometry(window):
         NOTE: Does not work with tk8.0 style menus, since those are
               handled by WM (according to Tk8.1 docs) """
     g = window.geometry().split("+") 
-    trueRootx = string.atoi(g[1]) 
-    trueRooty = string.atoi(g[2])
+    trueRootx = int(g[1]) 
+    trueRooty = int(g[2])
     
     rootx = window.winfo_rootx() # top left of our window
     rooty = window.winfo_rooty() # *WITHOUT* WM extras
@@ -314,9 +322,9 @@ class AlgoWin(Frame):
         self.algoFont = font
         self.algoFontSize = size
         
-        f = tkFont.Font(self, (font, size, tkFont.NORMAL))
-        bf = tkFont.Font(self, (font, size, tkFont.BOLD))
-        itf = tkFont.Font(self, (font, size, tkFont.ITALIC))
+        f = tkinter.font.Font(self, (font, size, tkinter.font.NORMAL))
+        bf = tkinter.font.Font(self, (font, size, tkinter.font.BOLD))
+        itf = tkinter.font.Font(self, (font, size, tkinter.font.ITALIC))
         
         self.algoText.config(font=f)
         # syntax highlighting tags
@@ -463,7 +471,7 @@ class AlgoWin(Frame):
             self.tagLines(self.algorithm.GetBreakpointLines(), 'Break')
             
             # Syntax highlighting
-            tokenize.tokenize(StringIO.StringIO(self.algorithm.GetSource()).readline, 
+            tokenize.tokenize(io.StringIO(self.algorithm.GetSource()).readline, 
                               self.tokenEater)
             
             
@@ -609,7 +617,7 @@ class AlgoWin(Frame):
         screenheight = self.master.winfo_screenheight() - screenTop
         
         reqGDWidth = screenwidth - trueWidth - 2 * WMExtra - pad - 1
-        reqGDHeight = screenheight/2 - WMExtra - topWMExtra - pad
+        reqGDHeight = old_div(screenheight,2) - WMExtra - topWMExtra - pad
         
         self.graphDisplay.geometry("%dx%d+%d+%d" % (
             reqGDWidth,
@@ -765,7 +773,7 @@ class AlgoWin(Frame):
         """ Callback for canvas to allow toggeling of breakpoints """
         # Was currLine  = string.splitfields(self.algoText.index(CURRENT),'.')[0]
         currLine  = self.algoText.index(CURRENT).split('.')[0]
-        self.algorithm.ToggleBreakpoint(string.atoi(currLine))
+        self.algorithm.ToggleBreakpoint(int(currLine))
         
         
         ############################################################
@@ -1045,7 +1053,7 @@ class AlgorithmDebugger(bdb.Bdb):
         
         # Endof: AlgorithmDebugger  ----------------------------------------------------
         
-class Algorithm:
+class Algorithm(object):
     """ Provides all services necessary to load an algorithm, run it
         and provide facilities for visualization """
     
@@ -1137,7 +1145,7 @@ class Algorithm:
                          'graphDisplays':'graphDisplays[ \t]*=[ \t]*([1-2])'}
         # about is more complicated
         
-        for patternName in optionPattern.keys():
+        for patternName in list(optionPattern.keys()):
             compPattern = re.compile(optionPattern[patternName])
             match = compPattern.search(text) 
             
@@ -1332,7 +1340,7 @@ class Algorithm:
             If check fails algorithm is stopped 
         
             Proper names for properties are defined in gProperty """
-        for property in propertyValueDict.keys():
+        for property in list(propertyValueDict.keys()):
             value = self.graph.Property(property)
             if value != propertyValueDict[property]:
                 r = askokcancel("Gato - Error", 
@@ -1427,7 +1435,7 @@ def main(argv=None):
             
         app.mainloop()
     else:
-        print "Usage: Gato3D algorithm.alg graph.cat"
+        print("Usage: Gato3D algorithm.alg graph.cat")
         return 2
         
 

@@ -41,14 +41,18 @@
 #
 
 #- Utility --------------------------------------------------------------------
+from __future__ import print_function
+from builtins import str
+from builtins import range
+from builtins import object
 from sys import *
 from xml.dom.minidom import *
 import copy
 import logging
 
 def printDict(d):
-    for k in d.keys():
-        print k, d[k]
+    for k in list(d.keys()):
+        print(k, d[k])
         
 def getText(nodelist):
     rc = ""
@@ -58,7 +62,7 @@ def getText(nodelist):
     return rc
     
 def copyAttributes(XMLNode, object):
-    for i in xrange(0,XMLNode.attributes.length):
+    for i in range(0,XMLNode.attributes.length):
         attrName = XMLNode.attributes.item(i).name
         attrValue = XMLNode.attributes.item(i).value
         
@@ -66,7 +70,7 @@ def copyAttributes(XMLNode, object):
         
 def attributesDict(XMLNode):
     retVal = {}
-    for i in xrange(0,XMLNode.attributes.length):
+    for i in range(0,XMLNode.attributes.length):
         attrName = XMLNode.attributes.item(i).name
         attrValue = XMLNode.attributes.item(i).value
         
@@ -76,7 +80,7 @@ def attributesDict(XMLNode):
     
     #- GraphML ---------------------------------------------------------------------
     
-class DataFactory:
+class DataFactory(object):
     # Maps strings to callable objects
 
     def __init__(self):
@@ -94,7 +98,7 @@ class DataFactory:
         return self.factories[type](stringArg)
         
     def Types(self):
-        return self.factories.keys()
+        return list(self.factories.keys())
         
     def arrayFromCSV(self, s, type):
         retVal = []
@@ -108,7 +112,7 @@ class DataFactory:
         
         
         
-class GraphML:
+class GraphML(object):
     def __init__(self):
         # Prototypes for which we can set default values of instance variables
         self.graphProto = Graph()
@@ -280,64 +284,64 @@ class GraphML:
     def __str__(self):
         r =     "GraphML\n"
         r = r + "  #key\tdescription\n"
-        for k in self.desc.keys():            
+        for k in list(self.desc.keys()):            
             r = r + "  %s\t%s\n" % (k,self.desc[k])
         r = r + "  #Nodes -------------------------\n"
         r = r + "  id  "
-        for k in self.desc.keys():            
+        for k in list(self.desc.keys()):            
             if self.domain[k] == 'all' or self.domain[k] == 'node':
                 r = r + "  %s " % k
         r = r + "\n"
         for n in self.graph.nodes:
             r = r + "  %s  " % n.id
-            for k in self.desc.keys():
+            for k in list(self.desc.keys()):
                 if self.domain[k] == 'all' or self.domain[k] == 'node':
                     r = r + "  %s " % n.__dict__[k]
             r = r + "\n"
         r = r + "  #Edges -------------------------\n     "
-        for k in self.desc.keys():            
+        for k in list(self.desc.keys()):            
             if self.domain[k] == 'all' or self.domain[k] == 'edge':
                 r = r + "  %s " % k
         r = r + "\n"
         for e in self.graph.edges:
             r = r + "  (%s,%s) " % (e.source, e.target)
-            for k in self.desc.keys():
+            for k in list(self.desc.keys()):
                 if self.domain[k] == 'all' or self.domain[k] == 'edge':
                     r = r + "  %s " % e.__dict__[k]
             r = r + "\n"
         return r
         
         
-class Graph:
+class Graph(object):
     def __init__(self):
         self.nodes = []
         self.edges = []
         self.id = None
         
-class Node:
+class Node(object):
     def __init__(self):
         self.id = None
         
-class Edge:
+class Edge(object):
     def __init__(self):
         self.id = None
         self.source = None
         self.target = None
         
         
-class Empty:
+class Empty(object):
     def __init__(self, **args):
-        for k in args.keys():
+        for k in list(args.keys()):
             self.__dict__[k] = args[k]
             
     def __str__(self):
         r = "{"
-        for k in self.__dict__.keys():
+        for k in list(self.__dict__.keys()):
             r = r + "%s:%s," % (k, self.__dict__[k])
         r = r + "}"
         return r
         
-class DiscreteAlphabet:
+class DiscreteAlphabet(object):
     def __init__(self):
         self.map = {}
         self.low = 0
@@ -364,7 +368,7 @@ def WriteXML(gml):
     node_keys = []
     edge_keys = []
     
-    for k in gml.desc.keys():
+    for k in list(gml.desc.keys()):
         elem = doc.createElement("key")
         elem.setAttribute('id', k)
         if gml.domain[k] != None:

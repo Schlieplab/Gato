@@ -34,8 +34,9 @@
 #             last change by $Author$.
 #
 ################################################################################
-from Gato import *
-import GatoGlobals
+from __future__ import absolute_import
+from .Gato import *
+from . import GatoGlobals
 import logging
 
 g = GatoGlobals.AnimationParameters
@@ -144,7 +145,7 @@ instance = {
 
 ##tests = [ ("BFS.alg", "sample.cat") ]
 
-tests = [(algo, graph) for algo in instance.keys() for graph in instance[algo]]
+tests = [(algo, graph) for algo in list(instance.keys()) for graph in instance[algo]]
 
 if __name__ == '__main__':
     app = AlgoWin()    

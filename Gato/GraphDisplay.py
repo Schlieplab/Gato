@@ -1,3 +1,5 @@
+from __future__ import division
+from __future__ import absolute_import
 ################################################################################
 #
 #       This file is part of Gato (Graph Animation Toolbox) 
@@ -34,15 +36,21 @@
 #
 ################################################################################
 
-from Tkinter import * # Frame, Canvas, Toplevel, StringVar and lots of handy constants
-import tkFont
-from Graph import Graph
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
+from builtins import object
+from past.utils import old_div
+from tkinter import * # Frame, Canvas, Toplevel, StringVar and lots of handy constants
+import tkinter.font
+from .Graph import Graph
 from math import sqrt, pi, sin, cos, atan2, degrees, log10
-import GatoGlobals
-from GatoUtil import orthogonal
-from GatoDialogs import AutoScrollbar
-from DataStructures import Point2D, VertexLabeling, EdgeLabeling
-from AnimatedDataStructures import ComponentMaker
+from . import GatoGlobals
+from .GatoUtil import orthogonal
+from .GatoDialogs import AutoScrollbar
+from .DataStructures import Point2D, VertexLabeling, EdgeLabeling
+from .AnimatedDataStructures import ComponentMaker
 import os
 import colorsys
 import logging
@@ -67,7 +75,7 @@ class ZoomVar(StringVar):
         return StringVar.set(self,value)
         
         
-class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
+class GraphDisplay(object): #object): XXX New Style classes fuck up Tkinter
     """ Provide functionality to display a graph. Not for direct consumption.
         Use
     
@@ -122,12 +130,12 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
         self.moats = {}   # Mapping of moat_id: (radius, color), used by WebGato
         
     def font(self, size):
-        return tkFont.Font(self, (g.FontFamily, size, g.FontStyle))
+        return tkinter.font.Font(self, (g.FontFamily, size, g.FontStyle))
                 
     def GetCanvasCenter(self): 
         """ *Internal* Return the center of the canvas in pixel """
         # XXX How to this for non-pixel
-        return (g.PaperWidth/2, g.PaperHeight/2)
+        return (old_div(g.PaperWidth,2), old_div(g.PaperHeight,2))
         
         
     def Zoom(self,percent):
@@ -165,7 +173,7 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
         else:
             self.zoomIn = 0
             
-        factor = zoomFactor[percent] / self.zoomFactor	    
+        factor = old_div(zoomFactor[percent], self.zoomFactor)	    
         self.zoomFactor = zoomFactor[percent]
         
         self.zVertexRadius = (g.VertexRadius*self.zoomFactor) / 100.0
@@ -457,8 +465,8 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
         yMiddle = v.y-((25*self.zoomFactor)/100.0)	
         Coords = []
         for degree in range(0,400,40):
-            Coords.append(loopRadius*cos(degree*(pi/180))+xMiddle)
-            Coords.append(loopRadius*sin(degree*(pi/180))+yMiddle)
+            Coords.append(loopRadius*cos(degree*(old_div(pi,180)))+xMiddle)
+            Coords.append(loopRadius*sin(degree*(old_div(pi,180)))+yMiddle)
         return self.canvas.create_line(Coords,
                                        fill=g.cEdgeDefault, 
                                        width=w,
@@ -475,8 +483,8 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
         Coords = []
         for degree in range(95,440,25):
             if degree != 395:
-                Coords.append(loopRadius*cos(degree*(pi/180))+xMiddle)
-                Coords.append(loopRadius*sin(degree*(pi/180))+yMiddle)
+                Coords.append(loopRadius*cos(degree*(old_div(pi,180)))+xMiddle)
+                Coords.append(loopRadius*sin(degree*(old_div(pi,180)))+yMiddle)
         return self.canvas.create_line(Coords,
                                        arrow="last",
                                        arrowshape=self.zArrowShape,
@@ -504,7 +512,7 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
         l = sqrt((head.x - tail.x)**2 + (head.y - tail.y)**2)
         if l < 0.001:
             l = 0.001
-        c = (l - self.zVertexRadius)/l - 0.001 # Dont let them quite touch 
+        c = old_div((l - self.zVertexRadius),l) - 0.001 # Dont let them quite touch 
         # (tmpX,tmpY) is a point on a straight line between t and h
         # not quite touching the vertex disc
         tmpX = tail.x + c * (head.x - tail.x) 
@@ -514,7 +522,7 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
         else: # Compute middle point for curves
             # (mX,mY) to difference vector h - t
             (mX,mY) = orthogonal((head.x - tail.x, head.y - tail.y))
-            c = 1.5 * self.zVertexRadius + l / 25
+            c = 1.5 * self.zVertexRadius + old_div(l, 25)
             # Add c * (mX,mY) at midpoint between h and t
             mX = tail.x + .5 * (head.x - tail.x) + c * mX
             mY = tail.y + .5 * (head.y - tail.y) + c * mY            
@@ -788,7 +796,7 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
             color=g.cVertexBlink
         dv = self.drawVertex[v]
         oldColor = self.canvas.itemconfig(dv, "fill")[4]
-        for i in xrange(1,g.BlinkRepeat):
+        for i in range(1,g.BlinkRepeat):
             self.canvas.after(g.BlinkRate)
             self.canvas.itemconfig( dv, fill=color)
             self.update()
@@ -811,7 +819,7 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
             except KeyError:
                 de = self.drawEdges[(head,tail)]	    
         oldColor = self.canvas.itemconfig(de, "fill")[4]
-        for i in xrange(1,g.BlinkRepeat):
+        for i in range(1,g.BlinkRepeat):
             self.canvas.after(g.BlinkRate)
             self.canvas.itemconfig( de, fill=color)
             self.update()
@@ -831,7 +839,7 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
         oldColor = [None] * len(list)
         drawItems = [None] * len(list)
         
-        for i in xrange(len(list)):
+        for i in range(len(list)):
             try:
                 e = list[i]
                 l = len(e) # will raise an exception	
@@ -842,13 +850,13 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
                 drawItems[i] = self.drawVertex[v]
                 oldColor[i] = self.canvas.itemconfig(drawItems[i], "fill")[4]
                 
-        for i in xrange(1,g.BlinkRepeat):
+        for i in range(1,g.BlinkRepeat):
             self.canvas.after(g.BlinkRate)
-            for j in xrange(len(drawItems)):	
+            for j in range(len(drawItems)):	
                 self.canvas.itemconfig(drawItems[j], fill=color)
             self.update()
             self.canvas.after(g.BlinkRate)
-            for j in xrange(len(drawItems)):	
+            for j in range(len(drawItems)):	
                 self.canvas.itemconfig(drawItems[j], fill=oldColor[j])
             self.update()
 
@@ -867,7 +875,7 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
     def GetVertexFrameWidth(self,v):
         """ Get the width of the black frame of a vertex"""
         dv = self.drawVertex[v]
-        return (float(self.canvas.itemcget(dv, "width")) * 100.0) /  self.zoomFactor
+        return old_div((float(self.canvas.itemcget(dv, "width")) * 100.0),  self.zoomFactor)
         
         
     def SetVertexFrameWidth(self,v,val):
@@ -905,7 +913,7 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
 
     def ClearVertexAnnotations(self):
         """ Set all vertex annotations to the empty string """
-        for v, da in self.vertexAnnotation.items():
+        for v, da in list(self.vertexAnnotation.items()):
             self.canvas.itemconfig(da,text='')     
         
             
@@ -934,7 +942,7 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
         dl = self.drawLabel[v]
         if blink == 1:
             oldColor = self.canvas.itemconfig(dl, "fill")[4]
-            for i in xrange(1,g.BlinkRepeat):
+            for i in range(1,g.BlinkRepeat):
                 self.canvas.after(g.BlinkRate)
                 self.canvas.itemconfig( dl, fill=color)
                 self.update()
@@ -1156,7 +1164,7 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
         self.G.SetLabeling(v, v)
         self.drawVertex[v] = self.CreateDrawVertex(v)
         self.drawLabel[v]  = self.CreateDrawLabel(v)
-        for i in xrange(0,self.G.NrOfVertexWeights()):
+        for i in range(0,self.G.NrOfVertexWeights()):
             self.G.SetVertexWeight(i,v,0)
         if self.autoUpdateScrollRegion:
             self.UpdateScrollRegion()
@@ -1171,7 +1179,7 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
         self.G.SetLabeling(v, v)
         self.drawVertex[v] = self.CreateDrawVertex(v,x,y)
         self.drawLabel[v]  = self.CreateDrawLabel(v)
-        for i in xrange(0,self.G.NrOfVertexWeights()):
+        for i in range(0,self.G.NrOfVertexWeights()):
             self.G.SetVertexWeight(i,v,0)
         if self.autoUpdateScrollRegion:
             self.UpdateScrollRegion()
@@ -1366,9 +1374,9 @@ class GraphDisplay(): #object): XXX New Style classes fuck up Tkinter
         printablePageHeight=280 #m
         printablePageWidth =190 #m
 		
-        printableRatio=printablePageHeight/printablePageWidth
+        printableRatio=old_div(printablePageHeight,printablePageWidth)
         
-        bbRatio = height/width
+        bbRatio = old_div(height,width)
         
         if bbRatio > printableRatio: # Height gives limiting dimension
             self.canvas.postscript(file=fileName, pageheight="%dm" % printablePageHeight,

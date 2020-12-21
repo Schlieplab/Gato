@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 ################################################################################
 #
 #       This file is part of Gato (Graph Animation Toolbox) 
@@ -33,15 +34,18 @@
 #
 ###############################################################################
 
-import ConfigParser
-import tkSimpleDialog 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
+import configparser
+import tkinter.simpledialog 
 import sys
 import os
-import tkFont
-from Tkinter import *
-from EditObjectAttributesDialog import TkIntEntry, TkStringPopupSelector, TkColorSelector
+import tkinter.font
+from tkinter import *
+from .EditObjectAttributesDialog import TkIntEntry, TkStringPopupSelector, TkColorSelector
 
-import StringIO
+import io
 
 class NoOptionsError(Exception):
     def __init__(self, name):
@@ -69,7 +73,7 @@ ActiveFG = black
 ActiveBG = #bbbbff
 """
 
-class GatoConfiguration:
+class GatoConfiguration(object):
     """ GatoConfiguration provides a collection of all editable
     configuration items
     
@@ -81,8 +85,8 @@ class GatoConfiguration:
     
     def __init__(self, parent):
         self.parent = parent
-        self.config = ConfigParser.ConfigParser()
-        self.config.readfp(StringIO.StringIO(default_cfg))
+        self.config = configparser.ConfigParser()
+        self.config.readfp(io.StringIO(default_cfg))
         self.config.read(['gato.cfg', os.path.expanduser('~/.gato.cfg')])
         # Keys which have widgets for editing
         self.editkeys = ['blinkrate', 'blinkrepeat', 
@@ -100,7 +104,7 @@ class GatoConfiguration:
             for opt in self.config.options(sec):
                 self.section[opt] = sec
                 #self.fonts = ['Courier', 'Helvetica']
-        self.fonts = tkFont.families(self.parent)
+        self.fonts = tkinter.font.families(self.parent)
         self.modified = 0
         
     def writeBack(self):
@@ -135,11 +139,11 @@ class GatoConfiguration:
             self.writeBack()
             self.parent.SetFromConfig()
             
-class EditPreferencesDialog(tkSimpleDialog.Dialog):
+class EditPreferencesDialog(tkinter.simpledialog.Dialog):
     def __init__(self, master, gatoconfig):
         self.widgets = {}
         self.gatoconfig = gatoconfig
-        tkSimpleDialog.Dialog.__init__(self, master, "Preferences")
+        tkinter.simpledialog.Dialog.__init__(self, master, "Preferences")
         
         
     def pane(self, master, name, desc):

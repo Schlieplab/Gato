@@ -32,15 +32,19 @@
 #
 ################################################################################
 
-import Tkinter
+from future import standard_library
+standard_library.install_aliases()
+from builtins import filter
+from builtins import object
+import tkinter
 import logging
 
-class dom_structure_widget(Tkinter.Frame):
+class dom_structure_widget(tkinter.Frame):
     """
     this widget displays the structure of a dom tree
     """
     
-    class nodeDisplayProperties:
+    class nodeDisplayProperties(object):
         """
         holds all properties for node
         """
@@ -70,12 +74,12 @@ class dom_structure_widget(Tkinter.Frame):
                        "highlightthickness":"0"}
         text_defaults.update(config)
         text_defaults.update(cnf)
-        Tkinter.Frame.__init__(self,master,cnf=my_defaults)
-        self.textWidget=Tkinter.Text(self,cnf=text_defaults)
-        self.textWidget.pack(side=Tkinter.LEFT,fill=Tkinter.BOTH,expand=1)
-        self.scroll=Tkinter.Scrollbar(self,command=self.textWidget.yview)
+        tkinter.Frame.__init__(self,master,cnf=my_defaults)
+        self.textWidget=tkinter.Text(self,cnf=text_defaults)
+        self.textWidget.pack(side=tkinter.LEFT,fill=tkinter.BOTH,expand=1)
+        self.scroll=tkinter.Scrollbar(self,command=self.textWidget.yview)
         self.textWidget.configure(yscrollcommand=self.scroll.set)
-        self.scroll.pack(side=Tkinter.LEFT,fill=Tkinter.Y,expand=1)
+        self.scroll.pack(side=tkinter.LEFT,fill=tkinter.Y,expand=1)
         self.dom=dom
         self.selectedNode=None
         self.report_function=report_function
@@ -89,11 +93,11 @@ class dom_structure_widget(Tkinter.Frame):
         self.ignorableTypes = self.textTypes # ignore text by default
         
         # without normal state no key events
-        self.textWidget.configure(state=Tkinter.NORMAL)
+        self.textWidget.configure(state=tkinter.NORMAL)
         # start with root element
-        self.textWidget.mark_set(Tkinter.INSERT,Tkinter.END)
-        self.textWidget.mark_gravity(Tkinter.INSERT,Tkinter.RIGHT)
-        self.createNodeEntries("root",dom,"",Tkinter.INSERT,-1)
+        self.textWidget.mark_set(tkinter.INSERT,tkinter.END)
+        self.textWidget.mark_gravity(tkinter.INSERT,tkinter.RIGHT)
+        self.createNodeEntries("root",dom,"",tkinter.INSERT,-1)
         
         # enable node selection
         self.selectedTag=None
@@ -172,7 +176,7 @@ class dom_structure_widget(Tkinter.Frame):
                                        background=node.DisplayProperties.bg_color)
             
             # has this node visible children ? -> is it expandable ?
-            if node.hasChildNodes() and filter(self.isVisible,node.childNodes):
+            if node.hasChildNodes() and list(filter(self.isVisible,node.childNodes)):
                 # yes, it has children
             
                 # decide if node is expanded or not
@@ -221,7 +225,7 @@ class dom_structure_widget(Tkinter.Frame):
         if event.type=="4":
             # collapse sign hit by mouse
             my_tags=self.textWidget.tag_names("@%d,%d"%(event.x,event.y))
-            tree_tags=filter(lambda t:t[:4]=='root',my_tags)
+            tree_tags=[t for t in my_tags if t[:4]=='root']
             if len(tree_tags)!=1:
                 logging.warning("not good: found %s to collapse!" % tree_tags)
                 return "break"
@@ -240,7 +244,7 @@ class dom_structure_widget(Tkinter.Frame):
         if event.type=="4":
             # collapse sign hit by mouse
             my_tags=self.textWidget.tag_names("@%d,%d"%(event.x,event.y))
-            tree_tag=filter(lambda t:t[:4]=='root',my_tags)
+            tree_tag=[t for t in my_tags if t[:4]=='root']
             if len(tree_tag)!=1:
                 logging.warning("not good: found %s to expand!" % tree_tag)
                 return "break"
@@ -257,7 +261,7 @@ class dom_structure_widget(Tkinter.Frame):
         clicked once on the node
         """
         my_tags=self.textWidget.tag_names("@%d,%d"%(event.x,event.y))
-        tree_tags=filter(lambda t:t[:4]=='root',my_tags)
+        tree_tags=[t for t in my_tags if t[:4]=='root']
         if len(tree_tags)!=1:
             logging.warning("not good: found %s to select!" % tree_tags)
         subtree=self.subtree_from_tag(tree_tags[0],self.dom)
@@ -274,7 +278,7 @@ class dom_structure_widget(Tkinter.Frame):
         result=self.textWidget.tag_nextrange("node",end)
         if len(result)==0: return "break"
         my_tags=self.textWidget.tag_names(result[0])
-        tree_tags=filter(lambda t:t[:4]=='root',my_tags)
+        tree_tags=[t for t in my_tags if t[:4]=='root']
         if len(tree_tags)!=1:
             logging.warning("not good: found %s to select!" % tree_tags)
             # mark the node
@@ -290,7 +294,7 @@ class dom_structure_widget(Tkinter.Frame):
         result=self.textWidget.tag_prevrange("node",start)
         if len(result)==0: return "break"
         my_tags=self.textWidget.tag_names(result[0])
-        tree_tags=filter(lambda t:t[:4]=='root',my_tags)
+        tree_tags=[t for t in my_tags if t[:4]=='root']
         if len(tree_tags)!=1:
             logging.warning("not good: found %s to select!" % tree_tags)
             # mark the node
@@ -322,7 +326,7 @@ class dom_structure_widget(Tkinter.Frame):
         if event.type=="4":
             # selection by mouse
             my_tags=self.textWidget.tag_names("@%d,%d"%(event.x,event.y))
-            tree_tags=filter(lambda t:t[:4]=='root',my_tags)
+            tree_tags=[t for t in my_tags if t[:4]=='root']
             if len(tree_tags)!=1:
                 logging.warning("not good: found %s to select!" % tree_tags)
                 # select this node
@@ -348,7 +352,7 @@ class dom_structure_widget(Tkinter.Frame):
         subtree.DisplayProperties.expanded=0
         all_tags=self.textWidget.tag_names()
         # determine tags to delete
-        tags_to_delete=filter(lambda s,t=tag+"-",l=len(tag)+1:s[:l]==t,all_tags)
+        tags_to_delete=list(filter(lambda s,t=tag+"-",l=len(tag)+1:s[:l]==t,all_tags))
         
         # handle selected node, that may become invisible
         if self.selectedNode != None and self.selectedNode.DisplayProperties.tag in tags_to_delete:
@@ -369,7 +373,7 @@ class dom_structure_widget(Tkinter.Frame):
         """
         subtree=self.subtree_from_tag(tag,self.dom)
         start_index=self.textWidget.index(tag+".last")
-        self.textWidget.mark_set(Tkinter.INSERT,start_index)
+        self.textWidget.mark_set(tkinter.INSERT,start_index)
         
         # change expand symbol to collapse symbol
         symbol_index=self.textWidget.tag_nextrange('expand',tag+".first",tag+".last")
@@ -382,7 +386,7 @@ class dom_structure_widget(Tkinter.Frame):
         self.createNodeEntries(tag,
                                subtree,
                                indentation+self.indent_step,
-                               Tkinter.INSERT,
+                               tkinter.INSERT,
                                -1)
         
     def subtree_from_tag(self,tag,dom):

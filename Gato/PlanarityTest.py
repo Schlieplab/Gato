@@ -1,3 +1,5 @@
+from __future__ import print_function
+from __future__ import absolute_import
 ################################################################################
 #
 #       This file is part of Gato (Graph Algorithm Toolbox) 
@@ -60,15 +62,19 @@
 
 
 #=============================================================================#
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import object
 from copy import deepcopy
-from DataStructures import Stack
-from tkMessageBox import showinfo
+from .DataStructures import Stack
+from tkinter.messagebox import showinfo
 #=============================================================================#
 
 
 
 #=============================================================================#
-class List:
+class List(object):
     def __init__(self,el=[]):
         elc=deepcopy(el)
         self.elements=elc
@@ -122,7 +128,7 @@ class List:
         
         
         #=============================================================================#
-class pt_graph:
+class pt_graph(object):
 
     def __init__(self):
         self.V        = []
@@ -237,7 +243,7 @@ class pt_graph:
             if x[1]<y[1]: return -1
             if x[1]==y[1]: return 0
             return 1
-        sorted_list=cost.items()
+        sorted_list=list(cost.items())
         sorted_list.sort(up)
         self.del_all_edges()
         for i in sorted_list:
@@ -256,7 +262,7 @@ def reversal(e):
     
     
     #=============================================================================#
-class block:
+class block(object):
 # The constructor takes an edge and a list of attachments and creates 
 # a block having the edge as the only segment in its left side.
 #
@@ -1003,22 +1009,22 @@ def embedding(e0,t,T,A):
     
     #=============================================================================#
 def PrintGraph(G):
-    print "============================================================"
-    print "V : "
+    print("============================================================")
+    print("V : ")
     for v in G.all_nodes():
-        print "[%i]" %(v-1)
-    print
+        print("[%i]" %(v-1))
+    print()
     
-    print "E : "
+    print("E : ")
     for e in G.all_edges():
-        print "[%i]---->[%i]" %((source(e)-1),(target(e)-1))
-    print
+        print("[%i]---->[%i]" %((source(e)-1),(target(e)-1)))
+    print()
     
     for v in G.all_nodes():
-        print "[%i] : " %(v-1)
+        print("[%i] : " %(v-1))
         for e in G.adj_edges(v):
-            print "    [%i]---->[%i]" %((source(e)-1),(target(e)-1))
-    print
+            print("    [%i]---->[%i]" %((source(e)-1),(target(e)-1)))
+    print()
     #=============================================================================#
     
     #=============================================================================#

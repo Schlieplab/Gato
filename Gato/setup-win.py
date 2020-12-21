@@ -38,6 +38,7 @@
 ################################################################################
 
 
+from past.builtins import execfile
 import distutils
 from distutils.core import setup,Extension
 import py2exe

@@ -36,11 +36,20 @@
 #
 ################################################################################
 
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
+from past.builtins import cmp
+from future import standard_library
+standard_library.install_aliases()
+from builtins import map
+from builtins import str
+from past.utils import old_div
 import math
-import Tkinter
-import tkSimpleDialog
-import ProbEditorBasics
-import ProbEditorWidgets
+import tkinter
+import tkinter.simpledialog
+from . import ProbEditorBasics
+from . import ProbEditorWidgets
 
 class pie_editor(ProbEditorWidgets.scroll_canvas,ProbEditorBasics.emission_editor):
 
@@ -59,7 +68,7 @@ class pie_editor(ProbEditorWidgets.scroll_canvas,ProbEditorBasics.emission_edito
                                                self.data.color_list,
                                                self.report_func)
         # self.pie.pack(fill=Tkinter.BOTH,expand=1)
-        self.create_window(0,0,window=self.pie,anchor=Tkinter.NW,width=350,height=300)
+        self.create_window(0,0,window=self.pie,anchor=tkinter.NW,width=350,height=300)
         
         
     def recieve_change(self,change):
@@ -96,7 +105,7 @@ class combined_editor(ProbEditorWidgets.scroll_canvas,ProbEditorBasics.emission_
                 for key in self.key_list2[1:]:
                     sum=sum+self.data.emissions[key]
                 for key in self.key_list2[1:]:
-                    dict[key]=self.data.emissions[key]/sum*other_val
+                    dict[key]=old_div(self.data.emissions[key],sum)*other_val
             self.bars.update_bars(dict)
             
         self.data.emissions.update(dict)
@@ -136,7 +145,7 @@ class combined_editor(ProbEditorWidgets.scroll_canvas,ProbEditorBasics.emission_
             
         if len(self.key_list2)>0:
             # draw pie and bars
-            bg_canvas=Tkinter.Canvas(self,
+            bg_canvas=tkinter.Canvas(self,
                                      bg='white',
                                      highlightthickness=0)
             # display first bar value in pie too
@@ -146,9 +155,9 @@ class combined_editor(ProbEditorWidgets.scroll_canvas,ProbEditorBasics.emission_
                                                    self.key_list1,
                                                    self.data.color_list,
                                                    self.report_pie)
-            pie_size=self.pie.bbox(Tkinter.ALL)
+            pie_size=self.pie.bbox(tkinter.ALL)
             pie_window=master.create_window(0,0,
-                                            anchor=Tkinter.NW,
+                                            anchor=tkinter.NW,
                                             window=self.pie,
                                             width=400,
                                             height=300)
@@ -158,9 +167,9 @@ class combined_editor(ProbEditorWidgets.scroll_canvas,ProbEditorBasics.emission_
                                                       self.key_list2,
                                                       self.color_list2,
                                                       self.report_bar)
-            bars_size=self.bars.bbox(Tkinter.ALL)
+            bars_size=self.bars.bbox(tkinter.ALL)
             bar_window=master.create_window(0,300,
-                                            anchor=Tkinter.NW,
+                                            anchor=tkinter.NW,
                                             window=self.bars,
                                             width=400,
                                             height=bars_size[3]+30)
@@ -172,7 +181,7 @@ class combined_editor(ProbEditorWidgets.scroll_canvas,ProbEditorBasics.emission_
                                                    self.data.color_list,
                                                    self.report_pie)
             pie_window=master.create_window(0,0,
-                                            anchor=Tkinter.NW,
+                                            anchor=tkinter.NW,
                                             window=self.pie,
                                             width=400,
                                             height=300)
@@ -212,10 +221,10 @@ class bar_editor(ProbEditorWidgets.scroll_canvas,ProbEditorBasics.emission_edito
                                                   self.data.color_list,
                                                   self.bar_report)
         
-        region=self.bars.bbox(Tkinter.ALL)
+        region=self.bars.bbox(tkinter.ALL)
         #self.config(scrollregion=region)
         self.create_window(0,0,
-                           anchor=Tkinter.NW,
+                           anchor=tkinter.NW,
                            window=self.bars,
                            width=region[2]-region[0]+10,
                            height=region[3]-region[1]+10)
@@ -229,7 +238,7 @@ class bar_editor(ProbEditorWidgets.scroll_canvas,ProbEditorBasics.emission_edito
         elif change.__class__==ProbEditorBasics.emission_change_order:
             self.bars.config_bar_order(change.data.order_list)
             
-class scaled_bar_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
+class scaled_bar_editor(tkinter.Frame,ProbEditorBasics.emission_editor):
 
     def bar_report(self,what,k,v):
         if what=='new value':
@@ -240,14 +249,14 @@ class scaled_bar_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
                 self.send_change(change)
                 
     def __init__(self,master,emissions):
-        Tkinter.Frame.__init__(self,master)
+        tkinter.Frame.__init__(self,master)
         ProbEditorBasics.emission_editor.__init__(self,emissions)
         
         self.bars=ProbEditorWidgets.bar_chart_with_scale(self,self.data.emissions,
                                                          self.data.order_list,
                                                          self.data.color_list,
                                                          self.bar_report)
-        self.bars.pack(side=Tkinter.TOP,fill=Tkinter.BOTH,expand=1)
+        self.bars.pack(side=tkinter.TOP,fill=tkinter.BOTH,expand=1)
         
     def recieve_change(self,change):
         if change.__class__==ProbEditorBasics.emission_change_data:
@@ -258,7 +267,7 @@ class scaled_bar_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
         elif change.__class__==ProbEditorBasics.emission_change_order:
             self.bars.bars.config_bar_order(change.data.order_list)
             
-class figure_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
+class figure_editor(tkinter.Frame,ProbEditorBasics.emission_editor):
 
     def val_entry(self,widget,key):
         text=widget.get()
@@ -283,17 +292,17 @@ class figure_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
         widget.tk_focusNext().focus_set()
         
     def __init__(self,master,emissions):
-        Tkinter.Frame.__init__(self,master)
+        tkinter.Frame.__init__(self,master)
         ProbEditorBasics.emission_editor.__init__(self,emissions)
         
         self.entry_dict={}
-        self.data_frame=Tkinter.Frame(self,bg='white')
+        self.data_frame=tkinter.Frame(self,bg='white')
         row=0
         self.entry_width=int(math.ceil(-math.log10(self.data.precision)))
         
         for key in self.data.order_list:
-            text=Tkinter.Label(self.data_frame,text=key,bg='white')
-            edit_value=Tkinter.Entry(self.data_frame,
+            text=tkinter.Label(self.data_frame,text=key,bg='white')
+            edit_value=tkinter.Entry(self.data_frame,
                                      width=self.entry_width+3,
                                      bg='white')
             val_func=lambda s=self,w=edit_value,k=key:s.val_entry(w,k)
@@ -306,17 +315,17 @@ class figure_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
             row=row+1
             
         self.update_values(emissions.emissions)
-        self.figures=Tkinter.Canvas(self,bg='white',highlightthickness=0)
+        self.figures=tkinter.Canvas(self,bg='white',highlightthickness=0)
         data_widget=self.figures.create_window((0,0),
                                                window=self.data_frame,
-                                               anchor=Tkinter.NW)
+                                               anchor=tkinter.NW)
         self.data_frame.lift(self.figures)
         self.update_idletasks()
         data_box=self.figures.bbox(data_widget)
         self.figures.config(width=data_box[2]-data_box[0]+5,
                             scrollregion=data_box)
-        self.figures.pack(side=Tkinter.LEFT,fill=Tkinter.Y)
-        self.scrollbar = Tkinter.Scrollbar(self,orient=Tkinter.VERTICAL,
+        self.figures.pack(side=tkinter.LEFT,fill=tkinter.Y)
+        self.scrollbar = tkinter.Scrollbar(self,orient=tkinter.VERTICAL,
                                            command=self.figures.yview)
         self.figures.config(yscrollcommand=self.scrollbar.set)
         self.bind('<Configure>',self.config_event)
@@ -326,21 +335,21 @@ class figure_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
         add or remove scrollbar
         """
         scrollr=self.figures.cget('scrollregion')
-        scrollr=map(int,scrollr.split())
+        scrollr=list(map(int,scrollr.split()))
         # print "from config",scrollr
         if event.height>=(scrollr[3]-scrollr[1]):
             # print "y_scrollbar away"
             self.scrollbar.pack_forget()
         else:
             # print "y_scrollbar needed"
-            self.scrollbar.pack(side=Tkinter.LEFT,fill=Tkinter.Y)
+            self.scrollbar.pack(side=tkinter.LEFT,fill=tkinter.Y)
             
     def update_values(self,dict):
-        for key in dict.keys():
+        for key in list(dict.keys()):
             widget=self.entry_dict[key]
-            widget.delete(0,Tkinter.END)
+            widget.delete(0,tkinter.END)
             value_text=str(round(dict[key],self.entry_width))
-            widget.insert(Tkinter.END,value_text)
+            widget.insert(tkinter.END,value_text)
             
     def update_position(self,change):
         pass
@@ -358,7 +367,7 @@ class figure_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
             
             ######################################################################################
             
-class sum_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
+class sum_editor(tkinter.Frame,ProbEditorBasics.emission_editor):
 
     def __init__(self,master,data):
         """
@@ -366,19 +375,19 @@ class sum_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
         """
         
         ProbEditorBasics.emission_editor.__init__(self,data)
-        Tkinter.Frame.__init__(self,master,bg='white',highlightthickness=0)
+        tkinter.Frame.__init__(self,master,bg='white',highlightthickness=0)
         # create headline
-        Tkinter.Label(self,text='sum of probability values',bg='white').grid(row=0,
+        tkinter.Label(self,text='sum of probability values',bg='white').grid(row=0,
                                                                              column=0,
                                                                              columnspan=2)
         
         # create number-widget
         self.entry_width=int(math.ceil(-math.log10(self.data.precision)))
-        self.sum=Tkinter.Entry(self,
+        self.sum=tkinter.Entry(self,
                                width=self.entry_width,
                                highlightthickness=0,
                                bg='white')
-        self.v=Tkinter.IntVar(self)
+        self.v=tkinter.IntVar(self)
         if self.data.fixed_sum>0:
             sum_value=self.data.fixed_sum
             if abs(sum_value-100.0)<self.data.precision:
@@ -393,44 +402,44 @@ class sum_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
         else:
             self.v.set(0)
             sum_value=self.data.emissions.sum
-        self.sum.insert(Tkinter.END,
+        self.sum.insert(tkinter.END,
                         str(round(sum_value,self.entry_width)),
                         )
         self.sum.bind('<Return>',self.renorm_event)
         
-        Tkinter.Radiobutton(self,
+        tkinter.Radiobutton(self,
                             text='100',
                             variable=self.v,
                             command=self.renorm_event,
                             value=100,
                             bg='white',
                             highlightthickness=0,
-                            anchor=Tkinter.W).grid(column=0,row=1,sticky=Tkinter.EW)
-        Tkinter.Radiobutton(self,
+                            anchor=tkinter.W).grid(column=0,row=1,sticky=tkinter.EW)
+        tkinter.Radiobutton(self,
                             text='1',
                             variable=self.v,
                             command=self.renorm_event,
                             value=1,
                             bg='white',
                             highlightthickness=0,
-                            anchor=Tkinter.W).grid(column=0,row=2,sticky=Tkinter.EW)
-        Tkinter.Radiobutton(self,
+                            anchor=tkinter.W).grid(column=0,row=2,sticky=tkinter.EW)
+        tkinter.Radiobutton(self,
                             text='custom',
                             variable=self.v,
                             command=self.renorm_event,
                             value=-1,
                             bg='white',
                             highlightthickness=0,
-                            anchor=Tkinter.W).grid(column=0,row=3,sticky=Tkinter.EW)
-        self.sum.grid(column=1,row=3,sticky=Tkinter.EW)
-        Tkinter.Radiobutton(self,
+                            anchor=tkinter.W).grid(column=0,row=3,sticky=tkinter.EW)
+        self.sum.grid(column=1,row=3,sticky=tkinter.EW)
+        tkinter.Radiobutton(self,
                             text='free',
                             variable=self.v,
                             command=self.renorm_event,
                             value=0,
                             bg='white',
                             highlightthickness=0,
-                            anchor=Tkinter.W).grid(column=0,row=4,sticky=Tkinter.EW)
+                            anchor=tkinter.W).grid(column=0,row=4,sticky=tkinter.EW)
         self.columnconfigure(3,weight=1)
         self.rowconfigure(5,weight=1)
         
@@ -445,11 +454,11 @@ class sum_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
                 new_sum=self.data.emmissions.sum
         except Exception as e:
             # nothing happens
-            print e
+            print(e)
             new_sum=self.data.emmissions.sum
             
-        self.sum.delete(0,Tkinter.END)
-        self.sum.insert(Tkinter.END,
+        self.sum.delete(0,tkinter.END)
+        self.sum.insert(tkinter.END,
                         str(round(new_sum,self.entry_width)),
                         )
         return new_sum
@@ -482,21 +491,21 @@ class sum_editor(Tkinter.Frame,ProbEditorBasics.emission_editor):
         """
         if self.data.fixed_sum==0:
             sum_value=self.data.emissions.sum
-            self.sum.delete(0,Tkinter.END)
-            self.sum.insert(Tkinter.END,
+            self.sum.delete(0,tkinter.END)
+            self.sum.insert(tkinter.END,
                             str(round(sum_value,self.entry_width)),
                             )
             
             
             ###################################################################################
             
-class emission_dialog(Tkinter.Toplevel,ProbEditorBasics.emission_editor):
+class emission_dialog(tkinter.Toplevel,ProbEditorBasics.emission_editor):
 
     def __init__(self,parent,emissions,title):
         """
         the entire dialog
         """
-        Tkinter.Toplevel.__init__(self,parent)
+        tkinter.Toplevel.__init__(self,parent)
         ProbEditorBasics.emission_editor.__init__(self,emissions)
         self.status=''
         self.withdraw()
@@ -504,14 +513,14 @@ class emission_dialog(Tkinter.Toplevel,ProbEditorBasics.emission_editor):
         self.emissions=emissions
         
         #buttons 
-        w1 = Tkinter.Button(self, text="ok", width=10, command=self.ok,
-                            default=Tkinter.ACTIVE)
-        w2 = Tkinter.Button(self, text="cancel", width=10, command=self.cancel,
-                            default=Tkinter.ACTIVE)
+        w1 = tkinter.Button(self, text="ok", width=10, command=self.ok,
+                            default=tkinter.ACTIVE)
+        w2 = tkinter.Button(self, text="cancel", width=10, command=self.cancel,
+                            default=tkinter.ACTIVE)
         
         self.bind("<Escape>", self.cancel)
         
-        f=Tkinter.Frame(self)
+        f=tkinter.Frame(self)
         figures=figure_editor(f,self.emissions)
         
         tab_dict={}
@@ -521,12 +530,12 @@ class emission_dialog(Tkinter.Toplevel,ProbEditorBasics.emission_editor):
         tab_dict['bars']=scaled_bar_editor(self,self.emissions)
         tab_dict['sum']=sum_editor(self,self.emissions)
         tabs=ProbEditorWidgets.tab_frame(f,tab_dict)
-        figures.pack(side=Tkinter.LEFT,fill=Tkinter.Y)
-        tabs.pack(side=Tkinter.LEFT,expand=1,fill=Tkinter.BOTH)
+        figures.pack(side=tkinter.LEFT,fill=tkinter.Y)
+        tabs.pack(side=tkinter.LEFT,expand=1,fill=tkinter.BOTH)
         
-        f.pack(side=Tkinter.TOP,expand=1,fill=Tkinter.BOTH)
-        w2.pack(side=Tkinter.LEFT, expand=1, padx=5, pady=5)
-        w1.pack(side=Tkinter.RIGHT, expand=1,padx=5, pady=5)
+        f.pack(side=tkinter.TOP,expand=1,fill=tkinter.BOTH)
+        w2.pack(side=tkinter.LEFT, expand=1, padx=5, pady=5)
+        w1.pack(side=tkinter.RIGHT, expand=1,padx=5, pady=5)
         self.initial_focus=w1
         
         self.update_idletasks()

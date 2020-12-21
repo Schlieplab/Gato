@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 ################################################################################
 #
 #       This file is part of Gato (Graph Animation Toolbox) 
@@ -34,17 +35,19 @@
 #             last change by $Author$.
 #
 ################################################################################
+from builtins import str
+from builtins import object
 import sys
 import inspect
 import time
 import logging
-import GatoGlobals
-import MergedHistories
+from . import GatoGlobals
+from . import MergedHistories
 
 g = GatoGlobals.AnimationParameters
 
 
-class AnimationCommand:
+class AnimationCommand(object):
 
 
     def __init__(self, method, target, args, kwargs={},
@@ -98,7 +101,7 @@ class AnimationCommand:
             t = self.target
 
         if self.kwargs:
-            kwstr = ["%s=%s" % (str(key),str(val)) for key,val in self.kwargs.items()]
+            kwstr = ["%s=%s" % (str(key),str(val)) for key,val in list(self.kwargs.items())]
             # if 'SetAll' in self.method.__name__:
             #     print 'kwargs: ', self.kwargs
             #     print 'kwstr: ', kwstr
@@ -116,7 +119,7 @@ class AnimationCommand:
         return "%s(%s,%s) %s" % (self.method.__name__, t, argstr, kwstr)
 
 
-class AnimationHistory:
+class AnimationHistory(object):
     """AnimationHistory provides a history of animation commands, and a undo and
        redo facility. It is to be used as a wrapper around a GraphDisplay and it
        will happily dispatch all calls to GraphDisplay.

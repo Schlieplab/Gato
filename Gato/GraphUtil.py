@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 ################################################################################
 #
 #       This file is part of Gato (Graph Animation Toolbox) 
@@ -35,12 +36,16 @@
 #
 ################################################################################
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
+from builtins import object
 import types
-import StringIO
+import io
 import string
-from GatoGlobals import *
-import Graph
-from DataStructures import Point2D, VertexLabeling, EdgeLabeling, EdgeWeight, VertexWeight, Queue
+from .GatoGlobals import *
+from . import Graph
+from .DataStructures import Point2D, VertexLabeling, EdgeLabeling, EdgeWeight, VertexWeight, Queue
 import logging
 
 
@@ -178,7 +183,7 @@ def FindBipartitePartitions(G):
     ################################################################################
     
     
-class GraphInformer:
+class GraphInformer(object):
     """ Provides information about edges and vertices of a graph.
         Used as argument for GraphDisplay.RegisterGraphInformer() """
     
@@ -286,7 +291,7 @@ def OpenCATBoxGraph(_file):
     graphFile=None
     if type(_file) in (str,):
         graphFile = open(_file, 'r')
-    elif type(_file)==types.FileType or issubclass(_file.__class__,StringIO.StringIO):
+    elif type(_file)==types.FileType or issubclass(_file.__class__,io.StringIO):
         graphFile=_file
     else:
         raise Exception("got wrong argument")
@@ -330,9 +335,9 @@ def OpenCATBoxGraph(_file):
             nrOfEdgeWeights = int_value(splitLine[4])
             nrOfVertexWeights = int_value(splitLine[5])
 
-            for i in xrange(nrOfEdgeWeights):
+            for i in range(nrOfEdgeWeights):
                 G.edgeWeights[i] = EdgeWeight(G)
-            for i in xrange(nrOfVertexWeights):
+            for i in range(nrOfVertexWeights):
                 G.vertexWeights[i] = VertexWeight(G)
                 
                 
@@ -346,7 +351,7 @@ def OpenCATBoxGraph(_file):
             v = G.AddVertex()
             x = int_value(splitLine[1])
             y = int_value(splitLine[2])
-            for i in xrange(nrOfVertexWeights):
+            for i in range(nrOfVertexWeights):
                 if intWeights:
                     w = int_value(splitLine[3+i])
                 else:
@@ -365,7 +370,7 @@ def OpenCATBoxGraph(_file):
             h = int_value(splitLine[0])
             t = int_value(splitLine[1])
             G.AddEdge(t,h,False)
-            for i in xrange(nrOfEdgeWeights):
+            for i in range(nrOfEdgeWeights):
                 # XXX Unclear whether intWeights is for both edge and vertex weights
                 if intWeights:
                     G.edgeWeights[i][(t,h)] = int_value(splitLine[3+i])
@@ -383,7 +388,7 @@ def OpenCATBoxGraph(_file):
     G.labeling  = L
     if intWeights:
         G.Integerize('all')
-        for i in xrange(nrOfVertexWeights):
+        for i in range(nrOfVertexWeights):
             G.vertexWeights[i].Integerize()
             
     return G
@@ -395,13 +400,13 @@ def SaveCATBoxGraph(G, _file):
     file=None
     if type(_file) in (str,):
         file = open(_file, 'w')
-    elif type(_file)==types.FileType or issubclass(_file.__class__,StringIO.StringIO):
+    elif type(_file)==types.FileType or issubclass(_file.__class__,io.StringIO):
         file=_file
     else:
         raise Exception("got wrong argument")
         
-    nrOfVertexWeights = len(G.vertexWeights.keys())
-    nrOfEdgeWeights = len(G.edgeWeights.keys())
+    nrOfVertexWeights = len(list(G.vertexWeights.keys()))
+    nrOfEdgeWeights = len(list(G.edgeWeights.keys()))
     integerEdgeWeights = G.edgeWeights[0].QInteger()
     
     file.write("graph:\n")
@@ -423,7 +428,7 @@ def SaveCATBoxGraph(G, _file):
         save[v] = count
         count = count + 1
         file.write("n:%d; x:%d; y:%d;" % (save[v], G.embedding[v].x, G.embedding[v].y))
-        for i in xrange(nrOfVertexWeights):
+        for i in range(nrOfVertexWeights):
             if integerEdgeWeights: # XXX
                 file.write(" w:%d;" % int(round(G.vertexWeights[i][v])))
             else:
@@ -435,7 +440,7 @@ def SaveCATBoxGraph(G, _file):
         for head in G.OutNeighbors(tail):
             file.write("h:%d; t:%d; e:2;" % (save[head], save[tail]))
             
-            for i in xrange(nrOfEdgeWeights):
+            for i in range(nrOfEdgeWeights):
                 if integerEdgeWeights:
                     file.write(" w:%d;" % int(round(G.edgeWeights[i][(tail,head)])))
                 else:
@@ -456,7 +461,7 @@ def ParseGML(file):
         if not line:
             return retval
             
-        token = filter(lambda x: x != '', split(line[:-1],"[\t ]*"))
+        token = [x for x in split(line[:-1],"[\t ]*") if x != '']
         
         if len(token) == 1 and token[0] == ']':
             return retval
@@ -474,7 +479,7 @@ def ParseGML(file):
             
 def PairListToDictionary(l):
     d = {}
-    for i in xrange(len(l)):
+    for i in range(len(l)):
         d[l[i][0]] = l[i][1]
     return d
     
@@ -500,7 +505,7 @@ def OpenGMLGraph(fileName):
         return
     else:
         l = g[0][1]
-        for i in xrange(len(l)):
+        for i in range(len(l)):
         
             key   = l[i][0]
             value = l[i][1]

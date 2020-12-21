@@ -1,3 +1,5 @@
+from __future__ import division
+from __future__ import absolute_import
 ################################################################################
 #
 #       This file is part of Gato (Graph Animation Toolbox) 
@@ -35,10 +37,15 @@
 #
 ################################################################################
 
-from Tkinter import * # Frame, Canvas, Toplevel, StringVar and lots of handy constants
-from Graph import Graph
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
+from builtins import object
+from past.utils import old_div
+from tkinter import * # Frame, Canvas, Toplevel, StringVar and lots of handy constants
+from .Graph import Graph
 from math import sqrt, pi, sin, cos
-from GatoGlobals import *
+from .GatoGlobals import *
 ### Internal Color Names for GraphDisplay and such
 ### This will be set in GraphDisplay.ReadConfiguration()
 cVertexDefault    = "red"
@@ -50,8 +57,8 @@ cLabelBlink       = "green"
 gVertexRadius = 12  
 gVertexFrameWidth =  2     
 gEdgeWidth =  3     
-from GatoUtil import orthogonal
-from DataStructures import Point2D, VertexLabeling, EdgeLabeling
+from .GatoUtil import orthogonal
+from .DataStructures import Point2D, VertexLabeling, EdgeLabeling
 import os
 import colorsys
 import string
@@ -59,7 +66,7 @@ import logging
 
 from visual import *
 
-class GraphDisplay3D:
+class GraphDisplay3D(object):
     """ Provide functionality to display a graph. Not for direct consumption.
         Use
     
@@ -109,9 +116,9 @@ class GraphDisplay3D:
         if tkcolor in colmap:
             return colmap[tkcolor]
         else: # tkcolor is #rrggbb
-            r = string.atoi(tkcolor[1:3], 16) / 255.0
-            g = string.atoi(tkcolor[3:5], 16) / 255.0
-            b = string.atoi(tkcolor[5:7], 16) / 255.0
+            r = int(tkcolor[1:3], 16) / 255.0
+            g = int(tkcolor[3:5], 16) / 255.0
+            b = int(tkcolor[5:7], 16) / 255.0
             return (r,g,b)
             
             
@@ -169,7 +176,7 @@ class GraphDisplay3D:
     def DeleteDrawEdges(self):
         """ *Internal* Delete draw edges on the canvas """
         self.edge = {} # XXX
-        for de in self.drawEdges.label.values():
+        for de in list(self.drawEdges.label.values()):
             de.visible = 0
         for de in self.shadowEdges:
             de.visible = 0
@@ -177,7 +184,7 @@ class GraphDisplay3D:
     def DeleteDrawVertices(self):
         """ *Internal* Delete draw vertices on the canvas """
         self.vertex = {} # XXX
-        for dv in self.drawVertex.label.values():
+        for dv in list(self.drawVertex.label.values()):
             dv.visible = 0
             
             
@@ -187,7 +194,7 @@ class GraphDisplay3D:
         
     def DeleteVertexAnnotations(self):
         """ *Internal* Delete all vertex annotations on the canvas """
-        for va in self.vertexAnnotation.label.values():
+        for va in list(self.vertexAnnotation.label.values()):
             va.visible = 0
             
             
@@ -222,8 +229,8 @@ class GraphDisplay3D:
         yMiddle = v.y-((25*self.zoomFactor)/100.0)	
         Coords = []
         for degree in range(0,400,40):
-            Coords.append(loopRadius*cos(degree*(pi/180))+xMiddle)
-            Coords.append(loopRadius*sin(degree*(pi/180))+yMiddle)
+            Coords.append(loopRadius*cos(degree*(old_div(pi,180)))+xMiddle)
+            Coords.append(loopRadius*sin(degree*(old_div(pi,180)))+yMiddle)
         return self.canvas.create_line(Coords,
                                        fill=cEdgeDefault, 
                                        width=w,
@@ -240,8 +247,8 @@ class GraphDisplay3D:
         Coords = []
         for degree in range(95,440,25):
             if degree != 395:
-                Coords.append(loopRadius*cos(degree*(pi/180))+xMiddle)
-                Coords.append(loopRadius*sin(degree*(pi/180))+yMiddle)
+                Coords.append(loopRadius*cos(degree*(old_div(pi,180)))+xMiddle)
+                Coords.append(loopRadius*sin(degree*(old_div(pi,180)))+yMiddle)
         return self.canvas.create_line(Coords,
                                        arrow="last",
                                        arrowshape=self.zArrowShape,
@@ -263,7 +270,7 @@ class GraphDisplay3D:
         l = sqrt((h.x - t.x)**2 + (h.y - t.y)**2)
         if l < 0.001:
             l = 0.001
-        c = (l - self.zVertexRadius)/l - 0.001 # Dont let them quite touch 
+        c = old_div((l - self.zVertexRadius),l) - 0.001 # Dont let them quite touch 
         # (tmpX,tmpY) is a point on a straight line between t and h
         # not quite touching the vertex disc
         tmpX = t.x + c * (h.x - t.x) 
@@ -278,7 +285,7 @@ class GraphDisplay3D:
         else:
             # (mX,mY) to difference vector h - t
             (mX,mY) = orthogonal((h.x - t.x, h.y - t.y))
-            c = 1.5 * self.zVertexRadius + l / 25
+            c = 1.5 * self.zVertexRadius + old_div(l, 25)
             # Add c * (mX,mY) at midpoint between h and t
             mX = t.x + .5 * (h.x - t.x) + c * mX
             mY = t.y + .5 * (h.y - t.y) + c * mY
@@ -437,7 +444,7 @@ class GraphDisplay3D:
         dv = self.drawVertex[v]
         oldColor = dv.color
         blinkColor = self.color(color)
-        for i in xrange(1,gBlinkRepeat):
+        for i in range(1,gBlinkRepeat):
             self.drawVertex[v].color = blinkColor
             rate(gBlinkRate)
             self.drawVertex[v].color = oldColor
@@ -458,7 +465,7 @@ class GraphDisplay3D:
         oldColor = self.de.color
         blinkColor = self.color(color)
         
-        for i in xrange(1,gBlinkRepeat):
+        for i in range(1,gBlinkRepeat):
             de.color = blinkColor
             rate(gBlinkRate)
             de.color = oldColor
@@ -474,7 +481,7 @@ class GraphDisplay3D:
         drawItems = [None] * len(list)
         
         blinkColor = self.color(color)
-        for i in xrange(len(list)):
+        for i in range(len(list)):
             try:
                 e = list[i]
                 l = len(e) # will raise an exception	
@@ -485,12 +492,12 @@ class GraphDisplay3D:
                 drawItems[i] = self.drawVertex[v]
                 oldColor[i] = drawItems[i].color
                 
-        for i in xrange(1,gBlinkRepeat):
+        for i in range(1,gBlinkRepeat):
             rate(gBlinkRate)
-            for j in xrange(len(drawItems)):	
+            for j in range(len(drawItems)):	
                 drawItems[i].color = blinkColor
             rate(gBlinkRate)
-            for j in xrange(len(drawItems)):	
+            for j in range(len(drawItems)):	
                 drawItems[j].color = oldColor[j]
                 
                 
@@ -536,7 +543,7 @@ class GraphDisplay3D:
         dl = self.drawLabel[v]
         if blink == 1:
             oldColor = self.canvas.itemconfig(dl, "fill")[4]
-            for i in xrange(1,gBlinkRepeat):
+            for i in range(1,gBlinkRepeat):
                 self.canvas.after(gBlinkRate)
                 self.canvas.itemconfig( dl, fill=color)
                 self.update()

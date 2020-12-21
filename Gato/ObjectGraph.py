@@ -1,3 +1,5 @@
+from __future__ import print_function
+from __future__ import absolute_import
 ################################################################################
 #
 #       This file is part of Gato (Graph Animation Toolbox) 
@@ -34,8 +36,10 @@
 #
 ################################################################################
 
-from GatoGlobals import *
-from DataStructures import Point2D, VertexLabeling, EdgeLabeling, EdgeWeight
+from builtins import range
+from builtins import object
+from .GatoGlobals import *
+from .DataStructures import Point2D, VertexLabeling, EdgeLabeling, EdgeWeight
 #from math import log
 
 import logging
@@ -140,7 +144,7 @@ class ObjectGraph(object):
         
     def QVertex(self, v):
         """ Check whether v is a vertex """
-        return v in self.vertices.keys()
+        return v in list(self.vertices.keys())
 
         
     def AddEdge(self,tail,head):
@@ -170,7 +174,7 @@ class ObjectGraph(object):
             self.SetEdgeWeight(0,tail,head,sqrt((h.x - t.x)**2 + (h.y - t.y)**2))
         else:
             self.SetEdgeWeight(0,tail,head,0)
-        for i in xrange(1,self.NrOfEdgeWeights()):
+        for i in range(1,self.NrOfEdgeWeights()):
             self.SetEdgeWeight(i,tail,head,0)
 
         
@@ -192,7 +196,7 @@ class ObjectGraph(object):
         """  Handles undirected graphs by returning correctly ordered
              vertices as (tail,head). Raises NoSuchEdgeError upon error. """
         
-        if tail not in self.vertices.keys() or head not in self.vertices.keys():
+        if tail not in list(self.vertices.keys()) or head not in list(self.vertices.keys()):
             raise NoSuchEdgeError("(%d,%d) is not an edge." % (tail,head))
             
         if (tail,head) in self.edges:
@@ -234,12 +238,12 @@ class ObjectGraph(object):
             
     def InNeighbors(self,v):
         """ Returns vertices w for which (w,v) is an edge """
-        return map(lambda e: e.tail.id, self.vertices[v].inEdges)
+        return [e.tail.id for e in self.vertices[v].inEdges]
         
         
     def OutNeighbors(self,v):
         """ Returns vertices w for which (v,w) is an edge """
-        return map(lambda e: e.head.id, self.vertices[v].outEdges)
+        return [e.head.id for e in self.vertices[v].outEdges]
         
         
     def InOutNeighbors(self,v):
@@ -249,12 +253,12 @@ class ObjectGraph(object):
         
     def InEdges(self,v):
         """ Returns edges (*,v) """	
-        return map(lambda e: e.key(),self.vertices[v].inEdges) 
+        return [e.key() for e in self.vertices[v].inEdges] 
         
         
     def OutEdges(self,v):
         """ Returns edges (v,*) """	
-        return map(lambda e: e.key(),self.vertices[v].outEdges) 
+        return [e.key() for e in self.vertices[v].outEdges] 
         
         
     def IncidentEdges(self,v):
@@ -264,17 +268,17 @@ class ObjectGraph(object):
         
     def Edges(self):
         """ Returns all edges """		
-        return self.edges.keys()
+        return list(self.edges.keys())
 
         
     def Vertices(self):
         """ Returns all edges """		
-        return self.vertices.keys()
+        return list(self.vertices.keys())
         
     def printMy(self):
         """ Debugging only """
         for v in self.vertices:
-            print v, " -- ", self.adjLists[v]
+            print(v, " -- ", self.adjLists[v])
             
             
     def GetNextVertexID(self):
@@ -285,12 +289,12 @@ class ObjectGraph(object):
         
     def Order(self):
         """ Returns order i.e., the number of vertices """
-        return len(self.vertices.keys())
+        return len(list(self.vertices.keys()))
         
         
     def Size(self):
         """ Returns size i.e., the number of edge """
-        return len(self.edges.keys()) 
+        return len(list(self.edges.keys())) 
         
         
     def Degree(self, v):
@@ -413,7 +417,7 @@ class ObjectGraph(object):
         if not self.directed:
             return
             
-        for v in self.vertices.keys():
+        for v in list(self.vertices.keys()):
             for e in self.vertices[v].outEdges:
                 w = e.head.id
                 if v in self.OutNeighbors(w):

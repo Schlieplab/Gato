@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 ################################################################################
 #
 #       This file is part of Gato (Graph Animation Toolbox) 
@@ -36,14 +37,16 @@
 #
 ################################################################################
 
-import GatoGlobals
-import AnimationHistory
+from builtins import str
+from builtins import object
+from . import GatoGlobals
+from . import AnimationHistory
 import traceback
 import logging
 
 g = GatoGlobals.AnimationParameters
 
-class MergedHistories:
+class MergedHistories(object):
 
     # TODO: Replace repetitive code with functions
 
@@ -238,7 +241,7 @@ class MergedHistories:
         self._check_animator_set(animator, display)
         #Delete all edges containing v
         #Call deletevertex command
-        for d in animator.drawEdges.keys():
+        for d in list(animator.drawEdges.keys()):
             if d[0]==v or d[1]==v:
                 self.DeleteEdge(d[0], d[1], animator, display)
         animation = AnimationHistory.AnimationCommand(animator.DeleteVertex, (v,), (), canUndo=False)

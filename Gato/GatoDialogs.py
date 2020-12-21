@@ -1,3 +1,5 @@
+from __future__ import division
+from __future__ import absolute_import
 ################################################################################
 #
 #       This file is part of Gato (Graph Animation Toolbox) 
@@ -32,16 +34,20 @@
 #             last change by $Author$.
 #
 ################################################################################
-from Tkinter import *
-from Tkinter import _cnfmerge
-from ScrolledText import *
-import GatoUtil
-import GatoGlobals
-import GatoIcons
-import tkSimpleDialog 
+from future import standard_library
+standard_library.install_aliases()
+from past.utils import old_div
+from tkinter import *
+from tkinter import _cnfmerge
+from tkinter.scrolledtext import *
+from . import GatoUtil
+from . import GatoGlobals
+from . import GatoIcons
+import tkinter.simpledialog 
 import sys
 import os
-import htmllib, formatter
+#import htmllib
+import formatter
 
 
 # Should be in GatoGlobals 
@@ -95,8 +101,9 @@ class AutoScrolledText(Text):
         if kw:
             cnf = _cnfmerge((cnf, kw))
         fcnf = {}
-        for k in cnf.keys():
-            if type(k) == ClassType or k == 'name':
+        for k in list(cnf.keys()):
+            #if type(k) == ClassType or k == 'name':
+            if k == 'name' or isinstance(k, type):
                 fcnf[k] = cnf[k]
                 del cnf[k]
         self.frame = Frame(master, **fcnf)
@@ -115,9 +122,9 @@ class AutoScrolledText(Text):
 
 
         # Copy geometry methods of self.frame -- hack!
-        methods = Pack.__dict__.keys()
-        methods = methods + Grid.__dict__.keys()
-        methods = methods + Place.__dict__.keys()
+        methods = list(Pack.__dict__.keys())
+        methods = methods + list(Grid.__dict__.keys())
+        methods = methods + list(Place.__dict__.keys())
 
         for m in methods:
             if m[0] != '_' and m != 'config' and m != 'configure':
@@ -125,7 +132,7 @@ class AutoScrolledText(Text):
 
 
 
-class AboutBox(tkSimpleDialog.Dialog):
+class AboutBox(tkinter.simpledialog.Dialog):
     """ The application's about box """
     
     def buttonbox(self):
@@ -192,8 +199,8 @@ class SplashScreen(Toplevel):
         self.update_idletasks()
         xmax = self.winfo_screenwidth()
         ymax = self.winfo_screenheight()
-        x0 = (xmax - self.winfo_reqwidth()) / 2
-        y0 = (ymax - self.winfo_reqheight()) / 2
+        x0 = old_div((xmax - self.winfo_reqwidth()), 2)
+        y0 = old_div((ymax - self.winfo_reqheight()), 2)
         self.geometry("+%d+%d" % (x0, y0))
         
     def CreateWidgets(self):
@@ -230,12 +237,12 @@ class HTMLWriter(formatter.DumbWriter):
         self.write(self.indent + data + ' ')
 
         
-class MyHTMLParser(htmllib.HTMLParser):
+class MyHTMLParser(object):#htmllib.HTMLParser):
     """ Basic parser with image support added. output is supposed to be
         the textwidget for output """
     
     def __init__(self, formatter, output):
-        htmllib.HTMLParser.__init__(self, formatter)
+        #htmllib.HTMLParser.__init__(self, formatter)
         self.output = output
         self.tag_start = {}
         

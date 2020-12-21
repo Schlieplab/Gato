@@ -1,3 +1,6 @@
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
 ################################################################################
 #
 #       This file is part of Gato (Graph Animation Toolbox) 
@@ -34,27 +37,31 @@
 #             last change by $Author$.
 #
 ################################################################################
-from GatoGlobals import AnimationParameters, gInfinity, NoSuchVertexError, NoSuchEdgeError  
-from DataStructures import VertexLabeling, Queue, Stack, PriorityQueue
-from Graph import SubGraph
+from future import standard_library
+standard_library.install_aliases()
+from past.utils import old_div
+from builtins import object
+from .GatoGlobals import AnimationParameters, gInfinity, NoSuchVertexError, NoSuchEdgeError  
+from .DataStructures import VertexLabeling, Queue, Stack, PriorityQueue
+from .Graph import SubGraph
 import copy
 import logging
 #import sets
 
 g = AnimationParameters
 
-class Animator:
+class Animator(object):
     """ *Debugging* Text only Animator providing animation functions which
         only print to console """
     
     def SetVertexColor(self,v, color):
-        print "set color of",v," to ",color
+        print("set color of",v," to ",color)
         
     def SetEdgeColor(self, tail, head, color):
-        print "set color of edge (",tail,",", head ,") to ",color
+        print("set color of edge (",tail,",", head ,") to ",color)
         
         
-class AnimatedNeighborhood:
+class AnimatedNeighborhood(object):
     """ Visualizes visiting of neighbors by calling the Neighborhood
         method of graph for v and allowing to iterate over it, while 
         coloring (v,w) cTraversedEdge unless (v,w) is colored with
@@ -113,7 +120,7 @@ class AnimatedNeighborhood:
         return len(self.nbh)
         
         
-class BlinkingNeighborhood:
+class BlinkingNeighborhood(object):
     """ Visualizes visiting blinking (v,w) for all w when iterating over
         the Neighborhood
     
@@ -171,7 +178,7 @@ class BlinkingTrackLastNeighborhood(BlinkingNeighborhood):
         return retVal
         
         
-class BlinkingContainerWrapper:
+class BlinkingContainerWrapper(object):
     """ Visualizes iterating over a list of vertices and/or edges by
         blinking.
     
@@ -290,7 +297,7 @@ class AnimatedVertexLabeling(VertexLabeling):
             self.Animator.SetVertexColor(v,self.color)
             
             
-class AnimatedSignIndicator:
+class AnimatedSignIndicator(object):
     """ Visualizes sign of vertex or edge:
         weight > 0 : green
                = 0 : grey
@@ -322,7 +329,7 @@ class AnimatedSignIndicator:
         
         
         
-class AnimatedPotential:
+class AnimatedPotential(object):
     """ Visualizes the potential from 0 (green) to
          max (brown) of a vertex. """
     def __init__(self,max,theAnimator1,theAnimator2=None):
@@ -347,7 +354,7 @@ class AnimatedPotential:
             self.Animator2.SetVertexAnnotation(v,"%d"%val)
         if val > self.max:
             val = self.max
-        self.Animator1.SetVertexColor(v,self.colors[(val*(len(self.colors)-1))/self.max])
+        self.Animator1.SetVertexColor(v,self.colors[old_div((val*(len(self.colors)-1)),self.max)])
         
     def __getitem__(self,v):
         return self.pot[v]
@@ -500,7 +507,7 @@ class AnimatedVertexStack(Stack):
             
             
             
-class AnimatedVertexSet:
+class AnimatedVertexSet(object):
     """ Visualizes status of vertices in relation to the Set by
         coloring them
 
@@ -554,7 +561,7 @@ class AnimatedVertexSet:
         return v in self.vertices
         
         
-class AnimatedEdgeSet:
+class AnimatedEdgeSet(object):
     """ Visualizes status of edges in relation to the Set by
         coloring them
     
@@ -739,7 +746,7 @@ class AnimatedPredecessor(VertexLabeling):
         else:
             self.ignoreColors.append(color)
             
-class ComponentMaker:
+class ComponentMaker(object):
     """ Subsequent calls of method NewComponent() will return differently
         colored subgraphs of G """
     colors = ['#FF0000','#00FF00','#0000FF',
@@ -809,7 +816,7 @@ def showPathByPredecessorArray(source,sink,pred,A,color="red"):
     #
     ################################################################################
     
-class FlowWrapper:
+class FlowWrapper(object):
     """ This class visualizes the flow in a directed graph G
         with animator GA and it's residual network R with
         animator RA.
@@ -892,7 +899,7 @@ class FlowWrapper:
         return self.flow[e]
         
         
-class ReducedCostsWrapper:
+class ReducedCostsWrapper(object):
     """ Visualizes the reduced costs of the edge
         >0 green
         =0 grey

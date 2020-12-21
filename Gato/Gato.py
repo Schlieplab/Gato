@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/opt/local/bin/python3.8
 ################################################################################
 #
 #       This file is part of Gato (Graph Animation Toolbox) 
@@ -35,6 +35,16 @@
 #             last change by $Author$.
 #
 ################################################################################
+from __future__ import division
+from __future__ import absolute_import
+from past.builtins import cmp
+from future import standard_library
+standard_library.install_aliases()
+from builtins import map
+from builtins import str
+from builtins import range
+from builtins import object
+from past.utils import old_div
 import sys
 import tempfile
 import traceback
@@ -43,33 +53,34 @@ import bdb
 import random
 import re 
 import string
-import StringIO
+import io
 import tokenize
-import tkFont
+import tkinter.font
 import copy
 import webbrowser
 import argparse
 import logging
 
-import Gred
+from . import Gred
+#import Gred
 
 
-from Tkinter import *
-from tkFileDialog import askopenfilename, asksaveasfilename
-from tkMessageBox import askokcancel, showerror, askyesno
+from tkinter import *
+from tkinter.filedialog import askopenfilename, asksaveasfilename
+from tkinter.messagebox import askokcancel, showerror, askyesno
 #from ScrolledText import ScrolledText
-from GatoConfiguration import GatoConfiguration
-import Graph #from Graph import Graph
-from GraphUtil import *
-from GraphDisplay import GraphDisplayToplevel, GraphDisplayFrame
-from GatoUtil import *
-import GatoGlobals
-from GatoDialogs import AboutBox, SplashScreen, HTMLViewer, AutoScrolledText
-import GatoIcons
+from .GatoConfiguration import GatoConfiguration
+from . import Graph #from Graph import Graph
+from .GraphUtil import *
+from .GraphDisplay import GraphDisplayToplevel, GraphDisplayFrame
+from .GatoUtil import *
+from . import GatoGlobals
+from .GatoDialogs import AboutBox, SplashScreen, HTMLViewer, AutoScrolledText
+from . import GatoIcons
 # Only needed for Trial-Solution version. 
 #import GatoSystemConfiguration
-from AnimationHistory import AnimationHistory, AnimationCommand
-import GatoExport
+from .AnimationHistory import AnimationHistory, AnimationCommand
+from . import GatoExport
 
 
 # Workaround for bug in py2exe which mangles linecache on Windows
@@ -79,7 +90,7 @@ import GatoExport
 # Same problem exists with py2app on Mac, only py2app is smarter
 # in sabotaging linecache
 try:
-    import linecacheCopy as linecache
+    from . import linecacheCopy as linecache
 except:
     import linecache
 
@@ -100,7 +111,7 @@ def parsegeometry(geometry):
     m = re.match("(\d+)x(\d+)([-+]\d+)([-+]\d+)", geometry)
     if not m:
         raise ValueError("failed to parse geometry string")
-    return map(int, m.groups())
+    return list(map(int, m.groups()))
 
 def WMExtrasGeometry(window):
     """ Returns (top,else) where
@@ -121,8 +132,8 @@ def WMExtrasGeometry(window):
     except TclError:
         # bad geometry specifier: e.g. ... "-1949x260+1871+1"
         return (32,32) 
-    trueRootx = string.atoi(g[1]) 
-    trueRooty = string.atoi(g[2])
+    trueRootx = int(g[1]) 
+    trueRooty = int(g[2])
     
     rootx = window.winfo_rootx() # top left of our window
     rooty = window.winfo_rooty() # *WITHOUT* WM extras
@@ -483,9 +494,9 @@ class AlgoWin(Frame):
         self.algoFont = font
         self.algoFontSize = size
         
-        f = tkFont.Font(self, (font, size, tkFont.NORMAL))
-        bf = tkFont.Font(self, (font, size, tkFont.BOLD))
-        itf = tkFont.Font(self, (font, size, tkFont.ITALIC))
+        f = tkinter.font.Font(self, (font, size, tkinter.font.NORMAL))
+        bf = tkinter.font.Font(self, (font, size, tkinter.font.BOLD))
+        itf = tkinter.font.Font(self, (font, size, tkinter.font.ITALIC))
         
         self.algoText.config(font=f)
         # syntax highlighting tags
@@ -669,7 +680,11 @@ class AlgoWin(Frame):
             self.tagLines(self.algorithm.GetBreakpointLines(), 'Break')
             
             # Syntax highlighting
-            tokenize.tokenize(StringIO.StringIO(self.algorithm.GetSource()).readline, self.tokenEater)
+            #tokens = tokenize.tokenize(io.StringIO(self.algorithm.GetSource()).readline)
+            tokens = tokenize.tokenize(io.BytesIO(self.algorithm.GetSource().encode('utf-8')).readline)
+
+            for tokenType, token, stuple, etuple, line in tokens:
+                self.tokenEater(tokenType, token, stuple, etuple, line)
             
             if self.algorithm.ReadyToStart():
                 self.buttonStart['state'] = NORMAL 
@@ -721,7 +736,7 @@ class AlgoWin(Frame):
         """
         under Construction...
         """
-        import GatoFile
+        from . import GatoFile
         
         # ToDo
         if not askyesno("Ooops...",
@@ -748,7 +763,7 @@ class AlgoWin(Frame):
         menu command
         """
         
-        import GatoFile
+        from . import GatoFile
         
         if self.algorithmIsRunning:
             # variable file is lost here!
@@ -847,7 +862,7 @@ class AlgoWin(Frame):
                 self.tagLines(self.algorithm.GetInteractiveLines(), 'Interactive')
                 self.tagLines(self.algorithm.GetBreakpointLines(), 'Break')
                 # Syntax highlighting
-                tokenize.tokenize(StringIO.StringIO(self.algorithm.GetSource()).readline, 
+                tokenize.tokenize(io.StringIO(self.algorithm.GetSource()).readline, 
                                   self.tokenEater)
                 
                 # set the state
@@ -1095,7 +1110,7 @@ class AlgoWin(Frame):
         screenheight = self.master.winfo_screenheight() - screenTop
         
         reqGDWidth = screenwidth - trueWidth - 2 * WMExtra - pad - 1
-        reqGDHeight = screenheight/2 - WMExtra - topWMExtra - pad
+        reqGDHeight = old_div(screenheight,2) - WMExtra - topWMExtra - pad
         
         self.graphDisplay.geometry("%dx%d+%d+%d" % (
             reqGDWidth,
@@ -1288,7 +1303,7 @@ class AlgoWin(Frame):
         """ Callback for canvas to allow toggeling of breakpoints """
         # Was: currLine  = string.splitfields(self.algoText.index(CURRENT),'.')[0]
         currLine  = self.algoText.index(CURRENT).split('.')[0]
-        self.algorithm.ToggleBreakpoint(string.atoi(currLine))
+        self.algorithm.ToggleBreakpoint(int(currLine))
         
 
     ############################################################
@@ -1399,7 +1414,7 @@ class AlgoWin(Frame):
     def ReportCallbackException(self, *args):
         short_msg = "Internal Gato error"
         long_msg = ''.join(traceback.format_exception(*args))
-        self.HandleError(short_msg, long_msg, log.exception)
+        self.HandleError(short_msg, long_msg, logging.exception)
 
     def ClearHistory(self):
         self.lastActiveLine = 0
@@ -1471,10 +1486,11 @@ class AlgorithmDebugger(bdb.Bdb):
         
     def dispatch_line(self, frame):
         """ *Internal* Only dispatch if we are in the algorithm file """
+        logging.debug("dispatch_line %s" % repr(frame))
         fn = frame.f_code.co_filename
         #XXX print frame.f_locals. Could extract values here.
         # What do do about vars going out of scope?
-        if fn != self.GUI.algoFileName:
+        if fn != "<string>": #self.GUI.algoFileName:
             return None
         line = self.currentLine(frame)
         logging.debug("dispatch_line %d (last %d)" % (line, self.lastLine))
@@ -1490,11 +1506,11 @@ class AlgorithmDebugger(bdb.Bdb):
         #import inspect
         fn = frame.f_code.co_filename
         line = self.currentLine(frame)
-        #logging.debug("dispatch_call %s %s %s %s %s %s" % (fn, line, frame, self.stop_here(frame), self.break_anywhere(frame), self.break_here(frame)))
+        logging.debug("dispatch_call %s %s %s %s %s %s" % (fn, line, frame, self.stop_here(frame), self.break_anywhere(frame), self.break_here(frame)))
         #logging.debug("%s" % inspect.getframeinfo(frame))
         doTrace = self.doTrace # value of self.doTrace might change
         # No tracing of functions defined outside of our algorithmfile 
-        if fn != self.GUI.algoFileName:
+        if fn != "<string>": #self.GUI.algoFileName:
             return None
             #import inspect
             #logging.debug("dispatch_call %s %s %s %s %s %s" % (fn, line, frame, self.stop_here(frame), self.break_anywhere(frame), self.break_here(frame)))
@@ -1593,7 +1609,7 @@ class AlgorithmDebugger(bdb.Bdb):
         """ *Internal* This function is called when a return trap is set here """
         #import inspect
         frame.f_locals['__return__'] = return_value
-        #logging.debug('--Return--')
+        logging.debug('--Return--')
         #self.doTrace = 0 #YYY
         # TO Avoid multiple steps in return line of called fun
         #self.interaction(frame, None)
@@ -1607,9 +1623,14 @@ class AlgorithmDebugger(bdb.Bdb):
         if type(exc_type) == type(''):
             exc_type_name = exc_type
         else: exc_type_name = exc_type.__name__
-        #logging.debug("exc_type_name: %s" repr.repr(exc_value))
+        logging.debug("exc_type_name: %s" % repr.repr(exc_value))
         self.interaction(frame, exc_traceback)
-      
+
+
+
+
+
+        
     def reset_component_infos(self):
         self.init_edge_infos = [None, None]
         self.edge_infos = [None, None]
@@ -1625,13 +1646,13 @@ class AlgorithmDebugger(bdb.Bdb):
         '''
         # TODO: These functions can definitely be consolidated...
         def construct_initial_graph_infos():
-            for i in xrange(num_graphs):
+            for i in range(num_graphs):
                 if self.init_graph_infos[i] is None:
                     self.init_graph_infos[i] = informers[i].DefaultInfo()
                     self.graph_infos[i] = copy.deepcopy(self.init_graph_infos[i])
 
         def construct_initial_edge_infos():
-            for i in xrange(num_graphs):
+            for i in range(num_graphs):
                 if self.init_edge_infos[i] is None:
                     self.init_edge_infos[i] = {}
                     for e in edges[i]:
@@ -1639,7 +1660,7 @@ class AlgorithmDebugger(bdb.Bdb):
                     self.edge_infos[i] = copy.deepcopy(self.init_edge_infos[i])
 
         def construct_initial_vertex_infos():
-            for i in xrange(num_graphs):
+            for i in range(num_graphs):
                 if self.init_vertex_infos[i] is None:
                     self.init_vertex_infos[i] = {}
                     for v in vertices[i]:
@@ -1647,7 +1668,7 @@ class AlgorithmDebugger(bdb.Bdb):
                     self.vertex_infos[i] = copy.deepcopy(self.init_vertex_infos[i])
 
         def check_for_edge_info_changes():
-            for i in xrange(num_graphs):
+            for i in range(num_graphs):
                 edge_infos = self.edge_infos[i]
                 history = histories[i]
                 informer = informers[i]
@@ -1662,12 +1683,12 @@ class AlgorithmDebugger(bdb.Bdb):
                             edge_infos[e] = curr_info
                             history.UpdateEdgeInfo(e[0], e[1], curr_info)
                 
-                for e in edge_infos.keys():
+                for e in list(edge_infos.keys()):
                     if e not in edges[i]:
                         del edge_infos[e]
 
         def check_for_vertex_info_changes():
-            for i in xrange(num_graphs):
+            for i in range(num_graphs):
                 vertex_infos = self.vertex_infos[i]
                 history = histories[i]
                 informer = informers[i]
@@ -1682,12 +1703,12 @@ class AlgorithmDebugger(bdb.Bdb):
                             vertex_infos[v] = curr_info
                             history.UpdateVertexInfo(v, curr_info)
 
-                for v in vertex_infos.keys():
+                for v in list(vertex_infos.keys()):
                     if v not in vertices[i]:
                         del vertex_infos[v]
 
         def check_for_graph_info_changes():
-            for i in xrange(num_graphs):
+            for i in range(num_graphs):
                 if self.graph_infos[i] != informers[i].DefaultInfo():
                     self.graph_infos[i] = informers[i].DefaultInfo()
                     histories[i].UpdateGraphInfo(self.graph_infos[i])
@@ -1696,14 +1717,14 @@ class AlgorithmDebugger(bdb.Bdb):
         num_graphs = 1
         informers = [self.GUI.GUI.graphDisplay.graphInformer]
         vertices = [self.GUI.graph.vertices]
-        edges = [self.GUI.graph.edgeWeights[0].keys()]    # list of tuples that are edges
+        edges = [list(self.GUI.graph.edgeWeights[0].keys())]    # list of tuples that are edges
         histories = [self.GUI.animation_history]
         if self.GUI.GUI.secondaryGraphDisplay != None and self.GUI.GUI.secondaryGraphDisplay.graphInformer != None:
             num_graphs = 2
             histories.append(self.GUI.GUI.secondaryGraphDisplay)
             informers.append(self.GUI.GUI.secondaryGraphDisplay.graphInformer)
-            edges.append(self.GUI.GUI.secondaryGraphDisplay.drawEdges.keys())
-            vertices.append(self.GUI.GUI.secondaryGraphDisplay.drawVertex.keys())
+            edges.append(list(self.GUI.GUI.secondaryGraphDisplay.drawEdges.keys()))
+            vertices.append(list(self.GUI.GUI.secondaryGraphDisplay.drawVertex.keys()))
 
         construct_initial_graph_infos()
         construct_initial_edge_infos()
@@ -1761,7 +1782,7 @@ class AlgorithmDebugger(bdb.Bdb):
 
 # Endof: AlgorithmDebugger  ----------------------------------------------------
         
-class Algorithm:
+class Algorithm(object):
     """ Provides all services necessary to load an algorithm, run it
         and provide facilities for visualization """
     
@@ -1797,8 +1818,9 @@ class Algorithm:
     def Open(self,file):
         """ Read in an algorithm from file. """
         input=open(file, 'r')
-        self.source = input.read()
+        s = input.read()
         input.close()
+        self.source = s #.decode('utf-8')
         self.ClearBreakpoints()
         self.algoFileName = file
         
@@ -1862,7 +1884,7 @@ class Algorithm:
                          'noGraphNeeded':'noGraphNeeded[ \t]*=[ \t]*([0-1])'}
         # about is more complicated
         
-        for patternName in optionPattern.keys():
+        for patternName in list(optionPattern.keys()):
             compPattern = re.compile(optionPattern[patternName])
             match = compPattern.search(text) 
             
@@ -1895,7 +1917,7 @@ class Algorithm:
         """ Read in a graph from file and open the display """
         if type(file) in (str,):
             self.graphFileName = file
-        elif type(file) == types.FileType or issubclass(file.__class__,StringIO.StringIO):
+        elif type(file) == types.FileType or issubclass(file.__class__,io.StringIO):
             self.graphFileName = fileName
         else:
             raise Exception("wrong types in argument list: expected string or file like object")
@@ -2002,8 +2024,8 @@ class Algorithm:
         self.algoGlobals['gInteractive'] = g.Interactive
         # Read in prolog and execute it
         try:
-            execfile(os.path.splitext(self.algoFileName)[0] + ".pro", 
-                     self.algoGlobals, self.algoGlobals)
+            prologFileName = os.path.splitext(self.algoFileName)[0] + ".pro"
+            exec(open(prologFileName).read(), self.algoGlobals, self.algoGlobals)
         except AbortProlog as e:
             # Only get here because NeededProperties was canceled by user
             logging.info(e.value)
@@ -2018,28 +2040,32 @@ class Algorithm:
         except: # Bug in the prolog
             short_msg = "Error in %s.pro" % os.path.splitext(self.algoFileName)[0]
             long_msg = traceback.format_exc()
-            self.GUI.HandleError(short_msg, long_msg, log.exception)            
+            self.GUI.HandleError(short_msg, long_msg, logging.exception)            
             self.GUI.CommitStop()
             return
 
         if prologOnly:
             return
         # Read in algo and execute it in the debugger
-        file = self.algoFileName
+        #file = self.algoFileName
         # Filename must be handed over in a very safe way
         # because of \ and ~1 under windows
-        self.algoGlobals['_tmp_file']=self.algoFileName
+        #self.algoGlobals['_tmp_file']=self.DB.canonic(self.algoFileName)
         
         # Switch on all shown breakpoints
         for line in self.breakpoints:
-            self.DB.set_break(self.algoFileName,line)
+            # Python 3 change:
+            # bdb.Bdb uses "<string>" as the filename for code executed via exec in
+            # bdb.Bdb.run(). Needs to be specified for setting/deleting breakpoints
+            # and in our debugger subclass to recognize when we are in the algorithm
+            self.DB.set_break("<string>",line)
         try:
-            command = "execfile(_tmp_file)"
-            self.DB.run(command, self.algoGlobals, self.algoGlobals)
+            source = open(self.algoFileName).read()
+            self.DB.run(source, self.algoGlobals, self.algoGlobals)
         except:
             short_msg = "Error in %s.alg" % os.path.splitext(self.algoFileName)[0]
             long_msg = traceback.format_exc()
-            self.GUI.HandleError(short_msg, long_msg, log.exception)            
+            self.GUI.HandleError(short_msg, long_msg, logging.exception)            
         
         self.GUI.graphDisplay.EndOfProlog()
 
@@ -2087,7 +2113,7 @@ class Algorithm:
         """ Clear all breakpoints """
         for line in self.breakpoints:
             self.GUI.HideBreakpoint(line)
-            self.DB.clear_break(self.algoFileName,line)
+            self.DB.clear_break("<string>",line)
         self.breakpoints = []
         
     def SetBreakpoints(self, list):
@@ -2100,7 +2126,7 @@ class Algorithm:
         for line in list:
             self.GUI.ShowBreakpoint(line)
             self.breakpoints.append(line)
-            self.DB.set_break(self.algoFileName,line)
+            self.DB.set_break("<string>",line)
             
             
     def ToggleBreakpoint(self,line = None):
@@ -2113,16 +2139,15 @@ class Algorithm:
         if line in self.breakpoints:
             self.GUI.HideBreakpoint(line)
             self.breakpoints.remove(line)
-            self.DB.clear_break(self.algoFileName,line)
+            self.DB.clear_break("<string>",line)
         else: # New Breakpoint
-        
             # check for not breaking in comments nor on empty lines. 
             codeline = linecache.getline(self.algoFileName,line)
             if codeline != '' and self.commentPattern.match(codeline) == None and \
                    self.blankLinePattern.match(codeline) == None:
                 self.GUI.ShowBreakpoint(line)
                 self.breakpoints.append(line)
-                self.DB.set_break(self.algoFileName,line)
+                self.DB.set_break("<string>",line)
                 
                 
     def GetInteractiveLines(self):
@@ -2147,7 +2172,7 @@ class Algorithm:
         
             Proper names for properties are defined in gProperty
         """
-        for property, requiredValue in propertyValueDict.iteritems():
+        for property, requiredValue in propertyValueDict.items():
             failed = 0
             value = self.graph.Property(property)
             if value != 'Unknown':   
@@ -2269,6 +2294,7 @@ def setupLogging(args, windowingsystem, macOSbinary=False):
                stream=sys.stdout,
                format='%(levelname)s %(message)s'
            )
+    logging.info("Welcome - log level is %s" % repr(logLevel))
 
 
 def GatoApp(args):
@@ -2362,8 +2388,7 @@ def GatoApp(args):
     app.update()
     return app
 
-    
-if __name__ == '__main__':
+def main(argv=[]):
     description = "Animate Graph Algorithms such as BFS, DFS, Dijkstra, ..."
 
     parser = argparse.ArgumentParser(
@@ -2410,9 +2435,9 @@ if __name__ == '__main__':
     parser.add_argument('algorithmFileName', nargs='?', default="")
     parser.add_argument('graphFileName', nargs='?', default="")
 
-    if 'Gato.app' in sys.argv[0]:
-        args = parser.parse_args([])
-    else:
-        args = parser.parse_args()
+    args = parser.parse_arg(argv)
     app = GatoApp(args)
     sys.exit(app.mainloop())
+
+if __name__ == '__main__':
+    sys.exit(main(sys.argv))

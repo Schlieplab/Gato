@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 ################################################################################
 #
 #       This file is part of Gato (Graph Animation Toolbox) 
@@ -1478,7 +1479,7 @@ sKDBgwgTKlzIsKHDhxAjSpxIsaLFixgzatzIsaPHjyBDihxJsqTJkyhTngwIADs=
 """
 
 def Init():
-    import GatoUtil
+    from . import GatoUtil
     imageCache = GatoUtil.ImageCache() # singleton
     imageCache.AddImage("Icons/black.gif",black)
     imageCache.AddImage("Icons/blacknde.gif",blacknde)

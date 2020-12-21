@@ -36,7 +36,7 @@ include __init__.py
 include setup.py
 include scripts/Gato
 include scripts/Gred
-exclude svgs
+exclude svgs	
 include svgs/css/*
 include svgs/js/*
 include BFS.alg

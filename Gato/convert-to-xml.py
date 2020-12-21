@@ -1,3 +1,5 @@
+from __future__ import print_function
+from __future__ import absolute_import
 ################################################################################
 #
 #       This file is part of Gato (Graph Animation Toolbox) 
@@ -31,7 +33,7 @@
 #                       from $Date$
 #             last change by $Author$.
 #
-import GatoFile
+from . import GatoFile
 import sys
 import os
 import os.path
@@ -76,7 +78,7 @@ class FileCollector(GatoFile.GatoFile):
                 # append algorithm
                 AlgorithmName=os.path.basename(thisArg)[:-4]
                 if not os.access(thisArg,os.R_OK):
-                    print >>sys.stderr, "could not read file %s, ignoring"%thisArg
+                    print("could not read file %s, ignoring"%thisArg, file=sys.stderr)
                     continue
                 if thisSection is None:
                     thisSection=self.createGatoElement()
@@ -89,7 +91,7 @@ class FileCollector(GatoFile.GatoFile):
                 # append graph
                 GraphName=os.path.basename(thisArg)[:-4]
                 if not os.access(thisArg,os.R_OK):
-                    print >>sys.stderr, "could not read file %s, ignoring"%thisArg
+                    print("could not read file %s, ignoring"%thisArg, file=sys.stderr)
                     continue
                 if thisSection is None:
                     thisSection=self.createGatoElement()
@@ -108,7 +110,7 @@ class FileCollector(GatoFile.GatoFile):
         print help message
         """
         if command=="convert-to-xml.py":
-            print convert_to_xml_help
+            print(convert_to_xml_help)
             
     def run(self, args):
         """

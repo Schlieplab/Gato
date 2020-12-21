@@ -38,6 +38,7 @@
 ################################################################################
 
 
+from past.builtins import execfile
 import distutils
 from distutils.core import setup
 
@@ -49,7 +50,9 @@ if sys.version_info < (3,0):
     execfile("GatoGlobals.py", info)
 else:
     # Some variant of exec(open("GatoGlobals.py").read())
-    raise NotImplementedError
+    info = {}
+    exec(open("GatoGlobals.py").read(), info)
+    #raise NotImplementedError
 
 long_description_text = "".join(open('README').readlines())
 

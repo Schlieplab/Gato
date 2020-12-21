@@ -35,13 +35,15 @@
 #
 ################################################################################
 
+from __future__ import print_function
+from __future__ import absolute_import
 import sys
 import os
 import re
 import fnmatch
 import logging
-from Gato import *
-import GatoGlobals
+from .Gato import *
+from . import GatoGlobals
 
 g = GatoGlobals.AnimationParameters
 
@@ -716,7 +718,7 @@ def checkForLibs():
             "(https://wiki.gnome.org/action/show/Projects/LibRsvg?action=show&redirect=LibRsvg)."
             "HTML generation will continue, but no index page will be generated.\n*******"
         )
-        print err_msg
+        print(err_msg)
     return has_png_libs
 
 

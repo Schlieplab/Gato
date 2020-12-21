@@ -35,7 +35,11 @@
 #
 ################################################################################
 
-import tkFont
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import object
+import tkinter.font
 
 gatoVersion = '1.2.6'
 gatoBuildDate = '12/17/2020'
@@ -47,7 +51,7 @@ gGatoURL = gatoURL
 gCATBoxURL = 'http://schliep.org/CATBox'
 
 
-class AnimationParameters:
+class AnimationParameters(object):
     """ Convenience class to collect all globals. 
 
         The values below are the initial default values, which can be
@@ -61,7 +65,7 @@ class AnimationParameters:
 
     FontFamily = "Helvetica"
     FontSize = 10
-    FontStyle = tkFont.BOLD
+    FontStyle = tkinter.font.BOLD
 
     # Animationk
     BlinkRate = 10 # ms

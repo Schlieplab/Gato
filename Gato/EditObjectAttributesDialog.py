@@ -35,11 +35,16 @@
 #             last change by $Author$.
 #
 ################################################################################
-from Tkinter import *
-from ScrolledText import *
-import tkSimpleDialog 
-import tkMessageBox
-from tkColorChooser import askcolor
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import map
+from builtins import object
+from tkinter import *
+from tkinter.scrolledtext import *
+import tkinter.simpledialog 
+import tkinter.messagebox
+from tkinter.colorchooser import askcolor
 import copy
 import sys
 import os
@@ -54,7 +59,7 @@ def typed_assign(var, val):
     
     
     #-------------------------------------------------------------------------------
-class TkBoolEntry:
+class TkBoolEntry(object):
     """Tk entry field for selecting one Bool"""
 
     def __init__(self, master, default=False):
@@ -78,7 +83,7 @@ class TkBoolEntry:
         self.status = not self.status
 
 
-class TkStringEntry:
+class TkStringEntry(object):
     """Tk entry field for editing strings"""
     
     def __init__(self, master, width):
@@ -113,7 +118,7 @@ class TkFloatEntry(TkStringEntry):
         return float(self.entryWidget.get())
         
         
-class TkDefaultMixin:
+class TkDefaultMixin(object):
     """Mixin for TkStringEntry, TkIntEntry, TkFloatEntry, ... to deal with
        values which have an externally defined default value. Combination
        of 'use default' checkbox and corresponding entry field """
@@ -195,18 +200,18 @@ class TkDefaultFloatEntry(TkFloatEntry, TkDefaultMixin):
             
             
             
-class TkPopupSelector:
+class TkPopupSelector(object):
     def __init__(self, master, value2pop, pop2value, width):
     
         self.value2pop = value2pop
         self.pop2value = pop2value
         self.popupvalue = StringVar()
-        self.popupvalue.set(self.pop2value.keys()[0]) # XXX first value as default 
+        self.popupvalue.set(list(self.pop2value.keys())[0]) # XXX first value as default 
         
         # XXX Uuughhh
-        keys = self.value2pop.keys()
+        keys = list(self.value2pop.keys())
         keys.sort()
-        pops = map(lambda x: value2pop[x], keys)
+        pops = [value2pop[x] for x in keys]
         #logging.debug("pops = %s" % pops)
         args = (master, self.popupvalue) + tuple(pops)
         
@@ -223,13 +228,13 @@ class TkPopupSelector:
         try:
             self.popupvalue.set(self.value2pop[value])
         except:
-            self.popupvalue.set(self.pop2value.keys()[0]) # XXX first value as default       
+            self.popupvalue.set(list(self.pop2value.keys())[0]) # XXX first value as default       
             
     def select(self):    
         # Cant choose invalid value with popup
         pass
         
-class TkStringPopupSelector:
+class TkStringPopupSelector(object):
     def __init__(self, master, strings):
     
         self.strings = strings
@@ -237,7 +242,7 @@ class TkStringPopupSelector:
         if len(self.strings) > 0:
             self.popupvalue.set(self.strings[0]) # XXX first value as default 
             
-        width = max(map(len, self.strings))
+        width = max(list(map(len, self.strings)))
         args = (master, self.popupvalue) + tuple(self.strings)
         self.tkwidget = OptionMenu(*args)
         self.tkwidget.config(height=1, width=width)
@@ -259,7 +264,7 @@ class TkStringPopupSelector:
         pass
         
         
-class TkColorSelector:
+class TkColorSelector(object):
     def __init__(self, master, color='black'):
         #self.tkwidget = Button(master, width=8, command=self.editColor)
         self.tkwidget = Frame(master, height=18, width=60, relief=RIDGE, borderwidth=1)
@@ -287,7 +292,7 @@ class TkColorSelector:
         
         
         
-class EditObjectAttributesDialog(tkSimpleDialog.Dialog):
+class EditObjectAttributesDialog(tkinter.simpledialog.Dialog):
     """ Creates an editable (pseudo-)inspector for a selected set of
         attributes of a given object
     
@@ -309,7 +314,7 @@ class EditObjectAttributesDialog(tkSimpleDialog.Dialog):
         self.object = object
         self.attr_names = attr_names
         self.edit = {}
-        tkSimpleDialog.Dialog.__init__(self, master, "Edit: %s" % self.object.desc)
+        tkinter.simpledialog.Dialog.__init__(self, master, "Edit: %s" % self.object.desc)
         
         
     def editWidget(self, master, object, attr_name):
@@ -373,7 +378,7 @@ class EditObjectAttributesDialog(tkSimpleDialog.Dialog):
 
                 cur_row = cur_row + 1
         else:
-            for attr in self.attr_names.keys():
+            for attr in list(self.attr_names.keys()):
                 label = Label(master, text="%s" % self.attr_names[attr], anchor=E)
                 label.grid(row=cur_row, column=0, padx=4, pady=3, sticky=E)
 
@@ -384,7 +389,7 @@ class EditObjectAttributesDialog(tkSimpleDialog.Dialog):
                 cur_row = cur_row + 1
 
     def validate(self):
-        for attr_name in self.edit.keys():
+        for attr_name in list(self.edit.keys()):
             try:
             
                 # In python 2.2 we can subclass attributes and add a validate method
@@ -397,12 +402,12 @@ class EditObjectAttributesDialog(tkSimpleDialog.Dialog):
                     
             except ValueError:
                 msg = "Please enter a valid value for %s" % attr_name
-                tkMessageBox.showwarning("Invalid Value", msg, parent=self)
+                tkinter.messagebox.showwarning("Invalid Value", msg, parent=self)
                 self.edit[attr_name].select()
                 return 0
                 
                 # Everything is valid => set values
-        for attr_name in self.edit.keys():            
+        for attr_name in list(self.edit.keys()):            
             self.object.__dict__[attr_name] = typed_assign(self.object.__dict__[attr_name], self.edit[attr_name].get())
             
             if isinstance(self.object.__dict__[attr_name], WithDefault):
@@ -413,7 +418,7 @@ class EditObjectAttributesDialog(tkSimpleDialog.Dialog):
         
         
         #-------------------------------------------------------------------------------
-class WithDefault:
+class WithDefault(object):
     """Mix-in for variables which have a default value"""
     
     def setDefault(self, useDefault, defaultValue):
@@ -428,7 +433,7 @@ class WithDefault:
         return 1
         
         
-class Popupable:
+class Popupable(object):
     """Mix-in for variables which can be edited via a pop-up menu
        - val2pop : dict mapping value to string for pop up menu
        - pop2val: dict mapping pop up menu string to value
@@ -443,7 +448,7 @@ class Popupable:
             self.pop2val = {} # Private copy
             self.width = 0
             
-            for val in val2pop.keys():
+            for val in list(val2pop.keys()):
                 pop = val2pop[val]
                 self.width = max(len(pop), self.width)
                 self.pop2val[pop] = val
@@ -474,7 +479,7 @@ class Popupable:
         ##        return 1
         
         
-class AlwaysValidate:
+class AlwaysValidate(object):
     """Mix-in for variables which always are valid"""
     def validate(self, value):
         return 1

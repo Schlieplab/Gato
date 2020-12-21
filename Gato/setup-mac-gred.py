@@ -41,6 +41,7 @@
 #
 #
 #
+from past.builtins import execfile
 import distutils
 from distutils.core import setup
 import py2app

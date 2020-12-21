@@ -1,3 +1,5 @@
+from __future__ import division
+from __future__ import absolute_import
 ################################################################################
 #
 #       This file is part of Gato (Graph Animation Toolbox) 
@@ -35,9 +37,13 @@
 #
 ################################################################################
 
-from GatoGlobals import gInfinity
+from future import standard_library
+standard_library.install_aliases()
+from past.utils import old_div
+from builtins import object
+from .GatoGlobals import gInfinity
 
-class Rect:
+class Rect(object):
     def __init__(self):
         self.x1 = 30
         self.y1 = 30
@@ -54,7 +60,7 @@ class Rect:
         return self.y2 - self.y1
             
 
-class Embedder:
+class Embedder(object):
     """ This class provides an abstract Embedder as
         a base for actual Embedder implementations """
     
@@ -116,7 +122,7 @@ def CircularCoords(G,rect=None):
         rect = Rect()    
     G.xCoord={}
     G.yCoord={}
-    distance = 2*pi/G.Order()
+    distance = old_div(2*pi,G.Order())
     degree = 0
     xMiddle, yMiddle = rect.midpoint()
     radius = min(rect.height(), rect.width()) / 2.0 - 50
@@ -145,7 +151,7 @@ class CircularEmbedder(Embedder):
         theGraphEditor.config(cursor="")
         
         #----------------------------------------------------------------------
-from PlanarEmbedding import *
+from .PlanarEmbedding import *
 
 class FPP_PlanarEmbedder(Embedder):
 
@@ -184,12 +190,12 @@ class Schnyder_PlanarEmbedder(Embedder):
         theGraphEditor.config(cursor="")
         
         #----------------------------------------------------------------------
-from Tkinter import *
-import tkSimpleDialog 
+from tkinter import *
+import tkinter.simpledialog 
 import string
-from tkMessageBox import showwarning
+from tkinter.messagebox import showwarning
 
-from DataStructures import Stack
+from .DataStructures import Stack
 
 """
 def center(G):
@@ -226,11 +232,11 @@ def center(G):
     return center
 """
 
-class TreeLayoutDialog(tkSimpleDialog.Dialog):
+class TreeLayoutDialog(tkinter.simpledialog.Dialog):
 
     def __init__(self, master):
         self.G = master.G
-        tkSimpleDialog.Dialog.__init__(self, master, "Tree Layout")
+        tkinter.simpledialog.Dialog.__init__(self, master, "Tree Layout")
         
         
     def body(self, master):
@@ -258,11 +264,11 @@ class TreeLayoutDialog(tkSimpleDialog.Dialog):
         
     def validate(self):
         try: 
-            if (string.atoi(self.root.get())<0 or 
-                string.atoi(self.root.get()) not in self.G.vertices):
+            if (int(self.root.get())<0 or 
+                int(self.root.get()) not in self.G.vertices):
                 raise rootError
             self.result=[]
-            self.result.append(string.atoi(self.root.get()))
+            self.result.append(int(self.root.get()))
             self.result.append(self.orientation.get())
             return self.result
         except:
@@ -341,12 +347,12 @@ def TreeCoords(G, root, orientation):
     if number_of_leaves<=19:
         dist1 = 50
     else:
-        dist1 = 900 / (number_of_leaves-1)
+        dist1 = old_div(900, (number_of_leaves-1))
         
     if height+1<=19:
         dist2 = 50
     else:
-        dist2 = 900 / height
+        dist2 = old_div(900, height)
         
     if dist1<25 or dist2<30: 
         showwarning("Warning", 
@@ -372,8 +378,8 @@ def TreeCoords(G, root, orientation):
                     Coord1[v] = Coord1[children[v][0]]
                 else:
                     Coord1[v] = ( Coord1[children[v][0]] +
-                                  (Coord1[children[v][-1]] - 
-                                   Coord1[children[v][0]]) / 2)  
+                                  old_div((Coord1[children[v][-1]] - 
+                                   Coord1[children[v][0]]), 2))  
         i=i-1
         
     if orientation=="vertical":
@@ -409,13 +415,13 @@ class TreeEmbedder(Embedder):
         theGraphEditor.config(cursor="")
         
         #----------------------------------------------------------------------
-from GraphUtil import BFS
+from .GraphUtil import BFS
 
-class BFSLayoutDialog(tkSimpleDialog.Dialog):
+class BFSLayoutDialog(tkinter.simpledialog.Dialog):
 
     def __init__(self, master):
         self.G = master.G
-        tkSimpleDialog.Dialog.__init__(self, master, "BFS Layout")
+        tkinter.simpledialog.Dialog.__init__(self, master, "BFS Layout")
         
         
     def body(self, master):
@@ -443,11 +449,11 @@ class BFSLayoutDialog(tkSimpleDialog.Dialog):
             
     def validate(self):
         try: 
-            if (string.atoi(self.root.get())<0 or
-                string.atoi(self.root.get()) not in self.G.vertices):
+            if (int(self.root.get())<0 or
+                int(self.root.get()) not in self.G.vertices):
                 raise rootError
             self.result=[]
-            self.result.append(string.atoi(self.root.get()))
+            self.result.append(int(self.root.get()))
             self.result.append(self.direction.get())
             return self.result
         except:
@@ -468,14 +474,14 @@ def BFSTreeCoords(G, root, direction, rect=None):
     for v in G.vertices:
         list[BFSdistance[v]].append(v)
     maxDistance=len(list)
-    for d in list.values():
+    for d in list(list.values()):
         if len(d)>maxBreadth: maxBreadth=len(d)
     if maxDistance > 1:
-        xDist=rect.height()/(maxDistance-1)
+        xDist=old_div(rect.height(),(maxDistance-1))
     else:
         xDist=0
     if maxBreadth > 1:
-        yDist=rect.width()/(maxBreadth-1)
+        yDist=old_div(rect.width(),(maxBreadth-1))
     else:
         yDist=0
     Coord1=rect.x2
@@ -483,8 +489,8 @@ def BFSTreeCoords(G, root, direction, rect=None):
     
     G.xCoord={}
     G.yCoord={}
-    for d in list.values():
-        Coord2=mid_y-(len(d)-1)*yDist/2
+    for d in list(list.values()):
+        Coord2=mid_y-old_div((len(d)-1)*yDist,2)
         for v in d:
             G.xCoord[v]=Coord1+random.randint(-20,20)
             G.yCoord[v]=Coord2
@@ -517,7 +523,7 @@ class BFSTreeEmbedder(Embedder):
         
         
 from math import *
-from DataStructures import Queue
+from .DataStructures import Queue
 
 def RadialTreeBFS(G,root,direction='forward'):
     """ Calculate BFS distances and predecessor without showing animations.
@@ -592,7 +598,7 @@ def BFSRadialTreeCoords(G, root, direction, rect=None):
     if rect is None:
         rect = Rect()
     offset = rect.midpoint()    
-    d = (min(rect.width(), rect.height())/2 - 50) / maxdist
+    d = old_div((old_div(min(rect.width(), rect.height()),2) - 50), maxdist)
     for v in G.vertices:
         try:
             (G.xCoord[v], G.yCoord[v]) = RadialToXY(angle[v], BFSdistance[v] * d, offset)

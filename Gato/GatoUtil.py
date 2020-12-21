@@ -1,3 +1,4 @@
+from __future__ import division
 ################################################################################
 #
 #       This file is part of Gato (Graph Animation Toolbox) 
@@ -34,7 +35,11 @@
 #
 ################################################################################
 
-from Tkinter import *
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
+from past.utils import old_div
+from tkinter import *
 import os
 
 def extension(pathAndFile):
@@ -53,8 +58,8 @@ def orthogonal(u):
     length = sqrt(u1**2 + u2**2)
     if length < 0.001:
         length = 0.001
-    u1 = u1 / length
-    u2 = u2 / length
+    u1 = old_div(u1, length)
+    u2 = old_div(u2, length)
     return (-u2,u1)
       
 def ArgMin(list,val):
@@ -69,7 +74,7 @@ def ArgMax(list,val):
     return list[values.index(max(values))]
 
             
-class ImageCache:
+class ImageCache(object):
     """ Provides a global cache for PhotoImages displayed in the 
         application. Singleton Pattern
 
@@ -90,7 +95,7 @@ class ImageCache:
         """ Given a relative URL to an image file return the 
             corresponding PhotoImage. """
         try:    
-            if relURL not in self.images.keys():
+            if relURL not in list(self.images.keys()):
                 ImageCache.images[relURL] = PhotoImage(file=relURL)
             return ImageCache.images[relURL]
         except IndexError as IOError:

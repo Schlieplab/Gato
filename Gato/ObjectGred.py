@@ -34,28 +34,33 @@
 #             last change by $Author$.
 #
 ################################################################################
-from GatoGlobals import *
-import GatoGlobals # Needed for help viewer.XXX
-from ObjectGraph import ObjectGraph, VertexObject, EdgeObject
-from DataStructures import EdgeWeight, VertexWeight
-from GraphUtil import OpenCATBoxGraph, OpenGMLGraph, OpenDotGraph, SaveCATBoxGraph, WeightedGraphInformer
-from GraphEditor import GraphEditor
-from Tkinter import *
-import tkFont
-from GatoUtil import stripPath, extension
-import GatoDialogs
-import GatoIcons
-from ScrolledText import *
+from __future__ import absolute_import
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
+from builtins import object
+from .GatoGlobals import *
+from . import GatoGlobals # Needed for help viewer.XXX
+from .ObjectGraph import ObjectGraph, VertexObject, EdgeObject
+from .DataStructures import EdgeWeight, VertexWeight
+from .GraphUtil import OpenCATBoxGraph, OpenGMLGraph, OpenDotGraph, SaveCATBoxGraph, WeightedGraphInformer
+from .GraphEditor import GraphEditor
+from tkinter import *
+import tkinter.font
+from .GatoUtil import stripPath, extension
+from . import GatoDialogs
+from . import GatoIcons
+from tkinter.scrolledtext import *
 
-from tkFileDialog import askopenfilename, asksaveasfilename
-from tkMessageBox import askokcancel
-import tkSimpleDialog 
+from tkinter.filedialog import askopenfilename, asksaveasfilename
+from tkinter.messagebox import askokcancel
+import tkinter.simpledialog 
 import random
 import string
 import sys
 import os
 
-import GraphCreator, Embedder
+from . import GraphCreator, Embedder
 
 class GredSplashScreen(GatoDialogs.SplashScreen):
 
@@ -94,7 +99,7 @@ class GredAboutBox(GatoDialogs.AboutBox):
         self.infoText.configure(state=DISABLED)
         self.title("Gred - About")
         
-class RandomizeEdgeWeightsDialog(tkSimpleDialog.Dialog):
+class RandomizeEdgeWeightsDialog(tkinter.simpledialog.Dialog):
     """ self.result is an array of triples (randomize, min, max)
         where 'randomize' indicates whether to randomize weight i
         and min and max give the range the random values are drawn
@@ -105,7 +110,7 @@ class RandomizeEdgeWeightsDialog(tkSimpleDialog.Dialog):
     def __init__(self, master, nrOfWeights, keepFirst):
         self.keepFirst = keepFirst
         self.nrOfWeights = nrOfWeights
-        tkSimpleDialog.Dialog.__init__(self, master, "Randomize Edge Weights")
+        tkinter.simpledialog.Dialog.__init__(self, master, "Randomize Edge Weights")
         
     def body(self, master):
         self.resizable(0,0)
@@ -123,7 +128,7 @@ class RandomizeEdgeWeightsDialog(tkSimpleDialog.Dialog):
         self.check = []
         self.checkVar = []
         
-        for i in xrange(self.nrOfWeights):
+        for i in range(self.nrOfWeights):
             label = Label(master, text="%d" % (i+1), anchor=W)
             label.grid(row=i+1, column=0, padx=4, pady=3, sticky="e")
             
@@ -149,7 +154,7 @@ class RandomizeEdgeWeightsDialog(tkSimpleDialog.Dialog):
                 
     def validate(self):
         self.result = []
-        for i in xrange(self.nrOfWeights):
+        for i in range(self.nrOfWeights):
             if self.checkVar[i] != None:
                 self.result.append( (self.checkVar[i].get(), 
                                      string.atof(self.minimum[i].get()),
@@ -201,7 +206,7 @@ class SAGraphEditor(GraphEditor, Frame):
         
         self.gFontFamily = "Helvetica"
         self.gFontSize = 11
-        self.gFontStyle = tkFont.BOLD
+        self.gFontStyle = tkinter.font.BOLD
         
         self.gVertexFrameWidth = 0
         self.cVertexDefault = "#000099"
@@ -553,9 +558,7 @@ class SAGraphEditor(GraphEditor, Frame):
                                              #,("Graphlet", ".let")
                                            ]
                                )
-        if file is "": 
-            pass
-        else:
+        if file != "": 
             self.fileName = file
             self.dirty = 0
             self.graphName = stripPath(file)
@@ -681,7 +684,7 @@ class SAGraphEditor(GraphEditor, Frame):
                 
     def vertexIntegerWeights(self):
         if self.G != None:
-            for i in xrange(0,self.G.NrOfVertexWeights()):
+            for i in range(0,self.G.NrOfVertexWeights()):
                 if not self.G.vertexWeights[i].QInteger(): 
                     self.G.vertexWeights[i].Integerize()
 
@@ -690,7 +693,7 @@ class SAGraphEditor(GraphEditor, Frame):
         if self.G == None:
             return
         n = self.edgeWeightVar.get()
-        k = self.G.edgeWeights.keys()
+        k = list(self.G.edgeWeights.keys())
         if self.G.edgeWeights[0].QInteger():
             initialWeight = 0
         else:
@@ -720,24 +723,24 @@ class SAGraphEditor(GraphEditor, Frame):
             return
         n = self.vertexWeightVar.get()
         old = self.G.NrOfVertexWeights()
-        k = self.G.vertexWeights.keys()
+        k = list(self.G.vertexWeights.keys())
         if self.vertexIntegerWeightsVar.get() == 1:
             initialWeight = 0
         else:
             initialWeight = 0.0	
             
         if n > old: # Add additional weigths
-            for i in xrange(old,n):
+            for i in range(old,n):
                 self.G.vertexWeights[i] = VertexWeight(self.G, initialWeight) 
                 if self.vertexIntegerWeightsVar.get() == 1:
                     self.G.vertexWeights[i].Integerize()
         else:       # Delete superfluos weigths
-            for i in xrange(n,old):
+            for i in range(n,old):
                 del(self.G.vertexWeights[i])
                 
                 # Integerize remaining weigths if necessary
         if self.vertexIntegerWeightsVar.get() == 1:
-            for i in xrange(0,min(n,old)): 
+            for i in range(0,min(n,old)): 
                 self.G.vertexWeights[i].Integerize()
                 
                 
@@ -758,13 +761,13 @@ class SAGraphEditor(GraphEditor, Frame):
         # NOTE: Embedder handled by lambda passed as command
         
     def RandomizeEdgeWeights(self):
-        count = len(self.G.edgeWeights.keys())
+        count = len(list(self.G.edgeWeights.keys()))
         d = RandomizeEdgeWeightsDialog(self, count, self.G.QEuclidian()) 
         if d.result is None:
             return
             
         for e in self.G.Edges():
-            for i in xrange(count):
+            for i in range(count):
                 if d.result[i][0] == 1:
                     val = random.uniform(d.result[i][1],d.result[i][2])
                     if self.G.edgeWeights[i].QInteger():
@@ -826,7 +829,7 @@ class SAGraphEditorToplevel(SAGraphEditor, Toplevel):
             self.focus_force()
             
             
-class Start:
+class Start(object):
 
     def __init__(self):
         graphEditor = SAGraphEditorToplevel()
