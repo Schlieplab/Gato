@@ -2319,10 +2319,9 @@ def GatoApp(args):
         setupLogging(args, app.windowingsystem, macOSbinary=(sys.argv[0] != 'Gato.py'))
         app.OpenSecondaryGraphDisplay()
         graph_panes.add(app.graphDisplay)
-        graph_panes.add(app.secondaryGraphDisplay)                        
+        graph_panes.add(app.secondaryGraphDisplay.animator)                        
         pw.add(app)
         pw.add(graph_panes)
-        #if app.windowingsystem == 'aqua':
         app.master.geometry("%dx%d+%d+%d" % (
             880,
             600, 
@@ -2435,7 +2434,7 @@ def main(argv=[]):
     parser.add_argument('algorithmFileName', nargs='?', default="")
     parser.add_argument('graphFileName', nargs='?', default="")
 
-    args = parser.parse_arg(argv)
+    args = parser.parse_args(argv)
     app = GatoApp(args)
     sys.exit(app.mainloop())
 
