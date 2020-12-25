@@ -37,9 +37,9 @@
 ################################################################################
 
 import sys
-import getopt
 
 import Gato.Gato
 
 if __name__ == '__main__':
-    sys.exit(Gato.Gato.main(sys.argv))
+    sys.exit(Gato.Gato.main(sys.argv[1:], exec_name=sys.argv[0]))
+

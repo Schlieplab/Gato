@@ -2387,12 +2387,15 @@ def GatoApp(args):
     app.update()
     return app
 
-def main(argv=[]):
+def main(argv=[], exec_name='Gato'):
+    """ Note: passing sys.argv as argv will throw errors as explicitly passing
+        arguments to parse_args() does not expect exec_name as first item """ 
     description = "Animate Graph Algorithms such as BFS, DFS, Dijkstra, ..."
 
     parser = argparse.ArgumentParser(
+        prog=exec_name,
         description=description,
-        epilog="Example: Gato.py BFS.alg sample.cat"
+        epilog="Example: %s BFS.alg sample.cat" % exec_name
     )
 
     parser.add_argument(
@@ -2439,4 +2442,4 @@ def main(argv=[]):
     sys.exit(app.mainloop())
 
 if __name__ == '__main__':
-    sys.exit(main(sys.argv))
+    sys.exit(main(sys.argv[1:], exec_name=sys.argv[0]))
