@@ -36,6 +36,7 @@ include __init__.py
 include setup.py
 include scripts/Gato
 include scripts/Gred
+include	scripts/gatoRegressionData
 exclude svgs	
 include svgs/css/*
 include svgs/js/*

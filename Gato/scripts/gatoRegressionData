@@ -1,4 +1,4 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python
 ################################################################################
 #
 #       This file is part of Gato (Graph Animation Toolbox) 
@@ -41,18 +41,18 @@ import os
 import re
 import fnmatch
 import logging
-from .Gato import *
-from . import GatoGlobals
+from Gato.Gato import *
+import Gato.GatoGlobals
 
 g = GatoGlobals.AnimationParameters
 
-def allInstances(exclude_algorithms=[], exclude_instances = {}):
+def allInstances(catbox_path, exclude_algorithms=[], exclude_instances = {}):
     """ Compute instances for all *.alg and all *.cat files across directories.
         Algorithms need to set self.NeededProperties() in Prolog correctly to
         avoid incompatible algorithm-graph pairings. E.g.
         self.NeededProperties({'EvenOrder':1}) for WeightedMatching
     """
-    testPath = "../CATBox/"
+    testPath = catbox_path
     directories = [
         '02-GraphsNetworks/',
         '03-MinimalSpanningTrees/',
@@ -216,26 +216,21 @@ def makeTests(instances):
 
 def RunTests(args):
     app = GatoApp(args)
+
+    testPath = args.catbox_path
     
     if args.quick:
-        testPath = "../CATBox"
-        #tests = [ ("BFS.alg", "sample.cat") ]
+        #tests = [ ("02-GraphsNetworks/BFS.alg", "02-GraphsNetworks/sample.cat") ]
         tests = [('04-LPDuality/PrimalDualKruskal.alg', '04-LPDuality/PD_Kruskal3.cat')]
-        #tests = [ ("BFS.alg", "K2.cat") ]
-        #tests = [
-        #    ("BFS.alg", "K2.cat"),
-        #    ("BFS.alg", "sample.cat"),
-        #]
     elif args.all:
         instances = allInstances(
+            args.catbox_path,
             exclude_algorithms=['MSTInteractive.alg'],
             exclude_instances=exclude_instances
         )
         tests = makeTests(instances)
-        testPath = "../CATBox/"        
     else:
         tests = makeTests(catbox_instances)
-        testPath = "../CATBox/"        
 
     # Accelerate execution by blinking less
     g.BlinkRepeat = 1 
@@ -251,6 +246,7 @@ def RunTests(args):
         # in the GraphDisplay(s). OpenSecondaryGraph() does this for the second
         # graph display.
         if args.path:
+            os.makedirs(args.path, exist_ok=True)
             fileName = os.path.join(args.path,'%s--%s.out' % (algoName, graphName))
             outfile = open(fileName, 'w')
             app.graphDisplay.animationReportFileHandle = outfile
@@ -273,13 +269,13 @@ def RunTests(args):
 if __name__ == '__main__':
     description = (
         "Run Gato for the CATBox algorithm on chapter-specific graphs "
-        "and log animation output on the console or in files for"
+        "and log animation output on the console or in files for "
         "regression tests."
         )
 
     parser = argparse.ArgumentParser(
         description=description,
-        epilog="Example: createRegressionData.py"
+        epilog="Example: gatoRegressionData -q /path/to/catbox"
     )
 
     parser.add_argument(
@@ -311,6 +307,12 @@ if __name__ == '__main__':
         action="store_true",
         help="Output information about the execution."
     )
+    
+    parser.add_argument(
+        "catbox_path",
+        help="Path to catbox algorithms."
+    )   
+   
     args = parser.parse_args()
     # Manually set the extra arguments defined in Gato.py
     args.experimental=False
