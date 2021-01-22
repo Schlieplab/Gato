@@ -40,7 +40,7 @@ import logging
 
 def extension(pathAndFile):
     """ Return ext if path/filename.ext is given """
-    return os.path.splitext(pathAndFile)[1]
+    return os.path.splitext(pathAndFile)[1][1:] # Remove '.'
     
 def stripPath(pathAndFile):
     """ Return filename.ext if path/filename.ext is given """

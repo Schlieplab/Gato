@@ -284,7 +284,7 @@ def OpenCATBoxGraph(_file):
     
     # get file from name or file object
     graphFile=None
-    if type(_file) in (str,):
+    if type(_file) in (str,unicode):
         graphFile = open(_file, 'r')
     elif type(_file)==types.FileType or issubclass(_file.__class__,StringIO.StringIO):
         graphFile=_file
@@ -393,7 +393,7 @@ def SaveCATBoxGraph(G, _file):
     
     # get file from name or file object
     file=None
-    if type(_file) in (str,):
+    if type(_file) in (str,unicode):
         file = open(_file, 'w')
     elif type(_file)==types.FileType or issubclass(_file.__class__,StringIO.StringIO):
         file=_file

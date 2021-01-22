@@ -47,6 +47,7 @@ from GatoUtil import stripPath, extension
 import GatoDialogs
 import GatoIcons
 from ScrolledText import *
+import logging
 
 from tkFileDialog import askopenfilename, asksaveasfilename
 from tkMessageBox import askokcancel, showinfo
@@ -604,6 +605,7 @@ class SAGraphEditor(GraphEditor, Frame):
                 G = OpenDotGraph(fileName)
             else:
                 logging.error("Unknown extension %s" % e)
+                return
                 
             if not self.gridding:
                 self.graphMenu.invoke(self.graphMenu.index('Grid'))	

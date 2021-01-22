@@ -1893,7 +1893,7 @@ class Algorithm:
             
     def OpenGraph(self,file,fileName=None):
         """ Read in a graph from file and open the display """
-        if type(file) in (str,):
+        if type(file) in (str, unicode):
             self.graphFileName = file
         elif type(file) == types.FileType or issubclass(file.__class__,StringIO.StringIO):
             self.graphFileName = fileName
