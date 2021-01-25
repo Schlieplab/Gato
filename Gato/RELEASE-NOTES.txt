@@ -1,5 +1,9 @@
 Gato Release notes
 
+Gato 1.2.7 from 1/25/2021
+* Minor bugfixes to the last version to support Python 2.7
+* Building Windows binaries and installer again
+
 Gato 1.2.6 from 12/17/2020
 * Last version to support Python 2.7
 * Mostly internal cleanup to prepare for Python 3
