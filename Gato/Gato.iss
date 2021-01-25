@@ -64,15 +64,15 @@ Source: dist\unicodedata.pyd; DestDir: {app}
 Source: sample.cat; DestDir: {userdocs}\CATBox; Tasks: ; Languages: 
 Source: BFS.alg; DestDir: {userdocs}\CATBox
 Source: BFS.pro; DestDir: {userdocs}\CATBox
-Source: ..\CATBox\02-GraphsNetworks\*; DestDir: {userdocs}\CATBox\02-GraphsNetworks\
-Source: ..\CATBox\03-MinimalSpanningTrees\*; DestDir: {userdocs}\CATBox\03-MinimalSpanningTrees\
-Source: ..\CATBox\04-LPDuality\*; DestDir: {userdocs}\CATBox\04-LPDuality\
-Source: ..\CATBox\05-ShortestPaths\*; DestDir: {userdocs}\CATBox\05-ShortestPaths\
-Source: ..\CATBox\06-MaximalFlows\*; DestDir: {userdocs}\CATBox\06-MaximalFlows\
-Source: ..\CATBox\07-MinimumCostFlows\*; DestDir: {userdocs}\CATBox\07-MinimumCostFlows\
-Source: ..\CATBox\08-Matching\*; DestDir: {userdocs}\CATBox\08-Matching\
-Source: ..\CATBox\09-WeightedMatching\*; DestDir: {userdocs}\CATBox\09-WeightedMatching\
-Source: ..\CATBox\Appendix\*; DestDir: {userdocs}\CATBox\Appendix\
+Source: Z:\CATBox\02-GraphsNetworks\*; DestDir: {userdocs}\CATBox\02-GraphsNetworks\
+Source: Z:\CATBox\03-MinimalSpanningTrees\*; DestDir: {userdocs}\CATBox\03-MinimalSpanningTrees\
+Source: Z:\CATBox\04-LPDuality\*; DestDir: {userdocs}\CATBox\04-LPDuality\
+Source: Z:\CATBox\05-ShortestPaths\*; DestDir: {userdocs}\CATBox\05-ShortestPaths\
+Source: Z:\CATBox\06-MaximalFlows\*; DestDir: {userdocs}\CATBox\06-MaximalFlows\
+Source: Z:\CATBox\07-MinimumCostFlows\*; DestDir: {userdocs}\CATBox\07-MinimumCostFlows\
+Source: Z:\CATBox\08-Matching\*; DestDir: {userdocs}\CATBox\08-Matching\
+Source: Z:\CATBox\09-WeightedMatching\*; DestDir: {userdocs}\CATBox\09-WeightedMatching\
+Source: Z:\CATBox\Appendix\*; DestDir: {userdocs}\CATBox\Appendix\
 
 
 [Icons]
