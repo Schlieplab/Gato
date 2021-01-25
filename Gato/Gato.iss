@@ -7,7 +7,7 @@
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{F8099CCA-6482-4114-9A3C-4A9BE6D68A95}
 AppName=CATBox
-AppVerName=CATBox 1.2.6
+AppVerName=CATBox 1.2.7
 AppPublisher=Schliep & Hochstaettler
 AppPublisherURL=http://schliep.org/CATBox
 AppSupportURL=http://schliep.org/CATBox
