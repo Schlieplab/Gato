@@ -2233,7 +2233,8 @@ class Algorithm:
 
 def setupLogging(args, windowingsystem, macOSbinary=False):
         
-    if windowingsystem == 'win32' or (windowingsystem == 'aqua' and macOSbinary):
+    #if windowingsystem == 'win32' or (windowingsystem == 'aqua' and macOSbinary):
+    if windowingsystem == 'aqua' and macOSbinary:
         # Suppress all logging on Windows and for MacOS binaries
         #
         # XXX Here we should actually provide our own buffer and a Tk Textbox to
@@ -2246,29 +2247,30 @@ def setupLogging(args, windowingsystem, macOSbinary=False):
         h = NullHandler()
         logging.getLogger("Gato").addHandler(h)
     else:
-        # If we run MacOS from source we can write to /tmp and also have a shell
+        # If we run MacOS from source we can write to /tmp and also have a terminal
 
+        logLevel = logging.WARNING
         if args.verbose:
             logLevel = logging.INFO
-        elif args.debug:
+        if args.debug:
             logLevel = logging.DEBUG
-        else:
-            logLevel = logging.WARNING
-        
-        
+
         if args.log_file:
             logging.basicConfig(
+                force=True, # basicConfig otherwise is ignored
                 level=logLevel,
                 filename='/tmp/Gato.log',
                 filemode='w',
                 format='%(levelname)s %(message)s'
             )
         else:
-           logging.basicConfig(
-               level=logLevel,
-               stream=sys.stdout,
-               format='%(levelname)s %(message)s'
-           )
+            logging.basicConfig(
+                force=True,
+                level=logLevel,
+                stream=sys.stdout,
+                format='%(levelname)s %(message)s'
+            )
+    logging.info("Welcome - log level is %s" % repr(logLevel))
 
 
 def GatoApp(args):
@@ -2296,7 +2298,6 @@ def GatoApp(args):
         graph_panes.add(app.secondaryGraphDisplay)                        
         pw.add(app)
         pw.add(graph_panes)
-        #if app.windowingsystem == 'aqua':
         app.master.geometry("%dx%d+%d+%d" % (
             880,
             600, 
@@ -2315,34 +2316,15 @@ def GatoApp(args):
     if app.windowingsystem == 'aqua':
         tk.createcommand("::tk::mac::Quit",app.Quit)
             
-    # XXX Here we should actually provide our own buffer and a Tk
-    # Textbox to write to. NullHandler taken from
-    # http://docs.python.org/library/logging.html
-    if not args.verbose:
-        # Windows does not have /tmp, MacOS does not allow binaries to write to /tmp 
-        if app.windowingsystem == 'win32' or app.windowingsystem == 'aqua':
-            class NullHandler(logging.Handler):
-                def emit(self, record):
-                    pass
-            h = NullHandler()
-            logging.getLogger("Gato").addHandler(h)
-        else:
-            logging.basicConfig(level=logging.WARNING,
-                                filename='/tmp/Gato.log',
-                                filemode='w',
-                                format='%(name)s %(levelname)s %(message)s')
-        
     # We get here if Gato.py <algorithm> <graph>
     if args.algorithmFileName and args.graphFileName:
         app.StartAlgorithmGraph(args.algorithmFileName, args.graphFileName)
-
 
     # We get here if Gato.py --gato-file <gatofile-name|url>
     if args.gato_file:
         app.OpenGatoFile(args.gato_file)
         app.update_idletasks()
         app.update()
-
         
     if app.windowingsystem == 'aqua':
         #app.master.iconify()
@@ -2362,13 +2344,15 @@ def GatoApp(args):
     app.update()
     return app
 
-    
-if __name__ == '__main__':
+def main(argv=[], exec_name='Gato'):
+    """ Note: passing sys.argv as argv will throw errors as explicitly passing
+        arguments to parse_args() does not expect exec_name as first item """ 
     description = "Animate Graph Algorithms such as BFS, DFS, Dijkstra, ..."
 
     parser = argparse.ArgumentParser(
+        prog=exec_name,
         description=description,
-        epilog="Example: Gato.py BFS.alg sample.cat"
+        epilog="Example: %s BFS.alg sample.cat" % exec_name
     )
 
     parser.add_argument(
@@ -2410,9 +2394,9 @@ if __name__ == '__main__':
     parser.add_argument('algorithmFileName', nargs='?', default="")
     parser.add_argument('graphFileName', nargs='?', default="")
 
-    if 'Gato.app' in sys.argv[0]:
-        args = parser.parse_args([])
-    else:
-        args = parser.parse_args()
+    args = parser.parse_args(argv)
     app = GatoApp(args)
     sys.exit(app.mainloop())
+
+if __name__ == '__main__':
+    sys.exit(main(sys.argv[1:], exec_name=sys.argv[0]))

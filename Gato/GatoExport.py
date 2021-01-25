@@ -40,7 +40,7 @@ import StringIO
 import tokenize
 import re
 import pdb
-from bs4 import BeautifulSoup
+#from bs4 import BeautifulSoup
 from math import sqrt, pi, sin, cos, atan2, degrees, log10, floor, ceil
 from WebGatoJS import animationhead
 import logging
@@ -644,6 +644,7 @@ def ExportAlgoInfo(fileName, algorithm):
 
     file = open("./svgs/infos/%s" % os.path.basename(fileName).replace("svg", "html"), "w")
     info = algorithm.About()
+    from bs4 import BeautifulSoup
     soup = BeautifulSoup(info)
 
     # Link the CSS file
@@ -862,8 +863,9 @@ def ExportSVG(fileName, algowin, algorithm, graphDisplay, secondaryGraphDisplay=
         file.write(animationhead % str_vars)
         file.close()
 
-        # Export the algorithm info to its own HTML file        
-        ExportAlgoInfo(fileName, algorithm)
+        if not no_info_file:
+            # Export the algorithm info to its own HTML file        
+            ExportAlgoInfo(fileName, algorithm)
 
 
     elif not showAnimation and not write_to_png:
@@ -1172,6 +1174,7 @@ def ExportAnimationAsHTML(fileName, algowin, algorithm, graphDisplay,
     file.write(animationhead % str_vars)
     file.close()
 
-    # Export the algorithm info to its own HTML file        
-    ExportAlgoInfo(fileName, algorithm)
+    if not no_info_file:
+        # Export the algorithm info to its own HTML file        
+        ExportAlgoInfo(fileName, algorithm)
 
