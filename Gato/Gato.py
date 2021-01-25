@@ -2270,7 +2270,7 @@ def setupLogging(args, windowingsystem, macOSbinary=False):
                 stream=sys.stdout,
                 format='%(levelname)s %(message)s'
             )
-    logging.info("Welcome - log level is %s" % repr(logLevel))
+        logging.info("Welcome - log level is %s" % repr(logLevel))
 
 
 def GatoApp(args):

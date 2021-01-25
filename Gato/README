@@ -38,4 +38,5 @@ under the GPL version 3 or later. It has been developed by Scott
 Merkling and Alexander Schliep and is copyright (C) 2014-20
 AlexanderSchliep, and copyright (C) 2014-16 Scott Merkling.
 
-Version 1.2.6 is the last version with Python 2.7 support.
+Versions 1.2.x run with Python 2.7. There is a 2.x release upcoming
+with Python 3 support.
