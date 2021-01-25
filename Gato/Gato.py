@@ -912,7 +912,7 @@ class AlgoWin(Frame):
                                      )
         if fileName != "":
             if self.HaveSecondaryGraphDisplay():
-                GatoExport.ExportGraphToSVG(fileName, self.algorithm, self.graphDisplayy, self.secondaryGraphDisplay)
+                GatoExport.ExportGraphToSVG(fileName, self.algorithm, self.graphDisplay, self.secondaryGraphDisplay)
             else:
                 GatoExport.ExportGraphToSVG(fileName, self.algorithm, self.graphDisplay)
 
